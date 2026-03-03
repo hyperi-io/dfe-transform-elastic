@@ -28,7 +28,7 @@ impl Event {
     }
 
     /// Parse from a JSON string using `serde_json`.
-    pub fn from_str(json: &str) -> Result<Self> {
+    pub fn from_json(json: &str) -> Result<Self> {
         let value: Value = serde_json::from_str(json)?;
         Ok(Self { inner: value })
     }
@@ -328,14 +328,14 @@ mod tests {
     }
 
     #[test]
-    fn from_str_valid() {
-        let event = Event::from_str(r#"{"a": {"b": 42}}"#).unwrap();
+    fn from_json_valid() {
+        let event = Event::from_json(r#"{"a": {"b": 42}}"#).unwrap();
         assert_eq!(event.get_i64("a.b"), Some(42));
     }
 
     #[test]
-    fn from_str_invalid() {
-        assert!(Event::from_str("not json").is_err());
+    fn from_json_invalid() {
+        assert!(Event::from_json("not json").is_err());
     }
 
     #[test]
