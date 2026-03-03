@@ -101,6 +101,17 @@ Kafka (JSON) -> simd-json deserialise -> Rust transforms -> output
 **Decision:** Keep the ANTLR4 Painless parser as its own component within dfe-codegen, callable independently.
 **Rationale:** Reused directly from elastic_to_vrl. May have future uses beyond codegen (analysis, validation). Clean separation of concerns.
 
+### Enrichment Ownership (GeoIP, Reputation, Community ID, User Agent)
+
+**Decision:** dfe-loader is the primary owner of GeoIP and IP reputation enrichment. dfe-transform-elastic re-uses dfe-loader's implementation. When running standalone, dfe-transform-elastic performs enrichment itself.
+**Rationale:** GeoIP is used in ~81% of Elastic pipelines (21 pipeline files, 81 lookup calls). dfe-loader already has a mature implementation: `src/enrich/geoip.rs` (LRU cache, private IP fast-path, City+ASN), `src/enrich/reputation.rs` (multi-source blocklists), `src/enrich/risk.rs` (composite scoring). Duplicating this is wasteful. Two modes: standalone (enrichment runs locally with auto-downloaded databases) and pass-through (dfe-loader handles it downstream).
+
+**Enrichment usage in Elastic pipelines:**
+- GeoIP: 21/26 pipeline files (~81%), City + ASN databases
+- Community ID: 11/26 files (~52%), network-flow logs only
+- User Agent: 14/26 files (~67%), web/auth logs
+- All three are CPU-bound (no external API calls at runtime)
+
 ---
 
 ## External Dependencies
