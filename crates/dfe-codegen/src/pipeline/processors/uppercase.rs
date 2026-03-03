@@ -14,17 +14,17 @@ pub struct Uppercase {
     pub tag: Option<String>,
     #[serde(alias = "if")]
     pub conditional: Option<Conditional>,
-
-    // Unsupported fields
     pub target_field: Option<String>,
     pub ignore_failure: Option<bool>,
+
+    // Unsupported fields
     pub on_failure: Option<OnFailure>,
 }
 
 impl Validate for Uppercase {
     #[instrument(name = "Uppercase::validate", skip_all, err)]
     fn validate(&self) -> anyhow::Result<()> {
-        unsupported_fields!("uppercase", self, target_field, on_failure, ignore_failure);
+        unsupported_fields!("uppercase", self, on_failure);
 
         Ok(())
     }
@@ -43,8 +43,6 @@ mod test {
                         field: message
                         {}: {}
             "#,
-            target_field => "target",
-            ignore_failure => "true",
             on_failure => "[]"
         );
     }

@@ -5,6 +5,10 @@
 //!
 //! Parses Elastic ingest pipeline YAML into processor structs, validates
 //! configuration, and generates Rust transform functions.
+//!
+//! Pipeline structs, processor configs, field handling, template strings,
+//! and the validation framework were all ported from Dylan's elastic_to_vrl.
+//! Solid work that saved us weeks of YAML wrangling.
 
 pub mod conditional;
 pub mod dynamic_path;

@@ -70,13 +70,11 @@
 
 > **Depends on:** 1.3.1 (parser trait), at least 1.3.2-1.3.3 (IP + numeric parsers)
 
-#### 2.1.1 Composite parser builder (`crates/dfe-parse/src/composite.rs`)
+#### 2.1.1 Composite parser builder — COMPLETE
 
-- [ ] `CompositeParser` builder — chain of `Literal` and `Capture` steps
-- [ ] `CompositeParser::parse(input) -> Result<HashMap<&str, Value>>` — execute chain, return named captures
-- [ ] Unit tests: 2-field parse, literal separators, mixed capture types, mismatch failure
-
-> **Done when:** CompositeParser chains Layer 1 parsers with separators, `cargo test -p dfe-parse` passes.
+- [x] `CompositeParser` builder with `Literal`, `Capture`, `SkipSpace` steps
+- [x] `parse()` and `parse_with_remainder()` — zero-copy field extraction
+- [x] 8 unit tests: 2-field, connection pattern, skip_space, word pairs, literal mismatch, remainder, empty, hostname
 
 #### 2.1.2 Grok pattern analyser
 
@@ -87,35 +85,30 @@
 
 > **Done when:** Analyser correctly classifies real grok patterns, `cargo test -p dfe-parse` passes.
 
-#### 2.1.3 DFA fallback (`crates/dfe-parse/src/dfa.rs`)
+#### 2.1.3 DFA fallback — COMPLETE
 
-- [ ] `DfaParser` wrapping `regex_automata::dfa` with named capture mapping
-- [ ] `DfaParser::from_pattern(pattern) -> Result<Self>` — compile regex to DFA
-- [ ] `DfaParser::parse(input) -> Result<HashMap<&str, &str>>` — execute, extract named captures
-- [ ] Unit tests: simple pattern, named groups, serialise/deserialise round-trip
-
-> **Done when:** DfaParser works as regex fallback, `cargo test -p dfe-parse` passes.
+- [x] `DfaParser` wrapping `regex_automata::meta::Regex` with named capture groups
+- [x] `parse()`, `parse_with_remainder()`, `is_match()`, `group_names()`
+- [x] 7 unit tests: named capture, remainder, no match, is_match, group names, syslog pattern, optional groups
 
 ### 2.2 dfe-codegen: Fork + Adapt (`crates/dfe-codegen/`)
 
 > **Depends on:** 1.2 (dfe-runtime Event + Transform trait must be defined)
 
-#### 2.2.1 Import ANTLR4 Painless parser
+#### 2.2.1 Import ANTLR4 Painless parser — COMPLETE
 
-- [ ] Copy ANTLR4 parser files from elastic_to_vrl (~15k lines) into `src/painless/parser/`
-- [ ] Copy transpiler module (`transpiler.rs`, `script.rs`) into `src/painless/`
-- [ ] Verify compiles: `cargo check -p dfe-codegen` passes
+- [x] ANTLR4 parser files (~18k lines) in `src/painless/parser/`
+- [x] Script parsing module in `src/painless/script.rs`
+- [x] Transpiler disabled (VRL → Rust rewrite pending)
+- [x] `cargo check -p dfe-codegen` passes, clippy clean
 
-> **Done when:** Painless parser compiles within dfe-codegen.
+#### 2.2.2 Import pipeline + processor structs — COMPLETE
 
-#### 2.2.2 Import pipeline + processor structs
-
-- [ ] Copy pipeline structs, AST, validation, YAML deserialisation into `src/pipeline/`
-- [ ] Copy 28 processor struct definitions into `src/pipeline/processors/`
-- [ ] Update `use` paths for new module structure
-- [ ] Verify: `cargo check -p dfe-codegen` passes
-
-> **Done when:** Pipeline YAML can be deserialised into Rust structs.
+- [x] Pipeline structs, AST, validation, YAML deserialisation in `src/pipeline/`
+- [x] 27 processor configs in `src/pipeline/processors/`
+- [x] VRL Transpile trait replaced with Codegen trait
+- [x] `serde_yaml` → `serde_yaml_ng`, all VRL deps stripped
+- [x] 116 tests passing, clippy clean
 
 #### 2.2.3 Adapt Painless transpiler for Rust output
 
