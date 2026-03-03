@@ -259,3 +259,269 @@ processors:
     assert!(code.contains("json!(true)"));
     assert!(code.contains("json!(5)"));
 }
+
+// -- Medium processor integration tests --
+
+#[test]
+fn gsub_basic() {
+    let yaml = r#"
+processors:
+  - gsub:
+      field: message
+      pattern: "\\."
+      replacement: "_"
+"#;
+
+    let code = validate_codegen(yaml, "gsub_basic");
+    assert!(code.contains("regex::Regex::new("));
+    assert!(code.contains("replace_all("));
+    assert!(code.contains("event.set(\"message\""));
+}
+
+#[test]
+fn gsub_with_target_field() {
+    let yaml = r#"
+processors:
+  - gsub:
+      field: message
+      pattern: "\\."
+      replacement: "_"
+      target_field: clean_message
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "gsub_target");
+    assert!(code.contains("event.set(\"clean_message\""));
+    assert!(code.contains("event.has(\"message\")"));
+}
+
+#[test]
+fn json_basic() {
+    let yaml = r#"
+processors:
+  - json:
+      field: message
+"#;
+
+    let code = validate_codegen(yaml, "json_basic");
+    assert!(code.contains("serde_json::from_str("));
+    assert!(code.contains("event.set(\"message\""));
+}
+
+#[test]
+fn json_with_target() {
+    let yaml = r#"
+processors:
+  - json:
+      field: message
+      target_field: parsed
+      ignore_failure: true
+"#;
+
+    let code = validate_codegen(yaml, "json_target");
+    assert!(code.contains("event.set(\"parsed\""));
+    assert!(code.contains("ignore_failure: true"));
+}
+
+#[test]
+fn csv_basic() {
+    let yaml = r#"
+processors:
+  - csv:
+      field: message
+      target_fields:
+        - field1
+        - field2
+        - field3
+"#;
+
+    let code = validate_codegen(yaml, "csv_basic");
+    assert!(code.contains("csv::ReaderBuilder::new()"));
+    assert!(code.contains("event.set(\"field1\""));
+    assert!(code.contains("event.set(\"field2\""));
+    assert!(code.contains("event.set(\"field3\""));
+}
+
+#[test]
+fn kv_basic() {
+    let yaml = r#"
+processors:
+  - kv:
+      field: message
+      field_split: " "
+      value_split: "="
+      ignore_missing: true
+      ignore_failure: true
+"#;
+
+    let code = validate_codegen(yaml, "kv_basic");
+    assert!(code.contains("split(\" \")"));
+    assert!(code.contains("split_once(\"=\")"));
+    assert!(code.contains("event.set("));
+}
+
+#[test]
+fn kv_with_target() {
+    let yaml = r#"
+processors:
+  - kv:
+      field: message
+      field_split: ";"
+      value_split: "="
+      target_field: parsed
+      trim_key: " "
+      trim_value: " "
+"#;
+
+    let code = validate_codegen(yaml, "kv_target");
+    assert!(code.contains("parsed."));
+    assert!(code.contains("key.trim()"));
+    assert!(code.contains("value.trim()"));
+}
+
+#[test]
+fn dissect_simple() {
+    let yaml = r#"
+processors:
+  - dissect:
+      field: message
+      pattern: "Hello, %{subject}"
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "dissect_simple");
+    assert!(code.contains("event.set(\"subject\""));
+    assert!(code.contains("strip_prefix(\"Hello, \")"));
+}
+
+#[test]
+fn dissect_complex() {
+    let yaml = r#"
+processors:
+  - dissect:
+      field: message
+      pattern: "%{network.direction} %{network.transport} connection %{event.outcome}"
+"#;
+
+    let code = validate_codegen(yaml, "dissect_complex");
+    assert!(code.contains("event.set(\"network.direction\""));
+    assert!(code.contains("event.set(\"network.transport\""));
+    assert!(code.contains("event.set(\"event.outcome\""));
+}
+
+#[test]
+fn grok_basic() {
+    let yaml = r#"
+processors:
+  - grok:
+      field: message
+      patterns:
+        - "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:level} %{GREEDYDATA:message}"
+      ignore_missing: true
+      ignore_failure: true
+"#;
+
+    let code = validate_codegen(yaml, "grok_basic");
+    assert!(code.contains("grok_to_regex("));
+    assert!(code.contains("regex::Regex::new("));
+    assert!(code.contains("event.set(name, m.as_str())"));
+}
+
+#[test]
+fn foreach_basic() {
+    let yaml = r#"
+processors:
+  - foreach:
+      field: items
+      ignore_missing: true
+      processor:
+        uppercase:
+          field: _ingest._value
+"#;
+
+    let code = validate_codegen(yaml, "foreach_basic");
+    assert!(code.contains("Value::Array(items)"));
+    assert!(code.contains("to_uppercase()"));
+}
+
+#[test]
+fn date_iso8601() {
+    let yaml = r#"
+processors:
+  - date:
+      field: timestamp
+      formats:
+        - ISO8601
+      target_field: "@timestamp"
+"#;
+
+    let code = validate_codegen(yaml, "date_iso");
+    assert!(code.contains("parse_from_rfc3339("));
+    assert!(code.contains("event.set(\"@timestamp\""));
+}
+
+#[test]
+fn date_unix() {
+    let yaml = r#"
+processors:
+  - date:
+      field: timestamp
+      formats:
+        - UNIX
+"#;
+
+    let code = validate_codegen(yaml, "date_unix");
+    assert!(code.contains("parse::<f64>()"));
+    assert!(code.contains("from_timestamp("));
+    assert!(code.contains("event.set(\"@timestamp\""));
+}
+
+#[test]
+fn date_unix_ms() {
+    let yaml = r#"
+processors:
+  - date:
+      field: timestamp
+      formats:
+        - UNIX_MS
+"#;
+
+    let code = validate_codegen(yaml, "date_unix_ms");
+    assert!(code.contains("parse::<i64>()"));
+    assert!(code.contains("from_timestamp_millis("));
+}
+
+#[test]
+fn mixed_medium_pipeline() {
+    let yaml = r#"
+description: "Pipeline with medium processors"
+processors:
+  - json:
+      field: message
+      ignore_failure: true
+  - gsub:
+      field: event.action
+      pattern: "-"
+      replacement: "_"
+      ignore_missing: true
+  - dissect:
+      field: source.address
+      pattern: "%{source.ip}:%{source.port}"
+      ignore_failure: true
+      ignore_missing: true
+  - set:
+      field: event.kind
+      value: event
+  - remove:
+      field: _temp
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "mixed_medium");
+    assert!(code.contains("pub struct MixedMedium;"));
+    assert!(code.contains("serde_json::from_str("));
+    assert!(code.contains("replace_all("));
+    assert!(code.contains("strip_prefix("));
+    assert!(code.contains("json!(\"event\")"));
+    assert!(code.contains("event.remove("));
+}

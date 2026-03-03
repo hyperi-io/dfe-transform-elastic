@@ -15,17 +15,18 @@ pub struct Foreach {
     pub processor: Box<Processor>,
     pub ignore_missing: Option<bool>,
 
-    // Unsupported fields
-    pub description: Option<String>,
     pub ignore_failure: Option<bool>,
     pub on_failure: Option<OnFailure>,
     pub tag: Option<String>,
+
+    // Unsupported fields
+    pub description: Option<String>,
 }
 
 impl Validate for Foreach {
     #[instrument(name = "Foreach::validate", skip_all, err)]
     fn validate(&self) -> Result<()> {
-        unsupported_fields!("foreach", self, description, ignore_failure, on_failure, tag);
+        unsupported_fields!("foreach", self, description);
 
         Ok(())
     }
@@ -47,10 +48,7 @@ mod test {
                                 field: "_ingest._value"
                         {}: {}
             "#,
-            description => "some_description",
-            ignore_failure => "true",
-            on_failure => "[]",
-            tag => "some_tag"
+            description => "some_description"
         );
     }
 

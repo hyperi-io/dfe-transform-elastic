@@ -15,16 +15,17 @@ pub struct Csv {
     #[serde(alias = "if")]
     pub conditional: Option<Conditional>,
 
-    // Unsupported fields
     pub separator: Option<String>,
     pub quote: Option<String>,
     pub ignore_missing: Option<bool>,
-    pub trim: Option<bool>,
-    pub empty_value: Option<String>,
+    pub ignore_failure: Option<bool>,
     pub on_failure: Option<OnFailure>,
     pub tag: Option<String>,
     pub description: Option<String>,
-    pub ignore_failure: Option<bool>,
+
+    // Unsupported fields
+    pub trim: Option<bool>,
+    pub empty_value: Option<String>,
 }
 
 impl Validate for Csv {
@@ -33,15 +34,8 @@ impl Validate for Csv {
         unsupported_fields!(
             "csv",
             self,
-            separator,
-            quote,
-            ignore_missing,
             trim,
-            empty_value,
-            on_failure,
-            tag,
-            description,
-            ignore_failure
+            empty_value
         );
 
         Ok(())
@@ -64,15 +58,8 @@ mod test {
                             - bar
                         {}: {}
             "#,
-            separator => "|",
-            quote => "\"'\"",
-            ignore_missing => "true",
             trim => "true",
-            empty_value => "empty",
-            on_failure => "[]",
-            tag => "some_tag",
-            description => "some_description",
-            ignore_failure => "true"
+            empty_value => "empty"
         );
     }
 
