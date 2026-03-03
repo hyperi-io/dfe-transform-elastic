@@ -86,6 +86,7 @@ proptest = ">=1.5, <1.7"
 test-case = ">=3.3"
 rstest = ">=0.22"
 tempfile = ">=3.10, <3.20"
+syn = { version = ">=2.0", features = ["full", "parsing"] }
 clap = { version = ">=4.5", features = ["derive"] }
 
 [profile.release]

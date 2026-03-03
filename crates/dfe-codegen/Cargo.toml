@@ -31,3 +31,4 @@ lazy_static = { workspace = true }
 tempfile = { workspace = true }
 paste = { workspace = true }
 pretty_assertions = { workspace = true }
+syn = { workspace = true }
