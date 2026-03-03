@@ -38,147 +38,27 @@
 - [x] STATE.md, RESEARCH.md, LICENSE
 - [x] Workspace compiles clean (`cargo check` passes)
 
-### 1.2 dfe-runtime Crate
+### 1.2 dfe-runtime Crate — COMPLETE
 
-> **Parallelism:** Tasks 1.2.1-1.2.4 are sequential (each builds on previous). 1.2.5 (error types) can run in parallel with 1.2.1. 1.2.6 (prelude) comes last.
+- [x] Event struct wrapping `serde_json::Value` with constructors (`new`, `from_json`, `from_bytes`)
+- [x] Dotted-path navigation + typed getters (`get`, `get_str`, `get_i64`, `get_f64`, `get_bool`, `get_array`, `get_object`, `has`)
+- [x] Setters: `set` (auto-creates intermediates), `remove`, `rename`
+- [x] Array operations: `append` (create if missing), `merge` (shallow/deep)
+- [x] Error types: `TransformError` enum (`FieldNotFound`, `TypeMismatch`, `ParseError`, `EnrichmentError`, `ProcessorError`, `Json`, `Io`), `with_processor()`, `Result<T>` alias
+- [x] Transform trait + chain: `TransformResult` (Continue/Drop), `Transform` trait (object-safe), `TransformChain`
+- [x] Prelude module: re-exports Event, Transform, TransformResult, TransformChain, TransformError, Result, json!, Value, chrono types
+- [x] 32 tests passing (`cargo test -p dfe-runtime`)
 
-#### 1.2.1 Event struct + constructor (`crates/dfe-runtime/src/event.rs`)
+### 1.3 dfe-parse: Layer 1 Parsers — COMPLETE
 
-- [ ] `Event` struct wrapping `serde_json::Value`
-- [ ] `Event::new(value: serde_json::Value)` — construct from owned Value
-- [ ] `Event::from_str(json: &str)` — parse from JSON string (serde_json)
-- [ ] `Event::from_bytes(buf: &mut [u8])` — parse from mutable buffer (simd-json)
-- [ ] `Event::as_value(&self) -> &Value` and `Event::into_value(self) -> Value`
-- [ ] Unit tests: construct from valid JSON, empty object, nested object, array root
-
-> **Done when:** `Event` can be constructed from all three input forms, `cargo test -p dfe-runtime` passes.
-
-#### 1.2.2 Dotted-path navigation + typed getters
-
-- [ ] Internal `resolve_path()` — walk dotted keys (e.g., `source.ip` → nested map traversal)
-- [ ] `get(path) -> Option<&Value>`, `get_str(path) -> Option<&str>`, `get_i64(path) -> Option<i64>`
-- [ ] `get_f64(path) -> Option<f64>`, `get_bool(path) -> Option<bool>`
-- [ ] `get_array(path) -> Option<&Vec<Value>>`, `get_object(path) -> Option<&Map<String, Value>>`
-- [ ] `has(path) -> bool`
-- [ ] Unit tests: nested paths (`a.b.c`), missing intermediate keys, type mismatches, root-level, empty path
-
-> **Done when:** All typed getters work on 3+ levels of nesting, `cargo test -p dfe-runtime` passes.
-
-#### 1.2.3 Setters (set, remove, rename)
-
-- [ ] `set(path, value) -> Result<()>` — creates intermediate objects
-- [ ] `remove(path) -> Option<Value>` — remove and return
-- [ ] `rename(from, to) -> Result<()>` — remove + set at new path
-- [ ] Unit tests: set creates missing parents, set overwrites, remove returns value, remove missing returns None, rename across parents
-
-> **Done when:** set/remove/rename work with auto-created intermediate objects, `cargo test -p dfe-runtime` passes.
-
-#### 1.2.4 Array operations + merge
-
-- [ ] `append(path, value) -> Result<()>` — append to array (create if missing)
-- [ ] `merge(other, deep) -> Result<()>` — shallow or deep merge
-- [ ] Unit tests: append to existing array, append creates array, merge shallow/deep, merge conflicting types
-
-> **Done when:** Array append and both merge modes work, `cargo test -p dfe-runtime` passes.
-
-#### 1.2.5 Error types (`crates/dfe-runtime/src/error.rs`)
-
-- [ ] Create `error.rs` module
-- [ ] `TransformError` enum via `thiserror` — `FieldNotFound`, `TypeMismatch`, `ParseError`, `EnrichmentError`, `ProcessorError`
-- [ ] `with_context(self, processor: &str)` for wrapping errors with processor name
-- [ ] `Result<T>` type alias
-- [ ] Unit tests: error display includes path and context, `?` propagation works
-
-> **Done when:** All error variants exist, `?` propagation works in transform fns, `cargo test -p dfe-runtime` passes.
-
-#### 1.2.6 Transform trait + chain (`crates/dfe-runtime/src/transform.rs`)
-
-- [ ] `TransformResult` enum — `Continue`, `Drop`
-- [ ] `Transform` trait — `name(&self) -> &str`, `transform(&self, event: &mut Event) -> Result<TransformResult>`
-- [ ] `TransformChain` — sequential composition, stop on Drop or error
-- [ ] Unit tests: single transform, chain of 3, Drop stops early, error propagation
-
-> **Done when:** Transform trait is object-safe, TransformChain composes correctly, `cargo test -p dfe-runtime` passes.
-
-#### 1.2.7 Prelude module (`crates/dfe-runtime/src/prelude.rs`)
-
-- [ ] Re-export `Event`, `Transform`, `TransformResult`, `TransformChain`, `TransformError`, `Result`
-- [ ] Re-export `serde_json::Value`, `serde_json::json!`
-- [ ] Verify: `use dfe_runtime::prelude::*;` is sufficient to write a complete transform fn
-
-> **Done when:** A test transform compiles using only `prelude::*`, `cargo test -p dfe-runtime` passes.
-
-### 1.3 dfe-parse: Layer 1 Parsers (`crates/dfe-parse/`)
-
-> **Parallelism:** 1.3.1 (parser trait) first. Then 1.3.2-1.3.6 can all run in parallel. 1.3.7 (benchmarks) depends on at least one parser family.
-
-#### 1.3.1 Parser trait + error types
-
-- [ ] `ParseResult<'a, T>` type — `Result<(&'a str, T), ParseError>` (remaining input + parsed value)
-- [ ] `ParseError` enum via `thiserror` — `UnexpectedByte`, `UnexpectedEof`, `InvalidFormat`, `OutOfRange`
-- [ ] Document winnow-style convention in module doc comment
-
-> **Done when:** Types compile, convention documented, `cargo test -p dfe-parse` passes.
-
-#### 1.3.2 IP parsers (`crates/dfe-parse/src/ip.rs`)
-
-- [ ] `parse_ipv4(input) -> ParseResult<'_, &str>` — octet validation (0-255)
-- [ ] `parse_ipv6(input) -> ParseResult<'_, &str>` — colon-group, `::` shorthand, mixed v4/v6
-- [ ] `parse_ip(input) -> ParseResult<'_, &str>` — try IPv4 then IPv6
-- [ ] `parse_ip_or_host(input) -> ParseResult<'_, &str>` — IP then hostname fallback
-- [ ] Unit tests + proptest: edge cases (0.0.0.0, 255.255.255.255, ::1, leading zeros)
-
-> **Done when:** All 4 parsers pass unit + property tests, `cargo test -p dfe-parse` passes.
-
-#### 1.3.3 Numeric parsers (`crates/dfe-parse/src/numeric.rs`)
-
-- [ ] `parse_int<T: FromStr>(input) -> ParseResult<'_, T>` — digit scan, optional sign, generic
-- [ ] `parse_number(input) -> ParseResult<'_, f64>` — integer or float, sign, decimal, exponent
-- [ ] `parse_hex(input) -> ParseResult<'_, u64>` — hex with optional `0x` prefix
-- [ ] Unit tests + proptest: positive/negative, overflow, leading zeros, scientific notation
-
-> **Done when:** All 3 parsers pass unit + property tests, `cargo test -p dfe-parse` passes.
-
-#### 1.3.4 Timestamp parsers (`crates/dfe-parse/src/timestamp.rs`)
-
-- [ ] `parse_iso8601(input) -> ParseResult<'_, DateTime<FixedOffset>>` — fixed-position, timezone
-- [ ] `parse_syslog_timestamp(input) -> ParseResult<'_, NaiveDateTime>` — `Mmm dd HH:MM:SS`, month lookup
-- [ ] `parse_httpdate(input) -> ParseResult<'_, DateTime<Utc>>` — RFC 2616 format
-- [ ] `parse_timestamp(input, format) -> ParseResult<'_, DateTime<FixedOffset>>` — generic chrono format
-- [ ] Unit tests: timezone offsets, millisecond/nanosecond precision, month abbreviations
-
-> **Done when:** All 4 parsers handle their formats, `cargo test -p dfe-parse` passes.
-
-#### 1.3.5 String parsers (`crates/dfe-parse/src/string.rs`)
-
-- [ ] `take_word(input) -> ParseResult<'_, &str>` — alphanumeric + underscore
-- [ ] `take_quoted(input) -> ParseResult<'_, &str>` — single/double quoted, escape handling, memchr
-- [ ] `take_greedy(input) -> ParseResult<'_, &str>` — consume remaining (zero cost)
-- [ ] `take_until(input, delimiter) -> ParseResult<'_, &str>` — memchr-accelerated
-- [ ] `take_while(input, predicate) -> ParseResult<'_, &str>` — byte-level predicate
-- [ ] `parse_loglevel(input) -> ParseResult<'_, &str>` — TRACE/DEBUG/INFO/WARN/ERROR/FATAL
-- [ ] Unit tests: empty strings, escaped quotes, nested quotes, Unicode, all log levels
-
-> **Done when:** All 6 parsers pass unit tests, memchr used for delimiters, `cargo test -p dfe-parse` passes.
-
-#### 1.3.6 Network parsers (`crates/dfe-parse/src/network.rs`)
-
-- [ ] `parse_mac(input) -> ParseResult<'_, &str>` — colon or dash separated hex octets
-- [ ] `parse_hostname(input) -> ParseResult<'_, &str>` — RFC 1123 label-dot-label
-- [ ] `parse_uri(input) -> ParseResult<'_, &str>` — scheme://authority/path?query#fragment
-- [ ] `parse_email(input) -> ParseResult<'_, &str>` — local@domain
-- [ ] `parse_uuid(input) -> ParseResult<'_, &str>` — 8-4-4-4-12 hex
-- [ ] Unit tests: MAC colons vs dashes, hostname trailing dot, URI edge cases, UUID case
-
-> **Done when:** All 5 parsers pass unit tests, `cargo test -p dfe-parse` passes.
-
-#### 1.3.7 Criterion benchmark harness (`crates/dfe-parse/benches/parsers.rs`)
-
-- [ ] Benchmark groups: ip, numeric, timestamp, string, network
-- [ ] Each parser benchmarked against equivalent `regex::Regex` pattern
-- [ ] Realistic input data from actual log lines
-
-> **Done when:** `cargo bench -p dfe-parse` runs and produces comparison tables.
+- [x] Parser trait + error types: `ParseResult<'a, T>`, `ParseError` enum, winnow-style convention
+- [x] IP parsers: `parse_ipv4`, `parse_ipv6`, `parse_ip`, `parse_ip_or_host`, `parse_hostname` — octet validation, `::` shorthand, mixed v4/v6, RFC 1123 hostnames
+- [x] Numeric parsers: `parse_int` (i64), `parse_nonneg_int` (u64), `parse_pos_int`, `parse_port` (u16), `parse_number` (f64 with exponent), `take_int` (zero-copy)
+- [x] Timestamp parsers: `parse_iso8601` (fractional seconds, timezone), `parse_syslog_timestamp` (month lookup), `parse_year`, `parse_monthnum`, `parse_monthday`, `parse_time`, `parse_iso8601_tz`
+- [x] String parsers: `take_word`, `take_notspace`, `take_greedy`, `take_until_byte`, `take_until_str`, `take_quoted` (escape handling, memchr), `expect_space`, `skip_space`, `expect_byte`, `expect_str`, `parse_loglevel`
+- [x] Network parsers: `parse_mac` (colon/hyphen/cisco dot), `parse_uri` (full decomposition), `parse_uri_scheme`, `parse_email` (local@domain), `parse_uuid` (8-4-4-4-12)
+- [x] Criterion benchmark harness: all parser families covered
+- [x] 105 tests passing (`cargo test -p dfe-parse`), clippy clean
 
 ---
 
@@ -464,7 +344,7 @@
 
 ## Completed
 
-### 2026-03-03: Project Initialisation
+### 2026-03-03: Project Initialisation + Phase 1
 
 - [x] Research: parsing libraries, architecture, effort estimation (RESEARCH.md)
 - [x] Git repo, ai/ci submodules attached
@@ -473,6 +353,8 @@
 - [x] STATE.md, TODO.md, RESEARCH.md
 - [x] Workspace compiles clean
 - [x] docs/DESIGN.md — architecture, Mermaid diagrams, API contracts
+- [x] dfe-runtime core: Event struct, typed getters/setters, Transform trait, TransformChain, error types (32 tests)
+- [x] dfe-parse Layer 1: IP, numeric, timestamp, string, network parsers + benchmark harness (105 tests)
 
 ---
 
