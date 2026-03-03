@@ -76,9 +76,12 @@ rustc-hash = ">=2.0"
 
 # Utilities
 uuid = { version = ">=1.10, <1.21", features = ["v4"] }
+lazy_static = ">=1.4"
+paste = ">=1.0"
 
 # Testing (used as dev-dependencies in member crates)
 criterion = { version = ">=0.5, <0.6", features = ["html_reports"] }
+pretty_assertions = ">=1.4"
 proptest = ">=1.5, <1.7"
 test-case = ">=3.3"
 rstest = ">=0.22"
