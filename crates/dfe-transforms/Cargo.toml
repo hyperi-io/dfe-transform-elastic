@@ -1,0 +1,24 @@
+[package]
+name = "dfe-transforms"
+description = "Generated and hand-tuned transform modules for Elastic data sources"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+dfe-parse = { workspace = true }
+dfe-runtime = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+regex = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+test-case = { workspace = true }

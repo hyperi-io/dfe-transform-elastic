@@ -1,0 +1,26 @@
+[package]
+name = "dfe-parse"
+description = "High-performance parser library replacing grok/regex patterns with native Rust"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+memchr = { workspace = true }
+winnow = { workspace = true }
+aho-corasick = { workspace = true }
+regex-automata = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+proptest = { workspace = true }
+regex = { workspace = true }
+
+[[bench]]
+name = "parsers"
+harness = false

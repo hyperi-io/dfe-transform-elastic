@@ -1,0 +1,97 @@
+[workspace]
+members = [
+    "crates/dfe-parse",
+    "crates/dfe-runtime",
+    "crates/dfe-codegen",
+    "crates/dfe-transforms",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["HyperI <dev@hyperi.com.au>"]
+license = "FSL-1.1-ALv2"
+repository = "https://github.com/hyperi-io/dfe-transform-elastic"
+rust-version = "1.83"
+
+[workspace.dependencies]
+# Workspace crates
+dfe-parse = { path = "crates/dfe-parse" }
+dfe-runtime = { path = "crates/dfe-runtime" }
+dfe-codegen = { path = "crates/dfe-codegen" }
+dfe-transforms = { path = "crates/dfe-transforms" }
+
+# Shared library (Artifactory)
+# DEV: local path while developing. Revert to Artifactory before commit.
+# hyperi-rustlib = { version = ">=1.10.0", registry = "hyperi", features = ["config"] }
+
+# Async runtime
+tokio = { version = ">=1.48", features = ["full"] }
+
+# JSON parsing (SIMD-accelerated)
+simd-json = { version = ">=0.14, <0.15", features = ["known-key"] }
+serde = { version = ">=1.0", features = ["derive"] }
+serde_json = ">=1.0"
+serde_yaml_ng = ">=0.10"
+
+# Parser combinators (zero-copy structured parsing)
+winnow = ">=0.6"
+
+# SIMD byte search
+memchr = ">=2.7"
+
+# Multi-pattern matching (SIMD Teddy algorithm)
+aho-corasick = ">=1.1"
+
+# Pre-compiled DFA regex (serialisable, zero-cost startup)
+regex-automata = ">=0.4"
+regex = ">=1.10"
+
+# Lexer generation (compile-time DFA)
+logos = ">=0.14"
+
+# Timestamp handling
+chrono = { version = ">=0.4", features = ["serde"] }
+
+# GeoIP enrichment (mmap for long-running apps, simdutf8 for SIMD UTF-8 validation)
+maxminddb = { version = ">=0.24", features = ["mmap", "simdutf8"] }
+
+# Error handling
+thiserror = ">=2.0"
+anyhow = ">=1.0"
+
+# Logging
+tracing = ">=0.1"
+tracing-subscriber = { version = ">=0.3", features = ["env-filter", "json"] }
+
+# ANTLR4 parser (Painless language)
+antlr-rust = "0.3.0-beta"
+
+# Go template engine (for codegen templates)
+gtmpl = ">=0.7"
+
+# Hashing
+rustc-hash = ">=2.0"
+
+# Utilities
+uuid = { version = ">=1.10, <1.21", features = ["v4"] }
+
+# Testing (used as dev-dependencies in member crates)
+criterion = { version = ">=0.5, <0.8", features = ["html_reports"] }
+proptest = ">=1.5, <1.10"
+test-case = ">=3.3"
+rstest = ">=0.22"
+tempfile = ">=3.10"
+clap = { version = ">=4.5", features = ["derive"] }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = true
+opt-level = 3
+
+[profile.bench]
+inherits = "release"
+debug = true
