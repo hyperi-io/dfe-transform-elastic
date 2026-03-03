@@ -40,7 +40,14 @@ pub fn emit_processor(processor: &Processor, indent_level: usize) -> Result<Stri
         Processor::Grok(p) => emit_grok(p, &pad),
         Processor::Foreach(p) => emit_foreach(p, &pad),
         Processor::Date(p) => emit_date(p, &pad),
-        _ => bail!("codegen not yet implemented for '{}' processor", processor.name()),
+        Processor::RegisteredDomain(p) => emit_registered_domain(p, &pad),
+        Processor::NetworkDirection(p) => emit_network_direction(p, &pad),
+        Processor::Fingerprint(p) => emit_fingerprint(p, &pad),
+        Processor::Pipeline(p) => emit_pipeline(p, &pad),
+        Processor::Geoip(p) => emit_geoip(p, &pad),
+        Processor::UserAgent(p) => emit_user_agent(p, &pad),
+        Processor::CommunityId(p) => emit_community_id(p, &pad),
+        Processor::Script(p) => emit_script(p, &pad),
     }
 }
 
@@ -938,9 +945,323 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
     Ok(body)
 }
 
+fn emit_registered_domain(
+    p: &registered_domain::RegisteredDomain,
+    pad: &str,
+) -> Result<String> {
+    let ip = indent(pad);
+    let field = &p.field;
+
+    let prefix = match &p.target_field {
+        Some(t) => format!("{}.", t),
+        None => String::new(),
+    };
+
+    let mut body = String::new();
+    body.push_str(&format!(
+        "{ip}if let Some(domain_str) = event.get_str({field_s}) {{\n\
+         {ip}    let domain = domain_str.to_string();\n\
+         {ip}    event.set(\"{prefix}domain\", json!(domain.clone()))?;\n\
+         {ip}    // Public suffix list lookup for registered domain extraction\n\
+         {ip}    if let Some(rd) = registered_domain_lookup(&domain) {{\n\
+         {ip}        event.set(\"{prefix}registered_domain\", json!(rd.registered_domain))?;\n\
+         {ip}        event.set(\"{prefix}top_level_domain\", json!(rd.top_level_domain))?;\n\
+         {ip}        if let Some(sub) = rd.subdomain {{\n\
+         {ip}            event.set(\"{prefix}subdomain\", json!(sub))?;\n\
+         {ip}        }}\n\
+         {ip}    }}\n\
+         {ip}}}\n",
+        field_s = field_lit(field),
+    ));
+
+    let body = wrap_ignore_missing(p.ignore_missing, field, &body, pad);
+    let body = wrap_ignore_failure(p.ignore_failure, &body, pad);
+    Ok(body)
+}
+
+fn emit_network_direction(
+    p: &network_direction::NetworkDirection,
+    pad: &str,
+) -> Result<String> {
+    let ip = indent(pad);
+
+    let networks_field = p
+        .internal_networks_field
+        .as_deref()
+        .unwrap_or("internal_networks");
+
+    let source_ip = "source.ip";
+    let dest_ip = "destination.ip";
+
+    let mut body = String::new();
+    body.push_str(&format!(
+        "{ip}// Classify network direction based on internal network ranges\n\
+         {ip}if let (Some(src), Some(dst)) = (event.get_str({src_s}), event.get_str({dst_s})) {{\n\
+         {ip}    let src = src.to_string();\n\
+         {ip}    let dst = dst.to_string();\n\
+         {ip}    if let Some(networks) = event.get_array({net_s}) {{\n\
+         {ip}        let networks: Vec<String> = networks.iter()\n\
+         {ip}            .filter_map(|v| v.as_str().map(|s| s.to_string()))\n\
+         {ip}            .collect();\n\
+         {ip}        let src_internal = is_internal_ip(&src, &networks);\n\
+         {ip}        let dst_internal = is_internal_ip(&dst, &networks);\n\
+         {ip}        let direction = match (src_internal, dst_internal) {{\n\
+         {ip}            (true, false) => \"outbound\",\n\
+         {ip}            (false, true) => \"inbound\",\n\
+         {ip}            (true, true) => \"internal\",\n\
+         {ip}            (false, false) => \"external\",\n\
+         {ip}        }};\n\
+         {ip}        event.set(\"network.direction\", json!(direction))?;\n\
+         {ip}    }}\n\
+         {ip}}}\n",
+        src_s = field_lit(source_ip),
+        dst_s = field_lit(dest_ip),
+        net_s = field_lit(networks_field),
+    ));
+
+    let body = wrap_ignore_missing(p.ignore_missing, source_ip, &body, pad);
+    let body = wrap_conditional(&p.conditional, &body, pad);
+    Ok(body)
+}
+
+fn emit_fingerprint(p: &fingerprint::Fingerprint, pad: &str) -> Result<String> {
+    let ip = indent(pad);
+    let target = p.target_field.as_deref().unwrap_or("_id");
+
+    let mut body = String::new();
+    body.push_str(&format!(
+        "{ip}{{\n\
+         {ip}    use sha2::{{Sha256, Digest}};\n\
+         {ip}    let mut hasher = Sha256::new();\n"
+    ));
+
+    for field in &p.fields {
+        if p.ignore_missing == Some(true) {
+            body.push_str(&format!(
+                "{ip}    if let Some(v) = event.get({field_s}) {{\n\
+                 {ip}        hasher.update(v.to_string().as_bytes());\n\
+                 {ip}    }}\n",
+                field_s = field_lit(field),
+            ));
+        } else {
+            body.push_str(&format!(
+                "{ip}    if let Some(v) = event.get({field_s}) {{\n\
+                 {ip}        hasher.update(v.to_string().as_bytes());\n\
+                 {ip}    }} else {{\n\
+                 {ip}        return Err(TransformError::FieldNotFound(\"{field}\".into()).into());\n\
+                 {ip}    }}\n",
+                field_s = field_lit(field),
+            ));
+        }
+    }
+
+    body.push_str(&format!(
+        "{ip}    let hash = format!(\"{{:x}}\", hasher.finalize());\n\
+         {ip}    event.set({target_s}, json!(hash))?;\n\
+         {ip}}}\n",
+        target_s = field_lit(target),
+    ));
+
+    Ok(body)
+}
+
+fn emit_pipeline(
+    p: &nested_pipeline::NestedPipeline,
+    pad: &str,
+) -> Result<String> {
+    let ip = indent(pad);
+    let name = &p.name.0;
+
+    let mut body = String::new();
+
+    if let Some(ref inner) = p.inner_pipeline {
+        body.push_str(&format!(
+            "{ip}// Begin nested pipeline: \"{name}\"\n"
+        ));
+
+        for processor in &inner.processors {
+            let proc_code = emit_processor(processor, 0)?;
+            for line in proc_code.lines() {
+                if !line.trim().is_empty() {
+                    body.push_str(&format!("{ip}{}\n", line.trim()));
+                }
+            }
+        }
+
+        body.push_str(&format!(
+            "{ip}// End nested pipeline: \"{name}\"\n"
+        ));
+    } else {
+        body.push_str(&format!(
+            "{ip}// Nested pipeline reference: \"{name}\"\n\
+             {ip}// TODO: Resolve and inline pipeline \"{name}\" at build time\n\
+             {ip}{name}_pipeline.transform(event)?;\n",
+            name = name.replace('-', "_"),
+        ));
+    }
+
+    let body = wrap_conditional(&p.condition, &body, pad);
+    Ok(body)
+}
+
+fn emit_geoip(p: &geoip::Geoip, pad: &str) -> Result<String> {
+    let ip = indent(pad);
+    let field = &p.field;
+    let db = p.database_file.unwrap_or_default();
+    let target = p
+        .target_field
+        .as_deref()
+        .unwrap_or("geoip");
+
+    let mut body = String::new();
+    body.push_str(&format!(
+        "{ip}if let Some(ip_str) = event.get_str({field_s}) {{\n\
+         {ip}    let ip_str = ip_str.to_string();\n\
+         {ip}    // GeoIP enrichment ({db})\n\
+         {ip}    if let Ok(geo) = geoip_lookup(\"{table}\", &ip_str) {{\n",
+        field_s = field_lit(field),
+        table = db.table_name(),
+    ));
+
+    // Emit property assignments based on DB type
+    let properties = match &p.properties {
+        Some(props) => props.iter().map(|s| s.as_str()).collect::<Vec<_>>(),
+        None => match db {
+            geoip::GeoIPDB::CITY => vec![
+                "country_iso_code",
+                "country_name",
+                "continent_name",
+                "region_iso_code",
+                "region_name",
+                "city_name",
+                "timezone",
+                "location",
+            ],
+            geoip::GeoIPDB::COUNTRY => vec![
+                "country_iso_code",
+                "country_name",
+                "continent_name",
+            ],
+            geoip::GeoIPDB::ASN => vec!["asn", "organization_name", "network"],
+        },
+    };
+
+    for prop in &properties {
+        body.push_str(&format!(
+            "{ip}        if let Some(v) = geo.get(\"{prop}\") {{\n\
+             {ip}            event.set(\"{target}.{prop}\", v.clone())?;\n\
+             {ip}        }}\n"
+        ));
+    }
+
+    body.push_str(&format!(
+        "{ip}    }}\n\
+         {ip}}}\n"
+    ));
+
+    let body = wrap_ignore_missing(p.ignore_missing, field, &body, pad);
+    let body = wrap_conditional(&p.conditional, &body, pad);
+    Ok(body)
+}
+
+fn emit_user_agent(p: &user_agent::UserAgent, pad: &str) -> Result<String> {
+    let ip = indent(pad);
+    let field = &p.field;
+    let target = p.target_field.as_deref().unwrap_or("user_agent");
+
+    let mut body = String::new();
+    body.push_str(&format!(
+        "{ip}if let Some(ua_str) = event.get_str({field_s}) {{\n\
+         {ip}    let ua_str = ua_str.to_string();\n\
+         {ip}    // User agent parsing\n\
+         {ip}    if let Ok(ua) = parse_user_agent(&ua_str) {{\n\
+         {ip}        event.set(\"{target}.original\", json!(ua_str))?;\n\
+         {ip}        if let Some(name) = ua.name {{ event.set(\"{target}.name\", json!(name))?; }}\n\
+         {ip}        if let Some(version) = ua.version {{ event.set(\"{target}.version\", json!(version))?; }}\n\
+         {ip}        if let Some(os_name) = ua.os_name {{\n\
+         {ip}            event.set(\"{target}.os.name\", json!(os_name))?;\n\
+         {ip}            if let Some(os_version) = ua.os_version {{\n\
+         {ip}                event.set(\"{target}.os.version\", json!(os_version))?;\n\
+         {ip}                event.set(\"{target}.os.full\", json!(format!(\"{{}} {{}}\", os_name, os_version)))?;\n\
+         {ip}            }}\n\
+         {ip}        }}\n\
+         {ip}        if let Some(device) = ua.device {{ event.set(\"{target}.device.name\", json!(device))?; }}\n\
+         {ip}    }}\n\
+         {ip}}}\n",
+        field_s = field_lit(field),
+    ));
+
+    let body = wrap_ignore_missing(p.ignore_missing, field, &body, pad);
+    Ok(body)
+}
+
+fn emit_community_id(p: &community_id::CommunityId, pad: &str) -> Result<String> {
+    let ip = indent(pad);
+
+    let src_ip = p.source_ip.as_deref().unwrap_or("source.ip");
+    let src_port = p.source_port.as_deref().unwrap_or("source.port");
+    let dst_ip = p.destination_ip.as_deref().unwrap_or("destination.ip");
+    let dst_port = p.destination_port.as_deref().unwrap_or("destination.port");
+    let target = p.target_field.as_deref().unwrap_or("network.community_id");
+
+    let mut body = String::new();
+    body.push_str(&format!(
+        "{ip}// Community ID v1 hash\n\
+         {ip}if let (Some(src_ip), Some(dst_ip)) = (\n\
+         {ip}    event.get_str({src_ip_s}),\n\
+         {ip}    event.get_str({dst_ip_s}),\n\
+         {ip}) {{\n\
+         {ip}    let src_ip = src_ip.to_string();\n\
+         {ip}    let dst_ip = dst_ip.to_string();\n\
+         {ip}    let src_port = event.get_i64({src_port_s}).unwrap_or(0) as u16;\n\
+         {ip}    let dst_port = event.get_i64({dst_port_s}).unwrap_or(0) as u16;\n\
+         {ip}    let protocol = event.get_str(\"network.transport\")\n\
+         {ip}        .or_else(|| event.get_str(\"network.iana_number\"))\n\
+         {ip}        .unwrap_or(\"tcp\").to_string();\n\
+         {ip}    let cid = community_id_v1(&src_ip, &dst_ip, src_port, dst_port, &protocol);\n\
+         {ip}    event.set({target_s}, json!(cid))?;\n\
+         {ip}}}\n",
+        src_ip_s = field_lit(src_ip),
+        dst_ip_s = field_lit(dst_ip),
+        src_port_s = field_lit(src_port),
+        dst_port_s = field_lit(dst_port),
+        target_s = field_lit(target),
+    ));
+
+    let body = wrap_ignore_missing(p.ignore_missing, src_ip, &body, pad);
+    let body = wrap_ignore_failure(p.ignore_failure, &body, pad);
+    Ok(body)
+}
+
+fn emit_script(p: &script::Script, pad: &str) -> Result<String> {
+    let ip = indent(pad);
+
+    let mut body = String::new();
+
+    if let Some(source) = &p.source {
+        let escaped = escape_json_str(source);
+        body.push_str(&format!(
+            "{ip}// Painless script\n\
+             {ip}// Source: {escaped}\n\
+             {ip}// TODO: Transpile Painless to Rust (2.2.3)\n\
+             {ip}painless_exec(event, r#\"{escaped}\"#)?;\n"
+        ));
+    } else if let Some(id) = &p.id {
+        let escaped = escape_json_str(id);
+        body.push_str(&format!(
+            "{ip}// Painless script reference: {escaped}\n\
+             {ip}// TODO: Resolve stored script and transpile (2.2.3)\n\
+             {ip}painless_exec_id(event, \"{escaped}\")?;\n"
+        ));
+    }
+
+    let body = wrap_ignore_failure(p.ignore_failure, &body, pad);
+    let body = wrap_conditional(&p.conditional, &body, pad);
+    Ok(body)
+}
+
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::pipeline::Pipeline;
 
     fn codegen_body(yaml: &str) -> String {
@@ -1313,5 +1634,173 @@ processors:
         assert!(code.contains("parse::<f64>()"));
         assert!(code.contains("from_timestamp("));
         assert!(code.contains(r#"event.set("event.created""#));
+    }
+
+    // -- Complex processor unit tests --
+
+    #[test]
+    fn registered_domain_basic() {
+        let code = codegen_body(r#"
+processors:
+  - registered_domain:
+      field: url.domain
+      ignore_missing: true
+"#);
+        assert!(code.contains(r#"event.get_str("url.domain")"#));
+        assert!(code.contains("registered_domain_lookup("));
+        assert!(code.contains(r#"event.set("registered_domain""#));
+        assert!(code.contains(r#"event.set("top_level_domain""#));
+    }
+
+    #[test]
+    fn registered_domain_target_field() {
+        let code = codegen_body(r#"
+processors:
+  - registered_domain:
+      field: source.domain
+      target_field: source
+"#);
+        assert!(code.contains(r#"event.set("source.domain""#));
+        assert!(code.contains(r#"event.set("source.registered_domain""#));
+        assert!(code.contains(r#"event.set("source.top_level_domain""#));
+        assert!(code.contains(r#"event.set("source.subdomain""#));
+    }
+
+    #[test]
+    fn network_direction_classify() {
+        let code = codegen_body(r#"
+processors:
+  - network_direction:
+      internal_networks_field: internal_networks
+      ignore_missing: true
+"#);
+        assert!(code.contains("is_internal_ip("));
+        assert!(code.contains(r#"event.set("network.direction""#));
+        assert!(code.contains(r#""outbound""#));
+        assert!(code.contains(r#""inbound""#));
+    }
+
+    #[test]
+    fn fingerprint_sha256() {
+        let code = codegen_body(r#"
+processors:
+  - fingerprint:
+      fields:
+        - "@timestamp"
+        - event.id
+      target_field: _id
+      ignore_missing: true
+"#);
+        assert!(code.contains("Sha256"));
+        assert!(code.contains("hasher.update("));
+        assert!(code.contains(r#"event.set("_id""#));
+    }
+
+    #[test]
+    fn fingerprint_required_fields() {
+        let code = codegen_body(r#"
+processors:
+  - fingerprint:
+      fields:
+        - user.name
+"#);
+        assert!(code.contains("FieldNotFound"));
+        assert!(code.contains(r#"event.set("_id""#));
+    }
+
+    #[test]
+    fn pipeline_nested_inline() {
+        use std::collections::HashMap;
+
+        let inner_yaml = r#"
+processors:
+  - set:
+      field: target
+      value: Hello
+"#;
+        let inner = Pipeline::parse(inner_yaml).unwrap();
+
+        let yaml = r#"
+processors:
+  - pipeline:
+      name: '{{< IngestPipeline "test-pipeline" >}}'
+"#;
+        let pipeline = Pipeline::parse_with_context(
+            yaml,
+            HashMap::from([("test-pipeline".into(), inner)]),
+        )
+        .unwrap();
+        let gen = super::super::emit::PipelineCodegen::new(&pipeline, "test");
+        let code = gen.generate_body().unwrap();
+        assert!(code.contains("test-pipeline"));
+        assert!(code.contains(r#"event.set("target""#));
+    }
+
+    // -- Enrichment processor unit tests --
+
+    #[test]
+    fn geoip_city_default() {
+        let code = codegen_body(r#"
+processors:
+  - geoip:
+      field: source.ip
+      ignore_missing: true
+"#);
+        assert!(code.contains("geoip_lookup(\"geoip_city\""));
+        assert!(code.contains(r#"event.set("geoip.country_iso_code""#));
+        assert!(code.contains(r#"event.set("geoip.city_name""#));
+    }
+
+    #[test]
+    fn geoip_asn() {
+        let code = codegen_body(r#"
+processors:
+  - geoip:
+      field: source.ip
+      database_file: GeoLite2-ASN.mmdb
+      target_field: source.as
+"#);
+        assert!(code.contains("geoip_lookup(\"geoip_asn\""));
+        assert!(code.contains(r#"event.set("source.as.asn""#));
+        assert!(code.contains(r#"event.set("source.as.organization_name""#));
+    }
+
+    #[test]
+    fn user_agent_parse() {
+        let code = codegen_body(r#"
+processors:
+  - user_agent:
+      field: agent
+      target_field: user
+"#);
+        assert!(code.contains("parse_user_agent("));
+        assert!(code.contains(r#"event.set("user.original""#));
+        assert!(code.contains(r#"event.set("user.name""#));
+        assert!(code.contains(r#"event.set("user.os.name""#));
+    }
+
+    #[test]
+    fn community_id_default() {
+        let code = codegen_body(r#"
+processors:
+  - community_id:
+      ignore_missing: true
+"#);
+        assert!(code.contains("community_id_v1("));
+        assert!(code.contains(r#"event.get_str("source.ip")"#));
+        assert!(code.contains(r#"event.set("network.community_id""#));
+    }
+
+    #[test]
+    fn script_painless() {
+        let code = codegen_body(r#"
+processors:
+  - script:
+      lang: painless
+      source: "ctx.event.kind = 'event'"
+      ignore_failure: true
+"#);
+        assert!(code.contains("painless_exec("));
+        assert!(code.contains("ctx.event.kind"));
     }
 }

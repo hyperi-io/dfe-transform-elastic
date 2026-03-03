@@ -5,6 +5,8 @@
 //!
 //! Parse pipeline YAML → generate Rust code → validate syntax with syn.
 
+use std::collections::HashMap;
+
 use dfe_codegen::codegen::PipelineCodegen;
 use dfe_codegen::pipeline::Pipeline;
 
@@ -15,6 +17,27 @@ fn validate_codegen(yaml: &str, module_name: &str) -> String {
     let code = gen.generate().expect("failed to generate code");
 
     // Validate syntax with syn
+    syn::parse_file(&code).unwrap_or_else(|e| {
+        panic!(
+            "generated code is not valid Rust:\n{}\n\nError: {}",
+            code, e
+        )
+    });
+
+    code
+}
+
+/// Helper: parse YAML with nested pipeline context, generate code, validate syntax.
+fn validate_codegen_with_context(
+    yaml: &str,
+    module_name: &str,
+    pipelines: HashMap<String, Pipeline>,
+) -> String {
+    let pipeline = Pipeline::parse_with_context(yaml, pipelines)
+        .expect("failed to parse pipeline YAML");
+    let gen = PipelineCodegen::new(&pipeline, module_name);
+    let code = gen.generate().expect("failed to generate code");
+
     syn::parse_file(&code).unwrap_or_else(|e| {
         panic!(
             "generated code is not valid Rust:\n{}\n\nError: {}",
@@ -524,4 +547,267 @@ processors:
     assert!(code.contains("strip_prefix("));
     assert!(code.contains("json!(\"event\")"));
     assert!(code.contains("event.remove("));
+}
+
+// -- Complex processor integration tests --
+
+#[test]
+fn registered_domain_basic() {
+    let yaml = r#"
+processors:
+  - registered_domain:
+      field: url.domain
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "reg_domain");
+    assert!(code.contains("event.get_str(\"url.domain\")"));
+    assert!(code.contains("registered_domain_lookup("));
+    assert!(code.contains("event.set(\"domain\""));
+    assert!(code.contains("event.set(\"registered_domain\""));
+    assert!(code.contains("event.set(\"top_level_domain\""));
+    assert!(code.contains("event.set(\"subdomain\""));
+}
+
+#[test]
+fn registered_domain_with_target() {
+    let yaml = r#"
+processors:
+  - registered_domain:
+      field: url.domain
+      target_field: url
+"#;
+
+    let code = validate_codegen(yaml, "reg_domain_target");
+    assert!(code.contains("event.set(\"url.domain\""));
+    assert!(code.contains("event.set(\"url.registered_domain\""));
+    assert!(code.contains("event.set(\"url.top_level_domain\""));
+    assert!(code.contains("event.set(\"url.subdomain\""));
+}
+
+#[test]
+fn network_direction_basic() {
+    let yaml = r#"
+processors:
+  - network_direction:
+      internal_networks_field: internal_networks
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "net_dir");
+    assert!(code.contains("event.get_str(\"source.ip\")"));
+    assert!(code.contains("event.get_str(\"destination.ip\")"));
+    assert!(code.contains("is_internal_ip("));
+    assert!(code.contains("event.set(\"network.direction\""));
+    assert!(code.contains("\"outbound\""));
+    assert!(code.contains("\"inbound\""));
+    assert!(code.contains("\"internal\""));
+    assert!(code.contains("\"external\""));
+}
+
+#[test]
+fn fingerprint_basic() {
+    let yaml = r#"
+processors:
+  - fingerprint:
+      fields:
+        - "@timestamp"
+        - event.id
+      target_field: _id
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "fingerprint_basic");
+    assert!(code.contains("Sha256"));
+    assert!(code.contains("hasher.update("));
+    assert!(code.contains("event.get(\"@timestamp\")"));
+    assert!(code.contains("event.get(\"event.id\")"));
+    assert!(code.contains("event.set(\"_id\""));
+}
+
+#[test]
+fn fingerprint_default_target() {
+    let yaml = r#"
+processors:
+  - fingerprint:
+      fields:
+        - user.name
+"#;
+
+    let code = validate_codegen(yaml, "fingerprint_default");
+    // Default target is _id
+    assert!(code.contains("event.set(\"_id\""));
+    // Without ignore_missing, should have FieldNotFound error path
+    assert!(code.contains("FieldNotFound"));
+}
+
+#[test]
+fn pipeline_nested() {
+    let inner_yaml = r#"
+processors:
+  - set:
+      field: target
+      value: Hello
+"#;
+    let inner = Pipeline::parse(inner_yaml).expect("inner pipeline");
+
+    let yaml = r#"
+processors:
+  - pipeline:
+      name: '{{< IngestPipeline "shared-pipeline" >}}'
+"#;
+
+    let code = validate_codegen_with_context(
+        yaml,
+        "pipeline_ref",
+        HashMap::from([("shared-pipeline".into(), inner)]),
+    );
+    assert!(code.contains("shared-pipeline"));
+    assert!(code.contains("event.set(\"target\""));
+}
+
+#[test]
+fn mixed_complex_pipeline() {
+    let yaml = r#"
+description: "Pipeline with complex processors"
+processors:
+  - set:
+      field: event.kind
+      value: event
+  - registered_domain:
+      field: url.domain
+      target_field: url
+      ignore_missing: true
+  - fingerprint:
+      fields:
+        - "@timestamp"
+        - event.id
+      target_field: _id
+      ignore_missing: true
+  - remove:
+      field: _temp
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "mixed_complex");
+    assert!(code.contains("pub struct MixedComplex;"));
+    assert!(code.contains("json!(\"event\")"));
+    assert!(code.contains("registered_domain_lookup("));
+    assert!(code.contains("Sha256"));
+    assert!(code.contains("event.remove("));
+}
+
+// -- Enrichment processor integration tests --
+
+#[test]
+fn geoip_basic() {
+    let yaml = r#"
+processors:
+  - geoip:
+      field: source.ip
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "geoip_basic");
+    assert!(code.contains("event.get_str(\"source.ip\")"));
+    assert!(code.contains("geoip_lookup("));
+    assert!(code.contains("geoip.country_iso_code"));
+    assert!(code.contains("geoip.city_name"));
+}
+
+#[test]
+fn geoip_with_target() {
+    let yaml = r#"
+processors:
+  - geoip:
+      field: source.ip
+      target_field: source.geo
+      database_file: GeoLite2-ASN.mmdb
+"#;
+
+    let code = validate_codegen(yaml, "geoip_target");
+    assert!(code.contains("geoip_lookup(\"geoip_asn\""));
+    assert!(code.contains("source.geo.asn"));
+    assert!(code.contains("source.geo.organization_name"));
+}
+
+#[test]
+fn user_agent_basic() {
+    let yaml = r#"
+processors:
+  - user_agent:
+      field: user_agent.original
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "ua_basic");
+    assert!(code.contains("event.get_str(\"user_agent.original\")"));
+    assert!(code.contains("parse_user_agent("));
+    assert!(code.contains("user_agent.name"));
+    assert!(code.contains("user_agent.version"));
+    assert!(code.contains("user_agent.os.name"));
+}
+
+#[test]
+fn user_agent_target() {
+    let yaml = r#"
+processors:
+  - user_agent:
+      field: agent
+      target_field: user
+"#;
+
+    let code = validate_codegen(yaml, "ua_target");
+    assert!(code.contains("event.get_str(\"agent\")"));
+    assert!(code.contains("user.name"));
+    assert!(code.contains("user.version"));
+}
+
+#[test]
+fn community_id_basic() {
+    let yaml = r#"
+processors:
+  - community_id:
+      ignore_missing: true
+"#;
+
+    let code = validate_codegen(yaml, "cid_basic");
+    assert!(code.contains("event.get_str(\"source.ip\")"));
+    assert!(code.contains("event.get_str(\"destination.ip\")"));
+    assert!(code.contains("community_id_v1("));
+    assert!(code.contains("event.set(\"network.community_id\""));
+}
+
+#[test]
+fn community_id_custom_fields() {
+    let yaml = r#"
+processors:
+  - community_id:
+      source_ip: source.nat.ip
+      source_port: source.nat.port
+      destination_ip: destination.nat.ip
+      destination_port: destination.nat.port
+      target_field: community_id
+"#;
+
+    let code = validate_codegen(yaml, "cid_custom");
+    assert!(code.contains("event.get_str(\"source.nat.ip\")"));
+    assert!(code.contains("event.get_str(\"destination.nat.ip\")"));
+    assert!(code.contains("event.set(\"community_id\""));
+}
+
+#[test]
+fn script_basic() {
+    let yaml = r#"
+processors:
+  - script:
+      lang: painless
+      source: "ctx.event_severity = ctx.event.severity"
+      ignore_failure: true
+"#;
+
+    let code = validate_codegen(yaml, "script_basic");
+    assert!(code.contains("painless_exec("));
+    assert!(code.contains("ctx.event_severity"));
+    assert!(code.contains("ignore_failure: true"));
 }
