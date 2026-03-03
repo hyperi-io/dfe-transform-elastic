@@ -43,6 +43,11 @@ fn field_lit(field: &str) -> String {
     format!("\"{}\"", field)
 }
 
+/// Add one level of indentation (4 spaces) to a pad string.
+fn indent(pad: &str) -> String {
+    format!("{pad}    ")
+}
+
 /// Wrap generated statements in an `if` block when a condition is present.
 fn wrap_conditional(cond: &Option<Conditional>, body: &str, pad: &str) -> String {
     match cond {
@@ -153,7 +158,7 @@ fn escape_json_str(s: &str) -> String {
 // -- Processor emitters -----------------------------------------------------
 
 fn emit_set(p: &set::Set, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
 
     let mut body = String::new();
@@ -181,13 +186,13 @@ fn emit_set(p: &set::Set, pad: &str) -> Result<String> {
     // Handle override: false
     if p.override_values == Some(false) {
         body.push_str(&format!(
-            "{inner_pad}if !event.has({field_s}) {{\n{inner_pad}    event.set({field_s}, {value})?;\n{inner_pad}}}\n",
+            "{pad}if !event.has({field_s}) {{\n{ip}event.set({field_s}, {value})?;\n{pad}}}\n",
             field_s = field_lit(field),
             value = value_expr,
         ));
     } else {
         body.push_str(&format!(
-            "{inner_pad}event.set({}, {})?;\n",
+            "{pad}event.set({}, {})?;\n",
             field_lit(field),
             value_expr,
         ));
@@ -199,7 +204,7 @@ fn emit_set(p: &set::Set, pad: &str) -> Result<String> {
 }
 
 fn emit_remove(p: &remove::Remove, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let mut body = String::new();
 
     let fields = match &p.field {
@@ -212,12 +217,12 @@ fn emit_remove(p: &remove::Remove, pad: &str) -> Result<String> {
     for field in &fields {
         if ignore_missing {
             body.push_str(&format!(
-                "{inner_pad}event.remove({});\n",
+                "{ip}event.remove({});\n",
                 field_lit(field),
             ));
         } else {
             body.push_str(&format!(
-                "{inner_pad}if event.remove({f}).is_none() {{\n{inner_pad}    return Err(TransformError::FieldNotFound {{ path: {f}.into() }}.into());\n{inner_pad}}}\n",
+                "{ip}if event.remove({f}).is_none() {{\n{ip}    return Err(TransformError::FieldNotFound {{ path: {f}.into() }}.into());\n{ip}}}\n",
                 f = field_lit(field),
             ));
         }
@@ -229,7 +234,7 @@ fn emit_remove(p: &remove::Remove, pad: &str) -> Result<String> {
 }
 
 fn emit_rename(p: &rename::Rename, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let mut body = String::new();
 
     let from = p.field.raw();
@@ -237,13 +242,13 @@ fn emit_rename(p: &rename::Rename, pad: &str) -> Result<String> {
 
     if p.ignore_missing == Some(true) {
         body.push_str(&format!(
-            "{inner_pad}if event.has({from_s}) {{\n{inner_pad}    event.rename({from_s}, {to_s})?;\n{inner_pad}}}\n",
+            "{ip}if event.has({from_s}) {{\n{ip}    event.rename({from_s}, {to_s})?;\n{ip}}}\n",
             from_s = field_lit(from),
             to_s = field_lit(to),
         ));
     } else {
         body.push_str(&format!(
-            "{inner_pad}event.rename({}, {})?;\n",
+            "{ip}event.rename({}, {})?;\n",
             field_lit(from),
             field_lit(to),
         ));
@@ -255,7 +260,7 @@ fn emit_rename(p: &rename::Rename, pad: &str) -> Result<String> {
 }
 
 fn emit_append(p: &append::Append, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let mut body = String::new();
     let field = &p.field;
 
@@ -263,7 +268,7 @@ fn emit_append(p: &append::Append, pad: &str) -> Result<String> {
         append::AppendValue::String(ts) => {
             let value_expr = emit_template_value(ts);
             body.push_str(&format!(
-                "{inner_pad}event.append({}, {})?;\n",
+                "{ip}event.append({}, {})?;\n",
                 field_lit(field),
                 value_expr,
             ));
@@ -272,7 +277,7 @@ fn emit_append(p: &append::Append, pad: &str) -> Result<String> {
             for item in items {
                 let value_expr = emit_template_value(item);
                 body.push_str(&format!(
-                    "{inner_pad}event.append({}, {})?;\n",
+                    "{ip}event.append({}, {})?;\n",
                     field_lit(field),
                     value_expr,
                 ));
@@ -286,16 +291,16 @@ fn emit_append(p: &append::Append, pad: &str) -> Result<String> {
 }
 
 fn emit_lowercase(p: &lowercase::Lowercase, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
     let target = p.target_field.as_deref().unwrap_or(field);
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{inner_pad}if let Some(s) = event.get_str({field_s}) {{\n\
-         {inner_pad}    let lowered = s.to_lowercase();\n\
-         {inner_pad}    event.set({target_s}, lowered)?;\n\
-         {inner_pad}}}\n",
+        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+         {ip}    let lowered = s.to_lowercase();\n\
+         {ip}    event.set({target_s}, lowered)?;\n\
+         {ip}}}\n",
         field_s = field_lit(field),
         target_s = field_lit(target),
     ));
@@ -307,16 +312,16 @@ fn emit_lowercase(p: &lowercase::Lowercase, pad: &str) -> Result<String> {
 }
 
 fn emit_uppercase(p: &uppercase::Uppercase, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
     let target = p.target_field.as_deref().unwrap_or(field);
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{inner_pad}if let Some(s) = event.get_str({field_s}) {{\n\
-         {inner_pad}    let uppered = s.to_uppercase();\n\
-         {inner_pad}    event.set({target_s}, uppered)?;\n\
-         {inner_pad}}}\n",
+        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+         {ip}    let uppered = s.to_uppercase();\n\
+         {ip}    event.set({target_s}, uppered)?;\n\
+         {ip}}}\n",
         field_s = field_lit(field),
         target_s = field_lit(target),
     ));
@@ -328,16 +333,16 @@ fn emit_uppercase(p: &uppercase::Uppercase, pad: &str) -> Result<String> {
 }
 
 fn emit_trim(p: &trim::Trim, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
     let target = p.target_field.as_deref().unwrap_or(field);
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{inner_pad}if let Some(s) = event.get_str({field_s}) {{\n\
-         {inner_pad}    let trimmed = s.trim().to_string();\n\
-         {inner_pad}    event.set({target_s}, trimmed)?;\n\
-         {inner_pad}}}\n",
+        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+         {ip}    let trimmed = s.trim().to_string();\n\
+         {ip}    event.set({target_s}, trimmed)?;\n\
+         {ip}}}\n",
         field_s = field_lit(field),
         target_s = field_lit(target),
     ));
@@ -349,67 +354,67 @@ fn emit_trim(p: &trim::Trim, pad: &str) -> Result<String> {
 }
 
 fn emit_convert(p: &convert::Convert, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
     let target = p.target_field.as_deref().unwrap_or(field);
 
     let conversion = match p.into_type {
         convert::IntoType::Integer | convert::IntoType::Long => format!(
-            "{inner_pad}if let Some(val) = event.get({field_s}) {{\n\
-             {inner_pad}    let converted = match val {{\n\
-             {inner_pad}        Value::String(s) => {{\n\
-             {inner_pad}            let s = s.trim();\n\
-             {inner_pad}            if let Some(hex) = s.strip_prefix(\"0x\") {{\n\
-             {inner_pad}                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to integer\", s) }})?)\n\
-             {inner_pad}            }} else {{\n\
-             {inner_pad}                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to integer\", s) }})?)\n\
-             {inner_pad}            }}\n\
-             {inner_pad}        }}\n\
-             {inner_pad}        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),\n\
-             {inner_pad}        Value::Bool(b) => json!(if *b {{ 1 }} else {{ 0 }}),\n\
-             {inner_pad}        _ => return Err(TransformError::ParseError {{ path: {field_s}.into(), message: \"cannot convert to integer\".into() }}.into()),\n\
-             {inner_pad}    }};\n\
-             {inner_pad}    event.set({target_s}, converted)?;\n\
-             {inner_pad}}}\n",
+            "{ip}if let Some(val) = event.get({field_s}) {{\n\
+             {ip}    let converted = match val {{\n\
+             {ip}        Value::String(s) => {{\n\
+             {ip}            let s = s.trim();\n\
+             {ip}            if let Some(hex) = s.strip_prefix(\"0x\") {{\n\
+             {ip}                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to integer\", s) }})?)\n\
+             {ip}            }} else {{\n\
+             {ip}                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to integer\", s) }})?)\n\
+             {ip}            }}\n\
+             {ip}        }}\n\
+             {ip}        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),\n\
+             {ip}        Value::Bool(b) => json!(if *b {{ 1 }} else {{ 0 }}),\n\
+             {ip}        _ => return Err(TransformError::ParseError {{ path: {field_s}.into(), message: \"cannot convert to integer\".into() }}.into()),\n\
+             {ip}    }};\n\
+             {ip}    event.set({target_s}, converted)?;\n\
+             {ip}}}\n",
             field_s = field_lit(field),
             target_s = field_lit(target),
         ),
         convert::IntoType::Float => format!(
-            "{inner_pad}if let Some(val) = event.get({field_s}) {{\n\
-             {inner_pad}    let converted = match val {{\n\
-             {inner_pad}        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to float\", s) }})?),\n\
-             {inner_pad}        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),\n\
-             {inner_pad}        Value::Bool(b) => json!(if *b {{ 1.0 }} else {{ 0.0 }}),\n\
-             {inner_pad}        _ => return Err(TransformError::ParseError {{ path: {field_s}.into(), message: \"cannot convert to float\".into() }}.into()),\n\
-             {inner_pad}    }};\n\
-             {inner_pad}    event.set({target_s}, converted)?;\n\
-             {inner_pad}}}\n",
+            "{ip}if let Some(val) = event.get({field_s}) {{\n\
+             {ip}    let converted = match val {{\n\
+             {ip}        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to float\", s) }})?),\n\
+             {ip}        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),\n\
+             {ip}        Value::Bool(b) => json!(if *b {{ 1.0 }} else {{ 0.0 }}),\n\
+             {ip}        _ => return Err(TransformError::ParseError {{ path: {field_s}.into(), message: \"cannot convert to float\".into() }}.into()),\n\
+             {ip}    }};\n\
+             {ip}    event.set({target_s}, converted)?;\n\
+             {ip}}}\n",
             field_s = field_lit(field),
             target_s = field_lit(target),
         ),
         convert::IntoType::String => format!(
-            "{inner_pad}if let Some(val) = event.get({field_s}) {{\n\
-             {inner_pad}    let converted = match val {{\n\
-             {inner_pad}        Value::String(_) => val.clone(),\n\
-             {inner_pad}        Value::Number(n) => json!(n.to_string()),\n\
-             {inner_pad}        Value::Bool(b) => json!(b.to_string()),\n\
-             {inner_pad}        Value::Null => json!(\"null\"),\n\
-             {inner_pad}        _ => json!(val.to_string()),\n\
-             {inner_pad}    }};\n\
-             {inner_pad}    event.set({target_s}, converted)?;\n\
-             {inner_pad}}}\n",
+            "{ip}if let Some(val) = event.get({field_s}) {{\n\
+             {ip}    let converted = match val {{\n\
+             {ip}        Value::String(_) => val.clone(),\n\
+             {ip}        Value::Number(n) => json!(n.to_string()),\n\
+             {ip}        Value::Bool(b) => json!(b.to_string()),\n\
+             {ip}        Value::Null => json!(\"null\"),\n\
+             {ip}        _ => json!(val.to_string()),\n\
+             {ip}    }};\n\
+             {ip}    event.set({target_s}, converted)?;\n\
+             {ip}}}\n",
             field_s = field_lit(field),
             target_s = field_lit(target),
         ),
         convert::IntoType::IP => format!(
-            "{inner_pad}if let Some(s) = event.get_str({field_s}) {{\n\
-             {inner_pad}    // Validate IP format\n\
-             {inner_pad}    let s = s.trim();\n\
-             {inner_pad}    if s.parse::<std::net::IpAddr>().is_err() {{\n\
-             {inner_pad}        return Err(TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to IP\", s) }}.into());\n\
-             {inner_pad}    }}\n\
-             {inner_pad}    event.set({target_s}, s)?;\n\
-             {inner_pad}}}\n",
+            "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+             {ip}    // Validate IP format\n\
+             {ip}    let s = s.trim();\n\
+             {ip}    if s.parse::<std::net::IpAddr>().is_err() {{\n\
+             {ip}        return Err(TransformError::ParseError {{ path: {field_s}.into(), message: format!(\"cannot convert '{{}}' to IP\", s) }}.into());\n\
+             {ip}    }}\n\
+             {ip}    event.set({target_s}, s)?;\n\
+             {ip}}}\n",
             field_s = field_lit(field),
             target_s = field_lit(target),
         ),
@@ -426,12 +431,12 @@ fn emit_convert(p: &convert::Convert, pad: &str) -> Result<String> {
 }
 
 fn emit_drop(p: &drop::Drop, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let mut body = String::new();
 
     // Drop always has a condition
     body.push_str(&format!(
-        "{inner_pad}return Ok(TransformResult::Drop);\n"
+        "{ip}return Ok(TransformResult::Drop);\n"
     ));
 
     // Always wrapped in conditional
@@ -440,17 +445,17 @@ fn emit_drop(p: &drop::Drop, pad: &str) -> Result<String> {
 }
 
 fn emit_split(p: &split::Split, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
     let target = p.target_field.as_deref().unwrap_or(field);
     let separator = escape_json_str(&p.separator);
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{inner_pad}if let Some(s) = event.get_str({field_s}) {{\n\
-         {inner_pad}    let parts: Vec<Value> = s.split(\"{sep}\").map(|p| json!(p)).collect();\n\
-         {inner_pad}    event.set({target_s}, Value::Array(parts))?;\n\
-         {inner_pad}}}\n",
+        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+         {ip}    let parts: Vec<Value> = s.split(\"{sep}\").map(|p| json!(p)).collect();\n\
+         {ip}    event.set({target_s}, Value::Array(parts))?;\n\
+         {ip}}}\n",
         field_s = field_lit(field),
         target_s = field_lit(target),
         sep = separator,
@@ -463,35 +468,35 @@ fn emit_split(p: &split::Split, pad: &str) -> Result<String> {
 }
 
 fn emit_uri_parts(p: &uri_parts::UriParts, pad: &str) -> Result<String> {
-    let inner_pad = format!("{pad}    ");
+    let ip = indent(pad);
     let field = &p.field;
     let target = p.target_field.as_deref().unwrap_or(field);
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{inner_pad}if let Some(uri_str) = event.get_str({field_s}) {{\n\
-         {inner_pad}    if let Ok(url) = url::Url::parse(uri_str) {{\n\
-         {inner_pad}        event.set(\"{target}.scheme\", url.scheme())?;\n\
-         {inner_pad}        if let Some(host) = url.host_str() {{\n\
-         {inner_pad}            event.set(\"{target}.domain\", host)?;\n\
-         {inner_pad}        }}\n\
-         {inner_pad}        if let Some(port) = url.port() {{\n\
-         {inner_pad}            event.set(\"{target}.port\", json!(port))?;\n\
-         {inner_pad}        }}\n\
-         {inner_pad}        event.set(\"{target}.path\", url.path())?;\n\
-         {inner_pad}        if let Some(query) = url.query() {{\n\
-         {inner_pad}            event.set(\"{target}.query\", query)?;\n\
-         {inner_pad}        }}\n\
-         {inner_pad}        if let Some(fragment) = url.fragment() {{\n\
-         {inner_pad}            event.set(\"{target}.fragment\", fragment)?;\n\
-         {inner_pad}        }}\n\
-         {inner_pad}        if let Some(userinfo) = url.password() {{\n\
-         {inner_pad}            event.set(\"{target}.user_info\", format!(\"{{}}:{{}}\", url.username(), userinfo))?;\n\
-         {inner_pad}        }} else if !url.username().is_empty() {{\n\
-         {inner_pad}            event.set(\"{target}.user_info\", url.username())?;\n\
-         {inner_pad}        }}\n\
-         {inner_pad}    }}\n\
-         {inner_pad}}}\n",
+        "{ip}if let Some(uri_str) = event.get_str({field_s}) {{\n\
+         {ip}    if let Ok(url) = url::Url::parse(uri_str) {{\n\
+         {ip}        event.set(\"{target}.scheme\", url.scheme())?;\n\
+         {ip}        if let Some(host) = url.host_str() {{\n\
+         {ip}            event.set(\"{target}.domain\", host)?;\n\
+         {ip}        }}\n\
+         {ip}        if let Some(port) = url.port() {{\n\
+         {ip}            event.set(\"{target}.port\", json!(port))?;\n\
+         {ip}        }}\n\
+         {ip}        event.set(\"{target}.path\", url.path())?;\n\
+         {ip}        if let Some(query) = url.query() {{\n\
+         {ip}            event.set(\"{target}.query\", query)?;\n\
+         {ip}        }}\n\
+         {ip}        if let Some(fragment) = url.fragment() {{\n\
+         {ip}            event.set(\"{target}.fragment\", fragment)?;\n\
+         {ip}        }}\n\
+         {ip}        if let Some(userinfo) = url.password() {{\n\
+         {ip}            event.set(\"{target}.user_info\", format!(\"{{}}:{{}}\", url.username(), userinfo))?;\n\
+         {ip}        }} else if !url.username().is_empty() {{\n\
+         {ip}            event.set(\"{target}.user_info\", url.username())?;\n\
+         {ip}        }}\n\
+         {ip}    }}\n\
+         {ip}}}\n",
         field_s = field_lit(field),
     ));
 
