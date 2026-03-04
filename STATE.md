@@ -3,8 +3,6 @@
 **Project:** dfe-transform-elastic
 **DFE:** Data Fusion Engine
 **Purpose:** Rust-optimised transform pipeline for Elastic Stack data (Beats + Elastic Agent) ingested via Kafka
-**Status:** Project scaffolding complete, development starting
-
 ---
 
 ## Licensing
