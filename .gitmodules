@@ -1,10 +1,10 @@
-[submodule "ai"]
-	path = ai
-	url = https://github.com/hyperi-io/ai.git
-	fetchRecurseSubmodules = true
-	update = rebase
 [submodule "ci"]
 	path = ci
 	url = https://github.com/hyperi-io/ci.git
 	fetchRecurseSubmodules = true
 	update = rebase
+[submodule "hyperi-ai"]
+	path = hyperi-ai
+	url = https://github.com/hyperi-io/hyperi-ai.git
+	update = rebase
+	fetchRecurseSubmodules = true
