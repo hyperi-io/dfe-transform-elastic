@@ -124,6 +124,16 @@ impl Processor {
 }
 
 impl Pipeline {
+    /// Deserialize pipeline YAML without validation.
+    ///
+    /// Used for building a context map of all pipelines before
+    /// resolving nested pipeline references with `parse_with_context`.
+    pub fn deserialize(str: &str) -> anyhow::Result<Self> {
+        let deserializer = serde_yaml_ng::Deserializer::from_str(str);
+        serde_yaml_ng::with::singleton_map_recursive::deserialize::<Pipeline, _>(deserializer)
+            .context("failed to deserialize pipeline")
+    }
+
     /// Parse pipeline YAML into a validated Pipeline struct.
     #[instrument(name = "Pipeline::parse", skip_all)]
     pub fn parse(str: &str) -> anyhow::Result<Self> {
@@ -141,11 +151,8 @@ impl Pipeline {
             serde_yaml_ng::with::singleton_map_recursive::deserialize::<Pipeline, _>(deserializer)
                 .context("failed to parse pipeline")?;
 
-        pipeline
-            .processors
-            .iter_mut()
-            .enumerate()
-            .try_for_each(|(index, processor)| -> anyhow::Result<()> {
+        pipeline.processors.iter_mut().enumerate().try_for_each(
+            |(index, processor)| -> anyhow::Result<()> {
                 let span = tracing::info_span!("validating_processor", index);
                 let _guard = span.enter();
 
@@ -156,7 +163,8 @@ impl Pipeline {
                 }
 
                 processor.validate()
-            })?;
+            },
+        )?;
 
         Ok(pipeline)
     }
