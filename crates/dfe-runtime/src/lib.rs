@@ -10,6 +10,7 @@ pub mod codegen_api;
 pub mod enrichment;
 pub mod error;
 pub mod event;
+pub mod painless_helpers;
 pub mod prelude;
 pub mod transform;
 

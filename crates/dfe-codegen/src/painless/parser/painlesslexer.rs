@@ -385,12 +385,17 @@ pub const _SYMBOLIC_NAMES: [Option<&'static str>; 87] = [
     Some("DOTID"),
 ];
 lazy_static! {
-    static ref _shared_context_cache: Arc<PredictionContextCache> = Arc::new(PredictionContextCache::new());
-    static ref VOCABULARY: Box<dyn Vocabulary> =
-        Box::new(VocabularyImpl::new(_LITERAL_NAMES.iter(), _SYMBOLIC_NAMES.iter(), None));
+    static ref _shared_context_cache: Arc<PredictionContextCache> =
+        Arc::new(PredictionContextCache::new());
+    static ref VOCABULARY: Box<dyn Vocabulary> = Box::new(VocabularyImpl::new(
+        _LITERAL_NAMES.iter(),
+        _SYMBOLIC_NAMES.iter(),
+        None
+    ));
 }
 
-pub type LexerContext<'input> = BaseRuleContext<'input, EmptyCustomRuleContext<'input, LocalTokenFactory<'input>>>;
+pub type LexerContext<'input> =
+    BaseRuleContext<'input, EmptyCustomRuleContext<'input, LocalTokenFactory<'input>>>;
 pub type LocalTokenFactory<'input> = CommonTokenFactory;
 
 type From<'a> = <LocalTokenFactory<'a> as TokenFactory<'a>>::From;
@@ -453,7 +458,10 @@ where
     &'input LocalTokenFactory<'input>: Default,
 {
     pub fn new(input: Input) -> Self {
-        PainlessLexer::new_with_token_factory(input, <&LocalTokenFactory<'input> as Default>::default())
+        PainlessLexer::new_with_token_factory(
+            input,
+            <&LocalTokenFactory<'input> as Default>::default(),
+        )
     }
 }
 
@@ -551,7 +559,8 @@ impl<'input, Input: CharStream<From<'input>>> TokenSource<'input> for PainlessLe
 }
 
 lazy_static! {
-    static ref _ATN: Arc<ATN> = Arc::new(ATNDeserializer::new(None).deserialize(_serializedATN.chars()));
+    static ref _ATN: Arc<ATN> =
+        Arc::new(ATNDeserializer::new(None).deserialize(_serializedATN.chars()));
     static ref _decision_to_DFA: Arc<Vec<antlr_rust::RwLock<DFA>>> = {
         let mut dfa = Vec::new();
         let size = _ATN.decision_to_state.len();

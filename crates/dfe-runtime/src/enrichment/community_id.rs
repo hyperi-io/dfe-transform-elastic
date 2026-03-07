@@ -43,8 +43,8 @@ pub fn community_id_v1(
     let dst: IpAddr = dst_ip
         .parse()
         .map_err(|e| format!("invalid destination IP '{dst_ip}': {e}"))?;
-    let proto = protocol_number(transport)
-        .ok_or_else(|| format!("unknown transport: {transport}"))?;
+    let proto =
+        protocol_number(transport).ok_or_else(|| format!("unknown transport: {transport}"))?;
 
     // Determine ordering: lower IP first, then lower port for tie-breaking
     let (ordered_src, ordered_dst, ordered_sport, ordered_dport) =
@@ -159,15 +159,7 @@ mod tests {
 
     #[test]
     fn tcp_basic() {
-        let cid = community_id_v1(
-            "123.124.125.126",
-            "55.56.57.58",
-            12345,
-            80,
-            "TCP",
-            0,
-        )
-        .unwrap();
+        let cid = community_id_v1("123.124.125.126", "55.56.57.58", 12345, 80, "TCP", 0).unwrap();
         // Known test vector from the community-id spec
         assert_eq!(cid, "1:9qr9Z1LViXcNwtLVOHZ3CL8MlyM=");
     }

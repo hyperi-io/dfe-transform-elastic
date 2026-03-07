@@ -110,14 +110,38 @@
 - [x] `serde_yaml` → `serde_yaml_ng`, all VRL deps stripped
 - [x] 116 tests passing, clippy clean
 
-#### 2.2.3 Adapt Painless transpiler for Rust output
+#### 2.2.3 Adapt Painless transpiler for Rust output — IN PROGRESS
 
-- [ ] Modify transpiler to emit Rust expressions instead of VRL
-- [ ] Handle type coercion (VRL dynamic → `serde_json::Value` operations)
-- [ ] Map Painless built-in functions to dfe-runtime equivalents
-- [ ] Unit tests: transpile 5+ Painless snippets, verify output compiles
+**Phase A: Foundation — COMPLETE**
 
-> **Done when:** Painless transpiler emits valid Rust for basic scripts.
+- [x] IR types (`ir.rs`): 25 Expr variants, 9 Stmt variants, PathSegment, BinOp, UnaryOp, CompoundOp
+- [x] Emitter (`emitter.rs`): IR → Rust source string for all IR variants (6 tests)
+- [x] Params module (`params.rs`): YAML params → inlined Rust literals (5 tests)
+- [x] Runtime helpers (`painless_helpers.rs`): painless_truthy, add/sub/mul/div/mod, to_i64/f64/string, eq/cmp, drop_empty, keys_to_snake_case (11 tests)
+- [x] Visitor (`visitor.rs`): ANTLR4 parse tree → IR for all node types (18 tests incl. 2 e2e)
+- [x] Wired into `script.rs` with `Script::transpile()` public entry point
+
+**Phase B: Collections + iteration — PENDING**
+
+- [ ] HashMap/ArrayList method calls in emitter
+- [ ] for loops, entrySet/keySet iteration patterns
+- [ ] removeIf with lambda
+- [ ] instanceof type checks in iteration context
+
+**Phase C: Functions + complex logic — PENDING**
+
+- [ ] Local function definitions and recursion
+- [ ] Regex find/match operations
+- [ ] Bitwise operations in emitter
+
+**Phase D: Integration — PENDING**
+
+- [ ] Modify `emit_script()` in `processor.rs` to call transpiler
+- [ ] Fallback to `painless_exec` no-op for scripts that fail to transpile
+- [ ] Regenerate all transforms
+- [ ] Run integration tests
+
+> **Done when:** Painless transpiler emits valid Rust for all 43 scripts, or gracefully falls back.
 
 #### 2.2.4 Rust code generation backend — COMPLETE
 
@@ -360,6 +384,29 @@
 
 ## Deferred
 
+### PINNED: dfe-parsers — Standalone Parser Crate
+
+> **Do not remove.** This is a pinned architectural goal.
+
+- [ ] Extract Painless-converted parsers into standalone `dfe-parsers` crate
+- [ ] Any DFE Rust project can depend on dfe-parsers for parsing
+- [ ] Painless is one "tag" (source) for parsers — others may come from bespoke or other sources
+- [ ] dfe-transform-elastic layers Beats/Agent envelope handling over dfe-parsers
+- [ ] Enables raw message feed mode: same parsers work for syslog/event sources without Beats
+
+> See [docs/DESIGN.md](docs/DESIGN.md) "Future: dfe-parsers" section for full architecture.
+
+### PINNED: Raw Message Feed Mode
+
+> **Do not remove.** This is a pinned feature scope item.
+
+- [ ] Startup option to run in raw message feed mode
+- [ ] Reuses same Painless-converted parsers against raw syslog/event messages
+- [ ] Enables same parsing without Beats/Agent as the data source
+- [ ] Depends on dfe-parsers crate extraction (above)
+
+### Other Deferred
+
 - [ ] Kafka integration (rdkafka consumer for end-to-end testing)
 - [ ] Prometheus metrics (per-transform latency, throughput)
 - [ ] hyperi-rustlib integration (transport, config, DLQ)
@@ -391,6 +438,7 @@
 - [x] dfe-codegen: Complex processor codegen — registered_domain, network_direction, fingerprint, pipeline, geoip, user_agent, community_id, script (42 integration tests, 346 workspace tests)
 - [x] All 27 processors have exhaustive codegen coverage (no catch-all match arm needed)
 - [x] dfe-runtime enrichment: Community ID v1 (SHA-1, base64, 7 tests), GeoIP (maxminddb 0.27, 3 tests), User Agent (regex, 9 tests) — 53 runtime tests, 367 workspace tests
+- [x] Painless transpiler Phase A: IR types, emitter, params, visitor, runtime helpers, Script::transpile() entry point — 40 new tests, 443 workspace tests passing
 
 ---
 
@@ -406,4 +454,4 @@
 
 ---
 
-**Last Updated:** 2026-03-04
+**Last Updated:** 2026-03-07
