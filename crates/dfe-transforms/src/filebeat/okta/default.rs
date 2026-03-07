@@ -488,9 +488,7 @@ impl Transform for Default {
 
         // TODO: conditional: ctx._behaviors_object != null
         {
-            if event.remove("okta.debug_context.debug_data.flattened.behaviors").is_none() {
-                return Err(TransformError::FieldNotFound { path: "okta.debug_context.debug_data.flattened.behaviors".into() }.into());
-            }
+            event.remove("okta.debug_context.debug_data.flattened.behaviors");
         }
 
         // ignore_failure: true
@@ -543,9 +541,7 @@ impl Transform for Default {
 
         // TODO: conditional: ctx._risk_object != null
         {
-            if event.remove("okta.debug_context.debug_data.flattened.risk_object").is_none() {
-                return Err(TransformError::FieldNotFound { path: "okta.debug_context.debug_data.flattened.risk_object".into() }.into());
-            }
+            event.remove("okta.debug_context.debug_data.flattened.risk_object");
         }
 
         // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.risk_object != null && ctx.okta?.debug_context?.debug_data?.flattened?.risk != null
@@ -595,9 +591,7 @@ impl Transform for Default {
 
         // TODO: conditional: ctx._risk_object != null
         {
-            if event.remove("okta.debug_context.debug_data.flattened.risk").is_none() {
-                return Err(TransformError::FieldNotFound { path: "okta.debug_context.debug_data.flattened.risk".into() }.into());
-            }
+            event.remove("okta.debug_context.debug_data.flattened.risk");
         }
 
         // ignore_failure: true

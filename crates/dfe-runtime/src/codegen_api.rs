@@ -99,10 +99,47 @@ pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
 /// Convert a grok pattern string to a regex pattern string.
 ///
 /// Phase 3 will replace grok patterns with native parsers.
-/// This stub returns the pattern as-is, assuming the codegen has
-/// already expanded grok patterns into valid regex syntax.
+/// This stub expands `%{NAME:field}` to named capture groups `(?P<field>.+)`,
+/// and `%{NAME}` to `(.+)`. This is a rough approximation — real grok
+/// patterns have type-specific sub-patterns that will be handled by
+/// dfe-parse native parsers.
 pub fn grok_to_regex(pattern: &str) -> String {
-    pattern.to_string()
+    let mut result = String::with_capacity(pattern.len());
+    let mut chars = pattern.chars().peekable();
+
+    while let Some(c) = chars.next() {
+        if c == '%' && chars.peek() == Some(&'{') {
+            chars.next(); // consume '{'
+            let mut name = String::new();
+            let mut field = String::new();
+            let mut in_field = false;
+
+            for ch in chars.by_ref() {
+                if ch == '}' {
+                    break;
+                } else if ch == ':' && !in_field {
+                    in_field = true;
+                } else if in_field {
+                    field.push(ch);
+                } else {
+                    name.push(ch);
+                }
+            }
+
+            if !field.is_empty() {
+                // Named capture: %{PATTERN:field} -> (?P<field>.+)
+                let safe_field = field.replace('.', "_");
+                result.push_str(&format!("(?P<{safe_field}>.+?)"));
+            } else {
+                // Unnamed: %{PATTERN} -> (.+)
+                result.push_str("(.+?)");
+            }
+        } else {
+            result.push(c);
+        }
+    }
+
+    result
 }
 
 /// Check whether an IP address is in a private/internal range.

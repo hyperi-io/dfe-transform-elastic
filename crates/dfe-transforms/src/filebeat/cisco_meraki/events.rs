@@ -456,9 +456,7 @@ impl Transform for Events {
 
         // TODO: conditional: ctx?.server?.ip != null
         {
-            if event.remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip").is_none() {
-                return Err(TransformError::FieldNotFound { path: "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip".into() }.into());
-            }
+            event.remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip");
         }
 
         // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'

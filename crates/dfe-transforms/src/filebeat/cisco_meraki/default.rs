@@ -125,9 +125,7 @@ impl Transform for Default {
             }
             // TODO: conditional: ctx.cisco_meraki?.firewall?.rule != null
             {
-            if event.remove("cisco_meraki.firewall.pattern").is_none() {
-            return Err(TransformError::FieldNotFound { path: "cisco_meraki.firewall.pattern".into() }.into());
-            }
+            event.remove("cisco_meraki.firewall.pattern");
             }
             if event.has("source.mac") {
             if let Some(s) = event.get_str("source.mac").map(String::from) {
@@ -1251,9 +1249,7 @@ impl Transform for Default {
             }
             // TODO: conditional: ctx?.server?.ip != null
             {
-            if event.remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip").is_none() {
-            return Err(TransformError::FieldNotFound { path: "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip".into() }.into());
-            }
+            event.remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip");
             }
             // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
             {

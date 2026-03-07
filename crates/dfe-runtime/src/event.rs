@@ -37,18 +37,16 @@ impl Event {
     ///
     /// This is the primary Kafka ingestion path — 2-3x faster than serde_json.
     pub fn from_bytes(buf: &mut [u8]) -> Result<Self> {
-        let owned = simd_json::to_owned_value(buf)
-            .map_err(|e| TransformError::ParseError {
+        let owned = simd_json::to_owned_value(buf).map_err(|e| TransformError::ParseError {
+            path: String::new(),
+            message: e.to_string(),
+        })?;
+        // Convert simd_json OwnedValue → serde_json Value via serde
+        let value: Value =
+            serde_json::to_value(&owned).map_err(|e| TransformError::ParseError {
                 path: String::new(),
                 message: e.to_string(),
             })?;
-        // Convert simd_json OwnedValue → serde_json Value via serde
-        let value: Value = serde_json::to_value(&owned).map_err(|e| {
-            TransformError::ParseError {
-                path: String::new(),
-                message: e.to_string(),
-            }
-        })?;
         Ok(Self { inner: value })
     }
 
@@ -115,6 +113,9 @@ impl Event {
         for (i, segment) in segments.iter().enumerate() {
             if i == segments.len() - 1 {
                 // Final segment — set the value
+                if current.is_null() {
+                    *current = Value::Object(Map::new());
+                }
                 match current {
                     Value::Object(map) => {
                         map.insert((*segment).to_string(), value);
@@ -131,6 +132,10 @@ impl Event {
             }
 
             // Intermediate segment — navigate or create object
+            // If current is null, promote it to an empty object (matches Elasticsearch behaviour)
+            if current.is_null() {
+                *current = Value::Object(Map::new());
+            }
             match current {
                 Value::Object(map) => {
                     current = map
@@ -202,16 +207,15 @@ impl Event {
                 self.set(path, Value::Array(vec![value]))?;
             }
             Some(existing) => {
-                if !existing.is_array() {
-                    return Err(TransformError::TypeMismatch {
-                        path: path.to_string(),
-                        expected: "array",
-                        actual: type_name(existing),
-                    });
+                if existing.is_array() {
+                    // Navigate to the array and push
+                    let target = resolve_path_mut(&mut self.inner, path).unwrap();
+                    target.as_array_mut().unwrap().push(value);
+                } else {
+                    // Wrap existing scalar in an array, then append
+                    let existing_clone = existing.clone();
+                    self.set(path, Value::Array(vec![existing_clone, value]))?;
                 }
-                // Navigate to the array and push
-                let target = resolve_path_mut(&mut self.inner, path).unwrap();
-                target.as_array_mut().unwrap().push(value);
             }
         }
 
@@ -293,9 +297,7 @@ fn deep_merge(target: &mut Value, source: &Value) {
     match (target, source) {
         (Value::Object(target_map), Value::Object(source_map)) => {
             for (key, source_val) in source_map {
-                let target_val = target_map
-                    .entry(key.clone())
-                    .or_insert(Value::Null);
+                let target_val = target_map.entry(key.clone()).or_insert(Value::Null);
                 deep_merge(target_val, source_val);
             }
         }
@@ -473,9 +475,13 @@ mod tests {
     }
 
     #[test]
-    fn append_to_non_array_fails() {
-        let mut event = Event::new(json!({"tags": "not_array"}));
-        assert!(event.append("tags", "value").is_err());
+    fn append_to_non_array_wraps_in_array() {
+        let mut event = Event::new(json!({"tags": "existing"}));
+        event.append("tags", "new_value").unwrap();
+        let arr = event.get_array("tags").unwrap();
+        assert_eq!(arr.len(), 2);
+        assert_eq!(arr[0].as_str().unwrap(), "existing");
+        assert_eq!(arr[1].as_str().unwrap(), "new_value");
     }
 
     #[test]

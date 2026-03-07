@@ -53,9 +53,7 @@ impl Transform for Flows {
 
         // TODO: conditional: ctx.cisco_meraki?.firewall?.rule != null
         {
-            if event.remove("cisco_meraki.firewall.pattern").is_none() {
-                return Err(TransformError::FieldNotFound { path: "cisco_meraki.firewall.pattern".into() }.into());
-            }
+            event.remove("cisco_meraki.firewall.pattern");
         }
 
         if event.has("source.mac") {
