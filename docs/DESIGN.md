@@ -622,6 +622,48 @@ opt-level = 3
 
 ---
 
+## Future: dfe-parsers — Standalone Parser Crate
+
+**Vision:** Extract message-parsing logic from transpiled Painless scripts into
+a standalone `dfe-parsers` crate usable by any DFE Rust project.
+
+```
+dfe-parsers (standalone crate, separate repo)
+├── parsers/
+│   ├── okta/                   # Okta event parsing
+│   │   ├── painless.rs         # From Painless transpilation (this project)
+│   │   └── bespoke.rs          # Hand-written or from another source
+│   ├── fortinet/
+│   │   ├── painless.rs         # splitUnquoted KV parser, etc.
+│   │   └── ...
+│   ├── crowdstrike/
+│   └── ...
+├── lib.rs
+└── Cargo.toml
+    Takes &str / Value input, returns structured output.
+    No knowledge of Beats, Elastic Agent, or transport.
+```
+
+**Layered architecture:**
+
+1. **dfe-parsers** — pure parsing functions. Source-agnostic. Any DFE project
+   can depend on this crate (e.g., a syslog feed project outside this repo).
+2. **dfe-transforms** — thin layer over dfe-parsers. Handles the Beats/Agent
+   envelope (field naming, ECS mapping, metadata). Calls dfe-parsers for
+   actual message parsing.
+
+**This project is the pilot** for this approach. The Painless transpiler outputs
+parser functions that are designed to be crate-independent from the start —
+operating on `&str` / `Value` inputs with no transport coupling. Once proven,
+the parsers can be extracted into their own crate with `painless` as one tag
+among many (bespoke, converted from other sources, etc.).
+
+**Use case:** A syslog feed project (outside this repo) receives raw syslog →
+uses dfe-parsers to parse the message → gets the same structured output as
+if it came through Beats.
+
+---
+
 ## Appendix: Key Dependencies
 
 | Crate | Version | Purpose |

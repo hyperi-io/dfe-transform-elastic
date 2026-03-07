@@ -130,7 +130,11 @@ fn extract_city_fields(record: &Value, result: &mut GeoIpResult) {
         if let Some(country_code) = result.get("country_iso_code") {
             result.insert(
                 "region_iso_code".into(),
-                json!(format!("{}-{}", country_code.as_str().unwrap_or(""), region_code.as_str().unwrap_or(""))),
+                json!(format!(
+                    "{}-{}",
+                    country_code.as_str().unwrap_or(""),
+                    region_code.as_str().unwrap_or("")
+                )),
             );
         }
     }
@@ -144,10 +148,7 @@ fn extract_city_fields(record: &Value, result: &mut GeoIpResult) {
         record.pointer("/location/latitude"),
         record.pointer("/location/longitude"),
     ) {
-        result.insert(
-            "location".into(),
-            json!({ "lat": lat, "lon": lon }),
-        );
+        result.insert("location".into(), json!({ "lat": lat, "lon": lon }));
     }
 }
 

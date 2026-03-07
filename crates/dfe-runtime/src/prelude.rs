@@ -18,3 +18,9 @@ pub use crate::codegen_api::{
     community_id_v1, geoip_lookup, grok_to_regex, is_internal_ip, painless_exec, parse_user_agent,
     registered_domain_lookup, RegisteredDomainResult,
 };
+
+pub use crate::painless_helpers::{
+    painless_add, painless_cmp, painless_div, painless_drop_empty, painless_eq,
+    painless_keys_to_snake_case, painless_mod, painless_mul, painless_sub, painless_to_f64,
+    painless_to_i64, painless_to_string, painless_truthy,
+};
