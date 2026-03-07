@@ -50,9 +50,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.remove("azure.signinlogs.time").is_none() {
-                return Err(TransformError::FieldNotFound { path: "azure.signinlogs.time".into() }.into());
-            }
+            event.remove("azure.signinlogs.time");
 
         // TODO: conditional: ctx.event?.original == null
         {
