@@ -5,17 +5,21 @@
 //!
 //! Converts Elastic ingest pipeline YAML into Rust transform modules.
 
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
-use tracing::info;
+use tracing::{info, warn};
 
 use dfe_codegen::codegen::PipelineCodegen;
 use dfe_codegen::pipeline::Pipeline;
 
 #[derive(Parser)]
-#[command(name = "dfe-codegen", about = "Elastic ingest pipeline to Rust code generator")]
+#[command(
+    name = "dfe-codegen",
+    about = "Elastic ingest pipeline to Rust code generator"
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -63,44 +67,94 @@ fn main() -> Result<()> {
 }
 
 fn cmd_generate(pipeline_path: &Path, output_dir: &Path, dry_run: bool) -> Result<()> {
-    let pipelines = collect_pipelines(pipeline_path)?;
+    let pipeline_files = collect_pipelines(pipeline_path)?;
 
-    if pipelines.is_empty() {
-        bail!("no pipeline YAML files found at {}", pipeline_path.display());
+    if pipeline_files.is_empty() {
+        bail!(
+            "no pipeline YAML files found at {}",
+            pipeline_path.display()
+        );
     }
 
-    info!("found {} pipeline(s)", pipelines.len());
+    info!("found {} pipeline(s)", pipeline_files.len());
 
     if !dry_run {
-        std::fs::create_dir_all(output_dir)
-            .with_context(|| format!("failed to create output directory: {}", output_dir.display()))?;
+        std::fs::create_dir_all(output_dir).with_context(|| {
+            format!(
+                "failed to create output directory: {}",
+                output_dir.display()
+            )
+        })?;
     }
 
-    for (name, yaml_path) in &pipelines {
-        info!("generating: {}", name);
+    // Pass 1: deserialize all pipelines without validation to build context map.
+    // The context map uses the original YAML filename (without extension, hyphens
+    // preserved) as keys, since that's what IngestPipeline references use.
+    let mut yaml_contents: Vec<(String, String)> = Vec::new();
+    let mut context: HashMap<String, Pipeline> = HashMap::new();
 
+    for (name, yaml_path) in &pipeline_files {
         let yaml = std::fs::read_to_string(yaml_path)
             .with_context(|| format!("failed to read {}", yaml_path.display()))?;
 
-        let parsed = Pipeline::parse(&yaml)
-            .with_context(|| format!("failed to parse pipeline: {}", name))?;
+        match Pipeline::deserialize(&yaml) {
+            Ok(parsed) => {
+                // Store with both module name and original filename as keys
+                let original_name = yaml_path
+                    .file_stem()
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .to_string();
+                context.insert(name.clone(), parsed.clone());
+                if original_name != *name {
+                    context.insert(original_name, parsed);
+                }
+            }
+            Err(e) => {
+                warn!("skipping {}: {}", name, e);
+            }
+        }
+        yaml_contents.push((name.clone(), yaml));
+    }
+
+    // Pass 2: parse each pipeline with full context for nested resolution.
+    let mut generated = 0;
+    for (name, yaml) in &yaml_contents {
+        info!("generating: {}", name);
+
+        let parsed = match Pipeline::parse_with_context(yaml, context.clone()) {
+            Ok(p) => p,
+            Err(e) => {
+                warn!("skipping {}: {}", name, e);
+                continue;
+            }
+        };
 
         let gen = PipelineCodegen::new(&parsed, name);
-        let code = gen.generate()
-            .with_context(|| format!("failed to generate code for: {}", name))?;
+        let code = match gen.generate() {
+            Ok(c) => c,
+            Err(e) => {
+                warn!("skipping {}: codegen failed: {}", name, e);
+                continue;
+            }
+        };
 
         if dry_run {
             println!("// === {} ===", name);
-            println!("{}", code);
+            println!("{code}");
         } else {
-            let out_file = output_dir.join(format!("{}.rs", name));
+            let out_file = output_dir.join(format!("{name}.rs"));
             std::fs::write(&out_file, &code)
                 .with_context(|| format!("failed to write {}", out_file.display()))?;
             info!("  wrote: {}", out_file.display());
         }
+        generated += 1;
     }
 
-    info!("done — {} pipeline(s) generated", pipelines.len());
+    info!(
+        "done — {generated}/{} pipeline(s) generated",
+        pipeline_files.len()
+    );
     Ok(())
 }
 

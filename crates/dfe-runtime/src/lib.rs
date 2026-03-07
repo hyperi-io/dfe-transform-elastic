@@ -6,6 +6,7 @@
 //! Provides the Event type, Transform trait, and enrichment modules
 //! used by generated transform code.
 
+pub mod codegen_api;
 pub mod enrichment;
 pub mod error;
 pub mod event;
@@ -15,3 +16,6 @@ pub mod transform;
 pub use error::{Result, TransformError};
 pub use event::Event;
 pub use transform::{Transform, TransformChain, TransformResult};
+
+#[cfg(feature = "testutil")]
+pub mod testutil;

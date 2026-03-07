@@ -1,0 +1,76 @@
+[
+  {
+    "@timestamp": "2022-04-08T12:17:49.000+00:00",
+    "crowdstrike": {
+      "event": {
+        "MobileAppsDetails": [
+          {
+            "AndroidAppLabel": "Facebook",
+            "AndroidAppVersionName": "323.0.0.46.119",
+            "AppIdentifier": "com.facebook.katana",
+            "AppInstallerInformation": "unknown",
+            "DexFileHashes": "abc456xxxxxxxxxxxxxxxxdef789",
+            "ImageFileName": "/data/app/com.facebook.katana-djFExxxxxxxxxrkg==/base.apk",
+            "IsBeingDebugged": false,
+            "IsContainerized": false
+          }
+        ],
+        "Objective": "Falcon Detection Method"
+      },
+      "metadata": {
+        "customerIDString": "0123456789ABCDEFGHIJKLMNOPQRSTUV",
+        "eventType": "MobileDetectionSummaryEvent",
+        "offset": 701283,
+        "version": "1.0"
+      }
+    },
+    "device": {
+      "id": "85ae98xxxxxxd9a8f2"
+    },
+    "ecs": {
+      "version": "8.11.0"
+    },
+    "event": {
+      "action": "mobile-detection",
+      "category": ["malware"],
+      "created": "2022-04-04T08:30:56.000+00:00",
+      "id": "1310556238",
+      "kind": "alert",
+      "original": "{\"metadata\":{\"customerIDString\":\"0123456789ABCDEFGHIJKLMNOPQRSTUV\",\"offset\":701283,\"eventType\":\"MobileDetectionSummaryEvent\",\"eventCreationTime\":1649420269000,\"version\":\"1.0\"},\"event\":{\"SensorId\":\"85ae98xxxxxxd9a8f2\",\"MobileDetectionId\":1310556238,\"ComputerName\":\"TESTComputer\",\"UserName\":\"TestUSER\",\"ContextTimeStamp\":1649061056,\"DetectId\":\"0123456789ABCDEFGHIJKLMNOPQRSTUV:ind:85ae98xxxxxxd9a8f2:41104|1310556238\",\"DetectName\":\"AppSideloadDetected\",\"DetectDescription\":\"Apps are installed from outside the PlayStore. Trigger based on a System callback when apps are installed or updated. \",\"Tactic\":\"Insecure security posture\",\"TacticId\":\"CSTA0009\",\"Technique\":\"Bad device settings\",\"TechniqueId\":\"CST0024\",\"Objective\":\"Falcon Detection Method\",\"Severity\":50,\"FalconHostLink\":\"https://falcon.crowdstrike.com/mobile/detections/0123456789ABCDEFGHIJKLMNOPQRSTUV:ind:85ae98xxxxxxd9a8f2:41104|1310556238?_cid=0123456789ABCDEFGHIJKLMNOPQRSTUV\",\"MobileAppsDetails\":[{\"AppIdentifier\":\"com.facebook.katana\",\"AndroidAppLabel\":\"Facebook\",\"DexFileHashes\":\"abc456xxxxxxxxxxxxxxxxdef789\",\"ImageFileName\":\"/data/app/com.facebook.katana-djFExxxxxxxxxrkg==/base.apk\",\"AppInstallerInformation\":\"unknown\",\"IsBeingDebugged\":false,\"AndroidAppVersionName\":\"323.0.0.46.119\",\"IsContainerized\":false}]}}",
+      "reference": "https://falcon.crowdstrike.com/mobile/detections/0123456789ABCDEFGHIJKLMNOPQRSTUV:ind:85ae98xxxxxxd9a8f2:41104|1310556238?_cid=0123456789ABCDEFGHIJKLMNOPQRSTUV",
+      "severity": 50,
+      "type": ["info"]
+    },
+    "host": {
+      "name": "TESTComputer"
+    },
+    "observer": {
+      "product": "Falcon",
+      "vendor": "Crowdstrike"
+    },
+    "related": {
+      "hosts": ["TESTComputer"],
+      "user": ["TestUSER"]
+    },
+    "rule": {
+      "description": "Apps are installed from outside the PlayStore. Trigger based on a System callback when apps are installed or updated. ",
+      "id": "0123456789ABCDEFGHIJKLMNOPQRSTUV:ind:85ae98xxxxxxd9a8f2:41104|1310556238",
+      "name": "AppSideloadDetected"
+    },
+    "tags": ["preserve_original_event"],
+    "threat": {
+      "framework": "MITRE ATT&CK",
+      "tactic": {
+        "id": ["CSTA0009"],
+        "name": ["Insecure security posture"]
+      },
+      "technique": {
+        "id": ["CST0024"],
+        "name": ["Bad device settings"]
+      }
+    },
+    "user": {
+      "name": "TestUSER"
+    }
+  }
+]

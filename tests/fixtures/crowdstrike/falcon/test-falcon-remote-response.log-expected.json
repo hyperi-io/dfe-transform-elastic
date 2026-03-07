@@ -1,0 +1,88 @@
+[
+  {
+    "@timestamp": "2020-02-27T19:12:14.000+00:00",
+    "crowdstrike": {
+      "event": {
+        "SessionId": "12345a1bc2d34fghi56jk7890lmno12p"
+      },
+      "metadata": {
+        "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+        "eventType": "RemoteResponseSessionStartEvent",
+        "offset": 1045,
+        "version": "1.0"
+      }
+    },
+    "ecs": {
+      "version": "8.11.0"
+    },
+    "event": {
+      "action": ["remote_response_session_start_event"],
+      "category": ["network", "session"],
+      "created": "2020-02-27T19:12:14.000+00:00",
+      "kind": "event",
+      "original": "{\"metadata\":{\"customerIDString\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"offset\":1045,\"eventType\":\"RemoteResponseSessionStartEvent\",\"eventCreationTime\":1582830734000,\"version\":\"1.0\"},\"event\":{\"SessionId\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"HostnameField\":\"hostnameofmachine\",\"UserName\":\"first.last@company.com\",\"StartTimestamp\":1582830734}}",
+      "start": "2020-02-27T19:12:14.000+00:00",
+      "type": ["start"]
+    },
+    "host": {
+      "name": "hostnameofmachine"
+    },
+    "message": "Remote response session started.",
+    "observer": {
+      "product": "Falcon",
+      "vendor": "Crowdstrike"
+    },
+    "related": {
+      "hosts": ["hostnameofmachine"],
+      "user": ["first.last@company.com"]
+    },
+    "tags": ["preserve_original_event"],
+    "user": {
+      "email": "first.last@company.com",
+      "name": "first.last@company.com"
+    }
+  },
+  {
+    "@timestamp": "2020-02-27T19:12:52.000+00:00",
+    "crowdstrike": {
+      "event": {
+        "SessionId": "12345a1bc2d34fghi56jk7890lmno12p"
+      },
+      "metadata": {
+        "customerIDString": "12345a1bc2d34fghi56jk7890lmno12p",
+        "eventType": "RemoteResponseSessionEndEvent",
+        "offset": 1046,
+        "version": "1.0"
+      }
+    },
+    "ecs": {
+      "version": "8.11.0"
+    },
+    "event": {
+      "action": ["remote_response_session_end_event"],
+      "category": ["network", "session"],
+      "created": "2020-02-27T19:12:52.000+00:00",
+      "end": "2020-02-27T19:12:52.000+00:00",
+      "kind": "event",
+      "original": "{\"metadata\":{\"customerIDString\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"offset\":1046,\"eventType\":\"RemoteResponseSessionEndEvent\",\"eventCreationTime\":1582830772000,\"version\":\"1.0\"},\"event\":{\"SessionId\":\"12345a1bc2d34fghi56jk7890lmno12p\",\"HostnameField\":\"hostnameofmachine\",\"UserName\":\"first.last@company.com\",\"EndTimestamp\":1582830772}}",
+      "type": ["end"]
+    },
+    "host": {
+      "name": "hostnameofmachine"
+    },
+    "message": "Remote response session ended.",
+    "observer": {
+      "product": "Falcon",
+      "vendor": "Crowdstrike"
+    },
+    "related": {
+      "hosts": ["hostnameofmachine"],
+      "user": ["first.last@company.com"]
+    },
+    "tags": ["preserve_original_event"],
+    "user": {
+      "email": "first.last@company.com",
+      "name": "first.last@company.com"
+    }
+  }
+]

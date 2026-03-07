@@ -18,7 +18,12 @@ thiserror = { workspace = true }
 anyhow = { workspace = true }
 tracing = { workspace = true }
 regex = { workspace = true }
+sha2 = { workspace = true }
+url = { workspace = true }
+csv = { workspace = true }
 
 [dev-dependencies]
 criterion = { workspace = true }
 test-case = { workspace = true }
+dfe-runtime = { workspace = true, features = ["testutil"] }
+tempfile = { workspace = true }
