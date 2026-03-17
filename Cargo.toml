@@ -22,9 +22,8 @@ dfe-runtime = { path = "crates/dfe-runtime" }
 dfe-codegen = { path = "crates/dfe-codegen" }
 dfe-transforms = { path = "crates/dfe-transforms" }
 
-# Shared library (Artifactory)
-# DEV: local path while developing. Revert to Artifactory before commit.
-# hyperi-rustlib = { version = ">=1.10.0", registry = "hyperi", features = ["config"] }
+# Shared library (crates.io)
+# hyperi-rustlib = { version = ">=1.16", features = ["config", "logger"] }
 
 # Async runtime
 tokio = { version = ">=1.48", features = ["full"] }
