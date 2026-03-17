@@ -130,8 +130,8 @@ fn cmd_generate(pipeline_path: &Path, output_dir: &Path, dry_run: bool) -> Resul
             }
         };
 
-        let gen = PipelineCodegen::new(&parsed, name);
-        let code = match gen.generate() {
+        let cg = PipelineCodegen::new(&parsed, name);
+        let code = match cg.generate() {
             Ok(c) => c,
             Err(e) => {
                 warn!("skipping {}: codegen failed: {}", name, e);

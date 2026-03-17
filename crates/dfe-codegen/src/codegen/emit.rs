@@ -42,7 +42,10 @@ impl<'a> PipelineCodegen<'a> {
         out.push_str("use dfe_runtime::prelude::*;\n\n");
 
         // Struct definition
-        out.push_str(&format!("/// Transform for the `{}` pipeline.\n", self.module_name));
+        out.push_str(&format!(
+            "/// Transform for the `{}` pipeline.\n",
+            self.module_name
+        ));
         out.push_str(&format!("pub struct {};\n\n", struct_name));
 
         // Transform impl
@@ -88,8 +91,8 @@ impl<'a> PipelineCodegen<'a> {
 ///
 /// Returns the body of a transform function.
 pub fn codegen_pipeline_body(pipeline: &Pipeline) -> Result<String> {
-    let gen = PipelineCodegen::new(pipeline, "anonymous");
-    gen.generate_body()
+    let cg = PipelineCodegen::new(pipeline, "anonymous");
+    cg.generate_body()
 }
 
 /// Convert a snake_case or kebab-case name to PascalCase.
@@ -138,8 +141,8 @@ processors:
       value: event
 "#;
         let pipeline = Pipeline::parse(yaml).unwrap();
-        let gen = PipelineCodegen::new(&pipeline, "test_pipeline");
-        let code = gen.generate().unwrap();
+        let cg = PipelineCodegen::new(&pipeline, "test_pipeline");
+        let code = cg.generate().unwrap();
 
         assert!(code.contains("pub struct TestPipeline;"));
         assert!(code.contains("impl Transform for TestPipeline"));
@@ -159,8 +162,8 @@ processors:
       ignore_missing: true
 "#;
         let pipeline = Pipeline::parse(yaml).unwrap();
-        let gen = PipelineCodegen::new(&pipeline, "multi_step");
-        let code = gen.generate().unwrap();
+        let cg = PipelineCodegen::new(&pipeline, "multi_step");
+        let code = cg.generate().unwrap();
 
         assert!(code.contains("pub struct MultiStep;"));
         assert!(code.contains("event.set("));
@@ -176,8 +179,8 @@ processors:
       value: event
 "#;
         let pipeline = Pipeline::parse(yaml).unwrap();
-        let gen = PipelineCodegen::new(&pipeline, "test");
-        let body = gen.generate_body().unwrap();
+        let cg = PipelineCodegen::new(&pipeline, "test");
+        let body = cg.generate_body().unwrap();
 
         // Body should not contain struct/impl
         assert!(!body.contains("pub struct"));
