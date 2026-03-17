@@ -13,8 +13,8 @@ use dfe_codegen::pipeline::Pipeline;
 /// Helper: parse YAML, generate code, validate syntax with syn.
 fn validate_codegen(yaml: &str, module_name: &str) -> String {
     let pipeline = Pipeline::parse(yaml).expect("failed to parse pipeline YAML");
-    let gen = PipelineCodegen::new(&pipeline, module_name);
-    let code = gen.generate().expect("failed to generate code");
+    let cg = PipelineCodegen::new(&pipeline, module_name);
+    let code = cg.generate().expect("failed to generate code");
 
     // Validate syntax with syn
     syn::parse_file(&code).unwrap_or_else(|e| {
@@ -33,10 +33,10 @@ fn validate_codegen_with_context(
     module_name: &str,
     pipelines: HashMap<String, Pipeline>,
 ) -> String {
-    let pipeline = Pipeline::parse_with_context(yaml, pipelines)
-        .expect("failed to parse pipeline YAML");
-    let gen = PipelineCodegen::new(&pipeline, module_name);
-    let code = gen.generate().expect("failed to generate code");
+    let pipeline =
+        Pipeline::parse_with_context(yaml, pipelines).expect("failed to parse pipeline YAML");
+    let cg = PipelineCodegen::new(&pipeline, module_name);
+    let code = cg.generate().expect("failed to generate code");
 
     syn::parse_file(&code).unwrap_or_else(|e| {
         panic!(
@@ -175,7 +175,10 @@ processors:
     let remove_count = code.matches("event.remove(").count();
 
     assert!(code.contains("json!(\"event\")"), "expected set event.kind");
-    assert!(code.contains("json!(\"network\")"), "expected set event.category");
+    assert!(
+        code.contains("json!(\"network\")"),
+        "expected set event.category"
+    );
     assert_eq!(rename_count, 2, "expected 2 rename calls");
     assert_eq!(convert_count, 2, "expected 2 integer converts");
     assert_eq!(remove_count, 2, "expected 2 remove calls");

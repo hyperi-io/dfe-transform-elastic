@@ -7,7 +7,7 @@
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 
 [toolchain]
-channel = "1.83"
+channel = "1.94"
 
 components = [
     "rustfmt",
