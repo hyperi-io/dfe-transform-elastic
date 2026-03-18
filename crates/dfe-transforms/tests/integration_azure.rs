@@ -3,54 +3,71 @@
 
 //! Integration tests for Azure transforms against fixture data.
 
-use std::path::Path;
+mod common;
 
-use dfe_runtime::testutil::diff::MatchMode;
-use dfe_runtime::testutil::harness::run_transform_test;
-use dfe_runtime::transform::Transform;
 use dfe_transforms::filebeat::{azure_activitylogs, azure_auditlogs, azure_signinlogs};
 
-const FIXTURE_BASE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures/azure");
-
-fn run_fixture(transform: &dyn Transform, subdir: &str, log_name: &str) {
-    let dir = Path::new(FIXTURE_BASE).join(subdir);
-    let log_path = dir.join(format!("{log_name}.log"));
-    let expected_path = dir.join(format!("{log_name}.log-expected.json"));
-
-    let result = run_transform_test(&log_path, &expected_path, transform, MatchMode::Subset)
-        .unwrap_or_else(|e| panic!("transform failed: {e}"));
-
-    println!(
-        "[{}] {}/{} events matched (fixture: {subdir}/{log_name})",
-        transform.name(),
-        result.passed,
-        result.total,
-    );
-
-    if !result.all_passed() {
-        println!("{result}");
-    }
-}
+const FIXTURE_BASE: &str = concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../testdata/integrations/azure"
+);
 
 #[test]
-fn azure_activitylogs_default() {
-    run_fixture(
+fn azure_activitylogs_raw() {
+    let dir = format!("{FIXTURE_BASE}/activitylogs");
+    common::run_fixture(
         &azure_activitylogs::default::Default,
-        "activitylogs",
-        "activitylogs",
+        &dir,
+        "test-activitylogs-raw",
     );
 }
 
 #[test]
-fn azure_auditlogs_default() {
-    run_fixture(&azure_auditlogs::default::Default, "auditlogs", "auditlogs");
+fn azure_activitylogs_identity() {
+    let dir = format!("{FIXTURE_BASE}/activitylogs");
+    common::run_fixture(
+        &azure_activitylogs::default::Default,
+        &dir,
+        "test-activitylogs-identity",
+    );
 }
 
 #[test]
-fn azure_signinlogs_default() {
-    run_fixture(
+fn azure_activitylogs_edgecases() {
+    let dir = format!("{FIXTURE_BASE}/activitylogs");
+    common::run_fixture(
+        &azure_activitylogs::default::Default,
+        &dir,
+        "test-activitylogs-edgecases",
+    );
+}
+
+#[test]
+fn azure_auditlogs_raw() {
+    let dir = format!("{FIXTURE_BASE}/auditlogs");
+    common::run_fixture(
+        &azure_auditlogs::default::Default,
+        &dir,
+        "test-auditlogs-raw",
+    );
+}
+
+#[test]
+fn azure_signinlogs_raw() {
+    let dir = format!("{FIXTURE_BASE}/signinlogs");
+    common::run_fixture(
         &azure_signinlogs::default::Default,
-        "signinlogs",
-        "signinlogs",
+        &dir,
+        "test-signinlogs-raw",
+    );
+}
+
+#[test]
+fn azure_signinlogs_sample() {
+    let dir = format!("{FIXTURE_BASE}/signinlogs");
+    common::run_fixture(
+        &azure_signinlogs::default::Default,
+        &dir,
+        "test-signinlogs-sample",
     );
 }
