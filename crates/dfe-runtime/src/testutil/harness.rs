@@ -3,9 +3,11 @@
 
 //! Test harness for running transforms against fixture data.
 //!
-//! Loads input events from `.log` files (one JSON per line),
-//! loads expected outputs from `-expected.json` files (JSON array
-//! of flat dot-notation objects), and compares transform results.
+//! Supports two fixture formats:
+//! - **Log format:** `.log` files (one JSON per line) + `-expected.json` (flat dot-notation)
+//! - **Integration format:** `{"events": [...]}` + `{"expected": [...]}` (nested JSON)
+//!
+//! The integration format matches Elastic's `_dev/test/pipeline/` convention.
 
 use std::path::Path;
 
@@ -120,6 +122,112 @@ pub fn run_transform_test(
             JsonDiff::compare_flat_expected(expected_map, event.as_value(), mode)
         } else {
             // More events than expected outputs — mark as a diff
+            JsonDiff {
+                diffs: vec![super::diff::FieldDiff {
+                    path: "<event count>".to_string(),
+                    kind: super::diff::DiffKind::Extra {
+                        actual: Value::String(format!("event {i} has no expected output")),
+                    },
+                }],
+                mode,
+            }
+        };
+
+        if diff.is_match() {
+            passed += 1;
+        } else {
+            failed += 1;
+        }
+
+        event_results.push(EventTestResult {
+            index: i,
+            diff,
+            dropped,
+        });
+    }
+
+    Ok(TestRunResult {
+        event_results,
+        total,
+        passed,
+        failed,
+    })
+}
+
+/// Load input events from an Elastic integration test file.
+///
+/// The file contains `{"events": [{ ... }, { ... }]}`.
+/// Each element in the array is a complete event object.
+pub fn load_integration_events(path: &Path) -> crate::error::Result<Vec<Event>> {
+    let content = std::fs::read_to_string(path).map_err(crate::error::TransformError::Io)?;
+    let wrapper: Value = serde_json::from_str(&content)?;
+
+    let events_array = wrapper
+        .get("events")
+        .and_then(|v| v.as_array())
+        .ok_or_else(|| crate::error::TransformError::ParseError {
+            path: path.display().to_string(),
+            message: "expected {\"events\": [...]}".to_string(),
+        })?;
+
+    events_array
+        .iter()
+        .map(|v| Ok(Event::new(v.clone())))
+        .collect()
+}
+
+/// Load expected outputs from an Elastic integration expected file.
+///
+/// The file contains `{"expected": [{ ... }, { ... }]}`.
+/// Each element is a nested JSON object (not flat dot-notation).
+pub fn load_integration_expected(path: &Path) -> crate::error::Result<Vec<Value>> {
+    let content = std::fs::read_to_string(path).map_err(crate::error::TransformError::Io)?;
+    let wrapper: Value = serde_json::from_str(&content)?;
+
+    let expected_array = wrapper
+        .get("expected")
+        .and_then(|v| v.as_array())
+        .ok_or_else(|| crate::error::TransformError::ParseError {
+            path: path.display().to_string(),
+            message: "expected {\"expected\": [...]}".to_string(),
+        })?;
+
+    Ok(expected_array.clone())
+}
+
+/// Run a transform against Elastic integration test fixtures.
+///
+/// - `input_path`: path to JSON file with `{"events": [...]}`
+/// - `expected_path`: path to JSON file with `{"expected": [...]}`
+/// - `transform`: the transform to test
+/// - `mode`: comparison strictness (Semantic recommended — skips timestamps)
+pub fn run_integration_test(
+    input_path: &Path,
+    expected_path: &Path,
+    transform: &dyn Transform,
+    mode: MatchMode,
+) -> crate::error::Result<TestRunResult> {
+    let mut events = load_integration_events(input_path)?;
+    let expected = load_integration_expected(expected_path)?;
+
+    let total = events.len();
+    let mut event_results = Vec::with_capacity(total);
+    let mut passed = 0;
+    let mut failed = 0;
+
+    for (i, event) in events.iter_mut().enumerate() {
+        let transform_result = transform.transform(event)?;
+        let dropped = transform_result == TransformResult::Drop;
+
+        let diff = if dropped {
+            JsonDiff {
+                diffs: Vec::new(),
+                mode,
+            }
+        } else if let Some(expected_val) = expected.get(i) {
+            // Integration fixtures use nested JSON, not flat dot-notation
+            JsonDiff::compare(expected_val, event.as_value(), mode)
+        } else {
             JsonDiff {
                 diffs: vec![super::diff::FieldDiff {
                     path: "<event count>".to_string(),
@@ -292,5 +400,82 @@ mod tests {
         assert_eq!(result.failed, 1);
         let output = result.to_string();
         assert!(output.contains("MISMATCH"));
+    }
+
+    #[test]
+    fn load_integration_events_format() {
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join("test.json");
+        std::fs::write(
+            &path,
+            r#"{"events": [{"message": "one"}, {"message": "two"}]}"#,
+        )
+        .expect("write");
+
+        let events = load_integration_events(&path).expect("load");
+        assert_eq!(events.len(), 2);
+        assert_eq!(events[0].get_str("message"), Some("one"));
+        assert_eq!(events[1].get_str("message"), Some("two"));
+    }
+
+    #[test]
+    fn load_integration_expected_format() {
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join("test-expected.json");
+        std::fs::write(
+            &path,
+            r#"{"expected": [{"event": {"kind": "event"}, "tags": ["forwarded"]}]}"#,
+        )
+        .expect("write");
+
+        let expected = load_integration_expected(&path).expect("load");
+        assert_eq!(expected.len(), 1);
+        assert_eq!(expected[0]["event"]["kind"], "event");
+    }
+
+    #[test]
+    fn run_integration_test_noop() {
+        let dir = tempfile::tempdir().expect("create temp dir");
+
+        let input = dir.path().join("input.json");
+        std::fs::write(
+            &input,
+            r#"{"events": [{"event": {"kind": "event"}, "message": "hello"}]}"#,
+        )
+        .expect("write");
+
+        let expected = dir.path().join("expected.json");
+        std::fs::write(
+            &expected,
+            r#"{"expected": [{"event": {"kind": "event"}, "message": "hello"}]}"#,
+        )
+        .expect("write");
+
+        let result =
+            run_integration_test(&input, &expected, &NoopTransform, MatchMode::Exact).expect("run");
+        assert!(result.all_passed(), "{result}");
+    }
+
+    #[test]
+    fn run_integration_test_semantic_skips_timestamp() {
+        let dir = tempfile::tempdir().expect("create temp dir");
+
+        let input = dir.path().join("input.json");
+        std::fs::write(
+            &input,
+            r#"{"events": [{"@timestamp": "2024-01-01", "message": "hi"}]}"#,
+        )
+        .expect("write");
+
+        let expected = dir.path().join("expected.json");
+        std::fs::write(
+            &expected,
+            r#"{"expected": [{"@timestamp": "2020-06-15", "message": "hi"}]}"#,
+        )
+        .expect("write");
+
+        let result = run_integration_test(&input, &expected, &NoopTransform, MatchMode::Semantic)
+            .expect("run");
+        assert!(result.all_passed(), "{result}");
     }
 }
