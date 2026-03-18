@@ -25,3 +25,12 @@ coverage-html/
 coverage.lcov
 .cargo/
 !.cargo/config.toml
+
+# Test fixtures (copied from elastic_to_vrl, not committed)
+testdata/
+
+# Temp working files
+.tmp/
+
+# AI agent working files (not committed)
+docs/superpowers/
