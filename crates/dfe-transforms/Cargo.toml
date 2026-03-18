@@ -27,3 +27,5 @@ criterion = { workspace = true }
 test-case = { workspace = true }
 dfe-runtime = { workspace = true, features = ["testutil"] }
 tempfile = { workspace = true }
+serde_yaml_ng = { workspace = true }
+serde_json = { workspace = true }
