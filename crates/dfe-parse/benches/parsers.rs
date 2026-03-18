@@ -5,7 +5,7 @@
 //!
 //! Run with: `cargo bench -p dfe-parse`
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use dfe_parse::{ip, network, numeric, string, timestamp};
 
 fn bench_ipv4(c: &mut Criterion) {

@@ -1,8 +1,8 @@
+use crate::pipeline::unsupported_fields;
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
-use crate::pipeline::unsupported_fields;
 
-use crate::pipeline::{Validate};
+use crate::pipeline::Validate;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct UserAgent {
@@ -19,7 +19,13 @@ pub struct UserAgent {
 impl Validate for UserAgent {
     #[instrument(name = "UserAgent::validate", skip_all, err)]
     fn validate(&self) -> anyhow::Result<()> {
-        unsupported_fields!("user_agent", self, regex_file, properties, extract_device_type);
+        unsupported_fields!(
+            "user_agent",
+            self,
+            regex_file,
+            properties,
+            extract_device_type
+        );
 
         Ok(())
     }

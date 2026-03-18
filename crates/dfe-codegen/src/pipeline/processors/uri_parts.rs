@@ -1,10 +1,7 @@
-
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
-use crate::pipeline::{
-    conditional::Conditional, unsupported_fields, Validate,
-};
+use crate::pipeline::{Validate, conditional::Conditional, unsupported_fields};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct UriParts {
@@ -33,7 +30,9 @@ impl Validate for UriParts {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{conditional::Conditional, unsupported_fields_tests, Pipeline, Processor};
+        use crate::pipeline::{
+            Pipeline, Processor, conditional::Conditional, unsupported_fields_tests,
+        };
 
         #[test]
         fn parse() {

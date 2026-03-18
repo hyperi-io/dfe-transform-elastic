@@ -1,14 +1,12 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use lazy_static::lazy_static;
 use regex::{Regex, Replacer};
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional,
-    on_failure::OnFailure,
-    template_string::TemplateString,
-    unsupported_fields, Validate,
+    Validate, conditional::Conditional, on_failure::OnFailure, template_string::TemplateString,
+    unsupported_fields,
 };
 
 // Cisco contains time patterns which do not contain the year
@@ -121,7 +119,11 @@ impl Replacer for &mut JavaDateTimeReplacer {
                 self.assume_current_year = false;
                 dst.push_str("%+")
             }
-            other => self.error = Err(anyhow!("failed to transpile java date-time string \"{other}\"")),
+            other => {
+                self.error = Err(anyhow!(
+                    "failed to transpile java date-time string \"{other}\""
+                ))
+            }
         };
     }
 }

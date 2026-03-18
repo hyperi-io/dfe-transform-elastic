@@ -8,7 +8,7 @@
 
 use std::net::IpAddr;
 
-use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
+use base64::{Engine, engine::general_purpose::STANDARD as BASE64};
 use sha1::{Digest, Sha1};
 
 use crate::error::{Result, TransformError};
@@ -118,7 +118,7 @@ pub fn enrich(event: &mut Event, config: &CommunityIdConfig<'_>) -> Result<()> {
         None => {
             return Err(TransformError::FieldNotFound {
                 path: (*src_ip_field).into(),
-            })
+            });
         }
     };
 
@@ -128,7 +128,7 @@ pub fn enrich(event: &mut Event, config: &CommunityIdConfig<'_>) -> Result<()> {
         None => {
             return Err(TransformError::FieldNotFound {
                 path: (*dst_ip_field).into(),
-            })
+            });
         }
     };
 

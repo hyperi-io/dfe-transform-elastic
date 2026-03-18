@@ -1,9 +1,10 @@
-
 use anyhow::bail;
 use serde::Deserialize;
 use tracing::instrument;
 
-use crate::pipeline::{conditional::Conditional, on_failure::OnFailure, unsupported_fields, Validate};
+use crate::pipeline::{
+    Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
+};
 
 /*
 

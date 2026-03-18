@@ -1,13 +1,10 @@
-
 use lazy_static::lazy_static;
 use regex::{Regex, Replacer};
 use serde::Deserialize;
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional,
-    on_failure::OnFailure,
-    unsupported_fields, Validate,
+    Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
 };
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.13/dissect-processor.html
@@ -54,7 +51,12 @@ impl Replacer for DissectionPatternReplacer {
 
         // Need to temporarily replace path dots with the unicode • so we can escape other dots later
         // This is required because Rust regex doesn't support lookarounds negative or otherwise
-        let path = caps.name("path").unwrap().as_str().to_string().replace('.', "•");
+        let path = caps
+            .name("path")
+            .unwrap()
+            .as_str()
+            .to_string()
+            .replace('.', "•");
         if !path.is_empty() {
             dst.push(':');
             dst.push_str(&path);

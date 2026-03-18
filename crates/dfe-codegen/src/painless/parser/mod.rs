@@ -1,6 +1,6 @@
 use antlr_rust::{
-    common_token_stream::CommonTokenStream, token_factory::CommonTokenFactory,
-    DefaultErrorStrategy, InputStream,
+    DefaultErrorStrategy, InputStream, common_token_stream::CommonTokenStream,
+    token_factory::CommonTokenFactory,
 };
 
 use self::{

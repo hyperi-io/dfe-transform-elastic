@@ -2,8 +2,8 @@ use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional, template_string::TemplateString, unsupported_fields,
-    Processor, Validate,
+    Processor, Validate, conditional::Conditional, template_string::TemplateString,
+    unsupported_fields,
 };
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -40,10 +40,10 @@ impl Validate for Append {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::processors::append::AppendValue;
-        use crate::pipeline::unsupported_fields_tests;
         use crate::pipeline::Pipeline;
         use crate::pipeline::Processor;
+        use crate::pipeline::processors::append::AppendValue;
+        use crate::pipeline::unsupported_fields_tests;
 
         #[test]
         fn parse() {
@@ -58,7 +58,10 @@ mod test {
             match &pipeline.processors[..] {
                 [Processor::Append(append)] => {
                     assert_eq!(append.field, "warnings");
-                    assert_eq!(append.value, AppendValue::String("this is a stern warning".into()));
+                    assert_eq!(
+                        append.value,
+                        AppendValue::String("this is a stern warning".into())
+                    );
                 }
                 _ => panic!("unexpected pipeline structure {:#?}", pipeline),
             }

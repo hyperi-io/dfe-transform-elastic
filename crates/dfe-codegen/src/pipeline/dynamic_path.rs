@@ -108,9 +108,7 @@ mod test {
             ParsedDynamicPath::DynamicPath(components) => {
                 assert_eq!(
                     components,
-                    vec![PathComponent::Dynamic(
-                        "cisco_meraki.event_subtype".into()
-                    )]
+                    vec![PathComponent::Dynamic("cisco_meraki.event_subtype".into())]
                 );
             }
             _ => panic!("expected DynamicPath"),

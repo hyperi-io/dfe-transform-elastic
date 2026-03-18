@@ -14,108 +14,108 @@ impl Transform for Idsalerts {
     }
 
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
+        if let Some(input) = event.get_str("event.original").map(String::from) {
             let input = input.as_str();
-                let mut remaining = input;
-                if let Some(pos) = remaining.find(" ids-alerts ") {
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ids-alerts ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("sig", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("sig", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("pri", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("pri", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("ts", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("ts", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("dir", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("dir", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("prot", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("prot", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("src", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
-                    remaining = rest;
-                }
-                event.set("src", remaining)?;
+            let mut remaining = input;
+            if let Some(pos) = remaining.find(" ids-alerts ") {
+                remaining = &remaining[pos..];
             }
+            if let Some(rest) = remaining.strip_prefix(" ids-alerts ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find("=") {
+                event.set("sig", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("=") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                event.set("sig", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find("=") {
+                event.set("pri", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("=") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                event.set("pri", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find("=") {
+                event.set("ts", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("=") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                event.set("ts", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find("=") {
+                event.set("dir", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("=") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                event.set("dir", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find("=") {
+                event.set("prot", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("=") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                event.set("prot", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find("=") {
+                event.set("src", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("=") {
+                remaining = rest;
+            }
+            event.set("src", remaining)?;
+        }
 
         event.set("cisco_meraki.event_subtype", json!("ids_alerted"))?;
 
-            event.rename("priority", "cisco_meraki.security.priority")?;
+        event.rename("priority", "cisco_meraki.security.priority")?;
 
-            event.rename("signature", "cisco_meraki.security.signature")?;
+        event.rename("signature", "cisco_meraki.security.signature")?;
 
-            event.rename("direction", "network.direction")?;
+        event.rename("direction", "network.direction")?;
 
-            if let Some(s) = event.get_str("protocol").map(String::from) {
+        if let Some(s) = event.get_str("protocol").map(String::from) {
             let s = s.as_str();
-                let lowered = s.to_lowercase();
-                event.set("network.protocol", lowered)?;
-            }
+            let lowered = s.to_lowercase();
+            event.set("network.protocol", lowered)?;
+        }
 
         // TODO: conditional: ctx?.src != null
         {
@@ -124,10 +124,12 @@ impl Transform for Idsalerts {
             // PORT = [0-9]+
             // IPV6NOCOMPRESS = ([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}
             if let Some(input) = event.get_str("src").map(String::from) {
-            let input = input.as_str();
+                let input = input.as_str();
                 // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.src_ip}:%{PORT:sport}$")).unwrap();
+                let grok_re =
+                    regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.src_ip}:%{PORT:sport}$"))
+                        .unwrap();
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -144,11 +146,15 @@ impl Transform for Idsalerts {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(s) = event.get_str("_temp.src_ip").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError { path: "_temp.src_ip".into(), message: format!("cannot convert '{}' to IP", s) }.into());
+                    return Err(TransformError::ParseError {
+                        path: "_temp.src_ip".into(),
+                        message: format!("cannot convert '{}' to IP", s),
+                    }
+                    .into());
                 }
                 event.set("source.ip", s)?;
             }
@@ -162,14 +168,30 @@ impl Transform for Idsalerts {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sport".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "sport".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sport".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "sport".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "sport".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "sport".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("source.port", converted)?;
             }

@@ -66,7 +66,9 @@ pub fn parse_nonneg_int(input: &str) -> ParseResult<'_, u64> {
     let len = bytes.len();
 
     if len == 0 || !bytes[0].is_ascii_digit() {
-        return Err(ParseError::invalid("expected digit in non-negative integer"));
+        return Err(ParseError::invalid(
+            "expected digit in non-negative integer",
+        ));
     }
 
     let mut pos = 0;

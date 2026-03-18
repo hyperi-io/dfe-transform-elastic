@@ -1,9 +1,8 @@
-
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
-use crate::pipeline::{conditional::Conditional, Validate};
+use crate::pipeline::{Validate, conditional::Conditional};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Drop {

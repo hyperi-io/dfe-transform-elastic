@@ -4,9 +4,7 @@ use tracing::instrument;
 
 use crate::pipeline::unsupported_fields;
 
-use crate::pipeline::{
-    conditional::Conditional, template_string::TemplateString, Validate,
-};
+use crate::pipeline::{Validate, conditional::Conditional, template_string::TemplateString};
 
 // We need this song and dance because Elastic supports arrays
 // with a single element here for some cursed reason
@@ -66,7 +64,7 @@ impl Validate for Set {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{processors::set::Value, Pipeline, Processor};
+        use crate::pipeline::{Pipeline, Processor, processors::set::Value};
 
         #[test]
         pub fn parse() {

@@ -1,15 +1,16 @@
-use anyhow::{ensure, Result};
+use anyhow::{Result, ensure};
 use lazy_static::lazy_static;
 use regex::Regex;
-use serde::{de::Error, Deserialize};
+use serde::{Deserialize, de::Error};
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional, on_failure::OnFailure, unsupported_fields, Pipeline, Validate,
+    Pipeline, Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
 };
 
 lazy_static! {
-    static ref PIPELINE_NAME_PATTERN: Regex = Regex::new(r#"IngestPipeline "(?<name>[^"]+)""#).unwrap();
+    static ref PIPELINE_NAME_PATTERN: Regex =
+        Regex::new(r#"IngestPipeline "(?<name>[^"]+)""#).unwrap();
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -53,7 +54,13 @@ pub struct NestedPipeline {
 impl Validate for NestedPipeline {
     #[instrument(name = "NestedPipeline::validate", skip_all, fields(name = ?self.name), err)]
     fn validate(&self) -> Result<()> {
-        unsupported_fields!("pipeline", self, ignore_missing_pipeline, ignore_failure, on_failure);
+        unsupported_fields!(
+            "pipeline",
+            self,
+            ignore_missing_pipeline,
+            ignore_failure,
+            on_failure
+        );
 
         ensure!(
             self.inner_pipeline.is_some(),

@@ -46,10 +46,7 @@ enum Step {
     /// Expect and consume a literal string.
     Literal(String),
     /// Run a parser and capture the result under the given field name.
-    Capture {
-        field: String,
-        parser: ParserFn,
-    },
+    Capture { field: String, parser: ParserFn },
     /// Consume optional whitespace (zero or more spaces/tabs).
     SkipSpace,
 }
@@ -232,9 +229,7 @@ mod tests {
             .capture("dest.port", take_int_fn)
             .build();
 
-        let fields = parser
-            .parse("10.0.0.1:8080 -> 192.168.1.1:443")
-            .unwrap();
+        let fields = parser.parse("10.0.0.1:8080 -> 192.168.1.1:443").unwrap();
         assert_eq!(fields["source.ip"], "10.0.0.1");
         assert_eq!(fields["source.port"], "8080");
         assert_eq!(fields["dest.ip"], "192.168.1.1");

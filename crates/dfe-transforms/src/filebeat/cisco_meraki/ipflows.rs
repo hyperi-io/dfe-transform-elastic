@@ -14,41 +14,41 @@ impl Transform for Ipflows {
     }
 
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
+        if let Some(input) = event.get_str("event.original").map(String::from) {
             let input = input.as_str();
-                let mut remaining = input;
-                if let Some(pos) = remaining.find(" ") {
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("_temp.event_type", &remaining[..pos])?;
-                    remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
-                    remaining = rest;
-                }
-                event.set("_temp.event", remaining)?;
+            let mut remaining = input;
+            if let Some(pos) = remaining.find(" ") {
+                remaining = &remaining[pos..];
             }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            if let Some(pos) = remaining.find(" ") {
+                event.set("_temp.event_type", &remaining[..pos])?;
+                remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix(" ") {
+                remaining = rest;
+            }
+            event.set("_temp.event", remaining)?;
+        }
 
         // TODO: conditional: ctx._temp?.event != null
         {
             if let Some(kv_str) = event.get_str("_temp.event").map(String::from) {
-            let kv_str = kv_str.as_str();
+                let kv_str = kv_str.as_str();
                 for pair in kv_str.split(" ") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
@@ -62,11 +62,15 @@ impl Transform for Ipflows {
         // TODO: conditional: ctx?.translated_src_ip != null
         {
             if let Some(s) = event.get_str("translated_src_ip").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError { path: "translated_src_ip".into(), message: format!("cannot convert '{}' to IP", s) }.into());
+                    return Err(TransformError::ParseError {
+                        path: "translated_src_ip".into(),
+                        message: format!("cannot convert '{}' to IP", s),
+                    }
+                    .into());
                 }
                 event.set("source.ip", s)?;
             }
@@ -75,11 +79,15 @@ impl Transform for Ipflows {
         // TODO: conditional: ctx?.translated_src_ip == null && ctx?.src != null
         {
             if let Some(s) = event.get_str("src").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError { path: "src".into(), message: format!("cannot convert '{}' to IP", s) }.into());
+                    return Err(TransformError::ParseError {
+                        path: "src".into(),
+                        message: format!("cannot convert '{}' to IP", s),
+                    }
+                    .into());
                 }
                 event.set("source.ip", s)?;
             }
@@ -92,14 +100,30 @@ impl Transform for Ipflows {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "translated_port".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "translated_port".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "translated_port".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "translated_port".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "translated_port".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "translated_port".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("source.port", converted)?;
             }
@@ -112,14 +136,30 @@ impl Transform for Ipflows {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sport".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "sport".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sport".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "sport".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "sport".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "sport".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("source.port", converted)?;
             }
@@ -128,11 +168,15 @@ impl Transform for Ipflows {
         // TODO: conditional: ctx?.translated_dst_ip != null
         {
             if let Some(s) = event.get_str("translated_dst_ip").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError { path: "translated_dst_ip".into(), message: format!("cannot convert '{}' to IP", s) }.into());
+                    return Err(TransformError::ParseError {
+                        path: "translated_dst_ip".into(),
+                        message: format!("cannot convert '{}' to IP", s),
+                    }
+                    .into());
                 }
                 event.set("destination.ip", s)?;
             }
@@ -141,11 +185,15 @@ impl Transform for Ipflows {
         // TODO: conditional: ctx?.translated_dst_ip == null && ctx?.dst != null
         {
             if let Some(s) = event.get_str("dst").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError { path: "dst".into(), message: format!("cannot convert '{}' to IP", s) }.into());
+                    return Err(TransformError::ParseError {
+                        path: "dst".into(),
+                        message: format!("cannot convert '{}' to IP", s),
+                    }
+                    .into());
                 }
                 event.set("destination.ip", s)?;
             }
@@ -158,14 +206,30 @@ impl Transform for Ipflows {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "translated_port".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "translated_port".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "translated_port".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "translated_port".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "translated_port".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "translated_port".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("destination.port", converted)?;
             }
@@ -178,20 +242,36 @@ impl Transform for Ipflows {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "dport".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "dport".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "dport".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "dport".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "dport".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "dport".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("destination.port", converted)?;
             }
         }
 
-            event.rename("protocol", "network.protocol")?;
+        event.rename("protocol", "network.protocol")?;
 
         Ok(TransformResult::Continue)
     }

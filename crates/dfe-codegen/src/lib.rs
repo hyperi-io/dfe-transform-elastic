@@ -1,6 +1,16 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
+#![forbid(unsafe_code)]
+#![warn(clippy::all, clippy::pedantic)]
+#![allow(
+    clippy::module_name_repetitions,
+    clippy::must_use_candidate,
+    clippy::too_many_lines,
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc
+)]
+
 //! Elastic ingest pipeline to Rust code generator.
 //!
 //! Forked from `elastic_to_vrl` — massive thanks to Dylan for the original

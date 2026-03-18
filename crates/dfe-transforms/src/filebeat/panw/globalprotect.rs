@@ -14,292 +14,349 @@ impl Transform for Globalprotect {
     }
 
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-            if let Some(csv_str) = event.get_str("message").map(String::from) {
+        if let Some(csv_str) = event.get_str("message").map(String::from) {
             let csv_str = csv_str.as_str();
-                let mut rdr = csv::ReaderBuilder::new()
-                    .delimiter(b',')
-                    .quote(b'\"')
-                    .has_headers(false)
-                    .from_reader(csv_str.as_bytes());
-                if let Some(Ok(record)) = rdr.records().next() {
-                    if let Some(val) = record.get(0) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.virtual_sys", val)?;
-                        }
+            let mut rdr = csv::ReaderBuilder::new()
+                .delimiter(b',')
+                .quote(b'\"')
+                .has_headers(false)
+                .from_reader(csv_str.as_bytes());
+            if let Some(Ok(record)) = rdr.records().next() {
+                if let Some(val) = record.get(0) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.virtual_sys", val)?;
                     }
-                    if let Some(val) = record.get(1) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.event.id", val)?;
-                        }
+                }
+                if let Some(val) = record.get(1) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.event.id", val)?;
                     }
-                    if let Some(val) = record.get(2) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.stage", val)?;
-                        }
+                }
+                if let Some(val) = record.get(2) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.stage", val)?;
                     }
-                    if let Some(val) = record.get(3) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.auth_method", val)?;
-                        }
+                }
+                if let Some(val) = record.get(3) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.auth_method", val)?;
                     }
-                    if let Some(val) = record.get(4) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.tunnel_type", val)?;
-                        }
+                }
+                if let Some(val) = record.get(4) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.tunnel_type", val)?;
                     }
-                    if let Some(val) = record.get(5) {
-                        if !val.is_empty() {
-                            event.set("_temp_.srcuser", val)?;
-                        }
+                }
+                if let Some(val) = record.get(5) {
+                    if !val.is_empty() {
+                        event.set("_temp_.srcuser", val)?;
                     }
-                    if let Some(val) = record.get(6) {
-                        if !val.is_empty() {
-                            event.set("_temp_.srcloc", val)?;
-                        }
+                }
+                if let Some(val) = record.get(6) {
+                    if !val.is_empty() {
+                        event.set("_temp_.srcloc", val)?;
                     }
-                    if let Some(val) = record.get(7) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.machine.name", val)?;
-                        }
+                }
+                if let Some(val) = record.get(7) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.machine.name", val)?;
                     }
-                    if let Some(val) = record.get(8) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.public.ip", val)?;
-                        }
+                }
+                if let Some(val) = record.get(8) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.public.ip", val)?;
                     }
-                    if let Some(val) = record.get(9) {
-                        if !val.is_empty() {
-                            event.set("_temp_.public_ipv6", val)?;
-                        }
+                }
+                if let Some(val) = record.get(9) {
+                    if !val.is_empty() {
+                        event.set("_temp_.public_ipv6", val)?;
                     }
-                    if let Some(val) = record.get(10) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.private.ip", val)?;
-                        }
+                }
+                if let Some(val) = record.get(10) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.private.ip", val)?;
                     }
-                    if let Some(val) = record.get(11) {
-                        if !val.is_empty() {
-                            event.set("_temp_.private_ipv6", val)?;
-                        }
+                }
+                if let Some(val) = record.get(11) {
+                    if !val.is_empty() {
+                        event.set("_temp_.private_ipv6", val)?;
                     }
-                    if let Some(val) = record.get(12) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.host.id", val)?;
-                        }
+                }
+                if let Some(val) = record.get(12) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.host.id", val)?;
                     }
-                    if let Some(val) = record.get(13) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.serial_number", val)?;
-                        }
+                }
+                if let Some(val) = record.get(13) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.serial_number", val)?;
                     }
-                    if let Some(val) = record.get(14) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.client_ver", val)?;
-                        }
+                }
+                if let Some(val) = record.get(14) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.client_ver", val)?;
                     }
-                    if let Some(val) = record.get(15) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.client.os", val)?;
-                        }
+                }
+                if let Some(val) = record.get(15) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.client.os", val)?;
                     }
-                    if let Some(val) = record.get(16) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.client.os_version", val)?;
-                        }
+                }
+                if let Some(val) = record.get(16) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.client.os_version", val)?;
                     }
-                    if let Some(val) = record.get(17) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.repeat_count", val)?;
-                        }
+                }
+                if let Some(val) = record.get(17) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.repeat_count", val)?;
                     }
-                    if let Some(val) = record.get(18) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.event.reason", val)?;
-                        }
+                }
+                if let Some(val) = record.get(18) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.event.reason", val)?;
                     }
-                    if let Some(val) = record.get(19) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.error_message", val)?;
-                        }
+                }
+                if let Some(val) = record.get(19) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.error_message", val)?;
                     }
-                    if let Some(val) = record.get(20) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.description", val)?;
-                        }
+                }
+                if let Some(val) = record.get(20) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.description", val)?;
                     }
-                    if let Some(val) = record.get(21) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.event.status", val)?;
-                        }
+                }
+                if let Some(val) = record.get(21) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.event.status", val)?;
                     }
-                    if let Some(val) = record.get(22) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.location", val)?;
-                        }
+                }
+                if let Some(val) = record.get(22) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.location", val)?;
                     }
-                    if let Some(val) = record.get(23) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.login_duration", val)?;
-                        }
+                }
+                if let Some(val) = record.get(23) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.login_duration", val)?;
                     }
-                    if let Some(val) = record.get(24) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.connect_method", val)?;
-                        }
+                }
+                if let Some(val) = record.get(24) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.connect_method", val)?;
                     }
-                    if let Some(val) = record.get(25) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.error_code", val)?;
-                        }
+                }
+                if let Some(val) = record.get(25) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.error_code", val)?;
                     }
-                    if let Some(val) = record.get(26) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.portal", val)?;
-                        }
+                }
+                if let Some(val) = record.get(26) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.portal", val)?;
                     }
-                    if let Some(val) = record.get(27) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.sequence_number", val)?;
-                        }
+                }
+                if let Some(val) = record.get(27) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.sequence_number", val)?;
                     }
-                    if let Some(val) = record.get(28) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.action_flags", val)?;
-                        }
+                }
+                if let Some(val) = record.get(28) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.action_flags", val)?;
                     }
-                    if let Some(val) = record.get(29) {
-                        if !val.is_empty() {
-                            event.set("_temp_.high_res_timestamp", val)?;
-                        }
+                }
+                if let Some(val) = record.get(29) {
+                    if !val.is_empty() {
+                        event.set("_temp_.high_res_timestamp", val)?;
                     }
-                    if let Some(val) = record.get(30) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.selection_type", val)?;
-                        }
+                }
+                if let Some(val) = record.get(30) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.selection_type", val)?;
                     }
-                    if let Some(val) = record.get(31) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.response_time", val)?;
-                        }
+                }
+                if let Some(val) = record.get(31) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.response_time", val)?;
                     }
-                    if let Some(val) = record.get(32) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.priority", val)?;
-                        }
+                }
+                if let Some(val) = record.get(32) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.priority", val)?;
                     }
-                    if let Some(val) = record.get(33) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.attempted_gateways", val)?;
-                        }
+                }
+                if let Some(val) = record.get(33) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.attempted_gateways", val)?;
                     }
-                    if let Some(val) = record.get(34) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.gateway", val)?;
-                        }
+                }
+                if let Some(val) = record.get(34) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.gateway", val)?;
                     }
-                    if let Some(val) = record.get(35) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.device_group_hierarchy1", val)?;
-                        }
+                }
+                if let Some(val) = record.get(35) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.device_group_hierarchy1", val)?;
                     }
-                    if let Some(val) = record.get(36) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.device_group_hierarchy2", val)?;
-                        }
+                }
+                if let Some(val) = record.get(36) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.device_group_hierarchy2", val)?;
                     }
-                    if let Some(val) = record.get(37) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.device_group_hierarchy3", val)?;
-                        }
+                }
+                if let Some(val) = record.get(37) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.device_group_hierarchy3", val)?;
                     }
-                    if let Some(val) = record.get(38) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.device_group_hierarchy4", val)?;
-                        }
+                }
+                if let Some(val) = record.get(38) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.device_group_hierarchy4", val)?;
                     }
-                    if let Some(val) = record.get(39) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.vsys_name", val)?;
-                        }
+                }
+                if let Some(val) = record.get(39) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.vsys_name", val)?;
                     }
-                    if let Some(val) = record.get(40) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.device_name", val)?;
-                        }
+                }
+                if let Some(val) = record.get(40) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.device_name", val)?;
                     }
-                    if let Some(val) = record.get(41) {
-                        if !val.is_empty() {
-                            event.set("panw.panos.vsys_id", val)?;
-                        }
+                }
+                if let Some(val) = record.get(41) {
+                    if !val.is_empty() {
+                        event.set("panw.panos.vsys_id", val)?;
                     }
                 }
             }
+        }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.ip", event.get("panw.panos.private.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.ip",
+                event
+                    .get("panw.panos.private.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // TODO: conditional: (ctx.source?.ip == null || ctx.source.ip == '0.0.0.0') && ctx._temp_?.private_ipv6 != null && ctx._temp_.private_ipv6 != '0.0.0.0'
         {
-        event.set("source.ip", event.get("_temp_.private_ipv6").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.ip",
+                event
+                    .get("_temp_.private_ipv6")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.source?.ip != null
         {
-        event.set("host.ip", event.get("source.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "host.ip",
+                event.get("source.ip").cloned().unwrap_or(Value::Null),
+            )?;
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.nat.ip", event.get("panw.panos.public.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.nat.ip",
+                event
+                    .get("panw.panos.public.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // TODO: conditional: (ctx.source?.nat?.ip == null || ctx.source.nat.ip == '0.0.0.0') && ctx._temp_?.public_ipv6 != null && ctx._temp_.public_ipv6 != '0.0.0.0'
         {
-        event.set("source.nat.ip", event.get("_temp_.public_ipv6").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.nat.ip",
+                event
+                    .get("_temp_.public_ipv6")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("network"))?;
+        event.append("event.category", json!("network"))?;
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("event.code", event.get("panw.panos.event.id").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "event.code",
+                event
+                    .get("panw.panos.event.id")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("event.duration", event.get("panw.panos.login_duration").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "event.duration",
+                event
+                    .get("panw.panos.login_duration")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("event.outcome", event.get("panw.panos.event.status").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "event.outcome",
+                event
+                    .get("panw.panos.event.status")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("event.reason", event.get("panw.panos.event.reason").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "event.reason",
+                event
+                    .get("panw.panos.event.reason")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("host.id", event.get("panw.panos.host.id").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "host.id",
+                event
+                    .get("panw.panos.host.id")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // TODO: conditional: ctx.panw?.panos?.machine?.name != null
         {
             if let Some(s) = event.get_str("panw.panos.machine.name").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 let lowered = s.to_lowercase();
                 event.set("host.name", lowered)?;
             }
@@ -307,43 +364,82 @@ impl Transform for Globalprotect {
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("host.os.family", event.get("panw.panos.client.os").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "host.os.family",
+                event
+                    .get("panw.panos.client.os")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("host.os.full", event.get("panw.panos.client.os_version").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "host.os.full",
+                event
+                    .get("panw.panos.client.os_version")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.geo.name", event.get("panw.panos.location").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.geo.name",
+                event
+                    .get("panw.panos.location")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.hostname", event.get("panw.panos.device_name").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.hostname",
+                event
+                    .get("panw.panos.device_name")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.source.region", event.get("source.geo.name").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.source.region",
+                event.get("source.geo.name").cloned().unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.public.ipv6", event.get("_temp_.public_ipv6").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.public.ipv6",
+                event
+                    .get("_temp_.public_ipv6")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.private.ipv6", event.get("_temp_.private_ipv6").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.private.ipv6",
+                event
+                    .get("_temp_.private_ipv6")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 

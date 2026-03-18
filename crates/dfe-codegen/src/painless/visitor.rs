@@ -170,8 +170,8 @@ impl RustVisitor {
     /// This is the main entry point. Parses the source and visits the tree.
     pub fn transpile(source: &str) -> anyhow::Result<PainlessScript> {
         use super::parser::painlesslexer::PainlessLexer;
-        use antlr_rust::common_token_stream::CommonTokenStream;
         use antlr_rust::InputStream;
+        use antlr_rust::common_token_stream::CommonTokenStream;
 
         let input = InputStream::new(source);
         let lexer = PainlessLexer::new(input);

@@ -1,11 +1,9 @@
-
 use anyhow::Result;
 use serde::Deserialize;
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional, on_failure::OnFailure, unsupported_fields,
-    Validate,
+    Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
 };
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
@@ -31,12 +29,7 @@ pub struct Csv {
 impl Validate for Csv {
     #[instrument(name = "Csv::validate", skip_all, err)]
     fn validate(&self) -> Result<()> {
-        unsupported_fields!(
-            "csv",
-            self,
-            trim,
-            empty_value
-        );
+        unsupported_fields!("csv", self, trim, empty_value);
 
         Ok(())
     }

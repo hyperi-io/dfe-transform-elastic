@@ -17,7 +17,7 @@ impl Transform for Sctp {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+                let csv_str = csv_str.as_str();
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -321,101 +321,197 @@ impl Transform for Sctp {
 
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("network"))?;
+        event.append("event.category", json!("network"))?;
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.ip", event.get("panw.panos.destination.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.ip",
+                event
+                    .get("panw.panos.destination.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.packets", event.get("panw.panos.packets_received").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.packets",
+                event
+                    .get("panw.panos.packets_received")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.port", event.get("panw.panos.destination.port").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.port",
+                event
+                    .get("panw.panos.destination.port")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("log.level", event.get("panw.panos.severity").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "log.level",
+                event
+                    .get("panw.panos.severity")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("network.packets", event.get("panw.panos.network.packets").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "network.packets",
+                event
+                    .get("panw.panos.network.packets")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("network.transport", event.get("panw.panos.protocol").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "network.transport",
+                event
+                    .get("panw.panos.protocol")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.egress.interface.name", event.get("panw.panos.outbound_interface").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.egress.interface.name",
+                event
+                    .get("panw.panos.outbound_interface")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.egress.zone", event.get("panw.panos.destination.zone").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.egress.zone",
+                event
+                    .get("panw.panos.destination.zone")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.hostname", event.get("panw.panos.device_name").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.hostname",
+                event
+                    .get("panw.panos.device_name")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.ingress.interface.name", event.get("panw.panos.inbound_interface").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.ingress.interface.name",
+                event
+                    .get("panw.panos.inbound_interface")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.ingress.zone", event.get("panw.panos.source.zone").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.ingress.zone",
+                event
+                    .get("panw.panos.source.zone")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.serial_number", event.get("observer.serial_number").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.serial_number",
+                event
+                    .get("observer.serial_number")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("rule.uuid", event.get("panw.panos.rule_uuid").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "rule.uuid",
+                event
+                    .get("panw.panos.rule_uuid")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.ip", event.get("panw.panos.source.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.ip",
+                event
+                    .get("panw.panos.source.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.packets", event.get("panw.panos.packets_sent").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.packets",
+                event
+                    .get("panw.panos.packets_sent")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.port", event.get("panw.panos.source.port").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.port",
+                event
+                    .get("panw.panos.source.port")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 

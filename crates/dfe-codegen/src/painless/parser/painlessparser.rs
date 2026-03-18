@@ -8,6 +8,8 @@
 #![allow(unused_braces)]
 use super::painlessparserlistener::*;
 use super::painlessparservisitor::*;
+use antlr_rust::PredictionContextCache;
+use antlr_rust::TokenSource;
 use antlr_rust::atn::{ATN, INVALID_ALT};
 use antlr_rust::atn_deserializer::ATNDeserializer;
 use antlr_rust::dfa::DFA;
@@ -16,16 +18,14 @@ use antlr_rust::errors::*;
 use antlr_rust::int_stream::EOF;
 use antlr_rust::parser::{BaseParser, Parser, ParserNodeType, ParserRecog};
 use antlr_rust::parser_atn_simulator::ParserATNSimulator;
-use antlr_rust::parser_rule_context::{cast, cast_mut, BaseParserRuleContext, ParserRuleContext};
+use antlr_rust::parser_rule_context::{BaseParserRuleContext, ParserRuleContext, cast, cast_mut};
 use antlr_rust::recognizer::{Actions, Recognizer};
 use antlr_rust::rule_context::{BaseRuleContext, CustomRuleContext, RuleContext};
-use antlr_rust::token::{OwningToken, Token, TOKEN_EOF};
+use antlr_rust::token::{OwningToken, TOKEN_EOF, Token};
 use antlr_rust::token_factory::{CommonTokenFactory, TokenAware, TokenFactory};
 use antlr_rust::token_stream::TokenStream;
 use antlr_rust::tree::*;
 use antlr_rust::vocabulary::{Vocabulary, VocabularyImpl};
-use antlr_rust::PredictionContextCache;
-use antlr_rust::TokenSource;
 
 use antlr_rust::lazy_static;
 use antlr_rust::{TidAble, TidExt};

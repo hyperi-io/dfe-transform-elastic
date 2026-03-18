@@ -12,7 +12,7 @@ use super::parser::{
     painlessparser::PainlessParserContextType,
 };
 use super::visitor::RustVisitor;
-use antlr_rust::{common_token_stream::CommonTokenStream, DefaultErrorStrategy, InputStream};
+use antlr_rust::{DefaultErrorStrategy, InputStream, common_token_stream::CommonTokenStream};
 use tracing::instrument;
 
 /// Entry point for Painless script parsing and transpilation.

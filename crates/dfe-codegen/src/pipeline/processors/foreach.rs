@@ -1,10 +1,9 @@
-
 use anyhow::Result;
 use serde::Deserialize;
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional, on_failure::OnFailure, unsupported_fields, Processor, Validate,
+    Processor, Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
 };
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
