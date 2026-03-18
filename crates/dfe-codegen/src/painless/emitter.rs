@@ -270,7 +270,9 @@ pub(crate) fn emit_expr(expr: &Expr) -> String {
                 }
                 "String" => format!("json!(painless_to_string(&{e}))"),
                 "char" => {
-                    format!("json!(painless_to_string(&{e}).chars().next().unwrap_or('\\0').to_string())")
+                    format!(
+                        "json!(painless_to_string(&{e}).chars().next().unwrap_or('\\0').to_string())"
+                    )
                 }
                 _ => e,
             }
@@ -318,7 +320,9 @@ pub(crate) fn emit_expr(expr: &Expr) -> String {
 
         Expr::Regex { pattern } => {
             let escaped = pattern.replace('\\', "\\\\").replace('"', "\\\"");
-            format!("regex::Regex::new(\"{escaped}\").unwrap_or_else(|_| regex::Regex::new(\".\").unwrap())")
+            format!(
+                "regex::Regex::new(\"{escaped}\").unwrap_or_else(|_| regex::Regex::new(\".\").unwrap())"
+            )
         }
 
         Expr::NullSafeAccess { base, field } => {
@@ -529,11 +533,15 @@ fn emit_method_call(receiver: &Expr, method: &str, args: &[Expr]) -> String {
         "trim" => format!("json!(({recv}).as_str().unwrap_or(\"\").trim())"),
         "startsWith" if args.len() == 1 => {
             let a = emit_expr(&args[0]);
-            format!("json!(({recv}).as_str().unwrap_or(\"\").starts_with(painless_to_string(&{a}).as_str()))")
+            format!(
+                "json!(({recv}).as_str().unwrap_or(\"\").starts_with(painless_to_string(&{a}).as_str()))"
+            )
         }
         "endsWith" if args.len() == 1 => {
             let a = emit_expr(&args[0]);
-            format!("json!(({recv}).as_str().unwrap_or(\"\").ends_with(painless_to_string(&{a}).as_str()))")
+            format!(
+                "json!(({recv}).as_str().unwrap_or(\"\").ends_with(painless_to_string(&{a}).as_str()))"
+            )
         }
         "substring" if args.len() == 1 => {
             let a = emit_expr(&args[0]);

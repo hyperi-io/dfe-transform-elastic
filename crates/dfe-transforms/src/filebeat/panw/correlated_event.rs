@@ -17,7 +17,7 @@ impl Transform for CorrelatedEvent {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+                let csv_str = csv_str.as_str();
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -106,25 +106,43 @@ impl Transform for CorrelatedEvent {
 
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("network"))?;
+        event.append("event.category", json!("network"))?;
 
         event.set("event.outcome", json!("success"))?;
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("log.level", event.get("panw.panos.severity").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "log.level",
+                event
+                    .get("panw.panos.severity")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.hostname", event.get("panw.panos.device_name").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.hostname",
+                event
+                    .get("panw.panos.device_name")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.ip", event.get("panw.panos.source.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.ip",
+                event
+                    .get("panw.panos.source.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 

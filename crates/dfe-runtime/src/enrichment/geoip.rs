@@ -11,7 +11,7 @@ use std::net::IpAddr;
 use std::path::Path;
 
 use maxminddb::Reader;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use crate::error::{Result, TransformError};
 use crate::event::Event;
@@ -94,7 +94,7 @@ impl GeoIpEnrichment {
             None => {
                 return Err(TransformError::FieldNotFound {
                     path: ip_field.into(),
-                })
+                });
             }
         };
 

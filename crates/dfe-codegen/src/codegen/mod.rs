@@ -9,4 +9,4 @@
 mod emit;
 mod processor;
 
-pub use emit::{codegen_pipeline_body, PipelineCodegen};
+pub use emit::{PipelineCodegen, codegen_pipeline_body};

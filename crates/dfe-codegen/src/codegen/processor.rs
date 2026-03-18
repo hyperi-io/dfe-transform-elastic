@@ -7,12 +7,12 @@
 //! operating on an `Event`. The generated code uses the dfe-runtime API
 //! (event.get(), event.set(), event.remove(), event.rename(), etc).
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 
+use crate::pipeline::Processor;
 use crate::pipeline::conditional::Conditional;
 use crate::pipeline::processors::*;
 use crate::pipeline::template_string::{TemplateFragment, TemplateString};
-use crate::pipeline::Processor;
 
 /// Emit Rust code for a single processor.
 ///

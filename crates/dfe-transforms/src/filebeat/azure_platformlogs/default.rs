@@ -16,16 +16,19 @@ impl Transform for Default {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("ecs.version", json!("8.0.0"))?;
 
-            if event.has("azure") {
-                event.rename("azure", "azure-eventhub")?;
-            }
+        if event.has("azure") {
+            event.rename("azure", "azure-eventhub")?;
+        }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: ctx.message = ctx.message.replace(params.empty_field_name, '')
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#)?;
+            painless_exec(
+                event,
+                r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#,
+            )?;
             Ok(())
         })();
 
@@ -41,30 +44,35 @@ impl Transform for Default {
             event.remove("message");
         }
 
-            if let Some(s) = event.get_str("event.original").map(String::from) {
+        if let Some(s) = event.get_str("event.original").map(String::from) {
             let s = s.as_str();
-                let parsed: Value = serde_json::from_str(s)
-                    .map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("azure.platformlogs", parsed)?;
-            }
+            let parsed: Value =
+                serde_json::from_str(s).map_err(|e| TransformError::ParseError {
+                    path: "event.original".into(),
+                    message: format!("failed to parse JSON: {}", e),
+                })?;
+            event.set("azure.platformlogs", parsed)?;
+        }
 
         // TODO: conditional: ctx.azure?.platformlogs?.identity instanceof String
         {
             if event.has("azure.platformlogs.identity") {
-                event.rename("azure.platformlogs.identity", "azure.platformlogs.identity_name")?;
+                event.rename(
+                    "azure.platformlogs.identity",
+                    "azure.platformlogs.identity_name",
+                )?;
             }
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(date_str) = event.get_str("azure.platformlogs.time").map(String::from) {
-            let date_str = date_str.as_str();
+                let date_str = date_str.as_str();
                 // Try ISO8601 format
                 if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(date_str)
-                    .or_else(|_| chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%.f%:z"))
+                    .or_else(|_| {
+                        chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
+                    })
                     .or_else(|_| chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%:z"))
                 {
                     event.set("@timestamp", dt.to_rfc3339())?;
@@ -75,11 +83,16 @@ impl Transform for Default {
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(date_str) = event.get_str("azure.platformlogs.EventTimeString").map(String::from) {
-            let date_str = date_str.as_str();
+            if let Some(date_str) = event
+                .get_str("azure.platformlogs.EventTimeString")
+                .map(String::from)
+            {
+                let date_str = date_str.as_str();
                 // Try ISO8601 format
                 if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(date_str)
-                    .or_else(|_| chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%.f%:z"))
+                    .or_else(|_| {
+                        chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
+                    })
                     .or_else(|_| chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%:z"))
                 {
                     event.set("@timestamp", dt.to_rfc3339())?;
@@ -91,22 +104,25 @@ impl Transform for Default {
             Ok(())
         })();
 
-            event.remove("azure.platformlogs.time");
+        event.remove("azure.platformlogs.time");
 
-            if event.has("azure.platformlogs.resourceId") {
-                event.rename("azure.platformlogs.resourceId", "azure.resource_id")?;
-            }
+        if event.has("azure.platformlogs.resourceId") {
+            event.rename("azure.platformlogs.resourceId", "azure.resource_id")?;
+        }
 
-            if event.has("azure.platformlogs.Region") {
-                event.rename("azure.platformlogs.Region", "cloud.region")?;
-            }
+        if event.has("azure.platformlogs.Region") {
+            event.rename("azure.platformlogs.Region", "cloud.region")?;
+        }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(s) = event.get_str("azure.platformlogs.EventProperties").map(String::from) {
-            let s = s.as_str();
-                let parsed: Value = serde_json::from_str(s)
-                    .map_err(|e| TransformError::ParseError {
+            if let Some(s) = event
+                .get_str("azure.platformlogs.EventProperties")
+                .map(String::from)
+            {
+                let s = s.as_str();
+                let parsed: Value =
+                    serde_json::from_str(s).map_err(|e| TransformError::ParseError {
                         path: "azure.platformlogs.EventProperties".into(),
                         message: format!("failed to parse JSON: {}", e),
                     })?;
@@ -122,10 +138,13 @@ impl Transform for Default {
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(s) = event.get_str("azure.platformlogs.properties.log").map(String::from) {
-            let s = s.as_str();
-                let parsed: Value = serde_json::from_str(s)
-                    .map_err(|e| TransformError::ParseError {
+            if let Some(s) = event
+                .get_str("azure.platformlogs.properties.log")
+                .map(String::from)
+            {
+                let s = s.as_str();
+                let parsed: Value =
+                    serde_json::from_str(s).map_err(|e| TransformError::ParseError {
                         path: "azure.platformlogs.properties.log".into(),
                         message: format!("failed to parse JSON: {}", e),
                     })?;
@@ -141,17 +160,24 @@ impl Transform for Default {
             }
         }
 
-            if event.has("azure.platformlogs.EventName") {
-                event.rename("azure.platformlogs.EventName", "event.action")?;
-            }
+        if event.has("azure.platformlogs.EventName") {
+            event.rename("azure.platformlogs.EventName", "event.action")?;
+        }
 
         if event.has("azure.platformlogs.callerIpAddress") {
-            if let Some(s) = event.get_str("azure.platformlogs.callerIpAddress").map(String::from) {
-            let s = s.as_str();
+            if let Some(s) = event
+                .get_str("azure.platformlogs.callerIpAddress")
+                .map(String::from)
+            {
+                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError { path: "azure.platformlogs.callerIpAddress".into(), message: format!("cannot convert '{}' to IP", s) }.into());
+                    return Err(TransformError::ParseError {
+                        path: "azure.platformlogs.callerIpAddress".into(),
+                        message: format!("cannot convert '{}' to IP", s),
+                    }
+                    .into());
                 }
                 event.set("source.ip", s)?;
             }
@@ -162,66 +188,97 @@ impl Transform for Default {
             event.remove("azure.platformlogs.callerIpAddress");
         }
 
-        event.set("client.ip", event.get("source.ip").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "client.ip",
+            event.get("source.ip").cloned().unwrap_or(Value::Null),
+        )?;
 
         // TODO: conditional: ctx.source?.ip != null
         {
-            event.append("related.ip", event.get("source.ip").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "related.ip",
+                event.get("source.ip").cloned().unwrap_or(Value::Null),
+            )?;
         }
 
-            if event.has("azure.platformlogs.level") {
-                event.rename("azure.platformlogs.level", "log.level")?;
-            }
+        if event.has("azure.platformlogs.level") {
+            event.rename("azure.platformlogs.level", "log.level")?;
+        }
 
         // TODO: conditional: ctx?.azure?.platformlogs?.durationMs != null && ctx?.azure?.platformlogs?.durationMs instanceof String
         {
-        if event.has("azure.platformlogs.durationMs") {
-            if let Some(val) = event.get("azure.platformlogs.durationMs") {
-                let converted = match val {
-                    Value::String(s) => {
-                        let s = s.trim();
-                        if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "azure.platformlogs.durationMs".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                        } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "azure.platformlogs.durationMs".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            if event.has("azure.platformlogs.durationMs") {
+                if let Some(val) = event.get("azure.platformlogs.durationMs") {
+                    let converted = match val {
+                        Value::String(s) => {
+                            let s = s.trim();
+                            if let Some(hex) = s.strip_prefix("0x") {
+                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                    TransformError::ParseError {
+                                        path: "azure.platformlogs.durationMs".into(),
+                                        message: format!("cannot convert '{}' to integer", s),
+                                    }
+                                })?)
+                            } else {
+                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                    path: "azure.platformlogs.durationMs".into(),
+                                    message: format!("cannot convert '{}' to integer", s)
+                                })?)
+                            }
                         }
-                    }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "azure.platformlogs.durationMs".into(), message: "cannot convert to integer".into() }.into()),
-                };
-                event.set("event.duration", converted)?;
+                        Value::Number(n) => {
+                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                        }
+                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                        _ => {
+                            return Err(TransformError::ParseError {
+                                path: "azure.platformlogs.durationMs".into(),
+                                message: "cannot convert to integer".into(),
+                            }
+                            .into());
+                        }
+                    };
+                    event.set("event.duration", converted)?;
+                }
             }
         }
-        }
 
-            event.remove("azure.platformlogs.durationMs");
+        event.remove("azure.platformlogs.durationMs");
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#)?;
+            painless_exec(
+                event,
+                r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#,
+            )?;
             Ok(())
         })();
 
-            if event.has("azure.platformlogs.location") {
-                event.rename("azure.platformlogs.location", "geo.name")?;
-            }
+        if event.has("azure.platformlogs.location") {
+            event.rename("azure.platformlogs.location", "geo.name")?;
+        }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx?.azure?.platformlogs?.properties?.eventCategory != null) {\n  ctx.azure.platformlogs.event_category = ctx.azure.platformlogs.properties.eventCategory;\n} else if (ctx?.azure?.platformlogs?.properties?.policies != null)  {\n  ctx.azure.platformlogs.event_category = 'Policy';\n} else {\n  ctx.azure.platformlogs.event_category = 'Administrative';\n}
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"if (ctx?.azure?.platformlogs?.properties?.eventCategory != null) {\n  ctx.azure.platformlogs.event_category = ctx.azure.platformlogs.properties.eventCategory;\n} else if (ctx?.azure?.platformlogs?.properties?.policies != null)  {\n  ctx.azure.platformlogs.event_category = 'Policy';\n} else {\n  ctx.azure.platformlogs.event_category = 'Administrative';\n}"#)?;
+            painless_exec(
+                event,
+                r#"if (ctx?.azure?.platformlogs?.properties?.eventCategory != null) {\n  ctx.azure.platformlogs.event_category = ctx.azure.platformlogs.properties.eventCategory;\n} else if (ctx?.azure?.platformlogs?.properties?.policies != null)  {\n  ctx.azure.platformlogs.event_category = 'Policy';\n} else {\n  ctx.azure.platformlogs.event_category = 'Administrative';\n}"#,
+            )?;
             Ok(())
         })();
 
-            if event.has("azure.platformlogs.resultType") {
-                event.rename("azure.platformlogs.resultType", "azure.platformlogs.result_type")?;
-            }
+        if event.has("azure.platformlogs.resultType") {
+            event.rename(
+                "azure.platformlogs.resultType",
+                "azure.platformlogs.result_type",
+            )?;
+        }
 
         // TODO: conditional: ctx?.azure?.platformlogs?.result_type != null && ctx.azure.platformlogs.result_type instanceof String && (ctx.azure.platformlogs.result_type.toLowerCase() == 'success' || ctx.azure.platformlogs.result_type.toLowerCase() == 'failure')
         {
@@ -265,9 +322,12 @@ impl Transform for Default {
             }
         }
 
-            if event.has("azure.platformlogs.operationName") {
-                event.rename("azure.platformlogs.operationName", "azure.platformlogs.operation_name")?;
-            }
+        if event.has("azure.platformlogs.operationName") {
+            event.rename(
+                "azure.platformlogs.operationName",
+                "azure.platformlogs.operation_name",
+            )?;
+        }
 
         if event.has("azure.platformlogs.operation_name") {
             if let Some(val) = event.get("azure.platformlogs.operation_name") {
@@ -282,25 +342,31 @@ impl Transform for Default {
             }
         }
 
-            if event.has("azure.platformlogs.resultSignature") {
-                event.rename("azure.platformlogs.resultSignature", "azure.platformlogs.result_signature")?;
-            }
+        if event.has("azure.platformlogs.resultSignature") {
+            event.rename(
+                "azure.platformlogs.resultSignature",
+                "azure.platformlogs.result_signature",
+            )?;
+        }
 
-            if event.has("azure.platformlogs.correlationId") {
-                event.rename("azure.platformlogs.correlationId", "azure.correlation_id")?;
-            }
+        if event.has("azure.platformlogs.correlationId") {
+            event.rename("azure.platformlogs.correlationId", "azure.correlation_id")?;
+        }
 
-            if event.has("azure.platformlogs.properties.statusCode") {
-                event.rename("azure.platformlogs.properties.statusCode", "azure.platformlogs.properties.status_code")?;
-            }
+        if event.has("azure.platformlogs.properties.statusCode") {
+            event.rename(
+                "azure.platformlogs.properties.statusCode",
+                "azure.platformlogs.properties.status_code",
+            )?;
+        }
 
-            if event.has("azure.platformlogs.Status") {
-                event.rename("azure.platformlogs.Status", "azure.platformlogs.status")?;
-            }
+        if event.has("azure.platformlogs.Status") {
+            event.rename("azure.platformlogs.Status", "azure.platformlogs.status")?;
+        }
 
         if event.has("source.ip") {
             if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-            let ip_str = ip_str.as_str();
+                let ip_str = ip_str.as_str();
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -332,14 +398,17 @@ impl Transform for Default {
             }
         }
 
-            // Painless script
-            // Source: if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#)?;
+        // Painless script
+        // Source: if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);
+        // TODO: Transpile Painless to Rust (2.2.3)
+        painless_exec(
+            event,
+            r#"if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#,
+        )?;
 
         if event.has("source.ip") {
             if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-            let ip_str = ip_str.as_str();
+                let ip_str = ip_str.as_str();
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -373,7 +442,7 @@ impl Transform for Default {
 
         if event.has("source.ip") {
             if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-            let ip_str = ip_str.as_str();
+                let ip_str = ip_str.as_str();
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -387,20 +456,20 @@ impl Transform for Default {
             }
         }
 
-            if event.has("source.as.asn") {
-                event.rename("source.as.asn", "source.as.number")?;
-            }
+        if event.has("source.as.asn") {
+            event.rename("source.as.asn", "source.as.number")?;
+        }
 
-            if event.has("source.as.organization_name") {
-                event.rename("source.as.organization_name", "source.as.organization.name")?;
-            }
+        if event.has("source.as.organization_name") {
+            event.rename("source.as.organization_name", "source.as.organization.name")?;
+        }
 
         event.set("event.kind", json!("event"))?;
 
-            // Begin nested pipeline: "azure-shared-pipeline"
-            event.set("cloud.provider", json!("azure"))?;
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
+        // Begin nested pipeline: "azure-shared-pipeline"
+        event.set("cloud.provider", json!("azure"))?;
+        // ignore_failure: true
+        let _ = (|| -> Result<()> {
             // Pattern definitions for grok
             // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
             // RULE = .+
@@ -408,186 +477,192 @@ impl Transform for Default {
             // PROVIDERNAME = .+
             // NAMESPACE = .+
             if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+                let input = input.as_str();
+                // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
+                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}")).unwrap();
+                if let Some(caps) = grok_re.captures(input) {
+                    for name in grok_re.capture_names().flatten() {
+                        if let Some(m) = caps.name(name) {
+                            event.set(name, m.as_str())?;
+                        }
+                    }
+                }
+                // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/namespaces/%{NAMESPACE:azure.resource.namespace}/authorizationRules/%{RULE:azure.resource.authorization_rule}
             }
-            }
-            }
-            // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/namespaces/%{NAMESPACE:azure.resource.namespace}/authorizationRules/%{RULE:azure.resource.authorization_rule}
-            }
-                Ok(())
-            })();
-            // TODO: conditional: ctx.azure?.subscription_id == null
-            {
+            Ok(())
+        })();
+        // TODO: conditional: ctx.azure?.subscription_id == null
+        {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // NAME = ((?!AUTHORIZATIONRULES).)*$
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            // GROUPID = .+
-            // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+/([A-Za-z])\w+.
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-            }
+                // Pattern definitions for grok
+                // NAME = ((?!AUTHORIZATIONRULES).)*$
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                // GROUPID = .+
+                // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+/([A-Za-z])\w+.
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
+                        }
+                    }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
+                }
                 Ok(())
             })();
-            }
-            // TODO: conditional: ctx.azure?.subscription_id == null
-            {
+        }
+        // TODO: conditional: ctx.azure?.subscription_id == null
+        {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
-            // NAME = .+
-            // GROUPID = .+
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-            }
+                // Pattern definitions for grok
+                // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
+                // NAME = .+
+                // GROUPID = .+
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
+                        }
+                    }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
+                }
                 Ok(())
             })();
-            }
-            // TODO: conditional: ctx.azure?.subscription_id == null
-            {
+        }
+        // TODO: conditional: ctx.azure?.subscription_id == null
+        {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // PROVIDER = .+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/providers/%{PROVIDER:azure.resource.provider}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: /PROVIDERS/%{PROVIDER:azure.resource.provider}
-            }
+                // Pattern definitions for grok
+                // PROVIDER = .+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex(
+                        "/providers/%{PROVIDER:azure.resource.provider}",
+                    ))
+                    .unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
+                        }
+                    }
+                    // Additional grok pattern 1: /PROVIDERS/%{PROVIDER:azure.resource.provider}
+                }
                 Ok(())
             })();
-            }
-            // TODO: conditional: ctx.azure?.subscription_id == null
-            {
+        }
+        // TODO: conditional: ctx.azure?.subscription_id == null
+        {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/providers/%{PROVIDERNAME:azure.resource.provider}
-            }
+                // Pattern definitions for grok
+                // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
+                        }
+                    }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/providers/%{PROVIDERNAME:azure.resource.provider}
+                }
                 Ok(())
             })();
-            }
-            // TODO: conditional: ctx.azure?.subscription_id == null
-            {
+        }
+        // TODO: conditional: ctx.azure?.subscription_id == null
+        {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            // GROUPID = .+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}
-            }
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                // GROUPID = .+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
+                        }
+                    }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}
+                }
                 Ok(())
             })();
-            }
-            // TODO: conditional: ctx.azure?.subscription_id == null
-            {
+        }
+        // TODO: conditional: ctx.azure?.subscription_id == null
+        {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}
-            }
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex(
+                        "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}",
+                    ))
+                    .unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
+                        }
+                    }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}
+                }
                 Ok(())
             })();
-            }
-            if event.has("azure.resource_id") {
+        }
+        if event.has("azure.resource_id") {
             event.rename("azure.resource_id", "azure.resource.id")?;
-            }
-            if event.has("event.outcome") {
+        }
+        if event.has("event.outcome") {
             if let Some(s) = event.get_str("event.outcome").map(String::from) {
-            let s = s.as_str();
-            let lowered = s.to_lowercase();
-            event.set("event.outcome", lowered)?;
+                let s = s.as_str();
+                let lowered = s.to_lowercase();
+                event.set("event.outcome", lowered)?;
             }
-            }
-            // End nested pipeline: "azure-shared-pipeline"
+        }
+        // End nested pipeline: "azure-shared-pipeline"
 
         // TODO: conditional: ctx?.tags == null || !(ctx.tags.contains('preserve_original_event'))
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            event.remove("event.original");
-            Ok(())
-        })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.remove("event.original");
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx?.azure_log_forwarder?.resource_type != null && (ctx?.azure_log_forwarder?.resource_type == 'Microsoft.AppPlatform/Spring'|| ctx?.azure_log_forwarder?.resource_type == 'MICROSOFT.APPPLATFORM/SPRING')
@@ -595,89 +670,134 @@ impl Transform for Default {
             // Begin nested pipeline: "springcloudlogs-inner-pipeline"
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            // Painless script
-            // Source: ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#)?;
+                // Painless script
+                // Source: ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#,
+                )?;
                 Ok(())
             })();
             if event.has("azure.platformlogs") {
-            event.rename("azure.platformlogs", "azure.springcloudlogs")?;
+                event.rename("azure.platformlogs", "azure.springcloudlogs")?;
             }
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            event.set("event.dataset", json!("azure.springcloudlogs"))?;
+                event.set("event.dataset", json!("azure.springcloudlogs"))?;
                 Ok(())
             })();
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            event.set("data_stream.dataset", json!("azure.springcloudlogs"))?;
+                event.set("data_stream.dataset", json!("azure.springcloudlogs"))?;
                 Ok(())
             })();
             // TODO: conditional: ctx.azure.springcloudlogs.category != 'SystemLogs' && ctx.azure.springcloudlogs.category != 'ApplicationConsole'
             {
-            return Ok(TransformResult::Drop);
+                return Ok(TransformResult::Drop);
             }
             if event.has("azure.springcloudlogs.LogFormat") {
-            event.rename("azure.springcloudlogs.LogFormat", "azure.springcloudlogs.log_format")?;
+                event.rename(
+                    "azure.springcloudlogs.LogFormat",
+                    "azure.springcloudlogs.log_format",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.InstanceName") {
-            event.rename("azure.springcloudlogs.properties.InstanceName", "azure.springcloudlogs.properties.instance_name")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.InstanceName",
+                    "azure.springcloudlogs.properties.instance_name",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Log") {
-            event.rename("azure.springcloudlogs.properties.Log", "azure.springcloudlogs.properties.log")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Log",
+                    "azure.springcloudlogs.properties.log",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.ServiceName") {
-            event.rename("azure.springcloudlogs.properties.ServiceName", "azure.springcloudlogs.properties.service_name")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.ServiceName",
+                    "azure.springcloudlogs.properties.service_name",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Stream") {
-            event.rename("azure.springcloudlogs.properties.Stream", "azure.springcloudlogs.properties.stream")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Stream",
+                    "azure.springcloudlogs.properties.stream",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.AppName") {
-            event.rename("azure.springcloudlogs.properties.AppName", "azure.springcloudlogs.properties.app_name")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.AppName",
+                    "azure.springcloudlogs.properties.app_name",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.ServiceId") {
-            event.rename("azure.springcloudlogs.properties.ServiceId", "azure.springcloudlogs.properties.service_id")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.ServiceId",
+                    "azure.springcloudlogs.properties.service_id",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Type") {
-            event.rename("azure.springcloudlogs.properties.Type", "azure.springcloudlogs.properties.type")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Type",
+                    "azure.springcloudlogs.properties.type",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Level") {
-            event.rename("azure.springcloudlogs.properties.Level", "azure.springcloudlogs.level")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Level",
+                    "azure.springcloudlogs.level",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Logger") {
-            event.rename("azure.springcloudlogs.properties.Logger", "azure.springcloudlogs.properties.logger")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Logger",
+                    "azure.springcloudlogs.properties.logger",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Stack") {
-            event.rename("azure.springcloudlogs.properties.Stack", "azure.springcloudlogs.properties.stack")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Stack",
+                    "azure.springcloudlogs.properties.stack",
+                )?;
             }
             if event.has("azure.springcloudlogs.properties.Thread") {
-            event.rename("azure.springcloudlogs.properties.Thread", "azure.springcloudlogs.properties.thread")?;
+                event.rename(
+                    "azure.springcloudlogs.properties.Thread",
+                    "azure.springcloudlogs.properties.thread",
+                )?;
             }
             if event.has("azure.springcloudlogs.level") {
-            event.rename("azure.springcloudlogs.level", "log.level")?;
+                event.rename("azure.springcloudlogs.level", "log.level")?;
             }
             if event.has("azure.springcloudlogs.operationName") {
-            event.rename("azure.springcloudlogs.operationName", "azure.springcloudlogs.operation_name")?;
+                event.rename(
+                    "azure.springcloudlogs.operationName",
+                    "azure.springcloudlogs.operation_name",
+                )?;
             }
             if event.has("azure.springcloudlogs.operation_name") {
-            if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
-            let converted = match val {
-            Value::String(_) => val.clone(),
-            Value::Number(n) => json!(n.to_string()),
-            Value::Bool(b) => json!(b.to_string()),
-            Value::Null => json!("null"),
-            _ => json!(val.to_string()),
-            };
-            event.set("event.action", converted)?;
-            }
+                if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
+                    let converted = match val {
+                        Value::String(_) => val.clone(),
+                        Value::Number(n) => json!(n.to_string()),
+                        Value::Bool(b) => json!(b.to_string()),
+                        Value::Null => json!("null"),
+                        _ => json!(val.to_string()),
+                    };
+                    event.set("event.action", converted)?;
+                }
             }
             // End nested pipeline: "springcloudlogs-inner-pipeline"
         }
 
-            if event.has("azure.platformlogs.resultDescription") {
-                event.rename("azure.platformlogs.resultDescription", "azure.platformlogs.result_description")?;
-            }
+        if event.has("azure.platformlogs.resultDescription") {
+            event.rename(
+                "azure.platformlogs.resultDescription",
+                "azure.platformlogs.result_description",
+            )?;
+        }
 
         Ok(TransformResult::Continue)
     }

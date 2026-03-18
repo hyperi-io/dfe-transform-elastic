@@ -46,13 +46,19 @@ impl Transform for AuthActivityAudit {
             event.append("event.type", json!("deletion"))?;
         }
 
-            if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
-            }
+        if event.has("crowdstrike.event.UserId") {
+            event.rename("crowdstrike.event.UserId", "user.name")?;
+        }
 
         // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null
         {
-            event.append("event.action", event.get("crowdstrike.event.OperationName").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "event.action",
+                event
+                    .get("crowdstrike.event.OperationName")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.event?.action == null
@@ -62,26 +68,26 @@ impl Transform for AuthActivityAudit {
 
         // TODO: conditional: ctx.crowdstrike?.event?.Success == true
         {
-        event.set("event.outcome", json!("success"))?;
+            event.set("event.outcome", json!("success"))?;
         }
 
         // TODO: conditional: ctx.crowdstrike?.event?.Success == false
         {
-        event.set("event.outcome", json!("failure"))?;
+            event.set("event.outcome", json!("failure"))?;
         }
 
         // TODO: conditional: ctx.event?.outcome == null
         {
-        event.set("event.outcome", json!("unknown"))?;
+            event.set("event.outcome", json!("unknown"))?;
         }
 
-            if event.has("crowdstrike.event.ServiceName") {
-                event.rename("crowdstrike.event.ServiceName", "message")?;
-            }
+        if event.has("crowdstrike.event.ServiceName") {
+            event.rename("crowdstrike.event.ServiceName", "message")?;
+        }
 
-            if event.has("crowdstrike.event.UserIp") {
-                event.rename("crowdstrike.event.UserIp", "source.ip")?;
-            }
+        if event.has("crowdstrike.event.UserIp") {
+            event.rename("crowdstrike.event.UserIp", "source.ip")?;
+        }
 
         Ok(TransformResult::Continue)
     }

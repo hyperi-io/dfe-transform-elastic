@@ -17,7 +17,7 @@ impl Transform for Decryption {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+                let csv_str = csv_str.as_str();
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -529,14 +529,17 @@ impl Transform for Decryption {
             Ok(())
         })();
 
-            if event.has("_temp_.config_version") {
-                event.rename("_temp_.config_version", "panw.panos.config_version")?;
-            }
+        if event.has("_temp_.config_version") {
+            event.rename("_temp_.config_version", "panw.panos.config_version")?;
+        }
 
         // TODO: conditional: ctx.event?.timezone == null
         {
-            if let Some(date_str) = event.get_str("panw.panos.certificate.not_after").map(String::from) {
-            let date_str = date_str.as_str();
+            if let Some(date_str) = event
+                .get_str("panw.panos.certificate.not_after")
+                .map(String::from)
+            {
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
@@ -548,8 +551,11 @@ impl Transform for Decryption {
 
         // TODO: conditional: ctx.event?.timezone != null
         {
-            if let Some(date_str) = event.get_str("panw.panos.certificate.not_after").map(String::from) {
-            let date_str = date_str.as_str();
+            if let Some(date_str) = event
+                .get_str("panw.panos.certificate.not_after")
+                .map(String::from)
+            {
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
@@ -561,8 +567,11 @@ impl Transform for Decryption {
 
         // TODO: conditional: ctx.event?.timezone == null
         {
-            if let Some(date_str) = event.get_str("panw.panos.certificate.not_before").map(String::from) {
-            let date_str = date_str.as_str();
+            if let Some(date_str) = event
+                .get_str("panw.panos.certificate.not_before")
+                .map(String::from)
+            {
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
@@ -574,8 +583,11 @@ impl Transform for Decryption {
 
         // TODO: conditional: ctx.event?.timezone != null
         {
-            if let Some(date_str) = event.get_str("panw.panos.certificate.not_before").map(String::from) {
-            let date_str = date_str.as_str();
+            if let Some(date_str) = event
+                .get_str("panw.panos.certificate.not_before")
+                .map(String::from)
+            {
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
@@ -587,193 +599,361 @@ impl Transform for Decryption {
 
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("network"))?;
+        event.append("event.category", json!("network"))?;
 
         // TODO: conditional: ctx.panw?.panos?.error_message == null || ctx.panw.panos.error_message == ""
         {
-        event.set("event.outcome", json!("success"))?;
+            event.set("event.outcome", json!("success"))?;
         }
 
         // TODO: conditional: ctx.panw?.panos?.error_message != ""
         {
-        event.set("event.outcome", json!("failure"))?;
+            event.set("event.outcome", json!("failure"))?;
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.hash", event.get("_temp_.hash").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.hash",
+                event.get("_temp_.hash").cloned().unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.tls.version", event.get("_temp_.tls").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.tls.version",
+                event.get("_temp_.tls").cloned().unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.ip", event.get("panw.panos.destination.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.ip",
+                event
+                    .get("panw.panos.destination.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.nat.ip", event.get("panw.panos.destination.nat.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.nat.ip",
+                event
+                    .get("panw.panos.destination.nat.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.nat.port", event.get("panw.panos.destination.nat.port").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.nat.port",
+                event
+                    .get("panw.panos.destination.nat.port")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("destination.port", event.get("panw.panos.destination.port").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "destination.port",
+                event
+                    .get("panw.panos.destination.port")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("network.application", event.get("panw.panos.network.application").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "network.application",
+                event
+                    .get("panw.panos.network.application")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("network.transport", event.get("panw.panos.protocol").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "network.transport",
+                event
+                    .get("panw.panos.protocol")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.egress.interface.name", event.get("panw.panos.outbound_interface").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.egress.interface.name",
+                event
+                    .get("panw.panos.outbound_interface")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.egress.zone", event.get("panw.panos.destination.zone").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.egress.zone",
+                event
+                    .get("panw.panos.destination.zone")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.hostname", event.get("panw.panos.device_name").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.hostname",
+                event
+                    .get("panw.panos.device_name")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.ingress.interface.name", event.get("panw.panos.inbound_interface").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.ingress.interface.name",
+                event
+                    .get("panw.panos.inbound_interface")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.ingress.zone", event.get("panw.panos.source.zone").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.ingress.zone",
+                event
+                    .get("panw.panos.source.zone")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.x509.subject.common_name", event.get("panw.panos.subject_common_name.value").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.x509.subject.common_name",
+                event
+                    .get("panw.panos.subject_common_name.value")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // TODO: conditional: ctx.tls?.client?.x509?.subject?.common_name instanceof String
         {
-        event.set("tls.client.x509.subject.common_name", json!(["{{{tls.client.x509.subject.common_name}}}"]))?;
+            event.set(
+                "tls.client.x509.subject.common_name",
+                json!(["{{{tls.client.x509.subject.common_name}}}"]),
+            )?;
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.x509.issuer.common_name", event.get("panw.panos.issuer_common_name.value").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.x509.issuer.common_name",
+                event
+                    .get("panw.panos.issuer_common_name.value")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // TODO: conditional: ctx.tls?.client?.x509?.issuer?.common_name instanceof String
         {
-        event.set("tls.client.x509.issuer.common_name", json!(["{{{tls.client.x509.issuer.common_name}}}"]))?;
+            event.set(
+                "tls.client.x509.issuer.common_name",
+                json!(["{{{tls.client.x509.issuer.common_name}}}"]),
+            )?;
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("rule.uuid", event.get("panw.panos.rule_uuid").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "rule.uuid",
+                event
+                    .get("panw.panos.rule_uuid")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.ip", event.get("panw.panos.source.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.ip",
+                event
+                    .get("panw.panos.source.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.nat.ip", event.get("panw.panos.source.nat.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.nat.ip",
+                event
+                    .get("panw.panos.source.nat.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.port", event.get("panw.panos.source.port").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.port",
+                event
+                    .get("panw.panos.source.port")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.nat.port", event.get("panw.panos.source.nat.port").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.nat.port",
+                event
+                    .get("panw.panos.source.nat.port")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.cipher", event.get("panw.panos.tls.encryption").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.cipher",
+                event
+                    .get("panw.panos.tls.encryption")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.not_after", event.get("panw.panos.certificate.not_after").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.not_after",
+                event
+                    .get("panw.panos.certificate.not_after")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.not_before", event.get("panw.panos.certificate.not_before").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.not_before",
+                event
+                    .get("panw.panos.certificate.not_before")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.server_name", event.get("panw.panos.server_name_indication.value").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.server_name",
+                event
+                    .get("panw.panos.server_name_indication.value")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.x509.public_key_size", event.get("panw.panos.certificate.size").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.x509.public_key_size",
+                event
+                    .get("panw.panos.certificate.size")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.x509.serial_number", event.get("panw.panos.certificate.serial_number").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.x509.serial_number",
+                event
+                    .get("panw.panos.certificate.serial_number")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.client.x509.version_number", event.get("panw.panos.certificate.version").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.client.x509.version_number",
+                event
+                    .get("panw.panos.certificate.version")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("tls.curve", event.get("panw.panos.elliptic_curve").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "tls.curve",
+                event
+                    .get("panw.panos.elliptic_curve")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
@@ -782,7 +962,10 @@ impl Transform for Decryption {
             // Painless script
             // Source: ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#)?;
+            painless_exec(
+                event,
+                r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#,
+            )?;
         }
 
         // TODO: conditional: ctx._temp_?.tls != null
@@ -790,7 +973,10 @@ impl Transform for Decryption {
             // Painless script
             // Source: ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#)?;
+            painless_exec(
+                event,
+                r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#,
+            )?;
         }
 
         Ok(TransformResult::Continue)

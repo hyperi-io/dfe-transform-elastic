@@ -1,12 +1,8 @@
-
 use anyhow::Result;
 use serde::Deserialize;
 use tracing::instrument;
 
-use crate::pipeline::{
-    conditional::Conditional,
-    on_failure::OnFailure, Validate,
-};
+use crate::pipeline::{Validate, conditional::Conditional, on_failure::OnFailure};
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct Gsub {

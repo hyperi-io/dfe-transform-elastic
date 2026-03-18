@@ -1,11 +1,8 @@
-
 use serde::Deserialize;
 use tracing::instrument;
 
-use crate::{
-    pipeline::{
-        conditional::Conditional, on_failure::OnFailure, unsupported_fields, Validate,
-    },
+use crate::pipeline::{
+    Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
 };
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
@@ -25,7 +22,14 @@ pub struct Trim {
 impl Validate for Trim {
     #[instrument(name = "Trim::validate", skip_all, err)]
     fn validate(&self) -> anyhow::Result<()> {
-        unsupported_fields!("trim", self, target_field, conditional, ignore_failure, on_failure);
+        unsupported_fields!(
+            "trim",
+            self,
+            target_field,
+            conditional,
+            ignore_failure,
+            on_failure
+        );
 
         Ok(())
     }

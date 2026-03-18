@@ -1,11 +1,8 @@
+use crate::pipeline::unsupported_fields;
 use serde::Deserialize;
 use tracing::instrument;
-use crate::pipeline::{unsupported_fields};
 
-use crate::pipeline::{
-    conditional::Conditional,
-    on_failure::OnFailure, Validate,
-};
+use crate::pipeline::{Validate, conditional::Conditional, on_failure::OnFailure};
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
 pub struct Json {
@@ -46,7 +43,7 @@ mod test {
         use crate::pipeline::conditional::Conditional;
         use crate::pipeline::on_failure::OnFailure;
         use crate::pipeline::processors::set::Set;
-        use crate::pipeline::{unsupported_fields_tests, Pipeline, Processor};
+        use crate::pipeline::{Pipeline, Processor, unsupported_fields_tests};
 
         #[test]
         pub fn parse() {
@@ -107,7 +104,10 @@ mod test {
             match &pipeline.processors[..] {
                 [Processor::Json(json)] => {
                     assert_eq!("message", json.field);
-                    assert_eq!(Some(Conditional("message instanceof String".into())), json.conditional)
+                    assert_eq!(
+                        Some(Conditional("message instanceof String".into())),
+                        json.conditional
+                    )
                 }
                 _ => panic!("unexpected pipeline"),
             };

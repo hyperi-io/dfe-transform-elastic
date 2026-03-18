@@ -8,7 +8,7 @@
 //! Painless scripts. All functions are pure — no I/O, no side effects
 //! beyond operating on the provided values.
 
-use serde_json::{json, Map, Value};
+use serde_json::{Map, Value, json};
 
 /// Painless truthiness: `null`/`false`/`0`/`""` → false, everything else → true.
 ///

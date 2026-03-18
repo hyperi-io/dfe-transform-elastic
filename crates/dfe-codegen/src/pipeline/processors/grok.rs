@@ -1,15 +1,13 @@
 use std::collections::HashMap;
 
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use lazy_static::lazy_static;
 use regex::{Regex, Replacer};
 use serde::Deserialize;
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional,
-    on_failure::OnFailure,
-    unsupported_fields, Validate,
+    Validate, conditional::Conditional, on_failure::OnFailure, unsupported_fields,
 };
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]
@@ -39,9 +37,12 @@ pub struct Grok {
 lazy_static! {
     static ref TYPE_COERCION_PATTERN: Regex =
         Regex::new("%\\{(?<alias>[^:}]+):(?<path>[^}:]+)(?::(?<type_coercion>[^}:]+))?}").unwrap();
-    static ref UNGROUPED_UNION_PATTERN: Regex = Regex::new(r#"^(?:[A-Za-z_]+\|)+[A-Za-z_]+$"#).unwrap();
-    static ref UNGROUPED_OPTIONAL_GROK_PATTERN: Regex = Regex::new(r#"(?<optional_grok>%\{[^}]+})\?"#).unwrap();
-    static ref NAMED_PATH_CAPTURE_PATTERN: Regex = Regex::new(r#"\?<(?<capture>[^>]+\.[^>]+)>"#).unwrap();
+    static ref UNGROUPED_UNION_PATTERN: Regex =
+        Regex::new(r#"^(?:[A-Za-z_]+\|)+[A-Za-z_]+$"#).unwrap();
+    static ref UNGROUPED_OPTIONAL_GROK_PATTERN: Regex =
+        Regex::new(r#"(?<optional_grok>%\{[^}]+})\?"#).unwrap();
+    static ref NAMED_PATH_CAPTURE_PATTERN: Regex =
+        Regex::new(r#"\?<(?<capture>[^>]+\.[^>]+)>"#).unwrap();
 }
 
 impl Validate for Grok {
@@ -128,8 +129,8 @@ impl Grok {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{unsupported_fields_tests, Pipeline};
-        use anyhow::{anyhow, Result};
+        use crate::pipeline::{Pipeline, unsupported_fields_tests};
+        use anyhow::{Result, anyhow};
 
         #[test]
         fn nested_path_captures_outside_of_patterns() -> Result<()> {

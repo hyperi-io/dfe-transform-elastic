@@ -1,11 +1,8 @@
-
 use anyhow::bail;
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
-use crate::pipeline::{
-    conditional::Conditional, unsupported_fields, Validate,
-};
+use crate::pipeline::{Validate, conditional::Conditional, unsupported_fields};
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub enum GeoIPDB {
@@ -76,7 +73,12 @@ const ASN_FIELDS: &[&str] = &["ip", "asn", "organization_name", "network"];
 impl Validate for Geoip {
     #[instrument(name = "Geoip::validate", skip_all, err)]
     fn validate(&self) -> anyhow::Result<()> {
-        unsupported_fields!("geoip", self, first_only, download_database_on_pipeline_creation);
+        unsupported_fields!(
+            "geoip",
+            self,
+            first_only,
+            download_database_on_pipeline_creation
+        );
 
         if let Some(properties) = &self.properties {
             match self.database_file.unwrap_or_default() {
@@ -96,7 +98,9 @@ impl Validate for Geoip {
                 }),
                 GeoIPDB::COUNTRY => properties.iter().try_for_each(|property| {
                     if !COUNTRY_FIELDS.contains(&property.as_str()) {
-                        bail!("{property} is not among the supported fields for GeoLite2-Country.mmdb")
+                        bail!(
+                            "{property} is not among the supported fields for GeoLite2-Country.mmdb"
+                        )
                     } else {
                         Ok(())
                     }
@@ -111,7 +115,9 @@ impl Validate for Geoip {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{processors::geoip::GeoIPDB, unsupported_fields_tests, Pipeline, Processor};
+        use crate::pipeline::{
+            Pipeline, Processor, processors::geoip::GeoIPDB, unsupported_fields_tests,
+        };
         use pretty_assertions::assert_eq;
 
         #[test]
@@ -166,7 +172,10 @@ mod test {
             );
 
             assert_eq!(
-                Pipeline::parse(&configuration).unwrap_err().root_cause().to_string(),
+                Pipeline::parse(&configuration)
+                    .unwrap_err()
+                    .root_cause()
+                    .to_string(),
                 "processors[0].geoip.database_file: unknown variant `unsupported.mmdb`, expected one of \
                  `GeoLite2-City.mmdb`, `GeoLite2-Country.mmdb`, `GeoLite2-ASN.mmdb` at line 5 column 44"
             );

@@ -1,12 +1,8 @@
-
-use anyhow::{ensure, Result};
+use anyhow::{Result, ensure};
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
-use crate::pipeline::{
-    conditional::Conditional,
-    on_failure::OnFailure, Validate,
-};
+use crate::pipeline::{Validate, conditional::Conditional, on_failure::OnFailure};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
@@ -40,7 +36,11 @@ impl Validate for Convert {
         ensure!(
             matches!(
                 self.into_type,
-                IntoType::IP | IntoType::String | IntoType::Integer | IntoType::Long | IntoType::Float
+                IntoType::IP
+                    | IntoType::String
+                    | IntoType::Integer
+                    | IntoType::Long
+                    | IntoType::Float
             ),
             "{:?} not supported, expected (ip | string | integer | float)",
             self.into_type
@@ -53,7 +53,7 @@ impl Validate for Convert {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{processors::convert::IntoType, Pipeline, Processor};
+        use crate::pipeline::{Pipeline, Processor, processors::convert::IntoType};
 
         use pretty_assertions::assert_eq;
 
@@ -104,7 +104,10 @@ mod test {
 
             assert_eq!(
                 "Boolean not supported, expected (ip | string | integer | float)",
-                Pipeline::parse(config).unwrap_err().root_cause().to_string()
+                Pipeline::parse(config)
+                    .unwrap_err()
+                    .root_cause()
+                    .to_string()
             );
         }
     }

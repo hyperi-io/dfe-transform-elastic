@@ -1,8 +1,6 @@
 use crate::pipeline::unsupported_fields;
-use crate::pipeline::{
-    conditional::Conditional, on_failure::OnFailure, Validate,
-};
-use anyhow::{ensure, Result};
+use crate::pipeline::{Validate, conditional::Conditional, on_failure::OnFailure};
+use anyhow::{Result, ensure};
 use serde::Deserialize;
 use tracing::instrument;
 
@@ -57,7 +55,7 @@ impl Validate for Script {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{unsupported_fields_tests, Pipeline, Processor};
+        use crate::pipeline::{Pipeline, Processor, unsupported_fields_tests};
         use pretty_assertions::assert_eq;
 
         #[test]
@@ -133,7 +131,10 @@ mod test {
                     }
                 } else {
                     assert_eq!(
-                        Pipeline::parse(&configuration).unwrap_err().root_cause().to_string(),
+                        Pipeline::parse(&configuration)
+                            .unwrap_err()
+                            .root_cause()
+                            .to_string(),
                         format!("language '{lang}' not currently supported in scripts")
                     );
                 }
@@ -148,7 +149,10 @@ mod test {
                 "#;
 
             assert_eq!(
-                Pipeline::parse(configuration).unwrap_err().root_cause().to_string(),
+                Pipeline::parse(configuration)
+                    .unwrap_err()
+                    .root_cause()
+                    .to_string(),
                 format!("'id' or 'source' must be specified")
             );
         }

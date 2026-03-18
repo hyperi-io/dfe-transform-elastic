@@ -65,16 +65,12 @@ pub fn parse_uri(input: &str) -> ParseResult<'_, UriParts<'_>> {
     let rest = &rest[3..];
 
     // Authority: up to first '/', '?', '#', or end.
-    let auth_end = rest
-        .find(['/', '?', '#'])
-        .unwrap_or(rest.len());
+    let auth_end = rest.find(['/', '?', '#']).unwrap_or(rest.len());
     let authority = &rest[..auth_end];
     let rest = &rest[auth_end..];
 
     // Path: up to '?', '#', or end.
-    let path_end = rest
-        .find(['?', '#'])
-        .unwrap_or(rest.len());
+    let path_end = rest.find(['?', '#']).unwrap_or(rest.len());
     let path = &rest[..path_end];
     let rest = &rest[path_end..];
 
@@ -347,8 +343,7 @@ mod tests {
 
     #[test]
     fn uuid_basic() {
-        let (rem, u) =
-            parse_uuid("550e8400-e29b-41d4-a716-446655440000 rest").unwrap();
+        let (rem, u) = parse_uuid("550e8400-e29b-41d4-a716-446655440000 rest").unwrap();
         assert_eq!(u, "550e8400-e29b-41d4-a716-446655440000");
         assert_eq!(rem, " rest");
     }

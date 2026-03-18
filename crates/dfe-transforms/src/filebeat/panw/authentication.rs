@@ -17,7 +17,7 @@ impl Transform for Authentication {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+                let csv_str = csv_str.as_str();
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -226,55 +226,91 @@ impl Transform for Authentication {
 
         // TODO: conditional: ctx._temp_?.user != null && ctx._temp_.user != ''
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            event.append("source.user.name", event.get("_temp_.user").cloned().unwrap_or(Value::Null))?;
-            Ok(())
-        })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append(
+                    "source.user.name",
+                    event.get("_temp_.user").cloned().unwrap_or(Value::Null),
+                )?;
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx.panw?.panos?.normalize_user != null && ctx.panw.panos.normalize_user != ''
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            event.append("source.user.name", event.get("panw.panos.normalize_user").cloned().unwrap_or(Value::Null))?;
-            Ok(())
-        })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append(
+                    "source.user.name",
+                    event
+                        .get("panw.panos.normalize_user")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+                Ok(())
+            })();
         }
 
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("authentication"))?;
+        event.append("event.category", json!("authentication"))?;
 
         event.set("event.outcome", json!("success"))?;
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("observer.hostname", event.get("panw.panos.device_name").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "observer.hostname",
+                event
+                    .get("panw.panos.device_name")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("rule.uuid", event.get("panw.panos.rule_uuid").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "rule.uuid",
+                event
+                    .get("panw.panos.rule_uuid")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("source.ip", event.get("panw.panos.source.ip").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "source.ip",
+                event
+                    .get("panw.panos.source.ip")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.user", event.get("_temp_.user").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.user",
+                event.get("_temp_.user").cloned().unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-        event.set("panw.panos.user_agent", event.get("_temp_.user_agent").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "panw.panos.user_agent",
+                event
+                    .get("_temp_.user_agent")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
             Ok(())
         })();
 

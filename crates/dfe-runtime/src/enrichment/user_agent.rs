@@ -4,13 +4,37 @@
 //! User Agent string parsing and enrichment.
 //!
 //! Extracts browser name, version, OS, and device information from
-//! User-Agent strings using regex patterns.
+//! User-Agent strings using pre-compiled regex patterns.
+
+use std::sync::OnceLock;
 
 use regex::Regex;
 use serde_json::json;
 
 use crate::error::{Result, TransformError};
 use crate::event::Event;
+
+// Pre-compiled regexes — compiled once on first use, reused for all events.
+macro_rules! static_regex {
+    ($name:ident, $pattern:expr) => {
+        fn $name() -> &'static Regex {
+            static RE: OnceLock<Regex> = OnceLock::new();
+            RE.get_or_init(|| Regex::new($pattern).expect(concat!("invalid regex: ", $pattern)))
+        }
+    };
+}
+
+static_regex!(re_edge, r"(?i)Edg(?:e|A|iOS)?/(\d+[\d.]*)");
+static_regex!(re_opera, r"(?i)OPR/(\d+[\d.]*)");
+static_regex!(re_firefox, r"(?i)Firefox/(\d+[\d.]*)");
+static_regex!(re_chrome, r"(?i)(?:Chrome|CriOS)/(\d+[\d.]*)");
+static_regex!(re_safari, r"(?i)(?:Version/(\d+[\d.]*).*)?Safari/");
+static_regex!(re_msie, r"MSIE (\d+[\d.]*)");
+static_regex!(re_trident_rv, r"rv:(\d+[\d.]*)");
+static_regex!(re_windows_nt, r"(?i)Windows NT (\d+\.\d+)");
+static_regex!(re_mac_osx, r"(?i)Mac OS X (\d+[._\d]*)");
+static_regex!(re_android, r"(?i)Android (\d+[\d.]*)");
+static_regex!(re_ios_version, r"(?i)OS (\d+[_\d]*)");
 
 /// Parsed User Agent result.
 #[derive(Debug, Clone, Default)]
@@ -27,60 +51,36 @@ pub fn parse(ua: &str) -> UserAgentResult {
     let mut result = UserAgentResult::default();
 
     // Browser detection (ordered by specificity)
-    if let Some(caps) = Regex::new(r"(?i)Edg(?:e|A|iOS)?/(\d+[\d.]*)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    if let Some(caps) = re_edge().captures(ua) {
         result.name = Some("Edge".into());
         result.version = caps.get(1).map(|m| m.as_str().into());
-    } else if let Some(caps) = Regex::new(r"(?i)OPR/(\d+[\d.]*)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    } else if let Some(caps) = re_opera().captures(ua) {
         result.name = Some("Opera".into());
         result.version = caps.get(1).map(|m| m.as_str().into());
-    } else if let Some(caps) = Regex::new(r"(?i)Firefox/(\d+[\d.]*)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    } else if let Some(caps) = re_firefox().captures(ua) {
         result.name = Some("Firefox".into());
         result.version = caps.get(1).map(|m| m.as_str().into());
-    } else if let Some(caps) = Regex::new(r"(?i)(?:Chrome|CriOS)/(\d+[\d.]*)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    } else if let Some(caps) = re_chrome().captures(ua) {
         if !ua.contains("Edg") && !ua.contains("OPR") {
             result.name = Some("Chrome".into());
             result.version = caps.get(1).map(|m| m.as_str().into());
         }
-    } else if let Some(caps) = Regex::new(r"(?i)(?:Version/(\d+[\d.]*).*)?Safari/")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    } else if let Some(caps) = re_safari().captures(ua) {
         if !ua.contains("Chrome") && !ua.contains("CriOS") {
             result.name = Some("Safari".into());
             result.version = caps.get(1).map(|m| m.as_str().into());
         }
     } else if ua.contains("MSIE") || ua.contains("Trident") {
         result.name = Some("IE".into());
-        if let Some(caps) = Regex::new(r"MSIE (\d+[\d.]*)")
-            .ok()
-            .and_then(|r| r.captures(ua))
-        {
+        if let Some(caps) = re_msie().captures(ua) {
             result.version = caps.get(1).map(|m| m.as_str().into());
-        } else if let Some(caps) = Regex::new(r"rv:(\d+[\d.]*)")
-            .ok()
-            .and_then(|r| r.captures(ua))
-        {
+        } else if let Some(caps) = re_trident_rv().captures(ua) {
             result.version = caps.get(1).map(|m| m.as_str().into());
         }
     }
 
     // OS detection
-    if let Some(caps) = Regex::new(r"(?i)Windows NT (\d+\.\d+)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    if let Some(caps) = re_windows_nt().captures(ua) {
         result.os_name = Some("Windows".into());
         let nt_version = caps.get(1).map(|m| m.as_str()).unwrap_or("");
         result.os_version = Some(match nt_version {
@@ -92,24 +92,15 @@ pub fn parse(ua: &str) -> UserAgentResult {
             "5.1" => "XP".into(),
             other => other.into(),
         });
-    } else if let Some(caps) = Regex::new(r"(?i)Mac OS X (\d+[._\d]*)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    } else if let Some(caps) = re_mac_osx().captures(ua) {
         result.os_name = Some("Mac OS X".into());
         result.os_version = caps.get(1).map(|m| m.as_str().replace('_', "."));
-    } else if let Some(caps) = Regex::new(r"(?i)Android (\d+[\d.]*)")
-        .ok()
-        .and_then(|r| r.captures(ua))
-    {
+    } else if let Some(caps) = re_android().captures(ua) {
         result.os_name = Some("Android".into());
         result.os_version = caps.get(1).map(|m| m.as_str().into());
     } else if ua.contains("iPhone") || ua.contains("iPad") || ua.contains("iPod") {
         result.os_name = Some("iOS".into());
-        if let Some(caps) = Regex::new(r"(?i)OS (\d+[_\d]*)")
-            .ok()
-            .and_then(|r| r.captures(ua))
-        {
+        if let Some(caps) = re_ios_version().captures(ua) {
             result.os_version = caps.get(1).map(|m| m.as_str().replace('_', "."));
         }
     } else if ua.contains("Linux") {
@@ -147,7 +138,7 @@ pub fn enrich(
         None => {
             return Err(TransformError::FieldNotFound {
                 path: ua_field.into(),
-            })
+            });
         }
     };
 
@@ -184,7 +175,9 @@ mod tests {
 
     #[test]
     fn chrome_macos() {
-        let ua = parse("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36");
+        let ua = parse(
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+        );
         assert_eq!(ua.name.as_deref(), Some("Chrome"));
         assert_eq!(ua.version.as_deref(), Some("51.0.2704.103"));
         assert_eq!(ua.os_name.as_deref(), Some("Mac OS X"));
@@ -204,7 +197,9 @@ mod tests {
 
     #[test]
     fn safari_iphone() {
-        let ua = parse("Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1");
+        let ua = parse(
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1",
+        );
         assert_eq!(ua.name.as_deref(), Some("Safari"));
         assert_eq!(ua.version.as_deref(), Some("14.1.1"));
         assert_eq!(ua.os_name.as_deref(), Some("iOS"));
@@ -213,14 +208,18 @@ mod tests {
 
     #[test]
     fn edge_windows() {
-        let ua = parse("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59");
+        let ua = parse(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59",
+        );
         assert_eq!(ua.name.as_deref(), Some("Edge"));
         assert_eq!(ua.version.as_deref(), Some("91.0.864.59"));
     }
 
     #[test]
     fn android_chrome() {
-        let ua = parse("Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36");
+        let ua = parse(
+            "Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
+        );
         assert_eq!(ua.name.as_deref(), Some("Chrome"));
         assert_eq!(ua.os_name.as_deref(), Some("Android"));
         assert_eq!(ua.os_version.as_deref(), Some("11"));

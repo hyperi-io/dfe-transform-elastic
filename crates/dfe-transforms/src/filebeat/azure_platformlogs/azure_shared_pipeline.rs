@@ -25,7 +25,7 @@ impl Transform for AzureSharedPipeline {
             // NAMESPACE = .+
             // RULE = .+
             if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
+                let input = input.as_str();
                 // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
                 let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}")).unwrap();
@@ -43,163 +43,169 @@ impl Transform for AzureSharedPipeline {
 
         // TODO: conditional: ctx.azure?.subscription_id == null
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+/([A-Za-z])\w+.
-            // NAME = ((?!AUTHORIZATIONRULES).)*$
-            // GROUPID = .+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-                // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+/([A-Za-z])\w+.
+                // NAME = ((?!AUTHORIZATIONRULES).)*$
+                // GROUPID = .+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
                         }
                     }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
                 }
-                // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-            }
-            Ok(())
-        })();
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx.azure?.subscription_id == null
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            // NAME = .+
-            // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
-            // GROUPID = .+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-                // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                // NAME = .+
+                // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
+                // GROUPID = .+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
                         }
                     }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
                 }
-                // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}/providers/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
-            }
-            Ok(())
-        })();
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx.azure?.subscription_id == null
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // PROVIDER = .+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-                // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/providers/%{PROVIDER:azure.resource.provider}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                // Pattern definitions for grok
+                // PROVIDER = .+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex(
+                        "/providers/%{PROVIDER:azure.resource.provider}",
+                    ))
+                    .unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
                         }
                     }
+                    // Additional grok pattern 1: /PROVIDERS/%{PROVIDER:azure.resource.provider}
                 }
-                // Additional grok pattern 1: /PROVIDERS/%{PROVIDER:azure.resource.provider}
-            }
-            Ok(())
-        })();
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx.azure?.subscription_id == null
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-                // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+\/([A-Za-z][^\/])\w+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
                         }
                     }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/providers/%{PROVIDERNAME:azure.resource.provider}
                 }
-                // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/providers/%{PROVIDERNAME:azure.resource.provider}
-            }
-            Ok(())
-        })();
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx.azure?.subscription_id == null
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            // GROUPID = .+
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-                // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                // GROUPID = .+
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}")).unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
                         }
                     }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}
                 }
-                // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}/resourceGroups/%{GROUPID:azure.resource.group}
-            }
-            Ok(())
-        })();
+                Ok(())
+            })();
         }
 
         // TODO: conditional: ctx.azure?.subscription_id == null
         {
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
-            if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
-            let input = input.as_str();
-                // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                // Pattern definitions for grok
+                // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+                if let Some(input) = event.get_str("azure.resource_id").map(String::from) {
+                    let input = input.as_str();
+                    // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
+                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                    let grok_re = regex::Regex::new(&grok_to_regex(
+                        "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}",
+                    ))
+                    .unwrap();
+                    if let Some(caps) = grok_re.captures(input) {
+                        for name in grok_re.capture_names().flatten() {
+                            if let Some(m) = caps.name(name) {
+                                event.set(name, m.as_str())?;
+                            }
                         }
                     }
+                    // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}
                 }
-                // Additional grok pattern 1: /subscriptions/%{SUBID:azure.subscription_id}
-            }
-            Ok(())
-        })();
+                Ok(())
+            })();
         }
 
-            if event.has("azure.resource_id") {
-                event.rename("azure.resource_id", "azure.resource.id")?;
-            }
+        if event.has("azure.resource_id") {
+            event.rename("azure.resource_id", "azure.resource.id")?;
+        }
 
         if event.has("event.outcome") {
             if let Some(s) = event.get_str("event.outcome").map(String::from) {
-            let s = s.as_str();
+                let s = s.as_str();
                 let lowered = s.to_lowercase();
                 event.set("event.outcome", lowered)?;
             }

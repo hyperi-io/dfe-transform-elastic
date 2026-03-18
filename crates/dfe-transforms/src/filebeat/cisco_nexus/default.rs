@@ -38,7 +38,7 @@ impl Transform for Default {
             // NEXUS_BODY = (?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description}
             // NEXUS_TIMESTAMP = %{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}
             if let Some(input) = event.get_str("event.original").map(String::from) {
-            let input = input.as_str();
+                let input = input.as_str();
                 // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}%{NEXUS_BODY}$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
                 let grok_re = regex::Regex::new(&grok_to_regex("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}%{NEXUS_BODY}$")).unwrap();
@@ -67,8 +67,11 @@ impl Transform for Default {
 
         // TODO: conditional: ctx.cisco_nexus?.log?.syslog_time != null && ctx.cisco_nexus.log.syslog_time != ''
         {
-            if let Some(date_str) = event.get_str("cisco_nexus.log.syslog_time").map(String::from) {
-            let date_str = date_str.as_str();
+            if let Some(date_str) = event
+                .get_str("cisco_nexus.log.syslog_time")
+                .map(String::from)
+            {
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
@@ -93,7 +96,7 @@ impl Transform for Default {
         // TODO: conditional: ctx.temp?.syslog_timestamp != null
         {
             if let Some(date_str) = event.get_str("temp.syslog_timestamp").map(String::from) {
-            let date_str = date_str.as_str();
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
@@ -117,13 +120,20 @@ impl Transform for Default {
 
         // TODO: conditional: ctx.temp?.timestamp == null && ctx.temp?.syslog_timestamp != null && ctx.cisco_nexus?.log?.timezone != null
         {
-        event.set("temp.timestamp", json!(format!("{} {}", event.get_str("temp.syslog_timestamp").unwrap_or(""), event.get_str("cisco_nexus.log.timezone").unwrap_or(""))))?;
+            event.set(
+                "temp.timestamp",
+                json!(format!(
+                    "{} {}",
+                    event.get_str("temp.syslog_timestamp").unwrap_or(""),
+                    event.get_str("cisco_nexus.log.timezone").unwrap_or("")
+                )),
+            )?;
         }
 
         // TODO: conditional: ctx.temp?.timestamp != null && ctx.temp.timestamp != '' && ((ctx.event?.timezone == null) || (ctx.event?.timezone != null && (ctx.cisco_nexus?.log?.timezone != null && ctx.cisco_nexus.log.timezone != '')))
         {
             if let Some(date_str) = event.get_str("temp.timestamp").map(String::from) {
-            let date_str = date_str.as_str();
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
@@ -184,7 +194,7 @@ impl Transform for Default {
         // TODO: conditional: ctx.temp?.timestamp != null && ctx.temp.timestamp != '' && ctx.event?.timezone != null && (ctx.cisco_nexus.log.timezone == null || ctx.cisco_nexus.log.timezone == '')
         {
             if let Some(date_str) = event.get_str("temp.timestamp").map(String::from) {
-            let date_str = date_str.as_str();
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
@@ -245,7 +255,7 @@ impl Transform for Default {
         // TODO: conditional: ctx.temp?.timestamp != null && ctx.temp.timestamp != '' && ((ctx.event?.timezone == null) || (ctx.event?.timezone != null && (ctx.cisco_nexus?.log?.timezone != null && ctx.cisco_nexus.log.timezone != '')))
         {
             if let Some(date_str) = event.get_str("temp.timestamp").map(String::from) {
-            let date_str = date_str.as_str();
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
@@ -324,7 +334,7 @@ impl Transform for Default {
         // TODO: conditional: ctx.temp?.timestamp != null && ctx.temp.timestamp != '' && ctx.event?.timezone != null && (ctx.cisco_nexus.log.timezone == null || ctx.cisco_nexus.log.timezone == '')
         {
             if let Some(date_str) = event.get_str("temp.timestamp").map(String::from) {
-            let date_str = date_str.as_str();
+                let date_str = date_str.as_str();
                 // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
                 // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
@@ -400,34 +410,85 @@ impl Transform for Default {
             }
         }
 
-        event.set("log.syslog.priority", event.get("cisco_nexus.log.priority_number").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "log.syslog.priority",
+            event
+                .get("cisco_nexus.log.priority_number")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
-        event.set("observer.name", event.get("cisco_nexus.log.switch_name").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "observer.name",
+            event
+                .get("cisco_nexus.log.switch_name")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
         // TODO: conditional: ctx.cisco_nexus?.log?.ip_address != null
         {
-            event.append("observer.ip", event.get("cisco_nexus.log.ip_address").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "observer.ip",
+                event
+                    .get("cisco_nexus.log.ip_address")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.cisco_nexus?.log?.ip_address != null
         {
-            event.append("related.ip", event.get("cisco_nexus.log.ip_address").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "related.ip",
+                event
+                    .get("cisco_nexus.log.ip_address")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
-        event.set("event.code", event.get("cisco_nexus.log.type").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "event.code",
+            event
+                .get("cisco_nexus.log.type")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
-        event.set("event.severity", event.get("cisco_nexus.log.severity").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "event.severity",
+            event
+                .get("cisco_nexus.log.severity")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
-        event.set("log.syslog.severity.code", event.get("cisco_nexus.log.severity").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "log.syslog.severity.code",
+            event
+                .get("cisco_nexus.log.severity")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
-        event.set("event.sequence", event.get("cisco_nexus.log.sequence_number").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "event.sequence",
+            event
+                .get("cisco_nexus.log.sequence_number")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
         // TODO: conditional: ctx.event?.severity != null
         {
             // Painless script
             // Source: def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}"#)?;
+            painless_exec(
+                event,
+                r#"def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}"#,
+            )?;
         }
 
         // TODO: conditional: ctx.cisco_nexus?.log?.priority_number != null && ctx.event?.severity != null
@@ -435,285 +496,303 @@ impl Transform for Default {
             // Painless script
             // Source: ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n"#)?;
+            painless_exec(
+                event,
+                r#"ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n"#,
+            )?;
         }
 
         if event.has("cisco_nexus.log.description") {
-            if let Some(s) = event.get_str("cisco_nexus.log.description").map(String::from) {
-            let s = s.as_str();
+            if let Some(s) = event
+                .get_str("cisco_nexus.log.description")
+                .map(String::from)
+            {
+                let s = s.as_str();
                 let trimmed = s.trim().to_string();
                 event.set("cisco_nexus.log.description", trimmed)?;
             }
         }
 
-        event.set("message", event.get("cisco_nexus.log.description").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "message",
+            event
+                .get("cisco_nexus.log.description")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
         // TODO: conditional: ctx.event?.code != null && ['IF_DOWN_ADMIN_DOWN','IF_ADMIN_UP','SPEED','IF_DUPLEX','IF_RX_FLOW_CONTROL','IF_TX_FLOW_CONTROL','IF_UP','IF_XCVR_WARNING','VSHD_SYSLOG_CONFIG_I','DETECT_MULTIPLE_PEERS','SYSTEM_MSG','UPDOWN','CFGWRITE_STARTED','CFGWRITE_DONE','INVAL_IP','L2FM_MAC_MOVE2','DUPLEX_MISMATCH','NATIVE_VLAN_MISMATCH','LOGIN_SUCCESS','LOGOUT','LOGOUT_C6K','L3_VPC_UNEQUAL_WEIGHT','AAA_ACCOUNTING_MESSAGE','TACACS_WARNING','DUP_HOSTS','NF_PARITY_ERROR','EXCESSIVE_PARITY_ERROR','LINEPROTO','THRESHOLD_VIOLATION'].contains(ctx.event.code.toUpperCase())
         {
             // Begin nested pipeline: "pipeline_extract_message"
             // TODO: conditional: ['IF_DOWN_ADMIN_DOWN','IF_ADMIN_UP','SPEED','IF_DUPLEX','IF_RX_FLOW_CONTROL','IF_TX_FLOW_CONTROL','IF_UP','IF_XCVR_WARNING'].contains(ctx.event?.code.toUpperCase())
             {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-            if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$
-            // Additional grok pattern 2: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$
-            // Additional grok pattern 3: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$
-            // Additional grok pattern 4: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Receive Flow Control state changed to %{DATA:cisco_nexus.log.operational.receive_flow_control_state}$
-            // Additional grok pattern 5: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Transmit Flow Control state changed to %{DATA:cisco_nexus.log.operational.transmit_flow_control_state}$
-            // Additional grok pattern 6: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, %{GREEDYDATA}$
-            }
-                Ok(())
-            })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_str("message").map(String::from) {
+                        let input = input.as_str();
+                        // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
+                        // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                        let grok_re = regex::Regex::new(&grok_to_regex("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$")).unwrap();
+                        if let Some(caps) = grok_re.captures(input) {
+                            for name in grok_re.capture_names().flatten() {
+                                if let Some(m) = caps.name(name) {
+                                    event.set(name, m.as_str())?;
+                                }
+                            }
+                        }
+                        // Additional grok pattern 1: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$
+                        // Additional grok pattern 2: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$
+                        // Additional grok pattern 3: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$
+                        // Additional grok pattern 4: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Receive Flow Control state changed to %{DATA:cisco_nexus.log.operational.receive_flow_control_state}$
+                        // Additional grok pattern 5: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Transmit Flow Control state changed to %{DATA:cisco_nexus.log.operational.transmit_flow_control_state}$
+                        // Additional grok pattern 6: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, %{GREEDYDATA}$
+                    }
+                    Ok(())
+                })();
             }
             // TODO: conditional: ['VSHD_SYSLOG_CONFIG_I','DETECT_MULTIPLE_PEERS','UPDOWN','CFGWRITE_STARTED','LINEPROTO'].contains(ctx.event?.code.toUpperCase())
             {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-            if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: ^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$
-            // Additional grok pattern 2: ^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$
-            // Additional grok pattern 3: ^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$
-            // Additional grok pattern 4: ^%{DATA}(PID %{NUMBER:process.pid:long})%{GREEDYDATA}$
-            }
-                Ok(())
-            })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_str("message").map(String::from) {
+                        let input = input.as_str();
+                        // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
+                        // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                        let grok_re = regex::Regex::new(&grok_to_regex("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$")).unwrap();
+                        if let Some(caps) = grok_re.captures(input) {
+                            for name in grok_re.capture_names().flatten() {
+                                if let Some(m) = caps.name(name) {
+                                    event.set(name, m.as_str())?;
+                                }
+                            }
+                        }
+                        // Additional grok pattern 1: ^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$
+                        // Additional grok pattern 2: ^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$
+                        // Additional grok pattern 3: ^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$
+                        // Additional grok pattern 4: ^%{DATA}(PID %{NUMBER:process.pid:long})%{GREEDYDATA}$
+                    }
+                    Ok(())
+                })();
             }
             // TODO: conditional: ['SYSTEM_MSG'].contains(ctx.event?.code.toUpperCase())
             {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-            if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: ^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
-            // Additional grok pattern 2: ^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
-            // Additional grok pattern 3: ^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
-            // Additional grok pattern 4: ^%{DATA} : %{GREEDYDATA:temp.message2}$
-            }
-                Ok(())
-            })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_str("message").map(String::from) {
+                        let input = input.as_str();
+                        // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
+                        // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                        let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$")).unwrap();
+                        if let Some(caps) = grok_re.captures(input) {
+                            for name in grok_re.capture_names().flatten() {
+                                if let Some(m) = caps.name(name) {
+                                    event.set(name, m.as_str())?;
+                                }
+                            }
+                        }
+                        // Additional grok pattern 1: ^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
+                        // Additional grok pattern 2: ^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
+                        // Additional grok pattern 3: ^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
+                        // Additional grok pattern 4: ^%{DATA} : %{GREEDYDATA:temp.message2}$
+                    }
+                    Ok(())
+                })();
             }
             // TODO: conditional: ['INVAL_IP','L2FM_MAC_MOVE2','DUPLEX_MISMATCH','NATIVE_VLAN_MISMATCH','THRESHOLD_VIOLATION'].contains(ctx.event?.code.toUpperCase())
             {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-            if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: ^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$
-            // Additional grok pattern 2: ^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$
-            // Additional grok pattern 3: ^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$
-            }
-                Ok(())
-            })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_str("message").map(String::from) {
+                        let input = input.as_str();
+                        // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
+                        // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                        let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$")).unwrap();
+                        if let Some(caps) = grok_re.captures(input) {
+                            for name in grok_re.capture_names().flatten() {
+                                if let Some(m) = caps.name(name) {
+                                    event.set(name, m.as_str())?;
+                                }
+                            }
+                        }
+                        // Additional grok pattern 1: ^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$
+                        // Additional grok pattern 2: ^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$
+                        // Additional grok pattern 3: ^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$
+                    }
+                    Ok(())
+                })();
             }
             // TODO: conditional: ['LOGIN_SUCCESS','LOGOUT','LOGOUT_C6K'].contains(ctx.event?.code.toUpperCase())
             {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_str("message").map(String::from) {
+                        let input = input.as_str();
+                        // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
+                        // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                        let grok_re = regex::Regex::new(&grok_to_regex("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$")).unwrap();
+                        if let Some(caps) = grok_re.captures(input) {
+                            for name in grok_re.capture_names().flatten() {
+                                if let Some(m) = caps.name(name) {
+                                    event.set(name, m.as_str())?;
+                                }
+                            }
+                        }
+                        // Additional grok pattern 1: ^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$
+                    }
+                    Ok(())
+                })();
+            }
+            if event.has("source.mac") {
+                if let Some(s) = event.get_str("source.mac").map(String::from) {
+                    let s = s.as_str();
+                    let re = regex::Regex::new("[.]").unwrap();
+                    let replaced = re.replace_all(s, "").into_owned();
+                    event.set("source.mac", replaced)?;
+                }
+            }
+            if event.has("source.mac") {
+                if let Some(s) = event.get_str("source.mac").map(String::from) {
+                    let s = s.as_str();
+                    let re = regex::Regex::new("(..)(?!$)").unwrap();
+                    let replaced = re.replace_all(s, "$1-").into_owned();
+                    event.set("source.mac", replaced)?;
+                }
+            }
+            if event.has("source.mac") {
+                if let Some(s) = event.get_str("source.mac").map(String::from) {
+                    let s = s.as_str();
+                    let uppered = s.to_uppercase();
+                    event.set("source.mac", uppered)?;
+                }
+            }
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
-            // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$")).unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-            for name in grok_re.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
-            }
-            }
-            }
-            // Additional grok pattern 1: ^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$
-            }
+                if event.has("temp.message") {
+                    if let Some(kv_str) = event.get_str("temp.message").map(String::from) {
+                        let kv_str = kv_str.as_str();
+                        for pair in kv_str.split("\\s+") {
+                            if let Some((key, value)) = pair.split_once("=") {
+                                if !key.is_empty() {
+                                    event.set(&format!("temp.{}", key), value)?;
+                                }
+                            }
+                        }
+                    }
+                }
                 Ok(())
             })();
-            }
-            if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-            let s = s.as_str();
-            let re = regex::Regex::new("[.]").unwrap();
-            let replaced = re.replace_all(s, "").into_owned();
-            event.set("source.mac", replaced)?;
-            }
-            }
-            if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-            let s = s.as_str();
-            let re = regex::Regex::new("(..)(?!$)").unwrap();
-            let replaced = re.replace_all(s, "$1-").into_owned();
-            event.set("source.mac", replaced)?;
-            }
-            }
-            if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-            let s = s.as_str();
-            let uppered = s.to_uppercase();
-            event.set("source.mac", uppered)?;
-            }
-            }
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            if event.has("temp.message") {
-            if let Some(kv_str) = event.get_str("temp.message").map(String::from) {
-            let kv_str = kv_str.as_str();
-            for pair in kv_str.split("\\s+") {
-            if let Some((key, value)) = pair.split_once("=") {
-            if !key.is_empty() {
-            event.set(&format!("temp.{}", key), value)?;
-            }
-            }
-            }
-            }
-            }
-                Ok(())
-            })();
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-            if event.has("temp.message2") {
-            if let Some(kv_str) = event.get_str("temp.message2").map(String::from) {
-            let kv_str = kv_str.as_str();
-            for pair in kv_str.split(" ; ") {
-            if let Some((key, value)) = pair.split_once("=") {
-            if !key.is_empty() {
-            event.set(&format!("temp.{}", key), value)?;
-            }
-            }
-            }
-            }
-            }
+                if event.has("temp.message2") {
+                    if let Some(kv_str) = event.get_str("temp.message2").map(String::from) {
+                        let kv_str = kv_str.as_str();
+                        for pair in kv_str.split(" ; ") {
+                            if let Some((key, value)) = pair.split_once("=") {
+                                if !key.is_empty() {
+                                    event.set(&format!("temp.{}", key), value)?;
+                                }
+                            }
+                        }
+                    }
+                }
                 Ok(())
             })();
             if event.has("temp.logname") {
-            event.rename("temp.logname", "cisco_nexus.log.logname")?;
+                event.rename("temp.logname", "cisco_nexus.log.logname")?;
             }
             if event.has("temp.uid") {
-            event.rename("temp.uid", "cisco_nexus.log.uid")?;
+                event.rename("temp.uid", "cisco_nexus.log.uid")?;
             }
             if event.has("temp.euid") {
-            event.rename("temp.euid", "cisco_nexus.log.euid")?;
+                event.rename("temp.euid", "cisco_nexus.log.euid")?;
             }
             if event.has("temp.tty") {
-            event.rename("temp.tty", "cisco_nexus.log.tty")?;
+                event.rename("temp.tty", "cisco_nexus.log.tty")?;
             }
             if event.has("temp.ruser") {
-            event.rename("temp.ruser", "cisco_nexus.log.ruser")?;
+                event.rename("temp.ruser", "cisco_nexus.log.ruser")?;
             }
             if event.has("temp.rhost") {
-            event.rename("temp.rhost", "cisco_nexus.log.rhost")?;
+                event.rename("temp.rhost", "cisco_nexus.log.rhost")?;
             }
             if event.has("temp.user") {
-            event.rename("temp.user", "user.name")?;
+                event.rename("temp.user", "user.name")?;
             }
             if event.has("temp.COMMAND") {
-            event.rename("temp.COMMAND", "cisco_nexus.log.command")?;
+                event.rename("temp.COMMAND", "cisco_nexus.log.command")?;
             }
             if event.has("temp.PWD") {
-            event.rename("temp.PWD", "cisco_nexus.log.pwd")?;
+                event.rename("temp.PWD", "cisco_nexus.log.pwd")?;
             }
             if event.has("temp.TTY") {
-            event.rename("temp.TTY", "cisco_nexus.log.tty")?;
+                event.rename("temp.TTY", "cisco_nexus.log.tty")?;
             }
             if event.has("temp.USER") {
-            event.rename("temp.USER", "user.name")?;
+                event.rename("temp.USER", "user.name")?;
             }
             if event.has("network.protocol") {
-            if let Some(s) = event.get_str("network.protocol").map(String::from) {
-            let s = s.as_str();
-            let lowered = s.to_lowercase();
-            event.set("network.protocol", lowered)?;
-            }
+                if let Some(s) = event.get_str("network.protocol").map(String::from) {
+                    let s = s.as_str();
+                    let lowered = s.to_lowercase();
+                    event.set("network.protocol", lowered)?;
+                }
             }
             // TODO: conditional: ctx.cisco_nexus?.log?.interface?.name != null || ctx.cisco_nexus?.log?.network?.ingress_interface != null || ctx.cisco_nexus?.log?.network?.egress_interface != null || ['L2FM_MAC_MOVE2','L3_VPC_UNEQUAL_WEIGHT','AAA_ACCOUNTING_MESSAGE','DUP_HOSTS','NF_PARITY_ERROR','EXCESSIVE_PARITY_ERROR'].contains(ctx.event?.code.toUpperCase()) || ctx.message.toLowerCase().contains('kex_exchange_identification')
             {
-            event.set("event.category", json!(["network"]))?;
+                event.set("event.category", json!(["network"]))?;
             }
             // TODO: conditional: ctx.cisco_nexus?.log?.interface?.name != null || ctx.cisco_nexus?.log?.network?.ingress_interface != null || ctx.cisco_nexus?.log?.network?.egress_interface != null || ['VSHD_SYSLOG_CONFIG_I','L2FM_MAC_MOVE2','L3_VPC_UNEQUAL_WEIGHT','AAA_ACCOUNTING_MESSAGE','DUP_HOSTS','NF_PARITY_ERROR','EXCESSIVE_PARITY_ERROR'].contains(ctx.event?.code.toUpperCase())
             {
-            event.set("event.type", json!(["info"]))?;
+                event.set("event.type", json!(["info"]))?;
             }
             // TODO: conditional: ctx.event?.code == 'VSHD_SYSLOG_CONFIG_I'
             {
-            event.set("event.category", json!(["configuration"]))?;
+                event.set("event.category", json!(["configuration"]))?;
             }
             // TODO: conditional: ctx.event?.code == 'LOGIN_SUCCESS' || (ctx.event?.code == 'SYSTEM_MSG' && (ctx.message.toLowerCase().contains('authentication') || ctx.message.toLowerCase().contains('authentication failure') || ctx.message.toLowerCase().contains('login')))
             {
-            event.set("event.category", json!(["authentication"]))?;
+                event.set("event.category", json!(["authentication"]))?;
             }
             // TODO: conditional: ctx.event?.code == 'LOGIN_SUCCESS' || (ctx.event?.code == 'SYSTEM_MSG' && (ctx.message.toLowerCase().contains('authentication failed') || ctx.message.toLowerCase().contains('authentication failure') || ctx.message.toLowerCase().contains('login failed')))
             {
-            event.set("event.type", json!(["end"]))?;
+                event.set("event.type", json!(["end"]))?;
             }
             // TODO: conditional: ctx.message.toLowerCase().contains('kex_exchange_identification')
             {
-            event.set("event.type", json!(["connection"]))?;
+                event.set("event.type", json!(["connection"]))?;
             }
             // TODO: conditional: ctx.message.toLowerCase().contains('failed') || ctx.message.toLowerCase().contains('failure')
             {
-            event.set("event.outcome", json!("failure"))?;
+                event.set("event.outcome", json!("failure"))?;
             }
             // TODO: conditional: ctx.message.toLowerCase().contains('successful') || ctx.message.toLowerCase().contains('success') || ctx.event?.code == 'IF_ADMIN_UP'
             {
-            event.set("event.outcome", json!("success"))?;
+                event.set("event.outcome", json!("success"))?;
             }
             // TODO: conditional: ctx.source?.ip != null
             {
-            event.append("related.ip", event.get("source.ip").cloned().unwrap_or(Value::Null))?;
+                event.append(
+                    "related.ip",
+                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                )?;
             }
             // TODO: conditional: ctx.user?.name != null
             {
-            event.append("related.user", event.get("user.name").cloned().unwrap_or(Value::Null))?;
+                event.append(
+                    "related.user",
+                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                )?;
             }
             // End nested pipeline: "pipeline_extract_message"
         }
 
         // TODO: conditional: ctx.cisco_nexus?.log?.facility != null && ctx.cisco_nexus.log.facility.toLowerCase().contains('arp')
         {
-        event.set("network.protocol", json!("arp"))?;
+            event.set("network.protocol", json!("arp"))?;
         }
 
-            event.remove("_conf");
-            event.remove("temp");
+        event.remove("_conf");
+        event.remove("temp");
 
         // TODO: conditional: ctx.tags == null || !(ctx.tags.contains('preserve_duplicate_custom_fields'))
         {
@@ -732,14 +811,17 @@ impl Transform for Default {
             event.remove("event.original");
         }
 
-            // Painless script
-            // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(event, r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#)?;
+        // Painless script
+        // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
+        // TODO: Transpile Painless to Rust (2.2.3)
+        painless_exec(
+            event,
+            r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#,
+        )?;
 
         // TODO: conditional: ctx.error?.message != null
         {
-        event.set("event.kind", json!("pipeline_error"))?;
+            event.set("event.kind", json!("pipeline_error"))?;
         }
 
         Ok(TransformResult::Continue)

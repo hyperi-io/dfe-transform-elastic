@@ -66,7 +66,10 @@ mod test {
     fn plain_string() {
         let ts = TemplateString::from("Hello, World");
         let frags = ts.fragments();
-        assert_eq!(frags, vec![TemplateFragment::Literal("Hello, World".into())]);
+        assert_eq!(
+            frags,
+            vec![TemplateFragment::Literal("Hello, World".into())]
+        );
     }
 
     #[test]

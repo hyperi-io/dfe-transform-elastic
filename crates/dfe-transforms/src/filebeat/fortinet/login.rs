@@ -20,27 +20,48 @@ impl Transform for Login {
             event.set("event.action", json!("login"))?;
         }
 
-            event.append("event.category", json!("authentication"))?;
+        event.append("event.category", json!("authentication"))?;
 
         // TODO: conditional: ctx.source?.user?.name != null
         {
-        event.set("user.name", event.get("source.user.name ").cloned().unwrap_or(Value::Null))?;
+            event.set(
+                "user.name",
+                event
+                    .get("source.user.name ")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.fortinet?.firewall?.adminprof != null
         {
-            event.append("user.roles", event.get("fortinet.firewall.adminprof ").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "user.roles",
+                event
+                    .get("fortinet.firewall.adminprof ")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.fortinet?.firewall?.adminprof != null
         {
-            event.append("source.user.roles", event.get("fortinet.firewall.adminprof ").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "source.user.roles",
+                event
+                    .get("fortinet.firewall.adminprof ")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.fortinet?.firewall?.userfrom != null && ctx.fortinet.firewall.userfrom.startsWith('JSON(')
         {
-            if let Some(input) = event.get_str("fortinet.firewall.userfrom").map(String::from) {
-            let input = input.as_str();
+            if let Some(input) = event
+                .get_str("fortinet.firewall.userfrom")
+                .map(String::from)
+            {
+                let input = input.as_str();
                 let mut remaining = input;
                 if let Some(rest) = remaining.strip_prefix("JSON(") {
                     remaining = rest;
@@ -58,7 +79,7 @@ impl Transform for Login {
         // TODO: conditional: ctx.message != null && ctx.message.startsWith('user')
         {
             if let Some(input) = event.get_str("fortinet.firewall.desc").map(String::from) {
-            let input = input.as_str();
+                let input = input.as_str();
                 let mut remaining = input;
                 if let Some(rest) = remaining.strip_prefix("User login/logout ") {
                     remaining = rest;
@@ -70,7 +91,7 @@ impl Transform for Login {
         // TODO: conditional: ctx.message != null && ctx.message.startsWith('Login from ssh:')
         {
             if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
+                let input = input.as_str();
                 let mut remaining = input;
                 if let Some(rest) = remaining.strip_prefix("Login from ssh: ") {
                     remaining = rest;
@@ -103,7 +124,7 @@ impl Transform for Login {
         // TODO: conditional: ctx.message != null && ctx.message.startsWith('Administrator')
         {
             if let Some(input) = event.get_str("message").map(String::from) {
-            let input = input.as_str();
+                let input = input.as_str();
                 let mut remaining = input;
                 if let Some(pos) = remaining.find(" ") {
                     event.set("_tmp.user.roles", &remaining[..pos])?;
@@ -144,34 +165,46 @@ impl Transform for Login {
 
         // TODO: conditional: ctx.event?.outcome != null && ctx.event?.outcome.toLowerCase().startsWith('fail')
         {
-        event.set("event.outcome", json!("failure"))?;
+            event.set("event.outcome", json!("failure"))?;
         }
 
         // TODO: conditional: ctx.event?.outcome != null && ctx.event?.outcome.toLowerCase().startsWith('success')
         {
-        event.set("event.outcome", json!("success"))?;
+            event.set("event.outcome", json!("success"))?;
         }
 
-            if event.has("fortinet.firewall.log_id") {
-                event.rename("fortinet.firewall.log_id", "event.id")?;
-            }
+        if event.has("fortinet.firewall.log_id") {
+            event.rename("fortinet.firewall.log_id", "event.id")?;
+        }
 
-            if event.has("fortinet.firewall.pri") {
-                event.rename("fortinet.firewall.pri", "log.level")?;
-            }
+        if event.has("fortinet.firewall.pri") {
+            event.rename("fortinet.firewall.pri", "log.level")?;
+        }
 
-            if event.has("fortinet.firewall.device_id") {
-                event.rename("fortinet.firewall.device_id", "observer.serial_number")?;
-            }
-
-        // TODO: conditional: ctx._tmp?.user?.roles != null
-        {
-            event.append("user.roles", event.get("_tmp.user.roles ").cloned().unwrap_or(Value::Null))?;
+        if event.has("fortinet.firewall.device_id") {
+            event.rename("fortinet.firewall.device_id", "observer.serial_number")?;
         }
 
         // TODO: conditional: ctx._tmp?.user?.roles != null
         {
-            event.append("source.user.roles", event.get("_tmp.user.roles ").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "user.roles",
+                event
+                    .get("_tmp.user.roles ")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
+        }
+
+        // TODO: conditional: ctx._tmp?.user?.roles != null
+        {
+            event.append(
+                "source.user.roles",
+                event
+                    .get("_tmp.user.roles ")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         // TODO: conditional: ctx.source?.port != null
@@ -181,14 +214,30 @@ impl Transform for Login {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "source.port".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "source.port".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "source.port".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "source.port".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "source.port".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "source.port".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("source.port", converted)?;
             }
@@ -201,14 +250,30 @@ impl Transform for Login {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "fortinet.firewall.valid".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.valid".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "fortinet.firewall.valid".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "fortinet.firewall.valid".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "fortinet.firewall.valid".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "fortinet.firewall.valid".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("fortinet.firewall.valid", converted)?;
             }

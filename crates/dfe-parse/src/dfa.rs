@@ -16,8 +16,8 @@
 //! Layer 1 parsers. Use only for irreducibly complex patterns.
 
 use crate::error::{ParseError, ParseResult};
-use regex_automata::meta::Regex;
 use regex_automata::PatternID;
+use regex_automata::meta::Regex;
 use std::collections::HashMap;
 
 /// A DFA-backed parser for complex patterns with named capture groups.
@@ -34,9 +34,8 @@ impl DfaParser {
     ///
     /// The pattern should use named capture groups: `(?P<field>...)`.
     pub fn new(pattern: &str) -> Result<Self, ParseError> {
-        let regex = Regex::new(pattern).map_err(|e| {
-            ParseError::invalid(format!("failed to compile regex: {e}"))
-        })?;
+        let regex = Regex::new(pattern)
+            .map_err(|e| ParseError::invalid(format!("failed to compile regex: {e}")))?;
 
         let group_names: Vec<String> = regex
             .group_info()
@@ -44,10 +43,7 @@ impl DfaParser {
             .filter_map(|(_, _, name)| name.map(|n| n.to_string()))
             .collect();
 
-        Ok(Self {
-            regex,
-            group_names,
-        })
+        Ok(Self { regex, group_names })
     }
 
     /// Parse the input, returning captured fields as string slices.
@@ -61,7 +57,11 @@ impl DfaParser {
         if caps.is_match() {
             let mut fields = HashMap::new();
             for name in &self.group_names {
-                if let Some(group_index) = self.regex.group_info().to_index(PatternID::ZERO, name.as_str()) {
+                if let Some(group_index) = self
+                    .regex
+                    .group_info()
+                    .to_index(PatternID::ZERO, name.as_str())
+                {
                     if let Some(span) = caps.get_group(group_index) {
                         fields.insert(name.clone(), &input[span.start..span.end]);
                     }
@@ -86,7 +86,11 @@ impl DfaParser {
         if let Some(overall) = caps.get_match() {
             let mut fields = HashMap::new();
             for name in &self.group_names {
-                if let Some(group_index) = self.regex.group_info().to_index(PatternID::ZERO, name.as_str()) {
+                if let Some(group_index) = self
+                    .regex
+                    .group_info()
+                    .to_index(PatternID::ZERO, name.as_str())
+                {
                     if let Some(span) = caps.get_group(group_index) {
                         fields.insert(name.clone(), &input[span.start..span.end]);
                     }
@@ -144,8 +148,7 @@ mod tests {
 
     #[test]
     fn group_names_listed() {
-        let parser =
-            DfaParser::new(r"(?P<src>\S+):(?P<port>\d+)").unwrap();
+        let parser = DfaParser::new(r"(?P<src>\S+):(?P<port>\d+)").unwrap();
         let names = parser.group_names();
         assert!(names.contains(&"src".to_string()));
         assert!(names.contains(&"port".to_string()));
@@ -159,9 +162,7 @@ mod tests {
         )
         .unwrap();
 
-        let fields = parser
-            .parse("<134>Jan 15 10:30:00 webserver")
-            .unwrap();
+        let fields = parser.parse("<134>Jan 15 10:30:00 webserver").unwrap();
         assert_eq!(fields["priority"], "134");
         assert_eq!(fields["timestamp"], "Jan 15 10:30:00");
         assert_eq!(fields["hostname"], "webserver");
@@ -169,8 +170,7 @@ mod tests {
 
     #[test]
     fn optional_groups() {
-        let parser =
-            DfaParser::new(r"(?P<ip>\d+\.\d+\.\d+\.\d+)(?::(?P<port>\d+))?").unwrap();
+        let parser = DfaParser::new(r"(?P<ip>\d+\.\d+\.\d+\.\d+)(?::(?P<port>\d+))?").unwrap();
 
         // With port.
         let fields = parser.parse("10.0.0.1:8080").unwrap();

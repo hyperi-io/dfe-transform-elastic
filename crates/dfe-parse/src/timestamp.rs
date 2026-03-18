@@ -252,7 +252,12 @@ pub fn parse_iso8601_tz(input: &str) -> ParseResult<'_, i32> {
 // ── Helpers ──────────────────────────────────────────────────────────
 
 /// Parse `count` ASCII digits starting at `offset`, return as u32.
-fn parse_fixed_digits(bytes: &[u8], offset: usize, count: usize, context: &'static str) -> Result<u32, ParseError> {
+fn parse_fixed_digits(
+    bytes: &[u8],
+    offset: usize,
+    count: usize,
+    context: &'static str,
+) -> Result<u32, ParseError> {
     if offset + count > bytes.len() {
         return Err(ParseError::eof(context));
     }
@@ -271,7 +276,12 @@ fn parse_fixed_digits(bytes: &[u8], offset: usize, count: usize, context: &'stat
 }
 
 /// Expect a specific byte at a specific position.
-fn expect_at(bytes: &[u8], pos: usize, expected: u8, context: &'static str) -> Result<(), ParseError> {
+fn expect_at(
+    bytes: &[u8],
+    pos: usize,
+    expected: u8,
+    context: &'static str,
+) -> Result<(), ParseError> {
     if pos >= bytes.len() {
         return Err(ParseError::eof(context));
     }

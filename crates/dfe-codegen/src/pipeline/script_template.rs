@@ -67,7 +67,9 @@ fn raw_strings(values: &[Value]) -> Result<Value, FuncError> {
         [Value::Array(arr)] => arr
             .iter()
             .map(|item| match item {
-                Value::String(str) => Ok(format!("s'{str}'", str = str.replace('\'', "\\'")).into()),
+                Value::String(str) => {
+                    Ok(format!("s'{str}'", str = str.replace('\'', "\\'")).into())
+                }
                 other => Err(FuncError::Generic(format!(
                     "raw_strings only supports operating on arrays of string, found: {other:?}"
                 ))),
@@ -146,10 +148,17 @@ fn into_array(values: &[Value]) -> Result<Value, FuncError> {
 
 fn contains(values: &[Value]) -> Result<Value, FuncError> {
     match values {
-        [Value::Array(query), Value::Array(target)] => Ok(Value::Bool(query.iter().all(|item| target.contains(item)))),
+        [Value::Array(query), Value::Array(target)] => {
+            Ok(Value::Bool(query.iter().all(|item| target.contains(item))))
+        }
         [value, Value::Array(arr)] => Ok(Value::Bool(arr.iter().any(|item| item == value))),
-        [_, _] => Err(FuncError::Generic("contains second argument must be an array".into())),
-        [..] => Err(FuncError::ExactlyXArgs("contains takes only two arguments".into(), 2)),
+        [_, _] => Err(FuncError::Generic(
+            "contains second argument must be an array".into(),
+        )),
+        [..] => Err(FuncError::ExactlyXArgs(
+            "contains takes only two arguments".into(),
+            2,
+        )),
     }
 }
 
@@ -161,7 +170,10 @@ fn unquote(values: &[Value]) -> Result<Value, FuncError> {
     match values {
         [Value::String(str)] => Ok(Value::String(str.replace('"', ""))),
         [_] => Err(FuncError::UnableToConvertFromValue),
-        _ => Err(FuncError::ExactlyXArgs("escape takes a single argument".into(), 1)),
+        _ => Err(FuncError::ExactlyXArgs(
+            "escape takes a single argument".into(),
+            1,
+        )),
     }
 }
 
@@ -191,11 +203,16 @@ fn error(values: &[Value]) -> Result<Value, FuncError> {
 
 fn replace(values: &[Value]) -> Result<Value, FuncError> {
     match values {
-        [Value::String(find), Value::String(replace), Value::String(str)] => {
-            Ok(Value::String(str.replace(find, replace)))
-        }
+        [
+            Value::String(find),
+            Value::String(replace),
+            Value::String(str),
+        ] => Ok(Value::String(str.replace(find, replace))),
         [_, _, _] => Err(FuncError::UnableToConvertFromValue),
-        _ => Err(FuncError::ExactlyXArgs("replace takes three arguments".into(), 3)),
+        _ => Err(FuncError::ExactlyXArgs(
+            "replace takes three arguments".into(),
+            3,
+        )),
     }
 }
 
@@ -205,7 +222,10 @@ impl ScriptTemplate {
     pub fn render(text: impl Into<String>, context: impl Into<Value>) -> anyhow::Result<Self> {
         let mut template = gtmpl::Template::default();
         template.add_funcs(&[
-            ("is_array", is_array as fn(&[Value]) -> Result<Value, FuncError>),
+            (
+                "is_array",
+                is_array as fn(&[Value]) -> Result<Value, FuncError>,
+            ),
             ("print_array", print_array),
             ("quote_string", quote_strings),
             ("raw_string", raw_strings),
@@ -221,7 +241,9 @@ impl ScriptTemplate {
 
         template.parse(text)?;
 
-        Ok(ScriptTemplate(template.render(&Context::from(context.into()))?))
+        Ok(ScriptTemplate(
+            template.render(&Context::from(context.into()))?,
+        ))
     }
 
     /// Return the rendered template string.

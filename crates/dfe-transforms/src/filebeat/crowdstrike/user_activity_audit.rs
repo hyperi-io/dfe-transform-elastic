@@ -16,19 +16,19 @@ impl Transform for UserActivityAudit {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("iam"))?;
+        event.append("event.category", json!("iam"))?;
 
-            event.append("event.type", json!("change"))?;
+        event.append("event.type", json!("change"))?;
 
         event.set("event.action", json!("user_activity_audit_event"))?;
 
-            if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
-            }
+        if event.has("crowdstrike.event.UserId") {
+            event.rename("crowdstrike.event.UserId", "user.name")?;
+        }
 
-            if event.has("crowdstrike.event.OperationName") {
-                event.rename("crowdstrike.event.OperationName", "message")?;
-            }
+        if event.has("crowdstrike.event.OperationName") {
+            event.rename("crowdstrike.event.OperationName", "message")?;
+        }
 
         // TODO: conditional: ctx.crowdstrike?.event?.UserIp != null && ctx.crowdstrike?.event?.UserIp != ""
         {

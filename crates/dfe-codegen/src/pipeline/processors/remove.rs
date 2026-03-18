@@ -1,9 +1,7 @@
 use serde::{Deserialize, Serialize};
 use tracing::instrument;
 
-use crate::pipeline::{
-    conditional::Conditional, unsupported_fields, Processor, Validate,
-};
+use crate::pipeline::{Processor, Validate, conditional::Conditional, unsupported_fields};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
@@ -38,7 +36,9 @@ impl Validate for Remove {
 #[cfg(test)]
 mod test {
     mod parse {
-        use crate::pipeline::{processors::remove::Field, unsupported_fields_tests, Pipeline, Processor};
+        use crate::pipeline::{
+            Pipeline, Processor, processors::remove::Field, unsupported_fields_tests,
+        };
 
         #[test]
         pub fn parse() {

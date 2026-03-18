@@ -1,6 +1,16 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
+#![forbid(unsafe_code)]
+#![warn(clippy::all, clippy::pedantic)]
+#![allow(
+    clippy::module_name_repetitions,
+    clippy::must_use_candidate,
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc,
+    clippy::redundant_closure_for_method_calls
+)]
+
 //! Core runtime for dfe-transform-elastic.
 //!
 //! Provides the Event type, Transform trait, and enrichment modules

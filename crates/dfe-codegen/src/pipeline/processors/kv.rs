@@ -1,13 +1,10 @@
-
 use anyhow::bail;
 use serde::Deserialize;
 use tracing::instrument;
 
 use crate::pipeline::{
-    conditional::Conditional,
-    dynamic_path::DynamicPath,
-    on_failure::OnFailure,
-    unsupported_fields, Validate,
+    Validate, conditional::Conditional, dynamic_path::DynamicPath, on_failure::OnFailure,
+    unsupported_fields,
 };
 
 // https://www.elastic.co/guide/en/elasticsearch/reference/8.13/kv-processor.html
@@ -42,7 +39,11 @@ impl Validate for KV {
         if !matches!(self.trim_key.as_deref(), Some(" ") | None)
             || !matches!(self.trim_value.as_deref(), Some(" ") | None)
         {
-            bail!("only \" \" is currently supported as the values of trim_key and trim_value, found key: {:?} and value: {:?}", self.trim_key, self.trim_value);
+            bail!(
+                "only \" \" is currently supported as the values of trim_key and trim_value, found key: {:?} and value: {:?}",
+                self.trim_key,
+                self.trim_value
+            );
         }
 
         if self.strip_brackets.is_some() {

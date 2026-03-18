@@ -3,6 +3,8 @@
 #![allow(nonstandard_style)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+use antlr_rust::PredictionContextCache;
+use antlr_rust::TokenSource;
 use antlr_rust::atn::ATN;
 use antlr_rust::atn_deserializer::ATNDeserializer;
 use antlr_rust::char_stream::CharStream;
@@ -11,16 +13,14 @@ use antlr_rust::error_listener::ErrorListener;
 use antlr_rust::int_stream::IntStream;
 use antlr_rust::lexer::{BaseLexer, Lexer, LexerRecog};
 use antlr_rust::lexer_atn_simulator::{ILexerATNSimulator, LexerATNSimulator};
-use antlr_rust::parser_rule_context::{cast, BaseParserRuleContext, ParserRuleContext};
+use antlr_rust::parser_rule_context::{BaseParserRuleContext, ParserRuleContext, cast};
 use antlr_rust::recognizer::{Actions, Recognizer};
 use antlr_rust::rule_context::{BaseRuleContext, EmptyContext, EmptyCustomRuleContext};
 use antlr_rust::token::*;
 use antlr_rust::token_factory::{CommonTokenFactory, TokenAware, TokenFactory};
 use antlr_rust::vocabulary::{Vocabulary, VocabularyImpl};
-use antlr_rust::PredictionContextCache;
-use antlr_rust::TokenSource;
 
-use antlr_rust::{lazy_static, Tid, TidAble, TidExt};
+use antlr_rust::{Tid, TidAble, TidExt, lazy_static};
 
 use std::borrow::Cow;
 use std::cell::RefCell;
