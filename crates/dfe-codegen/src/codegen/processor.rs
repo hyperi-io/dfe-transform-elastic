@@ -528,7 +528,7 @@ fn emit_gsub(p: &gsub::Gsub, pad: &str) -> Result<String> {
     body.push_str(&format!(
         "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let re = regex::Regex::new(\"{pattern}\").unwrap();\n\
-         {ip}    let replaced = re.replace_all(s, \"{replacement}\").into_owned();\n\
+         {ip}    let replaced = re.replace_all(&s, \"{replacement}\").into_owned();\n\
          {ip}    event.set({target_s}, replaced)?;\n\
          {ip}}}\n",
         field_s = field_lit(field),

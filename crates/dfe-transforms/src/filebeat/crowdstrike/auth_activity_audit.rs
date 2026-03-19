@@ -16,78 +16,72 @@ impl Transform for AuthActivityAudit {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && !["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.OperationName != null && !["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
         {
             event.append("event.category", json!("iam"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
-        {
+        let _cond = { event.has("crowdstrike.event.OperationName") && ["twoFactorAuthenticate", "userAuthenticate"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+        if _cond {
             event.append("event.category", json!("authentication"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(ctx.crowdstrike.event.OperationName)
-        {
+        let _cond = { event.has("crowdstrike.event.OperationName") && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("user"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(ctx.crowdstrike.event.OperationName)
-        {
+        let _cond = { event.has("crowdstrike.event.OperationName") && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("change"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ctx.crowdstrike.event.OperationName == "createUser"
-        {
+        let _cond = { event.has("crowdstrike.event.OperationName") && event.get_str("crowdstrike.event.OperationName") == Some("createUser") };
+        if _cond {
             event.append("event.type", json!("creation"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ctx.crowdstrike.event.OperationName == "deleteUser"
-        {
+        let _cond = { event.has("crowdstrike.event.OperationName") && event.get_str("crowdstrike.event.OperationName") == Some("deleteUser") };
+        if _cond {
             event.append("event.type", json!("deletion"))?;
         }
 
-        if event.has("crowdstrike.event.UserId") {
-            event.rename("crowdstrike.event.UserId", "user.name")?;
+            if event.has("crowdstrike.event.UserId") {
+                event.rename("crowdstrike.event.UserId", "user.name")?;
+            }
+
+        let _cond = { event.has("crowdstrike.event.OperationName") };
+        if _cond {
+            event.append("event.action", event.get("crowdstrike.event.OperationName").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null
-        {
-            event.append(
-                "event.action",
-                event
-                    .get("crowdstrike.event.OperationName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        // TODO: conditional: ctx.event?.action == null
-        {
+        let _cond = { !event.has("event.action") };
+        if _cond {
             event.append("event.action", json!("AuthActivityAuditEvent"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Success == true
-        {
-            event.set("event.outcome", json!("success"))?;
+        let _cond = { event.get_bool("crowdstrike.event.Success") == Some(true) };
+        if _cond {
+        event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Success == false
-        {
-            event.set("event.outcome", json!("failure"))?;
+        let _cond = { event.get_bool("crowdstrike.event.Success") == Some(false) };
+        if _cond {
+        event.set("event.outcome", json!("failure"))?;
         }
 
-        // TODO: conditional: ctx.event?.outcome == null
-        {
-            event.set("event.outcome", json!("unknown"))?;
+        let _cond = { !event.has("event.outcome") };
+        if _cond {
+        event.set("event.outcome", json!("unknown"))?;
         }
 
-        if event.has("crowdstrike.event.ServiceName") {
-            event.rename("crowdstrike.event.ServiceName", "message")?;
-        }
+            if event.has("crowdstrike.event.ServiceName") {
+                event.rename("crowdstrike.event.ServiceName", "message")?;
+            }
 
-        if event.has("crowdstrike.event.UserIp") {
-            event.rename("crowdstrike.event.UserIp", "source.ip")?;
-        }
+            if event.has("crowdstrike.event.UserIp") {
+                event.rename("crowdstrike.event.UserIp", "source.ip")?;
+            }
 
         Ok(TransformResult::Continue)
     }

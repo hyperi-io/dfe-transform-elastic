@@ -16,34 +16,28 @@ impl Transform for XdrDetectionSummary {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("alert"))?;
 
-        event.append("event.category", json!("malware"))?;
+            event.append("event.category", json!("malware"))?;
 
-        event.append("event.type", json!("info"))?;
+            event.append("event.type", json!("info"))?;
 
         event.set("event.action", json!("xdr-detection"))?;
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Author != null
-        {
-            event.append(
-                "rule.author",
-                event
-                    .get("crowdstrike.event.Author")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("crowdstrike.event.Author") };
+        if _cond {
+            event.append("rule.author", event.get("crowdstrike.event.Author").cloned().unwrap_or(Value::Null))?;
         }
 
-        if event.has("crowdstrike.event.Severity") {
-            event.rename("crowdstrike.event.Severity", "event.severity")?;
-        }
+            if event.has("crowdstrike.event.Severity") {
+                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            }
 
-        if event.has("crowdstrike.event.Name") {
-            event.rename("crowdstrike.event.Name", "rule.name")?;
-        }
+            if event.has("crowdstrike.event.Name") {
+                event.rename("crowdstrike.event.Name", "rule.name")?;
+            }
 
-        if event.has("crowdstrike.event.DetectId") {
-            event.rename("crowdstrike.event.DetectId", "rule.id")?;
-        }
+            if event.has("crowdstrike.event.DetectId") {
+                event.rename("crowdstrike.event.DetectId", "rule.id")?;
+            }
 
         if event.has("crowdstrike.event.PatternId") {
             if let Some(val) = event.get("crowdstrike.event.PatternId") {
@@ -58,236 +52,150 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        if event.has("crowdstrike.event.Description") {
-            event.rename("crowdstrike.event.Description", "message")?;
-        }
+            if event.has("crowdstrike.event.Description") {
+                event.rename("crowdstrike.event.Description", "message")?;
+            }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.DataDomains != null && ctx.crowdstrike?.event?.DataDomains.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.DataDomains")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.DataDomains") && event.get("crowdstrike.event.DataDomains").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.DataDomains") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("crowdstrike.event.DataDomains", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EmailAddresses != null && ctx.crowdstrike?.event?.EmailAddresses.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.EmailAddresses")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.EmailAddresses") && event.get("crowdstrike.event.EmailAddresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.EmailAddresses") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("crowdstrike.event.EmailAddresses", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IPV4Addresses != null && ctx.crowdstrike?.event?.IPV4Addresses.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.IPV4Addresses")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.IPV4Addresses") && event.get("crowdstrike.event.IPV4Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.IPV4Addresses") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.ip", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IPV4Addresses != null && !ctx.crowdstrike?.event?.IPV4Addresses.contains(",")
-        {
-            event.append(
-                "related.ip",
-                event
-                    .get("crowdstrike.event.IPV4Addresses")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.IPV4Addresses != null && !ctx.crowdstrike.event.IPV4Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.ip", event.get("crowdstrike.event.IPV4Addresses").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IPV6Addresses != null && ctx.crowdstrike?.event?.IPV6Addresses.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.IPV6Addresses")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.IPV6Addresses") && event.get("crowdstrike.event.IPV6Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.IPV6Addresses") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.ip", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IPV6Addresses != null && !ctx.crowdstrike?.event?.IPV6Addresses.contains(",")
-        {
-            event.append(
-                "related.ip",
-                event
-                    .get("crowdstrike.event.IPV6Addresses")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.IPV6Addresses != null && !ctx.crowdstrike.event.IPV6Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.ip", event.get("crowdstrike.event.IPV6Addresses").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.HostNames != null && ctx.crowdstrike?.event?.HostNames.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.HostNames")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.HostNames") && event.get("crowdstrike.event.HostNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.HostNames") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.hosts", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.HostNames != null && !ctx.crowdstrike?.event?.HostNames.contains(",")
-        {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.HostNames")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.HostNames != null && !ctx.crowdstrike.event.HostNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.HostNames").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.DomainNames != null && ctx.crowdstrike?.event?.DomainNames.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.DomainNames")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.DomainNames") && event.get("crowdstrike.event.DomainNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.DomainNames") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.hosts", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.DomainNames != null && !ctx.crowdstrike?.event?.DomainNames.contains(",")
-        {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.DomainNames")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.DomainNames != null && !ctx.crowdstrike.event.DomainNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.DomainNames").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.SHA256Hashes != null && ctx.crowdstrike?.event?.SHA256Hashes.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.SHA256Hashes")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.SHA256Hashes") && event.get("crowdstrike.event.SHA256Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.SHA256Hashes") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.hash", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.SHA256Hashes != null && !ctx.crowdstrike?.event?.SHA256Hashes.contains(",")
-        {
-            event.append(
-                "related.hash",
-                event
-                    .get("crowdstrike.event.SHA256Hashes")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.SHA256Hashes != null && !ctx.crowdstrike.event.SHA256Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.hash", event.get("crowdstrike.event.SHA256Hashes").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.MD5Hashes != null && ctx.crowdstrike?.event?.MD5Hashes.contains(",")
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.MD5Hashes")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.MD5Hashes") && event.get("crowdstrike.event.MD5Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.MD5Hashes") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.hash", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.MD5Hashes != null && !ctx.crowdstrike?.event?.MD5Hashes.contains(",")
-        {
-            event.append(
-                "related.hash",
-                event
-                    .get("crowdstrike.event.MD5Hashes")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.MD5Hashes != null && !ctx.crowdstrike.event.MD5Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.hash", event.get("crowdstrike.event.MD5Hashes").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Users != null && ctx.crowdstrike?.event?.Users.contains(",")
-        {
-            if let Some(s) = event.get_str("crowdstrike.event.Users").map(String::from) {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.Users") && event.get("crowdstrike.event.Users").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.Users") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("related.user", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Users != null && !ctx.crowdstrike?.event?.Users.contains(",")
-        {
-            event.append(
-                "related.user",
-                event
-                    .get("crowdstrike.event.Users")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.get("crowdstrike.event.Users != null && !ctx.crowdstrike.event.Users").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        if _cond {
+            event.append("related.user", event.get("crowdstrike.event.Users").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.message != null
-        {
-            event.set(
-                "rule.description",
-                event.get("message").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("message") };
+        if _cond {
+        event.set("rule.description", event.get("message").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null
-        {
-            if event.has("crowdstrike.event.StartTimeEpoch") {
-                if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.StartTimeEpoch", converted)?;
-                }
+        let _cond = { event.has("crowdstrike.event.StartTimeEpoch") };
+        if _cond {
+        if event.has("crowdstrike.event.StartTimeEpoch") {
+            if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
+                let converted = match val {
+                    Value::String(_) => val.clone(),
+                    Value::Number(n) => json!(n.to_string()),
+                    Value::Bool(b) => json!(b.to_string()),
+                    Value::Null => json!("null"),
+                    _ => json!(val.to_string()),
+                };
+                event.set("crowdstrike.event.StartTimeEpoch", converted)?;
             }
         }
+        }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() > 18
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() > 18
         {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.StartTimeEpoch")
-                .map(String::from)
-            {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("crowdstrike.event.StartTimeEpoch") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
-                let replaced = re.replace_all(s, "").into_owned();
+                let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.StartTimeEpoch", replaced)?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.StartTimeEpoch")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimeEpoch") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -297,13 +205,9 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.StartTimeEpoch")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimeEpoch") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -315,50 +219,39 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional: ctx.event?.start != null
-        {
-            event.set(
-                "@timestamp",
-                event.get("event.start").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("event.start") };
+        if _cond {
+        event.set("@timestamp", event.get("event.start").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null
-        {
-            if event.has("crowdstrike.event.EndTimeEpoch") {
-                if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.EndTimeEpoch", converted)?;
-                }
+        let _cond = { event.has("crowdstrike.event.EndTimeEpoch") };
+        if _cond {
+        if event.has("crowdstrike.event.EndTimeEpoch") {
+            if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
+                let converted = match val {
+                    Value::String(_) => val.clone(),
+                    Value::Number(n) => json!(n.to_string()),
+                    Value::Bool(b) => json!(b.to_string()),
+                    Value::Null => json!("null"),
+                    _ => json!(val.to_string()),
+                };
+                event.set("crowdstrike.event.EndTimeEpoch", converted)?;
             }
         }
+        }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() > 18
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() > 18
         {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.EndTimeEpoch")
-                .map(String::from)
-            {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("crowdstrike.event.EndTimeEpoch") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
-                let replaced = re.replace_all(s, "").into_owned();
+                let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.EndTimeEpoch", replaced)?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.EndTimeEpoch")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimeEpoch") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -368,13 +261,9 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.EndTimeEpoch")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimeEpoch") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -388,46 +277,33 @@ impl Transform for XdrDetectionSummary {
 
         event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Techniques != null
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.Techniques")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.Techniques") };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.Techniques") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("threat.technique.name", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.TechniqueIds != null
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.TechniqueIds")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.TechniqueIds") };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.TechniqueIds") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("threat.technique.id", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Tactics != null
-        {
-            if let Some(s) = event.get_str("crowdstrike.event.Tactics").map(String::from) {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.Tactics") };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.Tactics") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("threat.tactic.name", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.TacticIds != null
-        {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.TacticIds")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("crowdstrike.event.TacticIds") };
+        if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.TacticIds") {
                 let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                 event.set("threat.tactic.id", Value::Array(parts))?;
             }
