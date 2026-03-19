@@ -55,6 +55,11 @@ impl Event {
         &self.inner
     }
 
+    /// Mutably borrow the inner value.
+    pub fn as_value_mut(&mut self) -> &mut Value {
+        &mut self.inner
+    }
+
     /// Consume the event and return the inner value.
     pub fn into_value(self) -> Value {
         self.inner
@@ -78,6 +83,19 @@ impl Event {
     /// the caller needs to mutate the event after reading.
     pub fn get_string(&self, path: &str) -> Option<String> {
         self.get_str(path).map(String::from)
+    }
+
+    /// Get any value at a dotted path as a string representation.
+    ///
+    /// Works for strings, numbers, and booleans. Useful for fields
+    /// that may be stored as either string or number (e.g., epoch timestamps).
+    pub fn get_as_string(&self, path: &str) -> Option<String> {
+        self.get(path).and_then(|v| match v {
+            Value::String(s) => Some(s.clone()),
+            Value::Number(n) => Some(n.to_string()),
+            Value::Bool(b) => Some(b.to_string()),
+            _ => None,
+        })
     }
 
     /// Get an i64 value at a dotted path.

@@ -867,7 +867,7 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(date_str) = event.get_string({field_s}) {{\n",
+        "{ip}if let Some(date_str) = event.get_as_string({field_s}) {{\n",
         field_s = field_lit(field),
     ));
 

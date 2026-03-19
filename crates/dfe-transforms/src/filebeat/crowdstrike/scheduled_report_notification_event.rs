@@ -18,7 +18,7 @@ impl Transform for ScheduledReportNotificationEvent {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.ExecutionStart") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -30,7 +30,7 @@ impl Transform for ScheduledReportNotificationEvent {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -42,7 +42,7 @@ impl Transform for ScheduledReportNotificationEvent {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {

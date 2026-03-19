@@ -112,7 +112,7 @@ impl Transform for CspmEvents {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.Timestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -124,7 +124,7 @@ impl Transform for CspmEvents {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.Timestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -138,7 +138,7 @@ impl Transform for CspmEvents {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.EventCreatedTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.EventCreatedTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -150,7 +150,7 @@ impl Transform for CspmEvents {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.EventCreatedTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.EventCreatedTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -169,7 +169,7 @@ impl Transform for CspmEvents {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ResourceCreateTime") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -181,7 +181,7 @@ impl Transform for CspmEvents {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ResourceCreateTime") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;

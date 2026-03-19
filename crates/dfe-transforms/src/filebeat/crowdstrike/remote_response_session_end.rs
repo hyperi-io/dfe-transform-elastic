@@ -29,7 +29,7 @@ impl Transform for RemoteResponseSessionEnd {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimestamp != null && String.valueOf(ctx.crowdstrike.event.EndTimestamp).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -41,7 +41,7 @@ impl Transform for RemoteResponseSessionEnd {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimestamp != null && String.valueOf(ctx.crowdstrike.event.EndTimestamp).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;

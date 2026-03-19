@@ -62,7 +62,7 @@ impl Transform for Default {
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(date_str) = event.get_string("json.published") {
+            if let Some(date_str) = event.get_as_string("json.published") {
                 // Try ISO8601 format
                 if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
                     .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z"))
