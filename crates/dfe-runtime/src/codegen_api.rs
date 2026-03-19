@@ -26,15 +26,9 @@ pub struct RegisteredDomainResult {
 /// Look up GeoIP data for an IP address.
 ///
 /// Returns a flat map of field names to values (e.g., "country_iso_code" -> "AU").
-/// This is a no-op stub until GeoIP databases are configured at runtime.
-pub fn geoip_lookup(_db_name: &str, _ip: &str) -> Result<HashMap<String, Value>> {
-    // GeoIP requires runtime database configuration.
-    // When running standalone, dfe-loader's implementation is used.
-    // When running as a library, the caller must configure databases.
-    Err(TransformError::EnrichmentError {
-        enrichment: "geoip".into(),
-        message: "GeoIP databases not configured".into(),
-    })
+/// Uses the global auto-initialised enricher (auto-detects MMDB files).
+pub fn geoip_lookup(db_name: &str, ip: &str) -> Result<HashMap<String, Value>> {
+    Ok(crate::enrichment::geoip_global::geoip_lookup(db_name, ip))
 }
 
 /// Parse a User-Agent string into structured components.

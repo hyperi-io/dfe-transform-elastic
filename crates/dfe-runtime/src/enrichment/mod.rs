@@ -5,4 +5,5 @@
 
 pub mod community_id;
 pub mod geoip;
+pub mod geoip_global;
 pub mod user_agent;
