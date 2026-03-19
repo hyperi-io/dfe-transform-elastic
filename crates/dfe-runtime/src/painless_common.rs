@@ -115,7 +115,13 @@ pub fn extract_process_fields(
     Ok(())
 }
 
-/// Convert an epoch timestamp (seconds) to ISO8601 string and set on event.
+/// Convert an epoch timestamp to ISO8601 string and set on event.
+///
+/// Auto-detects epoch precision by magnitude (ported from dfe-loader):
+/// - > 1e18 → nanoseconds
+/// - > 1e15 → microseconds
+/// - > 1e12 → milliseconds
+/// - else   → seconds
 pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &str) -> Result<()> {
     let epoch = match event.get(source_field) {
         Some(Value::Number(n)) => n.as_f64().unwrap_or(0.0),
@@ -127,9 +133,22 @@ pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &
         return Ok(());
     }
 
-    let secs = epoch as i64;
-    if let Some(dt) = chrono::DateTime::from_timestamp(secs, 0) {
-        event.set(target_field, json!(dt.to_rfc3339()))?;
+    let (secs, nanos) = if epoch > 1e18 {
+        ((epoch / 1e9) as i64, ((epoch % 1e9) as u32))
+    } else if epoch > 1e15 {
+        ((epoch / 1e6) as i64, (((epoch % 1e6) * 1000.0) as u32))
+    } else if epoch > 1e12 {
+        ((epoch / 1e3) as i64, (((epoch % 1e3) * 1_000_000.0) as u32))
+    } else {
+        (epoch as i64, ((epoch.fract() * 1e9) as u32))
+    };
+
+    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nanos) {
+        // Use millisecond precision format matching Elastic convention
+        event.set(
+            target_field,
+            json!(dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string()),
+        )?;
     }
 
     Ok(())

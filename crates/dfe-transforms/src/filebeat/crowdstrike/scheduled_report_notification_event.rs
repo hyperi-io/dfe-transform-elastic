@@ -19,10 +19,12 @@ impl Transform for ScheduledReportNotificationEvent {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -31,10 +33,12 @@ impl Transform for ScheduledReportNotificationEvent {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -43,10 +47,12 @@ impl Transform for ScheduledReportNotificationEvent {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }

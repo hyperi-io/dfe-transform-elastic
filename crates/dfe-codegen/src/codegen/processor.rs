@@ -893,19 +893,21 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
                      {ip}        .or_else(|_| chrono::DateTime::parse_from_str(&date_str, \"%Y-%m-%dT%H:%M:%S%.f%:z\"))\n\
                      {ip}        .or_else(|_| chrono::DateTime::parse_from_str(&date_str, \"%Y-%m-%dT%H:%M:%S%:z\"))\n\
                      {ip}    {{\n\
-                     {ip}        event.set({target_s}, dt.to_rfc3339())?;\n\
+                     {ip}        event.set({target_s}, dt.format(\"%Y-%m-%dT%H:%M:%S%.3fZ\").to_string())?;\n\
                      {ip}    }}\n",
                     target_s = field_lit(target),
                 ));
             }
             "UNIX" => {
                 body.push_str(&format!(
-                    "{ip}    // Try UNIX timestamp\n\
+                    "{ip}    // Try UNIX timestamp (skip epoch 0)\n\
                      {ip}    if let Ok(ts) = date_str.parse::<f64>() {{\n\
-                     {ip}        let secs = ts as i64;\n\
-                     {ip}        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;\n\
-                     {ip}        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {{\n\
-                     {ip}            event.set({target_s}, dt.to_rfc3339())?;\n\
+                     {ip}        if ts > 0.0 {{\n\
+                     {ip}            let secs = ts as i64;\n\
+                     {ip}            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;\n\
+                     {ip}            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {{\n\
+                     {ip}                event.set({target_s}, dt.format(\"%Y-%m-%dT%H:%M:%S%.3fZ\").to_string())?;\n\
+                     {ip}            }}\n\
                      {ip}        }}\n\
                      {ip}    }}\n",
                     target_s = field_lit(target),
@@ -913,10 +915,12 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
             }
             "UNIX_MS" => {
                 body.push_str(&format!(
-                    "{ip}    // Try UNIX_MS timestamp\n\
+                    "{ip}    // Try UNIX_MS timestamp (skip epoch 0)\n\
                      {ip}    if let Ok(ms) = date_str.parse::<i64>() {{\n\
-                     {ip}        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {{\n\
-                     {ip}            event.set({target_s}, dt.to_rfc3339())?;\n\
+                     {ip}        if ms > 0 {{\n\
+                     {ip}            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {{\n\
+                     {ip}                event.set({target_s}, dt.format(\"%Y-%m-%dT%H:%M:%S%.3fZ\").to_string())?;\n\
+                     {ip}            }}\n\
                      {ip}        }}\n\
                      {ip}    }}\n",
                     target_s = field_lit(target),

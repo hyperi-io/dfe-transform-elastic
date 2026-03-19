@@ -68,7 +68,7 @@ impl Transform for Default {
                     .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z"))
                     .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z"))
                 {
-                    event.set("@timestamp", dt.to_rfc3339())?;
+                    event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
                 }
             }
             Ok(())
