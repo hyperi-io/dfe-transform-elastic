@@ -3,7 +3,7 @@
 Research, design, and implementation notes for transpiling Elastic's Painless
 scripting language to native Rust code within dfe-codegen.
 
-**Status:** Research complete, design in progress
+**Status:** Phase A complete (IR, emitter, visitor, params, helpers). Phases B-D pending.
 
 ---
 
