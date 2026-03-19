@@ -28,7 +28,7 @@ impl Transform for IncidentSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentStartTime") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -40,7 +40,7 @@ impl Transform for IncidentSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentStartTime") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -54,7 +54,7 @@ impl Transform for IncidentSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentEndTime") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -66,7 +66,7 @@ impl Transform for IncidentSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentEndTime") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;

@@ -52,7 +52,7 @@ impl Transform for ReconNotificationSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.MatchedTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -64,7 +64,7 @@ impl Transform for ReconNotificationSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.MatchedTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -78,7 +78,7 @@ impl Transform for ReconNotificationSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() >= 12
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ItemPostedTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -90,7 +90,7 @@ impl Transform for ReconNotificationSummary {
 
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() <= 11
         {
-            if let Some(date_str) = event.get_string("crowdstrike.event.ItemPostedTimestamp") {
+            if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;

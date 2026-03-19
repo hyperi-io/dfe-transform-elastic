@@ -51,9 +51,15 @@ pub struct JsonDiff {
     pub mode: MatchMode,
 }
 
-/// Fields that are non-deterministic and skipped in Semantic mode.
-const SEMANTIC_SKIP_FIELDS: &[&str] =
-    &["@timestamp", "event.created", "event.ingested", "@metadata"];
+/// Fields that are non-deterministic or infrastructure-only in Semantic mode.
+const SEMANTIC_SKIP_FIELDS: &[&str] = &[
+    "@timestamp",
+    "event.created",
+    "event.ingested",
+    "@metadata",
+    "_id",            // Elastic document ID — not a user field
+    "event.original", // Depends on preserve_original_event tag handling
+];
 
 impl JsonDiff {
     /// Compare expected and actual JSON values using the given match mode.
@@ -198,6 +204,19 @@ fn values_equal(a: &Value, b: &Value) -> bool {
             } else {
                 na == nb
             }
+        }
+        (Value::String(sa), Value::String(sb)) => {
+            if sa == sb {
+                return true;
+            }
+            // Try timestamp equivalence (2018-09-13T13:45:39.000Z == 2018-09-13T13:45:39+00:00)
+            if let (Ok(ta), Ok(tb)) = (
+                chrono::DateTime::parse_from_rfc3339(sa),
+                chrono::DateTime::parse_from_rfc3339(sb),
+            ) {
+                return ta == tb;
+            }
+            false
         }
         _ => a == b,
     }

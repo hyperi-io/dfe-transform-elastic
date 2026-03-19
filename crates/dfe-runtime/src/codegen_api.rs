@@ -78,14 +78,15 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
 
 /// Execute a Painless script against an event.
 ///
-/// Painless transpilation is not yet implemented (Phase 2.2.3).
-/// This stub logs the script and returns Ok — the transform continues
-/// without applying the script logic.
-#[allow(unused_variables)]
+/// Tries known common patterns first (drop nulls, command line extraction,
+/// keys_to_snake_case, etc.). Falls back to a no-op for unrecognised scripts.
 pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
+    if crate::painless_common::try_known_painless(event, script) {
+        return Ok(());
+    }
     debug!(
         script_len = script.len(),
-        "painless_exec: script skipped (transpiler pending)"
+        "painless_exec: unrecognised script skipped"
     );
     Ok(())
 }
