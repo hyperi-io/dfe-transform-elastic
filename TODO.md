@@ -259,50 +259,50 @@
 
 > **Parallelism:** 4.1 first. 4.2 depends on Phase 3. 4.3 depends on 4.2. 4.4 can run with 4.3.
 
-### 4.1 Test Framework (`crates/dfe-transforms/`)
+### 4.1 Test Framework (`crates/dfe-transforms/`) — COMPLETE
 
 > **Depends on:** 1.2 (Event type)
 
-#### 4.1.1 Test harness
+#### 4.1.1 Test harness — COMPLETE
 
-- [ ] `run_transform_test(input_path, expected_path, transform_fn)` — load, transform, compare
-- [ ] `load_test_events(path) -> Vec<Event>` — JSON lines, JSON array, or raw log
-- [ ] `load_expected_outputs(path) -> Vec<Value>`
+- [x] `run_transform_test(input_path, expected_path, transform_fn)` — load, transform, compare
+- [x] `load_test_events(path) -> Vec<Event>` — JSON lines, JSON array, or raw log
+- [x] `load_expected_outputs(path) -> Vec<Value>`
+- [x] Message wrapping (auto-detect `message` field presence)
+- [x] Config field loading from pipeline YAML for transforms that need it
 
-> **Done when:** Harness works with at least one hand-crafted fixture.
+#### 4.1.2 JSON comparison utilities — COMPLETE
 
-#### 4.1.2 JSON comparison utilities
+- [x] Deep JSON comparison with diff output
+- [x] Match modes: `Exact`, `Semantic` (ignore non-deterministic), `Subset` (expected ⊂ actual)
+- [x] `JsonDiff` for readable diff output (path + expected vs actual)
+- [x] Auto-format detection for test fixture files
 
-- [ ] `assert_json_eq!` macro — deep JSON comparison with diff output
-- [ ] Match modes: `Exact`, `Semantic` (ignore non-deterministic), `Subset` (expected ⊂ actual)
-- [ ] `JsonDiff` for readable diff output (path + expected vs actual)
+#### 4.1.3 Test fixture import — COMPLETE
 
-> **Done when:** Clear diff output for all three match modes, `cargo test` passes.
+- [x] Test data in `testdata/integrations/` (1,691 fixture files from elastic_to_vrl)
+- [x] Verify fixtures accessible from `#[test]` functions
+- [x] CrowdStrike, Azure, Okta test data loaded and running
 
-#### 4.1.3 Test fixture import
-
-- [ ] Git submodules: `external/beats`, `external/elastic-agent`
-- [ ] Import 242 existing test files from elastic_to_vrl
-- [ ] Verify fixtures accessible from `#[test]` functions
-
-> **Done when:** Fixtures from at least one Beats module and one Agent integration are loadable.
-
-### 4.2 Generate + Validate All Transforms
+### 4.2 Generate + Validate All Transforms — IN PROGRESS
 
 > **Depends on:** Phase 3, 2.2.5 (CLI)
 
-- [ ] Collect all pipeline YAMLs (Beats + Agent)
-- [ ] Run `dfe-codegen generate` on all pipelines
-- [ ] Fix codegen issues iteratively
-- [ ] Generated code compiles: `cargo check -p dfe-transforms` passes
-- [ ] Hand-tune ~5% that doesn't auto-generate (`// HAND-TUNED:` comments)
+- [x] Collect all pipeline YAMLs (Beats + Agent)
+- [x] Run `dfe-codegen generate` on all pipelines
+- [x] Fix codegen issues iteratively (conditional transpiler covers 94% of 1,180 conditionals)
+- [x] Generated code compiles: `cargo check -p dfe-transforms` passes
+- [ ] Hand-tune remaining transforms for match rate improvement
+- [ ] Improve sub-pipeline append to handle array values correctly
 
-> **Done when:** All pipelines produce compilable Rust, `cargo check -p dfe-transforms` passes.
+> **Done when:** All pipelines produce compilable Rust, `cargo check -p dfe-transforms` passes, match rates >90%.
 
-### 4.3 1:1 Beats Test Data Validation
+### 4.3 1:1 Beats Test Data Validation — IN PROGRESS
 
 > **Depends on:** 4.1, 4.2
 > **Parallelism:** Each source type independent.
+
+**Current match rate: 19% (13/68 events)**
 
 - [ ] **Filebeat** — ~60 modules
 - [ ] **Winlogbeat** — ~5 modules
@@ -313,9 +313,13 @@
 - [ ] **Elastic Agent:**
   - [ ] O365 (36 test files)
   - [ ] Cisco (73 test files)
-  - [ ] CrowdStrike (42 test files)
-  - [ ] Azure (48 test files)
-  - [ ] Okta (2 test files)
+  - [ ] CrowdStrike (42 test files) — 13/32 events matching (41%)
+    - falcon-audit: 8/13 (62%)
+    - falcon-sample: 2/7 (29%)
+    - falcon-events: 1/3 (33%)
+    - event-stream: 2/9 (22%)
+  - [ ] Azure (48 test files) — 0%
+  - [ ] Okta (2 test files) — 0%
   - [ ] Panw (14 test files)
   - [ ] Fortinet (27 test files)
 
@@ -440,13 +444,27 @@
 - [x] dfe-runtime enrichment: Community ID v1 (SHA-1, base64, 7 tests), GeoIP (maxminddb 0.27, 3 tests), User Agent (regex, 9 tests) — 53 runtime tests, 367 workspace tests
 - [x] Painless transpiler Phase A: IR types, emitter, params, visitor, runtime helpers, Script::transpile() entry point — 40 new tests, 443 workspace tests passing
 
+### 2026-03-19: Integration Testing Infrastructure + First Match Rates
+
+- [x] Test harness: message wrapping, config field loading, auto-format detection
+- [x] JSON comparison: deep diff with Exact/Semantic/Subset match modes
+- [x] Conditional transpiler (`codegen/condition.rs`) — covers 94% of 1,180 conditionals
+- [x] Global GeoIP enricher (`enrichment/geoip_global.rs`) — auto-detect MMDB, private IP fast-path
+- [x] Painless common patterns (`painless_common.rs`) — drop_empty, keys_to_snake_case, process fields, epoch conversion
+- [x] Event::get_string() and get_as_string() — borrow-safe field access
+- [x] Epoch precision auto-detect (ported from dfe-loader)
+- [x] Elastic-standard timestamp format (%Y-%m-%dT%H:%M:%S%.3fZ)
+- [x] CrowdStrike integration tests: 13/68 events matching (19%, from 0%)
+- [x] 476 workspace tests passing, 0 failures
+
 ---
 
 ## Notes
 
 - elastic_to_vrl source: `/projects/elastic_to_vrl/`
 - VRL templates being replaced: `/projects/dfe-vector-templates/src/core_templates/`
-- simd-json pinned to `<0.15` for Rust 1.83 compat (bump when toolchain updates)
+- Rust 1.94 / Edition 2024 (`gen` is reserved — use `cg` for codegen vars)
+- GeoIP test DBs in gitignored `testdata/geoip/` (DB-IP Lite, CC BY 4.0)
 - Painless parser kept as callable component within dfe-codegen per user decision
 - Task IDs (e.g., 1.2.3, 2.2.4) used for dependency references across phases
 - "Parallelism" notes indicate which tasks can run concurrently within a phase
@@ -454,4 +472,4 @@
 
 ---
 
-**Last Updated:** 2026-03-07
+**Last Updated:** 2026-03-19
