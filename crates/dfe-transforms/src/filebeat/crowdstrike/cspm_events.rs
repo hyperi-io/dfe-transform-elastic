@@ -113,10 +113,12 @@ impl Transform for CspmEvents {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -125,12 +127,14 @@ impl Transform for CspmEvents {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() <= 11
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                // Try UNIX timestamp
+                // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
-                    let secs = ts as i64;
-                    let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ts > 0.0 {
+                        let secs = ts as i64;
+                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -139,10 +143,12 @@ impl Transform for CspmEvents {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EventCreatedTimestamp") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -151,12 +157,14 @@ impl Transform for CspmEvents {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() <= 11
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EventCreatedTimestamp") {
-                // Try UNIX timestamp
+                // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
-                    let secs = ts as i64;
-                    let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                        event.set("@timestamp", dt.to_rfc3339())?;
+                    if ts > 0.0 {
+                        let secs = ts as i64;
+                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                            event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -170,10 +178,12 @@ impl Transform for CspmEvents {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("crowdstrike.event.ResourceCreateTime", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("crowdstrike.event.ResourceCreateTime", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -182,12 +192,14 @@ impl Transform for CspmEvents {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() <= 11
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime") {
-                // Try UNIX timestamp
+                // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
-                    let secs = ts as i64;
-                    let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                        event.set("crowdstrike.event.ResourceCreateTime", dt.to_rfc3339())?;
+                    if ts > 0.0 {
+                        let secs = ts as i64;
+                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                            event.set("crowdstrike.event.ResourceCreateTime", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }

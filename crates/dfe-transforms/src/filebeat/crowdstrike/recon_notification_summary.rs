@@ -53,10 +53,12 @@ impl Transform for ReconNotificationSummary {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("event.created", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -65,12 +67,14 @@ impl Transform for ReconNotificationSummary {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() <= 11
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
-                // Try UNIX timestamp
+                // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
-                    let secs = ts as i64;
-                    let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                        event.set("event.created", dt.to_rfc3339())?;
+                    if ts > 0.0 {
+                        let secs = ts as i64;
+                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -79,10 +83,12 @@ impl Transform for ReconNotificationSummary {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("event.created", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -91,12 +97,14 @@ impl Transform for ReconNotificationSummary {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() <= 11
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp") {
-                // Try UNIX timestamp
+                // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
-                    let secs = ts as i64;
-                    let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                        event.set("event.created", dt.to_rfc3339())?;
+                    if ts > 0.0 {
+                        let secs = ts as i64;
+                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }

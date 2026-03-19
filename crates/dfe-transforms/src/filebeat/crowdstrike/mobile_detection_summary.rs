@@ -30,12 +30,14 @@ impl Transform for MobileDetectionSummary {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() <= 11
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                // Try UNIX timestamp
+                // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
-                    let secs = ts as i64;
-                    let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                    if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                        event.set("event.created", dt.to_rfc3339())?;
+                    if ts > 0.0 {
+                        let secs = ts as i64;
+                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
@@ -44,10 +46,12 @@ impl Transform for MobileDetectionSummary {
         // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() >= 12
         {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                // Try UNIX_MS timestamp
+                // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
-                    if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                        event.set("event.created", dt.to_rfc3339())?;
+                    if ms > 0 {
+                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                        }
                     }
                 }
             }
