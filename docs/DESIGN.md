@@ -675,9 +675,9 @@ if it came through Beats.
 | `aho-corasick` | >=1.1 | Multi-pattern matching |
 | `regex-automata` | >=0.4 | Pre-compiled DFA regex |
 | `chrono` | >=0.4 | Timestamp handling |
-| `maxminddb` | >=0.24 | GeoIP lookups (mmap, simdutf8) |
+| `maxminddb` | >=0.27 | GeoIP lookups (mmap, simdutf8) |
 | `antlr-rust` | 0.3.0-beta | ANTLR4 Painless parser |
 | `gtmpl` | >=0.7 | Go template engine (codegen) |
-| `thiserror` | 2.x | Error derive macros |
+| `thiserror` | 1.x | Error derive macros |
 | `tokio` | >=1.48 | Async runtime |
 | `criterion` | >=0.5 | Benchmarking framework |
