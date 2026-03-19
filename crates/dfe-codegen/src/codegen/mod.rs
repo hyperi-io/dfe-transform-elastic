@@ -6,6 +6,7 @@
 //! Takes a validated `Pipeline` struct and emits a complete `.rs` file
 //! containing a struct that implements `dfe_runtime::Transform`.
 
+pub mod condition;
 mod emit;
 mod processor;
 
