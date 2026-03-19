@@ -310,7 +310,7 @@ fn emit_lowercase(p: &lowercase::Lowercase, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let lowered = s.to_lowercase();\n\
          {ip}    event.set({target_s}, lowered)?;\n\
          {ip}}}\n",
@@ -331,7 +331,7 @@ fn emit_uppercase(p: &uppercase::Uppercase, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let uppered = s.to_uppercase();\n\
          {ip}    event.set({target_s}, uppered)?;\n\
          {ip}}}\n",
@@ -352,7 +352,7 @@ fn emit_trim(p: &trim::Trim, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let trimmed = s.trim().to_string();\n\
          {ip}    event.set({target_s}, trimmed)?;\n\
          {ip}}}\n",
@@ -420,7 +420,7 @@ fn emit_convert(p: &convert::Convert, pad: &str) -> Result<String> {
             target_s = field_lit(target),
         ),
         convert::IntoType::IP => format!(
-            "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+            "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
              {ip}    // Validate IP format\n\
              {ip}    let s = s.trim();\n\
              {ip}    if s.parse::<std::net::IpAddr>().is_err() {{\n\
@@ -463,7 +463,7 @@ fn emit_split(p: &split::Split, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let parts: Vec<Value> = s.split(\"{sep}\").map(|p| json!(p)).collect();\n\
          {ip}    event.set({target_s}, Value::Array(parts))?;\n\
          {ip}}}\n",
@@ -485,7 +485,7 @@ fn emit_uri_parts(p: &uri_parts::UriParts, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(uri_str) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(uri_str) = event.get_string({field_s}) {{\n\
          {ip}    if let Ok(url) = url::Url::parse(uri_str) {{\n\
          {ip}        event.set(\"{target}.scheme\", url.scheme())?;\n\
          {ip}        if let Some(host) = url.host_str() {{\n\
@@ -526,7 +526,7 @@ fn emit_gsub(p: &gsub::Gsub, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let re = regex::Regex::new(\"{pattern}\").unwrap();\n\
          {ip}    let replaced = re.replace_all(s, \"{replacement}\").into_owned();\n\
          {ip}    event.set({target_s}, replaced)?;\n\
@@ -548,7 +548,7 @@ fn emit_json(p: &json::Json, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(s) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
          {ip}    let parsed: Value = serde_json::from_str(s)\n\
          {ip}        .map_err(|e| TransformError::ParseError {{\n\
          {ip}            path: {field_s}.into(),\n\
@@ -573,7 +573,7 @@ fn emit_csv(p: &csv::Csv, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(csv_str) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(csv_str) = event.get_string({field_s}) {{\n\
          {ip}    let mut rdr = csv::ReaderBuilder::new()\n\
          {ip}        .delimiter(b'{sep}')\n\
          {ip}        .quote(b'{quote}')\n\
@@ -626,7 +626,7 @@ fn emit_kv(p: &kv::KV, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(kv_str) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(kv_str) = event.get_string({field_s}) {{\n\
          {ip}    for pair in kv_str.split(\"{field_split}\") {{\n\
          {ip}        if let Some((key, value)) = pair.split_once(\"{value_split}\") {{\n",
         field_s = field_lit(field),
@@ -663,7 +663,7 @@ fn emit_dissect(p: &dissect::Dissect, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(input) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(input) = event.get_string({field_s}) {{\n\
          {ip}    let mut remaining = input;\n",
         field_s = field_lit(field),
     ));
@@ -789,7 +789,7 @@ fn emit_grok(p: &grok::Grok, pad: &str) -> Result<String> {
 
     // Try each grok pattern in order
     body.push_str(&format!(
-        "{ip}if let Some(input) = event.get_str({field_s}) {{\n",
+        "{ip}if let Some(input) = event.get_string({field_s}) {{\n",
         field_s = field_lit(field),
     ));
 
@@ -867,7 +867,7 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(date_str) = event.get_str({field_s}) {{\n",
+        "{ip}if let Some(date_str) = event.get_string({field_s}) {{\n",
         field_s = field_lit(field),
     ));
 
@@ -952,7 +952,7 @@ fn emit_registered_domain(p: &registered_domain::RegisteredDomain, pad: &str) ->
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(domain_str) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(domain_str) = event.get_string({field_s}) {{\n\
          {ip}    let domain = domain_str.to_string();\n\
          {ip}    event.set(\"{prefix}domain\", json!(domain.clone()))?;\n\
          {ip}    // Public suffix list lookup for registered domain extraction\n\
@@ -986,9 +986,7 @@ fn emit_network_direction(p: &network_direction::NetworkDirection, pad: &str) ->
     let mut body = String::new();
     body.push_str(&format!(
         "{ip}// Classify network direction based on internal network ranges\n\
-         {ip}if let (Some(src), Some(dst)) = (event.get_str({src_s}), event.get_str({dst_s})) {{\n\
-         {ip}    let src = src.to_string();\n\
-         {ip}    let dst = dst.to_string();\n\
+         {ip}if let (Some(src), Some(dst)) = (event.get_string({src_s}), event.get_string({dst_s})) {{\n\
          {ip}    if let Some(networks) = event.get_array({net_s}) {{\n\
          {ip}        let networks: Vec<String> = networks.iter()\n\
          {ip}            .filter_map(|v| v.as_str().map(|s| s.to_string()))\n\
@@ -1095,7 +1093,7 @@ fn emit_geoip(p: &geoip::Geoip, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(ip_str) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(ip_str) = event.get_string({field_s}) {{\n\
          {ip}    let ip_str = ip_str.to_string();\n\
          {ip}    // GeoIP enrichment ({db})\n\
          {ip}    if let Ok(geo) = geoip_lookup(\"{table}\", &ip_str) {{\n",
@@ -1147,7 +1145,7 @@ fn emit_user_agent(p: &user_agent::UserAgent, pad: &str) -> Result<String> {
 
     let mut body = String::new();
     body.push_str(&format!(
-        "{ip}if let Some(ua_str) = event.get_str({field_s}) {{\n\
+        "{ip}if let Some(ua_str) = event.get_string({field_s}) {{\n\
          {ip}    let ua_str = ua_str.to_string();\n\
          {ip}    // User agent parsing\n\
          {ip}    if let Ok(ua) = parse_user_agent(&ua_str) {{\n\
@@ -1184,16 +1182,14 @@ fn emit_community_id(p: &community_id::CommunityId, pad: &str) -> Result<String>
     body.push_str(&format!(
         "{ip}// Community ID v1 hash\n\
          {ip}if let (Some(src_ip), Some(dst_ip)) = (\n\
-         {ip}    event.get_str({src_ip_s}),\n\
-         {ip}    event.get_str({dst_ip_s}),\n\
+         {ip}    event.get_string({src_ip_s}),\n\
+         {ip}    event.get_string({dst_ip_s}),\n\
          {ip}) {{\n\
-         {ip}    let src_ip = src_ip.to_string();\n\
-         {ip}    let dst_ip = dst_ip.to_string();\n\
          {ip}    let src_port = event.get_i64({src_port_s}).unwrap_or(0) as u16;\n\
          {ip}    let dst_port = event.get_i64({dst_port_s}).unwrap_or(0) as u16;\n\
-         {ip}    let protocol = event.get_str(\"network.transport\")\n\
-         {ip}        .or_else(|| event.get_str(\"network.iana_number\"))\n\
-         {ip}        .unwrap_or(\"tcp\").to_string();\n\
+         {ip}    let protocol = event.get_string(\"network.transport\")\n\
+         {ip}        .or_else(|| event.get_string(\"network.iana_number\"))\n\
+         {ip}        .unwrap_or_else(|| \"tcp\".to_string());\n\
          {ip}    let cid = community_id_v1(&src_ip, &dst_ip, src_port, dst_port, &protocol);\n\
          {ip}    event.set({target_s}, json!(cid))?;\n\
          {ip}}}\n",
@@ -1393,7 +1389,7 @@ processors:
       field: message
 "#,
         );
-        assert!(code.contains(r#"event.get_str("message")"#));
+        assert!(code.contains(r#"event.get_string("message")"#));
         assert!(code.contains("to_lowercase()"));
         assert!(code.contains(r#"event.set("message""#));
     }
@@ -1408,7 +1404,7 @@ processors:
       target_field: destination
 "#,
         );
-        assert!(code.contains(r#"event.get_str("source")"#));
+        assert!(code.contains(r#"event.get_string("source")"#));
         assert!(code.contains("to_uppercase()"));
         assert!(code.contains(r#"event.set("destination""#));
     }
@@ -1678,7 +1674,7 @@ processors:
       ignore_missing: true
 "#,
         );
-        assert!(code.contains(r#"event.get_str("url.domain")"#));
+        assert!(code.contains(r#"event.get_string("url.domain")"#));
         assert!(code.contains("registered_domain_lookup("));
         assert!(code.contains(r#"event.set("registered_domain""#));
         assert!(code.contains(r#"event.set("top_level_domain""#));
@@ -1833,7 +1829,7 @@ processors:
 "#,
         );
         assert!(code.contains("community_id_v1("));
-        assert!(code.contains(r#"event.get_str("source.ip")"#));
+        assert!(code.contains(r#"event.get_string("source.ip")"#));
         assert!(code.contains(r#"event.set("network.community_id""#));
     }
 

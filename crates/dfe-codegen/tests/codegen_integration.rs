@@ -564,7 +564,7 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "reg_domain");
-    assert!(code.contains("event.get_str(\"url.domain\")"));
+    assert!(code.contains("event.get_string(\"url.domain\")"));
     assert!(code.contains("registered_domain_lookup("));
     assert!(code.contains("event.set(\"domain\""));
     assert!(code.contains("event.set(\"registered_domain\""));
@@ -598,8 +598,8 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "net_dir");
-    assert!(code.contains("event.get_str(\"source.ip\")"));
-    assert!(code.contains("event.get_str(\"destination.ip\")"));
+    assert!(code.contains("event.get_string(\"source.ip\")"));
+    assert!(code.contains("event.get_string(\"destination.ip\")"));
     assert!(code.contains("is_internal_ip("));
     assert!(code.contains("event.set(\"network.direction\""));
     assert!(code.contains("\"outbound\""));
@@ -712,7 +712,7 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "geoip_basic");
-    assert!(code.contains("event.get_str(\"source.ip\")"));
+    assert!(code.contains("event.get_string(\"source.ip\")"));
     assert!(code.contains("geoip_lookup("));
     assert!(code.contains("geoip.country_iso_code"));
     assert!(code.contains("geoip.city_name"));
@@ -744,7 +744,7 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "ua_basic");
-    assert!(code.contains("event.get_str(\"user_agent.original\")"));
+    assert!(code.contains("event.get_string(\"user_agent.original\")"));
     assert!(code.contains("parse_user_agent("));
     assert!(code.contains("user_agent.name"));
     assert!(code.contains("user_agent.version"));
@@ -761,7 +761,7 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "ua_target");
-    assert!(code.contains("event.get_str(\"agent\")"));
+    assert!(code.contains("event.get_string(\"agent\")"));
     assert!(code.contains("user.name"));
     assert!(code.contains("user.version"));
 }
@@ -775,8 +775,8 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "cid_basic");
-    assert!(code.contains("event.get_str(\"source.ip\")"));
-    assert!(code.contains("event.get_str(\"destination.ip\")"));
+    assert!(code.contains("event.get_string(\"source.ip\")"));
+    assert!(code.contains("event.get_string(\"destination.ip\")"));
     assert!(code.contains("community_id_v1("));
     assert!(code.contains("event.set(\"network.community_id\""));
 }
@@ -794,8 +794,8 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "cid_custom");
-    assert!(code.contains("event.get_str(\"source.nat.ip\")"));
-    assert!(code.contains("event.get_str(\"destination.nat.ip\")"));
+    assert!(code.contains("event.get_string(\"source.nat.ip\")"));
+    assert!(code.contains("event.get_string(\"destination.nat.ip\")"));
     assert!(code.contains("event.set(\"community_id\""));
 }
 
