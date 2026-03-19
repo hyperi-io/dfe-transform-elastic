@@ -16,67 +16,57 @@ impl Transform for Default {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("ecs.version", json!("8.11.0"))?;
 
-        // TODO: conditional: ctx.event?.original != null
-        {
-            event.append(
-                "error.message",
-                json!("event.original is set before start of ingest pipeline"),
-            )?;
+        let _cond = { event.has("event.original") };
+        if _cond {
+            event.append("error.message", json!("event.original is set before start of ingest pipeline"))?;
         }
 
-        // TODO: conditional: ctx.event?.original == null
-        {
+        let _cond = { !event.has("event.original") };
+        if _cond {
             if event.has("message") {
                 event.rename("message", "event.original")?;
             }
         }
 
-        if let Some(s) = event.get_str("event.original").map(String::from) {
-            let s = s.as_str();
-            let parsed: Value =
-                serde_json::from_str(s).map_err(|e| TransformError::ParseError {
-                    path: "event.original".into(),
-                    message: format!("failed to parse JSON: {}", e),
-                })?;
-            event.set("json", parsed)?;
-        }
+            if let Some(s) = event.get_string("event.original") {
+                let parsed: Value = serde_json::from_str(&s)
+                    .map_err(|e| TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: format!("failed to parse JSON: {}", e),
+                    })?;
+                event.set("json", parsed)?;
+            }
 
-        // Painless script
-        // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
-        // TODO: Transpile Painless to Rust (2.2.3)
-        painless_exec(
-            event,
-            r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#,
-        )?;
+            // Painless script
+            // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(event, r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#)?;
 
-        // TODO: conditional: ctx?.json?.uuid != null && ctx?.json?.uuid != ""
-        {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(val) = event.get("json.uuid") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("_id", converted)?;
-                }
-                Ok(())
-            })();
+        let _cond = { event.has("json.uuid") && event.get_str("json.uuid").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+        // ignore_failure: true
+        let _ = (|| -> Result<()> {
+            if let Some(val) = event.get("json.uuid") {
+                let converted = match val {
+                    Value::String(_) => val.clone(),
+                    Value::Number(n) => json!(n.to_string()),
+                    Value::Bool(b) => json!(b.to_string()),
+                    Value::Null => json!("null"),
+                    _ => json!(val.to_string()),
+                };
+                event.set("_id", converted)?;
+            }
+            Ok(())
+        })();
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(date_str) = event.get_str("json.published").map(String::from) {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("json.published") {
                 // Try ISO8601 format
-                if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(date_str)
-                    .or_else(|_| {
-                        chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                    })
-                    .or_else(|_| chrono::DateTime::parse_from_str(date_str, "%Y-%m-%dT%H:%M:%S%:z"))
+                if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
+                    .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z"))
+                    .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z"))
                 {
                     event.set("@timestamp", dt.to_rfc3339())?;
                 }
@@ -102,105 +92,78 @@ impl Transform for Default {
             Ok(())
         })();
 
-        // TODO: conditional: ["group.user_membership.add","group.user_membership.remove",
-        // "user.lifecycle.activate","user.lifecycle.create",
-        // "user.lifecycle.deactivate","user.lifecycle.suspend",
-        // "user.lifecycle.unsuspend"].contains(ctx?.okta?.event_type)
-
-        {
+        let _cond = { ["group.user_membership.add", "group.user_membership.remove", "user.lifecycle.activate", "user.lifecycle.create", "user.lifecycle.deactivate", "user.lifecycle.suspend", "user.lifecycle.unsuspend"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.category", json!("iam"))?;
         }
 
-        // TODO: conditional: ["policy.lifecycle.activate","policy.lifecycle.create",
-        // "policy.lifecycle.deactivate","policy.lifecycle.delete",
-        // "policy.lifecycle.update","policy.rule.activate","policy.rule.add",
-        // "policy.rule.deactivate","policy.rule.delete",
-        // "application.lifecycle.create","application.lifecycle.delete",
-        // "policy.rule.update","application.lifecycle.activate",
-        // "application.lifecycle.deactivate","application.lifecycle.update"].contains(ctx?.okta?.event_type)
-
-        {
+        let _cond = { ["policy.lifecycle.activate", "policy.lifecycle.create", "policy.lifecycle.deactivate", "policy.lifecycle.delete", "policy.lifecycle.update", "policy.rule.activate", "policy.rule.add", "policy.rule.deactivate", "policy.rule.delete", "application.lifecycle.create", "application.lifecycle.delete", "policy.rule.update", "application.lifecycle.activate", "application.lifecycle.deactivate", "application.lifecycle.update"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.category", json!("configuration"))?;
         }
 
-        // TODO: conditional: ["user.session.start","user.session.end","user.authentication.sso","policy.evaluate_sign_on"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["user.session.start", "user.session.end", "user.authentication.sso", "policy.evaluate_sign_on"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.category", json!("authentication"))?;
         }
 
-        // TODO: conditional: ["user.session.start","user.session.end"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["user.session.start", "user.session.end"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.category", json!("session"))?;
         }
 
-        // TODO: conditional: ["system.org.rate_limit.warning","system.org.rate_limit.violation",
-        // "core.concurrency.org.limit.violation"].contains(ctx?.okta?.event_type)
-
-        {
+        let _cond = { ["system.org.rate_limit.warning", "system.org.rate_limit.violation", "core.concurrency.org.limit.violation"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("info"))?;
         }
 
-        // TODO: conditional: ["security.request.blocked"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["security.request.blocked"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("network"))?;
         }
 
-        // TODO: conditional: ["system.org.rate_limit.warning","system.org.rate_limit.violation",
-        // "core.concurrency.org.limit.violation","security.request.blocked"].contains(ctx?.okta?.event_type)
-
-        {
+        let _cond = { ["system.org.rate_limit.warning", "system.org.rate_limit.violation", "core.concurrency.org.limit.violation", "security.request.blocked"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("network"))?;
         }
 
-        // TODO: conditional: ["user.session.start"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["user.session.start"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("start"))?;
         }
 
-        // TODO: conditional: ["user.session.end"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["user.session.end"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("end"))?;
         }
 
-        // TODO: conditional: ["group.user_membership.add","group.user_membership.remove"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["group.user_membership.add", "group.user_membership.remove"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("group"))?;
         }
 
-        // TODO: conditional: ["user.lifecycle.activate","user.lifecycle.create",
-        // "user.lifecycle.deactivate","user.lifecycle.suspend",
-        // "user.lifecycle.unsuspend","user.authentication.sso",
-        // "user.session.start","user.session.end","application.user_membership.add",
-        // "application.user_membership.remove","application.user_membership.change_username"].contains(ctx?.okta?.event_type)
-
-        {
+        let _cond = { ["user.lifecycle.activate", "user.lifecycle.create", "user.lifecycle.deactivate", "user.lifecycle.suspend", "user.lifecycle.unsuspend", "user.authentication.sso", "user.session.start", "user.session.end", "application.user_membership.add", "application.user_membership.remove", "application.user_membership.change_username"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("info"))?;
         }
 
-        // TODO: conditional: ["user.lifecycle.activate","user.lifecycle.deactivate",
-        // "user.lifecycle.suspend","user.lifecycle.unsuspend",
-        // "group.user_membership.add","group.user_membership.remove",
-        // "policy.lifecycle.activate","policy.lifecycle.deactivate",
-        // "policy.lifecycle.update","policy.rule.activate","policy.rule.add",
-        // "policy.rule.deactivate","policy.rule.update","application.user_membership.add",
-        // "application.user_membership.remove","application.user_membership.change_username"].contains(ctx?.okta?.event_type)
-
-        {
+        let _cond = { ["user.lifecycle.activate", "user.lifecycle.deactivate", "user.lifecycle.suspend", "user.lifecycle.unsuspend", "group.user_membership.add", "group.user_membership.remove", "policy.lifecycle.activate", "policy.lifecycle.deactivate", "policy.lifecycle.update", "policy.rule.activate", "policy.rule.add", "policy.rule.deactivate", "policy.rule.update", "application.user_membership.add", "application.user_membership.remove", "application.user_membership.change_username"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("change"))?;
         }
 
-        // TODO: conditional: ["user.lifecycle.create","policy.lifecycle.create","application.lifecycle.create"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["user.lifecycle.create", "policy.lifecycle.create", "application.lifecycle.create"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("creation"))?;
         }
 
-        // TODO: conditional: ["policy.lifecycle.delete","application.lifecycle.delete"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["policy.lifecycle.delete", "application.lifecycle.delete"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("deletion"))?;
         }
 
-        // TODO: conditional: ["policy.evaluate_sign_on"].contains(ctx?.okta?.event_type)
-        {
+        let _cond = { ["policy.evaluate_sign_on"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
+        if _cond {
             event.append("event.type", json!("info"))?;
         }
 
@@ -222,38 +185,31 @@ impl Transform for Default {
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if event.has("okta.actor.alternate_id") {
-                if let Some(input) = event.get_str("okta.actor.alternate_id").map(String::from) {
-                    let input = input.as_str();
-                    // Grok pattern: %{USER:user.name}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("%{USER:user.name}")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
+        if event.has("okta.actor.alternate_id") {
+            if let Some(input) = event.get_string("okta.actor.alternate_id") {
+                // Grok pattern: %{USER:user.name}
+                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                let grok_re = regex::Regex::new(&grok_to_regex("%{USER:user.name}")).unwrap();
+                if let Some(caps) = grok_re.captures(&input) {
+                    for name in grok_re.capture_names().flatten() {
+                        if let Some(m) = caps.name(name) {
+                            event.set(name, m.as_str())?;
                         }
                     }
                 }
             }
+        }
             Ok(())
         })();
 
-        // TODO: conditional: ctx?.user?.name != null
-        {
-            event.set(
-                "source.user.name",
-                event.get("user.name").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("user.name") };
+        if _cond {
+        event.set("source.user.name", event.get("user.name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.user?.name != null
-        {
-            event.set(
-                "client.user.name",
-                event.get("user.name").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("user.name") };
+        if _cond {
+        event.set("client.user.name", event.get("user.name").cloned().unwrap_or(Value::Null))?;
         }
 
         // ignore_failure: true
@@ -296,15 +252,11 @@ impl Transform for Default {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.okta?.device?.device_integrator != null
-        {
-            if let Some(s) = event
-                .get_str("okta.device.device_integrator")
-                .map(String::from)
-            {
-                let s = s.as_str();
-                let parsed: Value =
-                    serde_json::from_str(s).map_err(|e| TransformError::ParseError {
+        let _cond = { event.has("okta.device.device_integrator") };
+        if _cond {
+            if let Some(s) = event.get_string("okta.device.device_integrator") {
+                let parsed: Value = serde_json::from_str(&s)
+                    .map_err(|e| TransformError::ParseError {
                         path: "okta.device.device_integrator".into(),
                         message: format!("failed to parse JSON: {}", e),
                     })?;
@@ -315,10 +267,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.client.geographicalContext.geolocation") {
-                event.rename(
-                    "json.client.geographicalContext.geolocation",
-                    "client.geo.location",
-                )?;
+                event.rename("json.client.geographicalContext.geolocation", "client.geo.location")?;
             }
             Ok(())
         })();
@@ -326,10 +275,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.client.geographicalContext.city") {
-                event.rename(
-                    "json.client.geographicalContext.city",
-                    "client.geo.city_name",
-                )?;
+                event.rename("json.client.geographicalContext.city", "client.geo.city_name")?;
             }
             Ok(())
         })();
@@ -337,10 +283,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.client.geographicalContext.state") {
-                event.rename(
-                    "json.client.geographicalContext.state",
-                    "client.geo.region_name",
-                )?;
+                event.rename("json.client.geographicalContext.state", "client.geo.region_name")?;
             }
             Ok(())
         })();
@@ -348,10 +291,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.client.geographicalContext.country") {
-                event.rename(
-                    "json.client.geographicalContext.country",
-                    "client.geo.country_name",
-                )?;
+                event.rename("json.client.geographicalContext.country", "client.geo.country_name")?;
             }
             Ok(())
         })();
@@ -366,31 +306,23 @@ impl Transform for Default {
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if event.has("json.client.ipAddress") {
-                if let Some(s) = event.get_str("json.client.ipAddress").map(String::from) {
-                    let s = s.as_str();
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
-                            path: "json.client.ipAddress".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
-                    }
-                    event.set("okta.client.ip", s)?;
+        if event.has("json.client.ipAddress") {
+            if let Some(s) = event.get_string("json.client.ipAddress") {
+                // Validate IP format
+                let s = s.trim();
+                if s.parse::<std::net::IpAddr>().is_err() {
+                    return Err(TransformError::ParseError { path: "json.client.ipAddress".into(), message: format!("cannot convert '{}' to IP", s) }.into());
                 }
+                event.set("okta.client.ip", s)?;
             }
+        }
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.client.userAgent.browser") {
-                event.rename(
-                    "json.client.userAgent.browser",
-                    "okta.client.user_agent.browser",
-                )?;
+                event.rename("json.client.userAgent.browser", "okta.client.user_agent.browser")?;
             }
             Ok(())
         })();
@@ -406,10 +338,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.client.userAgent.rawUserAgent") {
-                event.rename(
-                    "json.client.userAgent.rawUserAgent",
-                    "okta.client.user_agent.raw_user_agent",
-                )?;
+                event.rename("json.client.userAgent.rawUserAgent", "okta.client.user_agent.raw_user_agent")?;
             }
             Ok(())
         })();
@@ -465,80 +394,53 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.transaction.detail.requestApiTokenId") {
-                event.rename(
-                    "json.transaction.detail.requestApiTokenId",
-                    "okta.transaction.detail.request_api_token_id",
-                )?;
+                event.rename("json.transaction.detail.requestApiTokenId", "okta.transaction.detail.request_api_token_id")?;
             }
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            event.set(
-                "okta.debug_context.debug_data.flattened",
-                event
-                    .get("json.debugContext.debugData")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        event.set("okta.debug_context.debug_data.flattened", event.get("json.debugContext.debugData").cloned().unwrap_or(Value::Null))?;
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(s) = event
-                .get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData")
-                .map(String::from)
-            {
-                let s = s.as_str();
-                let parsed: Value =
-                    serde_json::from_str(s).map_err(|e| TransformError::ParseError {
+            if let Some(s) = event.get_string("okta.debug_context.debug_data.flattened.logOnlySecurityData") {
+                let parsed: Value = serde_json::from_str(&s)
+                    .map_err(|e| TransformError::ParseError {
                         path: "okta.debug_context.debug_data.flattened.logOnlySecurityData".into(),
                         message: format!("failed to parse JSON: {}", e),
                     })?;
-                event.set(
-                    "okta.debug_context.debug_data.flattened.logOnlySecurityData",
-                    parsed,
-                )?;
+                event.set("okta.debug_context.debug_data.flattened.logOnlySecurityData", parsed)?;
             }
             Ok(())
         })();
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if event.has("okta.debug_context.debug_data.flattened.behaviors") {
-                if let Some(input) = event
-                    .get_str("okta.debug_context.debug_data.flattened.behaviors")
-                    .map(String::from)
-                {
-                    let input = input.as_str();
-                    let mut remaining = input;
-                    if let Some(rest) = remaining.strip_prefix("{") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("}") {
-                        event.set(
-                            "okta.debug_context.debug_data.flattened.behaviors",
-                            &remaining[..pos],
-                        )?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("}") {
-                        remaining = rest;
-                    }
+        if event.has("okta.debug_context.debug_data.flattened.behaviors") {
+            if let Some(input) = event.get_string("okta.debug_context.debug_data.flattened.behaviors") {
+                let mut remaining: &str = &input;
+                if let Some(rest) = remaining.strip_prefix("{") {
+                    remaining = rest;
+                }
+                if let Some(pos) = remaining.find("}") {
+                    event.set("okta.debug_context.debug_data.flattened.behaviors", &remaining[..pos])?;
+                    remaining = &remaining[pos..];
+                }
+                if let Some(rest) = remaining.strip_prefix("}") {
+                    remaining = rest;
                 }
             }
+        }
             Ok(())
         })();
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.behaviors != null
-        {
-            if let Some(kv_str) = event
-                .get_str("okta.debug_context.debug_data.flattened.behaviors")
-                .map(String::from)
-            {
-                let kv_str = kv_str.as_str();
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.behaviors") };
+        if _cond {
+            if let Some(kv_str) = event.get_string("okta.debug_context.debug_data.flattened.behaviors") {
                 for pair in kv_str.split(", ") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
@@ -549,67 +451,49 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx._behaviors_object != null
-        {
-            event.remove("okta.debug_context.debug_data.flattened.behaviors");
+        let _cond = { event.has("_behaviors_object") };
+        if _cond {
+            if event.remove("okta.debug_context.debug_data.flattened.behaviors").is_none() {
+                return Err(TransformError::FieldNotFound { path: "okta.debug_context.debug_data.flattened.behaviors".into() }.into());
+            }
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("_behaviors_object") {
-                event.rename(
-                    "_behaviors_object",
-                    "okta.debug_context.debug_data.flattened.behaviors",
-                )?;
+                event.rename("_behaviors_object", "okta.debug_context.debug_data.flattened.behaviors")?;
             }
             Ok(())
         })();
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.risk != null
-        {
-            event.set(
-                "okta.debug_context.debug_data.flattened.risk_object",
-                event
-                    .get("okta.debug_context.debug_data.flattened.risk")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.risk") };
+        if _cond {
+        event.set("okta.debug_context.debug_data.flattened.risk_object", event.get("okta.debug_context.debug_data.flattened.risk").cloned().unwrap_or(Value::Null))?;
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if event.has("okta.debug_context.debug_data.flattened.risk") {
-                if let Some(input) = event
-                    .get_str("okta.debug_context.debug_data.flattened.risk")
-                    .map(String::from)
-                {
-                    let input = input.as_str();
-                    let mut remaining = input;
-                    if let Some(rest) = remaining.strip_prefix("{") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("}") {
-                        event.set(
-                            "okta.debug_context.debug_data.flattened.risk",
-                            &remaining[..pos],
-                        )?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("}") {
-                        remaining = rest;
-                    }
+        if event.has("okta.debug_context.debug_data.flattened.risk") {
+            if let Some(input) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
+                let mut remaining: &str = &input;
+                if let Some(rest) = remaining.strip_prefix("{") {
+                    remaining = rest;
+                }
+                if let Some(pos) = remaining.find("}") {
+                    event.set("okta.debug_context.debug_data.flattened.risk", &remaining[..pos])?;
+                    remaining = &remaining[pos..];
+                }
+                if let Some(rest) = remaining.strip_prefix("}") {
+                    remaining = rest;
                 }
             }
+        }
             Ok(())
         })();
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.risk != null
-        {
-            if let Some(kv_str) = event
-                .get_str("okta.debug_context.debug_data.flattened.risk")
-                .map(String::from)
-            {
-                let kv_str = kv_str.as_str();
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.risk") };
+        if _cond {
+            if let Some(kv_str) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
                 for pair in kv_str.split(", ") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
@@ -620,79 +504,67 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx._risk_object != null
-        {
-            event.remove("okta.debug_context.debug_data.flattened.risk_object");
+        let _cond = { event.has("_risk_object") };
+        if _cond {
+            if event.remove("okta.debug_context.debug_data.flattened.risk_object").is_none() {
+                return Err(TransformError::FieldNotFound { path: "okta.debug_context.debug_data.flattened.risk_object".into() }.into());
+            }
         }
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.risk_object != null && ctx.okta?.debug_context?.debug_data?.flattened?.risk != null
-        {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event
-                    .get_str("okta.debug_context.debug_data.flattened.risk")
-                    .map(String::from)
-                {
-                    let input = input.as_str();
-                    // Grok pattern: level=%{NOTSPACE:_risk_object.level}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re =
-                        regex::Regex::new(&grok_to_regex("level=%{NOTSPACE:_risk_object.level}"))
-                            .unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.risk_object") && event.has("okta.debug_context.debug_data.flattened.risk") };
+        if _cond {
+        // ignore_failure: true
+        let _ = (|| -> Result<()> {
+            if let Some(input) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
+                // Grok pattern: level=%{NOTSPACE:_risk_object.level}
+                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                let grok_re = regex::Regex::new(&grok_to_regex("level=%{NOTSPACE:_risk_object.level}")).unwrap();
+                if let Some(caps) = grok_re.captures(&input) {
+                    for name in grok_re.capture_names().flatten() {
+                        if let Some(m) = caps.name(name) {
+                            event.set(name, m.as_str())?;
                         }
                     }
                 }
-                Ok(())
-            })();
+            }
+            Ok(())
+        })();
         }
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.risk_object != null && ctx.okta?.debug_context?.debug_data?.flattened?.risk != null
-        {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                // Pattern definitions for grok
-                // KEY = %{NOTSPACE}=
-                if let Some(input) = event
-                    .get_str("okta.debug_context.debug_data.flattened.risk")
-                    .map(String::from)
-                {
-                    let input = input.as_str();
-                    // Grok pattern: reasons=%{DATA:_risk_object.reasons}, %{KEY}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex(
-                        "reasons=%{DATA:_risk_object.reasons}, %{KEY}",
-                    ))
-                    .unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.risk_object") && event.has("okta.debug_context.debug_data.flattened.risk") };
+        if _cond {
+        // ignore_failure: true
+        let _ = (|| -> Result<()> {
+            // Pattern definitions for grok
+            // KEY = %{NOTSPACE}=
+            if let Some(input) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
+                // Grok pattern: reasons=%{DATA:_risk_object.reasons}, %{KEY}
+                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
+                let grok_re = regex::Regex::new(&grok_to_regex("reasons=%{DATA:_risk_object.reasons}, %{KEY}")).unwrap();
+                if let Some(caps) = grok_re.captures(&input) {
+                    for name in grok_re.capture_names().flatten() {
+                        if let Some(m) = caps.name(name) {
+                            event.set(name, m.as_str())?;
                         }
                     }
-                    // Additional grok pattern 1: reasons=%{DATA:_risk_object.reasons}$
                 }
-                Ok(())
-            })();
+                // Additional grok pattern 1: reasons=%{DATA:_risk_object.reasons}$
+            }
+            Ok(())
+        })();
         }
 
-        // TODO: conditional: ctx._risk_object != null
-        {
-            event.remove("okta.debug_context.debug_data.flattened.risk");
+        let _cond = { event.has("_risk_object") };
+        if _cond {
+            if event.remove("okta.debug_context.debug_data.flattened.risk").is_none() {
+                return Err(TransformError::FieldNotFound { path: "okta.debug_context.debug_data.flattened.risk".into() }.into());
+            }
         }
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("_risk_object") {
-                event.rename(
-                    "_risk_object",
-                    "okta.debug_context.debug_data.flattened.risk",
-                )?;
+                event.rename("_risk_object", "okta.debug_context.debug_data.flattened.risk")?;
             }
             Ok(())
         })();
@@ -700,10 +572,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.debugContext.debugData.deviceFingerprint") {
-                event.rename(
-                    "json.debugContext.debugData.deviceFingerprint",
-                    "okta.debug_context.debug_data.device_fingerprint",
-                )?;
+                event.rename("json.debugContext.debugData.deviceFingerprint", "okta.debug_context.debug_data.device_fingerprint")?;
             }
             Ok(())
         })();
@@ -711,10 +580,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.debugContext.debugData.requestId") {
-                event.rename(
-                    "json.debugContext.debugData.requestId",
-                    "okta.debug_context.debug_data.request_id",
-                )?;
+                event.rename("json.debugContext.debugData.requestId", "okta.debug_context.debug_data.request_id")?;
             }
             Ok(())
         })();
@@ -722,10 +588,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.debugContext.debugData.requestUri") {
-                event.rename(
-                    "json.debugContext.debugData.requestUri",
-                    "okta.debug_context.debug_data.request_uri",
-                )?;
+                event.rename("json.debugContext.debugData.requestUri", "okta.debug_context.debug_data.request_uri")?;
             }
             Ok(())
         })();
@@ -733,10 +596,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.debugContext.debugData.threatSuspected") {
-                event.rename(
-                    "json.debugContext.debugData.threatSuspected",
-                    "okta.debug_context.debug_data.threat_suspected",
-                )?;
+                event.rename("json.debugContext.debugData.threatSuspected", "okta.debug_context.debug_data.threat_suspected")?;
             }
             Ok(())
         })();
@@ -744,10 +604,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.debugContext.debugData.url") {
-                event.rename(
-                    "json.debugContext.debugData.url",
-                    "okta.debug_context.debug_data.url",
-                )?;
+                event.rename("json.debugContext.debugData.url", "okta.debug_context.debug_data.url")?;
             }
             Ok(())
         })();
@@ -755,92 +612,51 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.debugContext.debugData.dtHash") {
-                event.rename(
-                    "json.debugContext.debugData.dtHash",
-                    "okta.debug_context.debug_data.dt_hash",
-                )?;
+                event.rename("json.debugContext.debugData.dtHash", "okta.debug_context.debug_data.dt_hash")?;
             }
             Ok(())
         })();
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.logOnlySecurityData?.risk?.level != null && ctx.okta?.debug_context?.debug_data?.flattened?.logOnlySecurityData?.risk?.level != ""
-        {
-            event.set(
-                "okta.debug_context.debug_data.risk_level",
-                event
-                    .get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+        event.set("okta.debug_context.debug_data.risk_level", event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.flattened?.logOnlySecurityData?.risk?.reasons != null && ctx.okta?.debug_context?.debug_data?.flattened?.logOnlySecurityData?.risk?.reasons != ""
-        {
-            if let Some(s) = event
-                .get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { event.has("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+            if let Some(s) = event.get_string("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons") {
                 let parts: Vec<Value> = s.split(",\\s*").map(|p| json!(p)).collect();
-                event.set(
-                    "okta.debug_context.debug_data.risk_reasons",
-                    Value::Array(parts),
-                )?;
+                event.set("okta.debug_context.debug_data.risk_reasons", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.risk_level == null && ctx.okta?.debug_context?.debug_data?.flattened?.risk?.level != null && ctx.okta?.debug_context?.debug_data?.flattened?.risk?.level != ""
-        {
-            event.set(
-                "okta.debug_context.debug_data.risk_level",
-                event
-                    .get("okta.debug_context.debug_data.flattened.risk.level")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { !event.has("okta.debug_context.debug_data.risk_level") && event.has("okta.debug_context.debug_data.flattened.risk.level") && event.get_str("okta.debug_context.debug_data.flattened.risk.level").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+        event.set("okta.debug_context.debug_data.risk_level", event.get("okta.debug_context.debug_data.flattened.risk.level").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.factor == null && ctx.okta?.debug_context?.debug_data?.flattened?.factor != null && ctx.okta?.debug_context?.debug_data?.flattened?.factor != ""
-        {
-            event.set(
-                "okta.debug_context.debug_data.factor",
-                event
-                    .get("okta.debug_context.debug_data.flattened.factor")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { !event.has("okta.debug_context.debug_data.factor") && event.has("okta.debug_context.debug_data.flattened.factor") && event.get_str("okta.debug_context.debug_data.flattened.factor").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+        event.set("okta.debug_context.debug_data.factor", event.get("okta.debug_context.debug_data.flattened.factor").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta?.debug_context?.debug_data?.risk_reasons == null && ctx.okta?.debug_context?.debug_data?.flattened?.risk?.reasons != null && ctx.okta?.debug_context?.debug_data?.flattened?.risk?.reasons != ""
-        {
-            if let Some(s) = event
-                .get_str("okta.debug_context.debug_data.flattened.risk.reasons")
-                .map(String::from)
-            {
-                let s = s.as_str();
+        let _cond = { !event.has("okta.debug_context.debug_data.risk_reasons") && event.has("okta.debug_context.debug_data.flattened.risk.reasons") && event.get_str("okta.debug_context.debug_data.flattened.risk.reasons").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+            if let Some(s) = event.get_string("okta.debug_context.debug_data.flattened.risk.reasons") {
                 let parts: Vec<Value> = s.split(",\\s*").map(|p| json!(p)).collect();
-                event.set(
-                    "okta.debug_context.debug_data.risk_reasons",
-                    Value::Array(parts),
-                )?;
+                event.set("okta.debug_context.debug_data.risk_reasons", Value::Array(parts))?;
             }
         }
 
-        // Painless script
-        // Source: def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
-        painless_exec(
-            event,
-            r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#,
-        )?;
+            // Painless script
+            // Source: def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(event, r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#)?;
 
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.authenticationProvider") {
-                event.rename(
-                    "json.authenticationContext.authenticationProvider",
-                    "okta.authentication_context.authentication_provider",
-                )?;
+                event.rename("json.authenticationContext.authenticationProvider", "okta.authentication_context.authentication_provider")?;
             }
             Ok(())
         })();
@@ -848,10 +664,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.authenticationStep") {
-                event.rename(
-                    "json.authenticationContext.authenticationStep",
-                    "okta.authentication_context.authentication_step",
-                )?;
+                event.rename("json.authenticationContext.authenticationStep", "okta.authentication_context.authentication_step")?;
             }
             Ok(())
         })();
@@ -859,10 +672,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.credentialProvider") {
-                event.rename(
-                    "json.authenticationContext.credentialProvider",
-                    "okta.authentication_context.credential_provider",
-                )?;
+                event.rename("json.authenticationContext.credentialProvider", "okta.authentication_context.credential_provider")?;
             }
             Ok(())
         })();
@@ -870,10 +680,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.credentialType") {
-                event.rename(
-                    "json.authenticationContext.credentialType",
-                    "okta.authentication_context.credential_type",
-                )?;
+                event.rename("json.authenticationContext.credentialType", "okta.authentication_context.credential_type")?;
             }
             Ok(())
         })();
@@ -881,10 +688,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.externalSessionId") {
-                event.rename(
-                    "json.authenticationContext.externalSessionId",
-                    "okta.authentication_context.external_session_id",
-                )?;
+                event.rename("json.authenticationContext.externalSessionId", "okta.authentication_context.external_session_id")?;
             }
             Ok(())
         })();
@@ -892,10 +696,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.interface") {
-                event.rename(
-                    "json.authenticationContext.interface",
-                    "okta.authentication_context.authentication_provider",
-                )?;
+                event.rename("json.authenticationContext.interface", "okta.authentication_context.authentication_provider")?;
             }
             Ok(())
         })();
@@ -903,10 +704,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.authenticationContext.issuer") {
-                event.rename(
-                    "json.authenticationContext.issuer",
-                    "okta.authentication_context.issuer",
-                )?;
+                event.rename("json.authenticationContext.issuer", "okta.authentication_context.issuer")?;
             }
             Ok(())
         })();
@@ -914,10 +712,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.securityContext.asNumber") {
-                event.rename(
-                    "json.securityContext.asNumber",
-                    "okta.security_context.as.number",
-                )?;
+                event.rename("json.securityContext.asNumber", "okta.security_context.as.number")?;
             }
             Ok(())
         })();
@@ -925,10 +720,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.securityContext.asOrg") {
-                event.rename(
-                    "json.securityContext.asOrg",
-                    "okta.security_context.as.organization.name",
-                )?;
+                event.rename("json.securityContext.asOrg", "okta.security_context.as.organization.name")?;
             }
             Ok(())
         })();
@@ -936,10 +728,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.securityContext.domain") {
-                event.rename(
-                    "json.securityContext.domain",
-                    "okta.security_context.domain",
-                )?;
+                event.rename("json.securityContext.domain", "okta.security_context.domain")?;
             }
             Ok(())
         })();
@@ -947,10 +736,7 @@ impl Transform for Default {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("json.securityContext.isProxy") {
-                event.rename(
-                    "json.securityContext.isProxy",
-                    "okta.security_context.is_proxy",
-                )?;
+                event.rename("json.securityContext.isProxy", "okta.security_context.is_proxy")?;
             }
             Ok(())
         })();
@@ -980,13 +766,10 @@ impl Transform for Default {
                         // Inner processor operates on the element:
                         // ignore_failure: true
                         let _ = (|| -> Result<()> {
-                            if event.has("_ingest._value.geographicalContext") {
-                                event.rename(
-                                    "_ingest._value.geographicalContext",
-                                    "_ingest._value.geographical_context",
-                                )?;
-                            }
-                            Ok(())
+                        if event.has("_ingest._value.geographicalContext") {
+                        event.rename("_ingest._value.geographicalContext", "_ingest._value.geographical_context")?;
+                        }
+                        Ok(())
                         })();
                     }
                 }
@@ -1002,13 +785,10 @@ impl Transform for Default {
                         // Inner processor operates on the element:
                         // ignore_failure: true
                         let _ = (|| -> Result<()> {
-                            if event.has("_ingest._value.geographical_context.postalCode") {
-                                event.rename(
-                                    "_ingest._value.geographical_context.postalCode",
-                                    "_ingest._value.geographical_context.postal_code",
-                                )?;
-                            }
-                            Ok(())
+                        if event.has("_ingest._value.geographical_context.postalCode") {
+                        event.rename("_ingest._value.geographical_context.postalCode", "_ingest._value.geographical_context.postal_code")?;
+                        }
+                        Ok(())
                         })();
                     }
                 }
@@ -1030,20 +810,14 @@ impl Transform for Default {
             Ok(())
         })();
 
-        // TODO: conditional: ctx?.okta?.client?.ip != null
-        {
-            event.set(
-                "client.ip",
-                event.get("okta.client.ip").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.client.ip") };
+        if _cond {
+        event.set("client.ip", event.get("okta.client.ip").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.okta?.client?.ip != null
-        {
-            event.set(
-                "source.ip",
-                event.get("okta.client.ip").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.client.ip") };
+        if _cond {
+        event.set("source.ip", event.get("okta.client.ip").cloned().unwrap_or(Value::Null))?;
         }
 
         // ignore_failure: true
@@ -1122,226 +896,136 @@ impl Transform for Default {
         })();
 
         if event.has("okta.outcome.result") {
-            if let Some(s) = event.get_str("okta.outcome.result").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("okta.outcome.result") {
                 let lowered = s.to_lowercase();
                 event.set("okta.outcome.result_lower", lowered)?;
             }
         }
 
-        // TODO: conditional: ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "success" || ctx?.okta?.outcome?.result_lower == "allow")
+        // TODO: conditional not transpiled: ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "success" || ctx?.okta?.outcome?.result_lower == "allow")
         {
-            event.set("event.outcome", json!("success"))?;
+        event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "failure" || ctx?.okta?.outcome?.result_lower == "deny")
+        // TODO: conditional not transpiled: ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "failure" || ctx?.okta?.outcome?.result_lower == "deny")
         {
-            event.set("event.outcome", json!("failure"))?;
+        event.set("event.outcome", json!("failure"))?;
         }
 
-        // TODO: conditional: ctx?.event?.outcome == null
-        {
-            event.set("event.outcome", json!("unknown"))?;
+        let _cond = { !event.has("event.outcome") };
+        if _cond {
+        event.set("event.outcome", json!("unknown"))?;
         }
 
-        event.remove("okta.outcome.result_lower");
+            event.remove("okta.outcome.result_lower");
 
-        // Painless script
-        // Source: def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
-        painless_exec(
-            event,
-            r#"def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n"#,
-        )?;
+            // Painless script
+            // Source: def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(event, r#"def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n"#)?;
 
-        // TODO: conditional: ctx.okta_target_user?.display_name != null
-        {
-            event.set(
-                "user.target.full_name",
-                event
-                    .get("okta_target_user.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta_target_user.display_name") };
+        if _cond {
+        event.set("user.target.full_name", event.get("okta_target_user.display_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta_target_user?.id != null
-        {
-            event.set(
-                "user.target.id",
-                event
-                    .get("okta_target_user.id")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta_target_user.id") };
+        if _cond {
+        event.set("user.target.id", event.get("okta_target_user.id").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta_target_user?.login != null
-        {
-            event.set(
-                "user.target.email",
-                event
-                    .get("okta_target_user.login")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta_target_user.login") };
+        if _cond {
+        event.set("user.target.email", event.get("okta_target_user.login").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta_target_group?.display_name != null
-        {
-            event.set(
-                "user.target.group.name",
-                event
-                    .get("okta_target_group.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta_target_group.display_name") };
+        if _cond {
+        event.set("user.target.group.name", event.get("okta_target_group.display_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.okta_target_group?.id != null
-        {
-            event.set(
-                "user.target.group.id",
-                event
-                    .get("okta_target_group.id")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta_target_group.id") };
+        if _cond {
+        event.set("user.target.group.id", event.get("okta_target_group.id").cloned().unwrap_or(Value::Null))?;
         }
 
-        event.remove("okta_target_user");
-        event.remove("okta_target_group");
+            event.remove("okta_target_user");
+            event.remove("okta_target_group");
 
-        // TODO: conditional: ctx?.okta?.actor?.id != null
-        {
-            event.set(
-                "client.user.id",
-                event.get("okta.actor.id").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.actor.id") };
+        if _cond {
+        event.set("client.user.id", event.get("okta.actor.id").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.okta?.actor?.id != null
-        {
-            event.set(
-                "source.user.id",
-                event.get("okta.actor.id").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.actor.id") };
+        if _cond {
+        event.set("source.user.id", event.get("okta.actor.id").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.okta?.actor?.display_name != null
-        {
-            event.set(
-                "client.user.full_name",
-                event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.actor.display_name") };
+        if _cond {
+        event.set("client.user.full_name", event.get("okta.actor.display_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.okta?.actor?.display_name != null
-        {
-            event.set(
-                "source.user.full_name",
-                event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.actor.display_name") };
+        if _cond {
+        event.set("source.user.full_name", event.get("okta.actor.display_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.okta?.actor?.display_name != null
-        {
-            event.set(
-                "user.full_name",
-                event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.actor.display_name") };
+        if _cond {
+        event.set("user.full_name", event.get("okta.actor.display_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.okta?.actor?.display_name != null
-        {
-            event.append(
-                "related.user",
-                event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("okta.actor.display_name") };
+        if _cond {
+            event.append("related.user", event.get("okta.actor.display_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.user?.target?.full_name != null
-        {
-            event.append(
-                "related.user",
-                event
-                    .get("user.target.full_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("user.target.full_name") };
+        if _cond {
+            event.append("related.user", event.get("user.target.full_name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.user?.name != null
-        {
-            event.append(
-                "related.user",
-                event.get("user.name").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("user.name") };
+        if _cond {
+            event.append("related.user", event.get("user.name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.source?.ip != null
-        {
-            event.append(
-                "related.ip",
-                event.get("source.ip").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("source.ip") };
+        if _cond {
+            event.append("related.ip", event.get("source.ip").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx?.destination?.ip != null
-        {
-            event.append(
-                "related.ip",
-                event.get("destination.ip").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("destination.ip") };
+        if _cond {
+            event.append("related.ip", event.get("destination.ip").cloned().unwrap_or(Value::Null))?;
         }
 
-        event.remove("json");
+            event.remove("json");
 
         if event.has("user_agent.original") {
-            if let Some(ua_str) = event.get_str("user_agent.original").map(String::from) {
-                let ua_str = ua_str.as_str();
+            if let Some(ua_str) = event.get_string("user_agent.original") {
                 let ua_str = ua_str.to_string();
                 // User agent parsing
                 if let Ok(ua) = parse_user_agent(&ua_str) {
                     event.set("user_agent.original", json!(ua_str))?;
-                    if let Some(name) = ua.name {
-                        event.set("user_agent.name", json!(name))?;
-                    }
-                    if let Some(version) = ua.version {
-                        event.set("user_agent.version", json!(version))?;
-                    }
+                    if let Some(name) = ua.name { event.set("user_agent.name", json!(name))?; }
+                    if let Some(version) = ua.version { event.set("user_agent.version", json!(version))?; }
                     if let Some(os_name) = ua.os_name {
                         event.set("user_agent.os.name", json!(os_name))?;
                         if let Some(os_version) = ua.os_version {
                             event.set("user_agent.os.version", json!(os_version))?;
-                            event.set(
-                                "user_agent.os.full",
-                                json!(format!("{} {}", os_name, os_version)),
-                            )?;
+                            event.set("user_agent.os.full", json!(format!("{} {}", os_name, os_version)))?;
                         }
                     }
-                    if let Some(device) = ua.device {
-                        event.set("user_agent.device.name", json!(device))?;
-                    }
+                    if let Some(device) = ua.device { event.set("user_agent.device.name", json!(device))?; }
                 }
             }
         }
 
         if event.has("source.ip") {
-            if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("source.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -1374,8 +1058,7 @@ impl Transform for Default {
         }
 
         if event.has("destination.ip") {
-            if let Some(ip_str) = event.get_str("destination.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("destination.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -1408,8 +1091,7 @@ impl Transform for Default {
         }
 
         if event.has("source.ip") {
-            if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("source.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -1424,8 +1106,7 @@ impl Transform for Default {
         }
 
         if event.has("destination.ip") {
-            if let Some(ip_str) = event.get_str("destination.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("destination.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -1439,32 +1120,29 @@ impl Transform for Default {
             }
         }
 
-        if event.has("source.as.asn") {
-            event.rename("source.as.asn", "source.as.number")?;
-        }
+            if event.has("source.as.asn") {
+                event.rename("source.as.asn", "source.as.number")?;
+            }
 
-        if event.has("source.as.organization_name") {
-            event.rename("source.as.organization_name", "source.as.organization.name")?;
-        }
+            if event.has("source.as.organization_name") {
+                event.rename("source.as.organization_name", "source.as.organization.name")?;
+            }
 
-        if event.has("destination.as.asn") {
-            event.rename("destination.as.asn", "destination.as.number")?;
-        }
+            if event.has("destination.as.asn") {
+                event.rename("destination.as.asn", "destination.as.number")?;
+            }
 
-        if event.has("destination.as.organization_name") {
-            event.rename(
-                "destination.as.organization_name",
-                "destination.as.organization.name",
-            )?;
-        }
+            if event.has("destination.as.organization_name") {
+                event.rename("destination.as.organization_name", "destination.as.organization.name")?;
+            }
 
-        // TODO: conditional: ctx?.tags == null || !(ctx.tags.contains('preserve_original_event'))
+        // TODO: conditional not transpiled: ctx?.tags == null || !(ctx.tags.contains('preserve_original_event'))
         {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                event.remove("event.original");
-                Ok(())
-            })();
+        // ignore_failure: true
+        let _ = (|| -> Result<()> {
+            event.remove("event.original");
+            Ok(())
+        })();
         }
 
         Ok(TransformResult::Continue)

@@ -549,7 +549,7 @@ fn emit_json(p: &json::Json, pad: &str) -> Result<String> {
     let mut body = String::new();
     body.push_str(&format!(
         "{ip}if let Some(s) = event.get_string({field_s}) {{\n\
-         {ip}    let parsed: Value = serde_json::from_str(s)\n\
+         {ip}    let parsed: Value = serde_json::from_str(&s)\n\
          {ip}        .map_err(|e| TransformError::ParseError {{\n\
          {ip}            path: {field_s}.into(),\n\
          {ip}            message: format!(\"failed to parse JSON: {{}}\", e),\n\
@@ -664,7 +664,7 @@ fn emit_dissect(p: &dissect::Dissect, pad: &str) -> Result<String> {
     let mut body = String::new();
     body.push_str(&format!(
         "{ip}if let Some(input) = event.get_string({field_s}) {{\n\
-         {ip}    let mut remaining = input;\n",
+         {ip}    let mut remaining: &str = &input;\n",
         field_s = field_lit(field),
     ));
 
@@ -800,7 +800,7 @@ fn emit_grok(p: &grok::Grok, pad: &str) -> Result<String> {
                 "{ip}    // Grok pattern: {escaped}\n\
                  {ip}    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)\n\
                  {ip}    let grok_re = regex::Regex::new(&grok_to_regex(\"{escaped}\")).unwrap();\n\
-                 {ip}    if let Some(caps) = grok_re.captures(input) {{\n\
+                 {ip}    if let Some(caps) = grok_re.captures(&input) {{\n\
                  {ip}        for name in grok_re.capture_names().flatten() {{\n\
                  {ip}            if let Some(m) = caps.name(name) {{\n\
                  {ip}                event.set(name, m.as_str())?;\n\
@@ -889,9 +889,9 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
             "ISO8601" => {
                 body.push_str(&format!(
                     "{ip}    // Try ISO8601 format\n\
-                     {ip}    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(date_str)\n\
-                     {ip}        .or_else(|_| chrono::DateTime::parse_from_str(date_str, \"%Y-%m-%dT%H:%M:%S%.f%:z\"))\n\
-                     {ip}        .or_else(|_| chrono::DateTime::parse_from_str(date_str, \"%Y-%m-%dT%H:%M:%S%:z\"))\n\
+                     {ip}    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)\n\
+                     {ip}        .or_else(|_| chrono::DateTime::parse_from_str(&date_str, \"%Y-%m-%dT%H:%M:%S%.f%:z\"))\n\
+                     {ip}        .or_else(|_| chrono::DateTime::parse_from_str(&date_str, \"%Y-%m-%dT%H:%M:%S%:z\"))\n\
                      {ip}    {{\n\
                      {ip}        event.set({target_s}, dt.to_rfc3339())?;\n\
                      {ip}    }}\n",
@@ -928,7 +928,7 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
                 body.push_str(&format!(
                     "{ip}    // Try Java datetime format: {escaped}\n\
                      {ip}    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)\n\
-                     {ip}    // chrono::NaiveDateTime::parse_from_str(date_str, \"{escaped}\")\n"
+                     {ip}    // chrono::NaiveDateTime::parse_from_str(&date_str, \"{escaped}\")\n"
                 ));
             }
         }
@@ -1626,7 +1626,7 @@ processors:
 "#,
         );
         assert!(code.contains("grok_to_regex("));
-        assert!(code.contains("captures(input)"));
+        assert!(code.contains("captures(&input)"));
         assert!(code.contains("ignore_failure: true"));
     }
 
