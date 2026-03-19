@@ -64,16 +64,25 @@ fn indent(pad: &str) -> String {
 }
 
 /// Wrap generated statements in an `if` block when a condition is present.
+///
+/// Attempts to transpile the Painless conditional expression to Rust.
+/// Falls back to a TODO comment if the expression is too complex.
+///
+/// Uses a `let` binding to evaluate the condition before the `if` block,
+/// avoiding borrow conflicts between condition evaluation and body mutation.
 fn wrap_conditional(cond: &Option<Conditional>, body: &str, pad: &str) -> String {
     match cond {
         Some(c) => {
-            // Emit condition as a comment + the raw Painless expression.
-            // Full Painless→Rust transpilation is future work (2.2.3).
-            // For now we emit a TODO with the raw expression.
-            format!(
-                "{pad}// TODO: conditional: {expr}\n{pad}{{\n{body}{pad}}}\n",
-                expr = c.0,
-            )
+            if let Some(rust_cond) = super::condition::transpile_condition(&c.0) {
+                // Bind condition to a bool to drop any immutable borrows before the body
+                format!("{pad}let _cond = {{ {rust_cond} }};\n{pad}if _cond {{\n{body}{pad}}}\n")
+            } else {
+                // Fallback: emit TODO comment and run unconditionally
+                format!(
+                    "{pad}// TODO: conditional not transpiled: {expr}\n{pad}{{\n{body}{pad}}}\n",
+                    expr = c.0,
+                )
+            }
         }
         None => body.to_string(),
     }
@@ -82,8 +91,9 @@ fn wrap_conditional(cond: &Option<Conditional>, body: &str, pad: &str) -> String
 /// Wrap a block of statements in ignore_failure handling.
 fn wrap_ignore_failure(ignore: Option<bool>, body: &str, pad: &str) -> String {
     if ignore == Some(true) {
+        let ip = indent(pad);
         format!(
-            "{pad}// ignore_failure: true\n{pad}let _ = (|| -> Result<()> {{\n{body}{pad}}})();\n"
+            "{pad}// ignore_failure: true\n{pad}let _ = (|| -> Result<()> {{\n{body}{ip}Ok(())\n{pad}}})();\n"
         )
     } else {
         body.to_string()
