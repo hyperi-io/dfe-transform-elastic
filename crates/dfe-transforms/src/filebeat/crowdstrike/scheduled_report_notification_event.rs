@@ -16,13 +16,9 @@ impl Transform for ScheduledReportNotificationEvent {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.ExecutionMetadata.ExecutionStart")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.ExecutionStart") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -32,13 +28,9 @@ impl Transform for ScheduledReportNotificationEvent {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -48,13 +40,9 @@ impl Transform for ScheduledReportNotificationEvent {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -70,37 +58,16 @@ impl Transform for ScheduledReportNotificationEvent {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                        .into(),
-                                    message: format!("cannot convert '{}' to integer", s),
-                                }
-                            })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: format!("cannot convert '{}' to integer", s) })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                path:
-                                    "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(),
-                                message: format!("cannot convert '{}' to integer", s)
-                            })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: format!("cannot convert '{}' to integer", s) })?)
                         }
                     }
-                    Value::Number(n) => {
-                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                    }
+                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => {
-                        return Err(TransformError::ParseError {
-                            path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(),
-                            message: "cannot convert to integer".into(),
-                        }
-                        .into());
-                    }
+                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: "cannot convert to integer".into() }.into()),
                 };
-                event.set(
-                    "crowdstrike.event.ExecutionMetadata.ExecutionDuration",
-                    converted,
-                )?;
+                event.set("crowdstrike.event.ExecutionMetadata.ExecutionDuration", converted)?;
             }
         }
 
@@ -110,44 +77,27 @@ impl Transform for ScheduledReportNotificationEvent {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                    message: format!("cannot convert '{}' to integer", s),
-                                }
-                            })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                message: format!("cannot convert '{}' to integer", s)
-                            })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
                         }
                     }
-                    Value::Number(n) => {
-                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                    }
+                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => {
-                        return Err(TransformError::ParseError {
-                            path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                            message: "cannot convert to integer".into(),
-                        }
-                        .into());
-                    }
+                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(), message: "cannot convert to integer".into() }.into()),
                 };
                 event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
             }
         }
 
-        if event.has("crowdstrike.event.UserID") {
-            event.rename("crowdstrike.event.UserID", "user.id")?;
-        }
+            if event.has("crowdstrike.event.UserID") {
+                event.rename("crowdstrike.event.UserID", "user.id")?;
+            }
 
-        // TODO: conditional: ctx.user?.id != null && ctx.user.id.contains('@')
+        // TODO: conditional not transpiled: ctx.user?.id != null && ctx.user.id.contains('@')
         {
-            if let Some(input) = event.get_str("user.id").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+            if let Some(input) = event.get_string("user.id") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find("@") {
                     event.set("user.name", &remaining[..pos])?;
                     remaining = &remaining[pos..];

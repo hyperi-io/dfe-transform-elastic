@@ -16,24 +16,23 @@ impl Transform for Default {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("ecs.version", json!("8.11.0"))?;
 
-        // TODO: conditional: ctx.event?.original == null
-        {
+        let _cond = { !event.has("event.original") };
+        if _cond {
             if event.has("message") {
                 event.rename("message", "event.original")?;
             }
         }
 
-        if let Some(s) = event.get_str("event.original").map(String::from) {
-            let s = s.as_str();
-            let parsed: Value =
-                serde_json::from_str(s).map_err(|e| TransformError::ParseError {
-                    path: "event.original".into(),
-                    message: format!("failed to parse JSON: {}", e),
-                })?;
-            event.set("crowdstrike", parsed)?;
-        }
+            if let Some(s) = event.get_string("event.original") {
+                let parsed: Value = serde_json::from_str(&s)
+                    .map_err(|e| TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: format!("failed to parse JSON: {}", e),
+                    })?;
+                event.set("crowdstrike", parsed)?;
+            }
 
-        event.remove("host.name");
+            event.remove("host.name");
 
         event.set("observer.vendor", json!("Crowdstrike"))?;
 
@@ -65,35 +64,25 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event != null
-        {
+        let _cond = { event.has("crowdstrike.event") };
+        if _cond {
             // Painless script
             // Source: def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                r#"def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n"#,
-            )?;
+            painless_exec(event, r#"def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n"#)?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.Tags != null
-        {
+        let _cond = { event.has("crowdstrike.event.Tags") };
+        if _cond {
             // Painless script
             // Source: if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        ctx.tags.add(value.trim());\n    }\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                r#"if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        ctx.tags.add(value.trim());\n    }\n}\n"#,
-            )?;
+            painless_exec(event, r#"if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        ctx.tags.add(value.trim());\n    }\n}\n"#)?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.UTCTimestamp != null && String.valueOf(ctx.crowdstrike.event.UTCTimestamp).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.UTCTimestamp != null && String.valueOf(ctx.crowdstrike.event.UTCTimestamp).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.UTCTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.UTCTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -103,13 +92,9 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.UTCTimestamp != null && String.valueOf(ctx.crowdstrike.event.UTCTimestamp).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.UTCTimestamp != null && String.valueOf(ctx.crowdstrike.event.UTCTimestamp).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.UTCTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.UTCTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -121,13 +106,9 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventCreationTime != null && String.valueOf(ctx.crowdstrike.metadata.eventCreationTime).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.metadata?.eventCreationTime != null && String.valueOf(ctx.crowdstrike.metadata.eventCreationTime).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.metadata.eventCreationTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.metadata.eventCreationTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -139,13 +120,9 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventCreationTime != null && String.valueOf(ctx.crowdstrike.metadata.eventCreationTime).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.metadata?.eventCreationTime != null && String.valueOf(ctx.crowdstrike.metadata.eventCreationTime).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.metadata.eventCreationTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.metadata.eventCreationTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -155,2195 +132,1625 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.UTCTimestamp == null && ctx.event?.created != null
-        {
-            event.set(
-                "@timestamp",
-                event.get("event.created").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { !event.has("crowdstrike.event.UTCTimestamp") && event.has("event.created") };
+        if _cond {
+        event.set("@timestamp", event.get("event.created").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event != null
-        {
+        let _cond = { event.has("crowdstrike.event") };
+        if _cond {
             // Painless script
             // Source: ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                r#"ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#,
-            )?;
+            painless_exec(event, r#"ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#)?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata != null
-        {
+        let _cond = { event.has("crowdstrike.metadata") };
+        if _cond {
             // Painless script
             // Source: ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                r#"ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#,
-            )?;
+            painless_exec(event, r#"ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#)?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.CommandLine != null
-        {
+        let _cond = { event.has("crowdstrike.event.CommandLine") };
+        if _cond {
             // Painless script
             // Source: def commandLine = ctx.crowdstrike?.event?.CommandLine;\ncommandLine = commandLine.trim();\n\nif (commandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(commandLine)));\n  args.removeIf(arg -> arg == \"\");\n\n  ctx.process = [\n    'command_line': commandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                r#"def commandLine = ctx.crowdstrike?.event?.CommandLine;\ncommandLine = commandLine.trim();\n\nif (commandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(commandLine)));\n  args.removeIf(arg -> arg == \"\");\n\n  ctx.process = [\n    'command_line': commandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#,
-            )?;
+            painless_exec(event, r#"def commandLine = ctx.crowdstrike?.event?.CommandLine;\ncommandLine = commandLine.trim();\n\nif (commandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(commandLine)));\n  args.removeIf(arg -> arg == \"\");\n\n  ctx.process = [\n    'command_line': commandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#)?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ParentCommandLine != null
-        {
+        let _cond = { event.has("crowdstrike.event.ParentCommandLine") };
+        if _cond {
             // Painless script
             // Source: def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                r#"def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#,
-            )?;
+            painless_exec(event, r#"def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#)?;
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "DetectionSummaryEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("DetectionSummaryEvent") };
+        if _cond {
             // Begin nested pipeline: "detection_summary"
             event.set("event.kind", json!("alert"))?;
             event.append("event.category", json!("malware"))?;
             event.append("event.type", json!("info"))?;
             if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            event.rename("crowdstrike.event.UserName", "user.name")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ProcessStartTime != null && String.valueOf(ctx.crowdstrike.event.ProcessStartTime).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessStartTime != null && String.valueOf(ctx.crowdstrike.event.ProcessStartTime).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ProcessStartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("process.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ProcessStartTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("process.start", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ProcessStartTime != null && String.valueOf(ctx.crowdstrike.event.ProcessStartTime).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ProcessStartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("process.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ProcessEndTime != null && String.valueOf(ctx.crowdstrike.event.ProcessEndTime).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ProcessEndTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("process.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ProcessEndTime != null && String.valueOf(ctx.crowdstrike.event.ProcessEndTime).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ProcessEndTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("process.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.LocalIP != null && ctx.crowdstrike?.event?.LocalIP != ""
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessStartTime != null && String.valueOf(ctx.crowdstrike.event.ProcessStartTime).length() <= 11
             {
-                if event.has("crowdstrike.event.LocalIP") {
-                    event.rename("crowdstrike.event.LocalIP", "source.ip")?;
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ProcessStartTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("process.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessEndTime != null && String.valueOf(ctx.crowdstrike.event.ProcessEndTime).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ProcessEndTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("process.end", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessEndTime != null && String.valueOf(ctx.crowdstrike.event.ProcessEndTime).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ProcessEndTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("process.end", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.LocalIP") && event.get_str("crowdstrike.event.LocalIP").is_some_and(|s| !s.is_empty()) };
+            if _cond {
+            if event.has("crowdstrike.event.LocalIP") {
+            event.rename("crowdstrike.event.LocalIP", "source.ip")?;
+            }
             }
             if event.has("crowdstrike.event.ProcessId") {
-                event.rename("crowdstrike.event.ProcessId", "process.pid")?;
+            event.rename("crowdstrike.event.ProcessId", "process.pid")?;
             }
             if event.has("crowdstrike.event.HostGroups") {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.HostGroups")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
-                }
+            if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
+            }
             }
             if event.has("crowdstrike.event.ParentProcessId") {
-                event.rename("crowdstrike.event.ParentProcessId", "process.parent.pid")?;
+            event.rename("crowdstrike.event.ParentProcessId", "process.parent.pid")?;
             }
-            // TODO: conditional: ctx.process?.parent?.executable == null
-            {
-                if event.has("crowdstrike.event.ParentImageFileName") {
-                    event.rename(
-                        "crowdstrike.event.ParentImageFileName",
-                        "process.parent.executable",
-                    )?;
-                }
+            let _cond = { !event.has("process.parent.executable") };
+            if _cond {
+            if event.has("crowdstrike.event.ParentImageFileName") {
+            event.rename("crowdstrike.event.ParentImageFileName", "process.parent.executable")?;
+            }
             }
             if event.has("crowdstrike.event.PatternDispositionDescription") {
-                event.rename(
-                    "crowdstrike.event.PatternDispositionDescription",
-                    "event.action",
-                )?;
+            event.rename("crowdstrike.event.PatternDispositionDescription", "event.action")?;
             }
             if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
             if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
             if event.has("crowdstrike.event.DetectDescription") {
-                event.rename("crowdstrike.event.DetectDescription", "message")?;
+            event.rename("crowdstrike.event.DetectDescription", "message")?;
             }
-            // TODO: conditional: ctx.message != null
-            {
-                event.set(
-                    "rule.description",
-                    event.get("message").cloned().unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("message") };
+            if _cond {
+            event.set("rule.description", event.get("message").cloned().unwrap_or(Value::Null))?;
             }
             if event.has("crowdstrike.event.FileName") {
-                event.rename("crowdstrike.event.FileName", "process.name")?;
+            event.rename("crowdstrike.event.FileName", "process.name")?;
             }
             if event.has("crowdstrike.event.MachineDomain") {
-                event.rename("crowdstrike.event.MachineDomain", "host.domain")?;
+            event.rename("crowdstrike.event.MachineDomain", "host.domain")?;
             }
             if event.has("crowdstrike.event.ComputerName") {
-                event.rename("crowdstrike.event.ComputerName", "host.name")?;
+            event.rename("crowdstrike.event.ComputerName", "host.name")?;
             }
             if event.has("crowdstrike.event.SHA256String") {
-                event.rename("crowdstrike.event.SHA256String", "file.hash.sha256")?;
+            event.rename("crowdstrike.event.SHA256String", "file.hash.sha256")?;
             }
             if event.has("crowdstrike.event.MD5String") {
-                event.rename("crowdstrike.event.MD5String", "file.hash.md5")?;
+            event.rename("crowdstrike.event.MD5String", "file.hash.md5")?;
             }
             if event.has("crowdstrike.event.SHA1String") {
-                event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
+            event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
             }
-            // TODO: conditional: ctx.file?.hash?.sha1 != null && ctx.file?.hash?.sha1 != ""
-            {
-                event.append(
-                    "related.hash",
-                    event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("file.hash.sha1") && event.get_str("file.hash.sha1").is_some_and(|s| !s.is_empty()) };
+            if _cond {
+            event.append("related.hash", event.get("file.hash.sha1").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.file?.hash?.sha256 != null && ctx.file?.hash?.sha256 != ""
-            {
-                event.append(
-                    "related.hash",
-                    event
-                        .get("file.hash.sha256")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("file.hash.sha256") && event.get_str("file.hash.sha256").is_some_and(|s| !s.is_empty()) };
+            if _cond {
+            event.append("related.hash", event.get("file.hash.sha256").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.file?.hash?.md5 != null && ctx.file?.hash?.md5 != ""
-            {
-                event.append(
-                    "related.hash",
-                    event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("file.hash.md5") && event.get_str("file.hash.md5").is_some_and(|s| !s.is_empty()) };
+            if _cond {
+            event.append("related.hash", event.get("file.hash.md5").cloned().unwrap_or(Value::Null))?;
             }
             if event.has("crowdstrike.event.FileName") {
-                event.rename("crowdstrike.event.FileName", "file.name")?;
+            event.rename("crowdstrike.event.FileName", "file.name")?;
             }
             if event.has("crowdstrike.event.FilePath") {
-                event.rename("crowdstrike.event.FilePath", "file.path")?;
+            event.rename("crowdstrike.event.FilePath", "file.path")?;
             }
             if event.has("crowdstrike.event.DetectName") {
-                event.rename("crowdstrike.event.DetectName", "rule.name")?;
+            event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
             if event.has("crowdstrike.event.DetectId") {
-                event.rename("crowdstrike.event.DetectId", "rule.id")?;
+            event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
-            // TODO: conditional: ctx.cropwdstrike?.event?.MacAddress != null
-            {
-                if event.has("crowdstrike.event.MacAddress") {
-                    event.rename("crowdstrike.event.MacAddress", "host.mac")?;
-                }
+            let _cond = { event.has("cropwdstrike.event.MacAddress") };
+            if _cond {
+            if event.has("crowdstrike.event.MacAddress") {
+            event.rename("crowdstrike.event.MacAddress", "host.mac")?;
             }
-            // TODO: conditional: ctx.host?.mac != null
-            {
-                if event.has("host.mac") {
-                    if let Some(s) = event.get_str("host.mac").map(String::from) {
-                        let s = s.as_str();
-                        let uppered = s.to_uppercase();
-                        event.set("host.mac", uppered)?;
-                    }
-                }
+            }
+            let _cond = { event.has("host.mac") };
+            if _cond {
+            if event.has("host.mac") {
+            if let Some(s) = event.get_string("host.mac") {
+            let uppered = s.to_uppercase();
+            event.set("host.mac", uppered)?;
+            }
+            }
             }
             event.set("threat.framework", json!("MITRE ATT&CK"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.Technique != null
-            {
-                event.append(
-                    "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Technique") };
+            if _cond {
+            event.append("threat.technique.name", event.get("crowdstrike.event.Technique").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TechniqueId != null
-            {
-                event.append(
-                    "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.TechniqueId") };
+            if _cond {
+            event.append("threat.technique.id", event.get("crowdstrike.event.TechniqueId").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Tactic != null
-            {
-                event.append(
-                    "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Tactic") };
+            if _cond {
+            event.append("threat.tactic.name", event.get("crowdstrike.event.Tactic").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TacticId != null
-            {
-                event.append(
-                    "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.TacticId") };
+            if _cond {
+            event.append("threat.tactic.id", event.get("crowdstrike.event.TacticId").cloned().unwrap_or(Value::Null))?;
             }
             // End nested pipeline: "detection_summary"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "MobileDetectionSummaryEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("MobileDetectionSummaryEvent") };
+        if _cond {
             // Begin nested pipeline: "mobile_detection_summary"
             event.set("event.kind", json!("alert"))?;
             event.append("event.category", json!("malware"))?;
             event.append("event.type", json!("info"))?;
             event.set("event.action", json!("mobile-detection"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null
-            {
-                event.remove("event.created");
+            let _cond = { event.has("crowdstrike.event.ContextTimeStamp") };
+            if _cond {
+            event.remove("event.created");
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() <= 11
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() <= 11
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ContextTimeStamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ContextTimeStamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.created", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() >= 12
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ContextTimeStamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ContextTimeStamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.created", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             if event.has("crowdstrike.event.MobileDetectionId") {
-                event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
+            event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
             }
             if event.has("event.id") {
-                if let Some(val) = event.get("event.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("event.id", converted)?;
-                }
+            if let Some(val) = event.get("event.id") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("event.id", converted)?;
+            }
             }
             if event.has("crowdstrike.event.DetectId") {
-                event.rename("crowdstrike.event.DetectId", "rule.id")?;
+            event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
             if event.has("crowdstrike.event.DetectName") {
-                event.rename("crowdstrike.event.DetectName", "rule.name")?;
+            event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
             if event.has("crowdstrike.event.DetectDescription") {
-                event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
+            event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
             }
             event.set("threat.framework", json!("MITRE ATT&CK"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.Technique != null
-            {
-                event.append(
-                    "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Technique") };
+            if _cond {
+            event.append("threat.technique.name", event.get("crowdstrike.event.Technique").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TechniqueId != null
-            {
-                event.append(
-                    "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.TechniqueId") };
+            if _cond {
+            event.append("threat.technique.id", event.get("crowdstrike.event.TechniqueId").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Tactic != null
-            {
-                event.append(
-                    "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Tactic") };
+            if _cond {
+            event.append("threat.tactic.name", event.get("crowdstrike.event.Tactic").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TacticId != null
-            {
-                event.append(
-                    "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.TacticId") };
+            if _cond {
+            event.append("threat.tactic.id", event.get("crowdstrike.event.TacticId").cloned().unwrap_or(Value::Null))?;
             }
             if event.has("crowdstrike.event.ComputerName") {
-                event.rename("crowdstrike.event.ComputerName", "host.name")?;
+            event.rename("crowdstrike.event.ComputerName", "host.name")?;
             }
             if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            event.rename("crowdstrike.event.UserName", "user.name")?;
             }
             if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
             if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
             if event.has("crowdstrike.event.SensorId") {
-                event.rename("crowdstrike.event.SensorId", "device.id")?;
+            event.rename("crowdstrike.event.SensorId", "device.id")?;
             }
             if event.has("crowdstrike.event.ProcessId") {
-                event.rename("crowdstrike.event.ProcessId", "process.pid")?;
+            event.rename("crowdstrike.event.ProcessId", "process.pid")?;
             }
             // End nested pipeline: "mobile_detection_summary"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "IncidentSummaryEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("IncidentSummaryEvent") };
+        if _cond {
             // Begin nested pipeline: "incident_summary"
             event.set("event.kind", json!("alert"))?;
             event.append("event.category", json!("malware"))?;
             event.append("event.type", json!("info"))?;
             event.append("event.action", json!("incident"))?;
             if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
+            event.rename("crowdstrike.event.UserId", "user.name")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.IncidentStartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentStartTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.start", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.IncidentStartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.IncidentEndTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() <= 11
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() <= 11
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.IncidentEndTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentStartTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentEndTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.end", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentEndTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.end", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
             if event.has("crowdstrike.event.HostID") {
-                event.rename("crowdstrike.event.HostID", "host.id")?;
+            event.rename("crowdstrike.event.HostID", "host.id")?;
             }
             if event.has("crowdstrike.event.IncidentID") {
-                event.rename("crowdstrike.event.IncidentID", "event.id")?;
+            event.rename("crowdstrike.event.IncidentID", "event.id")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.FineScore != null
-            {
-                event.set(
-                    "message",
-                    json!(format!(
-                        "Incident score {}",
-                        event.get_str("crowdstrike.event.FineScore").unwrap_or("")
-                    )),
-                )?;
+            let _cond = { event.has("crowdstrike.event.FineScore") };
+            if _cond {
+            event.set("message", json!(format!("Incident score {}", event.get_str("crowdstrike.event.FineScore").unwrap_or(""))))?;
             }
             // End nested pipeline: "incident_summary"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "XdrDetectionSummaryEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("XdrDetectionSummaryEvent") };
+        if _cond {
             // Begin nested pipeline: "xdr_detection_summary"
             event.set("event.kind", json!("alert"))?;
             event.append("event.category", json!("malware"))?;
             event.append("event.type", json!("info"))?;
             event.set("event.action", json!("xdr-detection"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.Author != null
-            {
-                event.append(
-                    "rule.author",
-                    event
-                        .get("crowdstrike.event.Author")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Author") };
+            if _cond {
+            event.append("rule.author", event.get("crowdstrike.event.Author").cloned().unwrap_or(Value::Null))?;
             }
             if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
             if event.has("crowdstrike.event.Name") {
-                event.rename("crowdstrike.event.Name", "rule.name")?;
+            event.rename("crowdstrike.event.Name", "rule.name")?;
             }
             if event.has("crowdstrike.event.DetectId") {
-                event.rename("crowdstrike.event.DetectId", "rule.id")?;
+            event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
             if event.has("crowdstrike.event.PatternId") {
-                if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("rule.uuid", converted)?;
-                }
+            if let Some(val) = event.get("crowdstrike.event.PatternId") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("rule.uuid", converted)?;
+            }
             }
             if event.has("crowdstrike.event.Description") {
-                event.rename("crowdstrike.event.Description", "message")?;
+            event.rename("crowdstrike.event.Description", "message")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.DataDomains != null && ctx.crowdstrike?.event?.DataDomains.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.DataDomains")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("crowdstrike.event.DataDomains", Value::Array(parts))?;
-                }
+            let _cond = { event.has("crowdstrike.event.DataDomains") && event.get("crowdstrike.event.DataDomains").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.DataDomains") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("crowdstrike.event.DataDomains", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EmailAddresses != null && ctx.crowdstrike?.event?.EmailAddresses.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.EmailAddresses")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("crowdstrike.event.EmailAddresses", Value::Array(parts))?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IPV4Addresses != null && ctx.crowdstrike?.event?.IPV4Addresses.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.IPV4Addresses")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.ip", Value::Array(parts))?;
-                }
+            let _cond = { event.has("crowdstrike.event.EmailAddresses") && event.get("crowdstrike.event.EmailAddresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.EmailAddresses") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("crowdstrike.event.EmailAddresses", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IPV4Addresses != null && !ctx.crowdstrike?.event?.IPV4Addresses.contains(",")
-            {
-                event.append(
-                    "related.ip",
-                    event
-                        .get("crowdstrike.event.IPV4Addresses")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IPV6Addresses != null && ctx.crowdstrike?.event?.IPV6Addresses.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.IPV6Addresses")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.ip", Value::Array(parts))?;
-                }
+            let _cond = { event.has("crowdstrike.event.IPV4Addresses") && event.get("crowdstrike.event.IPV4Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.IPV4Addresses") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.ip", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.IPV6Addresses != null && !ctx.crowdstrike?.event?.IPV6Addresses.contains(",")
-            {
-                event.append(
-                    "related.ip",
-                    event
-                        .get("crowdstrike.event.IPV6Addresses")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.HostNames != null && ctx.crowdstrike?.event?.HostNames.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.HostNames")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.hosts", Value::Array(parts))?;
-                }
+            let _cond = { event.get("crowdstrike.event.IPV4Addresses != null && !ctx.crowdstrike.event.IPV4Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.ip", event.get("crowdstrike.event.IPV4Addresses").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.HostNames != null && !ctx.crowdstrike?.event?.HostNames.contains(",")
-            {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.HostNames")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.IPV6Addresses") && event.get("crowdstrike.event.IPV6Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.IPV6Addresses") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.ip", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.DomainNames != null && ctx.crowdstrike?.event?.DomainNames.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.DomainNames")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.hosts", Value::Array(parts))?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.DomainNames != null && !ctx.crowdstrike?.event?.DomainNames.contains(",")
-            {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.DomainNames")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.get("crowdstrike.event.IPV6Addresses != null && !ctx.crowdstrike.event.IPV6Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.ip", event.get("crowdstrike.event.IPV6Addresses").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.SHA256Hashes != null && ctx.crowdstrike?.event?.SHA256Hashes.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.SHA256Hashes")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.hash", Value::Array(parts))?;
-                }
+            let _cond = { event.has("crowdstrike.event.HostNames") && event.get("crowdstrike.event.HostNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.HostNames") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.hosts", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.SHA256Hashes != null && !ctx.crowdstrike?.event?.SHA256Hashes.contains(",")
-            {
-                event.append(
-                    "related.hash",
-                    event
-                        .get("crowdstrike.event.SHA256Hashes")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.MD5Hashes != null && ctx.crowdstrike?.event?.MD5Hashes.contains(",")
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.MD5Hashes")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.hash", Value::Array(parts))?;
-                }
+            let _cond = { event.get("crowdstrike.event.HostNames != null && !ctx.crowdstrike.event.HostNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.HostNames").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.MD5Hashes != null && !ctx.crowdstrike?.event?.MD5Hashes.contains(",")
-            {
-                event.append(
-                    "related.hash",
-                    event
-                        .get("crowdstrike.event.MD5Hashes")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.DomainNames") && event.get("crowdstrike.event.DomainNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.DomainNames") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.hosts", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Users != null && ctx.crowdstrike?.event?.Users.contains(",")
-            {
-                if let Some(s) = event.get_str("crowdstrike.event.Users").map(String::from) {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("related.user", Value::Array(parts))?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Users != null && !ctx.crowdstrike?.event?.Users.contains(",")
-            {
-                event.append(
-                    "related.user",
-                    event
-                        .get("crowdstrike.event.Users")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.get("crowdstrike.event.DomainNames != null && !ctx.crowdstrike.event.DomainNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.DomainNames").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.message != null
-            {
-                event.set(
-                    "rule.description",
-                    event.get("message").cloned().unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.SHA256Hashes") && event.get("crowdstrike.event.SHA256Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.SHA256Hashes") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.hash", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null
-            {
-                if event.has("crowdstrike.event.StartTimeEpoch") {
-                    if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.StartTimeEpoch", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() > 18
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.StartTimeEpoch")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.StartTimeEpoch", replaced)?;
-                }
+            let _cond = { event.get("crowdstrike.event.SHA256Hashes != null && !ctx.crowdstrike.event.SHA256Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.hash", event.get("crowdstrike.event.SHA256Hashes").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTimeEpoch")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            let _cond = { event.has("crowdstrike.event.MD5Hashes") && event.get("crowdstrike.event.MD5Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.MD5Hashes") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.hash", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTimeEpoch")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.event?.start != null
-            {
-                event.set(
-                    "@timestamp",
-                    event.get("event.start").cloned().unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.get("crowdstrike.event.MD5Hashes != null && !ctx.crowdstrike.event.MD5Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.hash", event.get("crowdstrike.event.MD5Hashes").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null
-            {
-                if event.has("crowdstrike.event.EndTimeEpoch") {
-                    if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.EndTimeEpoch", converted)?;
-                    }
-                }
+            let _cond = { event.has("crowdstrike.event.Users") && event.get("crowdstrike.event.Users").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.Users") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("related.user", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() > 18
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.EndTimeEpoch")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.EndTimeEpoch", replaced)?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.EndTimeEpoch")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            let _cond = { event.get("crowdstrike.event.Users != null && !ctx.crowdstrike.event.Users").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+            if _cond {
+            event.append("related.user", event.get("crowdstrike.event.Users").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() <= 11
+            let _cond = { event.has("message") };
+            if _cond {
+            event.set("rule.description", event.get("message").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.StartTimeEpoch") };
+            if _cond {
+            if event.has("crowdstrike.event.StartTimeEpoch") {
+            if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.StartTimeEpoch", converted)?;
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() > 18
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.EndTimeEpoch")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("process.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(s) = event.get_string("crowdstrike.event.StartTimeEpoch") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.StartTimeEpoch", replaced)?;
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimeEpoch") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimeEpoch") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("event.start") };
+            if _cond {
+            event.set("@timestamp", event.get("event.start").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.EndTimeEpoch") };
+            if _cond {
+            if event.has("crowdstrike.event.EndTimeEpoch") {
+            if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.EndTimeEpoch", converted)?;
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() > 18
+            {
+            if let Some(s) = event.get_string("crowdstrike.event.EndTimeEpoch") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.EndTimeEpoch", replaced)?;
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimeEpoch") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.end", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimeEpoch") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("process.end", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             event.set("threat.framework", json!("MITRE ATT&CK"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.Techniques != null
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.Techniques")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("threat.technique.name", Value::Array(parts))?;
-                }
+            let _cond = { event.has("crowdstrike.event.Techniques") };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.Techniques") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("threat.technique.name", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TechniqueIds != null
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.TechniqueIds")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("threat.technique.id", Value::Array(parts))?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Tactics != null
-            {
-                if let Some(s) = event.get_str("crowdstrike.event.Tactics").map(String::from) {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("threat.tactic.name", Value::Array(parts))?;
-                }
+            let _cond = { event.has("crowdstrike.event.TechniqueIds") };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.TechniqueIds") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("threat.technique.id", Value::Array(parts))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TacticIds != null
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.TacticIds")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    event.set("threat.tactic.id", Value::Array(parts))?;
-                }
+            }
+            let _cond = { event.has("crowdstrike.event.Tactics") };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.Tactics") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("threat.tactic.name", Value::Array(parts))?;
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.TacticIds") };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.TacticIds") {
+            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+            event.set("threat.tactic.id", Value::Array(parts))?;
+            }
             }
             // End nested pipeline: "xdr_detection_summary"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "IdpDetectionSummaryEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("IdpDetectionSummaryEvent") };
+        if _cond {
             // Begin nested pipeline: "ipd_detection_summary"
             event.set("event.kind", json!("alert"))?;
             event.append("event.category", json!("malware"))?;
             event.append("event.type", json!("info"))?;
             event.set("event.action", json!("ipd-detection"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.AttemptOutcome == true
-            {
-                event.set("event.outcome", json!("success"))?;
+            let _cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(true) };
+            if _cond {
+            event.set("event.outcome", json!("success"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AttemptOutcome == false
-            {
-                event.set("event.outcome", json!("failure"))?;
+            let _cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(false) };
+            if _cond {
+            event.set("event.outcome", json!("failure"))?;
             }
             if event.has("crowdstrike.event.DetectDescription") {
-                event.rename("crowdstrike.event.DetectDescription", "message")?;
+            event.rename("crowdstrike.event.DetectDescription", "message")?;
             }
             if event.has("crowdstrike.event.LocationCountryCode") {
-                event.rename(
-                    "crowdstrike.event.LocationCountryCode",
-                    "host.geo.country_iso_code",
-                )?;
+            event.rename("crowdstrike.event.LocationCountryCode", "host.geo.country_iso_code")?;
             }
             if event.has("crowdstrike.event.PatternId") {
-                if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("rule.uuid", converted)?;
-                }
+            if let Some(val) = event.get("crowdstrike.event.PatternId") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("rule.uuid", converted)?;
+            }
             }
             if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
             if event.has("crowdstrike.event.SourceAccountDomain") {
-                event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
+            event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
             }
             if event.has("crowdstrike.event.SourceAccountName") {
-                event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
+            event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
             }
             if event.has("crowdstrike.event.SourceAccountObjectSid") {
-                event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
+            event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
             }
             if event.has("crowdstrike.event.SourceEndpointHostName") {
-                event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
+            event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
             }
             if event.has("crowdstrike.event.SourceEndpointIpAddress") {
-                event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
+            event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Technique != null
-            {
-                event.append(
-                    "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Technique") };
+            if _cond {
+            event.append("threat.technique.name", event.get("crowdstrike.event.Technique").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TechniqueId != null
-            {
-                event.append(
-                    "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.TechniqueId") };
+            if _cond {
+            event.append("threat.technique.id", event.get("crowdstrike.event.TechniqueId").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Tactic != null
-            {
-                event.append(
-                    "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.Tactic") };
+            if _cond {
+            event.append("threat.tactic.name", event.get("crowdstrike.event.Tactic").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TacticId != null
-            {
-                event.append(
-                    "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.TacticId") };
+            if _cond {
+            event.append("threat.tactic.id", event.get("crowdstrike.event.TacticId").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.message != null
-            {
-                event.set(
-                    "rule.description",
-                    event.get("message").cloned().unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("message") };
+            if _cond {
+            event.set("rule.description", event.get("message").cloned().unwrap_or(Value::Null))?;
             }
             if event.has("crowdstrike.event.DetectName") {
-                event.rename("crowdstrike.event.DetectName", "rule.name")?;
+            event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
             if event.has("crowdstrike.event.DetectId") {
-                event.rename("crowdstrike.event.DetectId", "rule.id")?;
+            event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
             if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null
-            {
-                event.remove("event.created");
+            let _cond = { event.has("crowdstrike.event.ContextTimeStamp") };
+            if _cond {
+            event.remove("event.created");
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null
-            {
-                if event.has("crowdstrike.event.ContextTimeStamp") {
-                    if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.ContextTimeStamp", converted)?;
-                    }
-                }
+            let _cond = { event.has("crowdstrike.event.ContextTimeStamp") };
+            if _cond {
+            if event.has("crowdstrike.event.ContextTimeStamp") {
+            if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.ContextTimeStamp", converted)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() > 18
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.ContextTimeStamp")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ContextTimeStamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() <= 11
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() > 18
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ContextTimeStamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null
-            {
-                if event.has("crowdstrike.event.AccountCreationTimeStamp") {
-                    if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() > 18
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() >= 12
             {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.AccountCreationTimeStamp")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ContextTimeStamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.created", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.AccountCreationTimeStamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set(
-                                "crowdstrike.event.AccountCreationTimeStamp",
-                                dt.to_rfc3339(),
-                            )?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.AccountCreationTimeStamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set(
-                                "crowdstrike.event.AccountCreationTimeStamp",
-                                dt.to_rfc3339(),
-                            )?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null
-            {
-                if event.has("crowdstrike.event.StartTime") {
-                    if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.StartTime", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() <= 11
             {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.StartTime")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.StartTime", replaced)?;
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ContextTimeStamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.created", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null
-            {
-                if event.has("crowdstrike.event.EndTime") {
-                    if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.EndTime", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
-            {
-                if let Some(s) = event.get_str("crowdstrike.event.EndTime").map(String::from) {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.EndTime", replaced)?;
-                }
+            let _cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") };
+            if _cond {
+            if event.has("crowdstrike.event.AccountCreationTimeStamp") {
+            if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
-            {
-                if let Some(date_str) = event.get_str("crowdstrike.event.EndTime").map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
-            {
-                if let Some(date_str) = event.get_str("crowdstrike.event.EndTime").map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TargetEndpointHostName != null
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() > 18
             {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.TargetEndpointHostName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TargetDomain != null
-            {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.TargetDomain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.TargetAccountName != null
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() >= 12
             {
-                event.append(
-                    "related.user",
-                    event
-                        .get("crowdstrike.event.TargetAccountName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            if let Some(date_str) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("crowdstrike.event.AccountCreationTimeStamp", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AdditionalAccountDomain != null
-            {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalAccountDomain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AdditionalAccountName != null
-            {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalAccountName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AdditionalEndpointHostName != null
-            {
-                event.append(
-                    "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalEndpointHostName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.AdditionalEndpointIpAddress != null
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() <= 11
             {
-                event.append(
-                    "related.ip",
-                    event
-                        .get("crowdstrike.event.AdditionalEndpointIpAddress")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            if let Some(date_str) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("crowdstrike.event.AccountCreationTimeStamp", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.StartTime") };
+            if _cond {
+            if event.has("crowdstrike.event.StartTime") {
+            if let Some(val) = event.get("crowdstrike.event.StartTime") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.StartTime", converted)?;
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
+            {
+            if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.StartTime", replaced)?;
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.EndTime") };
+            if _cond {
+            if event.has("crowdstrike.event.EndTime") {
+            if let Some(val) = event.get("crowdstrike.event.EndTime") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.EndTime", converted)?;
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
+            {
+            if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.EndTime", replaced)?;
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.end", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.end", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.TargetEndpointHostName") };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.TargetEndpointHostName").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.TargetDomain") };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.TargetDomain").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.TargetAccountName") };
+            if _cond {
+            event.append("related.user", event.get("crowdstrike.event.TargetAccountName").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.AdditionalAccountDomain") };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.AdditionalAccountDomain").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.AdditionalAccountName") };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.AdditionalAccountName").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.AdditionalEndpointHostName") };
+            if _cond {
+            event.append("related.hosts", event.get("crowdstrike.event.AdditionalEndpointHostName").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.AdditionalEndpointIpAddress") };
+            if _cond {
+            event.append("related.ip", event.get("crowdstrike.event.AdditionalEndpointIpAddress").cloned().unwrap_or(Value::Null))?;
             }
             // End nested pipeline: "ipd_detection_summary"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "ReconNotificationSummaryEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("ReconNotificationSummaryEvent") };
+        if _cond {
             // Begin nested pipeline: "recon_notification_summary"
             event.set("event.kind", json!("event"))?;
             event.append("event.category", json!("threat"))?;
             event.append("event.type", json!("indicator"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.ItemType == null
-            {
-                event.set("event.action", json!("recon-notification"))?;
+            let _cond = { !event.has("crowdstrike.event.ItemType") };
+            if _cond {
+            event.set("event.action", json!("recon-notification"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ItemType != null
-            {
-                event.set(
-                    "event.action",
-                    json!(format!(
-                        "recon-notification-{}",
-                        event
-                            .get_str("ctx.crowdstrike.event.ItemType")
-                            .unwrap_or("")
-                    )),
-                )?;
+            let _cond = { event.has("crowdstrike.event.ItemType") };
+            if _cond {
+            event.set("event.action", json!(format!("recon-notification-{}", event.get_str("ctx.crowdstrike.event.ItemType").unwrap_or(""))))?;
             }
             if event.has("crowdstrike.event.ItemId") {
-                event.rename("crowdstrike.event.ItemId", "event.id")?;
+            event.rename("crowdstrike.event.ItemId", "event.id")?;
             }
             if event.has("crowdstrike.event.RuleId") {
-                event.rename("crowdstrike.event.RuleId", "rule.id")?;
+            event.rename("crowdstrike.event.RuleId", "rule.id")?;
             }
             if event.has("crowdstrike.event.RuleName") {
-                event.rename("crowdstrike.event.RuleName", "rule.name")?;
+            event.rename("crowdstrike.event.RuleName", "rule.name")?;
             }
             if event.has("crowdstrike.event.RuleTopic") {
-                event.rename("crowdstrike.event.RuleTopic", "rule.ruleset")?;
+            event.rename("crowdstrike.event.RuleTopic", "rule.ruleset")?;
             }
             if event.has("crowdstrike.event.RuleTopic") {
-                event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
+            event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.MatchedTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.MatchedTimestamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.created", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.MatchedTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ItemPostedTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() <= 11
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() <= 11
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ItemPostedTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.created", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.MatchedTimestamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.created", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ItemPostedTimestamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.created", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ItemPostedTimestamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.created", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             // End nested pipeline: "recon_notification_summary"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "IdentityProtectionEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("IdentityProtectionEvent") };
+        if _cond {
             // Begin nested pipeline: "identity_protection_incident"
             event.set("event.kind", json!("event"))?;
             event.append("event.category", json!("iam"))?;
             event.append("event.type", json!("info"))?;
             if event.has("crowdstrike.event.IncidentType") {
-                event.rename("crowdstrike.event.IncidentType", "event.action")?;
+            event.rename("crowdstrike.event.IncidentType", "event.action")?;
             }
             if event.has("crowdstrike.event.IncidentDescription") {
-                event.rename("crowdstrike.event.IncidentDescription", "message")?;
+            event.rename("crowdstrike.event.IncidentDescription", "message")?;
             }
             if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
             if event.has("crowdstrike.event.IdentityProtectionIncidentId") {
-                event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
+            event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
             }
             if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
             if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            event.rename("crowdstrike.event.UserName", "user.name")?;
             }
-            // TODO: conditional: ctx.user?.name != null && ctx.user.name.contains('\\')
+            // TODO: conditional not transpiled: ctx.user?.name != null && ctx.user.name.contains('\\')
             {
-                if let Some(input) = event.get_str("user.name").map(String::from) {
-                    let input = input.as_str();
-                    let mut remaining = input;
-                    if let Some(pos) = remaining.find("\\") {
-                        event.set("user.domain", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("\\") {
-                        remaining = rest;
-                    }
-                    event.set("user.name", remaining)?;
-                }
+            if let Some(input) = event.get_string("user.name") {
+            let mut remaining: &str = &input;
+            if let Some(pos) = remaining.find("\\") {
+            event.set("user.domain", &remaining[..pos])?;
+            remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("\\") {
+            remaining = rest;
+            }
+            event.set("user.name", remaining)?;
+            }
             }
             if event.has("crowdstrike.event.EndpointName") {
-                event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
+            event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
             }
             if event.has("crowdstrike.event.EndpointIp") {
-                event.rename("crowdstrike.event.EndpointIp", "host.ip")?;
+            event.rename("crowdstrike.event.EndpointIp", "host.ip")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null
-            {
-                if event.has("crowdstrike.event.StartTime") {
-                    if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.StartTime", converted)?;
-                    }
-                }
+            let _cond = { event.has("crowdstrike.event.StartTime") };
+            if _cond {
+            if event.has("crowdstrike.event.StartTime") {
+            if let Some(val) = event.get("crowdstrike.event.StartTime") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.StartTime", converted)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.StartTime")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.StartTime", replaced)?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.StartTime", replaced)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null
-            {
-                if event.has("crowdstrike.event.EndTime") {
-                    if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("crowdstrike.event.EndTime", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
             {
-                if let Some(s) = event.get_str("crowdstrike.event.EndTime").map(String::from) {
-                    let s = s.as_str();
-                    let re = regex::Regex::new("\\d{6}$").unwrap();
-                    let replaced = re.replace_all(s, "").into_owned();
-                    event.set("crowdstrike.event.EndTime", replaced)?;
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.start", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
-            {
-                if let Some(date_str) = event.get_str("crowdstrike.event.EndTime").map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
-            {
-                if let Some(date_str) = event.get_str("crowdstrike.event.EndTime").map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.event?.start != null
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
             {
-                event.set(
-                    "@timestamp",
-                    event.get("event.start").cloned().unwrap_or(Value::Null),
-                )?;
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.EndTime") };
+            if _cond {
+            if event.has("crowdstrike.event.EndTime") {
+            if let Some(val) = event.get("crowdstrike.event.EndTime") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.EndTime", converted)?;
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
+            {
+            if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
+            let re = regex::Regex::new("\\d{6}$").unwrap();
+            let replaced = re.replace_all(&s, "").into_owned();
+            event.set("crowdstrike.event.EndTime", replaced)?;
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("event.start") };
+            if _cond {
+            event.set("@timestamp", event.get("event.start").cloned().unwrap_or(Value::Null))?;
             }
             // End nested pipeline: "identity_protection_incident"
         }
 
-        // TODO: conditional: ['CSPMIOAStreamingEvent','CSPMSearchStreamingEvent'].contains(ctx.crowdstrike?.metadata?.eventType)
-        {
+        let _cond = { ["'CSPMIOAStreamingEvent'", "'CSPMSearchStreamingEvent'"].contains(&event.get_str("crowdstrike.metadata.eventType").unwrap_or("")) };
+        if _cond {
             // Begin nested pipeline: "cspm_events"
             event.set("event.kind", json!("alert"))?;
             event.append("event.category", json!("configuration"))?;
             event.append("event.type", json!("info"))?;
             event.append("event.type", json!("change"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.Disposition == "Passed"
-            {
-                event.set("event.outcome", json!("success"))?;
+            let _cond = { event.get_str("crowdstrike.event.Disposition") == Some("Passed") };
+            if _cond {
+            event.set("event.outcome", json!("success"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Disposition == "Failed"
-            {
-                event.set("event.outcome", json!("failure"))?;
+            let _cond = { event.get_str("crowdstrike.event.Disposition") == Some("Failed") };
+            if _cond {
+            event.set("event.outcome", json!("failure"))?;
             }
             if event.has("crowdstrike.event.EventAction") {
-                event.rename("crowdstrike.event.EventAction", "event.action")?;
+            event.rename("crowdstrike.event.EventAction", "event.action")?;
             }
             if event.has("crowdstrike.event.ReportUrl") {
-                event.rename("crowdstrike.event.ReportUrl", "event.reference")?;
+            event.rename("crowdstrike.event.ReportUrl", "event.reference")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ResourceAttributes != null
-            {
-                if let Some(s) = event
-                    .get_str("crowdstrike.event.ResourceAttributes")
-                    .map(String::from)
-                {
-                    let s = s.as_str();
-                    let parsed: Value =
-                        serde_json::from_str(s).map_err(|e| TransformError::ParseError {
-                            path: "crowdstrike.event.ResourceAttributes".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("crowdstrike.event.ResourceAttributes", parsed)?;
-                }
+            let _cond = { event.has("crowdstrike.event.ResourceAttributes") };
+            if _cond {
+            if let Some(s) = event.get_string("crowdstrike.event.ResourceAttributes") {
+            let parsed: Value = serde_json::from_str(&s)
+            .map_err(|e| TransformError::ParseError {
+            path: "crowdstrike.event.ResourceAttributes".into(),
+            message: format!("failed to parse JSON: {}", e),
+            })?;
+            event.set("crowdstrike.event.ResourceAttributes", parsed)?;
+            }
             }
             if event.has("crowdstrike.event.EventSource") {
-                event.rename("crowdstrike.event.EventSource", "event.provider")?;
+            event.rename("crowdstrike.event.EventSource", "event.provider")?;
             }
             if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
-            // TODO: conditional: ctx.cloud?.account?.id == null
-            {
-                if event.has("crowdstrike.event.AccountId") {
-                    event.rename("crowdstrike.event.AccountId", "cloud.account.id")?;
-                }
+            let _cond = { !event.has("cloud.account.id") };
+            if _cond {
+            if event.has("crowdstrike.event.AccountId") {
+            event.rename("crowdstrike.event.AccountId", "cloud.account.id")?;
             }
-            // TODO: conditional: ctx.cloud?.region == null
-            {
-                if event.has("crowdstrike.event.Region") {
-                    event.rename("crowdstrike.event.Region", "cloud.region")?;
-                }
             }
-            // TODO: conditional: ctx.cloud?.provider == null
-            {
-                if event.has("crowdstrike.event.CloudProvider") {
-                    event.rename("crowdstrike.event.CloudProvider", "cloud.provider")?;
-                }
+            let _cond = { !event.has("cloud.region") };
+            if _cond {
+            if event.has("crowdstrike.event.Region") {
+            event.rename("crowdstrike.event.Region", "cloud.region")?;
             }
-            // TODO: conditional: ctx.cloud?.provider == null
-            {
-                if event.has("crowdstrike.event.CloudPlatform") {
-                    event.rename("crowdstrike.event.CloudPlatform", "cloud.provider")?;
-                }
             }
-            // TODO: conditional: ctx.cloud?.service?.name == null
-            {
-                if event.has("crowdstrike.event.CloudService") {
-                    event.rename("crowdstrike.event.CloudService", "cloud.service.name")?;
-                }
+            let _cond = { !event.has("cloud.provider") };
+            if _cond {
+            if event.has("crowdstrike.event.CloudProvider") {
+            event.rename("crowdstrike.event.CloudProvider", "cloud.provider")?;
+            }
+            }
+            let _cond = { !event.has("cloud.provider") };
+            if _cond {
+            if event.has("crowdstrike.event.CloudPlatform") {
+            event.rename("crowdstrike.event.CloudPlatform", "cloud.provider")?;
+            }
+            }
+            let _cond = { !event.has("cloud.service.name") };
+            if _cond {
+            if event.has("crowdstrike.event.CloudService") {
+            event.rename("crowdstrike.event.CloudService", "cloud.service.name")?;
+            }
             }
             if event.has("crowdstrike.event.PolicyStatement") {
-                event.rename("crowdstrike.event.PolicyStatement", "message")?;
+            event.rename("crowdstrike.event.PolicyStatement", "message")?;
             }
             if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            event.rename("crowdstrike.event.UserName", "user.name")?;
             }
             if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.id")?;
+            event.rename("crowdstrike.event.UserId", "user.id")?;
             }
             if event.has("crowdstrike.event.UserSourceIp") {
-                event.rename("crowdstrike.event.UserSourceIp", "source.ip")?;
+            event.rename("crowdstrike.event.UserSourceIp", "source.ip")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.Timestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.Timestamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("@timestamp", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.Timestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.EventCreatedTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.EventCreatedTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime == 0
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.Timestamp != null && String.valueOf(ctx.crowdstrike.event.Timestamp).length() <= 11
             {
-                event.remove("crowdstrike.event.ResourceCreateTime");
+            if let Some(date_str) = event.get_string("crowdstrike.event.Timestamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("@timestamp", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ResourceCreateTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("crowdstrike.event.ResourceCreateTime", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() <= 11
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ResourceCreateTime")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("crowdstrike.event.ResourceCreateTime", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Tactic != null
-            {
-                event.append(
-                    "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Technique != null
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() >= 12
             {
-                event.append(
-                    "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            if let Some(date_str) = event.get_string("crowdstrike.event.EventCreatedTimestamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("@timestamp", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EventCreatedTimestamp != null && String.valueOf(ctx.crowdstrike.event.EventCreatedTimestamp).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.EventCreatedTimestamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("@timestamp", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime == 0
+            {
+            event.remove("crowdstrike.event.ResourceCreateTime");
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ResourceCreateTime") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("crowdstrike.event.ResourceCreateTime", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ResourceCreateTime != null && ctx.crowdstrike.event.ResourceCreateTime != 0 && String.valueOf(ctx.crowdstrike.event.ResourceCreateTime).length() <= 11
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ResourceCreateTime") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("crowdstrike.event.ResourceCreateTime", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.Tactic") };
+            if _cond {
+            event.append("threat.tactic.name", event.get("crowdstrike.event.Tactic").cloned().unwrap_or(Value::Null))?;
+            }
+            let _cond = { event.has("crowdstrike.event.Technique") };
+            if _cond {
+            event.append("threat.technique.name", event.get("crowdstrike.event.Technique").cloned().unwrap_or(Value::Null))?;
             }
             // End nested pipeline: "cspm_events"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "UserActivityAuditEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("UserActivityAuditEvent") };
+        if _cond {
             // Begin nested pipeline: "user_activity_audit"
             event.set("event.kind", json!("event"))?;
             event.append("event.category", json!("iam"))?;
             event.append("event.type", json!("change"))?;
             event.set("event.action", json!("user_activity_audit_event"))?;
             if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
+            event.rename("crowdstrike.event.UserId", "user.name")?;
             }
             if event.has("crowdstrike.event.OperationName") {
-                event.rename("crowdstrike.event.OperationName", "message")?;
+            event.rename("crowdstrike.event.OperationName", "message")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.UserIp != null && ctx.crowdstrike?.event?.UserIp != ""
-            {
-                if event.has("crowdstrike.event.UserIp") {
-                    event.rename("crowdstrike.event.UserIp", "source.ip")?;
-                }
+            let _cond = { event.has("crowdstrike.event.UserIp") && event.get_str("crowdstrike.event.UserIp").is_some_and(|s| !s.is_empty()) };
+            if _cond {
+            if event.has("crowdstrike.event.UserIp") {
+            event.rename("crowdstrike.event.UserIp", "source.ip")?;
+            }
             }
             // End nested pipeline: "user_activity_audit"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "AuthActivityAuditEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("AuthActivityAuditEvent") };
+        if _cond {
             // Begin nested pipeline: "auth_activity_audit"
             event.set("event.kind", json!("event"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && !["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.OperationName != null && !["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
             {
-                event.append("event.category", json!("iam"))?;
+            event.append("event.category", json!("iam"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
-            {
-                event.append("event.category", json!("authentication"))?;
+            let _cond = { event.has("crowdstrike.event.OperationName") && ["twoFactorAuthenticate", "userAuthenticate"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+            if _cond {
+            event.append("event.category", json!("authentication"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(ctx.crowdstrike.event.OperationName)
-            {
-                event.append("event.type", json!("user"))?;
+            let _cond = { event.has("crowdstrike.event.OperationName") && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+            if _cond {
+            event.append("event.type", json!("user"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(ctx.crowdstrike.event.OperationName)
-            {
-                event.append("event.type", json!("change"))?;
+            let _cond = { event.has("crowdstrike.event.OperationName") && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+            if _cond {
+            event.append("event.type", json!("change"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ctx.crowdstrike.event.OperationName == "createUser"
-            {
-                event.append("event.type", json!("creation"))?;
+            let _cond = { event.has("crowdstrike.event.OperationName") && event.get_str("crowdstrike.event.OperationName") == Some("createUser") };
+            if _cond {
+            event.append("event.type", json!("creation"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null && ctx.crowdstrike.event.OperationName == "deleteUser"
-            {
-                event.append("event.type", json!("deletion"))?;
+            let _cond = { event.has("crowdstrike.event.OperationName") && event.get_str("crowdstrike.event.OperationName") == Some("deleteUser") };
+            if _cond {
+            event.append("event.type", json!("deletion"))?;
             }
             if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
+            event.rename("crowdstrike.event.UserId", "user.name")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.OperationName != null
-            {
-                event.append(
-                    "event.action",
-                    event
-                        .get("crowdstrike.event.OperationName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+            let _cond = { event.has("crowdstrike.event.OperationName") };
+            if _cond {
+            event.append("event.action", event.get("crowdstrike.event.OperationName").cloned().unwrap_or(Value::Null))?;
             }
-            // TODO: conditional: ctx.event?.action == null
-            {
-                event.append("event.action", json!("AuthActivityAuditEvent"))?;
+            let _cond = { !event.has("event.action") };
+            if _cond {
+            event.append("event.action", json!("AuthActivityAuditEvent"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Success == true
-            {
-                event.set("event.outcome", json!("success"))?;
+            let _cond = { event.get_bool("crowdstrike.event.Success") == Some(true) };
+            if _cond {
+            event.set("event.outcome", json!("success"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.Success == false
-            {
-                event.set("event.outcome", json!("failure"))?;
+            let _cond = { event.get_bool("crowdstrike.event.Success") == Some(false) };
+            if _cond {
+            event.set("event.outcome", json!("failure"))?;
             }
-            // TODO: conditional: ctx.event?.outcome == null
-            {
-                event.set("event.outcome", json!("unknown"))?;
+            let _cond = { !event.has("event.outcome") };
+            if _cond {
+            event.set("event.outcome", json!("unknown"))?;
             }
             if event.has("crowdstrike.event.ServiceName") {
-                event.rename("crowdstrike.event.ServiceName", "message")?;
+            event.rename("crowdstrike.event.ServiceName", "message")?;
             }
             if event.has("crowdstrike.event.UserIp") {
-                event.rename("crowdstrike.event.UserIp", "source.ip")?;
+            event.rename("crowdstrike.event.UserIp", "source.ip")?;
             }
             // End nested pipeline: "auth_activity_audit"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "FirewallMatchEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("FirewallMatchEvent") };
+        if _cond {
             // Begin nested pipeline: "firewall_match"
             event.set("event.kind", json!("event"))?;
             event.append("event.category", json!("network"))?;
             event.append("event.action", json!("firewall_match_event"))?;
             event.append("event.type", json!("start"))?;
             event.append("event.type", json!("connection"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.RuleAction != null && ctx.crowdstrike?.event?.RuleAction == "1"
-            {
-                event.append("event.type", json!("allowed"))?;
+            let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("1") };
+            if _cond {
+            event.append("event.type", json!("allowed"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RuleAction != null && ctx.crowdstrike?.event?.RuleAction == "2"
-            {
-                event.set("_tmp_.action", json!("Allowed"))?;
+            let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("2") };
+            if _cond {
+            event.set("_tmp_.action", json!("Allowed"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RuleAction != null && ctx.crowdstrike?.event?.RuleAction == "2"
-            {
-                event.append("event.type", json!("denied"))?;
+            let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("2") };
+            if _cond {
+            event.append("event.type", json!("denied"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RuleAction != null && ctx.crowdstrike?.event?.RuleAction == "2"
-            {
-                event.set("_tmp_.action", json!("Blocked"))?;
+            let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("2") };
+            if _cond {
+            event.set("_tmp_.action", json!("Blocked"))?;
             }
-            // TODO: conditional: ctx._tmp_?.action == null
-            {
-                event.set("_tmp_.action", json!("Unknown"))?;
+            let _cond = { !event.has("_tmp_.action") };
+            if _cond {
+            event.set("_tmp_.action", json!("Unknown"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RuleName != null
-            {
-                event.set(
-                    "message",
-                    json!(format!(
-                        "Firewall Rule: '{}' triggered - Action: '{}'",
-                        event.get_str("crowdstrike.event.RuleName").unwrap_or(""),
-                        event.get_str("_tmp_.action").unwrap_or("")
-                    )),
-                )?;
+            let _cond = { event.has("crowdstrike.event.RuleName") };
+            if _cond {
+            event.set("message", json!(format!("Firewall Rule: '{}' triggered - Action: '{}'", event.get_str("crowdstrike.event.RuleName").unwrap_or(""), event.get_str("_tmp_.action").unwrap_or(""))))?;
             }
             if event.has("crowdstrike.event.Ipv") {
-                event.rename("crowdstrike.event.Ipv", "network.type")?;
+            event.rename("crowdstrike.event.Ipv", "network.type")?;
             }
             if event.has("crowdstrike.event.PID") {
-                if let Some(val) = event.get("crowdstrike.event.PID") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "crowdstrike.event.PID".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "crowdstrike.event.PID".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
-                        }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.PID".into(),
-                                message: "cannot convert to integer".into(),
-                            }
-                            .into());
-                        }
-                    };
-                    event.set("process.pid", converted)?;
-                }
+            if let Some(val) = event.get("crowdstrike.event.PID") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.PID".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.PID".into(), message: format!("cannot convert '{}' to integer", s) })?)
             }
-            event.set(
-                "process.executable",
-                event
-                    .get("crowdstrike.event.ImageFileName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.PID".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("process.pid", converted)?;
+            }
+            }
+            event.set("process.executable", event.get("crowdstrike.event.ImageFileName").cloned().unwrap_or(Value::Null))?;
             event.remove("crowdstrike.event.ImageFileName");
             if event.has("crowdstrike.event.RuleId") {
-                event.rename("crowdstrike.event.RuleId", "rule.id")?;
+            event.rename("crowdstrike.event.RuleId", "rule.id")?;
             }
             if event.has("crowdstrike.event.RuleName") {
-                event.rename("crowdstrike.event.RuleName", "rule.name")?;
+            event.rename("crowdstrike.event.RuleName", "rule.name")?;
             }
             if event.has("crowdstrike.event.RuleGroupName") {
-                event.rename("crowdstrike.event.RuleGroupName", "rule.ruleset")?;
+            event.rename("crowdstrike.event.RuleGroupName", "rule.ruleset")?;
             }
             if event.has("crowdstrike.event.RuleDescription") {
-                event.rename("crowdstrike.event.RuleDescription", "rule.description")?;
+            event.rename("crowdstrike.event.RuleDescription", "rule.description")?;
             }
             if event.has("crowdstrike.event.RuleFamilyID") {
-                event.rename("crowdstrike.event.RuleFamilyID", "rule.category")?;
+            event.rename("crowdstrike.event.RuleFamilyID", "rule.category")?;
             }
             if event.has("crowdstrike.event.HostName") {
-                event.rename("crowdstrike.event.HostName", "host.name")?;
+            event.rename("crowdstrike.event.HostName", "host.name")?;
             }
             if event.has("crowdstrike.event.EventType") {
-                event.rename("crowdstrike.event.EventType", "event.code")?;
+            event.rename("crowdstrike.event.EventType", "event.code")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ConnectionDirection == "1"
-            {
-                event.set("network.direction", json!("ingress"))?;
+            let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("1") };
+            if _cond {
+            event.set("network.direction", json!("ingress"))?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RemoteAddress != null && ctx.network?.direction == "ingress"
-            {
-                if event.has("crowdstrike.event.RemoteAddress") {
-                    event.rename("crowdstrike.event.RemoteAddress", "source.ip")?;
-                }
+            let _cond = { event.has("crowdstrike.event.RemoteAddress") && event.get_str("network.direction") == Some("ingress") };
+            if _cond {
+            if event.has("crowdstrike.event.RemoteAddress") {
+            event.rename("crowdstrike.event.RemoteAddress", "source.ip")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.LocalAddress != null && ctx.network?.direction == "ingress"
-            {
-                if event.has("crowdstrike.event.LocalAddress") {
-                    event.rename("crowdstrike.event.LocalAddress", "destination.ip")?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.LocalPort != null && ctx.network?.direction == "ingress"
-            {
-                if event.has("crowdstrike.event.LocalPort") {
-                    if let Some(val) = event.get("crowdstrike.event.LocalPort") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.LocalPort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.LocalPort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.LocalPort".into(),
-                                    message: "cannot convert to integer".into(),
-                                }
-                                .into());
-                            }
-                        };
-                        event.set("destination.port", converted)?;
-                    }
-                }
+            let _cond = { event.has("crowdstrike.event.LocalAddress") && event.get_str("network.direction") == Some("ingress") };
+            if _cond {
+            if event.has("crowdstrike.event.LocalAddress") {
+            event.rename("crowdstrike.event.LocalAddress", "destination.ip")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RemotePort != null && ctx.network?.direction == "ingress"
-            {
-                if event.has("crowdstrike.event.RemotePort") {
-                    if let Some(val) = event.get("crowdstrike.event.RemotePort") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.RemotePort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.RemotePort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.RemotePort".into(),
-                                    message: "cannot convert to integer".into(),
-                                }
-                                .into());
-                            }
-                        };
-                        event.set("source.port", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ConnectionDirection == "2"
-            {
-                event.set("network.direction", json!("egress"))?;
+            let _cond = { event.has("crowdstrike.event.LocalPort") && event.get_str("network.direction") == Some("ingress") };
+            if _cond {
+            if event.has("crowdstrike.event.LocalPort") {
+            if let Some(val) = event.get("crowdstrike.event.LocalPort") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RemoteAddress != null && ctx.network?.direction == "egress"
-            {
-                if event.has("crowdstrike.event.RemoteAddress") {
-                    event.rename("crowdstrike.event.RemoteAddress", "destination.ip")?;
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.LocalAddress != null && ctx.network?.direction == "egress"
-            {
-                if event.has("crowdstrike.event.LocalAddress") {
-                    event.rename("crowdstrike.event.LocalAddress", "source.ip")?;
-                }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("destination.port", converted)?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.LocalPort != null && ctx.network?.direction == "egress"
-            {
-                if event.has("crowdstrike.event.LocalPort") {
-                    if let Some(val) = event.get("crowdstrike.event.LocalPort") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.LocalPort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.LocalPort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.LocalPort".into(),
-                                    message: "cannot convert to integer".into(),
-                                }
-                                .into());
-                            }
-                        };
-                        event.set("source.port", converted)?;
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.RemotePort != null && ctx.network?.direction == "egress"
-            {
-                if event.has("crowdstrike.event.RemotePort") {
-                    if let Some(val) = event.get("crowdstrike.event.RemotePort") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.RemotePort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.RemotePort".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.RemotePort".into(),
-                                    message: "cannot convert to integer".into(),
-                                }
-                                .into());
-                            }
-                        };
-                        event.set("destination.port", converted)?;
-                    }
-                }
+            }
+            let _cond = { event.has("crowdstrike.event.RemotePort") && event.get_str("network.direction") == Some("ingress") };
+            if _cond {
+            if event.has("crowdstrike.event.RemotePort") {
+            if let Some(val) = event.get("crowdstrike.event.RemotePort") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            }
+            }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("source.port", converted)?;
+            }
+            }
+            }
+            let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("2") };
+            if _cond {
+            event.set("network.direction", json!("egress"))?;
+            }
+            let _cond = { event.has("crowdstrike.event.RemoteAddress") && event.get_str("network.direction") == Some("egress") };
+            if _cond {
+            if event.has("crowdstrike.event.RemoteAddress") {
+            event.rename("crowdstrike.event.RemoteAddress", "destination.ip")?;
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.LocalAddress") && event.get_str("network.direction") == Some("egress") };
+            if _cond {
+            if event.has("crowdstrike.event.LocalAddress") {
+            event.rename("crowdstrike.event.LocalAddress", "source.ip")?;
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.LocalPort") && event.get_str("network.direction") == Some("egress") };
+            if _cond {
+            if event.has("crowdstrike.event.LocalPort") {
+            if let Some(val) = event.get("crowdstrike.event.LocalPort") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            }
+            }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("source.port", converted)?;
+            }
+            }
+            }
+            let _cond = { event.has("crowdstrike.event.RemotePort") && event.get_str("network.direction") == Some("egress") };
+            if _cond {
+            if event.has("crowdstrike.event.RemotePort") {
+            if let Some(val) = event.get("crowdstrike.event.RemotePort") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            }
+            }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("destination.port", converted)?;
+            }
+            }
             }
             if event.has("crowdstrike.event.Platform") {
-                event.rename("crowdstrike.event.Platform", "host.os.platform")?;
+            event.rename("crowdstrike.event.Platform", "host.os.platform")?;
             }
             // End nested pipeline: "firewall_match"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "RemoteResponseSessionStartEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("RemoteResponseSessionStartEvent") };
+        if _cond {
             // Begin nested pipeline: "remote_response_session_start"
             event.set("event.kind", json!("event"))?;
             event.append("event.category", json!("network"))?;
@@ -2351,49 +1758,41 @@ impl Transform for Default {
             event.append("event.action", json!("remote_response_session_start_event"))?;
             event.append("event.type", json!("start"))?;
             if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            event.rename("crowdstrike.event.UserName", "user.name")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimestamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.start", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() <= 11
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() <= 11
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.StartTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimestamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.start", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             event.set("message", json!("Remote response session started."))?;
             if event.has("crowdstrike.event.HostnameField") {
-                event.rename("crowdstrike.event.HostnameField", "host.name")?;
+            event.rename("crowdstrike.event.HostnameField", "host.name")?;
             }
             // End nested pipeline: "remote_response_session_start"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "RemoteResponseSessionEndEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("RemoteResponseSessionEndEvent") };
+        if _cond {
             // Begin nested pipeline: "remote_response_session_end"
             event.set("event.kind", json!("event"))?;
             event.append("event.category", json!("network"))?;
@@ -2401,275 +1800,193 @@ impl Transform for Default {
             event.append("event.action", json!("remote_response_session_end_event"))?;
             event.append("event.type", json!("end"))?;
             if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            event.rename("crowdstrike.event.UserName", "user.name")?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTimestamp != null && String.valueOf(ctx.crowdstrike.event.EndTimestamp).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimestamp != null && String.valueOf(ctx.crowdstrike.event.EndTimestamp).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.EndTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimestamp") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("event.end", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.EndTimestamp != null && String.valueOf(ctx.crowdstrike.event.EndTimestamp).length() <= 11
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimestamp != null && String.valueOf(ctx.crowdstrike.event.EndTimestamp).length() <= 11
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.EndTimestamp")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX timestamp
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.end", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTimestamp") {
+            // Try UNIX timestamp
+            if let Ok(ts) = date_str.parse::<f64>() {
+            let secs = ts as i64;
+            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+            event.set("event.end", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             event.set("message", json!("Remote response session ended."))?;
             if event.has("crowdstrike.event.HostnameField") {
-                event.rename("crowdstrike.event.HostnameField", "host.name")?;
+            event.rename("crowdstrike.event.HostnameField", "host.name")?;
             }
             // End nested pipeline: "remote_response_session_end"
         }
 
-        // TODO: conditional: ctx.crowdstrike?.metadata?.eventType == "ScheduledReportNotificationEvent"
-        {
+        let _cond = { event.get_str("crowdstrike.metadata.eventType") == Some("ScheduledReportNotificationEvent") };
+        if _cond {
             // Begin nested pipeline: "scheduled_report_notification_event"
             event.set("event.kind", json!("event"))?;
-            // TODO: conditional: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ExecutionMetadata.ExecutionStart")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.ExecutionStart") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("@timestamp", dt.to_rfc3339())?;
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
-            {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
             }
-            // TODO: conditional: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
             {
-                if let Some(date_str) = event
-                    .get_str("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
-                    .map(String::from)
-                {
-                    let date_str = date_str.as_str();
-                    // Try UNIX_MS timestamp
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("@timestamp", dt.to_rfc3339())?;
-                        }
-                    }
-                }
+            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("@timestamp", dt.to_rfc3339())?;
+            }
+            }
+            }
+            }
+            // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
+            {
+            if let Some(date_str) = event.get_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") {
+            // Try UNIX_MS timestamp
+            if let Ok(ms) = date_str.parse::<i64>() {
+            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+            event.set("@timestamp", dt.to_rfc3339())?;
+            }
+            }
+            }
             }
             if event.has("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
-                if let Some(val) =
-                    event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration")
-                {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path:
-                                            "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                                .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| {
-                                    TransformError::ParseError {
-                                        path:
-                                            "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                                .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            }
-                        }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                    .into(),
-                                message: "cannot convert to integer".into(),
-                            }
-                            .into());
-                        }
-                    };
-                    event.set(
-                        "crowdstrike.event.ExecutionMetadata.ExecutionDuration",
-                        converted,
-                    )?;
-                }
+            if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            }
+            }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("crowdstrike.event.ExecutionMetadata.ExecutionDuration", converted)?;
+            }
             }
             if event.has("crowdstrike.event.ExecutionMetadata.ResultCount") {
-                if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "crowdstrike.event.ExecutionMetadata.ResultCount"
-                                            .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
-                        }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                message: "cannot convert to integer".into(),
-                            }
-                            .into());
-                        }
-                    };
-                    event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
-                }
+            if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount") {
+            let converted = match val {
+            Value::String(s) => {
+            let s = s.trim();
+            if let Some(hex) = s.strip_prefix("0x") {
+            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            } else {
+            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            }
+            }
+            Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+            _ => return Err(TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(), message: "cannot convert to integer".into() }.into()),
+            };
+            event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
+            }
             }
             if event.has("crowdstrike.event.UserID") {
-                event.rename("crowdstrike.event.UserID", "user.id")?;
+            event.rename("crowdstrike.event.UserID", "user.id")?;
             }
-            // TODO: conditional: ctx.user?.id != null && ctx.user.id.contains('@')
+            // TODO: conditional not transpiled: ctx.user?.id != null && ctx.user.id.contains('@')
             {
-                if let Some(input) = event.get_str("user.id").map(String::from) {
-                    let input = input.as_str();
-                    let mut remaining = input;
-                    if let Some(pos) = remaining.find("@") {
-                        event.set("user.name", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("@") {
-                        remaining = rest;
-                    }
-                    event.set("user.domain", remaining)?;
-                }
+            if let Some(input) = event.get_string("user.id") {
+            let mut remaining: &str = &input;
+            if let Some(pos) = remaining.find("@") {
+            event.set("user.name", &remaining[..pos])?;
+            remaining = &remaining[pos..];
+            }
+            if let Some(rest) = remaining.strip_prefix("@") {
+            remaining = rest;
+            }
+            event.set("user.domain", remaining)?;
+            }
             }
             if event.has("crowdstrike.event.Status") {
-                if let Some(val) = event.get("crowdstrike.event.Status") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.Status", converted)?;
-                }
+            if let Some(val) = event.get("crowdstrike.event.Status") {
+            let converted = match val {
+            Value::String(_) => val.clone(),
+            Value::Number(n) => json!(n.to_string()),
+            Value::Bool(b) => json!(b.to_string()),
+            Value::Null => json!("null"),
+            _ => json!(val.to_string()),
+            };
+            event.set("crowdstrike.event.Status", converted)?;
+            }
             }
             // End nested pipeline: "scheduled_report_notification_event"
         }
 
-        // TODO: conditional: ctx.user?.name != null && ctx.user?.name.contains("@")
-        {
-            event.set(
-                "user.email",
-                event.get("user.name").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("user.name") && event.get("user.name").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")), serde_json::Value::String(s) => s.contains("@"), _ => false }) };
+        if _cond {
+        event.set("user.email", event.get("user.name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.user?.name != null && ctx.user?.name != ""
-        {
-            event.append(
-                "related.user",
-                event.get("user.name").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("user.name") && event.get_str("user.name").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+            event.append("related.user", event.get("user.name").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.source?.ip != null && ctx.source?.ip != ""
-        {
-            event.append(
-                "related.ip",
-                event.get("source.ip").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("source.ip") && event.get_str("source.ip").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+            event.append("related.ip", event.get("source.ip").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.destination?.ip != null && ctx.destination?.ip != ""
-        {
-            event.append(
-                "related.ip",
-                event.get("destination.ip").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("destination.ip") && event.get_str("destination.ip").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+            event.append("related.ip", event.get("destination.ip").cloned().unwrap_or(Value::Null))?;
         }
 
-        // TODO: conditional: ctx.host?.name != null && ctx.host?.name != ""
-        {
-            event.append(
-                "related.hosts",
-                event.get("host.name").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("host.name") && event.get_str("host.name").is_some_and(|s| !s.is_empty()) };
+        if _cond {
+            event.append("related.hosts", event.get("host.name").cloned().unwrap_or(Value::Null))?;
         }
 
-        {
-            use sha2::{Digest, Sha256};
-            let mut hasher = Sha256::new();
-            if let Some(v) = event.get("@timestamp") {
-                hasher.update(v.to_string().as_bytes());
+            {
+                use sha2::{Sha256, Digest};
+                let mut hasher = Sha256::new();
+                if let Some(v) = event.get("@timestamp") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                if let Some(v) = event.get("crowdstrike.event.SessionId") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                if let Some(v) = event.get("crowdstrike.event.DetectId") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                if let Some(v) = event.get("crowdstrike.metadata.eventType") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                if let Some(v) = event.get("crowdstrike.metadata.customerIDString") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                let hash = format!("{:x}", hasher.finalize());
+                event.set("_id", json!(hash))?;
             }
-            if let Some(v) = event.get("crowdstrike.event.SessionId") {
-                hasher.update(v.to_string().as_bytes());
-            }
-            if let Some(v) = event.get("crowdstrike.event.DetectId") {
-                hasher.update(v.to_string().as_bytes());
-            }
-            if let Some(v) = event.get("crowdstrike.metadata.eventType") {
-                hasher.update(v.to_string().as_bytes());
-            }
-            if let Some(v) = event.get("crowdstrike.metadata.customerIDString") {
-                hasher.update(v.to_string().as_bytes());
-            }
-            let hash = format!("{:x}", hasher.finalize());
-            event.set("_id", json!(hash))?;
-        }
 
         if event.has("source.ip") {
-            if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("source.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -2702,8 +2019,7 @@ impl Transform for Default {
         }
 
         if event.has("source.ip") {
-            if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("source.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -2717,17 +2033,16 @@ impl Transform for Default {
             }
         }
 
-        if event.has("source.as.asn") {
-            event.rename("source.as.asn", "source.as.number")?;
-        }
+            if event.has("source.as.asn") {
+                event.rename("source.as.asn", "source.as.number")?;
+            }
 
-        if event.has("source.as.organization_name") {
-            event.rename("source.as.organization_name", "source.as.organization.name")?;
-        }
+            if event.has("source.as.organization_name") {
+                event.rename("source.as.organization_name", "source.as.organization.name")?;
+            }
 
         if event.has("destination.ip") {
-            if let Some(ip_str) = event.get_str("destination.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("destination.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -2760,8 +2075,7 @@ impl Transform for Default {
         }
 
         if event.has("destination.ip") {
-            if let Some(ip_str) = event.get_str("destination.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("destination.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -2775,71 +2089,68 @@ impl Transform for Default {
             }
         }
 
-        if event.has("destination.as.asn") {
-            event.rename("destination.as.asn", "destination.as.number")?;
-        }
+            if event.has("destination.as.asn") {
+                event.rename("destination.as.asn", "destination.as.number")?;
+            }
 
-        if event.has("destination.as.organization_name") {
-            event.rename(
-                "destination.as.organization_name",
-                "destination.as.organization.name",
-            )?;
-        }
+            if event.has("destination.as.organization_name") {
+                event.rename("destination.as.organization_name", "destination.as.organization.name")?;
+            }
 
-        // TODO: conditional: ctx.tags == null || !(ctx.tags.contains('preserve_original_event'))
+        // TODO: conditional not transpiled: ctx.tags == null || !(ctx.tags.contains('preserve_original_event'))
         {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                event.remove("event.original");
-                Ok(())
-            })();
+        // ignore_failure: true
+        let _ = (|| -> Result<()> {
+            event.remove("event.original");
+            Ok(())
+        })();
         }
 
-        event.remove("_tmp_");
-        event.remove("crowdstrike.event.Technique");
-        event.remove("crowdstrike.event.TechniqueId");
-        event.remove("crowdstrike.event.Tactic");
-        event.remove("crowdstrike.event.TacticId");
-        event.remove("crowdstrike.event.Techniques");
-        event.remove("crowdstrike.event.TechniqueIds");
-        event.remove("crowdstrike.event.Tactics");
-        event.remove("crowdstrike.event.TacticIds");
-        event.remove("crowdstrike.event.IPv6Addresses");
-        event.remove("crowdstrike.event.IPv4Addresses");
-        event.remove("crowdstrike.event.ParentCommandLine");
-        event.remove("crowdstrike.event.CommandLine");
-        event.remove("crowdstrike.event.ProcessStartTime");
-        event.remove("crowdstrike.event.IncidentStartTime");
-        event.remove("crowdstrike.event.HostNames");
-        event.remove("crowdstrike.event.DomainNames");
-        event.remove("crowdstrike.event.Users");
-        event.remove("crowdstrike.event.SHA256Hashes");
-        event.remove("crowdstrike.event.MD5Hashes");
-        event.remove("crowdstrike.event.Author");
-        event.remove("crowdstrike.event.ProcessEndTime");
-        event.remove("crowdstrike.event.IncidentEndTime");
-        event.remove("crowdstrike.metadata.eventCreationTime");
-        event.remove("crowdstrike.event.UTCTimestamp");
-        event.remove("crowdstrike.event.ContextTimeStamp");
-        event.remove("crowdstrike.event.PID");
-        event.remove("crowdstrike.event.RemotePort");
-        event.remove("crowdstrike.event.LocalPort");
-        event.remove("crowdstrike.event.ConnectionDirection");
-        event.remove("crowdstrike.event.StartTimestamp");
-        event.remove("crowdstrike.event.StartTimeEpoch");
-        event.remove("crowdstrike.event.AdditionalAccountDomain");
-        event.remove("crowdstrike.event.AdditionalAccountName");
-        event.remove("crowdstrike.event.AdditionalEndpointHostName");
-        event.remove("crowdstrike.event.AdditionalEndpointIpAddress");
-        event.remove("crowdstrike.event.AttemptOutcome");
-        event.remove("crowdstrike.event.EndTimeEpoch");
-        event.remove("crowdstrike.event.EndTimestamp");
-        event.remove("crowdstrike.event.EndTime");
-        event.remove("crowdstrike.event.EventCreatedTimestamp");
-        event.remove("crowdstrike.event.StartTime");
-        event.remove("crowdstrike.event.Disposition");
-        event.remove("crowdstrike.event.MatchedTimestamp");
-        event.remove("crowdstrike.event.Tags");
+            event.remove("_tmp_");
+            event.remove("crowdstrike.event.Technique");
+            event.remove("crowdstrike.event.TechniqueId");
+            event.remove("crowdstrike.event.Tactic");
+            event.remove("crowdstrike.event.TacticId");
+            event.remove("crowdstrike.event.Techniques");
+            event.remove("crowdstrike.event.TechniqueIds");
+            event.remove("crowdstrike.event.Tactics");
+            event.remove("crowdstrike.event.TacticIds");
+            event.remove("crowdstrike.event.IPv6Addresses");
+            event.remove("crowdstrike.event.IPv4Addresses");
+            event.remove("crowdstrike.event.ParentCommandLine");
+            event.remove("crowdstrike.event.CommandLine");
+            event.remove("crowdstrike.event.ProcessStartTime");
+            event.remove("crowdstrike.event.IncidentStartTime");
+            event.remove("crowdstrike.event.HostNames");
+            event.remove("crowdstrike.event.DomainNames");
+            event.remove("crowdstrike.event.Users");
+            event.remove("crowdstrike.event.SHA256Hashes");
+            event.remove("crowdstrike.event.MD5Hashes");
+            event.remove("crowdstrike.event.Author");
+            event.remove("crowdstrike.event.ProcessEndTime");
+            event.remove("crowdstrike.event.IncidentEndTime");
+            event.remove("crowdstrike.metadata.eventCreationTime");
+            event.remove("crowdstrike.event.UTCTimestamp");
+            event.remove("crowdstrike.event.ContextTimeStamp");
+            event.remove("crowdstrike.event.PID");
+            event.remove("crowdstrike.event.RemotePort");
+            event.remove("crowdstrike.event.LocalPort");
+            event.remove("crowdstrike.event.ConnectionDirection");
+            event.remove("crowdstrike.event.StartTimestamp");
+            event.remove("crowdstrike.event.StartTimeEpoch");
+            event.remove("crowdstrike.event.AdditionalAccountDomain");
+            event.remove("crowdstrike.event.AdditionalAccountName");
+            event.remove("crowdstrike.event.AdditionalEndpointHostName");
+            event.remove("crowdstrike.event.AdditionalEndpointIpAddress");
+            event.remove("crowdstrike.event.AttemptOutcome");
+            event.remove("crowdstrike.event.EndTimeEpoch");
+            event.remove("crowdstrike.event.EndTimestamp");
+            event.remove("crowdstrike.event.EndTime");
+            event.remove("crowdstrike.event.EventCreatedTimestamp");
+            event.remove("crowdstrike.event.StartTime");
+            event.remove("crowdstrike.event.Disposition");
+            event.remove("crowdstrike.event.MatchedTimestamp");
+            event.remove("crowdstrike.event.Tags");
 
         Ok(TransformResult::Continue)
     }

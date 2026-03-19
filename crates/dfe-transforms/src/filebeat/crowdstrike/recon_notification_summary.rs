@@ -16,55 +16,43 @@ impl Transform for ReconNotificationSummary {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        event.append("event.category", json!("threat"))?;
+            event.append("event.category", json!("threat"))?;
 
-        event.append("event.type", json!("indicator"))?;
+            event.append("event.type", json!("indicator"))?;
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ItemType == null
+        let _cond = { !event.has("crowdstrike.event.ItemType") };
+        if _cond {
+        event.set("event.action", json!("recon-notification"))?;
+        }
+
+        let _cond = { event.has("crowdstrike.event.ItemType") };
+        if _cond {
+        event.set("event.action", json!(format!("recon-notification-{}", event.get_str("ctx.crowdstrike.event.ItemType").unwrap_or(""))))?;
+        }
+
+            if event.has("crowdstrike.event.ItemId") {
+                event.rename("crowdstrike.event.ItemId", "event.id")?;
+            }
+
+            if event.has("crowdstrike.event.RuleId") {
+                event.rename("crowdstrike.event.RuleId", "rule.id")?;
+            }
+
+            if event.has("crowdstrike.event.RuleName") {
+                event.rename("crowdstrike.event.RuleName", "rule.name")?;
+            }
+
+            if event.has("crowdstrike.event.RuleTopic") {
+                event.rename("crowdstrike.event.RuleTopic", "rule.ruleset")?;
+            }
+
+            if event.has("crowdstrike.event.RuleTopic") {
+                event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
+            }
+
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() >= 12
         {
-            event.set("event.action", json!("recon-notification"))?;
-        }
-
-        // TODO: conditional: ctx.crowdstrike?.event?.ItemType != null
-        {
-            event.set(
-                "event.action",
-                json!(format!(
-                    "recon-notification-{}",
-                    event
-                        .get_str("ctx.crowdstrike.event.ItemType")
-                        .unwrap_or("")
-                )),
-            )?;
-        }
-
-        if event.has("crowdstrike.event.ItemId") {
-            event.rename("crowdstrike.event.ItemId", "event.id")?;
-        }
-
-        if event.has("crowdstrike.event.RuleId") {
-            event.rename("crowdstrike.event.RuleId", "rule.id")?;
-        }
-
-        if event.has("crowdstrike.event.RuleName") {
-            event.rename("crowdstrike.event.RuleName", "rule.name")?;
-        }
-
-        if event.has("crowdstrike.event.RuleTopic") {
-            event.rename("crowdstrike.event.RuleTopic", "rule.ruleset")?;
-        }
-
-        if event.has("crowdstrike.event.RuleTopic") {
-            event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
-        }
-
-        // TODO: conditional: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() >= 12
-        {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.MatchedTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.MatchedTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -74,13 +62,9 @@ impl Transform for ReconNotificationSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.MatchedTimestamp != null && String.valueOf(ctx.crowdstrike.event.MatchedTimestamp).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.MatchedTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.MatchedTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -92,13 +76,9 @@ impl Transform for ReconNotificationSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.ItemPostedTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.ItemPostedTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -108,13 +88,9 @@ impl Transform for ReconNotificationSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ItemPostedTimestamp != null && String.valueOf(ctx.crowdstrike.event.ItemPostedTimestamp).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.ItemPostedTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.ItemPostedTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;

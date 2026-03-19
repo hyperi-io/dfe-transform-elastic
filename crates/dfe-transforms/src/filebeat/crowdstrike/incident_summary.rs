@@ -16,23 +16,19 @@ impl Transform for IncidentSummary {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("alert"))?;
 
-        event.append("event.category", json!("malware"))?;
+            event.append("event.category", json!("malware"))?;
 
-        event.append("event.type", json!("info"))?;
+            event.append("event.type", json!("info"))?;
 
-        event.append("event.action", json!("incident"))?;
+            event.append("event.action", json!("incident"))?;
 
-        if event.has("crowdstrike.event.UserId") {
-            event.rename("crowdstrike.event.UserId", "user.name")?;
-        }
+            if event.has("crowdstrike.event.UserId") {
+                event.rename("crowdstrike.event.UserId", "user.name")?;
+            }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.IncidentStartTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -42,13 +38,9 @@ impl Transform for IncidentSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentStartTime != null && String.valueOf(ctx.crowdstrike.event.IncidentStartTime).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.IncidentStartTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -60,13 +52,9 @@ impl Transform for IncidentSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.IncidentEndTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -76,13 +64,9 @@ impl Transform for IncidentSummary {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.IncidentEndTime != null && String.valueOf(ctx.crowdstrike.event.IncidentEndTime).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.IncidentEndTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -94,27 +78,21 @@ impl Transform for IncidentSummary {
             }
         }
 
-        if event.has("crowdstrike.event.FalconHostLink") {
-            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
-        }
+            if event.has("crowdstrike.event.FalconHostLink") {
+                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            }
 
-        if event.has("crowdstrike.event.HostID") {
-            event.rename("crowdstrike.event.HostID", "host.id")?;
-        }
+            if event.has("crowdstrike.event.HostID") {
+                event.rename("crowdstrike.event.HostID", "host.id")?;
+            }
 
-        if event.has("crowdstrike.event.IncidentID") {
-            event.rename("crowdstrike.event.IncidentID", "event.id")?;
-        }
+            if event.has("crowdstrike.event.IncidentID") {
+                event.rename("crowdstrike.event.IncidentID", "event.id")?;
+            }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.FineScore != null
-        {
-            event.set(
-                "message",
-                json!(format!(
-                    "Incident score {}",
-                    event.get_str("crowdstrike.event.FineScore").unwrap_or("")
-                )),
-            )?;
+        let _cond = { event.has("crowdstrike.event.FineScore") };
+        if _cond {
+        event.set("message", json!(format!("Incident score {}", event.get_str("crowdstrike.event.FineScore").unwrap_or(""))))?;
         }
 
         Ok(TransformResult::Continue)

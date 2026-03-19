@@ -16,39 +16,38 @@ impl Transform for IdentityProtectionIncident {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        event.append("event.category", json!("iam"))?;
+            event.append("event.category", json!("iam"))?;
 
-        event.append("event.type", json!("info"))?;
+            event.append("event.type", json!("info"))?;
 
-        if event.has("crowdstrike.event.IncidentType") {
-            event.rename("crowdstrike.event.IncidentType", "event.action")?;
-        }
+            if event.has("crowdstrike.event.IncidentType") {
+                event.rename("crowdstrike.event.IncidentType", "event.action")?;
+            }
 
-        if event.has("crowdstrike.event.IncidentDescription") {
-            event.rename("crowdstrike.event.IncidentDescription", "message")?;
-        }
+            if event.has("crowdstrike.event.IncidentDescription") {
+                event.rename("crowdstrike.event.IncidentDescription", "message")?;
+            }
 
-        if event.has("crowdstrike.event.Severity") {
-            event.rename("crowdstrike.event.Severity", "event.severity")?;
-        }
+            if event.has("crowdstrike.event.Severity") {
+                event.rename("crowdstrike.event.Severity", "event.severity")?;
+            }
 
-        if event.has("crowdstrike.event.IdentityProtectionIncidentId") {
-            event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
-        }
+            if event.has("crowdstrike.event.IdentityProtectionIncidentId") {
+                event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
+            }
 
-        if event.has("crowdstrike.event.FalconHostLink") {
-            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
-        }
+            if event.has("crowdstrike.event.FalconHostLink") {
+                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            }
 
-        if event.has("crowdstrike.event.UserName") {
-            event.rename("crowdstrike.event.UserName", "user.name")?;
-        }
+            if event.has("crowdstrike.event.UserName") {
+                event.rename("crowdstrike.event.UserName", "user.name")?;
+            }
 
-        // TODO: conditional: ctx.user?.name != null && ctx.user.name.contains('\\')
+        // TODO: conditional not transpiled: ctx.user?.name != null && ctx.user.name.contains('\\')
         {
-            if let Some(input) = event.get_str("user.name").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+            if let Some(input) = event.get_string("user.name") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find("\\") {
                     event.set("user.domain", &remaining[..pos])?;
                     remaining = &remaining[pos..];
@@ -60,50 +59,42 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        if event.has("crowdstrike.event.EndpointName") {
-            event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
-        }
+            if event.has("crowdstrike.event.EndpointName") {
+                event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
+            }
 
-        if event.has("crowdstrike.event.EndpointIp") {
-            event.rename("crowdstrike.event.EndpointIp", "host.ip")?;
-        }
+            if event.has("crowdstrike.event.EndpointIp") {
+                event.rename("crowdstrike.event.EndpointIp", "host.ip")?;
+            }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null
-        {
-            if event.has("crowdstrike.event.StartTime") {
-                if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.StartTime", converted)?;
-                }
+        let _cond = { event.has("crowdstrike.event.StartTime") };
+        if _cond {
+        if event.has("crowdstrike.event.StartTime") {
+            if let Some(val) = event.get("crowdstrike.event.StartTime") {
+                let converted = match val {
+                    Value::String(_) => val.clone(),
+                    Value::Number(n) => json!(n.to_string()),
+                    Value::Bool(b) => json!(b.to_string()),
+                    Value::Null => json!("null"),
+                    _ => json!(val.to_string()),
+                };
+                event.set("crowdstrike.event.StartTime", converted)?;
             }
         }
+        }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
         {
-            if let Some(s) = event
-                .get_str("crowdstrike.event.StartTime")
-                .map(String::from)
-            {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
-                let replaced = re.replace_all(s, "").into_owned();
+                let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.StartTime", replaced)?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.StartTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -113,13 +104,9 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.StartTime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -131,36 +118,34 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null
-        {
-            if event.has("crowdstrike.event.EndTime") {
-                if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.EndTime", converted)?;
-                }
+        let _cond = { event.has("crowdstrike.event.EndTime") };
+        if _cond {
+        if event.has("crowdstrike.event.EndTime") {
+            if let Some(val) = event.get("crowdstrike.event.EndTime") {
+                let converted = match val {
+                    Value::String(_) => val.clone(),
+                    Value::Number(n) => json!(n.to_string()),
+                    Value::Bool(b) => json!(b.to_string()),
+                    Value::Null => json!("null"),
+                    _ => json!(val.to_string()),
+                };
+                event.set("crowdstrike.event.EndTime", converted)?;
             }
         }
+        }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
         {
-            if let Some(s) = event.get_str("crowdstrike.event.EndTime").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
-                let replaced = re.replace_all(s, "").into_owned();
+                let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.EndTime", replaced)?;
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
         {
-            if let Some(date_str) = event.get_str("crowdstrike.event.EndTime").map(String::from) {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTime") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -170,10 +155,9 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
         {
-            if let Some(date_str) = event.get_str("crowdstrike.event.EndTime").map(String::from) {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.EndTime") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -185,12 +169,9 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        // TODO: conditional: ctx.event?.start != null
-        {
-            event.set(
-                "@timestamp",
-                event.get("event.start").cloned().unwrap_or(Value::Null),
-            )?;
+        let _cond = { event.has("event.start") };
+        if _cond {
+        event.set("@timestamp", event.get("event.start").cloned().unwrap_or(Value::Null))?;
         }
 
         Ok(TransformResult::Continue)

@@ -16,24 +16,20 @@ impl Transform for RemoteResponseSessionStart {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        event.append("event.category", json!("network"))?;
-        event.append("event.category", json!("session"))?;
+            event.append("event.category", json!("network"))?;
+            event.append("event.category", json!("session"))?;
 
-        event.append("event.action", json!("remote_response_session_start_event"))?;
+            event.append("event.action", json!("remote_response_session_start_event"))?;
 
-        event.append("event.type", json!("start"))?;
+            event.append("event.type", json!("start"))?;
 
-        if event.has("crowdstrike.event.UserName") {
-            event.rename("crowdstrike.event.UserName", "user.name")?;
-        }
+            if event.has("crowdstrike.event.UserName") {
+                event.rename("crowdstrike.event.UserName", "user.name")?;
+            }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() >= 12
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() >= 12
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.StartTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimestamp") {
                 // Try UNIX_MS timestamp
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
@@ -43,13 +39,9 @@ impl Transform for RemoteResponseSessionStart {
             }
         }
 
-        // TODO: conditional: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() <= 11
+        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimestamp != null && String.valueOf(ctx.crowdstrike.event.StartTimestamp).length() <= 11
         {
-            if let Some(date_str) = event
-                .get_str("crowdstrike.event.StartTimestamp")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+            if let Some(date_str) = event.get_string("crowdstrike.event.StartTimestamp") {
                 // Try UNIX timestamp
                 if let Ok(ts) = date_str.parse::<f64>() {
                     let secs = ts as i64;
@@ -63,9 +55,9 @@ impl Transform for RemoteResponseSessionStart {
 
         event.set("message", json!("Remote response session started."))?;
 
-        if event.has("crowdstrike.event.HostnameField") {
-            event.rename("crowdstrike.event.HostnameField", "host.name")?;
-        }
+            if event.has("crowdstrike.event.HostnameField") {
+                event.rename("crowdstrike.event.HostnameField", "host.name")?;
+            }
 
         Ok(TransformResult::Continue)
     }
