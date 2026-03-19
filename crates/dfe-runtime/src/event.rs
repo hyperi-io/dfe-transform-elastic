@@ -67,9 +67,17 @@ impl Event {
         resolve_path(&self.inner, path)
     }
 
-    /// Get a string value at a dotted path.
+    /// Get a string value at a dotted path (borrowed).
     pub fn get_str(&self, path: &str) -> Option<&str> {
         self.get(path).and_then(Value::as_str)
+    }
+
+    /// Get a string value at a dotted path (owned).
+    ///
+    /// Returns an owned `String` to avoid borrow conflicts when
+    /// the caller needs to mutate the event after reading.
+    pub fn get_string(&self, path: &str) -> Option<String> {
+        self.get_str(path).map(String::from)
     }
 
     /// Get an i64 value at a dotted path.
