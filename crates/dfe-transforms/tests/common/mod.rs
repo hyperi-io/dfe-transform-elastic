@@ -174,9 +174,13 @@ pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str)
                         JsonDiff::compare(expected_val, event.as_value(), MatchMode::Semantic);
                     if diff.is_match() {
                         passed += 1;
-                    } else if i == 0 {
-                        // Only print full diff for first event to keep output manageable
-                        eprintln!("  event[{i}]: {diff}");
+                    } else {
+                        // Print summary for each failing event
+                        let first_path = diff.diffs.first().map(|d| d.path.as_str()).unwrap_or("?");
+                        eprintln!(
+                            "  event[{i}]: {} diffs (first: {first_path})",
+                            diff.diffs.len()
+                        );
                     }
                 }
             }
