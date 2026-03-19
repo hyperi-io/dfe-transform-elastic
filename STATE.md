@@ -17,6 +17,28 @@
 
 ---
 
+## Development Cycle — READ SECOND
+
+See [docs/DEVELOPMENT-CYCLE.md](docs/DEVELOPMENT-CYCLE.md) for the full 10-step per-source development cycle.
+
+**Semi-automated by design.** Full automation of Elastic pipeline → Rust is neither feasible nor sensible. The pipelines contain Painless scripts, complex conditionals, and implicit Elastic runtime behaviour that can't be mechanically translated with 100% fidelity. This semi-automated approach (codegen ~70% → hand-tune ~30%) worked well for VRL in DFE 2.1 and we extend it for the native Rust transforms in DFE 2.2+.
+
+**Quick reference:**
+1. Codegen from Elastic pipeline YAML (automated ~70%)
+2. Review source agents for field mapping + local parsing
+3. Triage Painless scripts (common pattern / hand-tune / skip)
+4. Iterate codegen + test until >90% match rate
+5. Add fuzzing, known-bad inputs, edge cases
+6. Update test data with complex real-world examples
+7. Common pattern abstraction (macros, shared modules)
+8. Batch processing review (row→batch, regex→native, clone→borrow)
+9. Efficiency review (CPU + memory profiling)
+10. Bake-off (benchmark against generated baseline + original VRL/Elastic)
+
+Steps 1-6 per source. Steps 7-10 cross-source. Repeat.
+
+---
+
 ## CI
 
 CI is live via `hyperi-ci`. Run `hyperi-ci check` (or `make check`) locally before pushing.
