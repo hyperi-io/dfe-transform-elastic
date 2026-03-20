@@ -23,7 +23,8 @@ dfe-codegen = { path = "crates/dfe-codegen" }
 dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Shared library (crates.io)
-# hyperi-rustlib = { version = ">=1.16", features = ["config", "logger"] }
+# DfeSource (kafka_config) is always available — no feature gate needed
+hyperi-rustlib = { version = ">=1.16.5", features = ["logger", "memory"] }
 
 # Async runtime
 tokio = { version = ">=1.48", features = ["full"] }

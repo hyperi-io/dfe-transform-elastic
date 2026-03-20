@@ -50,12 +50,13 @@ enum Commands {
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    // Set up tracing
-    let filter = if cli.verbose { "debug" } else { "info" };
-    tracing_subscriber::fmt()
-        .with_env_filter(filter)
-        .with_target(false)
-        .init();
+    // Set up tracing via hyperi-rustlib (auto-detect console vs JSON)
+    if cli.verbose {
+        // SAFETY: called before any threads are spawned (single-threaded main init)
+        unsafe { std::env::set_var("RUST_LOG", "debug") };
+    }
+    hyperi_rustlib::logger::setup_default()
+        .map_err(|e| anyhow::anyhow!("logger init failed: {e}"))?;
 
     match cli.command {
         Commands::Generate {

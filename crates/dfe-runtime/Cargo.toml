@@ -13,6 +13,7 @@ testutil = []
 
 [dependencies]
 dfe-parse = { workspace = true }
+hyperi-rustlib = { workspace = true }
 simd-json = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
