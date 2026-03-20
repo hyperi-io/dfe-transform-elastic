@@ -59,6 +59,13 @@ const SEMANTIC_SKIP_FIELDS: &[&str] = &[
     "@metadata",
     "_id",            // Elastic document ID — not a user field
     "event.original", // Depends on preserve_original_event tag handling
+    // GeoIP fields — DB-IP Lite vs MaxMind GeoLite2 give different results
+    "source.geo",
+    "destination.geo",
+    "client.geo",
+    "server.geo",
+    "source.as",
+    "destination.as",
 ];
 
 impl JsonDiff {
