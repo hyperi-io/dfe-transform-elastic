@@ -29,5 +29,9 @@ pub use error::{Result, TransformError};
 pub use event::Event;
 pub use transform::{Transform, TransformChain, TransformResult};
 
+// Re-export hyperi-rustlib types used by the runtime and downstream consumers
+pub use hyperi_rustlib::kafka_config::{DfeSource, ServiceRole};
+pub use hyperi_rustlib::memory::{MemoryGuard, MemoryGuardConfig, MemoryPressure};
+
 #[cfg(feature = "testutil")]
 pub mod testutil;
