@@ -199,6 +199,37 @@ pub fn painless_drop_empty(v: &mut Value) -> bool {
     }
 }
 
+/// Remove entries from a JSON object whose values match sentinel values.
+///
+/// Used by CrowdStrike and other pipelines that use Painless scripts like:
+/// ```painless
+/// ctx.crowdstrike.event.entrySet().removeIf(
+///     entry -> params.values.contains(entry.getValue())
+/// );
+/// ```
+///
+/// The `sentinels` parameter contains values to remove (e.g., `null`, `""`, `"-"`, `"NA"`, `0`).
+pub fn remove_sentinel_values(obj: &mut Map<String, Value>, sentinels: &[Value]) {
+    obj.retain(|_, v| !sentinels.contains(v));
+}
+
+/// Deduplicate a JSON array in-place, preserving order.
+///
+/// Used after multiple `append` calls that may produce duplicates
+/// (e.g., related.ip being appended from both source.ip and destination.ip
+/// when they're the same address).
+pub fn dedup_array(arr: &mut Vec<Value>) {
+    let mut seen = Vec::with_capacity(arr.len());
+    arr.retain(|v| {
+        if seen.contains(v) {
+            false
+        } else {
+            seen.push(v.clone());
+            true
+        }
+    });
+}
+
 /// Recursive camelCase-to-snake_case key renaming on a `Value` tree.
 ///
 /// Used by azure_signinlogs `keysToSnakeCase` script.
@@ -352,6 +383,46 @@ mod tests {
                 "g": ["keep"]
             })
         );
+    }
+
+    #[test]
+    fn remove_sentinels() {
+        let mut map = serde_json::from_value::<Map<String, Value>>(json!({
+            "keep": "valid",
+            "zero": 0,
+            "empty": "",
+            "na": "NA",
+            "dash": "-",
+            "null_val": null,
+            "also_keep": 42
+        }))
+        .unwrap();
+        let sentinels = vec![
+            Value::Null,
+            json!(""),
+            json!("-"),
+            json!("N/A"),
+            json!("NA"),
+            json!(0),
+        ];
+        remove_sentinel_values(&mut map, &sentinels);
+        assert_eq!(map.len(), 2);
+        assert!(map.contains_key("keep"));
+        assert!(map.contains_key("also_keep"));
+    }
+
+    #[test]
+    fn dedup_array_values() {
+        let mut arr = vec![json!("a"), json!("b"), json!("a"), json!("c"), json!("b")];
+        dedup_array(&mut arr);
+        assert_eq!(arr, vec![json!("a"), json!("b"), json!("c")]);
+    }
+
+    #[test]
+    fn dedup_array_preserves_order() {
+        let mut arr = vec![json!(3), json!(1), json!(2), json!(1), json!(3)];
+        dedup_array(&mut arr);
+        assert_eq!(arr, vec![json!(3), json!(1), json!(2)]);
     }
 
     #[test]

@@ -32,6 +32,40 @@ impl Transform for Default {
             event.set("crowdstrike", parsed)?;
         }
 
+        // Remove sentinel values from crowdstrike.event (Painless script_remove_null_event)
+        // Must run BEFORE field renames so sentinels like "NA" are cleaned before rename to host.domain
+        {
+            let sentinels = vec![
+                Value::Null,
+                json!(""),
+                json!("-"),
+                json!("N/A"),
+                json!("NA"),
+                json!(0),
+            ];
+            if let Some(Value::Object(cs_event)) =
+                event.as_value_mut().pointer_mut("/crowdstrike/event")
+            {
+                remove_sentinel_values(cs_event, &sentinels);
+            }
+        }
+
+        // Remove sentinel values from crowdstrike.metadata (Painless script_remove_null_metadata)
+        {
+            let sentinels = vec![
+                Value::Null,
+                json!(""),
+                json!("-"),
+                json!("N/A"),
+                json!("NA"),
+            ];
+            if let Some(Value::Object(cs_meta)) =
+                event.as_value_mut().pointer_mut("/crowdstrike/metadata")
+            {
+                remove_sentinel_values(cs_meta, &sentinels);
+            }
+        }
+
         event.remove("host.name");
 
         event.set("observer.vendor", json!("Crowdstrike"))?;
@@ -3426,6 +3460,11 @@ impl Transform for Default {
         event.remove("crowdstrike.event.Disposition");
         event.remove("crowdstrike.event.MatchedTimestamp");
         event.remove("crowdstrike.event.Tags");
+
+        // Dedup related.ip (append can produce duplicates when source/dest are same IP)
+        if let Some(Value::Array(arr)) = event.as_value_mut().pointer_mut("/related/ip") {
+            dedup_array(arr);
+        }
 
         // Drop null/empty values recursively (matches Elastic pipeline cleanup)
         painless_drop_empty(event.as_value_mut());
