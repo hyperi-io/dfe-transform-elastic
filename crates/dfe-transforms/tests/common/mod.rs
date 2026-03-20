@@ -8,6 +8,8 @@
 //! - Config YAML provides pre-set fields (@timestamp, tags, etc.)
 //! - The transform then processes message → event.original → json.* → ECS fields
 
+pub mod test_infra;
+
 use std::path::Path;
 
 use dfe_runtime::event::Event;
