@@ -14,7 +14,7 @@ This is the standard development cycle for each Elastic source (Beat or Agent in
 
 ---
 
-## Per-Source Cycle (Steps 1-6)
+## Per-Source Cycle (Steps 1-6, including 4a)
 
 ### Step 1: Codegen from Elastic Pipeline YAML
 
@@ -70,6 +70,27 @@ Fix issues iteratively:
 - Painless logic → implement in Rust (common patterns) or hand-tune
 
 **Done when:** >90% match rate on happy-path fixtures (Semantic mode — skips @timestamp, GeoIP, @metadata).
+
+### Step 4a: Codegen Feedback — Push Hand-Tune Patterns Back Into Codegen
+
+After reaching >90% on a source, review what you hand-tuned in Step 4 and ask:
+**"Should the codegen have generated this?"**
+
+| What you hand-tuned | Codegen fix |
+|---------------------|-------------|
+| Epoch length conditional (>=12 digits = ms, <=11 = seconds) | Add `try_string_length` to condition transpiler |
+| Negated list contains (`!["a","b"].contains(...)`) | Add prefix negation to condition transpiler |
+| Template string with numeric field (`FineScore`) | Use `get_as_string()` instead of `get_str()` in template emitter |
+| `painless_drop_empty` at end of transform | Emit automatically when pipeline has drop-nulls Painless script |
+
+After fixing the codegen:
+1. Regenerate the current source's transforms
+2. Re-test to verify the codegen fix works
+3. Regenerate other sources that haven't been hand-tuned yet (they benefit for free)
+
+This is how the codegen coverage moves from 70% toward 85%+. Every hand-tune that gets pushed back into codegen means the *next* source needs less manual work.
+
+**Done when:** All hand-tune patterns from Step 4 are either pushed into codegen or documented as "genuinely source-specific, not generalisable".
 
 ### Step 5: Add Fuzzing, Known-Bad Inputs, Edge Cases
 
@@ -158,6 +179,8 @@ When Elastic releases new Beats/Agent versions with updated pipeline YAMLs:
 
 ## Iteration
 
-If time permits, repeat Steps 1-6 per source, then Steps 7-10 cross-source. Each iteration should show measurable improvement in match rate, test coverage, or performance.
+If time permits, repeat Steps 1-6 (including 4a) per source, then Steps 7-10 cross-source. Each iteration should show measurable improvement in match rate, test coverage, or performance.
 
 The cycle is designed to be incremental — each step builds on the previous one, and you can stop at any step and have a working (if not yet optimal) transform.
+
+Step 4a is the key feedback loop that makes the whole cycle compound. Without it, every source requires the same hand-tuning effort. With it, the codegen gets smarter with each source and the hand-tune percentage shrinks over time.
