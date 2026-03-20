@@ -16,8 +16,8 @@ impl Transform for ScheduledReportNotificationEvent {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.ExecutionStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.ExecutionStart).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ExecutionMetadata.ExecutionStart") && event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -30,8 +30,8 @@ impl Transform for ScheduledReportNotificationEvent {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowStart != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowStart).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ExecutionMetadata.SearchWindowStart") && event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -44,8 +44,8 @@ impl Transform for ScheduledReportNotificationEvent {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ExecutionMetadata?.SearchWindowEnd != null && String.valueOf(ctx.crowdstrike.event.ExecutionMetadata.SearchWindowEnd).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") && event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {

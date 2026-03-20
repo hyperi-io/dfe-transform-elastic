@@ -24,8 +24,8 @@ impl Transform for DetectionSummary {
                 event.rename("crowdstrike.event.UserName", "user.name")?;
             }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessStartTime != null && String.valueOf(ctx.crowdstrike.event.ProcessStartTime).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ProcessStartTime") && event.get_as_string("crowdstrike.event.ProcessStartTime").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessStartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -38,8 +38,8 @@ impl Transform for DetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessStartTime != null && String.valueOf(ctx.crowdstrike.event.ProcessStartTime).length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.ProcessStartTime") && event.get_as_string("crowdstrike.event.ProcessStartTime").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessStartTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -54,8 +54,8 @@ impl Transform for DetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessEndTime != null && String.valueOf(ctx.crowdstrike.event.ProcessEndTime).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ProcessEndTime") && event.get_as_string("crowdstrike.event.ProcessEndTime").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -68,8 +68,8 @@ impl Transform for DetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ProcessEndTime != null && String.valueOf(ctx.crowdstrike.event.ProcessEndTime).length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.ProcessEndTime") && event.get_as_string("crowdstrike.event.ProcessEndTime").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {

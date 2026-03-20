@@ -135,8 +135,8 @@ impl Transform for IpdDetectionSummary {
         }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() > 18
-        {
+        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() > 18) };
+        if _cond {
             if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -144,8 +144,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -158,8 +158,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && ctx.crowdstrike.event.ContextTimeStamp.length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -190,8 +190,8 @@ impl Transform for IpdDetectionSummary {
         }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() > 18
-        {
+        let _cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") && event.get_as_string("crowdstrike.event.AccountCreationTimeStamp").is_some_and(|s| s.len() > 18) };
+        if _cond {
             if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -199,8 +199,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") && event.get_as_string("crowdstrike.event.AccountCreationTimeStamp").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.AccountCreationTimeStamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -213,8 +213,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.AccountCreationTimeStamp != null && ctx.crowdstrike.event.AccountCreationTimeStamp.length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") && event.get_as_string("crowdstrike.event.AccountCreationTimeStamp").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.AccountCreationTimeStamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -245,8 +245,8 @@ impl Transform for IpdDetectionSummary {
         }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() > 18
-        {
+        let _cond = { event.has("crowdstrike.event.StartTime") && event.get_as_string("crowdstrike.event.StartTime").is_some_and(|s| s.len() > 18) };
+        if _cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -254,8 +254,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.StartTime") && event.get_as_string("crowdstrike.event.StartTime").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -268,8 +268,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.StartTime") && event.get_as_string("crowdstrike.event.StartTime").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -300,8 +300,8 @@ impl Transform for IpdDetectionSummary {
         }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() > 18
-        {
+        let _cond = { event.has("crowdstrike.event.EndTime") && event.get_as_string("crowdstrike.event.EndTime").is_some_and(|s| s.len() > 18) };
+        if _cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -309,8 +309,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.EndTime") && event.get_as_string("crowdstrike.event.EndTime").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -323,8 +323,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTime != null && ctx.crowdstrike.event.EndTime.length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.EndTime") && event.get_as_string("crowdstrike.event.EndTime").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {

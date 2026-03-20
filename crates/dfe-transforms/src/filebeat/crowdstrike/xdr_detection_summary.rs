@@ -80,7 +80,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.IPV4Addresses != null && !ctx.crowdstrike.event.IPV4Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.IPV4Addresses") && !(event.get("crowdstrike.event.IPV4Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.ip", event.get("crowdstrike.event.IPV4Addresses").cloned().unwrap_or(Value::Null))?;
         }
@@ -93,7 +93,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.IPV6Addresses != null && !ctx.crowdstrike.event.IPV6Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.IPV6Addresses") && !(event.get("crowdstrike.event.IPV6Addresses").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.ip", event.get("crowdstrike.event.IPV6Addresses").cloned().unwrap_or(Value::Null))?;
         }
@@ -106,7 +106,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.HostNames != null && !ctx.crowdstrike.event.HostNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.HostNames") && !(event.get("crowdstrike.event.HostNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.hosts", event.get("crowdstrike.event.HostNames").cloned().unwrap_or(Value::Null))?;
         }
@@ -119,7 +119,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.DomainNames != null && !ctx.crowdstrike.event.DomainNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.DomainNames") && !(event.get("crowdstrike.event.DomainNames").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.hosts", event.get("crowdstrike.event.DomainNames").cloned().unwrap_or(Value::Null))?;
         }
@@ -132,7 +132,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.SHA256Hashes != null && !ctx.crowdstrike.event.SHA256Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.SHA256Hashes") && !(event.get("crowdstrike.event.SHA256Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.hash", event.get("crowdstrike.event.SHA256Hashes").cloned().unwrap_or(Value::Null))?;
         }
@@ -145,7 +145,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.MD5Hashes != null && !ctx.crowdstrike.event.MD5Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.MD5Hashes") && !(event.get("crowdstrike.event.MD5Hashes").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.hash", event.get("crowdstrike.event.MD5Hashes").cloned().unwrap_or(Value::Null))?;
         }
@@ -158,7 +158,7 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        let _cond = { event.get("crowdstrike.event.Users != null && !ctx.crowdstrike.event.Users").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false }) };
+        let _cond = { event.has("crowdstrike.event.Users") && !(event.get("crowdstrike.event.Users").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(",")), serde_json::Value::String(s) => s.contains(","), _ => false })) };
         if _cond {
             event.append("related.user", event.get("crowdstrike.event.Users").cloned().unwrap_or(Value::Null))?;
         }
@@ -184,8 +184,8 @@ impl Transform for XdrDetectionSummary {
         }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() > 18
-        {
+        let _cond = { event.has("crowdstrike.event.StartTimeEpoch") && event.get_as_string("crowdstrike.event.StartTimeEpoch").is_some_and(|s| s.len() > 18) };
+        if _cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTimeEpoch") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -193,8 +193,8 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.StartTimeEpoch") && event.get_as_string("crowdstrike.event.StartTimeEpoch").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -207,8 +207,8 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.StartTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.StartTimeEpoch).length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.StartTimeEpoch") && event.get_as_string("crowdstrike.event.StartTimeEpoch").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -244,8 +244,8 @@ impl Transform for XdrDetectionSummary {
         }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() > 18
-        {
+        let _cond = { event.has("crowdstrike.event.EndTimeEpoch") && event.get_as_string("crowdstrike.event.EndTimeEpoch").is_some_and(|s| s.len() > 18) };
+        if _cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTimeEpoch") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -253,8 +253,8 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.EndTimeEpoch") && event.get_as_string("crowdstrike.event.EndTimeEpoch").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -267,8 +267,8 @@ impl Transform for XdrDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.EndTimeEpoch != null && String.valueOf(ctx.crowdstrike.event.EndTimeEpoch).length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.EndTimeEpoch") && event.get_as_string("crowdstrike.event.EndTimeEpoch").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
