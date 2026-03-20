@@ -572,4 +572,19 @@ hyperi-rustlib = { version = ">=1.16.5", features = [
 
 ---
 
+### 2026-03-20: Sentinel Cleanup + FILETIME Conversion + CrowdStrike 91%
+
+- [x] Add remove_sentinel_values() to painless_helpers (null/""/"-"/"NA"/"N/A"/0)
+- [x] Add dedup_array() for related.ip deduplication
+- [x] Hand-tune CrowdStrike default.rs: sentinel cleanup before field renames
+- [x] falcon-sample: 5/7 → 7/7 (100%) — LateralMovement:0, host.domain:"NA" fixed
+- [x] Add filetime_to_unix_ms() for Windows FILETIME/LDAP timestamp conversion
+- [x] event-stream: 5/9 → 8/9 (89%) — FILETIME epoch fixed
+- [x] CrowdStrike overall: 31/34 (91%), non-CSPM: 31/32 (97%)
+- [x] Pin rustlib crates.io-only rule in STATE.md and MEMORY.md
+- [x] Add rustlib capability audit TODO (before Phase 5)
+- [x] 484 workspace tests, 0 failures
+
+---
+
 **Last Updated:** 2026-03-20

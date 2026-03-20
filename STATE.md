@@ -17,6 +17,22 @@
 
 ---
 
+## PINNED: hyperi-rustlib Dependency Rule
+
+**NEVER use a path dependency for hyperi-rustlib.** Always use the crates.io release:
+
+```toml
+# CORRECT — always use crates.io
+hyperi-rustlib = { version = ">=1.16.5", features = ["logger", "memory"] }
+
+# WRONG — never do this
+# hyperi-rustlib = { path = "/projects/hyperi-rustlib" }
+```
+
+**You may read code at `/projects/hyperi-rustlib/` for reference** (API surface, feature flags, implementation details), but the Cargo.toml dependency must always point to crates.io. No exceptions. No "temporary" path overrides. If a feature is needed that isn't published yet, wait for the release.
+
+---
+
 ## Development Cycle — READ SECOND
 
 See [docs/DEVELOPMENT-CYCLE.md](docs/DEVELOPMENT-CYCLE.md) for the full 10-step per-source development cycle.
