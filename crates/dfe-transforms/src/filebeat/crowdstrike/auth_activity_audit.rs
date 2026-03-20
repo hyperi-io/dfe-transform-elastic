@@ -16,8 +16,8 @@ impl Transform for AuthActivityAudit {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.OperationName != null && !["twoFactorAuthenticate", "userAuthenticate"].contains(ctx.crowdstrike.event.OperationName)
-        {
+        let _cond = { event.has("crowdstrike.event.OperationName") && !(["twoFactorAuthenticate", "userAuthenticate"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or(""))) };
+        if _cond {
             event.append("event.category", json!("iam"))?;
         }
 

@@ -111,6 +111,16 @@ fn split_logical<'a>(expr: &'a str, op: &str) -> Option<(&'a str, &'a str)> {
 
 /// Transpile a single (non-compound) expression.
 fn transpile_single(expr: &str) -> Option<String> {
+    // Prefix negation: !expr (without parens, e.g. !["a","b"].contains(...))
+    if let Some(inner) = expr.strip_prefix('!') {
+        let inner = inner.trim();
+        if !inner.starts_with('(') {
+            if let Some(r) = transpile_single(inner) {
+                return Some(format!("!({r})"));
+            }
+        }
+    }
+
     // List contains: ["a","b"].contains(ctx?.field)
     if let Some(r) = try_list_contains(expr) {
         return Some(r);
@@ -129,6 +139,11 @@ fn transpile_single(expr: &str) -> Option<String> {
     // field != null && field != ""  (non-empty check)
     // Already handled by compound && splitting + individual != null / != ""
 
+    // String length comparison: String.valueOf(ctx.field).length() >= 12
+    if let Some(r) = try_string_length(expr) {
+        return Some(r);
+    }
+
     // field != null
     if let Some(r) = try_null_check(expr) {
         return Some(r);
@@ -145,6 +160,32 @@ fn transpile_single(expr: &str) -> Option<String> {
     }
 
     None
+}
+
+/// `String.valueOf(ctx.field).length() >= 12` → string length comparison
+/// `ctx.field.length() >= 12` → string length comparison
+///
+/// Used by CrowdStrike epoch timestamp conditionals to distinguish
+/// UNIX (<=11 digits) from UNIX_MS (>=12 digits).
+fn try_string_length(expr: &str) -> Option<String> {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    let re = RE.get_or_init(|| {
+        Regex::new(
+            r#"^(?:String\.valueOf\()?ctx\??\.(.+?)\)?\s*\.length\(\)\s*(>=|<=|>|<|==)\s*(\d+)$"#,
+        )
+        .expect("string length regex")
+    });
+
+    let caps = re.captures(expr)?;
+    let field = painless_field_to_ecs(caps.get(1)?.as_str());
+    // Clean up trailing `)` from String.valueOf() wrapping
+    let field = field.trim_end_matches(')');
+    let op = caps.get(2)?.as_str();
+    let threshold = caps.get(3)?.as_str();
+
+    Some(format!(
+        r#"event.get_as_string("{field}").is_some_and(|s| s.len() {op} {threshold})"#,
+    ))
 }
 
 /// `ctx?.field != null` → `event.has("field")`
@@ -405,6 +446,37 @@ mod tests {
             transpile_condition("ctx?.event?.enriched == true"),
             Some(r#"event.get_bool("event.enriched") == Some(true)"#.into())
         );
+    }
+
+    #[test]
+    fn string_length_valueof() {
+        let result = transpile_condition(
+            "String.valueOf(ctx.crowdstrike.event.UTCTimestamp).length() >= 12",
+        );
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains(r#"event.get_as_string("crowdstrike.event.UTCTimestamp")"#));
+        assert!(r.contains("s.len() >= 12"));
+    }
+
+    #[test]
+    fn string_length_direct() {
+        let result = transpile_condition("ctx.crowdstrike.event.StartTime.length() <= 11");
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains(r#"event.get_as_string("crowdstrike.event.StartTime")"#));
+        assert!(r.contains("s.len() <= 11"));
+    }
+
+    #[test]
+    fn string_length_in_compound() {
+        let result = transpile_condition(
+            "ctx.crowdstrike?.event?.StartTime != null && ctx.crowdstrike.event.StartTime.length() >= 12",
+        );
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains("&&"));
+        assert!(r.contains("s.len() >= 12"));
     }
 
     #[test]

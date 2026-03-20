@@ -27,8 +27,8 @@ impl Transform for MobileDetectionSummary {
             event.remove("event.created");
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() <= 11
-        {
+        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() <= 11) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -43,8 +43,8 @@ impl Transform for MobileDetectionSummary {
             }
         }
 
-        // TODO: conditional not transpiled: ctx.crowdstrike?.event?.ContextTimeStamp != null && String.valueOf(ctx.crowdstrike.event.ContextTimeStamp).length() >= 12
-        {
+        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() >= 12) };
+        if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
