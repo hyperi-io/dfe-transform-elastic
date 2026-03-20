@@ -28,6 +28,7 @@ See [docs/DEVELOPMENT-CYCLE.md](docs/DEVELOPMENT-CYCLE.md) for the full 10-step 
 2. Review source agents for field mapping + local parsing
 3. Triage Painless scripts (common pattern / hand-tune / skip)
 4. Iterate codegen + test until >90% match rate
+4a. Codegen feedback — push hand-tune patterns back into codegen
 5. Add fuzzing, known-bad inputs, edge cases
 6. Update test data with complex real-world examples
 7. Common pattern abstraction (macros, shared modules)
@@ -35,7 +36,7 @@ See [docs/DEVELOPMENT-CYCLE.md](docs/DEVELOPMENT-CYCLE.md) for the full 10-step 
 9. Efficiency review (CPU + memory profiling)
 10. Bake-off (benchmark against generated baseline + original VRL/Elastic)
 
-Steps 1-6 per source. Steps 7-10 cross-source. Repeat.
+Steps 1-6 per source (including 4a). Steps 7-10 cross-source. Repeat.
 
 ---
 
