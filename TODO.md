@@ -302,10 +302,10 @@
 > **Depends on:** 4.1, 4.2
 > **Parallelism:** Each source type independent.
 
-**Current match rate: 38% (26/68 events)** `[IN PROGRESS]`
-  - Current: CrowdStrike Step 4 iteration — audit/events at 100%, sample/stream improving
-  - Next: Fix remaining event-stream epoch issues, then start Okta iteration
-  - Blockers: GeoIP DB mismatch (DB-IP vs MaxMind), sentinel values (LateralMovement:0, host.domain:"NA")
+**Current match rate: 44% (30/68 events)** `[IN PROGRESS]`
+  - CrowdStrike non-CSPM: 30/32 (94%) — sentinel values + dedup fixed
+  - Next: Fix event-stream epoch issue (2 events), SensorGroupingTags parsing, then start Okta
+  - Blockers: GeoIP DB mismatch (DB-IP vs MaxMind — skipped in Semantic mode)
 
 - [ ] **Filebeat** — ~60 modules
 - [ ] **Winlogbeat** — ~5 modules
@@ -316,11 +316,12 @@
 - [ ] **Elastic Agent:**
   - [ ] O365 (36 test files)
   - [ ] Cisco (73 test files)
-  - [ ] CrowdStrike (42 test files) — 26/34 events matching (76%)
-    - falcon-audit: 8/13 (62%)
-    - falcon-sample: 2/7 (29%)
-    - falcon-events: 1/3 (33%)
-    - event-stream: 2/9 (22%)
+  - [ ] CrowdStrike (42 test files) — 30/34 events matching (88%)
+    - falcon-audit: 13/13 (100%)
+    - falcon-events: 3/3 (100%)
+    - falcon-sample: 7/7 (100%)
+    - event-stream: 7/9 (78%) — 2 remaining: epoch + SensorGroupingTags
+    - falcon-tags/tags-list: 0/2 (CSPM events — need sub-pipeline routing)
   - [ ] Azure (48 test files) — 0%
   - [ ] Okta (2 test files) — 0%
   - [ ] Panw (14 test files)
@@ -468,6 +469,21 @@ hyperi-rustlib = { version = ">=1.16.5", features = [
 - [ ] Reuses same Painless-converted parsers against raw syslog/event messages
 - [ ] Enables same parsing without Beats/Agent as the data source
 - [ ] Depends on dfe-parsers crate extraction (above)
+
+### PINNED: Rustlib Capability Audit (Before Phase 5)
+
+> **Do not remove.** Review all bespoke code against rustlib features before Phase 5.
+> Ensure we don't have bespoke implementations for functions rustlib provides.
+
+- [ ] Audit dfe-runtime for bespoke config, transport, metrics, health code
+- [ ] Map Kafka transport to rustlib `transport-kafka` (rdkafka wrapper)
+- [ ] Map config loading to rustlib `config` (8-layer cascade)
+- [ ] Map health endpoints to rustlib `http-server` (/healthz, /readyz)
+- [ ] Map metrics to rustlib `metrics` (Prometheus /metrics)
+- [ ] Map CLI framework to rustlib `cli` (DfeApp trait)
+- [ ] Map resilience patterns to rustlib `resilience` (circuit breaker, retry)
+- [ ] Map scaling signals to rustlib `scaling` (KEDA backpressure)
+- [ ] Ensure no bespoke implementations exist for rustlib-provided functions
 
 ### Other Deferred
 
