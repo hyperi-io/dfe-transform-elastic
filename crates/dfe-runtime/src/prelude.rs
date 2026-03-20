@@ -20,7 +20,8 @@ pub use crate::codegen_api::{
 };
 
 pub use crate::painless_helpers::{
-    dedup_array, painless_add, painless_cmp, painless_div, painless_drop_empty, painless_eq,
-    painless_keys_to_snake_case, painless_mod, painless_mul, painless_sub, painless_to_f64,
-    painless_to_i64, painless_to_string, painless_truthy, remove_sentinel_values,
+    dedup_array, filetime_to_unix_ms, painless_add, painless_cmp, painless_div,
+    painless_drop_empty, painless_eq, painless_keys_to_snake_case, painless_mod, painless_mul,
+    painless_sub, painless_to_f64, painless_to_i64, painless_to_string, painless_truthy,
+    remove_sentinel_values,
 };

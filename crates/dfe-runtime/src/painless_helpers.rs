@@ -213,6 +213,26 @@ pub fn remove_sentinel_values(obj: &mut Map<String, Value>, sentinels: &[Value])
     obj.retain(|_, v| !sentinels.contains(v));
 }
 
+/// Convert a Windows FILETIME / LDAP timestamp to UNIX epoch milliseconds.
+///
+/// Windows FILETIME uses 100-nanosecond intervals since 1601-01-01.
+/// Values above `0x0100000000000000` (72057594037927936) are FILETIME;
+/// smaller values are already UNIX timestamps (seconds or milliseconds).
+///
+/// Used by CrowdStrike for StartTime, EndTime, ContextTimeStamp, etc.
+/// Reference: <https://devblogs.microsoft.com/oldnewthing/20030905-02/?p=42653>
+#[inline]
+pub fn filetime_to_unix_ms(value: i64) -> i64 {
+    const FILETIME_THRESHOLD: i64 = 0x0100_0000_0000_0000; // 72057594037927936
+    const FILETIME_TO_UNIX_OFFSET_MS: i64 = 11_644_473_600_000; // ms between 1601 and 1970
+
+    if value > FILETIME_THRESHOLD {
+        (value / 10_000) - FILETIME_TO_UNIX_OFFSET_MS
+    } else {
+        value
+    }
+}
+
 /// Deduplicate a JSON array in-place, preserving order.
 ///
 /// Used after multiple `append` calls that may produce duplicates
@@ -383,6 +403,25 @@ mod tests {
                 "g": ["keep"]
             })
         );
+    }
+
+    #[test]
+    fn filetime_to_unix_conversion() {
+        // Windows FILETIME for 2023-11-02T10:36:00.000Z
+        let ft = 133_433_949_600_000_000_i64;
+        let unix_ms = filetime_to_unix_ms(ft);
+        let dt = chrono::DateTime::from_timestamp_millis(unix_ms).unwrap();
+        assert_eq!(
+            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+            "2023-11-02T10:36:00.000Z"
+        );
+    }
+
+    #[test]
+    fn filetime_passthrough_unix() {
+        // Already UNIX milliseconds (should pass through)
+        let unix_ms = 1_698_918_960_000_i64;
+        assert_eq!(filetime_to_unix_ms(unix_ms), unix_ms);
     }
 
     #[test]
