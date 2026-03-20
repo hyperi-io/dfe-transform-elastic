@@ -175,12 +175,8 @@ pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str)
                     if diff.is_match() {
                         passed += 1;
                     } else {
-                        // Print summary for each failing event
-                        let first_path = diff.diffs.first().map(|d| d.path.as_str()).unwrap_or("?");
-                        eprintln!(
-                            "  event[{i}]: {} diffs (first: {first_path})",
-                            diff.diffs.len()
-                        );
+                        // Print full diff for failing events
+                        eprintln!("  event[{i}]: {diff}");
                     }
                 }
             }
