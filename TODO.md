@@ -341,15 +341,72 @@
 
 ## Phase 5: Packaging + Deployment
 
-### 5.1 CLI Module
+### 5.1 Runtime Binary + hyperi-rustlib Integration
 
-- [ ] Runtime CLI binary (clap): `dfe-transform run --config <path>`
+> **hyperi-rustlib integration plan.** Features already added: `logger`, `memory` (v1.16.5).
+> DfeSource and MemoryGuard types already re-exported from dfe-runtime.
+> Phase 5 adds the runtime binary features.
+
+**Runtime binary (`dfe-transform-elastic`):**
+
+- [ ] Runtime CLI binary using rustlib `cli` feature (DfeApp trait, CommonArgs)
 - [ ] Wire in codegen CLI as subcommand or separate binary
-- [ ] Config loading (YAML): pipeline paths, enrichment database paths, Kafka settings
-- [ ] Tracing subscriber setup (json/text, log level, env filter)
-- [ ] Graceful shutdown (tokio signal handling)
+- [ ] Graceful shutdown (CancellationToken, SIGTERM/SIGINT)
 
-> **Done when:** `dfe-transform --help` works, config validation passes.
+**Config cascade (rustlib `config` + `config-reload`):**
+
+- [ ] Add `config` and `config-reload` features to hyperi-rustlib dependency
+- [ ] `settings.yaml` for Kafka brokers, batch size, enrichment paths, pipeline config
+- [ ] Env var overrides: `DFE_TRANSFORM_ELASTIC_*` prefix
+- [ ] Hot-reload: `retry.*`, `scaling.*`, `source.batch_size` (takes effect on next batch)
+- [ ] Restart-only: `source.transport.*`, `sink.transport.*`, `enrichment.*`, `http.*`, `pipeline_name`
+
+**Kafka transport (rustlib `transport-kafka`):**
+
+- [ ] Add `transport-kafka` feature to hyperi-rustlib dependency
+- [ ] Kafka consumer (rdkafka) reading from `{source}_land` topics via DfeSource
+- [ ] Kafka producer writing to `{source}_load` topics via DfeSource
+- [ ] Consumer group: `dfe-transform-elastic-{source}` via `DfeSource::consumer_group()`
+- [ ] DLQ support via rustlib `dlq-kafka` feature (if needed)
+
+**Memory backpressure (rustlib `memory` — already added):**
+
+- [ ] Wire MemoryGuard into Kafka consumer loop (Pattern B — pause consumer)
+- [ ] `MemoryGuardConfig::from_env_raw("DFE_TRANSFORM_ELASTIC")`
+- [ ] Readiness probe: `!memory_guard.under_pressure() && sink.is_healthy()`
+- [ ] Metrics: `memory_guard.current_bytes()`, `memory_guard.limit_bytes()`
+
+**Observability (rustlib `metrics` + `http-server`):**
+
+- [ ] Add `metrics` and `http-server` features to hyperi-rustlib dependency
+- [ ] Prometheus `/metrics` endpoint: transform latency, throughput, error rate
+- [ ] Health endpoints: `/healthz` (liveness), `/readyz` (readiness)
+- [ ] Per-transform counters: events processed, matched, dropped, errors
+
+**Deployment (rustlib `deployment` + `scaling`):**
+
+- [ ] Add `deployment` and `scaling` features to hyperi-rustlib dependency
+- [ ] `generate_chart()` and `generate_dockerfile()` from contract
+- [ ] KEDA autoscaling signals via `ScalingPressure`
+
+**Rustlib feature summary for Phase 5 runtime binary:**
+
+```toml
+hyperi-rustlib = { version = ">=1.16.5", features = [
+    "logger",           # Already added — structured logging
+    "memory",           # Already added — MemoryGuard, cgroup-aware
+    "config",           # 8-layer cascade (CLI > env > .env > YAML > defaults)
+    "config-reload",    # SharedConfig + ConfigWatcher for hot-reload
+    "cli",              # DfeApp trait, CommonArgs (clap integration)
+    "metrics",          # Prometheus /metrics export
+    "http-server",      # /healthz, /readyz endpoints
+    "transport-kafka",  # rdkafka consumer/producer
+    "scaling",          # KEDA backpressure signals
+    "deployment",       # Dockerfile + Helm chart generation
+] }
+```
+
+> **Done when:** `dfe-transform-elastic --help` works, config validation passes, Kafka round-trip works locally.
 
 ### 5.2 GeoIP + Enrichment — Re-use dfe-loader Implementation
 
@@ -411,10 +468,6 @@
 
 ### Other Deferred
 
-- [ ] Kafka integration (rdkafka consumer for end-to-end testing)
-- [ ] Prometheus metrics (per-transform latency, throughput)
-- [ ] hyperi-rustlib integration (transport, config, DLQ)
-- [ ] Hot-reload (config-driven transform pipeline changes)
 - [ ] WASM extensibility (user-defined transforms)
 
 ---
@@ -472,4 +525,17 @@
 
 ---
 
-**Last Updated:** 2026-03-19
+### 2026-03-20: hyperi-rustlib Integration + CI Migration
+
+- [x] Migrate to hyperi-ci reusable workflows (remove ci/ submodule, add Makefile)
+- [x] Upgrade Rust 1.83→1.94 / Edition 2021→2024
+- [x] Code review remediation: rustfmt.toml, deny.toml, lint attrs, regex precompile
+- [x] Integrate hyperi-rustlib v1.16.5: DfeSource, MemoryGuard, logger
+- [x] Re-export DfeSource + ServiceRole from dfe-runtime for topic naming
+- [x] Re-export MemoryGuard + MemoryGuardConfig + MemoryPressure for backpressure
+- [x] Replace bespoke tracing setup with rustlib logger::setup_default()
+- [x] Phase 5 WBS updated with explicit rustlib feature integration plan
+
+---
+
+**Last Updated:** 2026-03-20
