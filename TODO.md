@@ -302,7 +302,10 @@
 > **Depends on:** 4.1, 4.2
 > **Parallelism:** Each source type independent.
 
-**Current match rate: 19% (13/68 events)**
+**Current match rate: 38% (26/68 events)** `[IN PROGRESS]`
+  - Current: CrowdStrike Step 4 iteration — audit/events at 100%, sample/stream improving
+  - Next: Fix remaining event-stream epoch issues, then start Okta iteration
+  - Blockers: GeoIP DB mismatch (DB-IP vs MaxMind), sentinel values (LateralMovement:0, host.domain:"NA")
 
 - [ ] **Filebeat** — ~60 modules
 - [ ] **Winlogbeat** — ~5 modules
@@ -313,7 +316,7 @@
 - [ ] **Elastic Agent:**
   - [ ] O365 (36 test files)
   - [ ] Cisco (73 test files)
-  - [ ] CrowdStrike (42 test files) — 13/32 events matching (41%)
+  - [ ] CrowdStrike (42 test files) — 26/34 events matching (76%)
     - falcon-audit: 8/13 (62%)
     - falcon-sample: 2/7 (29%)
     - falcon-events: 1/3 (33%)
@@ -535,6 +538,21 @@ hyperi-rustlib = { version = ">=1.16.5", features = [
 - [x] Re-export MemoryGuard + MemoryGuardConfig + MemoryPressure for backpressure
 - [x] Replace bespoke tracing setup with rustlib logger::setup_default()
 - [x] Phase 5 WBS updated with explicit rustlib feature integration plan
+
+---
+
+### 2026-03-20: Rustlib Integration + Codegen Improvements + Test Infra
+
+- [x] Integrate hyperi-rustlib v1.16.5: DfeSource, MemoryGuard, logger
+- [x] Phase 5 WBS updated with explicit rustlib feature integration plan
+- [x] Codegen: add try_string_length to condition transpiler (epoch ms vs seconds)
+- [x] Codegen: add prefix negation for !["a","b"].contains() pattern
+- [x] Regenerate CrowdStrike transforms — match rate 38% → 76% (26/34)
+- [x] CrowdStrike falcon-audit: 100% (13/13), falcon-events: 100% (3/3)
+- [x] Add painless_drop_empty to CrowdStrike transform (empty string cleanup)
+- [x] Skip GeoIP fields in Semantic comparison (DB-IP vs MaxMind mismatch)
+- [x] Add Step 4a (codegen feedback) to Development Cycle
+- [x] Test infrastructure scaffolding: .env, .env.example, TestMode, KafkaTestConfig
 
 ---
 
