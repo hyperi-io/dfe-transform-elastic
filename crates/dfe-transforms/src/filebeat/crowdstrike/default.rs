@@ -66,6 +66,34 @@ impl Transform for Default {
             }
         }
 
+        // Convert Windows FILETIME / LDAP timestamps to UNIX ms in crowdstrike.event
+        // (Painless convert-nt-timestamp-to-unix script)
+        {
+            let timestamp_fields = [
+                "StartTime",
+                "EndTime",
+                "ContextTimeStamp",
+                "EndTimestamp",
+                "IncidentEndTime",
+                "IncidentStartTime",
+                "ItemPostedTimestamp",
+                "MatchedTimestamp",
+                "MostRecentActivityTimeStamp",
+                "PrecedingActivityTimeStamp",
+                "StartTimestamp",
+                "UTCTimestamp",
+            ];
+            for field in &timestamp_fields {
+                let path = format!("crowdstrike.event.{field}");
+                if let Some(val) = event.get(&path) {
+                    if let Some(n) = val.as_i64() {
+                        let unix_ms = filetime_to_unix_ms(n);
+                        event.set(&path, json!(unix_ms))?;
+                    }
+                }
+            }
+        }
+
         event.remove("host.name");
 
         event.set("observer.vendor", json!("Crowdstrike"))?;
