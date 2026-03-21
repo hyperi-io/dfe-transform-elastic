@@ -1409,6 +1409,16 @@ impl Transform for Default {
             )?;
         }
 
+        // Dedup related arrays (same user/IP can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+
         event.remove("json");
 
         if event.has("user_agent.original") {

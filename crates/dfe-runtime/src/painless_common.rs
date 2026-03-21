@@ -209,6 +209,16 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_email_split(event, &normalised);
     }
 
+    // Pattern: okta.target array key renames + user/group extraction
+    // Renames alternateId→alternate_id, displayName→display_name in each element,
+    // filters detailEntry, extracts first user/usergroup targets
+    if normalised.contains("alternateId")
+        && normalised.contains("alternate_id")
+        && normalised.contains("okta")
+    {
+        return try_okta_target_rename(event);
+    }
+
     false
 }
 
@@ -252,6 +262,83 @@ fn try_email_split(event: &mut Event, script: &str) -> bool {
     let _ = event.set(&format!("{prefix}.email"), json!(email_val));
     let _ = event.set(&format!("{prefix}.name"), json!(parts[0]));
     let _ = event.set(&format!("{prefix}.domain"), json!(parts[1]));
+    true
+}
+
+/// Handle the Okta target array key rename + user/group extraction pattern.
+///
+/// The Painless script:
+/// 1. Renames alternateId→alternate_id, displayName→display_name in each target element
+/// 2. Filters detailEntry to only keep methodTypeUsed and methodUsedVerifiedProperties
+/// 3. Extracts first "User" type target → okta_target_user
+/// 4. Extracts first "UserGroup" type target → okta_target_group
+fn try_okta_target_rename(event: &mut Event) -> bool {
+    let target = match event.get("okta.target").cloned() {
+        Some(Value::Array(arr)) => arr,
+        _ => return true, // No target array — script returns early
+    };
+
+    let mut result = Vec::with_capacity(target.len());
+    let mut target_user: Option<Value> = None;
+    let mut target_group: Option<Value> = None;
+
+    for item in &target {
+        if let Some(obj) = item.as_object() {
+            let mut new_obj = serde_json::Map::new();
+
+            for (k, v) in obj {
+                let new_key = match k.as_str() {
+                    "alternateId" => "alternate_id",
+                    "displayName" => "display_name",
+                    "detailEntry" => {
+                        // Filter detailEntry to only keep specific keys
+                        if let Some(de) = v.as_object() {
+                            let filtered: serde_json::Map<String, Value> = de
+                                .iter()
+                                .filter(|(k, _)| {
+                                    k.as_str() == "methodTypeUsed"
+                                        || k.as_str() == "methodUsedVerifiedProperties"
+                                })
+                                .map(|(k, v)| (k.clone(), v.clone()))
+                                .collect();
+                            if !filtered.is_empty() {
+                                new_obj.insert("detail_entry".to_string(), Value::Object(filtered));
+                            }
+                        }
+                        continue; // Don't insert the original key
+                    }
+                    other => other,
+                };
+                new_obj.insert(new_key.to_string(), v.clone());
+            }
+
+            let new_val = Value::Object(new_obj.clone());
+
+            // Extract first user/usergroup targets
+            if let Some(type_val) = new_obj.get("type").and_then(|v| v.as_str()) {
+                let type_lower = type_val.to_lowercase();
+                if type_lower == "user" && target_user.is_none() {
+                    target_user = Some(new_val.clone());
+                } else if type_lower == "usergroup" && target_group.is_none() {
+                    target_group = Some(new_val.clone());
+                }
+            }
+
+            result.push(new_val);
+        } else {
+            result.push(item.clone());
+        }
+    }
+
+    let _ = event.set("okta.target", Value::Array(result));
+
+    if let Some(user) = target_user {
+        let _ = event.set("okta_target_user", user);
+    }
+    if let Some(group) = target_group {
+        let _ = event.set("okta_target_group", group);
+    }
+
     true
 }
 
