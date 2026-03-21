@@ -56,15 +56,25 @@ enrich, and route the data.
 
 ### Data Flow: Where Transformation Happens
 
-```
-Beat/Agent                    Kafka                    dfe-transform-elastic
-┌─────────────────────┐      ┌─────────┐      ┌──────────────────────────────┐
-│ Collect raw data     │      │         │      │ 1. JSON parse (simd-json)    │
-│ Add host/cloud meta  │─────→│  JSON   │─────→│ 2. Ingest pipeline logic     │
-│ Apply local procs    │      │ events  │      │    (processors + Painless)   │
-│ JSON encode          │      │         │      │ 3. Enrichment (GeoIP, UA)    │
-└─────────────────────┘      └─────────┘      │ 4. ECS normalisation         │
-                                               └──────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph Agent["Beat / Agent"]
+        A1[Collect raw data]
+        A2[Add host/cloud meta]
+        A3[Apply local procs]
+        A4[JSON encode]
+    end
+
+    K[Kafka<br/>JSON events]
+
+    subgraph Transform["dfe-transform-elastic"]
+        T1[1. JSON parse<br/>simd-json]
+        T2[2. Ingest pipeline logic<br/>processors + Painless]
+        T3[3. Enrichment<br/>GeoIP, UA, Community ID]
+        T4[4. ECS normalisation]
+    end
+
+    Agent --> K --> Transform
 ```
 
 ### Parity Verification
