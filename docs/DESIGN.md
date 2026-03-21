@@ -9,6 +9,110 @@ hot-path performance improvement. Converts Elastic ingest pipeline logic (Painle
 
 ---
 
+## Parity Design Principle
+
+**Goal:** Reliable 1:1 (or better) parity with Elastic ingest pipeline output for all
+supported Beats and Elastic Agent integrations.
+
+This is NOT reverse engineering Elasticsearch. We are building an independent transform
+service that produces the same normalised ECS output as the Elastic ingest pipeline would.
+Customers sending Beats/Agent data through DFE should get identical field mapping, type
+coercion, and enrichment as if the data went directly to Elasticsearch.
+
+**"Or better" means:** Where Elastic pipelines have known limitations (regex-only parsing,
+single-threaded Painless execution, per-document GeoIP lookups), we can exceed their
+performance while maintaining output compatibility.
+
+### What We Replicate
+
+The Elastic ingest pipeline is the primary transform layer. Data arrives from Beats/Agent
+as JSON events, and the ingest pipeline applies processors sequentially to normalise,
+enrich, and route the data.
+
+| Elastic Component | dfe-transform-elastic Equivalent | Status |
+|-------------------|----------------------------------|--------|
+| **Ingest processors** (27 used) | Codegen emitters (27/27) | Done |
+| **Painless scripts** | Runtime pattern matching + hand-tuned Rust | In progress |
+| **Foreach processor** | Event::for_each (array iteration) | Needs implementation |
+| **Pipeline chaining** | Nested pipeline codegen | Partial (CrowdStrike done) |
+| **GeoIP enrichment** | Global MMDB enricher (auto-detect) | Done (DB-IP Lite) |
+| **User Agent parsing** | Regex-based parser | Done (minor diffs from Elastic UA parser) |
+| **Community ID** | Hash-based network flow ID | Done |
+| **Conditional evaluation** | Painless → Rust transpiler | Done (all patterns covered) |
+| **On-failure handlers** | Not yet implemented | Planned |
+
+### What We Do NOT Replicate
+
+| Elastic Component | Why Not | Our Approach |
+|-------------------|---------|--------------|
+| Beat/Agent collection | We receive from Kafka, not from endpoints | Upstream responsibility |
+| Transport parsing (syslog, CEF) | Done by Beat/Agent before pipeline | Upstream responsibility |
+| Agent-side processors (`add_host_metadata`, `add_cloud_metadata`) | Run on source machine | Fields arrive pre-populated in event |
+| `@custom` pipelines | User-specific, not part of integration | Not applicable |
+| `final_pipeline` | Elasticsearch-specific routing | Not applicable |
+| `enrich` processor | Requires Elasticsearch enrich index | Alternative enrichment via dfe-loader |
+| `inference` processor | ML model execution | Not applicable for DFE |
+| `reroute` processor | Elasticsearch index routing | Kafka topic routing instead |
+
+### Data Flow: Where Transformation Happens
+
+```
+Beat/Agent                    Kafka                    dfe-transform-elastic
+┌─────────────────────┐      ┌─────────┐      ┌──────────────────────────────┐
+│ Collect raw data     │      │         │      │ 1. JSON parse (simd-json)    │
+│ Add host/cloud meta  │─────→│  JSON   │─────→│ 2. Ingest pipeline logic     │
+│ Apply local procs    │      │ events  │      │    (processors + Painless)   │
+│ JSON encode          │      │         │      │ 3. Enrichment (GeoIP, UA)    │
+└─────────────────────┘      └─────────┘      │ 4. ECS normalisation         │
+                                               └──────────────────────────────┘
+```
+
+### Parity Verification
+
+Every integration is validated against Elastic's own test fixtures:
+- Input: `.log` files from `_dev/test/pipeline/` in the integration package
+- Expected: `-expected.json` files with the expected post-pipeline output
+- Comparison: Semantic mode (skips non-deterministic fields like `@timestamp`, GeoIP)
+- Target: >90% match rate per source before declaring integration complete
+
+### Processor Coverage
+
+| # | Processor | Codegen | Runtime | Used By |
+|---|-----------|---------|---------|---------|
+| 1 | append | Done | Done | All |
+| 2 | convert | Done | Done | All |
+| 3 | csv | Done | Done | Fortinet |
+| 4 | date | Done | Done | All |
+| 5 | dissect | Done | Done | Cisco, Meraki |
+| 6 | drop | Done | Done | All |
+| 7 | fingerprint | Done | Done | O365 |
+| 8 | foreach | Done | Broken (_ingest._value) | Okta, O365 |
+| 9 | geoip | Done | Done (DB-IP) | All with IPs |
+| 10 | grok | Done | Done (regex fallback) | All |
+| 11 | gsub | Done | Done | O365 |
+| 12 | json | Done | Done | All |
+| 13 | kv | Done | Done | Okta |
+| 14 | lowercase | Done | Done | All |
+| 15 | network_direction | Done | Done | Fortinet, Panw |
+| 16 | pipeline | Done | Partial | CrowdStrike, Fortinet |
+| 17 | registered_domain | Done | Done | Panw |
+| 18 | remove | Done | Done | All |
+| 19 | rename | Done | Done | All |
+| 20 | script (Painless) | Done | Pattern-match (~5 patterns) | All |
+| 21 | set | Done | Done | All |
+| 22 | split | Done | Done | O365 |
+| 23 | trim | Done | Done | Cisco |
+| 24 | uppercase | Done | Done | Panw |
+| 25 | uri_parts | Done | Done | Panw |
+| 26 | user_agent | Done | Done | O365, Okta |
+| 27 | community_id | Done | Done | Panw, Fortinet |
+
+Processors NOT implemented (not used by current integrations):
+bytes, cef, date_index_name, dot_expander, enrich, fail, geo_grid, html_strip,
+inference, join, redact, reroute, set_security_user, sort, terminate, urldecode.
+
+---
+
 ## System Context
 
 Where dfe-transform-elastic fits in the Data Fusion Engine pipeline:
