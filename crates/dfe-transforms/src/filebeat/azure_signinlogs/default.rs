@@ -38,13 +38,13 @@ impl Transform for Default {
             return Ok(TransformResult::Drop);
         }
 
-            if let Some(date_str) = event.get_string("azure.signinlogs.time") {
+            if let Some(date_str) = event.get_as_string("azure.signinlogs.time") {
                 // Try ISO8601 format
                 if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
                     .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z"))
                     .or_else(|_| chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z"))
                 {
-                    event.set("@timestamp", dt.to_rfc3339())?;
+                    event.set("@timestamp", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
                 }
             }
 
@@ -220,8 +220,8 @@ impl Transform for Default {
 
         event.set("event.type", json!(["info"]))?;
 
-        // TODO: conditional not transpiled: ctx?.azure?.signinlogs?.properties?.status?.error_code == null || ctx.azure.signinlogs.properties.status.error_code == 0
-        {
+        let _cond = { !event.has("azure.signinlogs.properties.status.error_code") || event.get_i64("azure.signinlogs.properties.status.error_code") == Some(0) };
+        if _cond {
         event.set("event.outcome", json!("success"))?;
         }
 
@@ -238,11 +238,13 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.signinlogs.properties.user_principal_name") {
                 // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")).unwrap();
+                let (grok_pattern, grok_field_map) = grok_to_regex_with_map("%{USERNAME:user.name}@%{HOSTNAME:user.domain}");
+                let grok_re = regex::Regex::new(&grok_pattern).unwrap();
                 if let Some(caps) = grok_re.captures(&input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
+                            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+                            event.set(field_path, m.as_str())?;
                         }
                     }
                 }
@@ -377,18 +379,20 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
             // Pattern definitions for grok
             // NAMESPACE = .+
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
             // RULE = .+
-            // PROVIDERNAME = .+
+            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
             // GROUPID = .+
+            // PROVIDERNAME = .+
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -408,11 +412,13 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -433,11 +439,13 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -455,11 +463,13 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/providers/%{PROVIDER:azure.resource.provider}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/providers/%{PROVIDER:azure.resource.provider}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -478,11 +488,13 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -496,16 +508,18 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
             // Pattern definitions for grok
-            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
             // GROUPID = .+
+            // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -523,11 +537,13 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}")).unwrap();
+            let (grok_pattern, grok_field_map) = grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}");
+            let grok_re = regex::Regex::new(&grok_pattern).unwrap();
             if let Some(caps) = grok_re.captures(&input) {
             for name in grok_re.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
-            event.set(name, m.as_str())?;
+            let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
+            event.set(field_path, m.as_str())?;
             }
             }
             }
@@ -547,8 +563,8 @@ impl Transform for Default {
             }
             // End nested pipeline: "azure-shared-pipeline"
 
-        // TODO: conditional not transpiled: ctx?.tags == null || !(ctx.tags.contains('preserve_original_event'))
-        {
+        let _cond = { !event.has("tags") || !(event.get("tags").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("preserve_original_event")), serde_json::Value::String(s) => s.contains("preserve_original_event"), _ => false })) };
+        if _cond {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             event.remove("event.original");
