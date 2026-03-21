@@ -799,11 +799,13 @@ fn emit_grok(p: &grok::Grok, pad: &str) -> Result<String> {
             body.push_str(&format!(
                 "{ip}    // Grok pattern: {escaped}\n\
                  {ip}    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)\n\
-                 {ip}    let grok_re = regex::Regex::new(&grok_to_regex(\"{escaped}\")).unwrap();\n\
+                 {ip}    let (grok_pattern, grok_field_map) = grok_to_regex_with_map(\"{escaped}\");\n\
+                 {ip}    let grok_re = regex::Regex::new(&grok_pattern).unwrap();\n\
                  {ip}    if let Some(caps) = grok_re.captures(&input) {{\n\
                  {ip}        for name in grok_re.capture_names().flatten() {{\n\
                  {ip}            if let Some(m) = caps.name(name) {{\n\
-                 {ip}                event.set(name, m.as_str())?;\n\
+                 {ip}                let field_path = grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);\n\
+                 {ip}                event.set(field_path, m.as_str())?;\n\
                  {ip}            }}\n\
                  {ip}        }}\n\
                  {ip}    }}\n"
@@ -1629,7 +1631,7 @@ processors:
       ignore_failure: true
 "#,
         );
-        assert!(code.contains("grok_to_regex("));
+        assert!(code.contains("grok_to_regex_with_map("));
         assert!(code.contains("captures(&input)"));
         assert!(code.contains("ignore_failure: true"));
     }

@@ -448,9 +448,9 @@ processors:
 "#;
 
     let code = validate_codegen(yaml, "grok_basic");
-    assert!(code.contains("grok_to_regex("));
+    assert!(code.contains("grok_to_regex_with_map("));
     assert!(code.contains("regex::Regex::new("));
-    assert!(code.contains("event.set(name, m.as_str())"));
+    assert!(code.contains("event.set(field_path, m.as_str())"));
 }
 
 #[test]

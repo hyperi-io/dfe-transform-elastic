@@ -280,6 +280,11 @@ pub fn painless_keys_to_snake_case(v: &Value) -> Value {
             }
             Value::Object(out)
         }
+        Value::Array(arr) => Value::Array(
+            arr.iter()
+                .map(|item| painless_keys_to_snake_case(item))
+                .collect(),
+        ),
         _ => v.clone(),
     }
 }

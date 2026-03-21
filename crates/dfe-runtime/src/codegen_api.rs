@@ -93,13 +93,25 @@ pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
 
 /// Convert a grok pattern string to a regex pattern string.
 ///
-/// Phase 3 will replace grok patterns with native parsers.
-/// This stub expands `%{NAME:field}` to named capture groups `(?P<field>.+)`,
-/// and `%{NAME}` to `(.+)`. This is a rough approximation — real grok
-/// patterns have type-specific sub-patterns that will be handled by
-/// dfe-parse native parsers.
+/// Expands `%{NAME:field}` to named capture groups with type-appropriate
+/// sub-patterns. Returns `(regex_string, field_map)` where field_map maps
+/// safe capture names back to original dotted field paths.
+///
+/// Phase 3 will replace grok with native dfe-parse parsers.
 pub fn grok_to_regex(pattern: &str) -> String {
+    grok_to_regex_with_map(pattern).0
+}
+
+/// Like `grok_to_regex` but also returns a map of capture_name → original_field_path.
+///
+/// This is needed because regex capture names can't contain dots, so
+/// `user.name` becomes `user_name` in the regex. The map lets callers
+/// restore the original dotted path when setting fields.
+pub fn grok_to_regex_with_map(
+    pattern: &str,
+) -> (String, std::collections::HashMap<String, String>) {
     let mut result = String::with_capacity(pattern.len());
+    let mut field_map = std::collections::HashMap::new();
     let mut chars = pattern.chars().peekable();
 
     while let Some(c) = chars.next() {
@@ -121,20 +133,53 @@ pub fn grok_to_regex(pattern: &str) -> String {
                 }
             }
 
+            let sub_pattern = grok_pattern_regex(&name);
+
             if !field.is_empty() {
-                // Named capture: %{PATTERN:field} -> (?P<field>.+)
                 let safe_field = field.replace('.', "_");
-                result.push_str(&format!("(?P<{safe_field}>.+?)"));
+                field_map.insert(safe_field.clone(), field);
+                result.push_str(&format!("(?P<{safe_field}>{sub_pattern})"));
             } else {
-                // Unnamed: %{PATTERN} -> (.+)
-                result.push_str("(.+?)");
+                result.push_str(&format!("({sub_pattern})"));
             }
         } else {
             result.push(c);
         }
     }
 
-    result
+    (result, field_map)
+}
+
+/// Map well-known grok pattern names to their regex equivalents.
+fn grok_pattern_regex(name: &str) -> &'static str {
+    match name {
+        "USER" | "USERNAME" => r"[a-zA-Z0-9._-]+",
+        "IP" | "IPV4" => r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",
+        "IPV6" => r"[0-9a-fA-F:]+",
+        "POSINT" => r"\d+",
+        "INT" => r"[+-]?\d+",
+        "NUMBER" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
+        "NOTSPACE" => r"\S+",
+        "GREEDYDATA" => r".*",
+        "DATA" => r".*?",
+        "WORD" => r"\w+",
+        "HOSTNAME" => r"[a-zA-Z0-9._-]+",
+        "MAC" => r"(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}",
+        "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
+        "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+        "URI" | "URIPROTO" => r"\S+",
+        "PATH" | "UNIXPATH" | "WINPATH" => r"[^\s]+",
+        "MONTHDAY" => r"\d{1,2}",
+        "MONTH" => r"\w+",
+        "YEAR" => r"\d{4}",
+        "HOUR" => r"\d{2}",
+        "MINUTE" => r"\d{2}",
+        "SECOND" => r"\d{2}",
+        "TIMESTAMP_ISO8601" => {
+            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
+        }
+        _ => ".+?", // fallback for unknown patterns
+    }
 }
 
 /// Check whether an IP address is in a private/internal range.

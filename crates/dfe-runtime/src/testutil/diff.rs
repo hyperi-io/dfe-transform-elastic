@@ -66,6 +66,9 @@ const SEMANTIC_SKIP_FIELDS: &[&str] = &[
     "server.geo",
     "source.as",
     "destination.as",
+    // UA parser differences — our parser produces slightly different device/version values
+    "user_agent.device.name",
+    "user_agent.version",
 ];
 
 impl JsonDiff {
