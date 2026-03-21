@@ -23,12 +23,18 @@ use serde_json::{Map, Value, json};
 /// Config files are named `test-common-config.yml` or `{name}-config.yml`.
 /// They contain `fields:` with key-value pairs to merge into each event.
 fn load_config_fields(dir: &Path, log_name: &str) -> Map<String, Value> {
-    // Try fixture-specific config first, then common config
-    let specific = dir.join(format!("{log_name}-config.yml"));
+    // Try fixture-specific config first (Elastic convention: {name}.log-config.yml)
+    let specific_log = dir.join(format!("{log_name}.log-config.yml"));
+    let specific_json = dir.join(format!("{log_name}.json-config.yml"));
+    let specific_plain = dir.join(format!("{log_name}-config.yml"));
     let common = dir.join("test-common-config.yml");
 
-    let config_path = if specific.exists() {
-        specific
+    let config_path = if specific_log.exists() {
+        specific_log
+    } else if specific_json.exists() {
+        specific_json
+    } else if specific_plain.exists() {
+        specific_plain
     } else if common.exists() {
         common
     } else {

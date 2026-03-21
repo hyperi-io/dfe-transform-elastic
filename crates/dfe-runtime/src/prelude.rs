@@ -15,8 +15,8 @@ pub use serde_json::{Value, json};
 pub use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
 
 pub use crate::codegen_api::{
-    RegisteredDomainResult, community_id_v1, geoip_lookup, grok_to_regex, is_internal_ip,
-    painless_exec, parse_user_agent, registered_domain_lookup,
+    RegisteredDomainResult, community_id_v1, geoip_lookup, grok_to_regex, grok_to_regex_with_map,
+    is_internal_ip, painless_exec, parse_user_agent, registered_domain_lookup,
 };
 
 pub use crate::painless_helpers::{
