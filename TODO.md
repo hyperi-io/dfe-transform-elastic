@@ -295,6 +295,36 @@
 - [ ] Hand-tune remaining transforms for match rate improvement
 - [ ] Improve sub-pipeline append to handle array values correctly
 
+#### 4.2.5 Parity Infrastructure (as needed per source)
+
+Systemic gaps identified during integration testing. Implement per-source during the
+Development Cycle (assess relevance → implement if needed → skip if not).
+Not reverse engineering — supporting Elastic sources reliably.
+
+- [ ] **Foreach processor** — implement `Event::for_each(field, |element| { ... })`
+  for array element mutation. Codegen emits `_ingest._value` references which our
+  Event type doesn't support. **Assess per source:** only needed where the pipeline
+  iterates arrays (Okta ip_chain, O365 Actor/Target, some Cisco). Where arrays are
+  small and fixed, hand-tune with `keys_to_snake_case` or direct mutation instead.
+
+- [ ] **Pipeline chaining** — generalise nested pipeline resolution.
+  Currently works for CrowdStrike (single directory). **Assess per source:** only
+  needed where integrations reference pipelines across data streams or use dynamic
+  pipeline names. Fortinet, Cisco Meraki, Azure shared pipelines need this.
+  Sources with a single `default.yml` don't.
+
+- [ ] **`_conf` config injection** — support user-supplied pipeline configuration.
+  Elastic pipelines reference `ctx._conf.*` for tenant mappings and custom params.
+  **Assess per source:** only O365 (tenant name lookup) and some Azure pipelines
+  use this heavily. Most sources don't reference `_conf` at all. Implement when
+  a source needs it, not preemptively.
+
+- [ ] **On-failure handlers** — processor-level error recovery.
+  **Assess per source:** most on_failure blocks just log and continue (already
+  handled by `ignore_failure: true`). Only implement where on_failure does
+  meaningful fallback (e.g., alternative date format, default value assignment).
+  Review each source's pipeline and skip where on_failure is benign.
+
 > **Done when:** All pipelines produce compilable Rust, `cargo check -p dfe-transforms` passes, match rates >90%.
 
 ### 4.3 1:1 Beats Test Data Validation — IN PROGRESS
@@ -323,7 +353,7 @@
     - event-stream: 7/9 (78%) — 2 remaining: epoch + SensorGroupingTags
     - falcon-tags/tags-list: 0/2 (CSPM events — need sub-pipeline routing)
   - [ ] Azure (48 test files) — 0%
-  - [ ] Okta (2 test files) — 0%
+  - [ ] Okta (2 test files) — 2/24 (8%), down to 2 diffs/event (UA parser only)
   - [ ] Panw (14 test files)
   - [ ] Fortinet (27 test files)
 
@@ -587,4 +617,21 @@ hyperi-rustlib = { version = ">=1.16.5", features = [
 
 ---
 
-**Last Updated:** 2026-03-20
+### 2026-03-22: Conditional Transpiler + Grok Fix + Parity Analysis
+
+- [x] Add 6 new patterns to condition transpiler: isEmpty, single-quote contains, splitOnToken, numeric equality, parenthesised OR groups, strip_parens
+- [x] Regenerate Okta transform — 0 remaining TODO conditionals (was 159)
+- [x] Fix grok field name mapping (dots in capture names → restore via field_map)
+- [x] Add 15 known grok pattern regexes (USER, IP, NOTSPACE, HOSTNAME, etc.)
+- [x] Fix painless_keys_to_snake_case for Array inputs (was only handling Object)
+- [x] Hand-tune Okta ip_chain: replace broken foreach with keys_to_snake_case
+- [x] Fix config YAML loading for .log-config.yml naming convention
+- [x] Add email split Painless pattern to painless_common runtime
+- [x] Okta: 125 diffs/event → 2 diffs/event (UA parser only)
+- [x] Document parity design principle in DESIGN.md with full processor coverage table
+- [x] Add parity infrastructure items to TODO scope (foreach, pipeline chaining, _conf, on-failure)
+- [x] 490 workspace tests, 0 failures
+
+---
+
+**Last Updated:** 2026-03-22
