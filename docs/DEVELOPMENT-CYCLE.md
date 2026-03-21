@@ -1,24 +1,30 @@
 # Transform Development Cycle
 
-> Ported from Derek's elastic spike project. Refined during dfe-transform-elastic Phase 4.
+> Ported from Derek's elastic spike project. Battle-tested on CrowdStrike, Okta, Azure.
 
-## Why Semi-Automated
+## The Deal
 
-Full automation of Elastic pipeline → Rust is neither feasible nor sensible. The pipelines contain Painless scripts with arbitrary Java-like logic, complex conditionals with implicit Elastic runtime behaviour, and field mapping conventions that aren't formally specified. Attempting 100% mechanical translation would produce brittle, unoptimised code that's harder to maintain than hand-tuning.
+We can't fully automate Elastic pipeline → Rust. The pipelines are full of Painless
+scripts (arbitrary Java-like code), implicit Elastic runtime behaviour, and field mapping
+conventions that aren't formally specified anywhere. Trying to mechanically translate
+100% of it would produce worse code than writing it by hand.
 
-This semi-automated approach (codegen ~70% → hand-tune ~30%) worked well for the VRL transforms in DFE 2.1 and we extend it for the native Rust transforms in DFE 2.2+. The codegen gives you the structural skeleton and the easy processors (set, rename, remove, convert, etc.); you hand-tune the complex logic, optimise the hot paths, and verify against real test data.
+What works: codegen gets you ~70%, you hand-tune the rest. Same approach we used for
+VRL in DFE 2.1 — worked then, works now. The codegen gives you the skeleton and the
+easy bits (set, rename, remove, convert). You do the hard bits (complex conditionals,
+Painless logic, enrichment wiring) and validate against real test data.
+
+The key innovation is **Step 4a** — after hand-tuning a source, push reusable patterns
+back into the codegen so the NEXT source needs less work. That's how codegen coverage
+creeps from 70% toward 85%+.
 
 ---
 
-This is the standard development cycle for each Elastic source (Beat or Agent integration). The cycle is applied per-source (e.g., Okta, CrowdStrike, Azure) and repeats when Elastic upstream updates their pipeline YAMLs.
+## Per-Source (Steps 1-6)
 
----
+Run these for each source (Okta, CrowdStrike, Azure, etc.). Order matters.
 
-## Per-Source Cycle (Steps 1-6, including 4a)
-
-### Step 1: Codegen from Elastic Pipeline YAML
-
-Generate Rust transform code from the Elastic ingest pipeline YAML using `dfe-codegen`.
+### 1. Codegen from Pipeline YAML
 
 ```bash
 cargo run -p dfe-codegen -- generate \
@@ -26,161 +32,161 @@ cargo run -p dfe-codegen -- generate \
     --output crates/dfe-transforms/src/filebeat/<source>/
 ```
 
-The codegen produces ~70% correct code. Conditionals are transpiled to Rust `if` guards. Painless scripts fall back to `painless_exec()` stubs. This is the automated starting point — not the finished product.
+Produces ~70% correct Rust. Conditionals get transpiled to `if` guards. Painless
+scripts fall back to `painless_exec()` stubs. Starting point, not finished product.
 
-**Done when:** Generated code compiles (`cargo check -p dfe-transforms`).
+Done: generated code compiles (`cargo check -p dfe-transforms`).
 
-### Step 2: Review Source Agents for Missed Field Mapping + Parsing
+### 2. Review Agents for Field Mapping
 
-Review the actual Beats/Agent source code and Elastic integration docs for:
+Look at the actual Beats/Agent source and Elastic integration docs:
 
-- **Field mapping** — raw fields → ECS namespace renames (e.g., `actor.alternateId` → `okta.actor.alternate_id`). This is where most of the pipeline's work lives.
-- **Local parsing** — any parsing or enrichment the agent performs before the ingest pipeline (e.g., JSON decode, field extraction from structured logs).
-- **Enhancement** — fields the pipeline derives that aren't simple renames (e.g., `event.action` from `eventType`, `event.outcome` from `outcome.result` lowercased).
+- **Field mapping** — raw → ECS renames. This is where most pipeline work lives.
+  e.g., `actor.alternateId` → `okta.actor.alternate_id`
+- **Local parsing** — anything the agent does before the ingest pipeline
+  (JSON decode, field extraction from structured logs)
+- **Derived fields** — things the pipeline creates that aren't simple renames
+  e.g., `event.action` from `eventType`, `event.outcome` from lowercased `outcome.result`
 
-**Explicitly ignore:** Upstream transport parsing (syslog RFC, CEF, GELF, etc.). Assume that's done before data reaches us. We receive structured JSON from Kafka.
+Ignore upstream transport parsing (syslog RFC, CEF, GELF). That's done before us.
+We get structured JSON from Kafka.
 
-**Done when:** All expected ECS fields accounted for in the transform.
+Done: all expected ECS fields accounted for in the transform.
 
-### Step 3: Triage Painless Scripts
+### 3. Triage Painless Scripts
 
 Classify each Painless script in the pipeline:
 
-| Category | Action | Example |
-|----------|--------|---------|
-| **Common pattern** | Implement once as shared runtime function | Drop null/empty values recursively |
-| **Type coercion** | Codegen handles via `convert` processor | String → int, lowercase |
-| **Field extraction** | Hand-tune with dfe-parse or regex | Extract username from email |
-| **Complex logic** | Hand-tune in Rust | Conditional field derivation, array manipulation |
-| **Skip** | Leave as `painless_exec()` stub | Rarely-hit edge cases |
+- **Common pattern** → implement once as shared runtime function (drop nulls, email split, keys_to_snake_case)
+- **Type coercion** → codegen handles via convert processor
+- **Field extraction** → hand-tune with dfe-parse or regex
+- **Complex logic** → hand-tune in Rust (conditional field derivation, array manipulation)
+- **Skip** → leave as `painless_exec()` stub (rarely-hit edge cases)
 
-**Done when:** Each Painless script has a classification and a plan.
+Done: every Painless script has a classification and a plan.
 
-### Step 4: Iterate Codegen + Test Until Match Rate >90%
-
-Run the integration test against real Elastic fixture data:
+### 4. Iterate Until >90% Match Rate
 
 ```bash
 cargo test -p dfe-transforms --test integration_<source> -- --nocapture
 ```
 
-Fix issues iteratively:
-- Codegen bugs → fix in `dfe-codegen`, regenerate
+Fix things as they come up:
+- Codegen bugs → fix in dfe-codegen, regenerate
 - Missing field mappings → add to transform
-- Painless logic → implement in Rust (common patterns) or hand-tune
+- Painless logic → implement in Rust or hand-tune
 
-**Done when:** >90% match rate on happy-path fixtures (Semantic mode — skips @timestamp, GeoIP, @metadata).
+**Parity infrastructure** — assess per source, implement only where needed:
+- **Foreach** — only if pipeline iterates arrays (Okta ip_chain, O365 Actor/Target)
+- **Pipeline chaining** — only if pipeline references sub-pipelines (Fortinet, Cisco Meraki)
+- **`_conf` injection** — only if pipeline uses `ctx._conf.*` (O365 tenant lookup)
+- **On-failure handlers** — only if on_failure does real fallback (most are just log+continue)
 
-### Step 4a: Codegen Feedback — Push Hand-Tune Patterns Back Into Codegen
+Done: >90% match rate on happy-path fixtures (Semantic mode — skips @timestamp, GeoIP).
 
-After reaching >90% on a source, review what you hand-tuned in Step 4 and ask:
-**"Should the codegen have generated this?"**
+### 4a. Codegen Feedback
 
-| What you hand-tuned | Codegen fix |
-|---------------------|-------------|
-| Epoch length conditional (>=12 digits = ms, <=11 = seconds) | Add `try_string_length` to condition transpiler |
-| Negated list contains (`!["a","b"].contains(...)`) | Add prefix negation to condition transpiler |
-| Template string with numeric field (`FineScore`) | Use `get_as_string()` instead of `get_str()` in template emitter |
-| `painless_drop_empty` at end of transform | Emit automatically when pipeline has drop-nulls Painless script |
+After hitting >90%, ask: **"Should the codegen have generated this?"**
 
-After fixing the codegen:
-1. Regenerate the current source's transforms
-2. Re-test to verify the codegen fix works
-3. Regenerate other sources that haven't been hand-tuned yet (they benefit for free)
+Examples from real sessions:
+- Epoch length conditional → added `try_string_length` to transpiler
+- Negated list contains → added prefix negation to transpiler
+- Parenthesised OR groups → added `strip_parens` to transpiler
+- Grok field dot names → added `grok_to_regex_with_map` for name restoration
 
-This is how the codegen coverage moves from 70% toward 85%+. Every hand-tune that gets pushed back into codegen means the *next* source needs less manual work.
+After fixing codegen:
+1. Regenerate the current source
+2. Re-test to verify
+3. Regenerate OTHER sources that haven't been hand-tuned yet (they get the fix for free)
 
-**Done when:** All hand-tune patterns from Step 4 are either pushed into codegen or documented as "genuinely source-specific, not generalisable".
+This is how the codegen gets smarter. Every hand-tune pushed back means less work
+on the next source.
 
-### Step 5: Add Fuzzing, Known-Bad Inputs, Edge Cases
+Done: all hand-tune patterns either in codegen or documented as "source-specific".
 
-Harden the transform beyond the happy path:
+### 5. Fuzzing + Edge Cases
 
-- **Fuzzing:** Property-based testing with `proptest` — random field values, missing fields, null values, type mismatches.
-- **Known-bad inputs:** Web search for real-world malformed examples for this source type (e.g., truncated JSON, encoding issues, missing required fields).
-- **Edge cases:** Empty arrays, deeply nested objects, fields at max length, Unicode in field values.
+Harden beyond the happy path:
+- `proptest` fuzzing — random field values, missing fields, nulls, type mismatches
+- Web search for real-world malformed examples for this source type
+- Edge cases — empty arrays, deeply nested objects, Unicode, max-length fields
 
-**Done when:** Transform handles all edge cases without panicking. Error paths return `TransformResult::Continue` with appropriate error logging (don't drop events on parse failures).
+Done: transform handles all edge cases without panicking. Errors return
+`TransformResult::Continue` with logging, not event drops.
 
-### Step 6: Update Test Data with Complex Real-World Examples
+### 6. Complex Real-World Test Data
 
-Go beyond the Elastic-provided test fixtures:
+Go beyond Elastic's test fixtures:
+- Web search for real-world sample events (security blogs, vendor docs, community forums)
+- Multi-event sequences that exercise conditional branches
+- Events that trigger enrichment (GeoIP, UA, Community ID)
 
-- Web search for real-world sample events from this source (security blogs, vendor docs, community forums).
-- Add multi-event sequences that exercise conditional branches.
-- Add events that trigger enrichment paths (GeoIP, User Agent, Community ID).
-
-**Done when:** Test fixtures cover all major code paths in the transform.
+Done: test fixtures cover all major code paths.
 
 ---
 
-## Cross-Source Cycle (Steps 7-10)
+## Cross-Source (Steps 7-10)
 
-These steps operate across all sources, not per-source. Run after multiple sources have completed Steps 1-6.
+Run after multiple sources have completed Steps 1-6.
 
-### Step 7: Common Pattern Abstraction
+### 7. Common Pattern Abstraction
 
-Review all transforms for repeated patterns and lift them to shared modules:
+Look for repeated patterns across transforms and lift them:
+- **Macros** for repetitive codegen patterns (`field_rename!`, `conditional_set!`)
+- **Shared runtime functions** (already have: `drop_empty`, `keys_to_snake_case`, `email_split`)
+- **Parser extraction** to `dfe-parse` where parsers are duplicated across sources
 
-- **Rust macros** for repetitive codegen patterns (e.g., `field_rename!`, `conditional_set!`).
-- **Shared runtime functions** for common operations (e.g., `drop_empty_values()`, `keys_to_snake_case()`, `extract_username_from_email()`).
-- **Parser composition** — identify parsers that are duplicated across sources and extract to `dfe-parse`.
+Done: no pattern repeated more than twice across transforms.
 
-**Done when:** No pattern is repeated more than twice across transforms. Shared functions have their own tests.
+### 8. Batch Processing Review
 
-### Step 8: Batch Processing Review
+Where are we processing row-by-row when we could batch?
+- Row → batch: process 20k events at once, not one at a time
+- Regex → native parse: replace with `memchr`/`dfe-parse`
+- Clone → borrow: use references from Kafka message buffer
+- Sequential → SIMD: vectorise field operations across batch
+- Columnar: extract same field from all events in one pass
 
-Identify where row-by-row processing can be converted to batch operations:
+Done: hot-path functions show zero allocations in `dhat` profiling.
 
-- **Row → batch:** Where are we processing one event at a time when we could process 20k?
-- **Regex → native parse:** Where are regexes still used that could be replaced with `memchr`/`dfe-parse`?
-- **Clone → borrow:** Where are we allocating when we could borrow from the Kafka message buffer?
-- **Sequential → SIMD:** Where can field operations be vectorised across a batch?
-- **Columnar access:** Where can we extract the same field from all events in a batch in one pass?
+### 9. Efficiency Review
 
-**Done when:** Hot-path functions show zero allocations in `dhat` profiling. Batch operations identified and documented even if not yet implemented.
+Profile under realistic load:
+- **CPU:** `cargo flamegraph` — transform shouldn't be the bottleneck (Kafka I/O should dominate)
+- **Memory:** `dhat` — target zero allocations per event after init
+- **Pressure:** test with constrained cgroup memory, verify no OOM
+- **Latency:** p50/p95/p99 per-event transform latency
 
-### Step 9: Efficiency Review
+Done: no surprises in profiles. Pre-allocated structures only. Targets met.
 
-Profile CPU and memory under realistic load:
+### 10. Bake-Off
 
-- **CPU profiling:** `cargo flamegraph` to identify hot functions. Target: transform is not the bottleneck (Kafka I/O should dominate).
-- **Memory profiling:** `dhat` to identify allocation sites. Target: zero allocations per event on the hot path after init.
-- **Memory cap pressure:** Test with constrained cgroup memory to verify no OOM under batch load.
-- **Latency distribution:** p50/p95/p99 per-event transform latency.
+Benchmark against:
+1. **Generated baseline** — Step 1 output before hand-tuning (measures optimisation payoff)
+2. **Original VRL/Elastic** — the pipeline being replaced (validates the 10-20x claim)
+3. **Alternative approaches** — if Steps 8-9 identified options, benchmark head-to-head
 
-**Done when:** Flame graph shows no surprises. Memory profile shows pre-allocated structures only. Latency meets target.
+Use `criterion` with `Throughput::Elements(batch_size)`.
 
-### Step 10: Bake-Off
-
-Benchmark the optimised Rust transforms against:
-
-1. **Generated baseline** — the Step 1 codegen output before hand-tuning (measures optimisation payoff).
-2. **Original VRL/Elastic pipeline** — the Vector/Elastic ingest pipeline being replaced (measures the 10-20x claim).
-3. **Multiple implementation options** — if Step 8-9 identified alternative approaches, benchmark them head-to-head.
-
-Use `criterion` with `Throughput::Elements(batch_size)` for consistent measurement.
-
-**Done when:** Results documented in `BENCHMARKS.md`. Performance targets met.
+Done: results in `BENCHMARKS.md`. Performance targets met.
 
 ---
 
 ## Upstream Sync
 
-When Elastic releases new Beats/Agent versions with updated pipeline YAMLs:
-
-1. Update pipeline YAMLs from upstream (git submodule or manual copy).
-2. Re-run Step 1 (codegen) for affected sources.
-3. Diff the regenerated code against the current hand-tuned version.
-4. Merge new processors/fields while preserving hand-tuned optimisations.
-5. Re-run integration tests to verify.
+When Elastic updates pipeline YAMLs (new Beats/Agent release):
+1. Pull updated YAMLs from upstream
+2. Re-run Step 1 for affected sources
+3. Diff regenerated vs current hand-tuned code
+4. Merge new processors/fields, keep hand-tuned optimisations
+5. Re-run integration tests
 
 ---
 
 ## Iteration
 
-If time permits, repeat Steps 1-6 (including 4a) per source, then Steps 7-10 cross-source. Each iteration should show measurable improvement in match rate, test coverage, or performance.
+If time permits, repeat Steps 1-6 per source, then 7-10 cross-source. Each pass
+should show measurable improvement in match rate, coverage, or performance.
 
-The cycle is designed to be incremental — each step builds on the previous one, and you can stop at any step and have a working (if not yet optimal) transform.
-
-Step 4a is the key feedback loop that makes the whole cycle compound. Without it, every source requires the same hand-tuning effort. With it, the codegen gets smarter with each source and the hand-tune percentage shrinks over time.
+Step 4a is the compound interest — without it, every source costs the same effort.
+With it, the codegen gets smarter and the hand-tune shrinks each round.
