@@ -203,7 +203,56 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: email split — splitOnToken("@") → user.email, user.domain, user.name
+    // Used in Okta, O365, Azure, and many other sources
+    if normalised.contains("splitOnToken") && normalised.contains("@") {
+        return try_email_split(event, &normalised);
+    }
+
     false
+}
+
+/// Handle the email split Painless pattern.
+///
+/// Painless patterns like:
+/// ```painless
+/// String[] splitmail = ctx.user.id.splitOnToken("@");
+/// if (splitmail.length != 2) { return; }
+/// ctx.user.email = ctx.user.id;
+/// ctx.user.domain = splitmail[1];
+/// ctx.user.name = splitmail[0];
+/// ```
+///
+/// Also handles prefixed variants: user.target, source.user, destination.user
+fn try_email_split(event: &mut Event, script: &str) -> bool {
+    // Detect which field prefix this script operates on
+    let prefix = if script.contains("ctx.user.target.id") {
+        "user.target"
+    } else if script.contains("ctx.source.user.id") {
+        "source.user"
+    } else if script.contains("ctx.destination.user.id") {
+        "destination.user"
+    } else if script.contains("ctx.user.id") {
+        "user"
+    } else {
+        return false;
+    };
+
+    let id_field = format!("{prefix}.id");
+    let email_val = match event.get_string(&id_field) {
+        Some(v) if v.contains('@') => v,
+        _ => return true, // Field missing or not an email — script returns early
+    };
+
+    let parts: Vec<&str> = email_val.split('@').collect();
+    if parts.len() != 2 {
+        return true; // Script returns early on non-standard email
+    }
+
+    let _ = event.set(&format!("{prefix}.email"), json!(email_val));
+    let _ = event.set(&format!("{prefix}.name"), json!(parts[0]));
+    let _ = event.set(&format!("{prefix}.domain"), json!(parts[1]));
+    true
 }
 
 /// Try to extract a target field from a Painless script like `ctx.field_name`.

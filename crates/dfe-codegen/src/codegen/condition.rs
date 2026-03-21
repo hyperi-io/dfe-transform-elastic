@@ -42,6 +42,12 @@ fn try_compound(expr: &str) -> Option<String> {
         return Some(format!("!({})", transpiled));
     }
 
+    // Handle bare parentheses wrapping: (expr)
+    if let Some(inner) = strip_parens(expr) {
+        let transpiled = transpile_condition(inner)?;
+        return Some(format!("({})", transpiled));
+    }
+
     // Split on && (both sides must transpile)
     if let Some((left, right)) = split_logical(expr, "&&") {
         let l = transpile_condition(left)?;
@@ -67,6 +73,31 @@ fn strip_negation(expr: &str) -> Option<&str> {
     } else {
         None
     }
+}
+
+/// Strip outer parentheses: `(expr)` → `expr`
+/// Only strips if the closing paren matches the opening one (not a nested group).
+fn strip_parens(expr: &str) -> Option<&str> {
+    let trimmed = expr.trim();
+    if !trimmed.starts_with('(') || !trimmed.ends_with(')') {
+        return None;
+    }
+    // Verify the closing paren matches the opening one
+    let inner = &trimmed[1..trimmed.len() - 1];
+    let mut depth = 0i32;
+    for b in inner.bytes() {
+        match b {
+            b'(' => depth += 1,
+            b')' => {
+                depth -= 1;
+                if depth < 0 {
+                    return None; // Closing paren doesn't match opening
+                }
+            }
+            _ => {}
+        }
+    }
+    if depth == 0 { Some(inner) } else { None }
 }
 
 /// Split an expression on a logical operator, respecting parentheses and brackets.
@@ -126,8 +157,18 @@ fn transpile_single(expr: &str) -> Option<String> {
         return Some(r);
     }
 
-    // Field contains: ctx?.tags.contains("value") or ctx.tags.contains("value")
+    // Field contains: ctx?.tags.contains("value") or ctx.tags.contains('value')
     if let Some(r) = try_field_contains(expr) {
+        return Some(r);
+    }
+
+    // isEmpty: ctx?.field.isEmpty() or !ctx?.field.isEmpty()
+    if let Some(r) = try_is_empty(expr) {
+        return Some(r);
+    }
+
+    // splitOnToken email check: ctx.field.splitOnToken('@').length == 2
+    if let Some(r) = try_split_on_token(expr) {
         return Some(r);
     }
 
@@ -151,6 +192,11 @@ fn transpile_single(expr: &str) -> Option<String> {
 
     // field == "value" / field != "value"
     if let Some(r) = try_equality(expr) {
+        return Some(r);
+    }
+
+    // field == 123 / field != 0 (numeric equality)
+    if let Some(r) = try_numeric_equality(expr) {
         return Some(r);
     }
 
@@ -237,6 +283,21 @@ fn try_equality(expr: &str) -> Option<String> {
     }
 }
 
+/// `ctx?.field == 0` / `ctx?.field != 123` (numeric equality)
+fn try_numeric_equality(expr: &str) -> Option<String> {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    let re = RE.get_or_init(|| {
+        Regex::new(r#"^ctx\??\.(.+?)\s*(==|!=)\s*(-?\d+)$"#).expect("numeric equality regex")
+    });
+
+    let caps = re.captures(expr)?;
+    let field = painless_field_to_ecs(caps.get(1)?.as_str());
+    let op = caps.get(2)?.as_str();
+    let value = caps.get(3)?.as_str();
+
+    Some(format!(r#"event.get_i64("{field}") {op} Some({value})"#,))
+}
+
 /// `ctx?.field == true` / `ctx?.field == false`
 fn try_bool_check(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
@@ -282,11 +343,12 @@ fn try_list_contains(expr: &str) -> Option<String> {
     ))
 }
 
-/// `ctx?.tags.contains("value")` or `ctx.tags.contains("value")`
+/// `ctx?.tags.contains("value")` or `ctx.tags.contains('value')`
 fn try_field_contains(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
-        Regex::new(r#"^ctx\??\.(.+?)\.contains\("([^"]+)"\)$"#).expect("field contains regex")
+        Regex::new(r#"^ctx\??\.(.+?)\.contains\(["']([^"']+)["']\)$"#)
+            .expect("field contains regex")
     });
 
     let caps = re.captures(expr)?;
@@ -322,6 +384,43 @@ fn try_instanceof(expr: &str) -> Option<String> {
 
     Some(format!(
         r#"event.get("{field}").is_some_and(|v| v.{check})"#
+    ))
+}
+
+/// `ctx?.field.isEmpty()` → string empty check
+/// `!ctx?.field.isEmpty()` handled by prefix negation + this
+fn try_is_empty(expr: &str) -> Option<String> {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    let re =
+        RE.get_or_init(|| Regex::new(r#"^ctx\??\.(.+?)\.isEmpty\(\)$"#).expect("isEmpty regex"));
+
+    let caps = re.captures(expr)?;
+    let field = painless_field_to_ecs(caps.get(1)?.as_str());
+
+    Some(format!(
+        r#"event.get_str("{field}").is_none_or(|s| s.is_empty())"#,
+    ))
+}
+
+/// `ctx.field.splitOnToken('@').length == 2` → email format validation
+/// `ctx.field.splitOnToken('@')?.length == 2` (with optional chaining)
+fn try_split_on_token(expr: &str) -> Option<String> {
+    static RE: OnceLock<Regex> = OnceLock::new();
+    let re = RE.get_or_init(|| {
+        Regex::new(
+            r#"^ctx\??\.(.+?)\.splitOnToken\(['"](.+?)['"]\)\??\.length\s*(==|>=|<=|>|<)\s*(\d+)"#,
+        )
+        .expect("splitOnToken regex")
+    });
+
+    let caps = re.captures(expr)?;
+    let field = painless_field_to_ecs(caps.get(1)?.as_str());
+    let delimiter = caps.get(2)?.as_str();
+    let op = caps.get(3)?.as_str();
+    let count = caps.get(4)?.as_str();
+
+    Some(format!(
+        r#"event.get_str("{field}").is_some_and(|s| s.split('{delimiter}').count() {op} {count})"#,
     ))
 }
 
@@ -477,6 +576,64 @@ mod tests {
         let r = result.unwrap();
         assert!(r.contains("&&"));
         assert!(r.contains("s.len() >= 12"));
+    }
+
+    #[test]
+    fn is_empty() {
+        let result = transpile_condition("ctx.client?._temp.isEmpty()");
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains("is_none_or"));
+        assert!(r.contains("is_empty"));
+    }
+
+    #[test]
+    fn not_is_empty_compound() {
+        let result =
+            transpile_condition("ctx.client?._temp != null && !ctx.client?._temp.isEmpty()");
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains("&&"));
+        assert!(r.contains("!("));
+    }
+
+    #[test]
+    fn single_quote_contains() {
+        let result = transpile_condition("ctx.tags.contains('preserve_original_event')");
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains("preserve_original_event"));
+    }
+
+    #[test]
+    fn split_on_token_email() {
+        let result =
+            transpile_condition("ctx.o365audit?.Data?.f3u?.splitOnToken('@')?.length == 2");
+        assert!(result.is_some());
+        let r = result.unwrap();
+        assert!(r.contains("split('@')"));
+        assert!(r.contains("count() == 2"));
+    }
+
+    #[test]
+    fn parenthesised_or_group() {
+        let result = transpile_condition(
+            r#"ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "success" || ctx?.okta?.outcome?.result_lower == "allow")"#,
+        );
+        assert!(result.is_some(), "should transpile parenthesised OR group");
+        let r = result.unwrap();
+        assert!(r.contains("&&"));
+        assert!(r.contains("||"));
+        assert!(r.contains(r#""success""#));
+        assert!(r.contains(r#""allow""#));
+    }
+
+    #[test]
+    fn numeric_equality() {
+        assert_eq!(
+            transpile_condition("ctx.crowdstrike.event.ResourceCreateTime == 0"),
+            Some(r#"event.get_i64("crowdstrike.event.ResourceCreateTime") == Some(0)"#.into())
+        );
     }
 
     #[test]

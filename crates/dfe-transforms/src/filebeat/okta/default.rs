@@ -902,13 +902,13 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional not transpiled: ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "success" || ctx?.okta?.outcome?.result_lower == "allow")
-        {
+        let _cond = { event.has("okta.outcome.result_lower") && (event.get_str("okta.outcome.result_lower") == Some("success") || event.get_str("okta.outcome.result_lower") == Some("allow")) };
+        if _cond {
         event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional not transpiled: ctx?.okta?.outcome?.result_lower != null && (ctx?.okta?.outcome?.result_lower == "failure" || ctx?.okta?.outcome?.result_lower == "deny")
-        {
+        let _cond = { event.has("okta.outcome.result_lower") && (event.get_str("okta.outcome.result_lower") == Some("failure") || event.get_str("okta.outcome.result_lower") == Some("deny")) };
+        if _cond {
         event.set("event.outcome", json!("failure"))?;
         }
 
@@ -1136,8 +1136,8 @@ impl Transform for Default {
                 event.rename("destination.as.organization_name", "destination.as.organization.name")?;
             }
 
-        // TODO: conditional not transpiled: ctx?.tags == null || !(ctx.tags.contains('preserve_original_event'))
-        {
+        let _cond = { !event.has("tags") || !(event.get("tags").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("preserve_original_event")), serde_json::Value::String(s) => s.contains("preserve_original_event"), _ => false })) };
+        if _cond {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             event.remove("event.original");
