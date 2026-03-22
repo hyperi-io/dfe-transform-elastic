@@ -209,6 +209,12 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_email_split(event, &normalised);
     }
 
+    // Pattern: okta risk_behaviors extraction from flattened.behaviors
+    // Extracts keys with value "POSITIVE" into an array
+    if normalised.contains("POSITIVE") && normalised.contains("risk_behaviors") {
+        return try_risk_behaviors(event);
+    }
+
     // Pattern: okta.target array key renames + user/group extraction
     // Renames alternateId→alternate_id, displayName→display_name in each element,
     // filters detailEntry, extracts first user/usergroup targets
@@ -262,6 +268,35 @@ fn try_email_split(event: &mut Event, script: &str) -> bool {
     let _ = event.set(&format!("{prefix}.email"), json!(email_val));
     let _ = event.set(&format!("{prefix}.name"), json!(parts[0]));
     let _ = event.set(&format!("{prefix}.domain"), json!(parts[1]));
+    true
+}
+
+/// Extract risk behaviors from okta.debug_context.debug_data.flattened.behaviors.
+///
+/// The Painless script iterates the behaviors object and collects keys
+/// where the value is "POSITIVE" into an array at risk_behaviors.
+fn try_risk_behaviors(event: &mut Event) -> bool {
+    let behaviors = match event
+        .get("okta.debug_context.debug_data.flattened.behaviors")
+        .cloned()
+    {
+        Some(Value::Object(map)) => map,
+        _ => return true, // No behaviors or not an object — script returns early
+    };
+
+    let positive: Vec<Value> = behaviors
+        .iter()
+        .filter(|(_, v)| v.as_str() == Some("POSITIVE"))
+        .map(|(k, _)| json!(k))
+        .collect();
+
+    if !positive.is_empty() {
+        let _ = event.set(
+            "okta.debug_context.debug_data.risk_behaviors",
+            Value::Array(positive),
+        );
+    }
+
     true
 }
 
