@@ -382,11 +382,11 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
             // Pattern definitions for grok
-            // NAMESPACE = .+
-            // RULE = .+
             // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
             // GROUPID = .+
             // PROVIDERNAME = .+
+            // RULE = .+
+            // NAMESPACE = .+
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
@@ -409,10 +409,10 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
             // Pattern definitions for grok
-            // NAME = ((?!AUTHORIZATIONRULES).)*$
             // PROVIDERNAME = ([A-Za-z])\w+.([A-Za-z])\w+/([A-Za-z])\w+.
             // GROUPID = .+
             // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+            // NAME = ((?!AUTHORIZATIONRULES).)*$
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
@@ -512,8 +512,8 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
             // Pattern definitions for grok
-            // GROUPID = .+
             // SUBID = (\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}
+            // GROUPID = .+
             if let Some(input) = event.get_string("azure.resource_id") {
             // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
@@ -575,6 +575,27 @@ impl Transform for Default {
             Ok(())
         })();
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

@@ -65,6 +65,29 @@ impl<'a> PipelineCodegen<'a> {
             out.push('\n');
         }
 
+        // Post-processing: dedup related arrays and clean null/empty fields
+        out.push_str("        // --- Post-processing (codegen-emitted) ---\n");
+        out.push_str(
+            "        // Dedup related.* arrays (same value can be appended multiple times)\n",
+        );
+        for field in &[
+            "related.ip",
+            "related.user",
+            "related.hash",
+            "related.hosts",
+        ] {
+            out.push_str(&format!(
+                "        if let Some(Value::Array(mut arr)) = event.get(\"{field}\").cloned() {{\n\
+                 \x20           dedup_array(&mut arr);\n\
+                 \x20           event.set(\"{field}\", Value::Array(arr))?;\n\
+                 \x20       }}\n"
+            ));
+        }
+        out.push_str(
+            "        // Final cleanup: remove null/empty fields created during processing\n",
+        );
+        out.push_str("        painless_drop_empty(event.as_value_mut());\n\n");
+
         out.push_str("        Ok(TransformResult::Continue)\n");
         out.push_str("    }\n");
         out.push_str("}\n");
