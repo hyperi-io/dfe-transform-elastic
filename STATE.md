@@ -158,6 +158,12 @@ Kafka (20k batch) -> simd-json batch deserialise -> Rust transforms -> batch out
 **Decision:** dfe-transform-elastic is a standalone service, not a reusable library.
 **Rationale:** Purpose-built for one job: transform Elastic data at maximum throughput. Every abstraction must justify its performance cost. No plugin system, no user-extensible transforms, no general-purpose event processing.
 
+### Shared Crates: Independent Copies, Extract Later
+
+**Decision:** `dfe-parse` and `dfe-runtime` are copied into dfe-transform-splack (Splunk counterpart). Both projects evolve independently. No shared crate repo until post-spike stability.
+**Rationale:** Both projects are changing fast and breaking fast during the spike. Extracting shared crates now would block both projects on every breaking change. The coordination tax outweighs the duplication cost. When both projects reach beta stability, diff the copies, extract genuinely common code into `dfe-core` private GitHub repo, and both depend via git.
+**Full details:** [docs/SHARED-CRATES.md](docs/SHARED-CRATES.md)
+
 ### Batch-First Processing
 
 **Decision:** Default 20k event Kafka batches. All operations designed for batch processing.
