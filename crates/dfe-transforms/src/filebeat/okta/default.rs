@@ -743,36 +743,22 @@ impl Transform for Default {
             })();
         }
 
-        let _cond = {
-            event.has("okta.debug_context.debug_data.flattened.risk_object")
-                && event.has("okta.debug_context.debug_data.flattened.risk")
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                // Pattern definitions for grok
-                // KEY = %{NOTSPACE}=
-                if let Some(input) =
-                    event.get_string("okta.debug_context.debug_data.flattened.risk")
-                {
-                    // Grok pattern: reasons=%{DATA:_risk_object.reasons}, %{KEY}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) =
-                        grok_to_regex_with_map("reasons=%{DATA:_risk_object.reasons}, %{KEY}");
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
-                    if let Some(caps) = grok_re.captures(&input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                let field_path =
-                                    grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
-                                event.set(field_path, m.as_str())?;
-                            }
-                        }
-                    }
-                    // Additional grok pattern 1: reasons=%{DATA:_risk_object.reasons}$
+        // Hand-tuned: extract reasons from risk KV string
+        // The codegen KV parser truncates at commas inside values.
+        // This re-extracts the full reasons value from the original risk string.
+        if let Some(risk_str) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
+            if let Some(reasons_start) = risk_str.find("reasons=") {
+                let after = &risk_str[reasons_start + 8..];
+                let reasons_end = regex::Regex::new(r", \w+=")
+                    .ok()
+                    .and_then(|re| re.find(after))
+                    .map(|m| m.start())
+                    .unwrap_or(after.len());
+                let reasons = after[..reasons_end].trim();
+                if !reasons.is_empty() {
+                    let _ = event.set("_risk_object.reasons", reasons);
                 }
-                Ok(())
-            })();
+            }
         }
 
         let _cond = { event.has("_risk_object") };
