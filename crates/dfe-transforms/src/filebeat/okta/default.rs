@@ -895,7 +895,7 @@ impl Transform for Default {
             if let Some(s) = event.get_string(
                 "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons",
             ) {
-                let parts: Vec<Value> = s.split(",\\s*").map(|p| json!(p)).collect();
+                let parts: Vec<Value> = s.split(", ").map(|p| json!(p.trim())).collect();
                 event.set(
                     "okta.debug_context.debug_data.risk_reasons",
                     Value::Array(parts),
@@ -948,7 +948,7 @@ impl Transform for Default {
             if let Some(s) =
                 event.get_string("okta.debug_context.debug_data.flattened.risk.reasons")
             {
-                let parts: Vec<Value> = s.split(",\\s*").map(|p| json!(p)).collect();
+                let parts: Vec<Value> = s.split(", ").map(|p| json!(p.trim())).collect();
                 event.set(
                     "okta.debug_context.debug_data.risk_reasons",
                     Value::Array(parts),
@@ -1582,6 +1582,9 @@ impl Transform for Default {
                 Ok(())
             })();
         }
+
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

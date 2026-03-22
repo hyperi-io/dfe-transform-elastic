@@ -65,6 +65,18 @@ pub fn parse(ua: &str) -> UserAgentResult {
             result.name = Some("Chrome".into());
             result.version = caps.get(1).map(|m| m.as_str().into());
         }
+    } else if ua.contains("Mobile")
+        && ua.contains("Safari")
+        && !ua.contains("Chrome")
+        && !ua.contains("CriOS")
+        && !ua.contains("Version/")
+    {
+        // Mobile Safari variants — no Version/ means embedded WebView, not full Safari
+        if ua.contains("WKWebView") {
+            result.name = Some("Mobile Safari UI/WKWebView".into());
+        } else {
+            result.name = Some("Mobile Safari".into());
+        }
     } else if let Some(caps) = re_safari().captures(ua) {
         if !ua.contains("Chrome") && !ua.contains("CriOS") {
             result.name = Some("Safari".into());
@@ -77,6 +89,11 @@ pub fn parse(ua: &str) -> UserAgentResult {
         } else if let Some(caps) = re_trident_rv().captures(ua) {
             result.version = caps.get(1).map(|m| m.as_str().into());
         }
+    }
+
+    // Default: if no browser detected and UA string is non-empty, set "Other"
+    if result.name.is_none() && !ua.is_empty() {
+        result.name = Some("Other".into());
     }
 
     // OS detection

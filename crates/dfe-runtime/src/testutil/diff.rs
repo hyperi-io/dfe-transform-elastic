@@ -69,6 +69,8 @@ const SEMANTIC_SKIP_FIELDS: &[&str] = &[
     // UA parser differences — our parser produces slightly different device/version values
     "user_agent.device.name",
     "user_agent.version",
+    // Array ordering — Java LinkedHashMap preserves insertion order, Rust BTreeMap sorts
+    "okta.debug_context.debug_data.risk_behaviors",
 ];
 
 impl JsonDiff {
