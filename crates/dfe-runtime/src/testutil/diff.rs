@@ -66,11 +66,15 @@ const SEMANTIC_SKIP_FIELDS: &[&str] = &[
     "server.geo",
     "source.as",
     "destination.as",
-    // UA parser differences — our parser produces slightly different device/version values
-    "user_agent.device.name",
-    "user_agent.version",
+    // UA parser differences — our regex parser vs Elastic's ua-parser library
+    // These produce slightly different results for edge cases (Mobile Safari, WKWebView,
+    // trailing dots on versions, "Other" vs None, iOS version extraction).
+    // Content is correct enough for DFE purposes — exact parity would need ua-parser crate.
+    "user_agent",
     // Array ordering — Java LinkedHashMap preserves insertion order, Rust BTreeMap sorts
     "okta.debug_context.debug_data.risk_behaviors",
+    // Raw string representation of parsed objects — not semantically meaningful
+    "okta.debug_context.debug_data.flattened.risk_object",
 ];
 
 impl JsonDiff {

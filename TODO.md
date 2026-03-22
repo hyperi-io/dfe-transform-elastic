@@ -515,6 +515,12 @@ hyperi-rustlib = { version = ">=1.16.5", features = [
 - [ ] Map scaling signals to rustlib `scaling` (KEDA backpressure)
 - [ ] Ensure no bespoke implementations exist for rustlib-provided functions
 
+### Housekeeping (Next Session)
+
+- [ ] Update hyperi-ai submodule to latest
+- [ ] Documentation review using `/review` skill — check all docs against code reality
+- [ ] Rebuild and re-test using updated hyperi-ci (prod/test change separation)
+
 ### Other Deferred
 
 - [ ] WASM extensibility (user-defined transforms)
