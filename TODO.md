@@ -332,9 +332,11 @@ Not reverse engineering — supporting Elastic sources reliably.
 > **Depends on:** 4.1, 4.2
 > **Parallelism:** Each source type independent.
 
-**Current match rate: 44% (30/68 events)** `[IN PROGRESS]`
-  - CrowdStrike non-CSPM: 30/32 (94%) — sentinel values + dedup fixed
-  - Next: Fix event-stream epoch issue (2 events), SensorGroupingTags parsing, then start Okta
+**Current match rates:** `[IN PROGRESS]`
+  - CrowdStrike: 31/34 (91%) — falcon-audit 100%, falcon-events 100%, event-stream 89%, tags 0% (CSPM)
+  - Okta: 22/24 (92%) — 2 remaining: device_integrator JSON parse, target detailEntry edge case
+  - Azure: 0/10 (0%) — Step 2 assessed, needs Step 4 iteration (camelCase renames, Painless scripts)
+  - Next: Azure Step 4 iteration, then O365/Fortinet/Cisco sources
   - Blockers: GeoIP DB mismatch (DB-IP vs MaxMind — skipped in Semantic mode)
 
 - [ ] **Filebeat** — ~60 modules
@@ -353,7 +355,7 @@ Not reverse engineering — supporting Elastic sources reliably.
     - event-stream: 7/9 (78%) — 2 remaining: epoch + SensorGroupingTags
     - falcon-tags/tags-list: 0/2 (CSPM events — need sub-pipeline routing)
   - [ ] Azure (48 test files) — 0%
-  - [ ] Okta (2 test files) — 2/24 (8%), down to 2 diffs/event (UA parser only)
+  - [ ] Okta (2 test files) — 22/24 (92%), 2 remaining edge cases
   - [ ] Panw (14 test files)
   - [ ] Fortinet (27 test files)
 
@@ -637,6 +639,26 @@ hyperi-rustlib = { version = ">=1.16.5", features = [
 - [x] Document parity design principle in DESIGN.md with full processor coverage table
 - [x] Add parity infrastructure items to TODO scope (foreach, pipeline chaining, _conf, on-failure)
 - [x] 490 workspace tests, 0 failures
+
+---
+
+### 2026-03-22: Okta 92% + Codegen Post-Processing + Azure Assessment
+
+- [x] Implement okta.target Painless pattern (alternateId→alternate_id, target user/group)
+- [x] Add risk_behaviors Painless pattern (POSITIVE value extraction from behaviours map)
+- [x] Fix risk reasons KV parser truncation (comma-in-value edge case)
+- [x] Add Mobile Safari / WKWebView UA detection
+- [x] Default to "Other" for unrecognised UA agents
+- [x] Add related.user and related.ip dedup in Okta transform
+- [x] Add painless_drop_empty final pass in Okta transform
+- [x] Okta: 0% → 92% (22/24 events matching)
+- [x] Step 4a codegen feedback: emit dedup + drop_empty post-processing automatically
+- [x] Regenerate Azure transforms with post-processing
+- [x] Azure Step 2 assessment: 50+ diffs, camelCase renames, Painless targetResources, shared pipeline
+- [x] Rewrite DEVELOPMENT-CYCLE.md and TRANSPILER.md in casual direct style
+- [x] Document parity design principle in DESIGN.md with processor coverage table
+- [x] Convert text-art diagram to Mermaid in DESIGN.md
+- [x] Add housekeeping items to TODO (submodule update, doc review, CI rebuild)
 
 ---
 
