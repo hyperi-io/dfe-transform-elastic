@@ -136,8 +136,10 @@ pub fn grok_to_regex_with_map(
             let sub_pattern = grok_pattern_regex(&name);
 
             if !field.is_empty() {
-                let safe_field = field.replace('.', "_");
-                field_map.insert(safe_field.clone(), field);
+                // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
+                let field_name = field.split(':').next().unwrap_or(&field);
+                let safe_field = field_name.replace('.', "_");
+                field_map.insert(safe_field.clone(), field_name.to_string());
                 result.push_str(&format!("(?P<{safe_field}>{sub_pattern})"));
             } else {
                 result.push_str(&format!("({sub_pattern})"));
@@ -192,5 +194,181 @@ pub fn is_internal_ip(ip: &str) -> bool {
         Ok(IpAddr::V4(v4)) => v4.is_private() || v4.is_loopback() || v4.is_link_local(),
         Ok(IpAddr::V6(v6)) => v6.is_loopback(),
         Err(_) => false,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    // --- is_internal_ip ---
+
+    #[test]
+    fn internal_ip_rfc1918_class_a() {
+        assert!(is_internal_ip("10.0.0.1"));
+        assert!(is_internal_ip("10.255.255.255"));
+    }
+
+    #[test]
+    fn internal_ip_rfc1918_class_b() {
+        assert!(is_internal_ip("172.16.0.1"));
+        assert!(is_internal_ip("172.31.255.255"));
+        assert!(!is_internal_ip("172.32.0.1"));
+    }
+
+    #[test]
+    fn internal_ip_rfc1918_class_c() {
+        assert!(is_internal_ip("192.168.0.1"));
+        assert!(is_internal_ip("192.168.255.255"));
+    }
+
+    #[test]
+    fn internal_ip_loopback() {
+        assert!(is_internal_ip("127.0.0.1"));
+        assert!(is_internal_ip("::1"));
+    }
+
+    #[test]
+    fn internal_ip_link_local() {
+        assert!(is_internal_ip("169.254.0.1"));
+    }
+
+    #[test]
+    fn internal_ip_public() {
+        assert!(!is_internal_ip("8.8.8.8"));
+        assert!(!is_internal_ip("175.16.199.1"));
+        assert!(!is_internal_ip("1.1.1.1"));
+    }
+
+    #[test]
+    fn internal_ip_invalid() {
+        assert!(!is_internal_ip("not-an-ip"));
+        assert!(!is_internal_ip(""));
+    }
+
+    // --- registered_domain_lookup ---
+
+    #[test]
+    fn registered_domain_simple() {
+        let r = registered_domain_lookup("www.example.com").unwrap();
+        assert_eq!(r.registered_domain, "example.com");
+        assert_eq!(r.top_level_domain, "com");
+        assert_eq!(r.subdomain.as_deref(), Some("www"));
+    }
+
+    #[test]
+    fn registered_domain_no_subdomain() {
+        let r = registered_domain_lookup("example.com").unwrap();
+        assert_eq!(r.registered_domain, "example.com");
+        assert_eq!(r.top_level_domain, "com");
+        assert!(r.subdomain.is_none());
+    }
+
+    #[test]
+    fn registered_domain_bare_tld() {
+        assert!(registered_domain_lookup("com").is_none());
+    }
+
+    #[test]
+    fn registered_domain_empty() {
+        assert!(registered_domain_lookup("").is_none());
+    }
+
+    // --- grok_to_regex ---
+
+    #[test]
+    fn grok_simple_ip_field() {
+        let regex = grok_to_regex("%{IP:source.ip}");
+        assert!(regex.contains("(?P<source_ip>"));
+    }
+
+    #[test]
+    fn grok_field_map_restores_dots() {
+        let (_, map) = grok_to_regex_with_map("%{USER:user.name}");
+        assert_eq!(map.get("user_name").unwrap(), "user.name");
+    }
+
+    #[test]
+    fn grok_no_field() {
+        let regex = grok_to_regex("%{NOTSPACE}");
+        assert!(regex.contains(r"\S+"));
+        assert!(!regex.contains("(?P<"));
+    }
+
+    #[test]
+    fn grok_multiple_patterns() {
+        let regex = grok_to_regex("%{IP:src}:%{POSINT:port}");
+        assert!(regex.contains("(?P<src>"));
+        assert!(regex.contains("(?P<port>"));
+    }
+
+    #[test]
+    fn grok_unknown_pattern_fallback() {
+        let regex = grok_to_regex("%{UNKNOWN_THING:field}");
+        assert!(regex.contains(".+?")); // fallback
+    }
+
+    // --- parse_user_agent ---
+
+    #[test]
+    fn parse_ua_returns_ok() {
+        let result = parse_user_agent("Mozilla/5.0 (Windows NT 10.0) Chrome/91.0");
+        assert!(result.is_ok());
+        let ua = result.unwrap();
+        assert_eq!(ua.name.as_deref(), Some("Chrome"));
+    }
+
+    #[test]
+    fn parse_ua_empty() {
+        let result = parse_user_agent("");
+        assert!(result.is_ok());
+    }
+
+    // --- painless_exec ---
+
+    #[test]
+    fn painless_exec_unknown_script_noop() {
+        let mut event = Event::new(json!({"field": "value"}));
+        let result = painless_exec(&mut event, "unknown_script_that_does_nothing();");
+        assert!(result.is_ok());
+        // Field should be unchanged
+        assert_eq!(event.get_str("field"), Some("value"));
+    }
+
+    #[test]
+    fn painless_exec_drop_empty_known() {
+        let mut event = Event::new(json!({"a": "", "b": "keep", "c": null}));
+        let result = painless_exec(
+            &mut event,
+            r#"boolean drop(Object o) { if (o == null || o == "") { return true; } }"#,
+        );
+        assert!(result.is_ok());
+    }
+
+    // --- community_id_v1 ---
+
+    #[test]
+    fn community_id_tcp() {
+        let result = community_id_v1("1.2.3.4", "5.6.7.8", 1234, 80, "tcp");
+        assert!(result.is_ok());
+        let id = result.unwrap();
+        assert!(id.starts_with("1:"));
+    }
+
+    #[test]
+    fn community_id_invalid_ip() {
+        let result = community_id_v1("not-an-ip", "5.6.7.8", 1234, 80, "tcp");
+        assert!(result.is_err());
+    }
+
+    // --- geoip_lookup ---
+
+    #[test]
+    fn geoip_lookup_no_db() {
+        // Without MMDB files loaded, should return empty map (not panic)
+        let result = geoip_lookup("geoip_city", "8.8.8.8");
+        assert!(result.is_ok());
+        // May be empty if no DB loaded, but should not error
     }
 }
