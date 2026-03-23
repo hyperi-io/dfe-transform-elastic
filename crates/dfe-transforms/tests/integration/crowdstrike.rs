@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Integration tests for CrowdStrike transforms against fixture data.
-
-mod common;
-
 use dfe_transforms::filebeat::crowdstrike;
 
 const FIXTURE_DIR: &str = concat!(
@@ -14,7 +10,7 @@ const FIXTURE_DIR: &str = concat!(
 
 #[test]
 fn crowdstrike_default_sample() {
-    common::run_fixture(
+    super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-sample",
@@ -23,7 +19,7 @@ fn crowdstrike_default_sample() {
 
 #[test]
 fn crowdstrike_default_events() {
-    common::run_fixture(
+    super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-events",
@@ -32,7 +28,7 @@ fn crowdstrike_default_events() {
 
 #[test]
 fn crowdstrike_default_event_stream() {
-    common::run_fixture(
+    super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-event-stream",
@@ -41,7 +37,7 @@ fn crowdstrike_default_event_stream() {
 
 #[test]
 fn crowdstrike_default_audit_events() {
-    common::run_fixture(
+    super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-audit-events",
@@ -50,7 +46,7 @@ fn crowdstrike_default_audit_events() {
 
 #[test]
 fn crowdstrike_default_tags() {
-    common::run_fixture(
+    super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags",
@@ -59,7 +55,7 @@ fn crowdstrike_default_tags() {
 
 #[test]
 fn crowdstrike_default_tags_list() {
-    common::run_fixture(
+    super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags-list",
