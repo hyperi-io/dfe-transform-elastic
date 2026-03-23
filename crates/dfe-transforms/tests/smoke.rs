@@ -8,23 +8,43 @@ use dfe_runtime::event::Event;
 use dfe_runtime::transform::Transform;
 use serde_json::json;
 
-/// Run a transform against a minimal event and verify it doesn't panic.
+/// Run a transform against minimal events to catch init panics.
+///
+/// Primary goal: catch panics from OnceLock/regex compilation, not validate
+/// transform logic. Transform errors (FieldNotFound etc.) are OK — they mean
+/// the transform ran but needs real input data. Panics are NOT OK.
 fn smoke(t: &dyn Transform) {
-    // Verify name is non-empty
     let name = t.name();
     assert!(!name.is_empty(), "transform name must not be empty");
 
-    // Empty event — should not panic
-    let mut empty = Event::new(json!({}));
-    let _ = t.transform(&mut empty);
+    // Each event type: catch panics explicitly, allow errors
+    for (label, event_json) in [
+        ("empty", json!({})),
+        ("minimal_message", json!({"message": "{}"})),
+        ("null_fields", json!({"message": null, "event": null})),
+    ] {
+        let mut event = Event::new(event_json);
+        let panic_result =
+            std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| t.transform(&mut event)));
 
-    // Minimal message event — common pipeline entry point
-    let mut msg = Event::new(json!({"message": "{}"}));
-    let _ = t.transform(&mut msg);
-
-    // Event with null fields — tests null safety
-    let mut nulls = Event::new(json!({"message": null, "event": null}));
-    let _ = t.transform(&mut nulls);
+        match panic_result {
+            Err(panic) => {
+                let msg = panic
+                    .downcast_ref::<String>()
+                    .map(|s| s.as_str())
+                    .or_else(|| panic.downcast_ref::<&str>().copied())
+                    .unwrap_or("unknown panic");
+                panic!("[{name}] panicked on {label} event: {msg}");
+            }
+            Ok(Err(_transform_err)) => {
+                // Transform errors on empty/null input are expected —
+                // pipelines need their data. Not a structural problem.
+            }
+            Ok(Ok(_)) => {
+                // Transform succeeded — good
+            }
+        }
+    }
 }
 
 // --- CrowdStrike ---

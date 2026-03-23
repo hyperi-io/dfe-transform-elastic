@@ -369,6 +369,133 @@ mod tests {
         // Without MMDB files loaded, should return empty map (not panic)
         let result = geoip_lookup("geoip_city", "8.8.8.8");
         assert!(result.is_ok());
-        // May be empty if no DB loaded, but should not error
+    }
+
+    // --- grok edge cases ---
+
+    #[test]
+    fn grok_type_suffix_stripped() {
+        // Elastic grok uses %{IP:field:type} — the :type must be stripped
+        let (regex, map) = grok_to_regex_with_map("%{IP:source.ip:ip}");
+        assert!(regex.contains("(?P<source_ip>"));
+        assert!(!regex.contains(":ip"));
+        assert_eq!(map.get("source_ip").unwrap(), "source.ip");
+    }
+
+    #[test]
+    fn grok_empty_pattern() {
+        let regex = grok_to_regex("");
+        assert_eq!(regex, "");
+    }
+
+    #[test]
+    fn grok_literal_only() {
+        let regex = grok_to_regex("hello world");
+        assert_eq!(regex, "hello world");
+    }
+
+    #[test]
+    fn grok_consecutive_patterns() {
+        let regex = grok_to_regex("%{IP:src}%{POSINT:port}");
+        assert!(regex.contains("(?P<src>"));
+        assert!(regex.contains("(?P<port>"));
+    }
+
+    #[test]
+    fn grok_long_type_suffix() {
+        let (regex, map) = grok_to_regex_with_map("%{NUMBER:count:long}");
+        assert!(regex.contains("(?P<count>"));
+        assert!(!regex.contains(":long"));
+        assert_eq!(map.get("count").unwrap(), "count");
+    }
+
+    // --- Boundary value tests ---
+
+    #[test]
+    fn internal_ip_boundary_first_last() {
+        assert!(is_internal_ip("10.0.0.0"));
+        assert!(is_internal_ip("10.255.255.255"));
+        assert!(is_internal_ip("192.168.0.0"));
+        assert!(is_internal_ip("192.168.255.255"));
+        assert!(!is_internal_ip("0.0.0.0")); // not private
+        assert!(!is_internal_ip("255.255.255.255")); // broadcast
+    }
+
+    #[test]
+    fn community_id_boundary_ips() {
+        // Loopback
+        let result = community_id_v1("127.0.0.1", "127.0.0.1", 80, 80, "tcp");
+        assert!(result.is_ok());
+        // IPv6 loopback
+        let result = community_id_v1("::1", "::1", 80, 80, "tcp");
+        assert!(result.is_ok());
+        // Zero port
+        let result = community_id_v1("1.2.3.4", "5.6.7.8", 0, 0, "icmp");
+        assert!(result.is_ok());
+        // Max port
+        let result = community_id_v1("1.2.3.4", "5.6.7.8", 65535, 65535, "tcp");
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn community_id_unknown_protocol_errors() {
+        let result = community_id_v1("1.2.3.4", "5.6.7.8", 80, 80, "unknown_protocol");
+        // Unknown protocols are rejected, not defaulted — correct behaviour
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn registered_domain_deeply_nested() {
+        let r = registered_domain_lookup("deep.sub.example.com").unwrap();
+        // rsplitn(3, '.') gives ["com", "example", "deep.sub"]
+        assert_eq!(r.registered_domain, "example.com");
+        assert_eq!(r.subdomain.as_deref(), Some("deep.sub"));
+    }
+
+    #[test]
+    fn registered_domain_single_char() {
+        let r = registered_domain_lookup("a.b");
+        assert!(r.is_some());
+        let r = r.unwrap();
+        assert_eq!(r.registered_domain, "a.b");
+    }
+
+    #[test]
+    fn grok_regex_actually_matches() {
+        // Verify generated regex can actually match input
+        let regex_str = grok_to_regex("^%{IP:src}:%{POSINT:port}$");
+        let re = regex::Regex::new(&regex_str).expect("regex should compile");
+        let caps = re.captures("10.0.0.1:8080").expect("should match");
+        assert_eq!(caps.name("src").unwrap().as_str(), "10.0.0.1");
+        assert_eq!(caps.name("port").unwrap().as_str(), "8080");
+    }
+
+    #[test]
+    fn grok_regex_rejects_non_matching() {
+        let regex_str = grok_to_regex("^%{IP:src}$");
+        let re = regex::Regex::new(&regex_str).expect("regex should compile");
+        assert!(re.captures("not-an-ip").is_none());
+        assert!(re.captures("").is_none());
+    }
+
+    #[test]
+    fn parse_ua_returns_other_for_unknown() {
+        let result = parse_user_agent("SomeRandomBot/1.0").unwrap();
+        assert_eq!(result.name.as_deref(), Some("Other"));
+    }
+
+    // --- Mutation resistance test ---
+    // If you comment out the type-suffix stripping in grok_to_regex_with_map,
+    // this test MUST fail (verifies the test catches the bug)
+    #[test]
+    fn grok_type_suffix_compiles_as_valid_regex() {
+        let (regex, _) = grok_to_regex_with_map("%{IP:source.ip:ip}:%{POSINT:port:long}");
+        // This MUST compile — if type suffix isn't stripped, it won't
+        let re = regex::Regex::new(&regex);
+        assert!(
+            re.is_ok(),
+            "grok regex with type suffixes should compile: {:?}",
+            re.err()
+        );
     }
 }

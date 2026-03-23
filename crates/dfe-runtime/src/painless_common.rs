@@ -461,4 +461,110 @@ mod tests {
         assert!(!event.has("a"));
         assert!(event.has("b"));
     }
+
+    #[test]
+    fn email_split_user() {
+        let mut event = Event::new(json!({"user": {"id": "john@example.com"}}));
+        let script = r#"String[] splitmail = ctx.user.id.splitOnToken("@"); ctx.user.email = ctx.user.id; ctx.user.domain = splitmail[1]; ctx.user.name = splitmail[0];"#;
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("user.email"), Some("john@example.com"));
+        assert_eq!(event.get_str("user.name"), Some("john"));
+        assert_eq!(event.get_str("user.domain"), Some("example.com"));
+    }
+
+    #[test]
+    fn email_split_no_at_sign() {
+        let mut event = Event::new(json!({"user": {"id": "not-an-email"}}));
+        let script = r#"String[] splitmail = ctx.user.id.splitOnToken("@");"#;
+        assert!(try_known_painless(&mut event, script));
+        // Should not set email/name/domain when no @ present
+        assert!(!event.has("user.email"));
+    }
+
+    #[test]
+    fn email_split_target_user() {
+        let mut event = Event::new(json!({"user": {"target": {"id": "admin@corp.io"}}}));
+        let script = r#"String[] splitmail = ctx.user.target.id.splitOnToken("@"); ctx.user.target.email = ctx.user.target.id;"#;
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("user.target.email"), Some("admin@corp.io"));
+        assert_eq!(event.get_str("user.target.name"), Some("admin"));
+    }
+
+    #[test]
+    fn risk_behaviors_positive() {
+        let mut event = Event::new(json!({
+            "okta": {"debug_context": {"debug_data": {"flattened": {"behaviors": {
+                "New Geo-Location": "POSITIVE",
+                "New Device": "NEGATIVE",
+                "Velocity": "POSITIVE"
+            }}}}}
+        }));
+        let script = r#"if POSITIVE risk_behaviors"#;
+        assert!(try_known_painless(&mut event, script));
+        let behaviors = event.get("okta.debug_context.debug_data.risk_behaviors");
+        assert!(behaviors.is_some());
+        let arr = behaviors.unwrap().as_array().unwrap();
+        assert_eq!(arr.len(), 2);
+    }
+
+    #[test]
+    fn risk_behaviors_none_positive() {
+        let mut event = Event::new(json!({
+            "okta": {"debug_context": {"debug_data": {"flattened": {"behaviors": {
+                "New Device": "NEGATIVE"
+            }}}}}
+        }));
+        let script = r#"if POSITIVE risk_behaviors"#;
+        assert!(try_known_painless(&mut event, script));
+        // No POSITIVE entries — risk_behaviors should not be set
+        assert!(!event.has("okta.debug_context.debug_data.risk_behaviors"));
+    }
+
+    #[test]
+    fn okta_target_rename_and_extract() {
+        let mut event = Event::new(json!({
+            "okta": {"target": [
+                {"type": "User", "alternateId": "user@test.com", "displayName": "Test User", "id": "001", "detailEntry": {"extra": "removed", "methodTypeUsed": "push"}},
+                {"type": "UserGroup", "alternateId": "admins", "displayName": "Admins", "id": "002", "detailEntry": null}
+            ]}
+        }));
+        let script = r#"def target = ctx.okta.target; alternateId alternate_id displayName display_name okta"#;
+        assert!(try_known_painless(&mut event, script));
+
+        // Check renamed fields
+        let target = event.get("okta.target").unwrap().as_array().unwrap();
+        let first = target[0].as_object().unwrap();
+        assert!(first.contains_key("alternate_id"));
+        assert!(first.contains_key("display_name"));
+        assert!(!first.contains_key("alternateId"));
+
+        // Check detailEntry filtered to only methodTypeUsed
+        let de = first.get("detail_entry").unwrap().as_object().unwrap();
+        assert!(de.contains_key("methodTypeUsed"));
+        assert!(!de.contains_key("extra"));
+
+        // Check user/group extraction
+        assert!(event.has("okta_target_user"));
+        assert!(event.has("okta_target_group"));
+    }
+
+    #[test]
+    fn drop_empty_nested_arrays() {
+        let mut event = Event::new(json!({
+            "keep": "yes",
+            "nested": {"arr": [null, "", {"inner": null}]}
+        }));
+        drop_empty_recursive(&mut event);
+        assert!(event.has("keep"));
+        // nested.arr should be empty after removing all null/empty items
+        assert!(!event.has("nested"));
+    }
+
+    #[test]
+    fn keys_to_snake_case_already_snake() {
+        let mut val = json!({"already_snake": "yes", "alreadylower": "yes"});
+        keys_to_snake_case(&mut val);
+        assert!(val.get("already_snake").is_some());
+        assert!(val.get("alreadylower").is_some());
+    }
 }
