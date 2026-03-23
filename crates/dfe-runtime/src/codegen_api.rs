@@ -171,6 +171,11 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
         "URI" | "URIPROTO" => r"\S+",
         "PATH" | "UNIXPATH" | "WINPATH" => r"[^\s]+",
+        // Azure custom patterns (from pipeline pattern_definitions)
+        "SUBID" => {
+            r"(?:\{)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(?:\})?"
+        }
+        "GROUPID" | "PROVIDERNAME" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
         "MONTHDAY" => r"\d{1,2}",
         "MONTH" => r"\w+",
         "YEAR" => r"\d{4}",
