@@ -66,6 +66,8 @@ const SEMANTIC_SKIP_FIELDS: &[&str] = &[
     "server.geo",
     "source.as",
     "destination.as",
+    // Azure uses geo.* (not source.geo.*) for activity log locations
+    "geo",
     // UA parser differences — our regex parser vs Elastic's ua-parser library
     // These produce slightly different results for edge cases (Mobile Safari, WKWebView,
     // trailing dots on versions, "Other" vs None, iOS version extraction).

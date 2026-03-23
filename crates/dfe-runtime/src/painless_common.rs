@@ -215,6 +215,25 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_risk_behaviors(event);
     }
 
+    // Pattern: Azure category → event type/category mapping via params lookup
+    if normalised.contains("activitylogs")
+        && normalised.contains("category")
+        && normalised.contains("params.get")
+    {
+        return try_azure_category_to_event_type(event);
+    }
+
+    // Pattern: Azure activitylogs event_category assignment
+    if normalised.contains("event_category") && normalised.contains("eventCategory") {
+        return try_azure_event_category(event);
+    }
+
+    // Pattern: replace dots in map keys (Azure identity claims)
+    // Matches: ctx.temp_claims[key.replace('.', '_')] = ...
+    if normalised.contains("replace('.'") && normalised.contains("keySet()") {
+        return try_replace_dots_in_keys(event, &normalised);
+    }
+
     // Pattern: okta.target array key renames + user/group extraction
     // Renames alternateId→alternate_id, displayName→display_name in each element,
     // filters detailEntry, extracts first user/usergroup targets
@@ -374,6 +393,94 @@ fn try_okta_target_rename(event: &mut Event) -> bool {
         let _ = event.set("okta_target_group", group);
     }
 
+    true
+}
+
+/// Azure category → event type mapping.
+///
+/// Maps activitylogs.category to event.type via params lookup:
+/// write/action → ["change"], read → ["access"], delete → ["deletion"]
+fn try_azure_category_to_event_type(event: &mut Event) -> bool {
+    let category = match event.get_str("azure.activitylogs.category") {
+        Some(c) => c.to_lowercase(),
+        None => return true, // No category — script returns early
+    };
+
+    let event_types: Option<Vec<&str>> = match category.as_str() {
+        "write" | "action" => Some(vec!["change"]),
+        "read" => Some(vec!["access"]),
+        "delete" => Some(vec!["deletion"]),
+        _ => None,
+    };
+
+    if let Some(types) = event_types {
+        for t in types {
+            let _ = event.set("event.type", json!([t]));
+        }
+    }
+
+    true
+}
+
+/// Azure activitylogs event_category conditional assignment.
+///
+/// Sets `azure.activitylogs.event_category` based on:
+/// 1. `properties.eventCategory` if present
+/// 2. "Policy" if `properties.policies` present
+/// 3. "Administrative" as default
+fn try_azure_event_category(event: &mut Event) -> bool {
+    let category = if let Some(v) = event.get_str("azure.activitylogs.properties.eventCategory") {
+        v.to_string()
+    } else if event.has("azure.activitylogs.properties.policies") {
+        "Policy".to_string()
+    } else {
+        "Administrative".to_string()
+    };
+
+    let _ = event.set("azure.activitylogs.event_category", json!(category));
+    true
+}
+
+/// Replace dots with underscores in map keys at a given field path.
+///
+/// Common Azure pattern — identity claims have dots in URLs that Elastic normalises:
+/// ```painless
+/// for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {
+///   ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);
+/// }
+/// ctx.azure.activitylogs.identity.claims = ctx.temp_claims;
+/// ```
+fn try_replace_dots_in_keys(event: &mut Event, script: &str) -> bool {
+    // Extract the field path by finding `ctx.<path>.keySet()`
+    let field_path = if let Some(keyset_pos) = script.find(".keySet()") {
+        // Walk backwards from .keySet() to find `ctx.`
+        let before = &script[..keyset_pos];
+        if let Some(ctx_pos) = before.rfind("ctx.") {
+            let path = &before[ctx_pos + 4..];
+            path.replace("?.", ".").replace('?', "")
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    };
+
+    // Navigate to the parent object via JSON pointer to avoid dotted-path
+    // issues with keys that contain literal dots (e.g., URL-like claim names)
+    let pointer = format!("/{}", field_path.replace('.', "/"));
+    let inner = event.as_value_mut();
+    let resolved = inner.pointer_mut(&pointer);
+    let obj = match resolved {
+        Some(Value::Object(map)) => map,
+        _ => return true, // Field missing or not an object — skip
+    };
+
+    let new_map: Map<String, Value> = obj
+        .iter()
+        .map(|(k, v)| (k.replace('.', "_"), v.clone()))
+        .collect();
+
+    *obj = new_map;
     true
 }
 
@@ -546,6 +653,45 @@ mod tests {
         // Check user/group extraction
         assert!(event.has("okta_target_user"));
         assert!(event.has("okta_target_group"));
+    }
+
+    #[test]
+    fn replace_dots_in_keys_azure_claims() {
+        let mut event = Event::new(json!({
+            "azure": {"activitylogs": {"identity": {"claims": {
+                "http://schemas.microsoft.com/identity/claims/id": "test123",
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "user"
+            }}}}
+        }));
+        let script = r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#;
+        assert!(try_known_painless(&mut event, script));
+        // Verify dots replaced with underscores in claim keys
+        let claims = event
+            .as_value()
+            .pointer("/azure/activitylogs/identity/claims")
+            .expect("claims should exist");
+        let obj = claims.as_object().expect("claims should be object");
+        // Original dotted keys should be replaced
+        assert!(!obj.contains_key("http://schemas.microsoft.com/identity/claims/id"));
+        assert!(obj.contains_key("http://schemas_microsoft_com/identity/claims/id"));
+        assert_eq!(
+            obj.get("http://schemas_microsoft_com/identity/claims/id")
+                .unwrap(),
+            "test123"
+        );
+    }
+
+    #[test]
+    fn azure_event_category_default() {
+        let mut event = Event::new(json!({
+            "azure": {"activitylogs": {"properties": {}}}
+        }));
+        let script = r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) { ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory; } else { ctx.azure.activitylogs.event_category = 'Administrative'; }"#;
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("azure.activitylogs.event_category"),
+            Some("Administrative")
+        );
     }
 
     #[test]
