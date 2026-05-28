@@ -80,14 +80,14 @@ CI is live via `hyperi-ci`. Run `hyperi-ci check` (or `make check`) locally befo
 
 | Component | Value |
 |-----------|-------|
-| License | FSL-1.1-ALv2 (Functional Source License) |
+| License | BUSL-1.1 (Business Source License) |
 | Licensor | HYPERI PTY LIMITED (ABN 31 622 581 748) |
-| SPDX ID | `FSL-1.1-ALv2` |
+| SPDX ID | `BUSL-1.1` |
 | Apache 2.0 Conversion | 2 years after each release |
 
 **Source file headers:**
 ```rust
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 ```
 

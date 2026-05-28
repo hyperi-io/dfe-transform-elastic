@@ -4,7 +4,7 @@ description = "Elastic ingest pipeline to Rust code generator (elastic_to_rust)"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
-license.workspace = true
+license-file.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 
