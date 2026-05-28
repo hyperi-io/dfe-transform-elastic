@@ -4,7 +4,7 @@ description = "High-performance parser library replacing grok/regex patterns wit
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
-license.workspace = true
+license-file.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 

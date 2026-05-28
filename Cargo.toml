@@ -11,7 +11,7 @@ resolver = "2"
 version = "0.1.0"
 edition = "2024"
 authors = ["HyperI <dev@hyperi.com.au>"]
-license = "FSL-1.1-ALv2"
+license-file = "LICENSE"
 repository = "https://github.com/hyperi-io/dfe-transform-elastic"
 rust-version = "1.94"
 

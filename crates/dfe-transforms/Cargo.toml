@@ -4,7 +4,7 @@ description = "Generated and hand-tuned transform modules for Elastic data sourc
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
-license.workspace = true
+license-file.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 

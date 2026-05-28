@@ -2,7 +2,7 @@
 # File:      deny.toml
 # Purpose:   cargo-deny configuration for license and advisory checking
 #
-# License:   FSL-1.1-ALv2
+# License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 #
 # Run: cargo deny check
@@ -18,7 +18,7 @@ notice = "warn"
 [licenses]
 unlicensed = "deny"
 allow = [
-    "FSL-1.1-ALv2",
+    "BUSL-1.1",
     "MIT",
     "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
