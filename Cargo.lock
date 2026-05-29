@@ -550,7 +550,7 @@ dependencies = [
  "regex",
  "regex-automata",
  "thiserror 2.0.18",
- "winnow 0.7.14",
+ "winnow 1.0.0",
 ]
 
 [[package]]
@@ -1019,9 +1019,9 @@ dependencies = [
 
 [[package]]
 name = "hyperi-rustlib"
-version = "1.16.5"
+version = "1.19.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "42d349fbc90741297b2237d0d0c00286c3114cbcc7ab286079ac8326a04889cd"
+checksum = "acb8754cd4fee6c3abd0411728078648403a17a346c2b1f928a8ace530affb10"
 dependencies = [
  "dirs",
  "dotenvy",
@@ -3144,6 +3144,9 @@ name = "winnow"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a90e88e4667264a994d34e6d1ab2d26d398dcdca8b7f52bec8668957517fc7d8"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "wit-bindgen"

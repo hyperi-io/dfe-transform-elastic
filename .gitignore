@@ -32,5 +32,11 @@ testdata/
 # Temp working files
 .tmp/
 
-# AI agent working files (not committed)
+# Local working files (not committed)
 docs/superpowers/
+hyperi-ai/
+.mcp.json
+STATE.md
+CLAUDE.md
+TODO.md
+.ai-version
