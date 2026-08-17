@@ -16,21 +16,26 @@ impl Transform for UserActivityAudit {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("iam"))?;
+        event.append("event.category", json!("iam"))?;
 
-            event.append("event.type", json!("change"))?;
+        event.append("event.type", json!("change"))?;
 
         event.set("event.action", json!("user_activity_audit_event"))?;
 
-            if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
-            }
+        if event.has("crowdstrike.event.UserId") {
+            event.rename("crowdstrike.event.UserId", "user.name")?;
+        }
 
-            if event.has("crowdstrike.event.OperationName") {
-                event.rename("crowdstrike.event.OperationName", "message")?;
-            }
+        if event.has("crowdstrike.event.OperationName") {
+            event.rename("crowdstrike.event.OperationName", "message")?;
+        }
 
-        let _cond = { event.has("crowdstrike.event.UserIp") && event.get_str("crowdstrike.event.UserIp").is_some_and(|s| !s.is_empty()) };
+        let _cond = {
+            event.has("crowdstrike.event.UserIp")
+                && event
+                    .get_str("crowdstrike.event.UserIp")
+                    .is_some_and(|s| !s.is_empty())
+        };
         if _cond {
             if event.has("crowdstrike.event.UserIp") {
                 event.rename("crowdstrike.event.UserIp", "source.ip")?;

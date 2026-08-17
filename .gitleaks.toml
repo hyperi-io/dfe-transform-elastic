@@ -17,19 +17,13 @@ paths = [
     # Git submodules (have their own scanning)
     '''(^|/)ci/''',
     '''(^|/)ai/''',
-    # Uncomment and customise as needed
-    # '''tests/.*\.py''',
-    # '''tests/fixtures/.*''',
-    # '''.env.example''',
+    # Elastic's upstream test corpus -- synthetic ids that trip the entropy rules.
+    '''(^|/)tests/fixtures/''',
+    '''(^|/)tests/pipelines/''',
 ]
 
 # Regex patterns for known false positives
-# regexes = [
-#     '''YOUR_.*_TOKEN''',
-#     '''your-.*-token''',
-#     '''test-token''',
-#     '''example\.com''',
-# ]
-
-# Stopwords - findings containing these are likely false positives
-# stopwords = ["example", "sample", "test", "mock", "fake", "dummy", "placeholder"]
+regexes = [
+    # Meraki event-type literal carried through from the Elastic pipeline.
+    '''8021x_eap_failure''',
+]

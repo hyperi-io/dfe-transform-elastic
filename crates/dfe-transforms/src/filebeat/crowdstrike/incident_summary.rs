@@ -16,31 +16,44 @@ impl Transform for IncidentSummary {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("alert"))?;
 
-            event.append("event.category", json!("malware"))?;
+        event.append("event.category", json!("malware"))?;
 
-            event.append("event.type", json!("info"))?;
+        event.append("event.type", json!("info"))?;
 
-            event.append("event.action", json!("incident"))?;
+        event.append("event.action", json!("incident"))?;
 
-            if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
-            }
+        if event.has("crowdstrike.event.UserId") {
+            event.rename("crowdstrike.event.UserId", "user.name")?;
+        }
 
-        let _cond = { event.has("crowdstrike.event.IncidentStartTime") && event.get_as_string("crowdstrike.event.IncidentStartTime").is_some_and(|s| s.len() >= 12) };
+        let _cond = {
+            event.has("crowdstrike.event.IncidentStartTime")
+                && event
+                    .get_as_string("crowdstrike.event.IncidentStartTime")
+                    .is_some_and(|s| s.len() >= 12)
+        };
         if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if ms > 0 {
                         if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.start", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                            event.set(
+                                "event.start",
+                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                            )?;
                         }
                     }
                 }
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.IncidentStartTime") && event.get_as_string("crowdstrike.event.IncidentStartTime").is_some_and(|s| s.len() <= 11) };
+        let _cond = {
+            event.has("crowdstrike.event.IncidentStartTime")
+                && event
+                    .get_as_string("crowdstrike.event.IncidentStartTime")
+                    .is_some_and(|s| s.len() <= 11)
+        };
         if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX timestamp (skip epoch 0)
@@ -49,28 +62,44 @@ impl Transform for IncidentSummary {
                         let secs = ts as i64;
                         let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
                         if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.start", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                            event.set(
+                                "event.start",
+                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                            )?;
                         }
                     }
                 }
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.IncidentEndTime") && event.get_as_string("crowdstrike.event.IncidentEndTime").is_some_and(|s| s.len() >= 12) };
+        let _cond = {
+            event.has("crowdstrike.event.IncidentEndTime")
+                && event
+                    .get_as_string("crowdstrike.event.IncidentEndTime")
+                    .is_some_and(|s| s.len() >= 12)
+        };
         if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if ms > 0 {
                         if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.end", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                            event.set(
+                                "event.end",
+                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                            )?;
                         }
                     }
                 }
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.IncidentEndTime") && event.get_as_string("crowdstrike.event.IncidentEndTime").is_some_and(|s| s.len() <= 11) };
+        let _cond = {
+            event.has("crowdstrike.event.IncidentEndTime")
+                && event
+                    .get_as_string("crowdstrike.event.IncidentEndTime")
+                    .is_some_and(|s| s.len() <= 11)
+        };
         if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX timestamp (skip epoch 0)
@@ -79,28 +108,37 @@ impl Transform for IncidentSummary {
                         let secs = ts as i64;
                         let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
                         if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.end", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                            event.set(
+                                "event.end",
+                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                            )?;
                         }
                     }
                 }
             }
         }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
-            }
+        if event.has("crowdstrike.event.FalconHostLink") {
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+        }
 
-            if event.has("crowdstrike.event.HostID") {
-                event.rename("crowdstrike.event.HostID", "host.id")?;
-            }
+        if event.has("crowdstrike.event.HostID") {
+            event.rename("crowdstrike.event.HostID", "host.id")?;
+        }
 
-            if event.has("crowdstrike.event.IncidentID") {
-                event.rename("crowdstrike.event.IncidentID", "event.id")?;
-            }
+        if event.has("crowdstrike.event.IncidentID") {
+            event.rename("crowdstrike.event.IncidentID", "event.id")?;
+        }
 
         let _cond = { event.has("crowdstrike.event.FineScore") };
         if _cond {
-        event.set("message", json!(format!("Incident score {}", event.get_str("crowdstrike.event.FineScore").unwrap_or(""))))?;
+            event.set(
+                "message",
+                json!(format!(
+                    "Incident score {}",
+                    event.get_str("crowdstrike.event.FineScore").unwrap_or("")
+                )),
+            )?;
         }
 
         Ok(TransformResult::Continue)

@@ -16,46 +16,65 @@ impl Transform for FirewallMatch {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("network"))?;
+        event.append("event.category", json!("network"))?;
 
-            event.append("event.action", json!("firewall_match_event"))?;
+        event.append("event.action", json!("firewall_match_event"))?;
 
-            event.append("event.type", json!("start"))?;
-            event.append("event.type", json!("connection"))?;
+        event.append("event.type", json!("start"))?;
+        event.append("event.type", json!("connection"))?;
 
-        let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("1") };
+        let _cond = {
+            event.has("crowdstrike.event.RuleAction")
+                && event.get_str("crowdstrike.event.RuleAction") == Some("1")
+        };
         if _cond {
             event.append("event.type", json!("allowed"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("2") };
+        let _cond = {
+            event.has("crowdstrike.event.RuleAction")
+                && event.get_str("crowdstrike.event.RuleAction") == Some("2")
+        };
         if _cond {
-        event.set("_tmp_.action", json!("Allowed"))?;
+            event.set("_tmp_.action", json!("Allowed"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("2") };
+        let _cond = {
+            event.has("crowdstrike.event.RuleAction")
+                && event.get_str("crowdstrike.event.RuleAction") == Some("2")
+        };
         if _cond {
             event.append("event.type", json!("denied"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.RuleAction") && event.get_str("crowdstrike.event.RuleAction") == Some("2") };
+        let _cond = {
+            event.has("crowdstrike.event.RuleAction")
+                && event.get_str("crowdstrike.event.RuleAction") == Some("2")
+        };
         if _cond {
-        event.set("_tmp_.action", json!("Blocked"))?;
+            event.set("_tmp_.action", json!("Blocked"))?;
         }
 
         let _cond = { !event.has("_tmp_.action") };
         if _cond {
-        event.set("_tmp_.action", json!("Unknown"))?;
+            event.set("_tmp_.action", json!("Unknown"))?;
         }
 
         let _cond = { event.has("crowdstrike.event.RuleName") };
         if _cond {
-        event.set("message", json!(format!("Firewall Rule: '{}' triggered - Action: '{}'", event.get_str("crowdstrike.event.RuleName").unwrap_or(""), event.get_str("_tmp_.action").unwrap_or(""))))?;
+            event.set(
+                "message",
+                json!(format!(
+                    "Firewall Rule: '{}' triggered - Action: '{}'",
+                    event.get_str("crowdstrike.event.RuleName").unwrap_or(""),
+                    event.get_str("_tmp_.action").unwrap_or("")
+                )),
+            )?;
         }
 
-            if event.has("crowdstrike.event.Ipv") {
-                event.rename("crowdstrike.event.Ipv", "network.type")?;
-            }
+        if event.has("crowdstrike.event.Ipv") {
+            event.rename("crowdstrike.event.Ipv", "network.type")?;
+        }
 
         if event.has("crowdstrike.event.PID") {
             if let Some(val) = event.get("crowdstrike.event.PID") {
@@ -63,180 +82,290 @@ impl Transform for FirewallMatch {
                     Value::String(s) => {
                         let s = s.trim();
                         if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.PID".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.PID".into(),
+                                    message: format!("cannot convert '{}' to integer", s),
+                                }
+                            })?)
                         } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.PID".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                path: "crowdstrike.event.PID".into(),
+                                message: format!("cannot convert '{}' to integer", s)
+                            })?)
                         }
                     }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
+                    Value::Number(n) => {
+                        json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                    }
                     Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.PID".into(), message: "cannot convert to integer".into() }.into()),
+                    _ => {
+                        return Err(TransformError::ParseError {
+                            path: "crowdstrike.event.PID".into(),
+                            message: "cannot convert to integer".into(),
+                        }
+                        .into());
+                    }
                 };
                 event.set("process.pid", converted)?;
             }
         }
 
-        event.set("process.executable", event.get("crowdstrike.event.ImageFileName").cloned().unwrap_or(Value::Null))?;
+        event.set(
+            "process.executable",
+            event
+                .get("crowdstrike.event.ImageFileName")
+                .cloned()
+                .unwrap_or(Value::Null),
+        )?;
 
-            event.remove("crowdstrike.event.ImageFileName");
+        event.remove("crowdstrike.event.ImageFileName");
 
-            if event.has("crowdstrike.event.RuleId") {
-                event.rename("crowdstrike.event.RuleId", "rule.id")?;
-            }
+        if event.has("crowdstrike.event.RuleId") {
+            event.rename("crowdstrike.event.RuleId", "rule.id")?;
+        }
 
-            if event.has("crowdstrike.event.RuleName") {
-                event.rename("crowdstrike.event.RuleName", "rule.name")?;
-            }
+        if event.has("crowdstrike.event.RuleName") {
+            event.rename("crowdstrike.event.RuleName", "rule.name")?;
+        }
 
-            if event.has("crowdstrike.event.RuleGroupName") {
-                event.rename("crowdstrike.event.RuleGroupName", "rule.ruleset")?;
-            }
+        if event.has("crowdstrike.event.RuleGroupName") {
+            event.rename("crowdstrike.event.RuleGroupName", "rule.ruleset")?;
+        }
 
-            if event.has("crowdstrike.event.RuleDescription") {
-                event.rename("crowdstrike.event.RuleDescription", "rule.description")?;
-            }
+        if event.has("crowdstrike.event.RuleDescription") {
+            event.rename("crowdstrike.event.RuleDescription", "rule.description")?;
+        }
 
-            if event.has("crowdstrike.event.RuleFamilyID") {
-                event.rename("crowdstrike.event.RuleFamilyID", "rule.category")?;
-            }
+        if event.has("crowdstrike.event.RuleFamilyID") {
+            event.rename("crowdstrike.event.RuleFamilyID", "rule.category")?;
+        }
 
-            if event.has("crowdstrike.event.HostName") {
-                event.rename("crowdstrike.event.HostName", "host.name")?;
-            }
+        if event.has("crowdstrike.event.HostName") {
+            event.rename("crowdstrike.event.HostName", "host.name")?;
+        }
 
-            if event.has("crowdstrike.event.EventType") {
-                event.rename("crowdstrike.event.EventType", "event.code")?;
-            }
+        if event.has("crowdstrike.event.EventType") {
+            event.rename("crowdstrike.event.EventType", "event.code")?;
+        }
 
         let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("1") };
         if _cond {
-        event.set("network.direction", json!("ingress"))?;
+            event.set("network.direction", json!("ingress"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.RemoteAddress") && event.get_str("network.direction") == Some("ingress") };
+        let _cond = {
+            event.has("crowdstrike.event.RemoteAddress")
+                && event.get_str("network.direction") == Some("ingress")
+        };
         if _cond {
             if event.has("crowdstrike.event.RemoteAddress") {
                 event.rename("crowdstrike.event.RemoteAddress", "source.ip")?;
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.LocalAddress") && event.get_str("network.direction") == Some("ingress") };
+        let _cond = {
+            event.has("crowdstrike.event.LocalAddress")
+                && event.get_str("network.direction") == Some("ingress")
+        };
         if _cond {
             if event.has("crowdstrike.event.LocalAddress") {
                 event.rename("crowdstrike.event.LocalAddress", "destination.ip")?;
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.LocalPort") && event.get_str("network.direction") == Some("ingress") };
+        let _cond = {
+            event.has("crowdstrike.event.LocalPort")
+                && event.get_str("network.direction") == Some("ingress")
+        };
         if _cond {
-        if event.has("crowdstrike.event.LocalPort") {
-            if let Some(val) = event.get("crowdstrike.event.LocalPort") {
-                let converted = match val {
-                    Value::String(s) => {
-                        let s = s.trim();
-                        if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                        } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            if event.has("crowdstrike.event.LocalPort") {
+                if let Some(val) = event.get("crowdstrike.event.LocalPort") {
+                    let converted = match val {
+                        Value::String(s) => {
+                            let s = s.trim();
+                            if let Some(hex) = s.strip_prefix("0x") {
+                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                    TransformError::ParseError {
+                                        path: "crowdstrike.event.LocalPort".into(),
+                                        message: format!("cannot convert '{}' to integer", s),
+                                    }
+                                })?)
+                            } else {
+                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                    path: "crowdstrike.event.LocalPort".into(),
+                                    message: format!("cannot convert '{}' to integer", s)
+                                })?)
+                            }
                         }
-                    }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: "cannot convert to integer".into() }.into()),
-                };
-                event.set("destination.port", converted)?;
+                        Value::Number(n) => {
+                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                        }
+                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                        _ => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.LocalPort".into(),
+                                message: "cannot convert to integer".into(),
+                            }
+                            .into());
+                        }
+                    };
+                    event.set("destination.port", converted)?;
+                }
             }
-        }
         }
 
-        let _cond = { event.has("crowdstrike.event.RemotePort") && event.get_str("network.direction") == Some("ingress") };
+        let _cond = {
+            event.has("crowdstrike.event.RemotePort")
+                && event.get_str("network.direction") == Some("ingress")
+        };
         if _cond {
-        if event.has("crowdstrike.event.RemotePort") {
-            if let Some(val) = event.get("crowdstrike.event.RemotePort") {
-                let converted = match val {
-                    Value::String(s) => {
-                        let s = s.trim();
-                        if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                        } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            if event.has("crowdstrike.event.RemotePort") {
+                if let Some(val) = event.get("crowdstrike.event.RemotePort") {
+                    let converted = match val {
+                        Value::String(s) => {
+                            let s = s.trim();
+                            if let Some(hex) = s.strip_prefix("0x") {
+                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                    TransformError::ParseError {
+                                        path: "crowdstrike.event.RemotePort".into(),
+                                        message: format!("cannot convert '{}' to integer", s),
+                                    }
+                                })?)
+                            } else {
+                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                    path: "crowdstrike.event.RemotePort".into(),
+                                    message: format!("cannot convert '{}' to integer", s)
+                                })?)
+                            }
                         }
-                    }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: "cannot convert to integer".into() }.into()),
-                };
-                event.set("source.port", converted)?;
+                        Value::Number(n) => {
+                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                        }
+                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                        _ => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.RemotePort".into(),
+                                message: "cannot convert to integer".into(),
+                            }
+                            .into());
+                        }
+                    };
+                    event.set("source.port", converted)?;
+                }
             }
-        }
         }
 
         let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("2") };
         if _cond {
-        event.set("network.direction", json!("egress"))?;
+            event.set("network.direction", json!("egress"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.RemoteAddress") && event.get_str("network.direction") == Some("egress") };
+        let _cond = {
+            event.has("crowdstrike.event.RemoteAddress")
+                && event.get_str("network.direction") == Some("egress")
+        };
         if _cond {
             if event.has("crowdstrike.event.RemoteAddress") {
                 event.rename("crowdstrike.event.RemoteAddress", "destination.ip")?;
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.LocalAddress") && event.get_str("network.direction") == Some("egress") };
+        let _cond = {
+            event.has("crowdstrike.event.LocalAddress")
+                && event.get_str("network.direction") == Some("egress")
+        };
         if _cond {
             if event.has("crowdstrike.event.LocalAddress") {
                 event.rename("crowdstrike.event.LocalAddress", "source.ip")?;
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.LocalPort") && event.get_str("network.direction") == Some("egress") };
+        let _cond = {
+            event.has("crowdstrike.event.LocalPort")
+                && event.get_str("network.direction") == Some("egress")
+        };
         if _cond {
-        if event.has("crowdstrike.event.LocalPort") {
-            if let Some(val) = event.get("crowdstrike.event.LocalPort") {
-                let converted = match val {
-                    Value::String(s) => {
-                        let s = s.trim();
-                        if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                        } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            if event.has("crowdstrike.event.LocalPort") {
+                if let Some(val) = event.get("crowdstrike.event.LocalPort") {
+                    let converted = match val {
+                        Value::String(s) => {
+                            let s = s.trim();
+                            if let Some(hex) = s.strip_prefix("0x") {
+                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                    TransformError::ParseError {
+                                        path: "crowdstrike.event.LocalPort".into(),
+                                        message: format!("cannot convert '{}' to integer", s),
+                                    }
+                                })?)
+                            } else {
+                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                    path: "crowdstrike.event.LocalPort".into(),
+                                    message: format!("cannot convert '{}' to integer", s)
+                                })?)
+                            }
                         }
-                    }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.LocalPort".into(), message: "cannot convert to integer".into() }.into()),
-                };
-                event.set("source.port", converted)?;
+                        Value::Number(n) => {
+                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                        }
+                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                        _ => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.LocalPort".into(),
+                                message: "cannot convert to integer".into(),
+                            }
+                            .into());
+                        }
+                    };
+                    event.set("source.port", converted)?;
+                }
             }
-        }
         }
 
-        let _cond = { event.has("crowdstrike.event.RemotePort") && event.get_str("network.direction") == Some("egress") };
+        let _cond = {
+            event.has("crowdstrike.event.RemotePort")
+                && event.get_str("network.direction") == Some("egress")
+        };
         if _cond {
-        if event.has("crowdstrike.event.RemotePort") {
-            if let Some(val) = event.get("crowdstrike.event.RemotePort") {
-                let converted = match val {
-                    Value::String(s) => {
-                        let s = s.trim();
-                        if let Some(hex) = s.strip_prefix("0x") {
-                            json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                        } else {
-                            json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: format!("cannot convert '{}' to integer", s) })?)
+            if event.has("crowdstrike.event.RemotePort") {
+                if let Some(val) = event.get("crowdstrike.event.RemotePort") {
+                    let converted = match val {
+                        Value::String(s) => {
+                            let s = s.trim();
+                            if let Some(hex) = s.strip_prefix("0x") {
+                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                    TransformError::ParseError {
+                                        path: "crowdstrike.event.RemotePort".into(),
+                                        message: format!("cannot convert '{}' to integer", s),
+                                    }
+                                })?)
+                            } else {
+                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                    path: "crowdstrike.event.RemotePort".into(),
+                                    message: format!("cannot convert '{}' to integer", s)
+                                })?)
+                            }
                         }
-                    }
-                    Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                    _ => return Err(TransformError::ParseError { path: "crowdstrike.event.RemotePort".into(), message: "cannot convert to integer".into() }.into()),
-                };
-                event.set("destination.port", converted)?;
+                        Value::Number(n) => {
+                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                        }
+                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                        _ => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.RemotePort".into(),
+                                message: "cannot convert to integer".into(),
+                            }
+                            .into());
+                        }
+                    };
+                    event.set("destination.port", converted)?;
+                }
             }
-        }
         }
 
-            if event.has("crowdstrike.event.Platform") {
-                event.rename("crowdstrike.event.Platform", "host.os.platform")?;
-            }
+        if event.has("crowdstrike.event.Platform") {
+            event.rename("crowdstrike.event.Platform", "host.os.platform")?;
+        }
 
         Ok(TransformResult::Continue)
     }

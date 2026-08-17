@@ -13,7 +13,7 @@ testutil = []
 
 [dependencies]
 dfe-parse = { workspace = true }
-hyperi-rustlib = { workspace = true }
+scalo = { workspace = true }
 simd-json = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
@@ -29,5 +29,4 @@ base64 = { workspace = true }
 regex = { workspace = true }
 
 [dev-dependencies]
-criterion = { workspace = true }
 tempfile = { workspace = true }

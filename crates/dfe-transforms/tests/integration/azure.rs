@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
+//! Baselines are the measured match count per fixture, and only ever go up.
+//!
+//! Azure sits at 1/10 overall. Only `test-activitylogs-raw` matches; the rest
+//! still hold the raw envelope in `message` instead of the decoded fields.
+
 use dfe_transforms::filebeat::{azure_activitylogs, azure_auditlogs, azure_signinlogs};
 
-const FIXTURE_BASE: &str = concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/../../testdata/integrations/azure"
-);
+const FIXTURE_BASE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures/azure");
 
 #[test]
 fn azure_activitylogs_raw() {
@@ -15,6 +17,7 @@ fn azure_activitylogs_raw() {
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-raw",
+        1,
     );
 }
 
@@ -25,6 +28,7 @@ fn azure_activitylogs_identity() {
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-identity",
+        0,
     );
 }
 
@@ -35,6 +39,7 @@ fn azure_activitylogs_edgecases() {
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-edgecases",
+        0,
     );
 }
 
@@ -45,6 +50,7 @@ fn azure_auditlogs_raw() {
         &azure_auditlogs::default::Default,
         &dir,
         "test-auditlogs-raw",
+        0,
     );
 }
 
@@ -55,6 +61,7 @@ fn azure_signinlogs_raw() {
         &azure_signinlogs::default::Default,
         &dir,
         "test-signinlogs-raw",
+        0,
     );
 }
 
@@ -65,5 +72,6 @@ fn azure_signinlogs_sample() {
         &azure_signinlogs::default::Default,
         &dir,
         "test-signinlogs-sample",
+        0,
     );
 }

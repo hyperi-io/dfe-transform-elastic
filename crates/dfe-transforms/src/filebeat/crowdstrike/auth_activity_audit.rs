@@ -16,43 +16,107 @@ impl Transform for AuthActivityAudit {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        let _cond = { event.has("crowdstrike.event.OperationName") && !(["twoFactorAuthenticate", "userAuthenticate"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or(""))) };
+        let _cond = {
+            event.has("crowdstrike.event.OperationName")
+                && !(["twoFactorAuthenticate", "userAuthenticate"].contains(
+                    &event
+                        .get_str("crowdstrike.event.OperationName")
+                        .unwrap_or(""),
+                ))
+        };
         if _cond {
             event.append("event.category", json!("iam"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.OperationName") && ["twoFactorAuthenticate", "userAuthenticate"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+        let _cond = {
+            event.has("crowdstrike.event.OperationName")
+                && ["twoFactorAuthenticate", "userAuthenticate"].contains(
+                    &event
+                        .get_str("crowdstrike.event.OperationName")
+                        .unwrap_or(""),
+                )
+        };
         if _cond {
             event.append("event.category", json!("authentication"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.OperationName") && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+        let _cond = {
+            event.has("crowdstrike.event.OperationName")
+                && [
+                    "activateUser",
+                    "changePassword",
+                    "confirmResetPassword",
+                    "deactivateUser",
+                    "grantUserRoles",
+                    "grantCustomerSubscriptions",
+                    "revokeUserRoles",
+                    "revokeCustomerSubscriptions",
+                    "updateUser",
+                    "updateUserRoles",
+                ]
+                .contains(
+                    &event
+                        .get_str("crowdstrike.event.OperationName")
+                        .unwrap_or(""),
+                )
+        };
         if _cond {
             event.append("event.type", json!("user"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.OperationName") && ["activateUser", "changePassword", "confirmResetPassword", "deactivateUser", "grantUserRoles", "grantCustomerSubscriptions", "revokeUserRoles", "revokeCustomerSubscriptions", "updateUser", "updateUserRoles"].contains(&event.get_str("crowdstrike.event.OperationName").unwrap_or("")) };
+        let _cond = {
+            event.has("crowdstrike.event.OperationName")
+                && [
+                    "activateUser",
+                    "changePassword",
+                    "confirmResetPassword",
+                    "deactivateUser",
+                    "grantUserRoles",
+                    "grantCustomerSubscriptions",
+                    "revokeUserRoles",
+                    "revokeCustomerSubscriptions",
+                    "updateUser",
+                    "updateUserRoles",
+                ]
+                .contains(
+                    &event
+                        .get_str("crowdstrike.event.OperationName")
+                        .unwrap_or(""),
+                )
+        };
         if _cond {
             event.append("event.type", json!("change"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.OperationName") && event.get_str("crowdstrike.event.OperationName") == Some("createUser") };
+        let _cond = {
+            event.has("crowdstrike.event.OperationName")
+                && event.get_str("crowdstrike.event.OperationName") == Some("createUser")
+        };
         if _cond {
             event.append("event.type", json!("creation"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.OperationName") && event.get_str("crowdstrike.event.OperationName") == Some("deleteUser") };
+        let _cond = {
+            event.has("crowdstrike.event.OperationName")
+                && event.get_str("crowdstrike.event.OperationName") == Some("deleteUser")
+        };
         if _cond {
             event.append("event.type", json!("deletion"))?;
         }
 
-            if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
-            }
+        if event.has("crowdstrike.event.UserId") {
+            event.rename("crowdstrike.event.UserId", "user.name")?;
+        }
 
         let _cond = { event.has("crowdstrike.event.OperationName") };
         if _cond {
-            event.append("event.action", event.get("crowdstrike.event.OperationName").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "event.action",
+                event
+                    .get("crowdstrike.event.OperationName")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         let _cond = { !event.has("event.action") };
@@ -62,26 +126,26 @@ impl Transform for AuthActivityAudit {
 
         let _cond = { event.get_bool("crowdstrike.event.Success") == Some(true) };
         if _cond {
-        event.set("event.outcome", json!("success"))?;
+            event.set("event.outcome", json!("success"))?;
         }
 
         let _cond = { event.get_bool("crowdstrike.event.Success") == Some(false) };
         if _cond {
-        event.set("event.outcome", json!("failure"))?;
+            event.set("event.outcome", json!("failure"))?;
         }
 
         let _cond = { !event.has("event.outcome") };
         if _cond {
-        event.set("event.outcome", json!("unknown"))?;
+            event.set("event.outcome", json!("unknown"))?;
         }
 
-            if event.has("crowdstrike.event.ServiceName") {
-                event.rename("crowdstrike.event.ServiceName", "message")?;
-            }
+        if event.has("crowdstrike.event.ServiceName") {
+            event.rename("crowdstrike.event.ServiceName", "message")?;
+        }
 
-            if event.has("crowdstrike.event.UserIp") {
-                event.rename("crowdstrike.event.UserIp", "source.ip")?;
-            }
+        if event.has("crowdstrike.event.UserIp") {
+            event.rename("crowdstrike.event.UserIp", "source.ip")?;
+        }
 
         Ok(TransformResult::Continue)
     }

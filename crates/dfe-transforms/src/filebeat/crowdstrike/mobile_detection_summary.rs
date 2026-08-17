@@ -16,9 +16,9 @@ impl Transform for MobileDetectionSummary {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("alert"))?;
 
-            event.append("event.category", json!("malware"))?;
+        event.append("event.category", json!("malware"))?;
 
-            event.append("event.type", json!("info"))?;
+        event.append("event.type", json!("info"))?;
 
         event.set("event.action", json!("mobile-detection"))?;
 
@@ -27,7 +27,12 @@ impl Transform for MobileDetectionSummary {
             event.remove("event.created");
         }
 
-        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() <= 11) };
+        let _cond = {
+            event.has("crowdstrike.event.ContextTimeStamp")
+                && event
+                    .get_as_string("crowdstrike.event.ContextTimeStamp")
+                    .is_some_and(|s| s.len() <= 11)
+        };
         if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX timestamp (skip epoch 0)
@@ -36,30 +41,41 @@ impl Transform for MobileDetectionSummary {
                         let secs = ts as i64;
                         let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
                         if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                            event.set(
+                                "event.created",
+                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                            )?;
                         }
                     }
                 }
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") && event.get_as_string("crowdstrike.event.ContextTimeStamp").is_some_and(|s| s.len() >= 12) };
+        let _cond = {
+            event.has("crowdstrike.event.ContextTimeStamp")
+                && event
+                    .get_as_string("crowdstrike.event.ContextTimeStamp")
+                    .is_some_and(|s| s.len() >= 12)
+        };
         if _cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
                     if ms > 0 {
                         if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set("event.created", dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string())?;
+                            event.set(
+                                "event.created",
+                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                            )?;
                         }
                     }
                 }
             }
         }
 
-            if event.has("crowdstrike.event.MobileDetectionId") {
-                event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
-            }
+        if event.has("crowdstrike.event.MobileDetectionId") {
+            event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
+        }
 
         if event.has("event.id") {
             if let Some(val) = event.get("event.id") {
@@ -74,63 +90,87 @@ impl Transform for MobileDetectionSummary {
             }
         }
 
-            if event.has("crowdstrike.event.DetectId") {
-                event.rename("crowdstrike.event.DetectId", "rule.id")?;
-            }
+        if event.has("crowdstrike.event.DetectId") {
+            event.rename("crowdstrike.event.DetectId", "rule.id")?;
+        }
 
-            if event.has("crowdstrike.event.DetectName") {
-                event.rename("crowdstrike.event.DetectName", "rule.name")?;
-            }
+        if event.has("crowdstrike.event.DetectName") {
+            event.rename("crowdstrike.event.DetectName", "rule.name")?;
+        }
 
-            if event.has("crowdstrike.event.DetectDescription") {
-                event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
-            }
+        if event.has("crowdstrike.event.DetectDescription") {
+            event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
+        }
 
         event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
         let _cond = { event.has("crowdstrike.event.Technique") };
         if _cond {
-            event.append("threat.technique.name", event.get("crowdstrike.event.Technique").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "threat.technique.name",
+                event
+                    .get("crowdstrike.event.Technique")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         let _cond = { event.has("crowdstrike.event.TechniqueId") };
         if _cond {
-            event.append("threat.technique.id", event.get("crowdstrike.event.TechniqueId").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "threat.technique.id",
+                event
+                    .get("crowdstrike.event.TechniqueId")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         let _cond = { event.has("crowdstrike.event.Tactic") };
         if _cond {
-            event.append("threat.tactic.name", event.get("crowdstrike.event.Tactic").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "threat.tactic.name",
+                event
+                    .get("crowdstrike.event.Tactic")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
         let _cond = { event.has("crowdstrike.event.TacticId") };
         if _cond {
-            event.append("threat.tactic.id", event.get("crowdstrike.event.TacticId").cloned().unwrap_or(Value::Null))?;
+            event.append(
+                "threat.tactic.id",
+                event
+                    .get("crowdstrike.event.TacticId")
+                    .cloned()
+                    .unwrap_or(Value::Null),
+            )?;
         }
 
-            if event.has("crowdstrike.event.ComputerName") {
-                event.rename("crowdstrike.event.ComputerName", "host.name")?;
-            }
+        if event.has("crowdstrike.event.ComputerName") {
+            event.rename("crowdstrike.event.ComputerName", "host.name")?;
+        }
 
-            if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
-            }
+        if event.has("crowdstrike.event.UserName") {
+            event.rename("crowdstrike.event.UserName", "user.name")?;
+        }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
-                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
-            }
+        if event.has("crowdstrike.event.FalconHostLink") {
+            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+        }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
+        if event.has("crowdstrike.event.Severity") {
+            event.rename("crowdstrike.event.Severity", "event.severity")?;
+        }
 
-            if event.has("crowdstrike.event.SensorId") {
-                event.rename("crowdstrike.event.SensorId", "device.id")?;
-            }
+        if event.has("crowdstrike.event.SensorId") {
+            event.rename("crowdstrike.event.SensorId", "device.id")?;
+        }
 
-            if event.has("crowdstrike.event.ProcessId") {
-                event.rename("crowdstrike.event.ProcessId", "process.pid")?;
-            }
+        if event.has("crowdstrike.event.ProcessId") {
+            event.rename("crowdstrike.event.ProcessId", "process.pid")?;
+        }
 
         Ok(TransformResult::Continue)
     }

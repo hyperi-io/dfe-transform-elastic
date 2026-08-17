@@ -12,14 +12,13 @@
 
 use std::collections::HashMap;
 use std::net::IpAddr;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::OnceLock;
 
-use maxminddb::Reader;
-use serde_json::{Value, json};
+use serde_json::Value;
 use tracing::{debug, info, warn};
 
-use super::geoip::{GeoIpDbType, GeoIpEnrichment};
+use super::geoip::GeoIpEnrichment;
 
 /// Global enrichers — one per database type.
 struct GlobalGeoIp {

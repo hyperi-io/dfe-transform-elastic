@@ -13,7 +13,7 @@ use serde_json::Value;
 use tracing::debug;
 
 use crate::enrichment::user_agent;
-use crate::error::{Result, TransformError};
+use crate::error::Result;
 use crate::event::Event;
 
 /// Result from a registered domain lookup.
