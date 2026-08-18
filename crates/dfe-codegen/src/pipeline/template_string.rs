@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 
 lazy_static! {
     static ref METADATA_VARIABLES_PATTERN: Regex =
-        Regex::new(r#"(?:[{]{2,3} *(?<variable>[^{}]+) *[}]{2,3}|(?<string>[^{}]+))"#).unwrap();
+        Regex::new(r"(?:[{]{2,3} *(?<variable>[^{}]+) *[}]{2,3}|(?<string>[^{}]+))").unwrap();
 }
 
 /// An Elastic template string that may contain `{{field}}` or `{{{field}}}` interpolations.

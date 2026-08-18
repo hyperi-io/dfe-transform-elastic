@@ -7,7 +7,7 @@
 //! configuration, and generates Rust transform functions.
 //!
 //! Pipeline structs, processor configs, field handling, template strings,
-//! and the validation framework were all ported from Dylan's elastic_to_vrl.
+//! and the validation framework were all ported from Dylan's `elastic_to_vrl`.
 //! Solid work that saved us weeks of YAML wrangling.
 
 pub mod conditional;

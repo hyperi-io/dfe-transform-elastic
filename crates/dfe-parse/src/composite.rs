@@ -153,12 +153,14 @@ pub struct CompositeParserBuilder {
 
 impl CompositeParserBuilder {
     /// Add a literal string step. The input must match this exactly.
+    #[must_use]
     pub fn literal(mut self, s: &str) -> Self {
         self.steps.push(Step::Literal(s.to_string()));
         self
     }
 
     /// Add a capture step. The parser runs and the result is stored under `field`.
+    #[must_use]
     pub fn capture(mut self, field: &str, parser: ParserFn) -> Self {
         self.steps.push(Step::Capture {
             field: field.to_string(),
@@ -168,6 +170,7 @@ impl CompositeParserBuilder {
     }
 
     /// Add a step that skips optional whitespace.
+    #[must_use]
     pub fn skip_space(mut self) -> Self {
         self.steps.push(Step::SkipSpace);
         self
@@ -186,7 +189,7 @@ mod tests {
     use crate::numeric::take_int;
     use crate::string::take_word;
 
-    /// Wrapper to adapt `parse_ipv4` (which returns `&str`) to our ParserFn signature.
+    /// Wrapper to adapt `parse_ipv4` (which returns `&str`) to our `ParserFn` signature.
     fn parse_ipv4_fn(input: &str) -> Result<(&str, &str), ParseError> {
         parse_ipv4(input)
     }

@@ -30,15 +30,15 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = { !event.has("event.original") };
-        if _cond {
+        let cond = { !event.has("event.original") };
+        if cond {
             if event.has("message") {
                 event.rename("message", "event.original")?;
             }
         }
 
-        let _cond = { event.has("event.original") };
-        if _cond {
+        let cond = { event.has("event.original") };
+        if cond {
             event.remove("message");
         }
 
@@ -51,12 +51,12 @@ impl Transform for Default {
             event.set("azure.platformlogs", parsed)?;
         }
 
-        let _cond = {
+        let cond = {
             event
                 .get("azure.platformlogs.identity")
                 .is_some_and(|v| v.is_string())
         };
-        if _cond {
+        if cond {
             if event.has("azure.platformlogs.identity") {
                 event.rename(
                     "azure.platformlogs.identity",
@@ -127,8 +127,8 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = { event.has("azure.platformlogs.properties") };
-        if _cond {
+        let cond = { event.has("azure.platformlogs.properties") };
+        if cond {
             event.remove("azure.platformlogs.EventProperties");
         }
 
@@ -145,13 +145,13 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = {
+        let cond = {
             event.has("azure.platformlogs.properties.log")
                 && event
                     .get("azure.platformlogs.properties.log")
                     .is_some_and(|v| v.is_string())
         };
-        if _cond {
+        if cond {
             if event.has("azure.platformlogs.properties.log") {
                 event.rename("azure.platformlogs.properties.log", "message")?;
             }
@@ -169,15 +169,14 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "azure.platformlogs.callerIpAddress".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
         }
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.remove("azure.platformlogs.callerIpAddress");
         }
 
@@ -186,8 +185,8 @@ impl Transform for Default {
             event.get("source.ip").cloned().unwrap_or(Value::Null),
         )?;
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.append(
                 "related.ip",
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
@@ -198,13 +197,13 @@ impl Transform for Default {
             event.rename("azure.platformlogs.level", "log.level")?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("azure.platformlogs.durationMs")
                 && event
                     .get("azure.platformlogs.durationMs")
                     .is_some_and(|v| v.is_string())
         };
-        if _cond {
+        if cond {
             if event.has("azure.platformlogs.durationMs") {
                 if let Some(val) = event.get("azure.platformlogs.durationMs") {
                     let converted = match val {
@@ -232,8 +231,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "azure.platformlogs.durationMs".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("event.duration", converted)?;
@@ -279,13 +277,13 @@ impl Transform for Default {
         }
 
         // result_type is a String whose lowercase form is 'success' or 'failure'
-        let _cond = event
+        let cond = event
             .get_str("azure.platformlogs.result_type")
             .is_some_and(|r| {
                 let r = r.to_lowercase();
                 r == "success" || r == "failure"
             });
-        if _cond {
+        if cond {
             if let Some(val) = event.get("azure.platformlogs.result_type") {
                 let converted = match val {
                     Value::String(_) => val.clone(),
@@ -298,7 +296,7 @@ impl Transform for Default {
             }
         }
 
-        let _cond = {
+        let cond = {
             !event.has("event.outcome")
                 && event.has("azure.platformlogs.properties.result")
                 && event
@@ -310,7 +308,7 @@ impl Transform for Default {
                         .unwrap_or(""),
                 )
         };
-        if _cond {
+        if cond {
             if let Some(val) = event.get("azure.platformlogs.properties.result") {
                 let converted = match val {
                     Value::String(_) => val.clone(),
@@ -323,7 +321,7 @@ impl Transform for Default {
             }
         }
 
-        let _cond = {
+        let cond = {
             !event.has("event.outcome")
                 && event.has("azure.platformlogs.Status")
                 && event
@@ -338,7 +336,7 @@ impl Transform for Default {
                 ]
                 .contains(&event.get_str("azure.platformlogs.Status").unwrap_or(""))
         };
-        if _cond {
+        if cond {
             if let Some(val) = event.get("azure.platformlogs.Status") {
                 let converted = match val {
                     Value::String(_) => val.clone(),
@@ -517,8 +515,8 @@ impl Transform for Default {
             }
             Ok(())
         })();
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -542,8 +540,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -567,8 +565,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -592,8 +590,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -615,8 +613,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -638,8 +636,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -675,12 +673,12 @@ impl Transform for Default {
         // End nested pipeline: "azure-shared-pipeline"
 
         // tags is absent, or does not carry 'preserve_original_event'
-        let _cond = event.get_array("tags").is_none_or(|tags| {
+        let cond = event.get_array("tags").is_none_or(|tags| {
             !tags
                 .iter()
                 .any(|t| t.as_str() == Some("preserve_original_event"))
         });
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.remove("event.original");
@@ -689,12 +687,12 @@ impl Transform for Default {
         }
 
         // azure_log_forwarder.resource_type names Spring, in either casing
-        let _cond = event
+        let cond = event
             .get_str("azure_log_forwarder.resource_type")
             .is_some_and(|t| {
                 t == "Microsoft.AppPlatform/Spring" || t == "MICROSOFT.APPPLATFORM/SPRING"
             });
-        if _cond {
+        if cond {
             // Begin nested pipeline: "springcloudlogs-inner-pipeline"
             // ignore_failure: true
             let _ = (|| -> Result<()> {
@@ -722,10 +720,10 @@ impl Transform for Default {
             })();
             // ctx.azure.springcloudlogs.category != 'SystemLogs'
             //   && ctx.azure.springcloudlogs.category != 'ApplicationConsole'
-            let _cond = event
+            let cond = event
                 .get_as_string("azure.springcloudlogs.category")
                 .is_none_or(|c| c != "SystemLogs" && c != "ApplicationConsole");
-            if _cond {
+            if cond {
                 return Ok(TransformResult::Drop);
             }
             if event.has("azure.springcloudlogs.LogFormat") {

@@ -47,12 +47,12 @@ mod test {
 
         #[test]
         fn parse() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - append:
                     field: warnings
                     value: this is a stern warning
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             match &pipeline.processors[..] {
@@ -63,19 +63,19 @@ mod test {
                         AppendValue::String("this is a stern warning".into())
                     );
                 }
-                _ => panic!("unexpected pipeline structure {:#?}", pipeline),
+                _ => panic!("unexpected pipeline structure {pipeline:#?}"),
             }
         }
 
         unsupported_fields_tests!(
           "append",
-          r#"
+          r"
             processors:
               - append:
                   field: warnings
                   value: this is a stern warning
                   {}: {}
-          "#,
+          ",
           media_type => "application/json",
           on_failure => r#"[ { "remove": { "field": "message" } } ]"#
         );

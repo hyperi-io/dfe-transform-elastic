@@ -43,8 +43,8 @@ impl Transform for AzureSharedPipeline {
             Ok(())
         })();
 
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -74,8 +74,8 @@ impl Transform for AzureSharedPipeline {
             })();
         }
 
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -105,8 +105,8 @@ impl Transform for AzureSharedPipeline {
             })();
         }
 
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -132,8 +132,8 @@ impl Transform for AzureSharedPipeline {
             })();
         }
 
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -161,8 +161,8 @@ impl Transform for AzureSharedPipeline {
             })();
         }
 
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -190,8 +190,8 @@ impl Transform for AzureSharedPipeline {
             })();
         }
 
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok

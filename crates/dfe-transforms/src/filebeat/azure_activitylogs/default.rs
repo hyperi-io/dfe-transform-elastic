@@ -30,15 +30,15 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = { !event.has("event.original") };
-        if _cond {
+        let cond = { !event.has("event.original") };
+        if cond {
             if event.has("message") {
                 event.rename("message", "event.original")?;
             }
         }
 
-        let _cond = { event.has("event.original") };
-        if _cond {
+        let cond = { event.has("event.original") };
+        if cond {
             event.remove("message");
         }
 
@@ -86,15 +86,14 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "azure.activitylogs.callerIpAddress".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
         }
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.remove("azure.activitylogs.callerIpAddress");
         }
 
@@ -103,8 +102,8 @@ impl Transform for Default {
             event.get("source.ip").cloned().unwrap_or(Value::Null),
         )?;
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.append(
                 "related.ip",
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
@@ -135,12 +134,12 @@ impl Transform for Default {
             event.rename("azure.activitylogs.location", "geo.name")?;
         }
 
-        let _cond = {
+        let cond = {
             event
                 .get("azure.activitylogs.identity")
                 .is_some_and(|v| v.is_string())
         };
-        if _cond {
+        if cond {
             if event.has("azure.activitylogs.identity") {
                 event.rename(
                     "azure.activitylogs.identity",
@@ -149,12 +148,12 @@ impl Transform for Default {
             }
         }
 
-        let _cond = {
+        let cond = {
             event
                 .get("azure.activitylogs.identity")
                 .is_some_and(|v| v.is_string())
         };
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(s) = event.get_string("azure.activitylogs.identity") {
@@ -169,12 +168,12 @@ impl Transform for Default {
             })();
         }
 
-        let _cond = {
+        let cond = {
             event
                 .get("azure.activitylogs.properties")
                 .is_some_and(|v| v.is_string())
         };
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(s) = event.get_string("azure.activitylogs.properties") {
@@ -201,8 +200,8 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = { event.has("azure.activitylogs.event_category") };
-        if _cond {
+        let cond = { event.has("azure.activitylogs.event_category") };
+        if cond {
             event.remove("azure.activitylogs.properties.eventCategory");
         }
 
@@ -224,7 +223,7 @@ impl Transform for Default {
             }
         }
 
-        let _cond = {
+        let cond = {
             !event.has("event.outcome")
                 && event.has("azure.activitylogs.properties.result")
                 && event
@@ -236,7 +235,7 @@ impl Transform for Default {
                         .unwrap_or(""),
                 )
         };
-        if _cond {
+        if cond {
             if let Some(val) = event.get("azure.activitylogs.properties.result") {
                 let converted = match val {
                     Value::String(_) => val.clone(),
@@ -427,12 +426,12 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = {
+        let cond = {
             event.has("azure.activitylogs.identity")
                 && event.has("azure.activitylogs.identity.claims_initiated_by_user")
                 && event.has("azure.activitylogs.identity.claims_initiated_by_user.name")
         };
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.set(
@@ -544,8 +543,8 @@ impl Transform for Default {
             Ok(())
         })();
 
-        let _cond = { event.has("user.name") };
-        if _cond {
+        let cond = { event.has("user.name") };
+        if cond {
             event.set(
                 "user.email",
                 event
@@ -555,8 +554,8 @@ impl Transform for Default {
             )?;
         }
 
-        let _cond = { !event.has("user.name") };
-        if _cond {
+        let cond = { !event.has("user.name") };
+        if cond {
             event.set(
                 "user.name",
                 event
@@ -566,8 +565,8 @@ impl Transform for Default {
             )?;
         }
 
-        let _cond = { event.has("user.name") };
-        if _cond {
+        let cond = { event.has("user.name") };
+        if cond {
             event.append(
                 "related.user",
                 event.get("user.name").cloned().unwrap_or(Value::Null),
@@ -621,8 +620,8 @@ impl Transform for Default {
             }
             Ok(())
         })();
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -651,8 +650,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -681,8 +680,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -707,8 +706,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -735,8 +734,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -763,8 +762,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -800,7 +799,7 @@ impl Transform for Default {
         }
         // End nested pipeline: "azure-shared-pipeline"
 
-        let _cond = {
+        let cond = {
             !event.has("tags")
                 || !(event.get("tags").is_some_and(|v| match v {
                     serde_json::Value::Array(a) => a
@@ -810,7 +809,7 @@ impl Transform for Default {
                     _ => false,
                 }))
         };
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.remove("event.original");

@@ -22,8 +22,8 @@ impl<'a> From<&'a str> for Field {
 }
 
 lazy_static! {
-    static ref PATH_SEGMENT_PATTERN: Regex = Regex::new(r#"([^.]+)"#).unwrap();
-    static ref ALLOWED_PATH_NAME: Regex = Regex::new(r#"^[a-zA-Z0-9_]+$"#).unwrap();
+    static ref PATH_SEGMENT_PATTERN: Regex = Regex::new(r"([^.]+)").unwrap();
+    static ref ALLOWED_PATH_NAME: Regex = Regex::new(r"^[a-zA-Z0-9_]+$").unwrap();
 }
 
 impl Field {
@@ -38,15 +38,18 @@ impl Field {
         let mut path = PATH_SEGMENT_PATTERN
             .captures_iter(&self.0)
             .flat_map(|variable| variable.extract::<1>().1.into_iter())
-            .map(|item| match ALLOWED_PATH_NAME.is_match(item) {
-                true => item.to_string(),
-                false => format!("\"{item}\""),
+            .map(|item| {
+                if ALLOWED_PATH_NAME.is_match(item) {
+                    item.to_string()
+                } else {
+                    format!("\"{item}\"")
+                }
             })
             .collect::<Vec<_>>()
             .join(".");
 
         if !path.starts_with("_ingest._value") {
-            path = format!(".{path}")
+            path = format!(".{path}");
         }
 
         path

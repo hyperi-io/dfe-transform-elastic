@@ -47,11 +47,11 @@ mod test {
 
         #[test]
         pub fn parse() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - json:
                     field: message
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             match &pipeline.processors[..] {
@@ -59,12 +59,12 @@ mod test {
                     assert_eq!("message", json.field);
                 }
                 _ => panic!("unexpected pipeline"),
-            };
+            }
         }
 
         #[test]
         pub fn parse_on_failure() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - json:
                     field: message
@@ -72,7 +72,7 @@ mod test {
                       - set:
                           field: error
                           value: failed to process json
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             match &pipeline.processors[..] {
@@ -88,17 +88,17 @@ mod test {
                     );
                 }
                 _ => panic!("unexpected pipeline"),
-            };
+            }
         }
 
         #[test]
         pub fn parse_conditional() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - json:
                     if: message instanceof String
                     field: message
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             match &pipeline.processors[..] {
@@ -107,39 +107,39 @@ mod test {
                     assert_eq!(
                         Some(Conditional("message instanceof String".into())),
                         json.conditional
-                    )
+                    );
                 }
                 _ => panic!("unexpected pipeline"),
-            };
+            }
         }
 
         #[test]
         pub fn parse_tag() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - json:
                     tag: example
                     field: message
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             match &pipeline.processors[..] {
                 [Processor::Json(json)] => {
                     assert_eq!("message", json.field);
-                    assert_eq!(Some("example".to_owned()), json.tag)
+                    assert_eq!(Some("example".to_owned()), json.tag);
                 }
                 _ => panic!("unexpected pipeline"),
-            };
+            }
         }
 
         unsupported_fields_tests!(
             "json",
-            r#"
+            r"
                 processors:
                     - json:
                         field: message
                         {}: {}
-            "#,
+            ",
             add_to_root => "true",
             add_to_root_conflict_strategy => "merge",
             allow_duplicate_keys => "true",

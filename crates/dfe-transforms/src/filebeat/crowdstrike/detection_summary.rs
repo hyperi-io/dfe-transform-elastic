@@ -22,13 +22,13 @@ impl Transform for DetectionSummary {
             event.rename("crowdstrike.event.UserName", "user.name")?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ProcessStartTime")
                 && event
                     .get_as_string("crowdstrike.event.ProcessStartTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessStartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -44,13 +44,13 @@ impl Transform for DetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ProcessStartTime")
                 && event
                     .get_as_string("crowdstrike.event.ProcessStartTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessStartTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -68,13 +68,13 @@ impl Transform for DetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ProcessEndTime")
                 && event
                     .get_as_string("crowdstrike.event.ProcessEndTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -90,13 +90,13 @@ impl Transform for DetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ProcessEndTime")
                 && event
                     .get_as_string("crowdstrike.event.ProcessEndTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -114,13 +114,13 @@ impl Transform for DetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.LocalIP")
                 && event
                     .get_str("crowdstrike.event.LocalIP")
                     .is_some_and(|s| !s.is_empty())
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.LocalIP") {
                 event.rename("crowdstrike.event.LocalIP", "source.ip")?;
             }
@@ -141,8 +141,8 @@ impl Transform for DetectionSummary {
             event.rename("crowdstrike.event.ParentProcessId", "process.parent.pid")?;
         }
 
-        let _cond = { !event.has("process.parent.executable") };
-        if _cond {
+        let cond = { !event.has("process.parent.executable") };
+        if cond {
             if event.has("crowdstrike.event.ParentImageFileName") {
                 event.rename(
                     "crowdstrike.event.ParentImageFileName",
@@ -170,8 +170,8 @@ impl Transform for DetectionSummary {
             event.rename("crowdstrike.event.DetectDescription", "message")?;
         }
 
-        let _cond = { event.has("message") };
-        if _cond {
+        let cond = { event.has("message") };
+        if cond {
             event.set(
                 "rule.description",
                 event.get("message").cloned().unwrap_or(Value::Null),
@@ -202,26 +202,26 @@ impl Transform for DetectionSummary {
             event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("file.hash.sha1")
                 && event
                     .get_str("file.hash.sha1")
                     .is_some_and(|s| !s.is_empty())
         };
-        if _cond {
+        if cond {
             event.append(
                 "related.hash",
                 event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("file.hash.sha256")
                 && event
                     .get_str("file.hash.sha256")
                     .is_some_and(|s| !s.is_empty())
         };
-        if _cond {
+        if cond {
             event.append(
                 "related.hash",
                 event
@@ -231,13 +231,13 @@ impl Transform for DetectionSummary {
             )?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("file.hash.md5")
                 && event
                     .get_str("file.hash.md5")
                     .is_some_and(|s| !s.is_empty())
         };
-        if _cond {
+        if cond {
             event.append(
                 "related.hash",
                 event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
@@ -260,15 +260,15 @@ impl Transform for DetectionSummary {
             event.rename("crowdstrike.event.DetectId", "rule.id")?;
         }
 
-        let _cond = { event.has("cropwdstrike.event.MacAddress") };
-        if _cond {
+        let cond = { event.has("cropwdstrike.event.MacAddress") };
+        if cond {
             if event.has("crowdstrike.event.MacAddress") {
                 event.rename("crowdstrike.event.MacAddress", "host.mac")?;
             }
         }
 
-        let _cond = { event.has("host.mac") };
-        if _cond {
+        let cond = { event.has("host.mac") };
+        if cond {
             if event.has("host.mac") {
                 if let Some(s) = event.get_string("host.mac") {
                     let uppered = s.to_uppercase();
@@ -279,8 +279,8 @@ impl Transform for DetectionSummary {
 
         event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
-        let _cond = { event.has("crowdstrike.event.Technique") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.Technique") };
+        if cond {
             event.append(
                 "threat.technique.name",
                 event
@@ -290,8 +290,8 @@ impl Transform for DetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TechniqueId") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TechniqueId") };
+        if cond {
             event.append(
                 "threat.technique.id",
                 event
@@ -301,8 +301,8 @@ impl Transform for DetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.Tactic") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.Tactic") };
+        if cond {
             event.append(
                 "threat.tactic.name",
                 event
@@ -312,8 +312,8 @@ impl Transform for DetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TacticId") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TacticId") };
+        if cond {
             event.append(
                 "threat.tactic.id",
                 event

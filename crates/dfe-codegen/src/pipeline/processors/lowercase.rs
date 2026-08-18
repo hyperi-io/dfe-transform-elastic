@@ -36,12 +36,12 @@ mod test {
 
         unsupported_fields_tests!(
             "lowercase",
-            r#"
+            r"
                 processors:
                     - lowercase:
                         field: target
                         {}: {}
-            "#,
+            ",
             on_failure => "[]"
         );
     }

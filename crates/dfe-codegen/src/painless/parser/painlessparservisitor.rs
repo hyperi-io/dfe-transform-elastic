@@ -1,11 +1,28 @@
 #![allow(nonstandard_style)]
 // Generated from /nix/store/7lvp6vd92i2ff9fnrfyln27gpgnnfv83-painless-grammar/PainlessParser.g4 by ANTLR 4.8
-use super::painlessparser::*;
+use super::painlessparser::{
+    AddsubContext, AfterthoughtContext, ArgumentContext, ArgumentsContext, AssignmentContext,
+    BinaryContext, BlockContext, BoolContext, BraceaccessContext, BreakContext, CallinvokeContext,
+    CalllocalContext, CastContext, ClassfuncrefContext, CompContext, ConditionalContext,
+    ConstructorfuncrefContext, ContinueContext, DeclContext, DeclarationContext, DecltypeContext,
+    DeclvarContext, DoContext, DynamicContext, EachContext, ElvisContext, EmptyContext,
+    ExprContext, FalseContext, FieldaccessContext, ForContext, FunctionContext, IfContext,
+    IneachContext, InitializerContext, InstanceofContext, LambdaContext, LamtypeContext,
+    ListinitContext, ListinitializerContext, LocalfuncrefContext, MapinitContext,
+    MapinitializerContext, MaptokenContext, NewarrayContext, NewinitializedarrayContext,
+    NewobjectContext, NewstandardarrayContext, NonconditionalContext, NotContext, NotaddsubContext,
+    NullContext, NumericContext, PainlessParserContextType, ParametersContext, PostContext,
+    PostdotContext, PostfixContext, PreContext, PrecedenceContext, PrimordefcastContext,
+    PrimordefcasttypeContext, ReadContext, RefcastContext, RefcasttypeContext, RegexContext,
+    ReturnContext, SingleContext, SourceContext, StatementContext, StringContext, ThrowContext,
+    TrailerContext, TrapContext, TrueContext, TryContext, TypeidContext, VariableContext,
+    WhileContext,
+};
 use antlr_rust::tree::{ParseTreeVisitor, ParseTreeVisitorCompat};
 
 /**
  * This interface defines a complete generic visitor for a parse tree produced
- * by {@link PainlessParser}.
+ * by {@link `PainlessParser`}.
  */
 pub trait PainlessParserVisitor<'input>:
     ParseTreeVisitor<'input, PainlessParserContextType>
@@ -15,7 +32,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_source(&mut self, ctx: &SourceContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -23,7 +40,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_function(&mut self, ctx: &FunctionContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -31,7 +48,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_parameters(&mut self, ctx: &ParametersContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -39,7 +56,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_statement(&mut self, ctx: &StatementContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -48,7 +65,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_if(&mut self, ctx: &IfContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -57,7 +74,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_while(&mut self, ctx: &WhileContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -66,7 +83,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_for(&mut self, ctx: &ForContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -75,7 +92,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_each(&mut self, ctx: &EachContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -84,7 +101,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_ineach(&mut self, ctx: &IneachContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -93,7 +110,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_try(&mut self, ctx: &TryContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -102,7 +119,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_do(&mut self, ctx: &DoContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -111,7 +128,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_decl(&mut self, ctx: &DeclContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -120,7 +137,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_continue(&mut self, ctx: &ContinueContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -129,7 +146,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_break(&mut self, ctx: &BreakContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -138,7 +155,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_return(&mut self, ctx: &ReturnContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -147,7 +164,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_throw(&mut self, ctx: &ThrowContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -156,7 +173,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_expr(&mut self, ctx: &ExprContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -164,7 +181,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_trailer(&mut self, ctx: &TrailerContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -172,7 +189,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_block(&mut self, ctx: &BlockContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -180,7 +197,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_empty(&mut self, ctx: &EmptyContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -188,7 +205,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_initializer(&mut self, ctx: &InitializerContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -196,7 +213,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_afterthought(&mut self, ctx: &AfterthoughtContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -204,7 +221,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_declaration(&mut self, ctx: &DeclarationContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -212,7 +229,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_decltype(&mut self, ctx: &DecltypeContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -220,7 +237,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_typeid(&mut self, ctx: &TypeidContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -228,7 +245,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_declvar(&mut self, ctx: &DeclvarContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -236,7 +253,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_trap(&mut self, ctx: &TrapContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -245,7 +262,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_single(&mut self, ctx: &SingleContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -254,7 +271,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_comp(&mut self, ctx: &CompContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -263,7 +280,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_bool(&mut self, ctx: &BoolContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -272,7 +289,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_binary(&mut self, ctx: &BinaryContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -281,7 +298,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_elvis(&mut self, ctx: &ElvisContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -290,7 +307,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_instanceof(&mut self, ctx: &InstanceofContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -299,7 +316,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_nonconditional(&mut self, ctx: &NonconditionalContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -308,7 +325,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_conditional(&mut self, ctx: &ConditionalContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -317,7 +334,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_assignment(&mut self, ctx: &AssignmentContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -326,7 +343,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_pre(&mut self, ctx: &PreContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -335,7 +352,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_addsub(&mut self, ctx: &AddsubContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -344,7 +361,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_notaddsub(&mut self, ctx: &NotaddsubContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -353,7 +370,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_read(&mut self, ctx: &ReadContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -362,7 +379,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_post(&mut self, ctx: &PostContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -371,7 +388,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_not(&mut self, ctx: &NotContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -380,7 +397,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_cast(&mut self, ctx: &CastContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -389,7 +406,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_primordefcast(&mut self, ctx: &PrimordefcastContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -398,7 +415,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_refcast(&mut self, ctx: &RefcastContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -406,7 +423,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_primordefcasttype(&mut self, ctx: &PrimordefcasttypeContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -414,7 +431,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_refcasttype(&mut self, ctx: &RefcasttypeContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -423,7 +440,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_dynamic(&mut self, ctx: &DynamicContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -432,7 +449,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_newarray(&mut self, ctx: &NewarrayContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -441,7 +458,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_precedence(&mut self, ctx: &PrecedenceContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -450,7 +467,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_numeric(&mut self, ctx: &NumericContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -459,7 +476,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_true(&mut self, ctx: &TrueContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -468,7 +485,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_false(&mut self, ctx: &FalseContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -477,7 +494,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_null(&mut self, ctx: &NullContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -486,7 +503,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_string(&mut self, ctx: &StringContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -495,7 +512,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_regex(&mut self, ctx: &RegexContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -504,7 +521,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_listinit(&mut self, ctx: &ListinitContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -513,7 +530,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_mapinit(&mut self, ctx: &MapinitContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -522,7 +539,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_variable(&mut self, ctx: &VariableContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -531,7 +548,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_calllocal(&mut self, ctx: &CalllocalContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -540,7 +557,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_newobject(&mut self, ctx: &NewobjectContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -548,7 +565,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_postfix(&mut self, ctx: &PostfixContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -556,7 +573,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_postdot(&mut self, ctx: &PostdotContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -564,7 +581,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_callinvoke(&mut self, ctx: &CallinvokeContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -572,7 +589,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_fieldaccess(&mut self, ctx: &FieldaccessContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -580,7 +597,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_braceaccess(&mut self, ctx: &BraceaccessContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -589,7 +606,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_newstandardarray(&mut self, ctx: &NewstandardarrayContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -598,7 +615,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_newinitializedarray(&mut self, ctx: &NewinitializedarrayContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -606,7 +623,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_listinitializer(&mut self, ctx: &ListinitializerContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -614,7 +631,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_mapinitializer(&mut self, ctx: &MapinitializerContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -622,7 +639,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_maptoken(&mut self, ctx: &MaptokenContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -630,7 +647,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_arguments(&mut self, ctx: &ArgumentsContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -638,7 +655,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_argument(&mut self, ctx: &ArgumentContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -646,7 +663,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_lambda(&mut self, ctx: &LambdaContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -654,7 +671,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_lamtype(&mut self, ctx: &LamtypeContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -663,7 +680,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_classfuncref(&mut self, ctx: &ClassfuncrefContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -672,7 +689,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_constructorfuncref(&mut self, ctx: &ConstructorfuncrefContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 
     /**
@@ -681,7 +698,7 @@ pub trait PainlessParserVisitor<'input>:
      * @param ctx the parse tree
      */
     fn visit_localfuncref(&mut self, ctx: &LocalfuncrefContext<'input>) {
-        self.visit_children(ctx)
+        self.visit_children(ctx);
     }
 }
 

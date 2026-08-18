@@ -191,7 +191,7 @@ impl Transform for Default {
                     for pair in kv_str.split(" ") {
                         if let Some((key, value)) = pair.split_once("=") {
                             if !key.is_empty() {
-                                event.set(&format!("{}", key), value)?;
+                                event.set(key, value)?;
                             }
                         }
                     }
@@ -207,8 +207,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "translated_src_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("source.ip", s)?;
                 }
@@ -223,8 +222,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "src".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("source.ip", s)?;
                 }
@@ -257,8 +255,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "translated_port".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -292,8 +289,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "sport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -309,8 +305,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "translated_dst_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("destination.ip", s)?;
                 }
@@ -325,8 +320,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "dst".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("destination.ip", s)?;
                 }
@@ -359,8 +353,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "translated_port".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;
@@ -394,8 +387,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "dport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;
@@ -562,7 +554,7 @@ impl Transform for Default {
                 for pair in kv_str.split(" ") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
-                            event.set(&format!("{}", key), value)?;
+                            event.set(key, value)?;
                         }
                     }
                 }
@@ -682,8 +674,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "_temp.src_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("source.ip", s)?;
                 }
@@ -727,8 +718,7 @@ impl Transform for Default {
                                     return Err(TransformError::ParseError {
                                         path: "sport".into(),
                                         message: "cannot convert to integer".into(),
-                                    }
-                                    .into());
+                                    });
                                 }
                             };
                             event.set("source.port", converted)?;
@@ -773,8 +763,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "_temp.dst_ip".into(),
                                 message: format!("cannot convert '{}' to IP", s),
-                            }
-                            .into());
+                            });
                         }
                         event.set("destination.ip", s)?;
                     }
@@ -820,8 +809,7 @@ impl Transform for Default {
                                     return Err(TransformError::ParseError {
                                         path: "dport".into(),
                                         message: "cannot convert to integer".into(),
-                                    }
-                                    .into());
+                                    });
                                 }
                             };
                             event.set("destination.port", converted)?;
@@ -968,8 +956,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "_temp.src_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("source.ip", s)?;
                 }
@@ -1003,8 +990,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "sport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -1446,8 +1432,7 @@ impl Transform for Default {
                                     "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip"
                                         .into(),
                                 message: format!("cannot convert '{}' to IP", s),
-                            }
-                            .into());
+                            });
                         }
                         event.set("server.ip", s)?;
                     }
@@ -1501,8 +1486,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "cisco_meraki.multiple_dhcp_servers_detected.server_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("cisco_meraki.multiple_dhcp_servers_detected.server_ip", s)?;
                 }
@@ -1604,8 +1588,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "_temp.client_ip".into(),
                                 message: format!("cannot convert '{}' to IP", s),
-                            }
-                            .into());
+                            });
                         }
                         event.set("client.ip", s)?;
                     }
@@ -1756,8 +1739,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "_temp.src_ip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
@@ -1789,8 +1771,7 @@ impl Transform for Default {
                             return Err(TransformError::ParseError {
                                 path: "sport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -1829,8 +1810,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "_temp.dst_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("destination.ip", s)?;
                 }
@@ -1868,8 +1848,7 @@ impl Transform for Default {
                                 return Err(TransformError::ParseError {
                                     path: "dport".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("destination.port", converted)?;

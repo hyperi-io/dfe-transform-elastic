@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Efficient timestamp parsers replacing %{TIMESTAMP_ISO8601}, %{SYSLOGTIMESTAMP},
+//! Efficient timestamp parsers replacing %{`TIMESTAMP_ISO8601`}, %{SYSLOGTIMESTAMP},
 //! and related date/time patterns.
 //!
 //! Uses fixed-position byte extraction instead of regex for 10-12x speedup.
@@ -61,7 +61,7 @@ pub fn parse_iso8601(input: &str) -> ParseResult<'_, DateTime<Utc>> {
         if frac_len > 0 {
             let mut frac_val: u64 = 0;
             for &b in &bytes[frac_start..pos] {
-                frac_val = frac_val * 10 + (b - b'0') as u64;
+                frac_val = frac_val * 10 + u64::from(b - b'0');
             }
             // Normalise to nanoseconds (9 digits).
             if frac_len <= 9 {
@@ -104,7 +104,7 @@ pub fn parse_iso8601(input: &str) -> ParseResult<'_, DateTime<Utc>> {
 ///
 /// Format: `MMM DD HH:MM:SS` or `MMM  D HH:MM:SS` (leading space for single-digit day).
 ///
-/// Returns a DateTime in UTC for the current year (syslog timestamps lack year).
+/// Returns a `DateTime` in UTC for the current year (syslog timestamps lack year).
 /// Replaces `%{SYSLOGTIMESTAMP}`.
 pub fn parse_syslog_timestamp(input: &str) -> ParseResult<'_, DateTime<Utc>> {
     let bytes = input.as_bytes();
@@ -130,11 +130,11 @@ pub fn parse_syslog_timestamp(input: &str) -> ParseResult<'_, DateTime<Utc>> {
 
     let (day, time_start) = if bytes[4] == b' ' {
         // Single-digit day with leading space: "MMM  D HH:MM:SS".
-        let d = (bytes[5] - b'0') as u32;
+        let d = u32::from(bytes[5] - b'0');
         (d, 7)
     } else {
         // Two-digit day: "MMM DD HH:MM:SS".
-        let d = (bytes[4] - b'0') as u32 * 10 + (bytes[5] - b'0') as u32;
+        let d = u32::from(bytes[4] - b'0') * 10 + u32::from(bytes[5] - b'0');
         (d, 7)
     };
 
@@ -270,7 +270,7 @@ fn parse_fixed_digits(
                 got: b,
             });
         }
-        val = val * 10 + (b - b'0') as u32;
+        val = val * 10 + u32::from(b - b'0');
     }
     Ok(val)
 }
@@ -395,7 +395,7 @@ mod tests {
     #[test]
     fn iso8601_with_micros() {
         let (_, dt) = parse_iso8601("2024-01-15T10:30:00.123456Z").unwrap();
-        assert_eq!(dt.nanosecond() / 1_000, 123456);
+        assert_eq!(dt.nanosecond() / 1_000, 123_456);
     }
 
     #[test]

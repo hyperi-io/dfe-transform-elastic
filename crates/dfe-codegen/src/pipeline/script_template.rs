@@ -29,7 +29,7 @@ fn quote_strings(values: &[Value]) -> Result<Value, FuncError> {
             .iter()
             .map(|item| match item {
                 Value::String(str) => Ok(format!("\"{str}\"").into()),
-                Value::Number(n) => Ok(format!("{}", n).into()),
+                Value::Number(n) => Ok(format!("{n}").into()),
                 Value::Nil => Ok("null".into()),
                 other => Err(FuncError::Generic(format!(
                     "quote_strings only supports operating on arrays of string, found: {other:?}"
@@ -85,7 +85,7 @@ fn print_map(values: &[Value]) -> Result<Value, FuncError> {
     match values {
         [Value::Map(obj)] => {
             let mut entries = obj.iter().collect::<Vec<_>>();
-            entries.sort_by(|(a, _), (b, _)| a.cmp(b));
+            entries.sort_by_key(|(a, _)| *a);
 
             Ok(format!(
                 "{{ {} }}",
@@ -124,7 +124,7 @@ fn print_map(values: &[Value]) -> Result<Value, FuncError> {
                             }
                         };
 
-                        Ok(format!("\"{key}\": {value}",))
+                        Ok(format!("\"{key}\": {value}"))
                     })
                     .collect::<Result<Vec<_>, _>>()?
                     .join(", ")

@@ -8,7 +8,6 @@
 //! predecessor VRL transpiler) because ANTLR's `ParseTreeVisitor` trait
 //! forces a uniform return type across all visit methods.
 
-use std::ops::Deref;
 use std::rc::Rc;
 
 use antlr_rust::parser::ParserNodeType;
@@ -16,8 +15,45 @@ use antlr_rust::tree::{ParseTree, ParseTreeVisitor, Tree, VisitChildren};
 use anyhow::anyhow;
 use serde_json::json;
 
-use super::ir::*;
-use super::parser::painlessparser::*;
+use super::ir::{
+    BinOp, CompoundOp, Expr, FunctionParam, PainlessScript, PathSegment, Stmt, UnaryOp,
+};
+use super::parser::painlessparser::{
+    AddsubContext, AddsubContextAttrs, AfterthoughtContext, AfterthoughtContextAttrs,
+    ArgumentContext, ArgumentContextAttrs, ArgumentsContext, ArgumentsContextAttrs,
+    AssignmentContext, AssignmentContextAttrs, BinaryContext, BinaryContextAttrs, BlockContext,
+    BlockContextAttrs, BoolContext, BoolContextAttrs, BraceaccessContext, BraceaccessContextAttrs,
+    BreakContext, CallinvokeContext, CallinvokeContextAttrs, CalllocalContext,
+    CalllocalContextAttrs, CastContext, ClassfuncrefContext, ClassfuncrefContextAttrs, CompContext,
+    CompContextAttrs, ConditionalContext, ConditionalContextAttrs, ConstructorfuncrefContext,
+    ConstructorfuncrefContextAttrs, ContinueContext, DeclContext, DeclarationContext,
+    DeclarationContextAttrs, DecltypeContext, DecltypeContextAttrs, DeclvarContext,
+    DeclvarContextAttrs, DoContext, DoContextAttrs, DstatementContextAll, DynamicContext,
+    DynamicContextAttrs, EachContext, EachContextAttrs, ElvisContext, ElvisContextAttrs,
+    EmptyContext, ExprContext, ExprContextAttrs, FalseContext, FieldaccessContext,
+    FieldaccessContextAttrs, ForContext, ForContextAttrs, FunctionContext, FunctionContextAttrs,
+    IfContext, IfContextAttrs, IneachContext, IneachContextAttrs, InitializerContext,
+    InitializerContextAttrs, InstanceofContext, InstanceofContextAttrs, LambdaContext,
+    LambdaContextAttrs, LamtypeContext, LamtypeContextAttrs, ListinitContext,
+    ListinitializerContext, ListinitializerContextAttrs, LocalfuncrefContext,
+    LocalfuncrefContextAttrs, MapinitContext, MapinitializerContext, MapinitializerContextAttrs,
+    MaptokenContext, MaptokenContextAttrs, NewarrayContext, NewinitializedarrayContext,
+    NewinitializedarrayContextAttrs, NewobjectContext, NewobjectContextAttrs,
+    NewstandardarrayContext, NewstandardarrayContextAttrs, NonconditionalContext,
+    NonconditionalContextAttrs, NotContext, NotContextAttrs, NotaddsubContext,
+    NotaddsubContextAttrs, NullContext, NumericContext, NumericContextAttrs, PainlessParser,
+    PainlessParserContextType, ParametersContext, ParametersContextAttrs, PostContext,
+    PostContextAttrs, PostdotContext, PostdotContextAttrs, PostfixContext, PostfixContextAll,
+    PostfixContextAttrs, PreContext, PreContextAttrs, PrecedenceContext, PrecedenceContextAttrs,
+    PrimordefcastContext, PrimordefcastContextAttrs, PrimordefcasttypeContext, ReadContext,
+    ReadContextAttrs, RefcastContext, RefcastContextAttrs, RefcasttypeContext,
+    RefcasttypeContextAttrs, RegexContext, ReturnContext, ReturnContextAttrs, SingleContext,
+    SingleContextAttrs, SourceContext, SourceContextAttrs, StatementContext, StatementContextAll,
+    StatementContextAttrs, StringContext, ThrowContext, ThrowContextAttrs, TrailerContext,
+    TrailerContextAttrs, TrapContext, TrapContextAttrs, TrueContext, TryContext, TryContextAttrs,
+    TypeidContext, TypeidContextAttrs, VariableContext, VariableContextAttrs, WhileContext,
+    WhileContextAttrs,
+};
 use super::parser::painlessparservisitor::PainlessParserVisitor;
 
 /// An IR node returned from a visitor method.
@@ -78,6 +114,7 @@ impl IrNode {
 }
 
 /// Visitor that builds IR from the ANTLR4 Painless parse tree.
+#[derive(Default)]
 pub struct RustVisitor {
     /// Slot for returning values from visitor methods.
     program: Option<anyhow::Result<IrNode>>,
@@ -85,16 +122,6 @@ pub struct RustVisitor {
     functions: Vec<Stmt>,
     /// Whether an error has been reported (to avoid duplicate logging).
     error_reported: bool,
-}
-
-impl Default for RustVisitor {
-    fn default() -> Self {
-        Self {
-            program: None,
-            functions: Vec::new(),
-            error_reported: false,
-        }
-    }
 }
 
 impl RustVisitor {
@@ -127,11 +154,11 @@ impl RustVisitor {
 
     /// Store a result in the return slot.
     fn returns(&mut self, result: anyhow::Result<IrNode>) {
-        if let Err(ref err) = result {
-            if !self.error_reported {
-                tracing::error!(error = %err, "painless visitor error");
-                self.error_reported = true;
-            }
+        if let Err(ref err) = result
+            && !self.error_reported
+        {
+            tracing::error!(error = %err, "painless visitor error");
+            self.error_reported = true;
         }
         self.program = Some(result);
     }
@@ -149,14 +176,14 @@ impl RustVisitor {
     ) -> anyhow::Result<Vec<Stmt>> {
         let mut stmts = Vec::new();
         for s in statements {
-            let stmt = self.visit_stmt_node(s.deref())?;
+            let stmt = self.visit_stmt_node(&**s)?;
             match stmt {
                 Stmt::Block(inner) => stmts.extend(inner),
                 other => stmts.push(other),
             }
         }
         if let Some(ds) = trailing {
-            let stmt = self.visit_stmt_node(ds.deref())?;
+            let stmt = self.visit_stmt_node(&*ds)?;
             match stmt {
                 Stmt::Block(inner) => stmts.extend(inner),
                 other => stmts.push(other),
@@ -177,9 +204,7 @@ impl RustVisitor {
         let lexer = PainlessLexer::new(input);
         let token_stream = CommonTokenStream::new(lexer);
         let mut parser = PainlessParser::new(token_stream);
-        let tree = parser
-            .source()
-            .map_err(|e| anyhow!("parse error: {:?}", e))?;
+        let tree = parser.source().map_err(|e| anyhow!("parse error: {e:?}"))?;
 
         let mut visitor = RustVisitor::default();
         let result = visitor.visit_ir(&*tree)?;
@@ -192,9 +217,9 @@ impl RustVisitor {
     }
 }
 
-impl<'input> ParseTreeVisitor<'input, PainlessParserContextType> for RustVisitor {}
+impl ParseTreeVisitor<'_, PainlessParserContextType> for RustVisitor {}
 
-impl<'input> PainlessParserVisitor<'input> for RustVisitor {
+impl PainlessParserVisitor<'_> for RustVisitor {
     /// Grammar: function* statement* EOF
     fn visit_source(&mut self, ctx: &SourceContext<'_>) {
         let result: anyhow::Result<IrNode> = (|| {
@@ -861,9 +886,9 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
     /// Grammar: primary postfix*
     ///
     /// This is the most complex visitor method. It handles:
-    /// - `ctx.field.subfield` → CtxAccess
+    /// - `ctx.field.subfield` → `CtxAccess`
     /// - `ctx.field = value` (handled at assignment level)
-    /// - `params.key` → ParamAccess
+    /// - `params.key` → `ParamAccess`
     /// - method calls: `.replace()`, `.toLowerCase()`, etc.
     /// - bracket access: `map[key]`
     /// - field access: `.field`
@@ -918,11 +943,11 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
                 if i < postfixes.len() {
                     // There are remaining postfixes (method calls, etc.)
                     // Build CtxAccess for the path so far, then handle remaining
-                    if !path.is_empty() {
-                        expr = Expr::CtxAccess { path };
-                    } else {
+                    if path.is_empty() {
                         // Direct method on ctx (e.g., ctx.remove)
                         expr = Expr::CtxAccess { path: vec![] };
+                    } else {
+                        expr = Expr::CtxAccess { path };
                     }
 
                     // Process remaining postfixes
@@ -946,12 +971,12 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
 
                 while i < postfixes.len() {
                     let pf = &postfixes[i];
-                    if let Some(fa) = pf.fieldaccess() {
-                        if let Some(dotid) = fa.DOTID() {
-                            path.push(PathSegment::Static(dotid.get_text()));
-                            i += 1;
-                            continue;
-                        }
+                    if let Some(fa) = pf.fieldaccess()
+                        && let Some(dotid) = fa.DOTID()
+                    {
+                        path.push(PathSegment::Static(dotid.get_text()));
+                        i += 1;
+                        continue;
                     }
                     if let Some(ba) = pf.braceaccess() {
                         let index_expr = self.visit_expr_node(&*ba.expression().unwrap())?;
@@ -981,10 +1006,7 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
 
             // General case: process all postfixes
             // Check if primary is a class name for static calls
-            let is_class_name = primary_text
-                .chars()
-                .next()
-                .map_or(false, |c| c.is_uppercase())
+            let is_class_name = primary_text.chars().next().is_some_and(char::is_uppercase)
                 && !matches!(primary_text.as_str(), "true" | "false" | "null");
 
             if is_class_name && !postfixes.is_empty() {
@@ -1224,7 +1246,7 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
             let args = ctx.expression_all();
             let mut elements = Vec::new();
             for arg in &args {
-                elements.push(self.visit_expr_node(arg.deref())?);
+                elements.push(self.visit_expr_node(&**arg)?);
             }
             Ok(IrNode::Expr(Expr::ArrayLiteral { elements }))
         })();
@@ -1237,7 +1259,7 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
             let args = ctx.expression_all();
             let mut elements = Vec::new();
             for arg in &args {
-                elements.push(self.visit_expr_node(arg.deref())?);
+                elements.push(self.visit_expr_node(&**arg)?);
             }
             Ok(IrNode::Expr(Expr::ArrayLiteral { elements }))
         })();
@@ -1341,7 +1363,7 @@ impl<'input> PainlessParserVisitor<'input> for RustVisitor {
 
 // Helper methods not part of the visitor trait
 impl RustVisitor {
-    /// Collect arguments from an ArgumentsContext into a list of expressions.
+    /// Collect arguments from an `ArgumentsContext` into a list of expressions.
     fn collect_arguments(&mut self, ctx: &ArgumentsContext<'_>) -> anyhow::Result<Vec<Expr>> {
         let mut args = Vec::new();
         for arg in ctx.argument_all() {
@@ -1386,21 +1408,21 @@ impl RustVisitor {
             let args = self.collect_arguments(&ci.arguments().unwrap())?;
 
             // Special handling for ctx.remove()
-            if method == "remove" {
-                if let Expr::CtxAccess { path } = &expr {
-                    if path.is_empty() && args.len() == 1 {
-                        // ctx.remove('field') → CtxRemove
-                        let field = match &args[0] {
-                            Expr::Literal {
-                                value: serde_json::Value::String(s),
-                            } => {
-                                vec![PathSegment::Static(s.clone())]
-                            }
-                            other => vec![PathSegment::Dynamic(Box::new(other.clone()))],
-                        };
-                        return Ok(Expr::CtxRemove { path: field });
+            if method == "remove"
+                && let Expr::CtxAccess { path } = &expr
+                && path.is_empty()
+                && args.len() == 1
+            {
+                // ctx.remove('field') → CtxRemove
+                let field = match &args[0] {
+                    Expr::Literal {
+                        value: serde_json::Value::String(s),
+                    } => {
+                        vec![PathSegment::Static(s.clone())]
                     }
-                }
+                    other => vec![PathSegment::Dynamic(Box::new(other.clone()))],
+                };
+                return Ok(Expr::CtxRemove { path: field });
             }
 
             if is_null_safe {
@@ -1712,7 +1734,7 @@ mod tests {
     fn e2e_if_null_guard() {
         use super::super::emitter;
 
-        let source = r#"if (ctx.message != null) { ctx.event.original = ctx.message; }"#;
+        let source = r"if (ctx.message != null) { ctx.event.original = ctx.message; }";
         let script = transpile(source).unwrap();
         let (_, body) = emitter::emit_script(&script, "    ");
 

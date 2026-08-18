@@ -35,12 +35,12 @@ mod test {
 
         unsupported_fields_tests!(
             "uppercase",
-            r#"
+            r"
                 processors:
                     - uppercase:
                         field: message
                         {}: {}
-            "#,
+            ",
             on_failure => "[]"
         );
     }

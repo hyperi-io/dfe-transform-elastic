@@ -24,13 +24,13 @@ impl Transform for IncidentSummary {
             event.rename("crowdstrike.event.UserId", "user.name")?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.IncidentStartTime")
                 && event
                     .get_as_string("crowdstrike.event.IncidentStartTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -46,13 +46,13 @@ impl Transform for IncidentSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.IncidentStartTime")
                 && event
                     .get_as_string("crowdstrike.event.IncidentStartTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -70,13 +70,13 @@ impl Transform for IncidentSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.IncidentEndTime")
                 && event
                     .get_as_string("crowdstrike.event.IncidentEndTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -92,13 +92,13 @@ impl Transform for IncidentSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.IncidentEndTime")
                 && event
                     .get_as_string("crowdstrike.event.IncidentEndTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -128,8 +128,8 @@ impl Transform for IncidentSummary {
             event.rename("crowdstrike.event.IncidentID", "event.id")?;
         }
 
-        let _cond = { event.has("crowdstrike.event.FineScore") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.FineScore") };
+        if cond {
             event.set(
                 "message",
                 json!(format!(

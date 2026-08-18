@@ -38,12 +38,12 @@ mod test {
 
         #[test]
         pub fn parse() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - user_agent:
                     field: user_agent.original
                     ignore_missing: true
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             assert_eq!(pipeline.processors.len(), 1);
@@ -54,23 +54,24 @@ mod test {
                     assert_eq!("user_agent.original", user_agent.field);
                     assert_eq!(Some(true), user_agent.ignore_missing);
                 }
-                _ => panic!("unexpected processor {:#?}", processor),
+                _ => panic!("unexpected processor {processor:#?}"),
             }
         }
 
         #[test]
         pub fn unsupported_regex_file() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - user_agent:
                     field: user_agent.original
                     regex_file: foo bar
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration);
-            if pipeline.is_ok() {
-                panic!("expected error for unsupported configuration")
-            }
+            assert!(
+                !pipeline.is_ok(),
+                "expected error for unsupported configuration"
+            )
         }
 
         #[test]
@@ -83,24 +84,26 @@ mod test {
             "#;
 
             let pipeline = Pipeline::parse(configuration);
-            if pipeline.is_ok() {
-                panic!("expected error for unsupported configuration")
-            }
+            assert!(
+                !pipeline.is_ok(),
+                "expected error for unsupported configuration"
+            )
         }
 
         #[test]
         pub fn unsupported_extract_device_type() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - user_agent:
                     field: user_agent.original
                     extract_device_type: true
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration);
-            if pipeline.is_ok() {
-                panic!("expected error for unsupported configuration")
-            }
+            assert!(
+                !pipeline.is_ok(),
+                "expected error for unsupported configuration"
+            )
         }
     }
 

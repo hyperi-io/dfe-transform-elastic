@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Global GeoIP enricher for use by generated transform code.
+//! Global `GeoIP` enricher for use by generated transform code.
 //!
 //! Initialised lazily on first lookup. Auto-detects MMDB files from:
 //! 1. `GEOIP_CITY_DB` / `GEOIP_ASN_DB` env vars (explicit paths)
 //! 2. `GEOIP_DB_DIR` env var (directory containing `*.mmdb` files)
 //! 3. Default search paths: `testdata/geoip/`, `/var/lib/dfe/geoip/`
 //!
-//! Approach ported from dfe-loader's auto-works GeoIP pattern.
+//! Approach ported from dfe-loader's auto-works `GeoIP` pattern.
 
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -28,7 +28,7 @@ struct GlobalGeoIp {
 
 static GLOBAL_GEOIP: OnceLock<GlobalGeoIp> = OnceLock::new();
 
-/// Initialise the global GeoIP enricher.
+/// Initialise the global `GeoIP` enricher.
 ///
 /// Called lazily on first `geoip_lookup()`. Searches for MMDB files
 /// in standard locations. Non-fatal: if no databases found, lookups
@@ -110,9 +110,9 @@ fn find_db(env_var: &str, filenames: &[&str]) -> Option<PathBuf> {
     None
 }
 
-/// Perform a GeoIP lookup using the global enricher.
+/// Perform a `GeoIP` lookup using the global enricher.
 ///
-/// `db_name` selects the database: "geoip_city" or "geoip_asn".
+/// `db_name` selects the database: "`geoip_city`" or "`geoip_asn`".
 /// Returns a flat map of field names to values, or an empty map if
 /// the database is not loaded or the IP is private.
 pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
@@ -197,7 +197,7 @@ mod tests {
     fn public_ip_lookup() {
         // 8.8.8.8 (Google DNS) should have GeoIP data if DB is loaded
         let result = geoip_lookup("geoip_city", "8.8.8.8");
-        eprintln!("GeoIP 8.8.8.8 result: {:?}", result);
+        eprintln!("GeoIP 8.8.8.8 result: {result:?}");
         // Don't assert on specific values — DB may or may not be present
         // This test verifies the lookup path doesn't panic
     }

@@ -18,13 +18,13 @@ impl Transform for ReconNotificationSummary {
 
         event.append("event.type", json!("indicator"))?;
 
-        let _cond = { !event.has("crowdstrike.event.ItemType") };
-        if _cond {
+        let cond = { !event.has("crowdstrike.event.ItemType") };
+        if cond {
             event.set("event.action", json!("recon-notification"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.ItemType") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.ItemType") };
+        if cond {
             event.set(
                 "event.action",
                 json!(format!(
@@ -56,13 +56,13 @@ impl Transform for ReconNotificationSummary {
             event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.MatchedTimestamp")
                 && event
                     .get_as_string("crowdstrike.event.MatchedTimestamp")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -78,13 +78,13 @@ impl Transform for ReconNotificationSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.MatchedTimestamp")
                 && event
                     .get_as_string("crowdstrike.event.MatchedTimestamp")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -102,13 +102,13 @@ impl Transform for ReconNotificationSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ItemPostedTimestamp")
                 && event
                     .get_as_string("crowdstrike.event.ItemPostedTimestamp")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -124,13 +124,13 @@ impl Transform for ReconNotificationSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ItemPostedTimestamp")
                 && event
                     .get_as_string("crowdstrike.event.ItemPostedTimestamp")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {

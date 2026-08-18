@@ -53,12 +53,12 @@ mod tests {
 
         unsupported_fields_tests!(
             "network_direction",
-            r#"
+            r"
                 processors:
                     - network_direction:
                         internal_networks_fields: internal_networks
                         {}: {}
-            "#,
+            ",
             destination_ip => "destination.ip",
             ignore_failure => "true",
             internal_networks => "[private]",

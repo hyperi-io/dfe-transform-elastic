@@ -76,8 +76,7 @@ impl Transform for Utm {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.dst_port".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;
@@ -119,8 +118,7 @@ impl Transform for Utm {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.remport".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("destination.port", converted)?;
@@ -163,8 +161,7 @@ impl Transform for Utm {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.dstport".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("destination.port", converted)?;
@@ -203,8 +200,7 @@ impl Transform for Utm {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.rcvdbyte".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.bytes", converted)?;
@@ -265,8 +261,7 @@ impl Transform for Utm {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.locport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -308,8 +303,7 @@ impl Transform for Utm {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.src_port".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("source.port", converted)?;
@@ -352,8 +346,7 @@ impl Transform for Utm {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.srcport".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("source.port", converted)?;
@@ -392,8 +385,7 @@ impl Transform for Utm {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.sentbyte".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.bytes", converted)?;
@@ -545,8 +537,7 @@ impl Transform for Utm {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.filesize".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("file.size", converted)?;
@@ -802,8 +793,7 @@ impl Transform for Utm {
                         return Err(TransformError::ParseError {
                             path: "tls.server.x509.public_key_size".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("tls.server.x509.public_key_size", converted)?;

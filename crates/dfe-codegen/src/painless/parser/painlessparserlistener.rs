@@ -1,6 +1,23 @@
 #![allow(nonstandard_style)]
 // Generated from /nix/store/7lvp6vd92i2ff9fnrfyln27gpgnnfv83-painless-grammar/PainlessParser.g4 by ANTLR 4.8
-use super::painlessparser::*;
+use super::painlessparser::{
+    AddsubContext, AfterthoughtContext, ArgumentContext, ArgumentsContext, AssignmentContext,
+    BinaryContext, BlockContext, BoolContext, BraceaccessContext, BreakContext, CallinvokeContext,
+    CalllocalContext, CastContext, ClassfuncrefContext, CompContext, ConditionalContext,
+    ConstructorfuncrefContext, ContinueContext, DeclContext, DeclarationContext, DecltypeContext,
+    DeclvarContext, DoContext, DynamicContext, EachContext, ElvisContext, EmptyContext,
+    ExprContext, FalseContext, FieldaccessContext, ForContext, FunctionContext, IfContext,
+    IneachContext, InitializerContext, InstanceofContext, LambdaContext, LamtypeContext,
+    ListinitContext, ListinitializerContext, LocalfuncrefContext, MapinitContext,
+    MapinitializerContext, MaptokenContext, NewarrayContext, NewinitializedarrayContext,
+    NewobjectContext, NewstandardarrayContext, NonconditionalContext, NotContext, NotaddsubContext,
+    NullContext, NumericContext, PainlessParserContextType, ParametersContext, PostContext,
+    PostdotContext, PostfixContext, PreContext, PrecedenceContext, PrimordefcastContext,
+    PrimordefcasttypeContext, ReadContext, RefcastContext, RefcasttypeContext, RegexContext,
+    ReturnContext, SingleContext, SourceContext, StatementContext, StringContext, ThrowContext,
+    TrailerContext, TrapContext, TrueContext, TryContext, TypeidContext, VariableContext,
+    WhileContext,
+};
 use antlr_rust::tree::ParseTreeListener;
 
 pub trait PainlessParserListener<'input>:

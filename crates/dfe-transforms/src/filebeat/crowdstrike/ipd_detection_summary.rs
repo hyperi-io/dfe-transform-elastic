@@ -20,13 +20,13 @@ impl Transform for IpdDetectionSummary {
 
         event.set("event.action", json!("ipd-detection"))?;
 
-        let _cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(true) };
-        if _cond {
+        let cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(true) };
+        if cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        let _cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(false) };
-        if _cond {
+        let cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(false) };
+        if cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
@@ -78,8 +78,8 @@ impl Transform for IpdDetectionSummary {
             event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
         }
 
-        let _cond = { event.has("crowdstrike.event.Technique") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.Technique") };
+        if cond {
             event.append(
                 "threat.technique.name",
                 event
@@ -89,8 +89,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TechniqueId") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TechniqueId") };
+        if cond {
             event.append(
                 "threat.technique.id",
                 event
@@ -100,8 +100,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.Tactic") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.Tactic") };
+        if cond {
             event.append(
                 "threat.tactic.name",
                 event
@@ -111,8 +111,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TacticId") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TacticId") };
+        if cond {
             event.append(
                 "threat.tactic.id",
                 event
@@ -122,8 +122,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("message") };
-        if _cond {
+        let cond = { event.has("message") };
+        if cond {
             event.set(
                 "rule.description",
                 event.get("message").cloned().unwrap_or(Value::Null),
@@ -142,13 +142,13 @@ impl Transform for IpdDetectionSummary {
             event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
         }
 
-        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.ContextTimeStamp") };
+        if cond {
             event.remove("event.created");
         }
 
-        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.ContextTimeStamp") };
+        if cond {
             if event.has("crowdstrike.event.ContextTimeStamp") {
                 if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
                     let converted = match val {
@@ -163,13 +163,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ContextTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.ContextTimeStamp")
                     .is_some_and(|s| s.len() > 18)
         };
-        if _cond {
+        if cond {
             if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -177,13 +177,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ContextTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.ContextTimeStamp")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -199,13 +199,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ContextTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.ContextTimeStamp")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -223,8 +223,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") };
+        if cond {
             if event.has("crowdstrike.event.AccountCreationTimeStamp") {
                 if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
                     let converted = match val {
@@ -239,13 +239,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.AccountCreationTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                     .is_some_and(|s| s.len() > 18)
         };
-        if _cond {
+        if cond {
             if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -253,13 +253,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.AccountCreationTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) =
                 event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
             {
@@ -277,13 +277,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.AccountCreationTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) =
                 event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
             {
@@ -303,8 +303,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.StartTime") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.StartTime") };
+        if cond {
             if event.has("crowdstrike.event.StartTime") {
                 if let Some(val) = event.get("crowdstrike.event.StartTime") {
                     let converted = match val {
@@ -319,13 +319,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.StartTime")
                 && event
                     .get_as_string("crowdstrike.event.StartTime")
                     .is_some_and(|s| s.len() > 18)
         };
-        if _cond {
+        if cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -333,13 +333,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.StartTime")
                 && event
                     .get_as_string("crowdstrike.event.StartTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -355,13 +355,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.StartTime")
                 && event
                     .get_as_string("crowdstrike.event.StartTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -379,8 +379,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.EndTime") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.EndTime") };
+        if cond {
             if event.has("crowdstrike.event.EndTime") {
                 if let Some(val) = event.get("crowdstrike.event.EndTime") {
                     let converted = match val {
@@ -395,13 +395,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.EndTime")
                 && event
                     .get_as_string("crowdstrike.event.EndTime")
                     .is_some_and(|s| s.len() > 18)
         };
-        if _cond {
+        if cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -409,13 +409,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.EndTime")
                 && event
                     .get_as_string("crowdstrike.event.EndTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -431,13 +431,13 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.EndTime")
                 && event
                     .get_as_string("crowdstrike.event.EndTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -455,8 +455,8 @@ impl Transform for IpdDetectionSummary {
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.TargetEndpointHostName") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TargetEndpointHostName") };
+        if cond {
             event.append(
                 "related.hosts",
                 event
@@ -466,8 +466,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TargetDomain") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TargetDomain") };
+        if cond {
             event.append(
                 "related.hosts",
                 event
@@ -477,8 +477,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TargetAccountName") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TargetAccountName") };
+        if cond {
             event.append(
                 "related.user",
                 event
@@ -488,8 +488,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.AdditionalAccountDomain") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.AdditionalAccountDomain") };
+        if cond {
             event.append(
                 "related.hosts",
                 event
@@ -499,8 +499,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.AdditionalAccountName") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.AdditionalAccountName") };
+        if cond {
             event.append(
                 "related.hosts",
                 event
@@ -510,8 +510,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.AdditionalEndpointHostName") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.AdditionalEndpointHostName") };
+        if cond {
             event.append(
                 "related.hosts",
                 event
@@ -521,8 +521,8 @@ impl Transform for IpdDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.AdditionalEndpointIpAddress") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.AdditionalEndpointIpAddress") };
+        if cond {
             event.append(
                 "related.ip",
                 event

@@ -110,8 +110,7 @@ impl Transform for FortinetEvent {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.dstport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;
@@ -153,8 +152,7 @@ impl Transform for FortinetEvent {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.remport".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("destination.port", converted)?;
@@ -193,8 +191,7 @@ impl Transform for FortinetEvent {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.rcvdbyte".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.bytes", converted)?;
@@ -254,8 +251,7 @@ impl Transform for FortinetEvent {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.sentbyte".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.bytes", converted)?;
@@ -315,8 +311,7 @@ impl Transform for FortinetEvent {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.srcport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -358,8 +353,7 @@ impl Transform for FortinetEvent {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.locport".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("source.port", converted)?;
@@ -414,8 +408,7 @@ impl Transform for FortinetEvent {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.filesize".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("file.size", converted)?;
@@ -481,8 +474,7 @@ impl Transform for FortinetEvent {
                     return Err(TransformError::ParseError {
                         path: "fortinet.firewall.addr".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("fortinet.firewall.addr", s)?;
             }
@@ -525,8 +517,7 @@ impl Transform for FortinetEvent {
                                 return Err(TransformError::ParseError {
                                     path: "fortinet.firewall.sess_duration".into(),
                                     message: "cannot convert to integer".into(),
-                                }
-                                .into());
+                                });
                             }
                         };
                         event.set("event.duration", converted)?;
@@ -565,8 +556,7 @@ impl Transform for FortinetEvent {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.mem".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("fortinet.firewall.mem", converted)?;
@@ -590,8 +580,7 @@ impl Transform for FortinetEvent {
                         return Err(TransformError::ParseError {
                             path: "fortinet.firewall.jitter".into(),
                             message: "cannot convert to float".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("fortinet.firewall.jitter", converted)?;
@@ -613,8 +602,7 @@ impl Transform for FortinetEvent {
                         return Err(TransformError::ParseError {
                             path: "fortinet.firewall.latency".into(),
                             message: "cannot convert to float".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("fortinet.firewall.latency", converted)?;

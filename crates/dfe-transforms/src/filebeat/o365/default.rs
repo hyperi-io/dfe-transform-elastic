@@ -1003,8 +1003,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "client.address".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("client.ip", s)?;
             }
@@ -1038,8 +1037,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "client._port".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("client.port", converted)?;
@@ -1056,8 +1054,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "server.address".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("server.ip", s)?;
             }
@@ -1297,8 +1294,8 @@ impl Transform for Default {
 
         // TODO: conditional: ctx.o365audit?.Actor instanceof List
         {
-            if let Some(arr) = event.get("o365audit.Actor").cloned() {
-                if let Value::Array(items) = arr {
+            if let Some(Value::Array(items)) = event.get("o365audit.Actor").cloned() {
+                {
                     for (idx, _item) in items.iter().enumerate() {
                         // Set _ingest._value for inner processor access
                         let item_path = format!("o365audit.Actor[{}]", idx);
@@ -1322,8 +1319,8 @@ impl Transform for Default {
 
         // TODO: conditional: ctx.o365audit?.Target instanceof List
         {
-            if let Some(arr) = event.get("o365audit.Target").cloned() {
-                if let Value::Array(items) = arr {
+            if let Some(Value::Array(items)) = event.get("o365audit.Target").cloned() {
+                {
                     for (idx, _item) in items.iter().enumerate() {
                         // Set _ingest._value for inner processor access
                         let item_path = format!("o365audit.Target[{}]", idx);
@@ -1447,8 +1444,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "o365audit.Data.sip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("o365audit.Data.sip", s)?;
             }

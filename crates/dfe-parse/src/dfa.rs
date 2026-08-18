@@ -61,10 +61,9 @@ impl DfaParser {
                     .regex
                     .group_info()
                     .to_index(PatternID::ZERO, name.as_str())
+                    && let Some(span) = caps.get_group(group_index)
                 {
-                    if let Some(span) = caps.get_group(group_index) {
-                        fields.insert(name.clone(), &input[span.start..span.end]);
-                    }
+                    fields.insert(name.clone(), &input[span.start..span.end]);
                 }
             }
             Ok(fields)
@@ -90,10 +89,9 @@ impl DfaParser {
                     .regex
                     .group_info()
                     .to_index(PatternID::ZERO, name.as_str())
+                    && let Some(span) = caps.get_group(group_index)
                 {
-                    if let Some(span) = caps.get_group(group_index) {
-                        fields.insert(name.clone(), &input[span.start..span.end]);
-                    }
+                    fields.insert(name.clone(), &input[span.start..span.end]);
                 }
             }
             Ok((&input[overall.end()..], fields))

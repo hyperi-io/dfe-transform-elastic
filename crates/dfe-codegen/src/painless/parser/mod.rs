@@ -27,7 +27,5 @@ pub fn parse(
     let lexer: PainlessLexer<InputStream<&str>> =
         PainlessLexer::new_with_token_factory(InputStream::new(input), &CommonTokenFactory);
 
-    let parser = PainlessParser::new(CommonTokenStream::new(lexer));
-
-    parser
+    PainlessParser::new(CommonTokenStream::new(lexer))
 }

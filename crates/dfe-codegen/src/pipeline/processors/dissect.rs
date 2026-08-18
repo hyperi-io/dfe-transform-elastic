@@ -34,10 +34,10 @@ impl Validate for Dissect {
 
 lazy_static! {
     static ref DISSECTION_PATTERN: Regex = Regex::new(
-        r#"%\{(?P<append>\+)?(?P<reference_key>[&*])?(?P<path>.*?)(?:(?P<right_pad>->}(?P<right_pad_char>.)?)|})"#
+        r"%\{(?P<append>\+)?(?P<reference_key>[&*])?(?P<path>.*?)(?:(?P<right_pad>->}(?P<right_pad_char>.)?)|})"
     )
     .unwrap();
-    static ref ESCAPE_CHARACTERS_PATTERN: Regex = Regex::new(r#"[\[\]\(\)\\']"#).unwrap();
+    static ref ESCAPE_CHARACTERS_PATTERN: Regex = Regex::new(r"[\[\]\(\)\\']").unwrap();
 }
 
 pub struct DissectionPatternReplacer;

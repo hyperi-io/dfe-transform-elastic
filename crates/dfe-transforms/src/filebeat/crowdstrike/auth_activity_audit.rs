@@ -14,7 +14,7 @@ impl Transform for AuthActivityAudit {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.OperationName")
                 && !(["twoFactorAuthenticate", "userAuthenticate"].contains(
                     &event
@@ -22,11 +22,11 @@ impl Transform for AuthActivityAudit {
                         .unwrap_or(""),
                 ))
         };
-        if _cond {
+        if cond {
             event.append("event.category", json!("iam"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.OperationName")
                 && ["twoFactorAuthenticate", "userAuthenticate"].contains(
                     &event
@@ -34,11 +34,11 @@ impl Transform for AuthActivityAudit {
                         .unwrap_or(""),
                 )
         };
-        if _cond {
+        if cond {
             event.append("event.category", json!("authentication"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.OperationName")
                 && [
                     "activateUser",
@@ -58,11 +58,11 @@ impl Transform for AuthActivityAudit {
                         .unwrap_or(""),
                 )
         };
-        if _cond {
+        if cond {
             event.append("event.type", json!("user"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.OperationName")
                 && [
                     "activateUser",
@@ -82,23 +82,23 @@ impl Transform for AuthActivityAudit {
                         .unwrap_or(""),
                 )
         };
-        if _cond {
+        if cond {
             event.append("event.type", json!("change"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.OperationName")
                 && event.get_str("crowdstrike.event.OperationName") == Some("createUser")
         };
-        if _cond {
+        if cond {
             event.append("event.type", json!("creation"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.OperationName")
                 && event.get_str("crowdstrike.event.OperationName") == Some("deleteUser")
         };
-        if _cond {
+        if cond {
             event.append("event.type", json!("deletion"))?;
         }
 
@@ -106,8 +106,8 @@ impl Transform for AuthActivityAudit {
             event.rename("crowdstrike.event.UserId", "user.name")?;
         }
 
-        let _cond = { event.has("crowdstrike.event.OperationName") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.OperationName") };
+        if cond {
             event.append(
                 "event.action",
                 event
@@ -117,23 +117,23 @@ impl Transform for AuthActivityAudit {
             )?;
         }
 
-        let _cond = { !event.has("event.action") };
-        if _cond {
+        let cond = { !event.has("event.action") };
+        if cond {
             event.append("event.action", json!("AuthActivityAuditEvent"))?;
         }
 
-        let _cond = { event.get_bool("crowdstrike.event.Success") == Some(true) };
-        if _cond {
+        let cond = { event.get_bool("crowdstrike.event.Success") == Some(true) };
+        if cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        let _cond = { event.get_bool("crowdstrike.event.Success") == Some(false) };
-        if _cond {
+        let cond = { event.get_bool("crowdstrike.event.Success") == Some(false) };
+        if cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
-        let _cond = { !event.has("event.outcome") };
-        if _cond {
+        let cond = { !event.has("event.outcome") };
+        if cond {
             event.set("event.outcome", json!("unknown"))?;
         }
 

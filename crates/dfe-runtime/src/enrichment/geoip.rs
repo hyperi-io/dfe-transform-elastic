@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: FSL-1.1-ALv2
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! GeoIP enrichment using MaxMind MMDB.
+//! `GeoIP` enrichment using `MaxMind` MMDB.
 //!
-//! Provides IP-to-geography lookups using memory-mapped MaxMind GeoLite2
+//! Provides IP-to-geography lookups using memory-mapped `MaxMind` `GeoLite2`
 //! databases (City, Country, ASN).
 
 use std::collections::HashMap;
@@ -16,10 +16,10 @@ use serde_json::{Value, json};
 use crate::error::{Result, TransformError};
 use crate::event::Event;
 
-/// GeoIP lookup result as a flat map of property → value.
+/// `GeoIP` lookup result as a flat map of property → value.
 pub type GeoIpResult = HashMap<String, Value>;
 
-/// GeoIP enrichment engine wrapping a MaxMind MMDB reader.
+/// `GeoIP` enrichment engine wrapping a `MaxMind` MMDB reader.
 pub struct GeoIpEnrichment {
     reader: Reader<Vec<u8>>,
     db_type: GeoIpDbType,
@@ -34,7 +34,7 @@ pub enum GeoIpDbType {
 }
 
 impl GeoIpEnrichment {
-    /// Open a MaxMind MMDB file.
+    /// Open a `MaxMind` MMDB file.
     pub fn open(path: &Path) -> std::result::Result<Self, String> {
         let reader =
             Reader::open_readfile(path).map_err(|e| format!("failed to open MMDB: {e}"))?;
@@ -79,7 +79,7 @@ impl GeoIpEnrichment {
         Ok(result)
     }
 
-    /// Enrich an event with GeoIP data.
+    /// Enrich an event with `GeoIP` data.
     pub fn enrich(
         &self,
         event: &mut Event,
@@ -102,10 +102,10 @@ impl GeoIpEnrichment {
             Ok(geo) => {
                 for (key, value) in &geo {
                     // Filter by properties if specified
-                    if let Some(props) = properties {
-                        if !props.iter().any(|p| p == key) {
-                            continue;
-                        }
+                    if let Some(props) = properties
+                        && !props.iter().any(|p| p == key)
+                    {
+                        continue;
                     }
                     let field_path = format!("{target_prefix}.{key}");
                     event.set(&field_path, value.clone())?;
@@ -126,17 +126,17 @@ fn extract_city_fields(record: &Value, result: &mut GeoIpResult) {
     if let Some(city) = record.pointer("/city/names/en") {
         result.insert("city_name".into(), city.clone());
     }
-    if let Some(region_code) = record.pointer("/subdivisions/0/iso_code") {
-        if let Some(country_code) = result.get("country_iso_code") {
-            result.insert(
-                "region_iso_code".into(),
-                json!(format!(
-                    "{}-{}",
-                    country_code.as_str().unwrap_or(""),
-                    region_code.as_str().unwrap_or("")
-                )),
-            );
-        }
+    if let Some(region_code) = record.pointer("/subdivisions/0/iso_code")
+        && let Some(country_code) = result.get("country_iso_code")
+    {
+        result.insert(
+            "region_iso_code".into(),
+            json!(format!(
+                "{}-{}",
+                country_code.as_str().unwrap_or(""),
+                region_code.as_str().unwrap_or("")
+            )),
+        );
     }
     if let Some(region_name) = record.pointer("/subdivisions/0/names/en") {
         result.insert("region_name".into(), region_name.clone());

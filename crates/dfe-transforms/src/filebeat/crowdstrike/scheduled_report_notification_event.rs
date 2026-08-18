@@ -14,13 +14,13 @@ impl Transform for ScheduledReportNotificationEvent {
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ExecutionMetadata.ExecutionStart")
                 && event
                     .get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) =
                 event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart")
             {
@@ -38,13 +38,13 @@ impl Transform for ScheduledReportNotificationEvent {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
                 && event
                     .get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) =
                 event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
             {
@@ -62,13 +62,13 @@ impl Transform for ScheduledReportNotificationEvent {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
                 && event
                     .get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) =
                 event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
             {
@@ -115,8 +115,7 @@ impl Transform for ScheduledReportNotificationEvent {
                         return Err(TransformError::ParseError {
                             path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set(
@@ -153,8 +152,7 @@ impl Transform for ScheduledReportNotificationEvent {
                         return Err(TransformError::ParseError {
                             path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
@@ -166,8 +164,8 @@ impl Transform for ScheduledReportNotificationEvent {
         }
 
         // user.id is an email address
-        let _cond = event.get_str("user.id").is_some_and(|i| i.contains('@'));
-        if _cond {
+        let cond = event.get_str("user.id").is_some_and(|i| i.contains('@'));
+        if cond {
             if let Some(input) = event.get_string("user.id") {
                 let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find("@") {

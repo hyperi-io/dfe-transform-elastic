@@ -38,11 +38,11 @@ lazy_static! {
     static ref TYPE_COERCION_PATTERN: Regex =
         Regex::new("%\\{(?<alias>[^:}]+):(?<path>[^}:]+)(?::(?<type_coercion>[^}:]+))?}").unwrap();
     static ref UNGROUPED_UNION_PATTERN: Regex =
-        Regex::new(r#"^(?:[A-Za-z_]+\|)+[A-Za-z_]+$"#).unwrap();
+        Regex::new(r"^(?:[A-Za-z_]+\|)+[A-Za-z_]+$").unwrap();
     static ref UNGROUPED_OPTIONAL_GROK_PATTERN: Regex =
-        Regex::new(r#"(?<optional_grok>%\{[^}]+})\?"#).unwrap();
+        Regex::new(r"(?<optional_grok>%\{[^}]+})\?").unwrap();
     static ref NAMED_PATH_CAPTURE_PATTERN: Regex =
-        Regex::new(r#"\?<(?<capture>[^>]+\.[^>]+)>"#).unwrap();
+        Regex::new(r"\?<(?<capture>[^>]+\.[^>]+)>").unwrap();
 }
 
 impl Validate for Grok {
@@ -101,7 +101,7 @@ impl Replacer for TypeCoercionReplacer {
         dst.push_str(&caps[1]);
         dst.push(':');
         dst.push_str(&caps[2]);
-        dst.push('}')
+        dst.push('}');
     }
 }
 
@@ -134,14 +134,14 @@ mod test {
 
         #[test]
         fn nested_path_captures_outside_of_patterns() -> Result<()> {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - grok:
                         field: user.name
                         ignore_failure: true
                         patterns:
                             - ^%{GREEDYDATA:user.full_name} (\((?<user.email>%{DATA:user.name}@%{DATA:user.domain})\))?$
-            "#;
+            ";
 
             assert_eq!(
                 "grok codegen doesn't support named path captures outside of pattern definitions. Found: user.email",

@@ -6,7 +6,11 @@
 use std::collections::HashMap;
 
 use super::Validate;
-use super::processors::*;
+use super::processors::{
+    Append, CommunityId, Convert, Csv, Date, Dissect, Drop, Fingerprint, Foreach, Geoip, Grok,
+    Gsub, Json, KV, Lowercase, NestedPipeline, NetworkDirection, RegisteredDomain, Remove, Rename,
+    Script, Set, Split, Trim, Uppercase, UriParts, UserAgent,
+};
 use anyhow::Context;
 use serde::Deserialize;
 use tracing::instrument;
@@ -156,10 +160,10 @@ impl Pipeline {
                 let span = tracing::info_span!("validating_processor", index);
                 let _guard = span.enter();
 
-                if let Processor::Pipeline(nested) = processor {
-                    if let Some(other) = pipelines.get(&nested.name.0) {
-                        nested.inner_pipeline = Some(other.clone());
-                    }
+                if let Processor::Pipeline(nested) = processor
+                    && let Some(other) = pipelines.get(&nested.name.0)
+                {
+                    nested.inner_pipeline = Some(other.clone());
                 }
 
                 processor.validate()

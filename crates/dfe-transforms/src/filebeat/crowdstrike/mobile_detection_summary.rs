@@ -20,18 +20,18 @@ impl Transform for MobileDetectionSummary {
 
         event.set("event.action", json!("mobile-detection"))?;
 
-        let _cond = { event.has("crowdstrike.event.ContextTimeStamp") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.ContextTimeStamp") };
+        if cond {
             event.remove("event.created");
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ContextTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.ContextTimeStamp")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -49,13 +49,13 @@ impl Transform for MobileDetectionSummary {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.ContextTimeStamp")
                 && event
                     .get_as_string("crowdstrike.event.ContextTimeStamp")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -102,8 +102,8 @@ impl Transform for MobileDetectionSummary {
 
         event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
-        let _cond = { event.has("crowdstrike.event.Technique") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.Technique") };
+        if cond {
             event.append(
                 "threat.technique.name",
                 event
@@ -113,8 +113,8 @@ impl Transform for MobileDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TechniqueId") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TechniqueId") };
+        if cond {
             event.append(
                 "threat.technique.id",
                 event
@@ -124,8 +124,8 @@ impl Transform for MobileDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.Tactic") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.Tactic") };
+        if cond {
             event.append(
                 "threat.tactic.name",
                 event
@@ -135,8 +135,8 @@ impl Transform for MobileDetectionSummary {
             )?;
         }
 
-        let _cond = { event.has("crowdstrike.event.TacticId") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.TacticId") };
+        if cond {
             event.append(
                 "threat.tactic.id",
                 event

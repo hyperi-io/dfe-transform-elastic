@@ -20,12 +20,12 @@ use serde_json::{Map, Value};
 pub fn flatten_value(value: &Value) -> Map<String, Value> {
     let mut result = Map::new();
     if let Value::Object(map) = value {
-        flatten_inner(map, String::new(), &mut result);
+        flatten_inner(map, "", &mut result);
     }
     result
 }
 
-fn flatten_inner(map: &Map<String, Value>, prefix: String, result: &mut Map<String, Value>) {
+fn flatten_inner(map: &Map<String, Value>, prefix: &str, result: &mut Map<String, Value>) {
     for (key, value) in map {
         let full_key = if prefix.is_empty() {
             key.clone()
@@ -35,7 +35,7 @@ fn flatten_inner(map: &Map<String, Value>, prefix: String, result: &mut Map<Stri
 
         match value {
             Value::Object(inner) if !inner.is_empty() => {
-                flatten_inner(inner, full_key, result);
+                flatten_inner(inner, &full_key, result);
             }
             _ => {
                 result.insert(full_key, value.clone());

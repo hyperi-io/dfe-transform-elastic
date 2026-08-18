@@ -42,10 +42,10 @@ impl Transform for SpringcloudlogsInnerPipeline {
 
         // ctx.azure.springcloudlogs.category != 'SystemLogs'
         //   && ctx.azure.springcloudlogs.category != 'ApplicationConsole'
-        let _cond = event
+        let cond = event
             .get_as_string("azure.springcloudlogs.category")
             .is_none_or(|c| c != "SystemLogs" && c != "ApplicationConsole");
-        if _cond {
+        if cond {
             return Ok(TransformResult::Drop);
         }
 

@@ -25,7 +25,7 @@ impl<'a> From<&'a str> for Value {
 
 impl Default for Value {
     fn default() -> Self {
-        Value::String(TemplateString("".into()))
+        Value::String(TemplateString(String::new()))
     }
 }
 
@@ -68,12 +68,12 @@ mod test {
 
         #[test]
         pub fn parse() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - set:
                     field: event.ingested
                     value: '{{_ingest.timestamp}}'
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             assert_eq!(pipeline.processors.len(), 1);
@@ -87,28 +87,29 @@ mod test {
                         *set.value.as_ref().unwrap()
                     );
                 }
-                _ => panic!("unexpected processor {:#?}", processor),
+                _ => panic!("unexpected processor {processor:#?}"),
             }
         }
 
         #[test]
         pub fn unsupported_media_type() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                   - set:
                       field: foo
                       value: bar
                       media_type: application/json
-            "#;
+            ";
 
-            if Pipeline::parse(configuration).is_ok() {
-                panic!("expected error for unsupported configuration")
-            }
+            assert!(
+                !Pipeline::parse(configuration).is_ok(),
+                "expected error for unsupported configuration"
+            )
         }
 
         #[test]
         pub fn unsupported_on_failure() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                   - set:
                       field: foo
@@ -116,11 +117,12 @@ mod test {
                       on_failure:
                         - foo:
                           bar: baz
-            "#;
+            ";
 
-            if Pipeline::parse(configuration).is_ok() {
-                panic!("expected error for unsupported configuration")
-            }
+            assert!(
+                !Pipeline::parse(configuration).is_ok(),
+                "expected error for unsupported configuration"
+            )
         }
     }
 

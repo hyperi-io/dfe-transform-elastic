@@ -21,45 +21,45 @@ impl Transform for FirewallMatch {
         event.append("event.type", json!("start"))?;
         event.append("event.type", json!("connection"))?;
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RuleAction")
                 && event.get_str("crowdstrike.event.RuleAction") == Some("1")
         };
-        if _cond {
+        if cond {
             event.append("event.type", json!("allowed"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RuleAction")
                 && event.get_str("crowdstrike.event.RuleAction") == Some("2")
         };
-        if _cond {
+        if cond {
             event.set("_tmp_.action", json!("Allowed"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RuleAction")
                 && event.get_str("crowdstrike.event.RuleAction") == Some("2")
         };
-        if _cond {
+        if cond {
             event.append("event.type", json!("denied"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RuleAction")
                 && event.get_str("crowdstrike.event.RuleAction") == Some("2")
         };
-        if _cond {
+        if cond {
             event.set("_tmp_.action", json!("Blocked"))?;
         }
 
-        let _cond = { !event.has("_tmp_.action") };
-        if _cond {
+        let cond = { !event.has("_tmp_.action") };
+        if cond {
             event.set("_tmp_.action", json!("Unknown"))?;
         }
 
-        let _cond = { event.has("crowdstrike.event.RuleName") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.RuleName") };
+        if cond {
             event.set(
                 "message",
                 json!(format!(
@@ -101,8 +101,7 @@ impl Transform for FirewallMatch {
                         return Err(TransformError::ParseError {
                             path: "crowdstrike.event.PID".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("process.pid", converted)?;
@@ -147,36 +146,36 @@ impl Transform for FirewallMatch {
             event.rename("crowdstrike.event.EventType", "event.code")?;
         }
 
-        let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("1") };
-        if _cond {
+        let cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("1") };
+        if cond {
             event.set("network.direction", json!("ingress"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RemoteAddress")
                 && event.get_str("network.direction") == Some("ingress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.RemoteAddress") {
                 event.rename("crowdstrike.event.RemoteAddress", "source.ip")?;
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.LocalAddress")
                 && event.get_str("network.direction") == Some("ingress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.LocalAddress") {
                 event.rename("crowdstrike.event.LocalAddress", "destination.ip")?;
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.LocalPort")
                 && event.get_str("network.direction") == Some("ingress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.LocalPort") {
                 if let Some(val) = event.get("crowdstrike.event.LocalPort") {
                     let converted = match val {
@@ -204,8 +203,7 @@ impl Transform for FirewallMatch {
                             return Err(TransformError::ParseError {
                                 path: "crowdstrike.event.LocalPort".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;
@@ -213,11 +211,11 @@ impl Transform for FirewallMatch {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RemotePort")
                 && event.get_str("network.direction") == Some("ingress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.RemotePort") {
                 if let Some(val) = event.get("crowdstrike.event.RemotePort") {
                     let converted = match val {
@@ -245,8 +243,7 @@ impl Transform for FirewallMatch {
                             return Err(TransformError::ParseError {
                                 path: "crowdstrike.event.RemotePort".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -254,36 +251,36 @@ impl Transform for FirewallMatch {
             }
         }
 
-        let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("2") };
-        if _cond {
+        let cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("2") };
+        if cond {
             event.set("network.direction", json!("egress"))?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RemoteAddress")
                 && event.get_str("network.direction") == Some("egress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.RemoteAddress") {
                 event.rename("crowdstrike.event.RemoteAddress", "destination.ip")?;
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.LocalAddress")
                 && event.get_str("network.direction") == Some("egress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.LocalAddress") {
                 event.rename("crowdstrike.event.LocalAddress", "source.ip")?;
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.LocalPort")
                 && event.get_str("network.direction") == Some("egress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.LocalPort") {
                 if let Some(val) = event.get("crowdstrike.event.LocalPort") {
                     let converted = match val {
@@ -311,8 +308,7 @@ impl Transform for FirewallMatch {
                             return Err(TransformError::ParseError {
                                 path: "crowdstrike.event.LocalPort".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -320,11 +316,11 @@ impl Transform for FirewallMatch {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.RemotePort")
                 && event.get_str("network.direction") == Some("egress")
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.RemotePort") {
                 if let Some(val) = event.get("crowdstrike.event.RemotePort") {
                     let converted = match val {
@@ -352,8 +348,7 @@ impl Transform for FirewallMatch {
                             return Err(TransformError::ParseError {
                                 path: "crowdstrike.event.RemotePort".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;

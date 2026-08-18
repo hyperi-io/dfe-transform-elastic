@@ -64,13 +64,13 @@ mod tests {
 
         unsupported_fields_tests!(
             "fingerprint",
-            r#"
+            r"
                 processors:
                     - fingerprint:
                         fields:
                             - '@timestamp'
                         {}: {}
-            "#,
+            ",
             salt => "12345",
             method => "sha256",
             conditional => "true",

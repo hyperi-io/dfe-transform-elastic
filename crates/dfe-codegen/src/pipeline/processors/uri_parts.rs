@@ -36,11 +36,11 @@ mod test {
 
         #[test]
         fn parse() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - uri_parts:
                         field: url
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::UriParts(uri_parts)] => {
@@ -52,12 +52,12 @@ mod test {
 
         #[test]
         fn parse_target_field() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - uri_parts:
                         field: url
                         target_field: uri_parts
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::UriParts(uri_parts)] => {
@@ -70,12 +70,12 @@ mod test {
 
         #[test]
         fn parse_ignore_failure() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - uri_parts:
                         field: url
                         ignore_failure: true
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::UriParts(uri_parts)] => {
@@ -88,12 +88,12 @@ mod test {
 
         #[test]
         fn parse_conditional() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - uri_parts:
                         field: url.original
                         if: ctx?.url?.original != null
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::UriParts(uri_parts)] => {
@@ -109,12 +109,12 @@ mod test {
 
         unsupported_fields_tests!(
             "uri_parts",
-            r#"
+            r"
                 processors:
                     - uri_parts:
                         field: url
                         {}: {}
-            "#,
+            ",
             ignore_missing => "true"
         );
     }

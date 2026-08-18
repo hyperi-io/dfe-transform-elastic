@@ -42,12 +42,12 @@ mod test {
 
         unsupported_fields_tests!(
             "trim",
-            r#"
+            r"
                 processors:
                     - trim:
                         field: message,
                         {}: {}
-            "#,
+            ",
             conditional => "true && false",
             target_field => "target",
             ignore_failure => "true",

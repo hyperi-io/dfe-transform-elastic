@@ -476,8 +476,7 @@ impl Transform for Events {
                             path: "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip"
                                 .into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("server.ip", s)?;
                 }
@@ -535,8 +534,7 @@ impl Transform for Events {
                     return Err(TransformError::ParseError {
                         path: "cisco_meraki.multiple_dhcp_servers_detected.server_ip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("cisco_meraki.multiple_dhcp_servers_detected.server_ip", s)?;
             }
@@ -642,8 +640,7 @@ impl Transform for Events {
                         return Err(TransformError::ParseError {
                             path: "_temp.client_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("client.ip", s)?;
                 }

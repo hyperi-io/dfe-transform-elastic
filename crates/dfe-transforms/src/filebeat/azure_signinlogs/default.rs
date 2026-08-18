@@ -37,10 +37,10 @@ impl Transform for Default {
 
         // ctx?.azure?.signinlogs?.category == null
         //   || !ctx.azure.signinlogs.category.endsWith('SignInLogs')
-        let _cond = event
+        let cond = event
             .get_as_string("azure.signinlogs.category")
             .is_none_or(|c| !c.ends_with("SignInLogs"));
-        if _cond {
+        if cond {
             return Ok(TransformResult::Drop);
         }
 
@@ -60,19 +60,18 @@ impl Transform for Default {
         if event.remove("azure.signinlogs.time").is_none() {
             return Err(TransformError::FieldNotFound {
                 path: "azure.signinlogs.time".into(),
-            }
-            .into());
+            });
         }
 
-        let _cond = { !event.has("event.original") };
-        if _cond {
+        let cond = { !event.has("event.original") };
+        if cond {
             if event.has("message") {
                 event.rename("message", "event.original")?;
             }
         }
 
-        let _cond = { event.has("event.original") };
-        if _cond {
+        let cond = { event.has("event.original") };
+        if cond {
             event.remove("message");
         }
 
@@ -80,8 +79,8 @@ impl Transform for Default {
             event.rename("azure.signinlogs.resource_id", "azure.resource_id")?;
         }
 
-        let _cond = { !event.has("source.address") };
-        if _cond {
+        let cond = { !event.has("source.address") };
+        if cond {
             event.set(
                 "source.address",
                 event
@@ -91,8 +90,8 @@ impl Transform for Default {
             )?;
         }
 
-        let _cond = { !event.has("source.address") };
-        if _cond {
+        let cond = { !event.has("source.address") };
+        if cond {
             event.set(
                 "source.address",
                 event
@@ -112,8 +111,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "source.address".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("source.ip", s)?;
                 }
@@ -131,8 +129,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "azure.signinlogs.caller_ip_address".into(),
                             message: format!("cannot convert '{}' to IP", s),
-                        }
-                        .into());
+                        });
                     }
                     event.set("azure.signinlogs.caller_ip_address", s)?;
                 }
@@ -143,8 +140,8 @@ impl Transform for Default {
         event.remove("azure.signinlogs.properties.ipaddress");
         event.remove("azure.signinlogs.properties.ip_address");
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.append(
                 "related.ip",
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
@@ -175,8 +172,8 @@ impl Transform for Default {
             event.rename("azure.signinlogs.duration_ms", "event.duration")?;
         }
 
-        let _cond = { event.has("event.duration") };
-        if _cond {
+        let cond = { event.has("event.duration") };
+        if cond {
             // Painless script
             // Source: ctx.event.duration = ctx.event.duration * 1000000
             // TODO: Transpile Painless to Rust (2.2.3)
@@ -271,13 +268,13 @@ impl Transform for Default {
 
         event.remove("azure.signinlogs.properties.location");
 
-        let _cond = {
+        let cond = {
             event.has("azure.signinlogs.properties.authentication_processing_details")
                 && event
                     .get("azure.signinlogs.properties.authentication_processing_details")
                     .is_some_and(|v| v.is_array())
         };
-        if _cond {
+        if cond {
             // Painless script
             // Source: def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n
             // TODO: Transpile Painless to Rust (2.2.3)
@@ -293,19 +290,19 @@ impl Transform for Default {
 
         event.set("event.type", json!(["info"]))?;
 
-        let _cond = {
+        let cond = {
             !event.has("azure.signinlogs.properties.status.error_code")
                 || event.get_i64("azure.signinlogs.properties.status.error_code") == Some(0)
         };
-        if _cond {
+        if cond {
             event.set("event.outcome", json!("success"))?;
         }
 
         // properties.status.error_code is present and greater than zero
-        let _cond = event
+        let cond = event
             .get_i64("azure.signinlogs.properties.status.error_code")
             .is_some_and(|c| c > 0);
-        if _cond {
+        if cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
@@ -356,8 +353,8 @@ impl Transform for Default {
             }
         }
 
-        let _cond = { !event.has("azure.signinlogs.properties.user_id") };
-        if _cond {
+        let cond = { !event.has("azure.signinlogs.properties.user_id") };
+        if cond {
             event.remove("azure.signinlogs.properties.user_id");
         }
 
@@ -430,8 +427,8 @@ impl Transform for Default {
             event.rename("source.as.organization_name", "source.as.organization.name")?;
         }
 
-        let _cond = { !event.has("user_agent.original") };
-        if _cond {
+        let cond = { !event.has("user_agent.original") };
+        if cond {
             if event.has("azure.signinlogs.properties.user_agent") {
                 event.rename(
                     "azure.signinlogs.properties.user_agent",
@@ -440,8 +437,8 @@ impl Transform for Default {
             }
         }
 
-        let _cond = { event.has("user_agent.original") };
-        if _cond {
+        let cond = { event.has("user_agent.original") };
+        if cond {
             event.remove("azure.signinlogs.properties.user_agent");
         }
 
@@ -504,8 +501,8 @@ impl Transform for Default {
             }
             Ok(())
         })();
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -534,8 +531,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -564,8 +561,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -590,8 +587,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -618,8 +615,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -646,8 +643,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -683,7 +680,7 @@ impl Transform for Default {
         }
         // End nested pipeline: "azure-shared-pipeline"
 
-        let _cond = {
+        let cond = {
             !event.has("tags")
                 || !(event.get("tags").is_some_and(|v| match v {
                     serde_json::Value::Array(a) => a
@@ -693,7 +690,7 @@ impl Transform for Default {
                     _ => false,
                 }))
         };
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.remove("event.original");

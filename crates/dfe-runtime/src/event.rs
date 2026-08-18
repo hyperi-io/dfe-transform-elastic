@@ -35,7 +35,7 @@ impl Event {
 
     /// Parse from a mutable byte buffer using `simd_json`.
     ///
-    /// This is the primary Kafka ingestion path — 2-3x faster than serde_json.
+    /// This is the primary Kafka ingestion path — 2-3x faster than `serde_json`.
     pub fn from_bytes(buf: &mut [u8]) -> Result<Self> {
         let owned = simd_json::to_owned_value(buf).map_err(|e| TransformError::ParseError {
             path: String::new(),
@@ -399,7 +399,7 @@ mod tests {
         let event = Event::new(json!({
             "s": "hello",
             "i": 42,
-            "f": 3.14,
+            "f": 2.75,
             "b": true,
             "arr": [1, 2, 3],
             "obj": {"k": "v"}
@@ -407,7 +407,7 @@ mod tests {
 
         assert_eq!(event.get_str("s"), Some("hello"));
         assert_eq!(event.get_i64("i"), Some(42));
-        assert_eq!(event.get_f64("f"), Some(3.14));
+        assert_eq!(event.get_f64("f"), Some(2.75));
         assert_eq!(event.get_bool("b"), Some(true));
         assert_eq!(event.get_array("arr").map(|a| a.len()), Some(3));
         assert!(event.get_object("obj").is_some());
@@ -610,14 +610,11 @@ mod tests {
     }
 
     #[test]
-    fn has_returns_false_for_null_value() {
+    fn has_returns_true_for_null_value() {
         let event = Event::new(json!({"a": null}));
-        // has() should return true — the key exists, even if null
-        // This tests the actual behaviour, not assumed behaviour
-        let has_a = event.has("a");
-        // Document: our has() checks key existence, not value truthiness
-        assert!(has_a || !has_a); // Non-assertion — just verifying no panic
-        // The real assertion: get() returns Some for null values
+        // has() is key existence, not truthiness.
+        assert!(event.has("a"));
         assert!(event.get("a").is_some());
+        assert!(!event.has("b"));
     }
 }

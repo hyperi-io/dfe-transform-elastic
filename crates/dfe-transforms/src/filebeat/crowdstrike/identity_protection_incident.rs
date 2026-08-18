@@ -43,8 +43,8 @@ impl Transform for IdentityProtectionIncident {
         }
 
         // user.name carries a domain prefix
-        let _cond = event.get_str("user.name").is_some_and(|n| n.contains('\\'));
-        if _cond {
+        let cond = event.get_str("user.name").is_some_and(|n| n.contains('\\'));
+        if cond {
             if let Some(input) = event.get_string("user.name") {
                 let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find("\\") {
@@ -66,8 +66,8 @@ impl Transform for IdentityProtectionIncident {
             event.rename("crowdstrike.event.EndpointIp", "host.ip")?;
         }
 
-        let _cond = { event.has("crowdstrike.event.StartTime") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.StartTime") };
+        if cond {
             if event.has("crowdstrike.event.StartTime") {
                 if let Some(val) = event.get("crowdstrike.event.StartTime") {
                     let converted = match val {
@@ -82,13 +82,13 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.StartTime")
                 && event
                     .get_as_string("crowdstrike.event.StartTime")
                     .is_some_and(|s| s.len() > 18)
         };
-        if _cond {
+        if cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -96,13 +96,13 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.StartTime")
                 && event
                     .get_as_string("crowdstrike.event.StartTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -118,13 +118,13 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.StartTime")
                 && event
                     .get_as_string("crowdstrike.event.StartTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -142,8 +142,8 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = { event.has("crowdstrike.event.EndTime") };
-        if _cond {
+        let cond = { event.has("crowdstrike.event.EndTime") };
+        if cond {
             if event.has("crowdstrike.event.EndTime") {
                 if let Some(val) = event.get("crowdstrike.event.EndTime") {
                     let converted = match val {
@@ -158,13 +158,13 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.EndTime")
                 && event
                     .get_as_string("crowdstrike.event.EndTime")
                     .is_some_and(|s| s.len() > 18)
         };
-        if _cond {
+        if cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
                 let re = regex::Regex::new("\\d{6}$").unwrap();
                 let replaced = re.replace_all(&s, "").into_owned();
@@ -172,13 +172,13 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.EndTime")
                 && event
                     .get_as_string("crowdstrike.event.EndTime")
                     .is_some_and(|s| s.len() >= 12)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
                 // Try UNIX_MS timestamp (skip epoch 0)
                 if let Ok(ms) = date_str.parse::<i64>() {
@@ -194,13 +194,13 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.EndTime")
                 && event
                     .get_as_string("crowdstrike.event.EndTime")
                     .is_some_and(|s| s.len() <= 11)
         };
-        if _cond {
+        if cond {
             if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
                 // Try UNIX timestamp (skip epoch 0)
                 if let Ok(ts) = date_str.parse::<f64>() {
@@ -218,8 +218,8 @@ impl Transform for IdentityProtectionIncident {
             }
         }
 
-        let _cond = { event.has("event.start") };
-        if _cond {
+        let cond = { event.has("event.start") };
+        if cond {
             event.set(
                 "@timestamp",
                 event.get("event.start").cloned().unwrap_or(Value::Null),

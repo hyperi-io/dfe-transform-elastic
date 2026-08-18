@@ -151,8 +151,7 @@ impl Transform for Idsalerts {
                     return Err(TransformError::ParseError {
                         path: "_temp.src_ip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
@@ -187,8 +186,7 @@ impl Transform for Idsalerts {
                         return Err(TransformError::ParseError {
                             path: "sport".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("source.port", converted)?;

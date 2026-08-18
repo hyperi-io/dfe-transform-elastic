@@ -39,27 +39,27 @@ fn try_compound(expr: &str) -> Option<String> {
     // Handle negation wrapping: !(expr)
     if let Some(inner) = strip_negation(expr) {
         let transpiled = transpile_condition(inner)?;
-        return Some(format!("!({})", transpiled));
+        return Some(format!("!({transpiled})"));
     }
 
     // Handle bare parentheses wrapping: (expr)
     if let Some(inner) = strip_parens(expr) {
         let transpiled = transpile_condition(inner)?;
-        return Some(format!("({})", transpiled));
+        return Some(format!("({transpiled})"));
     }
 
     // Split on && (both sides must transpile)
     if let Some((left, right)) = split_logical(expr, "&&") {
         let l = transpile_condition(left)?;
         let r = transpile_condition(right)?;
-        return Some(format!("{} && {}", l, r));
+        return Some(format!("{l} && {r}"));
     }
 
     // Split on || (both sides must transpile)
     if let Some((left, right)) = split_logical(expr, "||") {
         let l = transpile_condition(left)?;
         let r = transpile_condition(right)?;
-        return Some(format!("{} || {}", l, r));
+        return Some(format!("{l} || {r}"));
     }
 
     None
@@ -125,13 +125,15 @@ fn split_logical<'a>(expr: &'a str, op: &str) -> Option<(&'a str, &'a str)> {
                 depth_bracket -= 1;
             }
 
-            if depth_paren == 0 && depth_bracket == 0 && i + op_bytes.len() <= bytes.len() {
-                if &bytes[i..i + op_bytes.len()] == op_bytes {
-                    let left = expr[..i].trim();
-                    let right = expr[i + op_bytes.len()..].trim();
-                    if !left.is_empty() && !right.is_empty() {
-                        return Some((left, right));
-                    }
+            if depth_paren == 0
+                && depth_bracket == 0
+                && i + op_bytes.len() <= bytes.len()
+                && &bytes[i..i + op_bytes.len()] == op_bytes
+            {
+                let left = expr[..i].trim();
+                let right = expr[i + op_bytes.len()..].trim();
+                if !left.is_empty() && !right.is_empty() {
+                    return Some((left, right));
                 }
             }
         }
@@ -145,10 +147,10 @@ fn transpile_single(expr: &str) -> Option<String> {
     // Prefix negation: !expr (without parens, e.g. !["a","b"].contains(...))
     if let Some(inner) = expr.strip_prefix('!') {
         let inner = inner.trim();
-        if !inner.starts_with('(') {
-            if let Some(r) = transpile_single(inner) {
-                return Some(format!("!({r})"));
-            }
+        if !inner.starts_with('(')
+            && let Some(r) = transpile_single(inner)
+        {
+            return Some(format!("!({r})"));
         }
     }
 
@@ -211,13 +213,13 @@ fn transpile_single(expr: &str) -> Option<String> {
 /// `String.valueOf(ctx.field).length() >= 12` → string length comparison
 /// `ctx.field.length() >= 12` → string length comparison
 ///
-/// Used by CrowdStrike epoch timestamp conditionals to distinguish
-/// UNIX (<=11 digits) from UNIX_MS (>=12 digits).
+/// Used by `CrowdStrike` epoch timestamp conditionals to distinguish
+/// UNIX (<=11 digits) from `UNIX_MS` (>=12 digits).
 fn try_string_length(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
         Regex::new(
-            r#"^(?:String\.valueOf\()?ctx\??\.(.+?)\)?\s*\.length\(\)\s*(>=|<=|>|<|==)\s*(\d+)$"#,
+            r"^(?:String\.valueOf\()?ctx\??\.(.+?)\)?\s*\.length\(\)\s*(>=|<=|>|<|==)\s*(\d+)$",
         )
         .expect("string length regex")
     });
@@ -238,9 +240,8 @@ fn try_string_length(expr: &str) -> Option<String> {
 /// `ctx?.field == null` → `!event.has("field")`
 fn try_null_check(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
-    let re = RE.get_or_init(|| {
-        Regex::new(r#"^ctx\??\.(.+?)\s*(!=|==)\s*null$"#).expect("null check regex")
-    });
+    let re = RE
+        .get_or_init(|| Regex::new(r"^ctx\??\.(.+?)\s*(!=|==)\s*null$").expect("null check regex"));
 
     let caps = re.captures(expr)?;
     let field = painless_field_to_ecs(caps.get(1)?.as_str());
@@ -287,7 +288,7 @@ fn try_equality(expr: &str) -> Option<String> {
 fn try_numeric_equality(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
-        Regex::new(r#"^ctx\??\.(.+?)\s*(==|!=)\s*(-?\d+)$"#).expect("numeric equality regex")
+        Regex::new(r"^ctx\??\.(.+?)\s*(==|!=)\s*(-?\d+)$").expect("numeric equality regex")
     });
 
     let caps = re.captures(expr)?;
@@ -295,14 +296,14 @@ fn try_numeric_equality(expr: &str) -> Option<String> {
     let op = caps.get(2)?.as_str();
     let value = caps.get(3)?.as_str();
 
-    Some(format!(r#"event.get_i64("{field}") {op} Some({value})"#,))
+    Some(format!(r#"event.get_i64("{field}") {op} Some({value})"#))
 }
 
 /// `ctx?.field == true` / `ctx?.field == false`
 fn try_bool_check(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
-        Regex::new(r#"^ctx\??\.(.+?)\s*(==|!=)\s*(true|false)$"#).expect("bool regex")
+        Regex::new(r"^ctx\??\.(.+?)\s*(==|!=)\s*(true|false)$").expect("bool regex")
     });
 
     let caps = re.captures(expr)?;
@@ -323,7 +324,7 @@ fn try_bool_check(expr: &str) -> Option<String> {
 fn try_list_contains(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
-        Regex::new(r#"^\[([^\]]+)\]\.contains\(ctx\??\.(.+?)\)$"#).expect("list contains regex")
+        Regex::new(r"^\[([^\]]+)\]\.contains\(ctx\??\.(.+?)\)$").expect("list contains regex")
     });
 
     let caps = re.captures(expr)?;
@@ -366,7 +367,7 @@ fn try_field_contains(expr: &str) -> Option<String> {
 fn try_instanceof(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
     let re = RE.get_or_init(|| {
-        Regex::new(r#"^ctx\??\.(.+?)\s+instanceof\s+(\w+)$"#).expect("instanceof regex")
+        Regex::new(r"^ctx\??\.(.+?)\s+instanceof\s+(\w+)$").expect("instanceof regex")
     });
 
     let caps = re.captures(expr)?;
@@ -391,8 +392,7 @@ fn try_instanceof(expr: &str) -> Option<String> {
 /// `!ctx?.field.isEmpty()` handled by prefix negation + this
 fn try_is_empty(expr: &str) -> Option<String> {
     static RE: OnceLock<Regex> = OnceLock::new();
-    let re =
-        RE.get_or_init(|| Regex::new(r#"^ctx\??\.(.+?)\.isEmpty\(\)$"#).expect("isEmpty regex"));
+    let re = RE.get_or_init(|| Regex::new(r"^ctx\??\.(.+?)\.isEmpty\(\)$").expect("isEmpty regex"));
 
     let caps = re.captures(expr)?;
     let field = painless_field_to_ecs(caps.get(1)?.as_str());

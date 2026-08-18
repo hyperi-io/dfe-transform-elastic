@@ -651,9 +651,15 @@ impl Transform for Default {
             if event.has("source.mac") {
                 if let Some(s) = event.get_str("source.mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("(..)(?!$)").unwrap();
-                    let replaced = re.replace_all(s, "$1-").into_owned();
-                    event.set("source.mac", replaced)?;
+                    // Dash-separate the MAC in pairs. The upstream pipeline uses a
+                    // negative lookahead, which the regex crate cannot compile.
+                    let chars: Vec<char> = s.chars().collect();
+                    let dashed = chars
+                        .chunks(2)
+                        .map(|pair| pair.iter().collect::<String>())
+                        .collect::<Vec<_>>()
+                        .join("-");
+                    event.set("source.mac", dashed)?;
                 }
             }
             if event.has("source.mac") {

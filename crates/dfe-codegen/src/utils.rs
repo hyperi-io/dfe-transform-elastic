@@ -5,8 +5,6 @@
 
 #![allow(dead_code)]
 
-use std::ops::Deref;
-
 pub trait TraceError {
     fn trace_error(self) -> Self;
 }
@@ -18,7 +16,7 @@ pub trait TraceAnyhow {
 impl<T, E: std::error::Error> TraceError for Result<T, E> {
     fn trace_error(self) -> Self {
         if let Err(err) = &self {
-            tracing::error!("{}", err as &dyn std::error::Error)
+            tracing::error!("{}", err as &dyn std::error::Error);
         }
 
         self
@@ -28,7 +26,7 @@ impl<T, E: std::error::Error> TraceError for Result<T, E> {
 impl<T> TraceAnyhow for Result<T, anyhow::Error> {
     fn trace_error(self) -> Self {
         if let Err(err) = &self {
-            tracing::error!("{}", err.deref());
+            tracing::error!("{}", &**err);
         }
 
         self

@@ -233,8 +233,7 @@ impl Transform for Login {
                         return Err(TransformError::ParseError {
                             path: "source.port".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("source.port", converted)?;
@@ -269,8 +268,7 @@ impl Transform for Login {
                         return Err(TransformError::ParseError {
                             path: "fortinet.firewall.valid".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("fortinet.firewall.valid", converted)?;

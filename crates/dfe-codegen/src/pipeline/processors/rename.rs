@@ -38,13 +38,13 @@ mod test {
 
         unsupported_fields_tests!(
             "rename",
-            r#"
+            r"
               processors:
                   - rename:
                       field: source
                       target_field: target
                       {}: {}
-            "#,
+            ",
             overwrite => "true",
             on_failure => "[]"
         );

@@ -6,15 +6,15 @@
 #![allow(unused_imports)]
 #![allow(unused_mut)]
 #![allow(unused_braces)]
-use super::painlessparserlistener::*;
-use super::painlessparservisitor::*;
+use super::painlessparserlistener::PainlessParserListener;
+use super::painlessparservisitor::{PainlessParserVisitor, PainlessParserVisitorCompat};
 use antlr_rust::PredictionContextCache;
 use antlr_rust::TokenSource;
 use antlr_rust::atn::{ATN, INVALID_ALT};
 use antlr_rust::atn_deserializer::ATNDeserializer;
 use antlr_rust::dfa::DFA;
 use antlr_rust::error_strategy::{DefaultErrorStrategy, ErrorStrategy};
-use antlr_rust::errors::*;
+use antlr_rust::errors::{ANTLRError, FailedPredicateError, NoViableAltError};
 use antlr_rust::int_stream::EOF;
 use antlr_rust::parser::{BaseParser, Parser, ParserNodeType, ParserRecog};
 use antlr_rust::parser_atn_simulator::ParserATNSimulator;
@@ -24,7 +24,10 @@ use antlr_rust::rule_context::{BaseRuleContext, CustomRuleContext, RuleContext};
 use antlr_rust::token::{OwningToken, TOKEN_EOF, Token};
 use antlr_rust::token_factory::{CommonTokenFactory, TokenAware, TokenFactory};
 use antlr_rust::token_stream::TokenStream;
-use antlr_rust::tree::*;
+use antlr_rust::tree::{
+    ErrorNode, Listenable, ParseTreeListener, ParseTreeWalker, TerminalNode, Visitable,
+    VisitableDyn,
+};
 use antlr_rust::vocabulary::{Vocabulary, VocabularyImpl};
 
 use antlr_rust::lazy_static;
@@ -405,7 +408,7 @@ pub type LocalTokenFactory<'input> = CommonTokenFactory;
 pub type PainlessParserTreeWalker<'input, 'a> =
     ParseTreeWalker<'input, 'a, PainlessParserContextType, dyn PainlessParserListener<'input> + 'a>;
 
-/// Parser for PainlessParser grammar
+/// Parser for `PainlessParser` grammar
 pub struct PainlessParser<'input, I, H>
 where
     I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>,
@@ -427,7 +430,7 @@ where
     }
 
     pub fn set_error_strategy(&mut self, strategy: H) {
-        self.err_handler = strategy
+        self.err_handler = strategy;
     }
 
     pub fn with_strategy(input: I, strategy: H) -> Self {
@@ -472,7 +475,7 @@ where
     }
 }
 
-/// Trait for monomorphized trait object that corresponds to the nodes of parse tree generated for PainlessParser
+/// Trait for monomorphized trait object that corresponds to the nodes of parse tree generated for `PainlessParser`
 pub trait PainlessParserContext<'input>:
     for<'x> Listenable<dyn PainlessParserListener<'input> + 'x>
     + for<'x> Visitable<dyn PainlessParserVisitor<'input> + 'x>
@@ -487,7 +490,7 @@ where
     T: PainlessParserVisitor<'input> + 'x,
 {
     fn accept_dyn(&self, visitor: &mut T) {
-        self.accept(visitor as &mut (dyn PainlessParserVisitor<'input> + 'x))
+        self.accept(visitor as &mut (dyn PainlessParserVisitor<'input> + 'x));
     }
 }
 
@@ -547,7 +550,7 @@ impl<'input, I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'i
 impl<'input, I: TokenStream<'input, TF = LocalTokenFactory<'input>> + TidAble<'input>>
     Actions<'input, BaseParserType<'input, I>> for PainlessParserExt<'input>
 {
-    fn get_grammar_file_name(&self) -> &str {
+    fn get_grammar_file_name(&self) -> &'static str {
         "PainlessParser.g4"
     }
 
@@ -672,7 +675,7 @@ impl<'input> SourceContextExt<'input> {
 pub trait SourceContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<SourceContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token EOF
+    /// Retrieves first `TerminalNode` corresponding to token EOF
     /// Returns `None` if there is no child corresponding to token EOF
     fn EOF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -800,7 +803,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -874,7 +877,7 @@ pub trait FunctionContextAttrs<'input>:
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -931,7 +934,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -999,7 +1002,7 @@ impl<'input> ParametersContextExt<'input> {
 pub trait ParametersContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<ParametersContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1007,7 +1010,7 @@ pub trait ParametersContextAttrs<'input>:
     {
         self.get_token(LP, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1034,7 +1037,7 @@ pub trait ParametersContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token ID, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token ID, starting from 0.
     /// Returns `None` if number of children corresponding to token ID is less or equal than `i`.
     fn ID(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1049,7 +1052,7 @@ pub trait ParametersContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1128,7 +1131,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -1208,7 +1211,7 @@ pub trait StatementContextAttrs<'input>:
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token SEMICOLON
+    /// Retrieves first `TerminalNode` corresponding to token SEMICOLON
     /// Returns `None` if there is no child corresponding to token SEMICOLON
     fn SEMICOLON(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1216,7 +1219,7 @@ pub trait StatementContextAttrs<'input>:
     {
         self.get_token(SEMICOLON, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token EOF
+    /// Retrieves first `TerminalNode` corresponding to token EOF
     /// Returns `None` if there is no child corresponding to token EOF
     fn EOF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1266,14 +1269,14 @@ where
 
                         recog.base.set_state(115);
                         _la = recog.base.input.la(1);
-                        if !(_la == EOF || _la == SEMICOLON) {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
+                        if _la == EOF || _la == SEMICOLON {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                     }
                 }
@@ -1285,7 +1288,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -1318,7 +1321,9 @@ impl<'input> PainlessParserContext<'input> for RstatementContextAll<'input> {}
 impl<'input> Deref for RstatementContextAll<'input> {
     type Target = dyn RstatementContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use RstatementContextAll::*;
+        use RstatementContextAll::{
+            EachContext, Error, ForContext, IfContext, IneachContext, TryContext, WhileContext,
+        };
         match self {
             ForContext(inner) => inner,
             TryContext(inner) => inner,
@@ -1334,17 +1339,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for RstatementContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for RstatementContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -1396,7 +1401,7 @@ impl<'input> RstatementContextAttrs<'input> for RstatementContext<'input> {}
 pub type ForContext<'input> = BaseParserRuleContext<'input, ForContextExt<'input>>;
 
 pub trait ForContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token FOR
+    /// Retrieves first `TerminalNode` corresponding to token FOR
     /// Returns `None` if there is no child corresponding to token FOR
     fn FOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1404,7 +1409,7 @@ pub trait ForContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(FOR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1419,7 +1424,7 @@ pub trait ForContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token SEMICOLON, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token SEMICOLON, starting from 0.
     /// Returns `None` if number of children corresponding to token SEMICOLON is less or equal than `i`.
     fn SEMICOLON(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1427,7 +1432,7 @@ pub trait ForContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(SEMICOLON, i)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1534,7 +1539,7 @@ impl<'input> ForContextExt<'input> {
 pub type TryContext<'input> = BaseParserRuleContext<'input, TryContextExt<'input>>;
 
 pub trait TryContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token TRY
+    /// Retrieves first `TerminalNode` corresponding to token TRY
     /// Returns `None` if there is no child corresponding to token TRY
     fn TRY(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1629,7 +1634,7 @@ impl<'input> TryContextExt<'input> {
 pub type WhileContext<'input> = BaseParserRuleContext<'input, WhileContextExt<'input>>;
 
 pub trait WhileContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token WHILE
+    /// Retrieves first `TerminalNode` corresponding to token WHILE
     /// Returns `None` if there is no child corresponding to token WHILE
     fn WHILE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1637,7 +1642,7 @@ pub trait WhileContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(WHILE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1651,7 +1656,7 @@ pub trait WhileContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1740,7 +1745,7 @@ impl<'input> WhileContextExt<'input> {
 pub type IneachContext<'input> = BaseParserRuleContext<'input, IneachContextExt<'input>>;
 
 pub trait IneachContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token FOR
+    /// Retrieves first `TerminalNode` corresponding to token FOR
     /// Returns `None` if there is no child corresponding to token FOR
     fn FOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1748,7 +1753,7 @@ pub trait IneachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(FOR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1756,7 +1761,7 @@ pub trait IneachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(LP, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1764,7 +1769,7 @@ pub trait IneachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ID, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token IN
+    /// Retrieves first `TerminalNode` corresponding to token IN
     /// Returns `None` if there is no child corresponding to token IN
     fn IN(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1778,7 +1783,7 @@ pub trait IneachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1861,7 +1866,7 @@ impl<'input> IneachContextExt<'input> {
 pub type IfContext<'input> = BaseParserRuleContext<'input, IfContextExt<'input>>;
 
 pub trait IfContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token IF
+    /// Retrieves first `TerminalNode` corresponding to token IF
     /// Returns `None` if there is no child corresponding to token IF
     fn IF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1869,7 +1874,7 @@ pub trait IfContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(IF, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1883,7 +1888,7 @@ pub trait IfContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1903,7 +1908,7 @@ pub trait IfContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token ELSE
+    /// Retrieves first `TerminalNode` corresponding to token ELSE
     /// Returns `None` if there is no child corresponding to token ELSE
     fn ELSE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1980,7 +1985,7 @@ impl<'input> IfContextExt<'input> {
 pub type EachContext<'input> = BaseParserRuleContext<'input, EachContextExt<'input>>;
 
 pub trait EachContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token FOR
+    /// Retrieves first `TerminalNode` corresponding to token FOR
     /// Returns `None` if there is no child corresponding to token FOR
     fn FOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -1988,7 +1993,7 @@ pub trait EachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(FOR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2002,7 +2007,7 @@ pub trait EachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2010,7 +2015,7 @@ pub trait EachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ID, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token COLON
+    /// Retrieves first `TerminalNode` corresponding to token COLON
     /// Returns `None` if there is no child corresponding to token COLON
     fn COLON(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2024,7 +2029,7 @@ pub trait EachContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2484,7 +2489,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -2518,7 +2523,10 @@ impl<'input> PainlessParserContext<'input> for DstatementContextAll<'input> {}
 impl<'input> Deref for DstatementContextAll<'input> {
     type Target = dyn DstatementContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use DstatementContextAll::*;
+        use DstatementContextAll::{
+            BreakContext, ContinueContext, DeclContext, DoContext, Error, ExprContext,
+            ReturnContext, ThrowContext,
+        };
         match self {
             DeclContext(inner) => inner,
             BreakContext(inner) => inner,
@@ -2535,17 +2543,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for DstatementContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for DstatementContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -2672,7 +2680,7 @@ impl<'input> DeclContextExt<'input> {
 pub type BreakContext<'input> = BaseParserRuleContext<'input, BreakContextExt<'input>>;
 
 pub trait BreakContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token BREAK
+    /// Retrieves first `TerminalNode` corresponding to token BREAK
     /// Returns `None` if there is no child corresponding to token BREAK
     fn BREAK(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2749,7 +2757,7 @@ impl<'input> BreakContextExt<'input> {
 pub type ThrowContext<'input> = BaseParserRuleContext<'input, ThrowContextExt<'input>>;
 
 pub trait ThrowContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token THROW
+    /// Retrieves first `TerminalNode` corresponding to token THROW
     /// Returns `None` if there is no child corresponding to token THROW
     fn THROW(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2832,7 +2840,7 @@ impl<'input> ThrowContextExt<'input> {
 pub type ContinueContext<'input> = BaseParserRuleContext<'input, ContinueContextExt<'input>>;
 
 pub trait ContinueContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token CONTINUE
+    /// Retrieves first `TerminalNode` corresponding to token CONTINUE
     /// Returns `None` if there is no child corresponding to token CONTINUE
     fn CONTINUE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2984,7 +2992,7 @@ impl<'input> ExprContextExt<'input> {
 pub type DoContext<'input> = BaseParserRuleContext<'input, DoContextExt<'input>>;
 
 pub trait DoContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token DO
+    /// Retrieves first `TerminalNode` corresponding to token DO
     /// Returns `None` if there is no child corresponding to token DO
     fn DO(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -2998,7 +3006,7 @@ pub trait DoContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token WHILE
+    /// Retrieves first `TerminalNode` corresponding to token WHILE
     /// Returns `None` if there is no child corresponding to token WHILE
     fn WHILE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3006,7 +3014,7 @@ pub trait DoContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(WHILE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3020,7 +3028,7 @@ pub trait DoContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3097,7 +3105,7 @@ impl<'input> DoContextExt<'input> {
 pub type ReturnContext<'input> = BaseParserRuleContext<'input, ReturnContextExt<'input>>;
 
 pub trait ReturnContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token RETURN
+    /// Retrieves first `TerminalNode` corresponding to token RETURN
     /// Returns `None` if there is no child corresponding to token RETURN
     fn RETURN(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3324,7 +3332,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -3453,7 +3461,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -3521,7 +3529,7 @@ impl<'input> BlockContextExt<'input> {
 pub trait BlockContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<BlockContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token LBRACK
+    /// Retrieves first `TerminalNode` corresponding to token LBRACK
     /// Returns `None` if there is no child corresponding to token LBRACK
     fn LBRACK(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3529,7 +3537,7 @@ pub trait BlockContextAttrs<'input>:
     {
         self.get_token(LBRACK, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RBRACK
+    /// Retrieves first `TerminalNode` corresponding to token RBRACK
     /// Returns `None` if there is no child corresponding to token RBRACK
     fn RBRACK(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3646,7 +3654,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -3714,7 +3722,7 @@ impl<'input> EmptyContextExt<'input> {
 pub trait EmptyContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<EmptyContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token SEMICOLON
+    /// Retrieves first `TerminalNode` corresponding to token SEMICOLON
     /// Returns `None` if there is no child corresponding to token SEMICOLON
     fn SEMICOLON(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -3747,7 +3755,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -3874,7 +3882,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -3979,7 +3987,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -4074,7 +4082,7 @@ pub trait DeclarationContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4134,7 +4142,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -4215,7 +4223,7 @@ pub trait DecltypeContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token LBRACE, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token LBRACE, starting from 0.
     /// Returns `None` if number of children corresponding to token LBRACE is less or equal than `i`.
     fn LBRACE(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4230,7 +4238,7 @@ pub trait DecltypeContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token RBRACE, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token RBRACE, starting from 0.
     /// Returns `None` if number of children corresponding to token RBRACE is less or equal than `i`.
     fn RBRACE(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4285,7 +4293,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -4353,7 +4361,7 @@ impl<'input> TypeidContextExt<'input> {
 pub trait TypeidContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<TypeidContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token DEF
+    /// Retrieves first `TerminalNode` corresponding to token DEF
     /// Returns `None` if there is no child corresponding to token DEF
     fn DEF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4361,7 +4369,7 @@ pub trait TypeidContextAttrs<'input>:
     {
         self.get_token(DEF, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token PRIMITIVE
+    /// Retrieves first `TerminalNode` corresponding to token PRIMITIVE
     /// Returns `None` if there is no child corresponding to token PRIMITIVE
     fn PRIMITIVE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4369,7 +4377,7 @@ pub trait TypeidContextAttrs<'input>:
     {
         self.get_token(PRIMITIVE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4384,7 +4392,7 @@ pub trait TypeidContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token DOT, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token DOT, starting from 0.
     /// Returns `None` if number of children corresponding to token DOT is less or equal than `i`.
     fn DOT(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4399,7 +4407,7 @@ pub trait TypeidContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token DOTID, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token DOTID, starting from 0.
     /// Returns `None` if number of children corresponding to token DOTID is less or equal than `i`.
     fn DOTID(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4481,7 +4489,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -4549,7 +4557,7 @@ impl<'input> DeclvarContextExt<'input> {
 pub trait DeclvarContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<DeclvarContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4557,7 +4565,7 @@ pub trait DeclvarContextAttrs<'input>:
     {
         self.get_token(ID, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ASSIGN
+    /// Retrieves first `TerminalNode` corresponding to token ASSIGN
     /// Returns `None` if there is no child corresponding to token ASSIGN
     fn ASSIGN(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4611,7 +4619,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -4679,7 +4687,7 @@ impl<'input> TrapContextExt<'input> {
 pub trait TrapContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<TrapContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token CATCH
+    /// Retrieves first `TerminalNode` corresponding to token CATCH
     /// Returns `None` if there is no child corresponding to token CATCH
     fn CATCH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4687,7 +4695,7 @@ pub trait TrapContextAttrs<'input>:
     {
         self.get_token(CATCH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4701,7 +4709,7 @@ pub trait TrapContextAttrs<'input>:
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4709,7 +4717,7 @@ pub trait TrapContextAttrs<'input>:
     {
         self.get_token(ID, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4765,7 +4773,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -4798,7 +4806,10 @@ impl<'input> PainlessParserContext<'input> for NoncondexpressionContextAll<'inpu
 impl<'input> Deref for NoncondexpressionContextAll<'input> {
     type Target = dyn NoncondexpressionContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use NoncondexpressionContextAll::*;
+        use NoncondexpressionContextAll::{
+            BinaryContext, BoolContext, CompContext, ElvisContext, Error, InstanceofContext,
+            SingleContext,
+        };
         match self {
             SingleContext(inner) => inner,
             CompContext(inner) => inner,
@@ -4814,17 +4825,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for NoncondexpressionContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for NoncondexpressionContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -4972,7 +4983,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token LT
+    /// Retrieves first `TerminalNode` corresponding to token LT
     /// Returns `None` if there is no child corresponding to token LT
     fn LT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4980,7 +4991,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(LT, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LTE
+    /// Retrieves first `TerminalNode` corresponding to token LTE
     /// Returns `None` if there is no child corresponding to token LTE
     fn LTE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4988,7 +4999,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(LTE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token GT
+    /// Retrieves first `TerminalNode` corresponding to token GT
     /// Returns `None` if there is no child corresponding to token GT
     fn GT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -4996,7 +5007,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(GT, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token GTE
+    /// Retrieves first `TerminalNode` corresponding to token GTE
     /// Returns `None` if there is no child corresponding to token GTE
     fn GTE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5004,7 +5015,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(GTE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token EQ
+    /// Retrieves first `TerminalNode` corresponding to token EQ
     /// Returns `None` if there is no child corresponding to token EQ
     fn EQ(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5012,7 +5023,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(EQ, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token EQR
+    /// Retrieves first `TerminalNode` corresponding to token EQR
     /// Returns `None` if there is no child corresponding to token EQR
     fn EQR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5020,7 +5031,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(EQR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token NE
+    /// Retrieves first `TerminalNode` corresponding to token NE
     /// Returns `None` if there is no child corresponding to token NE
     fn NE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5028,7 +5039,7 @@ pub trait CompContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(NE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token NER
+    /// Retrieves first `TerminalNode` corresponding to token NER
     /// Returns `None` if there is no child corresponding to token NER
     fn NER(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5119,7 +5130,7 @@ pub trait BoolContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token BOOLAND
+    /// Retrieves first `TerminalNode` corresponding to token BOOLAND
     /// Returns `None` if there is no child corresponding to token BOOLAND
     fn BOOLAND(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5127,7 +5138,7 @@ pub trait BoolContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(BOOLAND, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token BOOLOR
+    /// Retrieves first `TerminalNode` corresponding to token BOOLOR
     /// Returns `None` if there is no child corresponding to token BOOLOR
     fn BOOLOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5218,7 +5229,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token MUL
+    /// Retrieves first `TerminalNode` corresponding to token MUL
     /// Returns `None` if there is no child corresponding to token MUL
     fn MUL(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5226,7 +5237,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(MUL, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DIV
+    /// Retrieves first `TerminalNode` corresponding to token DIV
     /// Returns `None` if there is no child corresponding to token DIV
     fn DIV(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5234,7 +5245,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(DIV, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token REM
+    /// Retrieves first `TerminalNode` corresponding to token REM
     /// Returns `None` if there is no child corresponding to token REM
     fn REM(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5242,7 +5253,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(REM, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ADD
+    /// Retrieves first `TerminalNode` corresponding to token ADD
     /// Returns `None` if there is no child corresponding to token ADD
     fn ADD(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5250,7 +5261,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ADD, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token SUB
+    /// Retrieves first `TerminalNode` corresponding to token SUB
     /// Returns `None` if there is no child corresponding to token SUB
     fn SUB(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5258,7 +5269,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(SUB, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token FIND
+    /// Retrieves first `TerminalNode` corresponding to token FIND
     /// Returns `None` if there is no child corresponding to token FIND
     fn FIND(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5266,7 +5277,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(FIND, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token MATCH
+    /// Retrieves first `TerminalNode` corresponding to token MATCH
     /// Returns `None` if there is no child corresponding to token MATCH
     fn MATCH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5274,7 +5285,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(MATCH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LSH
+    /// Retrieves first `TerminalNode` corresponding to token LSH
     /// Returns `None` if there is no child corresponding to token LSH
     fn LSH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5282,7 +5293,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(LSH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RSH
+    /// Retrieves first `TerminalNode` corresponding to token RSH
     /// Returns `None` if there is no child corresponding to token RSH
     fn RSH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5290,7 +5301,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(RSH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token USH
+    /// Retrieves first `TerminalNode` corresponding to token USH
     /// Returns `None` if there is no child corresponding to token USH
     fn USH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5298,7 +5309,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(USH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token BWAND
+    /// Retrieves first `TerminalNode` corresponding to token BWAND
     /// Returns `None` if there is no child corresponding to token BWAND
     fn BWAND(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5306,7 +5317,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(BWAND, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token XOR
+    /// Retrieves first `TerminalNode` corresponding to token XOR
     /// Returns `None` if there is no child corresponding to token XOR
     fn XOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5314,7 +5325,7 @@ pub trait BinaryContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(XOR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token BWOR
+    /// Retrieves first `TerminalNode` corresponding to token BWOR
     /// Returns `None` if there is no child corresponding to token BWOR
     fn BWOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5405,7 +5416,7 @@ pub trait ElvisContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token ELVIS
+    /// Retrieves first `TerminalNode` corresponding to token ELVIS
     /// Returns `None` if there is no child corresponding to token ELVIS
     fn ELVIS(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5490,7 +5501,7 @@ pub trait InstanceofContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token INSTANCEOF
+    /// Retrieves first `TerminalNode` corresponding to token INSTANCEOF
     /// Returns `None` if there is no child corresponding to token INSTANCEOF
     fn INSTANCEOF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -5653,20 +5664,20 @@ where
                                         }
                                         recog.base.set_state(269);
                                         _la = recog.base.input.la(1);
-                                        if !(((_la - 31) & !0x3f) == 0
+                                        if ((_la - 31) & !0x3f) == 0
                                             && ((1usize << (_la - 31))
                                                 & ((1usize << (MUL - 31))
                                                     | (1usize << (DIV - 31))
                                                     | (1usize << (REM - 31))))
-                                                != 0)
+                                                != 0
                                         {
-                                            recog.err_handler.recover_inline(&mut recog.base)?;
-                                        } else {
                                             if recog.base.input.la(1) == TOKEN_EOF {
-                                                recog.base.matched_eof = true
-                                            };
+                                                recog.base.matched_eof = true;
+                                            }
                                             recog.err_handler.report_match(&mut recog.base);
                                             recog.base.consume(&mut recog.err_handler);
+                                        } else {
+                                            recog.err_handler.recover_inline(&mut recog.base)?;
                                         }
                                         /*InvokeRule noncondexpression*/
                                         recog.base.set_state(270);
@@ -5698,14 +5709,14 @@ where
                                         }
                                         recog.base.set_state(272);
                                         _la = recog.base.input.la(1);
-                                        if !(_la == ADD || _la == SUB) {
-                                            recog.err_handler.recover_inline(&mut recog.base)?;
-                                        } else {
+                                        if _la == ADD || _la == SUB {
                                             if recog.base.input.la(1) == TOKEN_EOF {
-                                                recog.base.matched_eof = true
-                                            };
+                                                recog.base.matched_eof = true;
+                                            }
                                             recog.err_handler.report_match(&mut recog.base);
                                             recog.base.consume(&mut recog.err_handler);
+                                        } else {
+                                            recog.err_handler.recover_inline(&mut recog.base)?;
                                         }
                                         /*InvokeRule noncondexpression*/
                                         recog.base.set_state(273);
@@ -5737,14 +5748,14 @@ where
                                         }
                                         recog.base.set_state(275);
                                         _la = recog.base.input.la(1);
-                                        if !(_la == FIND || _la == MATCH) {
-                                            recog.err_handler.recover_inline(&mut recog.base)?;
-                                        } else {
+                                        if _la == FIND || _la == MATCH {
                                             if recog.base.input.la(1) == TOKEN_EOF {
-                                                recog.base.matched_eof = true
-                                            };
+                                                recog.base.matched_eof = true;
+                                            }
                                             recog.err_handler.report_match(&mut recog.base);
                                             recog.base.consume(&mut recog.err_handler);
+                                        } else {
+                                            recog.err_handler.recover_inline(&mut recog.base)?;
                                         }
                                         /*InvokeRule noncondexpression*/
                                         recog.base.set_state(276);
@@ -5776,20 +5787,20 @@ where
                                         }
                                         recog.base.set_state(278);
                                         _la = recog.base.input.la(1);
-                                        if !(((_la - 36) & !0x3f) == 0
+                                        if ((_la - 36) & !0x3f) == 0
                                             && ((1usize << (_la - 36))
                                                 & ((1usize << (LSH - 36))
                                                     | (1usize << (RSH - 36))
                                                     | (1usize << (USH - 36))))
-                                                != 0)
+                                                != 0
                                         {
-                                            recog.err_handler.recover_inline(&mut recog.base)?;
-                                        } else {
                                             if recog.base.input.la(1) == TOKEN_EOF {
-                                                recog.base.matched_eof = true
-                                            };
+                                                recog.base.matched_eof = true;
+                                            }
                                             recog.err_handler.report_match(&mut recog.base);
                                             recog.base.consume(&mut recog.err_handler);
+                                        } else {
+                                            recog.err_handler.recover_inline(&mut recog.base)?;
                                         }
                                         /*InvokeRule noncondexpression*/
                                         recog.base.set_state(279);
@@ -5821,21 +5832,21 @@ where
                                         }
                                         recog.base.set_state(281);
                                         _la = recog.base.input.la(1);
-                                        if !(((_la - 39) & !0x3f) == 0
+                                        if ((_la - 39) & !0x3f) == 0
                                             && ((1usize << (_la - 39))
                                                 & ((1usize << (LT - 39))
                                                     | (1usize << (LTE - 39))
                                                     | (1usize << (GT - 39))
                                                     | (1usize << (GTE - 39))))
-                                                != 0)
+                                                != 0
                                         {
-                                            recog.err_handler.recover_inline(&mut recog.base)?;
-                                        } else {
                                             if recog.base.input.la(1) == TOKEN_EOF {
-                                                recog.base.matched_eof = true
-                                            };
+                                                recog.base.matched_eof = true;
+                                            }
                                             recog.err_handler.report_match(&mut recog.base);
                                             recog.base.consume(&mut recog.err_handler);
+                                        } else {
+                                            recog.err_handler.recover_inline(&mut recog.base)?;
                                         }
                                         /*InvokeRule noncondexpression*/
                                         recog.base.set_state(282);
@@ -5867,21 +5878,21 @@ where
                                         }
                                         recog.base.set_state(284);
                                         _la = recog.base.input.la(1);
-                                        if !(((_la - 43) & !0x3f) == 0
+                                        if ((_la - 43) & !0x3f) == 0
                                             && ((1usize << (_la - 43))
                                                 & ((1usize << (EQ - 43))
                                                     | (1usize << (EQR - 43))
                                                     | (1usize << (NE - 43))
                                                     | (1usize << (NER - 43))))
-                                                != 0)
+                                                != 0
                                         {
-                                            recog.err_handler.recover_inline(&mut recog.base)?;
-                                        } else {
                                             if recog.base.input.la(1) == TOKEN_EOF {
-                                                recog.base.matched_eof = true
-                                            };
+                                                recog.base.matched_eof = true;
+                                            }
                                             recog.err_handler.report_match(&mut recog.base);
                                             recog.base.consume(&mut recog.err_handler);
+                                        } else {
+                                            recog.err_handler.recover_inline(&mut recog.base)?;
                                         }
                                         /*InvokeRule noncondexpression*/
                                         recog.base.set_state(285);
@@ -6120,7 +6131,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -6150,7 +6161,9 @@ impl<'input> PainlessParserContext<'input> for ExpressionContextAll<'input> {}
 impl<'input> Deref for ExpressionContextAll<'input> {
     type Target = dyn ExpressionContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use ExpressionContextAll::*;
+        use ExpressionContextAll::{
+            AssignmentContext, ConditionalContext, Error, NonconditionalContext,
+        };
         match self {
             ConditionalContext(inner) => inner,
             AssignmentContext(inner) => inner,
@@ -6163,17 +6176,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for ExpressionContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for ExpressionContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -6231,7 +6244,7 @@ pub trait ConditionalContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token COND
+    /// Retrieves first `TerminalNode` corresponding to token COND
     /// Returns `None` if there is no child corresponding to token COND
     fn COND(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6251,7 +6264,7 @@ pub trait ConditionalContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token COLON
+    /// Retrieves first `TerminalNode` corresponding to token COLON
     /// Returns `None` if there is no child corresponding to token COLON
     fn COLON(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6342,7 +6355,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token ASSIGN
+    /// Retrieves first `TerminalNode` corresponding to token ASSIGN
     /// Returns `None` if there is no child corresponding to token ASSIGN
     fn ASSIGN(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6350,7 +6363,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ASSIGN, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AADD
+    /// Retrieves first `TerminalNode` corresponding to token AADD
     /// Returns `None` if there is no child corresponding to token AADD
     fn AADD(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6358,7 +6371,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(AADD, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ASUB
+    /// Retrieves first `TerminalNode` corresponding to token ASUB
     /// Returns `None` if there is no child corresponding to token ASUB
     fn ASUB(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6366,7 +6379,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ASUB, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AMUL
+    /// Retrieves first `TerminalNode` corresponding to token AMUL
     /// Returns `None` if there is no child corresponding to token AMUL
     fn AMUL(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6374,7 +6387,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(AMUL, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ADIV
+    /// Retrieves first `TerminalNode` corresponding to token ADIV
     /// Returns `None` if there is no child corresponding to token ADIV
     fn ADIV(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6382,7 +6395,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ADIV, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AREM
+    /// Retrieves first `TerminalNode` corresponding to token AREM
     /// Returns `None` if there is no child corresponding to token AREM
     fn AREM(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6390,7 +6403,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(AREM, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AAND
+    /// Retrieves first `TerminalNode` corresponding to token AAND
     /// Returns `None` if there is no child corresponding to token AAND
     fn AAND(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6398,7 +6411,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(AAND, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AXOR
+    /// Retrieves first `TerminalNode` corresponding to token AXOR
     /// Returns `None` if there is no child corresponding to token AXOR
     fn AXOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6406,7 +6419,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(AXOR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AOR
+    /// Retrieves first `TerminalNode` corresponding to token AOR
     /// Returns `None` if there is no child corresponding to token AOR
     fn AOR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6414,7 +6427,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(AOR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ALSH
+    /// Retrieves first `TerminalNode` corresponding to token ALSH
     /// Returns `None` if there is no child corresponding to token ALSH
     fn ALSH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6422,7 +6435,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ALSH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ARSH
+    /// Retrieves first `TerminalNode` corresponding to token ARSH
     /// Returns `None` if there is no child corresponding to token ARSH
     fn ARSH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6430,7 +6443,7 @@ pub trait AssignmentContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ARSH, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token AUSH
+    /// Retrieves first `TerminalNode` corresponding to token AUSH
     /// Returns `None` if there is no child corresponding to token AUSH
     fn AUSH(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6647,7 +6660,7 @@ where
 
                         recog.base.set_state(320);
                         _la = recog.base.input.la(1);
-                        if !(((_la - 61) & !0x3f) == 0
+                        if ((_la - 61) & !0x3f) == 0
                             && ((1usize << (_la - 61))
                                 & ((1usize << (ASSIGN - 61))
                                     | (1usize << (AADD - 61))
@@ -6661,15 +6674,15 @@ where
                                     | (1usize << (ALSH - 61))
                                     | (1usize << (ARSH - 61))
                                     | (1usize << (AUSH - 61))))
-                                != 0)
+                                != 0
                         {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                         /*InvokeRule expression*/
                         recog.base.set_state(321);
@@ -6682,7 +6695,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -6712,7 +6725,7 @@ impl<'input> PainlessParserContext<'input> for UnaryContextAll<'input> {}
 impl<'input> Deref for UnaryContextAll<'input> {
     type Target = dyn UnaryContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use UnaryContextAll::*;
+        use UnaryContextAll::{AddsubContext, Error, NotaddsubContext, PreContext};
         match self {
             NotaddsubContext(inner) => inner,
             PreContext(inner) => inner,
@@ -6723,15 +6736,15 @@ impl<'input> Deref for UnaryContextAll<'input> {
 }
 impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a> for UnaryContextAll<'input> {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a> for UnaryContextAll<'input> {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -6864,7 +6877,7 @@ pub trait PreContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token INCR
+    /// Retrieves first `TerminalNode` corresponding to token INCR
     /// Returns `None` if there is no child corresponding to token INCR
     fn INCR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6872,7 +6885,7 @@ pub trait PreContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(INCR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DECR
+    /// Retrieves first `TerminalNode` corresponding to token DECR
     /// Returns `None` if there is no child corresponding to token DECR
     fn DECR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6955,7 +6968,7 @@ pub trait AddsubContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token ADD
+    /// Retrieves first `TerminalNode` corresponding to token ADD
     /// Returns `None` if there is no child corresponding to token ADD
     fn ADD(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -6963,7 +6976,7 @@ pub trait AddsubContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ADD, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token SUB
+    /// Retrieves first `TerminalNode` corresponding to token SUB
     /// Returns `None` if there is no child corresponding to token SUB
     fn SUB(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7060,14 +7073,14 @@ where
                     {
                         recog.base.set_state(325);
                         _la = recog.base.input.la(1);
-                        if !(_la == INCR || _la == DECR) {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
+                        if _la == INCR || _la == DECR {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                         /*InvokeRule chain*/
                         recog.base.set_state(326);
@@ -7082,14 +7095,14 @@ where
                     {
                         recog.base.set_state(327);
                         _la = recog.base.input.la(1);
-                        if !(_la == ADD || _la == SUB) {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
+                        if _la == ADD || _la == SUB {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                         /*InvokeRule unary*/
                         recog.base.set_state(328);
@@ -7116,7 +7129,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -7147,7 +7160,7 @@ impl<'input> PainlessParserContext<'input> for UnarynotaddsubContextAll<'input> 
 impl<'input> Deref for UnarynotaddsubContextAll<'input> {
     type Target = dyn UnarynotaddsubContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use UnarynotaddsubContextAll::*;
+        use UnarynotaddsubContextAll::{CastContext, Error, NotContext, PostContext, ReadContext};
         match self {
             CastContext(inner) => inner,
             NotContext(inner) => inner,
@@ -7161,17 +7174,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for UnarynotaddsubContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for UnarynotaddsubContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -7305,7 +7318,7 @@ pub trait NotContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token BOOLNOT
+    /// Retrieves first `TerminalNode` corresponding to token BOOLNOT
     /// Returns `None` if there is no child corresponding to token BOOLNOT
     fn BOOLNOT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7313,7 +7326,7 @@ pub trait NotContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(BOOLNOT, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token BWNOT
+    /// Retrieves first `TerminalNode` corresponding to token BWNOT
     /// Returns `None` if there is no child corresponding to token BWNOT
     fn BWNOT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7471,7 +7484,7 @@ pub trait PostContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token INCR
+    /// Retrieves first `TerminalNode` corresponding to token INCR
     /// Returns `None` if there is no child corresponding to token INCR
     fn INCR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7479,7 +7492,7 @@ pub trait PostContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(INCR, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DECR
+    /// Retrieves first `TerminalNode` corresponding to token DECR
     /// Returns `None` if there is no child corresponding to token DECR
     fn DECR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7593,14 +7606,14 @@ where
 
                         recog.base.set_state(334);
                         _la = recog.base.input.la(1);
-                        if !(_la == INCR || _la == DECR) {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
+                        if _la == INCR || _la == DECR {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                     }
                 }
@@ -7611,14 +7624,14 @@ where
                     {
                         recog.base.set_state(336);
                         _la = recog.base.input.la(1);
-                        if !(_la == BOOLNOT || _la == BWNOT) {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
+                        if _la == BOOLNOT || _la == BWNOT {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                         /*InvokeRule unary*/
                         recog.base.set_state(337);
@@ -7641,7 +7654,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -7670,7 +7683,7 @@ impl<'input> PainlessParserContext<'input> for CastexpressionContextAll<'input> 
 impl<'input> Deref for CastexpressionContextAll<'input> {
     type Target = dyn CastexpressionContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use CastexpressionContextAll::*;
+        use CastexpressionContextAll::{Error, PrimordefcastContext, RefcastContext};
         match self {
             RefcastContext(inner) => inner,
             PrimordefcastContext(inner) => inner,
@@ -7682,17 +7695,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for CastexpressionContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for CastexpressionContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -7745,7 +7758,7 @@ impl<'input> CastexpressionContextAttrs<'input> for CastexpressionContext<'input
 pub type RefcastContext<'input> = BaseParserRuleContext<'input, RefcastContextExt<'input>>;
 
 pub trait RefcastContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7759,7 +7772,7 @@ pub trait RefcastContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7843,7 +7856,7 @@ pub type PrimordefcastContext<'input> =
     BaseParserRuleContext<'input, PrimordefcastContextExt<'input>>;
 
 pub trait PrimordefcastContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -7857,7 +7870,7 @@ pub trait PrimordefcastContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8005,7 +8018,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -8078,7 +8091,7 @@ impl<'input> PrimordefcasttypeContextExt<'input> {
 pub trait PrimordefcasttypeContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<PrimordefcasttypeContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token DEF
+    /// Retrieves first `TerminalNode` corresponding to token DEF
     /// Returns `None` if there is no child corresponding to token DEF
     fn DEF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8086,7 +8099,7 @@ pub trait PrimordefcasttypeContextAttrs<'input>:
     {
         self.get_token(DEF, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token PRIMITIVE
+    /// Retrieves first `TerminalNode` corresponding to token PRIMITIVE
     /// Returns `None` if there is no child corresponding to token PRIMITIVE
     fn PRIMITIVE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8121,20 +8134,20 @@ where
             {
                 recog.base.set_state(353);
                 _la = recog.base.input.la(1);
-                if !(_la == PRIMITIVE || _la == DEF) {
-                    recog.err_handler.recover_inline(&mut recog.base)?;
-                } else {
+                if _la == PRIMITIVE || _la == DEF {
                     if recog.base.input.la(1) == TOKEN_EOF {
-                        recog.base.matched_eof = true
-                    };
+                        recog.base.matched_eof = true;
+                    }
                     recog.err_handler.report_match(&mut recog.base);
                     recog.base.consume(&mut recog.err_handler);
+                } else {
+                    recog.err_handler.recover_inline(&mut recog.base)?;
                 }
             }
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -8204,7 +8217,7 @@ impl<'input> RefcasttypeContextExt<'input> {
 pub trait RefcasttypeContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<RefcasttypeContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token DEF
+    /// Retrieves first `TerminalNode` corresponding to token DEF
     /// Returns `None` if there is no child corresponding to token DEF
     fn DEF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8219,7 +8232,7 @@ pub trait RefcasttypeContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token LBRACE, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token LBRACE, starting from 0.
     /// Returns `None` if number of children corresponding to token LBRACE is less or equal than `i`.
     fn LBRACE(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8234,7 +8247,7 @@ pub trait RefcasttypeContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token RBRACE, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token RBRACE, starting from 0.
     /// Returns `None` if number of children corresponding to token RBRACE is less or equal than `i`.
     fn RBRACE(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8242,7 +8255,7 @@ pub trait RefcasttypeContextAttrs<'input>:
     {
         self.get_token(RBRACE, i)
     }
-    /// Retrieves first TerminalNode corresponding to token PRIMITIVE
+    /// Retrieves first `TerminalNode` corresponding to token PRIMITIVE
     /// Returns `None` if there is no child corresponding to token PRIMITIVE
     fn PRIMITIVE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8250,7 +8263,7 @@ pub trait RefcasttypeContextAttrs<'input>:
     {
         self.get_token(PRIMITIVE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8265,7 +8278,7 @@ pub trait RefcasttypeContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token DOT, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token DOT, starting from 0.
     /// Returns `None` if number of children corresponding to token DOT is less or equal than `i`.
     fn DOT(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8280,7 +8293,7 @@ pub trait RefcasttypeContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token DOTID, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token DOTID, starting from 0.
     /// Returns `None` if number of children corresponding to token DOTID is less or equal than `i`.
     fn DOTID(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -8421,7 +8434,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -8450,7 +8463,7 @@ impl<'input> PainlessParserContext<'input> for ChainContextAll<'input> {}
 impl<'input> Deref for ChainContextAll<'input> {
     type Target = dyn ChainContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use ChainContextAll::*;
+        use ChainContextAll::{DynamicContext, Error, NewarrayContext};
         match self {
             DynamicContext(inner) => inner,
             NewarrayContext(inner) => inner,
@@ -8460,15 +8473,15 @@ impl<'input> Deref for ChainContextAll<'input> {
 }
 impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a> for ChainContextAll<'input> {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a> for ChainContextAll<'input> {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -8739,7 +8752,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -8778,7 +8791,11 @@ impl<'input> PainlessParserContext<'input> for PrimaryContextAll<'input> {}
 impl<'input> Deref for PrimaryContextAll<'input> {
     type Target = dyn PrimaryContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use PrimaryContextAll::*;
+        use PrimaryContextAll::{
+            CalllocalContext, Error, FalseContext, ListinitContext, MapinitContext,
+            NewobjectContext, NullContext, NumericContext, PrecedenceContext, RegexContext,
+            StringContext, TrueContext, VariableContext,
+        };
         match self {
             ListinitContext(inner) => inner,
             RegexContext(inner) => inner,
@@ -8798,15 +8815,15 @@ impl<'input> Deref for PrimaryContextAll<'input> {
 }
 impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a> for PrimaryContextAll<'input> {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a> for PrimaryContextAll<'input> {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -8933,7 +8950,7 @@ impl<'input> ListinitContextExt<'input> {
 pub type RegexContext<'input> = BaseParserRuleContext<'input, RegexContextExt<'input>>;
 
 pub trait RegexContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token REGEX
+    /// Retrieves first `TerminalNode` corresponding to token REGEX
     /// Returns `None` if there is no child corresponding to token REGEX
     fn REGEX(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9010,7 +9027,7 @@ impl<'input> RegexContextExt<'input> {
 pub type NullContext<'input> = BaseParserRuleContext<'input, NullContextExt<'input>>;
 
 pub trait NullContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token NULL
+    /// Retrieves first `TerminalNode` corresponding to token NULL
     /// Returns `None` if there is no child corresponding to token NULL
     fn NULL(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9087,7 +9104,7 @@ impl<'input> NullContextExt<'input> {
 pub type StringContext<'input> = BaseParserRuleContext<'input, StringContextExt<'input>>;
 
 pub trait StringContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token STRING
+    /// Retrieves first `TerminalNode` corresponding to token STRING
     /// Returns `None` if there is no child corresponding to token STRING
     fn STRING(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9245,7 +9262,7 @@ pub trait CalllocalContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9253,7 +9270,7 @@ pub trait CalllocalContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(ID, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DOLLAR
+    /// Retrieves first `TerminalNode` corresponding to token DOLLAR
     /// Returns `None` if there is no child corresponding to token DOLLAR
     fn DOLLAR(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9330,7 +9347,7 @@ impl<'input> CalllocalContextExt<'input> {
 pub type TrueContext<'input> = BaseParserRuleContext<'input, TrueContextExt<'input>>;
 
 pub trait TrueContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token TRUE
+    /// Retrieves first `TerminalNode` corresponding to token TRUE
     /// Returns `None` if there is no child corresponding to token TRUE
     fn TRUE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9407,7 +9424,7 @@ impl<'input> TrueContextExt<'input> {
 pub type FalseContext<'input> = BaseParserRuleContext<'input, FalseContextExt<'input>>;
 
 pub trait FalseContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token FALSE
+    /// Retrieves first `TerminalNode` corresponding to token FALSE
     /// Returns `None` if there is no child corresponding to token FALSE
     fn FALSE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9484,7 +9501,7 @@ impl<'input> FalseContextExt<'input> {
 pub type VariableContext<'input> = BaseParserRuleContext<'input, VariableContextExt<'input>>;
 
 pub trait VariableContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9561,7 +9578,7 @@ impl<'input> VariableContextExt<'input> {
 pub type NumericContext<'input> = BaseParserRuleContext<'input, NumericContextExt<'input>>;
 
 pub trait NumericContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token OCTAL
+    /// Retrieves first `TerminalNode` corresponding to token OCTAL
     /// Returns `None` if there is no child corresponding to token OCTAL
     fn OCTAL(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9569,7 +9586,7 @@ pub trait NumericContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(OCTAL, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token HEX
+    /// Retrieves first `TerminalNode` corresponding to token HEX
     /// Returns `None` if there is no child corresponding to token HEX
     fn HEX(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9577,7 +9594,7 @@ pub trait NumericContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(HEX, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token INTEGER
+    /// Retrieves first `TerminalNode` corresponding to token INTEGER
     /// Returns `None` if there is no child corresponding to token INTEGER
     fn INTEGER(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9585,7 +9602,7 @@ pub trait NumericContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(INTEGER, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DECIMAL
+    /// Retrieves first `TerminalNode` corresponding to token DECIMAL
     /// Returns `None` if there is no child corresponding to token DECIMAL
     fn DECIMAL(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9662,7 +9679,7 @@ impl<'input> NumericContextExt<'input> {
 pub type NewobjectContext<'input> = BaseParserRuleContext<'input, NewobjectContextExt<'input>>;
 
 pub trait NewobjectContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token NEW
+    /// Retrieves first `TerminalNode` corresponding to token NEW
     /// Returns `None` if there is no child corresponding to token NEW
     fn NEW(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9751,7 +9768,7 @@ impl<'input> NewobjectContextExt<'input> {
 pub type PrecedenceContext<'input> = BaseParserRuleContext<'input, PrecedenceContextExt<'input>>;
 
 pub trait PrecedenceContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9765,7 +9782,7 @@ pub trait PrecedenceContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -9878,21 +9895,21 @@ where
                     {
                         recog.base.set_state(400);
                         _la = recog.base.input.la(1);
-                        if !(((_la - 73) & !0x3f) == 0
+                        if ((_la - 73) & !0x3f) == 0
                             && ((1usize << (_la - 73))
                                 & ((1usize << (OCTAL - 73))
                                     | (1usize << (HEX - 73))
                                     | (1usize << (INTEGER - 73))
                                     | (1usize << (DECIMAL - 73))))
-                                != 0)
+                                != 0
                         {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                     }
                 }
@@ -9977,14 +9994,14 @@ where
                     {
                         recog.base.set_state(409);
                         _la = recog.base.input.la(1);
-                        if !(_la == DOLLAR || _la == ID) {
-                            recog.err_handler.recover_inline(&mut recog.base)?;
-                        } else {
+                        if _la == DOLLAR || _la == ID {
                             if recog.base.input.la(1) == TOKEN_EOF {
-                                recog.base.matched_eof = true
-                            };
+                                recog.base.matched_eof = true;
+                            }
                             recog.err_handler.report_match(&mut recog.base);
                             recog.base.consume(&mut recog.err_handler);
+                        } else {
+                            recog.err_handler.recover_inline(&mut recog.base)?;
                         }
                         /*InvokeRule arguments*/
                         recog.base.set_state(410);
@@ -10014,7 +10031,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -10152,7 +10169,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -10275,7 +10292,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -10343,7 +10360,7 @@ impl<'input> CallinvokeContextExt<'input> {
 pub trait CallinvokeContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<CallinvokeContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token DOTID
+    /// Retrieves first `TerminalNode` corresponding to token DOTID
     /// Returns `None` if there is no child corresponding to token DOTID
     fn DOTID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10357,7 +10374,7 @@ pub trait CallinvokeContextAttrs<'input>:
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token DOT
+    /// Retrieves first `TerminalNode` corresponding to token DOT
     /// Returns `None` if there is no child corresponding to token DOT
     fn DOT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10365,7 +10382,7 @@ pub trait CallinvokeContextAttrs<'input>:
     {
         self.get_token(DOT, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token NSDOT
+    /// Retrieves first `TerminalNode` corresponding to token NSDOT
     /// Returns `None` if there is no child corresponding to token NSDOT
     fn NSDOT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10397,14 +10414,14 @@ where
             {
                 recog.base.set_state(426);
                 _la = recog.base.input.la(1);
-                if !(_la == DOT || _la == NSDOT) {
-                    recog.err_handler.recover_inline(&mut recog.base)?;
-                } else {
+                if _la == DOT || _la == NSDOT {
                     if recog.base.input.la(1) == TOKEN_EOF {
-                        recog.base.matched_eof = true
-                    };
+                        recog.base.matched_eof = true;
+                    }
                     recog.err_handler.report_match(&mut recog.base);
                     recog.base.consume(&mut recog.err_handler);
+                } else {
+                    recog.err_handler.recover_inline(&mut recog.base)?;
                 }
                 recog.base.set_state(427);
                 recog.base.match_token(DOTID, &mut recog.err_handler)?;
@@ -10416,7 +10433,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -10486,7 +10503,7 @@ impl<'input> FieldaccessContextExt<'input> {
 pub trait FieldaccessContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<FieldaccessContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token DOT
+    /// Retrieves first `TerminalNode` corresponding to token DOT
     /// Returns `None` if there is no child corresponding to token DOT
     fn DOT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10494,7 +10511,7 @@ pub trait FieldaccessContextAttrs<'input>:
     {
         self.get_token(DOT, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token NSDOT
+    /// Retrieves first `TerminalNode` corresponding to token NSDOT
     /// Returns `None` if there is no child corresponding to token NSDOT
     fn NSDOT(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10502,7 +10519,7 @@ pub trait FieldaccessContextAttrs<'input>:
     {
         self.get_token(NSDOT, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DOTID
+    /// Retrieves first `TerminalNode` corresponding to token DOTID
     /// Returns `None` if there is no child corresponding to token DOTID
     fn DOTID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10510,7 +10527,7 @@ pub trait FieldaccessContextAttrs<'input>:
     {
         self.get_token(DOTID, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token DOTINTEGER
+    /// Retrieves first `TerminalNode` corresponding to token DOTINTEGER
     /// Returns `None` if there is no child corresponding to token DOTINTEGER
     fn DOTINTEGER(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10542,31 +10559,31 @@ where
             {
                 recog.base.set_state(430);
                 _la = recog.base.input.la(1);
-                if !(_la == DOT || _la == NSDOT) {
-                    recog.err_handler.recover_inline(&mut recog.base)?;
-                } else {
+                if _la == DOT || _la == NSDOT {
                     if recog.base.input.la(1) == TOKEN_EOF {
-                        recog.base.matched_eof = true
-                    };
+                        recog.base.matched_eof = true;
+                    }
                     recog.err_handler.report_match(&mut recog.base);
                     recog.base.consume(&mut recog.err_handler);
+                } else {
+                    recog.err_handler.recover_inline(&mut recog.base)?;
                 }
                 recog.base.set_state(431);
                 _la = recog.base.input.la(1);
-                if !(_la == DOTINTEGER || _la == DOTID) {
-                    recog.err_handler.recover_inline(&mut recog.base)?;
-                } else {
+                if _la == DOTINTEGER || _la == DOTID {
                     if recog.base.input.la(1) == TOKEN_EOF {
-                        recog.base.matched_eof = true
-                    };
+                        recog.base.matched_eof = true;
+                    }
                     recog.err_handler.report_match(&mut recog.base);
                     recog.base.consume(&mut recog.err_handler);
+                } else {
+                    recog.err_handler.recover_inline(&mut recog.base)?;
                 }
             }
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -10636,7 +10653,7 @@ impl<'input> BraceaccessContextExt<'input> {
 pub trait BraceaccessContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<BraceaccessContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token LBRACE
+    /// Retrieves first `TerminalNode` corresponding to token LBRACE
     /// Returns `None` if there is no child corresponding to token LBRACE
     fn LBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10650,7 +10667,7 @@ pub trait BraceaccessContextAttrs<'input>:
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token RBRACE
+    /// Retrieves first `TerminalNode` corresponding to token RBRACE
     /// Returns `None` if there is no child corresponding to token RBRACE
     fn RBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10692,7 +10709,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -10721,7 +10738,9 @@ impl<'input> PainlessParserContext<'input> for ArrayinitializerContextAll<'input
 impl<'input> Deref for ArrayinitializerContextAll<'input> {
     type Target = dyn ArrayinitializerContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use ArrayinitializerContextAll::*;
+        use ArrayinitializerContextAll::{
+            Error, NewinitializedarrayContext, NewstandardarrayContext,
+        };
         match self {
             NewstandardarrayContext(inner) => inner,
             NewinitializedarrayContext(inner) => inner,
@@ -10733,17 +10752,17 @@ impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a>
     for ArrayinitializerContextAll<'input>
 {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a>
     for ArrayinitializerContextAll<'input>
 {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -10800,7 +10819,7 @@ pub type NewstandardarrayContext<'input> =
     BaseParserRuleContext<'input, NewstandardarrayContextExt<'input>>;
 
 pub trait NewstandardarrayContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token NEW
+    /// Retrieves first `TerminalNode` corresponding to token NEW
     /// Returns `None` if there is no child corresponding to token NEW
     fn NEW(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10821,7 +10840,7 @@ pub trait NewstandardarrayContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token LBRACE, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token LBRACE, starting from 0.
     /// Returns `None` if number of children corresponding to token LBRACE is less or equal than `i`.
     fn LBRACE(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10848,7 +10867,7 @@ pub trait NewstandardarrayContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token RBRACE, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token RBRACE, starting from 0.
     /// Returns `None` if number of children corresponding to token RBRACE is less or equal than `i`.
     fn RBRACE(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10950,7 +10969,7 @@ pub type NewinitializedarrayContext<'input> =
     BaseParserRuleContext<'input, NewinitializedarrayContextExt<'input>>;
 
 pub trait NewinitializedarrayContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token NEW
+    /// Retrieves first `TerminalNode` corresponding to token NEW
     /// Returns `None` if there is no child corresponding to token NEW
     fn NEW(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10964,7 +10983,7 @@ pub trait NewinitializedarrayContextAttrs<'input>: PainlessParserContext<'input>
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token LBRACE
+    /// Retrieves first `TerminalNode` corresponding to token LBRACE
     /// Returns `None` if there is no child corresponding to token LBRACE
     fn LBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10972,7 +10991,7 @@ pub trait NewinitializedarrayContextAttrs<'input>: PainlessParserContext<'input>
     {
         self.get_token(LBRACE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RBRACE
+    /// Retrieves first `TerminalNode` corresponding to token RBRACE
     /// Returns `None` if there is no child corresponding to token RBRACE
     fn RBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10980,7 +10999,7 @@ pub trait NewinitializedarrayContextAttrs<'input>: PainlessParserContext<'input>
     {
         self.get_token(RBRACE, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token LBRACK
+    /// Retrieves first `TerminalNode` corresponding to token LBRACK
     /// Returns `None` if there is no child corresponding to token LBRACK
     fn LBRACK(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -10988,7 +11007,7 @@ pub trait NewinitializedarrayContextAttrs<'input>: PainlessParserContext<'input>
     {
         self.get_token(LBRACK, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RBRACK
+    /// Retrieves first `TerminalNode` corresponding to token RBRACK
     /// Returns `None` if there is no child corresponding to token RBRACK
     fn RBRACK(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11027,7 +11046,7 @@ pub trait NewinitializedarrayContextAttrs<'input>: PainlessParserContext<'input>
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11314,7 +11333,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -11387,7 +11406,7 @@ impl<'input> ListinitializerContextExt<'input> {
 pub trait ListinitializerContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<ListinitializerContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token LBRACE
+    /// Retrieves first `TerminalNode` corresponding to token LBRACE
     /// Returns `None` if there is no child corresponding to token LBRACE
     fn LBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11407,7 +11426,7 @@ pub trait ListinitializerContextAttrs<'input>:
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token RBRACE
+    /// Retrieves first `TerminalNode` corresponding to token RBRACE
     /// Returns `None` if there is no child corresponding to token RBRACE
     fn RBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11422,7 +11441,7 @@ pub trait ListinitializerContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11503,7 +11522,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -11576,7 +11595,7 @@ impl<'input> MapinitializerContextExt<'input> {
 pub trait MapinitializerContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<MapinitializerContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token LBRACE
+    /// Retrieves first `TerminalNode` corresponding to token LBRACE
     /// Returns `None` if there is no child corresponding to token LBRACE
     fn LBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11596,7 +11615,7 @@ pub trait MapinitializerContextAttrs<'input>:
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token RBRACE
+    /// Retrieves first `TerminalNode` corresponding to token RBRACE
     /// Returns `None` if there is no child corresponding to token RBRACE
     fn RBRACE(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11611,7 +11630,7 @@ pub trait MapinitializerContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11619,7 +11638,7 @@ pub trait MapinitializerContextAttrs<'input>:
     {
         self.get_token(COMMA, i)
     }
-    /// Retrieves first TerminalNode corresponding to token COLON
+    /// Retrieves first `TerminalNode` corresponding to token COLON
     /// Returns `None` if there is no child corresponding to token COLON
     fn COLON(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11703,7 +11722,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -11783,7 +11802,7 @@ pub trait MaptokenContextAttrs<'input>:
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token COLON
+    /// Retrieves first `TerminalNode` corresponding to token COLON
     /// Returns `None` if there is no child corresponding to token COLON
     fn COLON(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11824,7 +11843,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -11892,7 +11911,7 @@ impl<'input> ArgumentsContextExt<'input> {
 pub trait ArgumentsContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<ArgumentsContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11900,7 +11919,7 @@ pub trait ArgumentsContextAttrs<'input>:
     {
         self.get_token(LP, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -11927,7 +11946,7 @@ pub trait ArgumentsContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12025,7 +12044,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -12163,7 +12182,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -12231,7 +12250,7 @@ impl<'input> LambdaContextExt<'input> {
 pub trait LambdaContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<LambdaContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token ARROW
+    /// Retrieves first `TerminalNode` corresponding to token ARROW
     /// Returns `None` if there is no child corresponding to token ARROW
     fn ARROW(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12251,7 +12270,7 @@ pub trait LambdaContextAttrs<'input>:
     {
         self.child_of_type(i)
     }
-    /// Retrieves first TerminalNode corresponding to token LP
+    /// Retrieves first `TerminalNode` corresponding to token LP
     /// Returns `None` if there is no child corresponding to token LP
     fn LP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12259,7 +12278,7 @@ pub trait LambdaContextAttrs<'input>:
     {
         self.get_token(LP, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token RP
+    /// Retrieves first `TerminalNode` corresponding to token RP
     /// Returns `None` if there is no child corresponding to token RP
     fn RP(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12286,7 +12305,7 @@ pub trait LambdaContextAttrs<'input>:
     {
         self.children_of_type()
     }
-    /// Retrieves 'i's TerminalNode corresponding to token COMMA, starting from 0.
+    /// Retrieves 'i's `TerminalNode` corresponding to token COMMA, starting from 0.
     /// Returns `None` if number of children corresponding to token COMMA is less or equal than `i`.
     fn COMMA(&self, i: usize) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12409,7 +12428,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -12477,7 +12496,7 @@ impl<'input> LamtypeContextExt<'input> {
 pub trait LamtypeContextAttrs<'input>:
     PainlessParserContext<'input> + BorrowMut<LamtypeContextExt<'input>>
 {
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12529,7 +12548,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -12559,7 +12578,9 @@ impl<'input> PainlessParserContext<'input> for FuncrefContextAll<'input> {}
 impl<'input> Deref for FuncrefContextAll<'input> {
     type Target = dyn FuncrefContextAttrs<'input> + 'input;
     fn deref(&self) -> &Self::Target {
-        use FuncrefContextAll::*;
+        use FuncrefContextAll::{
+            ClassfuncrefContext, ConstructorfuncrefContext, Error, LocalfuncrefContext,
+        };
         match self {
             ClassfuncrefContext(inner) => inner,
             ConstructorfuncrefContext(inner) => inner,
@@ -12570,15 +12591,15 @@ impl<'input> Deref for FuncrefContextAll<'input> {
 }
 impl<'input, 'a> Visitable<dyn PainlessParserVisitor<'input> + 'a> for FuncrefContextAll<'input> {
     fn accept(&self, visitor: &mut (dyn PainlessParserVisitor<'input> + 'a)) {
-        self.deref().accept(visitor)
+        self.deref().accept(visitor);
     }
 }
 impl<'input, 'a> Listenable<dyn PainlessParserListener<'input> + 'a> for FuncrefContextAll<'input> {
     fn enter(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().enter(listener)
+        self.deref().enter(listener);
     }
     fn exit(&self, listener: &mut (dyn PainlessParserListener<'input> + 'a)) {
-        self.deref().exit(listener)
+        self.deref().exit(listener);
     }
 }
 
@@ -12637,7 +12658,7 @@ pub trait ClassfuncrefContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token REF
+    /// Retrieves first `TerminalNode` corresponding to token REF
     /// Returns `None` if there is no child corresponding to token REF
     fn REF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12645,7 +12666,7 @@ pub trait ClassfuncrefContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(REF, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12731,7 +12752,7 @@ pub trait ConstructorfuncrefContextAttrs<'input>: PainlessParserContext<'input> 
     {
         self.child_of_type(0)
     }
-    /// Retrieves first TerminalNode corresponding to token REF
+    /// Retrieves first `TerminalNode` corresponding to token REF
     /// Returns `None` if there is no child corresponding to token REF
     fn REF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12739,7 +12760,7 @@ pub trait ConstructorfuncrefContextAttrs<'input>: PainlessParserContext<'input> 
     {
         self.get_token(REF, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token NEW
+    /// Retrieves first `TerminalNode` corresponding to token NEW
     /// Returns `None` if there is no child corresponding to token NEW
     fn NEW(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12821,7 +12842,7 @@ pub type LocalfuncrefContext<'input> =
     BaseParserRuleContext<'input, LocalfuncrefContextExt<'input>>;
 
 pub trait LocalfuncrefContextAttrs<'input>: PainlessParserContext<'input> {
-    /// Retrieves first TerminalNode corresponding to token THIS
+    /// Retrieves first `TerminalNode` corresponding to token THIS
     /// Returns `None` if there is no child corresponding to token THIS
     fn THIS(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12829,7 +12850,7 @@ pub trait LocalfuncrefContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(THIS, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token REF
+    /// Retrieves first `TerminalNode` corresponding to token REF
     /// Returns `None` if there is no child corresponding to token REF
     fn REF(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12837,7 +12858,7 @@ pub trait LocalfuncrefContextAttrs<'input>: PainlessParserContext<'input> {
     {
         self.get_token(REF, 0)
     }
-    /// Retrieves first TerminalNode corresponding to token ID
+    /// Retrieves first `TerminalNode` corresponding to token ID
     /// Returns `None` if there is no child corresponding to token ID
     fn ID(&self) -> Option<Rc<TerminalNode<'input, PainlessParserContextType>>>
     where
@@ -12981,7 +13002,7 @@ where
             Ok(())
         })();
         match result {
-            Ok(_) => {}
+            Ok(()) => {}
             Err(e @ ANTLRError::FallThrough(_)) => return Err(e),
             Err(ref re) => {
                 //_localctx.exception = re;
@@ -13002,7 +13023,7 @@ lazy_static! {
         let mut dfa = Vec::new();
         let size = _ATN.decision_to_state.len();
         for i in 0..size {
-            dfa.push(DFA::new(_ATN.clone(), _ATN.get_decision_state(i), i as isize).into())
+            dfa.push(DFA::new(_ATN.clone(), _ATN.get_decision_state(i), i as isize).into());
         }
         Arc::new(dfa)
     };

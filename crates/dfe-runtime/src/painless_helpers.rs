@@ -113,13 +113,7 @@ pub fn painless_to_f64(v: &Value) -> f64 {
     match v {
         Value::Number(n) => n.as_f64().unwrap_or(0.0),
         Value::String(s) => s.parse::<f64>().unwrap_or(0.0),
-        Value::Bool(b) => {
-            if *b {
-                1.0
-            } else {
-                0.0
-            }
-        }
+        Value::Bool(b) if *b => 1.0,
         _ => 0.0,
     }
 }
@@ -147,15 +141,17 @@ pub fn painless_eq(a: &Value, b: &Value) -> bool {
         return painless_to_f64(a) == painless_to_f64(b);
     }
     // Compare string to number
-    if a.is_string() && b.is_number() {
-        if let Ok(n) = a.as_str().unwrap_or("").parse::<f64>() {
-            return n == painless_to_f64(b);
-        }
+    if a.is_string()
+        && b.is_number()
+        && let Ok(n) = a.as_str().unwrap_or("").parse::<f64>()
+    {
+        return n == painless_to_f64(b);
     }
-    if a.is_number() && b.is_string() {
-        if let Ok(n) = b.as_str().unwrap_or("").parse::<f64>() {
-            return painless_to_f64(a) == n;
-        }
+    if a.is_number()
+        && b.is_string()
+        && let Ok(n) = b.as_str().unwrap_or("").parse::<f64>()
+    {
+        return painless_to_f64(a) == n;
     }
     false
 }
@@ -169,7 +165,7 @@ pub fn painless_cmp(a: &Value, b: &Value) -> Option<std::cmp::Ordering> {
 
 /// Recursive removal of null and empty values from a `Value` tree.
 ///
-/// Used by okta, cisco_nexus, and fortinet `drop` scripts.
+/// Used by okta, `cisco_nexus`, and fortinet `drop` scripts.
 /// Returns `true` if the value itself should be removed.
 pub fn painless_drop_empty(v: &mut Value) -> bool {
     match v {
@@ -201,7 +197,7 @@ pub fn painless_drop_empty(v: &mut Value) -> bool {
 
 /// Remove entries from a JSON object whose values match sentinel values.
 ///
-/// Used by CrowdStrike and other pipelines that use Painless scripts like:
+/// Used by `CrowdStrike` and other pipelines that use Painless scripts like:
 /// ```painless
 /// ctx.crowdstrike.event.entrySet().removeIf(
 ///     entry -> params.values.contains(entry.getValue())
@@ -219,7 +215,7 @@ pub fn remove_sentinel_values(obj: &mut Map<String, Value>, sentinels: &[Value])
 /// Values above `0x0100000000000000` (72057594037927936) are FILETIME;
 /// smaller values are already UNIX timestamps (seconds or milliseconds).
 ///
-/// Used by CrowdStrike for StartTime, EndTime, ContextTimeStamp, etc.
+/// Used by `CrowdStrike` for `StartTime`, `EndTime`, `ContextTimeStamp`, etc.
 /// Reference: <https://devblogs.microsoft.com/oldnewthing/20030905-02/?p=42653>
 #[inline]
 pub fn filetime_to_unix_ms(value: i64) -> i64 {
@@ -252,7 +248,7 @@ pub fn dedup_array(arr: &mut Vec<Value>) {
 
 /// Recursive camelCase-to-snake_case key renaming on a `Value` tree.
 ///
-/// Used by azure_signinlogs `keysToSnakeCase` script.
+/// Used by `azure_signinlogs` `keysToSnakeCase` script.
 pub fn painless_keys_to_snake_case(v: &Value) -> Value {
     match v {
         Value::Object(map) => {
@@ -280,26 +276,22 @@ pub fn painless_keys_to_snake_case(v: &Value) -> Value {
             }
             Value::Object(out)
         }
-        Value::Array(arr) => Value::Array(
-            arr.iter()
-                .map(|item| painless_keys_to_snake_case(item))
-                .collect(),
-        ),
+        Value::Array(arr) => Value::Array(arr.iter().map(painless_keys_to_snake_case).collect()),
         _ => v.clone(),
     }
 }
 
-/// Convert a camelCase or PascalCase string to snake_case.
+/// Convert a camelCase or `PascalCase` string to `snake_case`.
 fn camel_to_snake(s: &str) -> String {
     let mut result = String::with_capacity(s.len() + 4);
     for (i, ch) in s.chars().enumerate() {
         if ch.is_uppercase() {
             if i > 0 {
                 // Only insert underscore if previous char is lowercase
-                if let Some(prev) = s.chars().nth(i - 1) {
-                    if prev.is_lowercase() {
-                        result.push('_');
-                    }
+                if let Some(prev) = s.chars().nth(i - 1)
+                    && prev.is_lowercase()
+                {
+                    result.push('_');
                 }
             }
             result.push(ch.to_lowercase().next().unwrap_or(ch));

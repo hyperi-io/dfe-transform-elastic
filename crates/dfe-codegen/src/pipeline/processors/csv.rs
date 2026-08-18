@@ -42,7 +42,7 @@ mod test {
 
         unsupported_fields_tests!(
             "csv",
-            r#"
+            r"
                 processors:
                     - csv:
                         field: message
@@ -50,7 +50,7 @@ mod test {
                             - foo
                             - bar
                         {}: {}
-            "#,
+            ",
             trim => "true",
             empty_value => "empty"
         );

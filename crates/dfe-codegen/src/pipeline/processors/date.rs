@@ -58,7 +58,7 @@ impl TimePattern {
 // https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn3
 // Further Madness: https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-date-format.html
 lazy_static! {
-    static ref JAVA_DATETIME_REGEX: Regex = Regex::new(r#"([^/:. \n\-]+)"#).unwrap();
+    static ref JAVA_DATETIME_REGEX: Regex = Regex::new(r"([^/:. \n\-]+)").unwrap();
 }
 
 pub struct JavaDateTimeReplacer {
@@ -104,11 +104,11 @@ impl Replacer for &mut JavaDateTimeReplacer {
             "SSS" => dst.push_str("%3f"),
             "XXX" | "Z" => {
                 self.has_timezone = true;
-                dst.push_str("%z")
+                dst.push_str("%z");
             }
             "yyyy" => {
                 self.assume_current_year = false;
-                dst.push_str("%Y")
+                dst.push_str("%Y");
             }
             "zzz" | "z" => {
                 self.has_timezone = true;
@@ -117,14 +117,14 @@ impl Replacer for &mut JavaDateTimeReplacer {
             "strict_date_optional_time_nanos" => {
                 self.has_timezone = true;
                 self.assume_current_year = false;
-                dst.push_str("%+")
+                dst.push_str("%+");
             }
             other => {
                 self.error = Err(anyhow!(
                     "failed to transpile java date-time string \"{other}\""
-                ))
+                ));
             }
-        };
+        }
     }
 }
 
@@ -161,7 +161,7 @@ impl Validate for TimeFormats {
 }
 
 impl TimeFormats {
-    /// Convert a TimeFormats value to a TimePattern for date parsing.
+    /// Convert a `TimeFormats` value to a `TimePattern` for date parsing.
     #[allow(dead_code, clippy::wrong_self_convention)]
     #[instrument(name = "TimeFormats::to_pattern", err)]
     fn to_pattern(self) -> anyhow::Result<TimePattern> {

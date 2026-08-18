@@ -53,11 +53,11 @@ mod test {
 
         unsupported_fields_tests!(
             "community_id",
-            r#"
+            r"
                 processors:
                     - community_id:
                         {}: {}
-            "#,
+            ",
             iana_number => "network.iana_number",
             icmp_type => "icmp.type",
             icmp_code => "icmp.code",

@@ -24,9 +24,7 @@ pub fn yaml_to_json(yaml: &serde_yaml_ng::Value) -> Value {
             } else if let Some(u) = n.as_u64() {
                 Value::Number(u.into())
             } else if let Some(f) = n.as_f64() {
-                serde_json::Number::from_f64(f)
-                    .map(Value::Number)
-                    .unwrap_or(Value::Null)
+                serde_json::Number::from_f64(f).map_or(Value::Null, Value::Number)
             } else {
                 Value::Null
             }

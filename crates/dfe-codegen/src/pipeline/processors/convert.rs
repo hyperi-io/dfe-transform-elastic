@@ -59,12 +59,12 @@ mod test {
 
         #[test]
         fn ip() {
-            let config = r#"
+            let config = r"
                 processors:
                     - convert:
                         field: source.address
                         type: ip
-            "#;
+            ";
 
             match &Pipeline::parse(config).unwrap().processors[..] {
                 [Processor::Convert(convert)] => {
@@ -77,12 +77,12 @@ mod test {
 
         #[test]
         fn string() {
-            let config = r#"
+            let config = r"
                 processors:
                     - convert:
                         field: source.address
                         type: string
-            "#;
+            ";
 
             match &Pipeline::parse(config).unwrap().processors[..] {
                 [Processor::Convert(convert)] => {
@@ -95,12 +95,12 @@ mod test {
 
         #[test]
         fn into_type_unsupported() {
-            let config = r#"
+            let config = r"
                 processors:
                     - convert:
                         field: source.address
                         type: boolean
-            "#;
+            ";
 
             assert_eq!(
                 "Boolean not supported, expected (ip | string | integer | float)",

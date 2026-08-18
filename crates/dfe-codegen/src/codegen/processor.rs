@@ -5,13 +5,17 @@
 //!
 //! Each supported processor has a function that emits Rust statements
 //! operating on an `Event`. The generated code uses the dfe-runtime API
-//! (event.get(), event.set(), event.remove(), event.rename(), etc).
+//! (`event.get()`, `event.set()`, `event.remove()`, `event.rename()`, etc).
 
 use anyhow::{Result, bail};
 
 use crate::pipeline::Processor;
 use crate::pipeline::conditional::Conditional;
-use crate::pipeline::processors::*;
+use crate::pipeline::processors::{
+    append, community_id, convert, csv, date, dissect, drop, fingerprint, foreach, geoip, grok,
+    gsub, json, kv, lowercase, nested_pipeline, network_direction, registered_domain, remove,
+    rename, script, set, split, trim, uppercase, uri_parts, user_agent,
+};
 use crate::pipeline::template_string::{TemplateFragment, TemplateString};
 
 /// Emit Rust code for a single processor.
@@ -55,7 +59,7 @@ pub fn emit_processor(processor: &Processor, indent_level: usize) -> Result<Stri
 
 /// Format a dotted field path as a Rust string literal.
 fn field_lit(field: &str) -> String {
-    format!("\"{}\"", field)
+    format!("\"{field}\"")
 }
 
 /// Add one level of indentation (4 spaces) to a pad string.
@@ -88,7 +92,7 @@ fn wrap_conditional(cond: &Option<Conditional>, body: &str, pad: &str) -> String
     }
 }
 
-/// Wrap a block of statements in ignore_failure handling.
+/// Wrap a block of statements in `ignore_failure` handling.
 fn wrap_ignore_failure(ignore: Option<bool>, body: &str, pad: &str) -> String {
     if ignore == Some(true) {
         let ip = indent(pad);
@@ -100,7 +104,7 @@ fn wrap_ignore_failure(ignore: Option<bool>, body: &str, pad: &str) -> String {
     }
 }
 
-/// Wrap a field access in ignore_missing handling.
+/// Wrap a field access in `ignore_missing` handling.
 fn wrap_ignore_missing(ignore: Option<bool>, field: &str, body: &str, pad: &str) -> String {
     if ignore == Some(true) {
         format!(
@@ -121,20 +125,20 @@ fn emit_template_value(ts: &TemplateString) -> String {
     let fragments = ts.fragments();
 
     // Simple literal (no interpolation)
-    if fragments.len() == 1 {
-        if let TemplateFragment::Literal(lit) = &fragments[0] {
-            return format!("json!(\"{}\")", escape_json_str(lit));
-        }
+    if fragments.len() == 1
+        && let TemplateFragment::Literal(lit) = &fragments[0]
+    {
+        return format!("json!(\"{}\")", escape_json_str(lit));
     }
 
     // Single variable reference (copy_from equivalent)
-    if fragments.len() == 1 {
-        if let TemplateFragment::Variable(var) = &fragments[0] {
-            return format!(
-                "event.get({}).cloned().unwrap_or(Value::Null)",
-                field_lit(var)
-            );
-        }
+    if fragments.len() == 1
+        && let TemplateFragment::Variable(var) = &fragments[0]
+    {
+        return format!(
+            "event.get({}).cloned().unwrap_or(Value::Null)",
+            field_lit(var)
+        );
     }
 
     // Mixed template — build with format!()
@@ -153,7 +157,7 @@ fn emit_template_value(ts: &TemplateString) -> String {
     }
 
     if args.is_empty() {
-        format!("json!(\"{}\")", fmt_str)
+        format!("json!(\"{fmt_str}\")")
     } else {
         format!("json!(format!(\"{}\", {}))", fmt_str, args.join(", "))
     }
@@ -185,8 +189,8 @@ fn emit_set(p: &set::Set, pad: &str) -> Result<String> {
     } else if let Some(value) = &p.value {
         match value {
             set::Value::String(ts) => emit_template_value(ts),
-            set::Value::Number(n) => format!("json!({})", n),
-            set::Value::Bool(b) => format!("json!({})", b),
+            set::Value::Number(n) => format!("json!({n})"),
+            set::Value::Bool(b) => format!("json!({b})"),
             set::Value::Array(arr) => {
                 let items: Vec<String> = arr
                     .iter()
@@ -225,14 +229,14 @@ fn emit_remove(p: &remove::Remove, pad: &str) -> Result<String> {
 
     let fields = match &p.field {
         remove::Field::One(f) => vec![f.as_str()],
-        remove::Field::Many(fs) => fs.iter().map(|s| s.as_str()).collect(),
+        remove::Field::Many(fs) => fs.iter().map(std::string::String::as_str).collect(),
     };
 
     let ignore_missing = p.ignore_missing == Some(true);
 
     for field in &fields {
         if ignore_missing {
-            body.push_str(&format!("{ip}event.remove({});\n", field_lit(field),));
+            body.push_str(&format!("{ip}event.remove({});\n", field_lit(field)));
         } else {
             body.push_str(&format!(
                 "{ip}if event.remove({f}).is_none() {{\n{ip}    return Err(TransformError::FieldNotFound {{ path: {f}.into() }}.into());\n{ip}}}\n",
@@ -686,7 +690,15 @@ fn emit_dissect(p: &dissect::Dissect, pad: &str) -> Result<String> {
                 });
 
                 if let Some(delim) = next_lit {
-                    if !name.is_empty() {
+                    if name.is_empty() {
+                        // Empty field name — skip/consume up to delimiter
+                        let escaped = escape_json_str(delim);
+                        body.push_str(&format!(
+                            "{ip}    if let Some(pos) = remaining.find(\"{escaped}\") {{\n\
+                             {ip}        remaining = &remaining[pos..];\n\
+                             {ip}    }}\n"
+                        ));
+                    } else {
                         let escaped = escape_json_str(delim);
                         body.push_str(&format!(
                             "{ip}    if let Some(pos) = remaining.find(\"{escaped}\") {{\n\
@@ -694,14 +706,6 @@ fn emit_dissect(p: &dissect::Dissect, pad: &str) -> Result<String> {
                              {ip}        remaining = &remaining[pos..];\n\
                              {ip}    }}\n",
                             target = field_lit(name),
-                        ));
-                    } else {
-                        // Empty field name — skip/consume up to delimiter
-                        let escaped = escape_json_str(delim);
-                        body.push_str(&format!(
-                            "{ip}    if let Some(pos) = remaining.find(\"{escaped}\") {{\n\
-                             {ip}        remaining = &remaining[pos..];\n\
-                             {ip}    }}\n"
                         ));
                     }
                 } else if !name.is_empty() {
@@ -783,7 +787,7 @@ fn emit_grok(p: &grok::Grok, pad: &str) -> Result<String> {
     if let Some(pattern_defs) = &p.pattern_definitions {
         body.push_str(&format!("{ip}// Pattern definitions for grok\n"));
         for (name, pattern) in pattern_defs {
-            body.push_str(&format!("{ip}// {name} = {pattern}\n",));
+            body.push_str(&format!("{ip}// {name} = {pattern}\n"));
         }
     }
 
@@ -882,7 +886,7 @@ fn emit_date(p: &date::Date, pad: &str) -> Result<String> {
             date::TimeFormats::UNIX => "UNIX".to_string(),
             date::TimeFormats::UNIX_MS => "UNIX_MS".to_string(),
             date::TimeFormats::TAI64N => "TAI64N".to_string(),
-            date::TimeFormats::Custom(c) => format!("{:?}", c),
+            date::TimeFormats::Custom(c) => format!("{c:?}"),
         })
         .collect();
 
@@ -952,7 +956,7 @@ fn emit_registered_domain(p: &registered_domain::RegisteredDomain, pad: &str) ->
     let field = &p.field;
 
     let prefix = match &p.target_field {
-        Some(t) => format!("{}.", t),
+        Some(t) => format!("{t}."),
         None => String::new(),
     };
 
@@ -1109,7 +1113,10 @@ fn emit_geoip(p: &geoip::Geoip, pad: &str) -> Result<String> {
 
     // Emit property assignments based on DB type
     let properties = match &p.properties {
-        Some(props) => props.iter().map(|s| s.as_str()).collect::<Vec<_>>(),
+        Some(props) => props
+            .iter()
+            .map(std::string::String::as_str)
+            .collect::<Vec<_>>(),
         None => match db {
             geoip::GeoIPDB::CITY => vec![
                 "country_iso_code",
@@ -1251,12 +1258,12 @@ mod tests {
     #[test]
     fn set_string_value() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - set:
       field: event.kind
       value: event
-"#,
+",
         );
         assert!(code.contains(r#"event.set("event.kind", json!("event"))?;"#));
     }
@@ -1264,12 +1271,12 @@ processors:
     #[test]
     fn set_number_value() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - set:
       field: event.severity
       value: 3
-"#,
+",
         );
         assert!(code.contains(r#"event.set("event.severity", json!(3))?;"#));
     }
@@ -1277,12 +1284,12 @@ processors:
     #[test]
     fn set_bool_value() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - set:
       field: event.enriched
       value: true
-"#,
+",
         );
         assert!(code.contains(r#"event.set("event.enriched", json!(true))?;"#));
     }
@@ -1290,12 +1297,12 @@ processors:
     #[test]
     fn set_copy_from() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - set:
       field: destination
       copy_from: source
-"#,
+",
         );
         assert!(code.contains(r#"event.get("source").cloned()"#));
         assert!(code.contains(r#"event.set("destination""#));
@@ -1304,12 +1311,12 @@ processors:
     #[test]
     fn set_template_variable() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - set:
       field: message
       value: 'Hello {{name}}'
-"#,
+",
         );
         assert!(code.contains(r#"format!("Hello {}"#));
         assert!(code.contains(r#"event.get_str("name")"#));
@@ -1318,12 +1325,12 @@ processors:
     #[test]
     fn remove_single() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - remove:
       field: _temp
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains(r#"event.remove("_temp")"#));
         // Should not check for errors since ignore_missing is true
@@ -1333,14 +1340,14 @@ processors:
     #[test]
     fn remove_multiple() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - remove:
       field:
         - _temp1
         - _temp2
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains(r#"event.remove("_temp1")"#));
         assert!(code.contains(r#"event.remove("_temp2")"#));
@@ -1349,11 +1356,11 @@ processors:
     #[test]
     fn remove_required() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - remove:
       field: important
-"#,
+",
         );
         assert!(code.contains("FieldNotFound"));
     }
@@ -1361,12 +1368,12 @@ processors:
     #[test]
     fn rename_basic() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - rename:
       field: source
       target_field: destination
-"#,
+",
         );
         assert!(code.contains(r#"event.rename("source", "destination")?;"#));
     }
@@ -1374,13 +1381,13 @@ processors:
     #[test]
     fn rename_ignore_missing() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - rename:
       field: source
       target_field: destination
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains(r#"if event.has("source")"#));
         assert!(code.contains(r#"event.rename("source", "destination")?;"#));
@@ -1389,11 +1396,11 @@ processors:
     #[test]
     fn lowercase_basic() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - lowercase:
       field: message
-"#,
+",
         );
         assert!(code.contains(r#"event.get_string("message")"#));
         assert!(code.contains("to_lowercase()"));
@@ -1403,12 +1410,12 @@ processors:
     #[test]
     fn uppercase_with_target() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - uppercase:
       field: source
       target_field: destination
-"#,
+",
         );
         assert!(code.contains(r#"event.get_string("source")"#));
         assert!(code.contains("to_uppercase()"));
@@ -1418,11 +1425,11 @@ processors:
     #[test]
     fn trim_basic() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - trim:
       field: message
-"#,
+",
         );
         assert!(code.contains("trim()"));
         assert!(code.contains(r#"event.set("message""#));
@@ -1431,12 +1438,12 @@ processors:
     #[test]
     fn convert_integer() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - convert:
       field: port
       type: integer
-"#,
+",
         );
         assert!(code.contains("parse::<i64>()"));
     }
@@ -1444,12 +1451,12 @@ processors:
     #[test]
     fn convert_string() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - convert:
       field: count
       type: string
-"#,
+",
         );
         assert!(code.contains("to_string()"));
     }
@@ -1457,11 +1464,11 @@ processors:
     #[test]
     fn drop_processor() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - drop:
       if: ctx?.severity > 7
-"#,
+",
         );
         assert!(code.contains("TransformResult::Drop"));
         assert!(code.contains("ctx?.severity > 7"));
@@ -1549,11 +1556,11 @@ processors:
     #[test]
     fn json_parse() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - json:
       field: message
-"#,
+",
         );
         assert!(code.contains("serde_json::from_str("));
         assert!(code.contains(r#"event.set("message""#));
@@ -1562,12 +1569,12 @@ processors:
     #[test]
     fn json_target_field() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - json:
       field: message
       target_field: parsed
-"#,
+",
         );
         assert!(code.contains(r#"event.set("parsed""#));
     }
@@ -1575,14 +1582,14 @@ processors:
     #[test]
     fn csv_parse() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - csv:
       field: message
       target_fields:
         - a
         - b
-"#,
+",
         );
         assert!(code.contains("csv::ReaderBuilder::new()"));
         assert!(code.contains(r#"event.set("a""#));
@@ -1639,13 +1646,13 @@ processors:
     #[test]
     fn date_iso8601() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - date:
       field: timestamp
       formats:
         - ISO8601
-"#,
+",
         );
         assert!(code.contains("parse_from_rfc3339("));
         assert!(code.contains(r#"event.set("@timestamp""#));
@@ -1654,14 +1661,14 @@ processors:
     #[test]
     fn date_unix_timestamp() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - date:
       field: ts
       formats:
         - UNIX
       target_field: event.created
-"#,
+",
         );
         assert!(code.contains("parse::<f64>()"));
         assert!(code.contains("from_timestamp("));
@@ -1673,12 +1680,12 @@ processors:
     #[test]
     fn registered_domain_basic() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - registered_domain:
       field: url.domain
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains(r#"event.get_string("url.domain")"#));
         assert!(code.contains("registered_domain_lookup("));
@@ -1689,12 +1696,12 @@ processors:
     #[test]
     fn registered_domain_target_field() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - registered_domain:
       field: source.domain
       target_field: source
-"#,
+",
         );
         assert!(code.contains(r#"event.set("source.domain""#));
         assert!(code.contains(r#"event.set("source.registered_domain""#));
@@ -1705,12 +1712,12 @@ processors:
     #[test]
     fn network_direction_classify() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - network_direction:
       internal_networks_field: internal_networks
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains("is_internal_ip("));
         assert!(code.contains(r#"event.set("network.direction""#));
@@ -1739,12 +1746,12 @@ processors:
     #[test]
     fn fingerprint_required_fields() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - fingerprint:
       fields:
         - user.name
-"#,
+",
         );
         assert!(code.contains("FieldNotFound"));
         assert!(code.contains(r#"event.set("_id""#));
@@ -1754,12 +1761,12 @@ processors:
     fn pipeline_nested_inline() {
         use std::collections::HashMap;
 
-        let inner_yaml = r#"
+        let inner_yaml = r"
 processors:
   - set:
       field: target
       value: Hello
-"#;
+";
         let inner = Pipeline::parse(inner_yaml).unwrap();
 
         let yaml = r#"
@@ -1781,12 +1788,12 @@ processors:
     #[test]
     fn geoip_city_default() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - geoip:
       field: source.ip
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains("geoip_lookup(\"geoip_city\""));
         assert!(code.contains(r#"event.set("geoip.country_iso_code""#));
@@ -1796,13 +1803,13 @@ processors:
     #[test]
     fn geoip_asn() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - geoip:
       field: source.ip
       database_file: GeoLite2-ASN.mmdb
       target_field: source.as
-"#,
+",
         );
         assert!(code.contains("geoip_lookup(\"geoip_asn\""));
         assert!(code.contains(r#"event.set("source.as.asn""#));
@@ -1812,12 +1819,12 @@ processors:
     #[test]
     fn user_agent_parse() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - user_agent:
       field: agent
       target_field: user
-"#,
+",
         );
         assert!(code.contains("parse_user_agent("));
         assert!(code.contains(r#"event.set("user.original""#));
@@ -1828,11 +1835,11 @@ processors:
     #[test]
     fn community_id_default() {
         let code = codegen_body(
-            r#"
+            r"
 processors:
   - community_id:
       ignore_missing: true
-"#,
+",
         );
         assert!(code.contains("community_id_v1("));
         assert!(code.contains(r#"event.get_string("source.ip")"#));

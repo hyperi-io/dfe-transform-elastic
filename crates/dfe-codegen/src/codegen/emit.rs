@@ -15,7 +15,7 @@ use super::processor::emit_processor;
 /// Generate Rust source code from a parsed pipeline.
 pub struct PipelineCodegen<'a> {
     pipeline: &'a Pipeline,
-    /// Module name used for the struct name (e.g., "cisco_asa" → "CiscoAsa").
+    /// Module name used for the struct name (e.g., "`cisco_asa`" → "`CiscoAsa`").
     module_name: String,
 }
 
@@ -46,10 +46,10 @@ impl<'a> PipelineCodegen<'a> {
             "/// Transform for the `{}` pipeline.\n",
             self.module_name
         ));
-        out.push_str(&format!("pub struct {};\n\n", struct_name));
+        out.push_str(&format!("pub struct {struct_name};\n\n"));
 
         // Transform impl
-        out.push_str(&format!("impl Transform for {} {{\n", struct_name));
+        out.push_str(&format!("impl Transform for {struct_name} {{\n"));
         out.push_str(&format!(
             "    fn name(&self) -> &str {{\n        \"{}\"\n    }}\n\n",
             self.module_name
@@ -118,7 +118,7 @@ pub fn codegen_pipeline_body(pipeline: &Pipeline) -> Result<String> {
     cg.generate_body()
 }
 
-/// Convert a snake_case or kebab-case name to PascalCase.
+/// Convert a `snake_case` or kebab-case name to `PascalCase`.
 fn to_pascal_case(s: &str) -> String {
     s.split(['_', '-'])
         .filter(|part| !part.is_empty())
@@ -157,12 +157,12 @@ mod tests {
 
     #[test]
     fn generate_simple_set() {
-        let yaml = r#"
+        let yaml = r"
 processors:
   - set:
       field: event.kind
       value: event
-"#;
+";
         let pipeline = Pipeline::parse(yaml).unwrap();
         let cg = PipelineCodegen::new(&pipeline, "test_pipeline");
         let code = cg.generate().unwrap();
@@ -175,7 +175,7 @@ processors:
 
     #[test]
     fn generate_set_and_remove() {
-        let yaml = r#"
+        let yaml = r"
 processors:
   - set:
       field: event.kind
@@ -183,7 +183,7 @@ processors:
   - remove:
       field: _temp
       ignore_missing: true
-"#;
+";
         let pipeline = Pipeline::parse(yaml).unwrap();
         let cg = PipelineCodegen::new(&pipeline, "multi_step");
         let code = cg.generate().unwrap();
@@ -195,12 +195,12 @@ processors:
 
     #[test]
     fn generate_body_only() {
-        let yaml = r#"
+        let yaml = r"
 processors:
   - set:
       field: event.kind
       value: event
-"#;
+";
         let pipeline = Pipeline::parse(yaml).unwrap();
         let cg = PipelineCodegen::new(&pipeline, "test");
         let body = cg.generate_body().unwrap();

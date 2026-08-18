@@ -50,7 +50,7 @@ impl Transform for Ipflows {
                 for pair in kv_str.split(" ") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
-                            event.set(&format!("{}", key), value)?;
+                            event.set(key, value)?;
                         }
                     }
                 }
@@ -67,8 +67,7 @@ impl Transform for Ipflows {
                     return Err(TransformError::ParseError {
                         path: "translated_src_ip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
@@ -84,8 +83,7 @@ impl Transform for Ipflows {
                     return Err(TransformError::ParseError {
                         path: "src".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
@@ -119,8 +117,7 @@ impl Transform for Ipflows {
                         return Err(TransformError::ParseError {
                             path: "translated_port".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("source.port", converted)?;
@@ -155,8 +152,7 @@ impl Transform for Ipflows {
                         return Err(TransformError::ParseError {
                             path: "sport".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("source.port", converted)?;
@@ -173,8 +169,7 @@ impl Transform for Ipflows {
                     return Err(TransformError::ParseError {
                         path: "translated_dst_ip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("destination.ip", s)?;
             }
@@ -190,8 +185,7 @@ impl Transform for Ipflows {
                     return Err(TransformError::ParseError {
                         path: "dst".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("destination.ip", s)?;
             }
@@ -225,8 +219,7 @@ impl Transform for Ipflows {
                         return Err(TransformError::ParseError {
                             path: "translated_port".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("destination.port", converted)?;
@@ -261,8 +254,7 @@ impl Transform for Ipflows {
                         return Err(TransformError::ParseError {
                             path: "dport".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("destination.port", converted)?;

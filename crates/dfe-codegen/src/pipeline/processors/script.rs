@@ -39,11 +39,11 @@ impl Validate for Script {
         );
 
         if self.ignore_failure.unwrap_or_default() {
-            tracing::warn!("Ignore Failure is not properly supported by 'script' processor")
+            tracing::warn!("Ignore Failure is not properly supported by 'script' processor");
         }
 
         if self.on_failure.is_some() {
-            tracing::warn!("On Failure is not properly supported by 'script' processor")
+            tracing::warn!("On Failure is not properly supported by 'script' processor");
         }
 
         unsupported_fields!("script", self, id);
@@ -60,11 +60,11 @@ mod test {
 
         #[test]
         fn happy_path() {
-            let configuration = r#"
+            let configuration = r"
                     processors:
                         - script:
                             source: 'true'
-                "#;
+                ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Script(script)] => {
@@ -76,12 +76,12 @@ mod test {
 
         #[test]
         fn conditional() {
-            let configuration = r#"
+            let configuration = r"
                     processors:
                         - script:
                             conditional: 'true && false'
                             source: 'true'
-                "#;
+                ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Script(script)] => {
@@ -94,12 +94,12 @@ mod test {
 
         #[test]
         fn tag() {
-            let configuration = r#"
+            let configuration = r"
                     processors:
                         - script:
                             tag: some tag
                             source: 'true'
-                "#;
+                ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Script(script)] => {
@@ -114,12 +114,12 @@ mod test {
         fn only_painless_supported() {
             for lang in ["painless", "expression", "mustache", "java"] {
                 let configuration = format!(
-                    r#"
+                    r"
                     processors:
                         - script:
                             lang: {lang}
                             source: 'true'
-                "#
+                "
                 );
 
                 if lang == "painless" {
@@ -143,10 +143,10 @@ mod test {
 
         #[test]
         fn id_or_source_required() {
-            let configuration = r#"
+            let configuration = r"
                     processors:
                         - script:
-                "#;
+                ";
 
             assert_eq!(
                 Pipeline::parse(configuration)
@@ -159,12 +159,12 @@ mod test {
 
         unsupported_fields_tests!(
             "script",
-            r#"
+            r"
                 processors:
                     - script:
                         source: 'true'
                         {}: {}
-            "#,
+            ",
             id => "some_id"
         );
     }

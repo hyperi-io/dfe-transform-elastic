@@ -281,7 +281,7 @@ mod tests {
 
     #[test]
     fn space_basic() {
-        let (rem, _) = expect_space("  hello").unwrap();
+        let (rem, ()) = expect_space("  hello").unwrap();
         assert_eq!(rem, "hello");
     }
 
@@ -294,13 +294,13 @@ mod tests {
 
     #[test]
     fn byte_match() {
-        let (rem, _) = expect_byte(":rest", b':').unwrap();
+        let (rem, ()) = expect_byte(":rest", b':').unwrap();
         assert_eq!(rem, "rest");
     }
 
     #[test]
     fn str_match() {
-        let (rem, _) = expect_str(" -> dest", " -> ").unwrap();
+        let (rem, ()) = expect_str(" -> dest", " -> ").unwrap();
         assert_eq!(rem, "dest");
     }
 

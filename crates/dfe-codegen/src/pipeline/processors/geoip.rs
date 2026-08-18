@@ -83,26 +83,26 @@ impl Validate for Geoip {
         if let Some(properties) = &self.properties {
             match self.database_file.unwrap_or_default() {
                 GeoIPDB::CITY => properties.iter().try_for_each(|property| {
-                    if !CITY_FIELDS.contains(&property.as_str()) {
-                        bail!("{property} is not among the supported fields for GeoLite2-City.mmdb")
-                    } else {
+                    if CITY_FIELDS.contains(&property.as_str()) {
                         Ok(())
+                    } else {
+                        bail!("{property} is not among the supported fields for GeoLite2-City.mmdb")
                     }
                 }),
                 GeoIPDB::ASN => properties.iter().try_for_each(|property| {
-                    if !ASN_FIELDS.contains(&property.as_str()) {
-                        bail!("{property} is not among the supported fields for GeoLite2-ASN.mmdb")
-                    } else {
+                    if ASN_FIELDS.contains(&property.as_str()) {
                         Ok(())
+                    } else {
+                        bail!("{property} is not among the supported fields for GeoLite2-ASN.mmdb")
                     }
                 }),
                 GeoIPDB::COUNTRY => properties.iter().try_for_each(|property| {
-                    if !COUNTRY_FIELDS.contains(&property.as_str()) {
+                    if COUNTRY_FIELDS.contains(&property.as_str()) {
+                        Ok(())
+                    } else {
                         bail!(
                             "{property} is not among the supported fields for GeoLite2-Country.mmdb"
                         )
-                    } else {
-                        Ok(())
                     }
                 }),
             }?;
@@ -122,30 +122,30 @@ mod test {
 
         #[test]
         fn field() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - geoip:
                         field: source.ip
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Geoip(geoip)] => {
                     assert_eq!(geoip.field, "source.ip");
                 }
                 _ => panic!("unexpected pipeline structure"),
-            };
+            }
         }
 
         #[test]
         fn database_file() {
             for database_file in [GeoIPDB::ASN, GeoIPDB::CITY, GeoIPDB::COUNTRY] {
                 let configuration = format!(
-                    r#"
+                    r"
                     processors:
                         - geoip:
                             field: source.ip
                             database_file: {database_file}
-                "#
+                "
                 );
 
                 match &Pipeline::parse(&configuration).unwrap().processors[..] {
@@ -154,7 +154,7 @@ mod test {
                         assert_eq!(geoip.database_file.unwrap(), database_file);
                     }
                     _ => panic!("unexpected pipeline structure"),
-                };
+                }
             }
         }
 
@@ -163,12 +163,12 @@ mod test {
             let database_file = "unsupported.mmdb";
 
             let configuration = format!(
-                r#"
+                r"
                     processors:
                         - geoip:
                             field: source.ip
                             database_file: {database_file}
-                "#
+                "
             );
 
             assert_eq!(
@@ -183,12 +183,12 @@ mod test {
 
         #[test]
         fn target_field() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - geoip:
                         field: source.ip
                         target_field: source.geo
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Geoip(geoip)] => {
@@ -196,19 +196,19 @@ mod test {
                     assert_eq!(geoip.target_field.as_ref().unwrap(), "source.geo");
                 }
                 _ => panic!("unexpected pipeline structure"),
-            };
+            }
         }
 
         #[test]
         fn properties() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - geoip:
                         field: source.ip
                         properties:
                             - continent_name
                             - country_name
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Geoip(geoip)] => {
@@ -219,17 +219,17 @@ mod test {
                     );
                 }
                 _ => panic!("unexpected pipeline structure"),
-            };
+            }
         }
 
         #[test]
         fn ignore_missing() {
-            let configuration = r#"
+            let configuration = r"
                 processors:
                     - geoip:
                         field: source.ip
                         ignore_missing: true
-            "#;
+            ";
 
             match &Pipeline::parse(configuration).unwrap().processors[..] {
                 [Processor::Geoip(geoip)] => {
@@ -237,17 +237,17 @@ mod test {
                     assert_eq!(geoip.ignore_missing.unwrap(), true);
                 }
                 _ => panic!("unexpected pipeline structure"),
-            };
+            }
         }
 
         unsupported_fields_tests!(
             "geoip",
-            r#"
+            r"
                 processors:
                     - geoip:
                         field: source.ip
                         {}: {}
-            "#,
+            ",
             first_only => "false",
             download_database_on_pipeline_creation => "false"
         );

@@ -51,9 +51,9 @@ fn drop_value(value: &mut Value) -> bool {
     }
 }
 
-/// Convert a Painless keys_to_snake_case operation.
+/// Convert a Painless `keys_to_snake_case` operation.
 ///
-/// Converts camelCase JSON object keys to snake_case recursively.
+/// Converts camelCase JSON object keys to `snake_case` recursively.
 /// Common in Okta and other pipelines for normalising field names.
 pub fn keys_to_snake_case(value: &mut Value) {
     match value {
@@ -89,7 +89,7 @@ pub fn keys_to_snake_case(value: &mut Value) {
 
 /// Extract process fields from a command line string.
 ///
-/// Sets: process.command_line, process.args, process.executable
+/// Sets: `process.command_line`, process.args, process.executable
 pub fn extract_process_fields(
     event: &mut Event,
     cmd_field: &str,
@@ -157,7 +157,7 @@ pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
-/// to the generic painless_exec stub.
+/// to the generic `painless_exec` stub.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = script.replace("\\n", "\n").replace("\\\"", "\"");
 
@@ -205,7 +205,7 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 
     // Pattern: email split — splitOnToken("@") → user.email, user.domain, user.name
     // Used in Okta, O365, Azure, and many other sources
-    if normalised.contains("splitOnToken") && normalised.contains("@") {
+    if normalised.contains("splitOnToken") && normalised.contains('@') {
         return try_email_split(event, &normalised);
     }
 
@@ -290,17 +290,17 @@ fn try_email_split(event: &mut Event, script: &str) -> bool {
     true
 }
 
-/// Extract risk behaviors from okta.debug_context.debug_data.flattened.behaviors.
+/// Extract risk behaviors from `okta.debug_context.debug_data.flattened.behaviors`.
 ///
 /// The Painless script iterates the behaviors object and collects keys
-/// where the value is "POSITIVE" into an array at risk_behaviors.
+/// where the value is "POSITIVE" into an array at `risk_behaviors`.
 fn try_risk_behaviors(event: &mut Event) -> bool {
-    let behaviors = match event
+    // No behaviors, or not an object -- the script returns early.
+    let Some(Value::Object(behaviors)) = event
         .get("okta.debug_context.debug_data.flattened.behaviors")
         .cloned()
-    {
-        Some(Value::Object(map)) => map,
-        _ => return true, // No behaviors or not an object — script returns early
+    else {
+        return true;
     };
 
     let positive: Vec<Value> = behaviors
@@ -322,14 +322,14 @@ fn try_risk_behaviors(event: &mut Event) -> bool {
 /// Handle the Okta target array key rename + user/group extraction pattern.
 ///
 /// The Painless script:
-/// 1. Renames alternateId→alternate_id, displayName→display_name in each target element
+/// 1. Renames `alternateId→alternate_id`, `displayName→display_name` in each target element
 /// 2. Filters detailEntry to only keep methodTypeUsed and methodUsedVerifiedProperties
-/// 3. Extracts first "User" type target → okta_target_user
-/// 4. Extracts first "UserGroup" type target → okta_target_group
+/// 3. Extracts first "User" type target → `okta_target_user`
+/// 4. Extracts first "`UserGroup`" type target → `okta_target_group`
 fn try_okta_target_rename(event: &mut Event) -> bool {
-    let target = match event.get("okta.target").cloned() {
-        Some(Value::Array(arr)) => arr,
-        _ => return true, // No target array — script returns early
+    // No target array -- the script returns early.
+    let Some(Value::Array(target)) = event.get("okta.target").cloned() else {
+        return true;
     };
 
     let mut result = Vec::with_capacity(target.len());
@@ -399,7 +399,7 @@ fn try_okta_target_rename(event: &mut Event) -> bool {
 /// Azure category → event type mapping.
 ///
 /// Maps activitylogs.category to event.type via params lookup:
-/// write/action → ["change"], read → ["access"], delete → ["deletion"]
+/// write/action → `["change"]`, read → `["access"]`, delete → `["deletion"]`
 fn try_azure_category_to_event_type(event: &mut Event) -> bool {
     let category = match event.get_str("azure.activitylogs.category") {
         Some(c) => c.to_lowercase(),
@@ -422,7 +422,7 @@ fn try_azure_category_to_event_type(event: &mut Event) -> bool {
     true
 }
 
-/// Azure activitylogs event_category conditional assignment.
+/// Azure activitylogs `event_category` conditional assignment.
 ///
 /// Sets `azure.activitylogs.event_category` based on:
 /// 1. `properties.eventCategory` if present
@@ -470,9 +470,9 @@ fn try_replace_dots_in_keys(event: &mut Event, script: &str) -> bool {
     let pointer = format!("/{}", field_path.replace('.', "/"));
     let inner = event.as_value_mut();
     let resolved = inner.pointer_mut(&pointer);
-    let obj = match resolved {
-        Some(Value::Object(map)) => map,
-        _ => return true, // Field missing or not an object — skip
+    // Field missing or not an object -- skip.
+    let Some(Value::Object(obj)) = resolved else {
+        return true;
     };
 
     let new_map: Map<String, Value> = obj
@@ -489,7 +489,7 @@ fn extract_target_field(script: &str) -> Option<String> {
     // Look for patterns like ctx.okta.request or ctx.field
     for line in script.lines() {
         let trimmed = line.trim();
-        if trimmed.starts_with("ctx.") && !trimmed.contains("(") {
+        if trimmed.starts_with("ctx.") && !trimmed.contains('(') {
             let field = trimmed
                 .trim_start_matches("ctx.")
                 .trim_end_matches(';')
@@ -554,7 +554,7 @@ mod tests {
 
     #[test]
     fn epoch_to_iso8601() {
-        let mut event = Event::new(json!({"ts": 1536846339}));
+        let mut event = Event::new(json!({"ts": 1_536_846_339}));
         epoch_to_timestamp(&mut event, "ts", "@timestamp").unwrap();
         let ts = event.get_str("@timestamp").unwrap();
         assert!(ts.starts_with("2018-09-13"));
@@ -606,7 +606,7 @@ mod tests {
                 "Velocity": "POSITIVE"
             }}}}}
         }));
-        let script = r#"if POSITIVE risk_behaviors"#;
+        let script = r"if POSITIVE risk_behaviors";
         assert!(try_known_painless(&mut event, script));
         let behaviors = event.get("okta.debug_context.debug_data.risk_behaviors");
         assert!(behaviors.is_some());
@@ -621,7 +621,7 @@ mod tests {
                 "New Device": "NEGATIVE"
             }}}}}
         }));
-        let script = r#"if POSITIVE risk_behaviors"#;
+        let script = r"if POSITIVE risk_behaviors";
         assert!(try_known_painless(&mut event, script));
         // No POSITIVE entries — risk_behaviors should not be set
         assert!(!event.has("okta.debug_context.debug_data.risk_behaviors"));
@@ -635,7 +635,8 @@ mod tests {
                 {"type": "UserGroup", "alternateId": "admins", "displayName": "Admins", "id": "002", "detailEntry": null}
             ]}
         }));
-        let script = r#"def target = ctx.okta.target; alternateId alternate_id displayName display_name okta"#;
+        let script =
+            r"def target = ctx.okta.target; alternateId alternate_id displayName display_name okta";
         assert!(try_known_painless(&mut event, script));
 
         // Check renamed fields
@@ -663,7 +664,7 @@ mod tests {
                 "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "user"
             }}}}
         }));
-        let script = r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#;
+        let script = r"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}";
         assert!(try_known_painless(&mut event, script));
         // Verify dots replaced with underscores in claim keys
         let claims = event
@@ -686,7 +687,7 @@ mod tests {
         let mut event = Event::new(json!({
             "azure": {"activitylogs": {"properties": {}}}
         }));
-        let script = r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) { ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory; } else { ctx.azure.activitylogs.event_category = 'Administrative'; }"#;
+        let script = r"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) { ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory; } else { ctx.azure.activitylogs.event_category = 'Administrative'; }";
         assert!(try_known_painless(&mut event, script));
         assert_eq!(
             event.get_str("azure.activitylogs.event_category"),

@@ -28,13 +28,13 @@ impl Transform for UserActivityAudit {
             event.rename("crowdstrike.event.OperationName", "message")?;
         }
 
-        let _cond = {
+        let cond = {
             event.has("crowdstrike.event.UserIp")
                 && event
                     .get_str("crowdstrike.event.UserIp")
                     .is_some_and(|s| !s.is_empty())
         };
-        if _cond {
+        if cond {
             if event.has("crowdstrike.event.UserIp") {
                 event.rename("crowdstrike.event.UserIp", "source.ip")?;
             }

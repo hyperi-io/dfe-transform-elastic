@@ -13,7 +13,7 @@ use tracing::instrument;
 
 lazy_static! {
     static ref DYNAMIC_PATH_PATTERN: Regex =
-        Regex::new(r#"([{]{2,3}(?<dynamic_path>[^}]+)[}]{2,3}|(?<static_path>[^.]+))"#).unwrap();
+        Regex::new(r"([{]{2,3}(?<dynamic_path>[^}]+)[}]{2,3}|(?<static_path>[^.]+))").unwrap();
 }
 
 /// A field path that may contain template expressions.

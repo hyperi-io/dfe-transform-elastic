@@ -42,29 +42,29 @@ mod test {
 
         #[test]
         pub fn parse() {
-            let configuration = r#"
+            let configuration = r"
               processors:
                 - remove:
                     field: foo
-            "#;
+            ";
 
             let pipeline = Pipeline::parse(configuration).unwrap();
             match &pipeline.processors[..] {
                 [Processor::Remove(remove)] => {
-                    assert_eq!(Field::One("foo".into()), remove.field)
+                    assert_eq!(Field::One("foo".into()), remove.field);
                 }
-                _ => panic!("Unexpected pipeline structure {:#?}", pipeline),
+                _ => panic!("Unexpected pipeline structure {pipeline:#?}"),
             }
         }
 
         unsupported_fields_tests!(
           "remove",
-          r#"
+          r"
             processors:
               - remove:
                   field: foo
                   {}: {}
-          "#,
+          ",
           keep => "['foo', 'bar']",
           on_failure => r#"[ { "remove": { "field": "bar" } } ]"#
         );

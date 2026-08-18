@@ -194,7 +194,7 @@ pub(crate) fn emit_expr(expr: &Expr) -> String {
                 let parts: Vec<&str> = p.split('.').collect();
                 let mut access = "PARAMS".to_string();
                 for part in parts {
-                    access = format!("{access}[\"{}\"]\n", part);
+                    access = format!("{access}[\"{part}\"]\n");
                 }
                 format!("{access}.clone()")
             } else {
@@ -304,10 +304,8 @@ pub(crate) fn emit_expr(expr: &Expr) -> String {
         }
 
         Expr::Lambda { params, body } => {
-            let param_list: Vec<String> = params
-                .iter()
-                .map(|p| format!("{}", sanitize_ident(p)))
-                .collect();
+            let param_list: Vec<String> =
+                params.iter().map(|p| sanitize_ident(p).clone()).collect();
             let body_str = emit_stmt(body, "");
             format!("|{}| {{ {} }}", param_list.join(", "), body_str.trim())
         }
@@ -427,9 +425,7 @@ fn emit_binary(left: &Expr, op: BinOp, right: &Expr) -> String {
         BinOp::And => format!("json!(painless_truthy(&{l}) && painless_truthy(&{r}))"),
         BinOp::Or => format!("json!(painless_truthy(&{l}) || painless_truthy(&{r}))"),
 
-        BinOp::Find | BinOp::Match => {
-            format!("/* regex op */ json!(false)")
-        }
+        BinOp::Find | BinOp::Match => "/* regex op */ json!(false)".to_string(),
     }
 }
 
@@ -805,7 +801,7 @@ fn emit_dynamic_path(path: &[PathSegment]) -> String {
 
 /// Sanitize a Painless identifier to be a valid Rust identifier.
 fn sanitize_ident(name: &str) -> String {
-    let sanitized = name.replace('.', "_").replace('-', "_");
+    let sanitized = name.replace(['.', '-'], "_");
     // Avoid Rust keywords
     match sanitized.as_str() {
         "type" => "r#type".to_string(),

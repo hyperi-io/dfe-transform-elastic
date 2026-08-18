@@ -18,15 +18,15 @@ impl Transform for Default {
             event.rename("azure", "azure-eventhub")?;
         }
 
-        let _cond = { !event.has("event.original") };
-        if _cond {
+        let cond = { !event.has("event.original") };
+        if cond {
             if event.has("message") {
                 event.rename("message", "event.original")?;
             }
         }
 
-        let _cond = { event.has("event.original") };
-        if _cond {
+        let cond = { event.has("event.original") };
+        if cond {
             event.remove("message");
         }
 
@@ -40,10 +40,10 @@ impl Transform for Default {
         }
 
         // ctx.azure.auditlogs.category != 'AuditLogs'
-        let _cond = event
+        let cond = event
             .get_as_string("azure.auditlogs.category")
             .is_none_or(|c| c != "AuditLogs");
-        if _cond {
+        if cond {
             return Ok(TransformResult::Drop);
         }
 
@@ -85,13 +85,13 @@ impl Transform for Default {
         )?;
 
         // properties.result is a String whose lowercase form is 'success' or 'failure'
-        let _cond = event
+        let cond = event
             .get_str("azure.auditlogs.properties.result")
             .is_some_and(|r| {
                 let r = r.to_lowercase();
                 r == "success" || r == "failure"
             });
-        if _cond {
+        if cond {
             event.rename("azure.auditlogs.properties.result", "event.outcome")?;
         }
 
@@ -176,31 +176,30 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "azure.auditlogs.callerIpAddress".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
         }
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.remove("azure.auditlogs.callerIpAddress");
         }
 
-        let _cond = { !event.has("azure.auditlogs.properties.initiatedBy.app.appId") };
-        if _cond {
+        let cond = { !event.has("azure.auditlogs.properties.initiatedBy.app.appId") };
+        if cond {
             event.remove("azure.auditlogs.properties.initiatedBy.app.appId");
         }
 
-        let _cond =
+        let cond =
             { !event.has("azure.auditlogs.properties.initiatedBy.app.servicePrincipalName") };
-        if _cond {
+        if cond {
             event.remove("azure.auditlogs.properties.initiatedBy.app.servicePrincipalName");
         }
 
-        let _cond = { !event.has("azure.auditlogs.properties.userAgent") };
-        if _cond {
+        let cond = { !event.has("azure.auditlogs.properties.userAgent") };
+        if cond {
             event.remove("azure.auditlogs.properties.userAgent");
         }
 
@@ -209,8 +208,8 @@ impl Transform for Default {
             event.get("source.ip").cloned().unwrap_or(Value::Null),
         )?;
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
+        let cond = { event.has("source.ip") };
+        if cond {
             event.append(
                 "related.ip",
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
@@ -363,8 +362,8 @@ impl Transform for Default {
             }
             Ok(())
         })();
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -393,8 +392,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -423,8 +422,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -449,8 +448,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -477,8 +476,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -505,8 +504,8 @@ impl Transform for Default {
                 Ok(())
             })();
         }
-        let _cond = { !event.has("azure.subscription_id") };
-        if _cond {
+        let cond = { !event.has("azure.subscription_id") };
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Pattern definitions for grok
@@ -542,7 +541,7 @@ impl Transform for Default {
         }
         // End nested pipeline: "azure-shared-pipeline"
 
-        let _cond = {
+        let cond = {
             !event.has("tags")
                 || !(event.get("tags").is_some_and(|v| match v {
                     serde_json::Value::Array(a) => a
@@ -552,7 +551,7 @@ impl Transform for Default {
                     _ => false,
                 }))
         };
-        if _cond {
+        if cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.remove("event.original");

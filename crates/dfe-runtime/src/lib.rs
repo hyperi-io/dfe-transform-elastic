@@ -3,12 +3,15 @@
 
 #![forbid(unsafe_code)]
 #![warn(clippy::all, clippy::pedantic)]
+// Painless semantics are f64-based, so the numeric helpers truncate on purpose.
 #![allow(
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
     clippy::missing_errors_doc,
     clippy::missing_panics_doc,
-    clippy::redundant_closure_for_method_calls
+    clippy::redundant_closure_for_method_calls,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
 )]
 
 //! Core runtime for dfe-transform-elastic.
@@ -30,7 +33,7 @@ pub use event::Event;
 pub use transform::{Transform, TransformChain, TransformResult};
 
 // Re-export scalo types used by the runtime and downstream consumers
-pub use scalo::kafka_config::{DfeSource, ServiceRole};
+pub use scalo::kafka_config::{KafkaSource, ServiceRole};
 pub use scalo::memory::{MemoryGuard, MemoryGuardConfig, MemoryPressure};
 
 #[cfg(feature = "testutil")]

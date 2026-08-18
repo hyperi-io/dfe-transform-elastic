@@ -271,7 +271,7 @@ mod tests {
     struct NoopTransform;
 
     impl Transform for NoopTransform {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "noop"
         }
 
@@ -283,7 +283,7 @@ mod tests {
     struct SetKindTransform;
 
     impl Transform for SetKindTransform {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "set_kind"
         }
 

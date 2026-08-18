@@ -16,7 +16,7 @@ use antlr_rust::lexer_atn_simulator::{ILexerATNSimulator, LexerATNSimulator};
 use antlr_rust::parser_rule_context::{BaseParserRuleContext, ParserRuleContext, cast};
 use antlr_rust::recognizer::{Actions, Recognizer};
 use antlr_rust::rule_context::{BaseRuleContext, EmptyContext, EmptyCustomRuleContext};
-use antlr_rust::token::*;
+use antlr_rust::token::Token;
 use antlr_rust::token_factory::{CommonTokenFactory, TokenAware, TokenFactory};
 use antlr_rust::vocabulary::{Vocabulary, VocabularyImpl};
 
@@ -565,7 +565,7 @@ lazy_static! {
         let mut dfa = Vec::new();
         let size = _ATN.decision_to_state.len();
         for i in 0..size {
-            dfa.push(DFA::new(_ATN.clone(), _ATN.get_decision_state(i), i as isize).into())
+            dfa.push(DFA::new(_ATN.clone(), _ATN.get_decision_state(i), i as isize).into());
         }
         Arc::new(dfa)
     };

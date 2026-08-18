@@ -69,8 +69,7 @@ impl Transform for Traffic {
                     return Err(TransformError::ParseError {
                         path: "fortinet.firewall.tranip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("destination.nat.ip", s)?;
             }
@@ -105,8 +104,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.dstport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.port", converted)?;
@@ -144,8 +142,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.tranport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.nat.port", converted)?;
@@ -183,8 +180,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.rcvdbyte".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.bytes", converted)?;
@@ -222,8 +218,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.rcvdpkt".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("destination.packets", converted)?;
@@ -284,8 +279,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.sentbyte".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.bytes", converted)?;
@@ -335,8 +329,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.srcport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.port", converted)?;
@@ -396,8 +389,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.sentpkt".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.packets", converted)?;
@@ -415,8 +407,7 @@ impl Transform for Traffic {
                     return Err(TransformError::ParseError {
                         path: "fortinet.firewall.transip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.nat.ip", s)?;
             }
@@ -451,8 +442,7 @@ impl Transform for Traffic {
                             return Err(TransformError::ParseError {
                                 path: "fortinet.firewall.transport".into(),
                                 message: "cannot convert to integer".into(),
-                            }
-                            .into());
+                            });
                         }
                     };
                     event.set("source.nat.port", converted)?;

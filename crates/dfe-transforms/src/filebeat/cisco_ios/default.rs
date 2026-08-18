@@ -111,8 +111,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "cisco.ios.message_count".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("cisco.ios.message_count", converted)?;
@@ -283,8 +282,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "event.severity".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("event.severity", converted)?;
@@ -318,8 +316,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "event.sequence".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("event.sequence", converted)?;
@@ -866,8 +863,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "destination.address".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("destination.ip", s)?;
             }
@@ -882,8 +878,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "source.address".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("source.ip", s)?;
             }
@@ -898,8 +893,7 @@ impl Transform for Default {
                     return Err(TransformError::ParseError {
                         path: "cisco.ios.pim.source.ip".into(),
                         message: format!("cannot convert '{}' to IP", s),
-                    }
-                    .into());
+                    });
                 }
                 event.set("cisco.ios.pim.source.ip", s)?;
             }
@@ -932,8 +926,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "source.port".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("source.port", converted)?;
@@ -967,8 +960,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "source.packets".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("source.packets", converted)?;
@@ -1002,8 +994,7 @@ impl Transform for Default {
                         return Err(TransformError::ParseError {
                             path: "destination.port".into(),
                             message: "cannot convert to integer".into(),
-                        }
-                        .into());
+                        });
                     }
                 };
                 event.set("destination.port", converted)?;

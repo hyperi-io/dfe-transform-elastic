@@ -3,9 +3,13 @@
 
 #![forbid(unsafe_code)]
 #![warn(clippy::all)]
+// Shapes the generator emits, not defects to fix in place. Correctness lints stay on.
 #![allow(
     clippy::needless_return,
     clippy::redundant_closure_for_method_calls,
+    clippy::collapsible_if,
+    clippy::redundant_closure_call,
+    unused_assignments,
     unused_variables,
     unused_imports,
     dead_code
