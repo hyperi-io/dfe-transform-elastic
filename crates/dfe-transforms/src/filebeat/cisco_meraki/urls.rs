@@ -100,14 +100,7 @@ impl Transform for Urls {
             let input = input.as_str();
             // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = &cached_grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").regex;
-            if let Some(caps) = grok_re.captures(input) {
-                for name in grok_re.capture_names().flatten() {
-                    if let Some(m) = caps.name(name) {
-                        event.set(name, m.as_str())?;
-                    }
-                }
-            }
+            cached_grok!("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").extract_into(input, event)?;
             // Additional grok pattern 1: ^\\[%{IPV6:_temp.src_ip}\\]:%{PORT:sport}$
             // Additional grok pattern 2: ^%{IPV6NOCOMPRESS:_temp.src_ip}:%{PORT:sport}$
             // Additional grok pattern 3: ^%{IPV6:_temp.src_ip}%{IPV6PORTSEP}%{PORT:sport}$
@@ -170,14 +163,7 @@ impl Transform for Urls {
             let input = input.as_str();
             // Grok pattern: ^%{IPV4:_temp.dst_ip}:%{PORT:dport}$
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = &cached_grok("^%{IPV4:_temp.dst_ip}:%{PORT:dport}$").regex;
-            if let Some(caps) = grok_re.captures(input) {
-                for name in grok_re.capture_names().flatten() {
-                    if let Some(m) = caps.name(name) {
-                        event.set(name, m.as_str())?;
-                    }
-                }
-            }
+            cached_grok!("^%{IPV4:_temp.dst_ip}:%{PORT:dport}$").extract_into(input, event)?;
             // Additional grok pattern 1: ^\\[%{IPV6:_temp.dst_ip}\\]:%{PORT:dport}$
             // Additional grok pattern 2: ^%{IPV6NOCOMPRESS:_temp.dst_ip}:%{PORT:dport}$
             // Additional grok pattern 3: ^%{IPV6:_temp.dst_ip}%{IPV6PORTSEP}%{PORT:dport}$
@@ -241,7 +227,7 @@ impl Transform for Urls {
 
         if let Some(s) = event.get_str("mac").map(String::from) {
             let s = s.as_str();
-            let re = cached_regex("[-:.]");
+            let re = cached_regex!("[-:.]");
             let replaced = re.replace_all(s, "-").into_owned();
             event.set("cisco_meraki.urls.mac", replaced)?;
         }

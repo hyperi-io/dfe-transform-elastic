@@ -14,9 +14,8 @@ pub use serde_json::{Value, json};
 
 pub use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
 
-// Compiled once per process. `grok_to_regex*` return a STRING the caller then
-// has to compile, which is what made every grok site rebuild its DFA per event.
-pub use crate::grok_cache::{grok as cached_grok, regex as cached_regex};
+// Compiled once per process, then looked up once per call site.
+pub use crate::{cached_grok, cached_regex};
 
 pub use crate::codegen_api::{
     RegisteredDomainResult, community_id_v1, geoip_lookup, grok_to_regex, grok_to_regex_with_map,

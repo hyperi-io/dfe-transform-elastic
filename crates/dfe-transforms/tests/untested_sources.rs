@@ -31,8 +31,12 @@ struct Outcome {
     first_error: Option<String>,
 }
 
-/// Beats-shaped events from a committed `.log`: the raw line as a STRING in
-/// `message`, which is how filebeat delivers it.
+/// Events from a committed `.log`, in whichever of the two shapes it holds.
+///
+/// Most fixtures are already a JSON envelope carrying the vendor payload as a
+/// string in `message`, which is how filebeat delivers it. A few are bare
+/// syslog lines. Wrapping an envelope again puts JSON text where the transform
+/// expects a log line, so the shape is detected rather than assumed.
 fn beats_events(relative: &str) -> Vec<Event> {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../tests/fixtures")
@@ -42,7 +46,12 @@ fn beats_events(relative: &str) -> Vec<Event> {
 
     raw.lines()
         .filter(|line| !line.trim().is_empty())
-        .map(|line| Event::new(serde_json::json!({ "message": line })))
+        .map(
+            |line| match serde_json::from_str::<serde_json::Value>(line) {
+                Ok(value) if value.is_object() => Event::new(value),
+                _ => Event::new(serde_json::json!({ "message": line })),
+            },
+        )
         .collect()
 }
 

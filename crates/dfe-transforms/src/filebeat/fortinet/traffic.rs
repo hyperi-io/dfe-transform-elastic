@@ -500,7 +500,7 @@ impl Transform for Traffic {
         if event.has("rule.category") {
             if let Some(s) = event.get_str("rule.category").map(String::from) {
                 let s = s.as_str();
-                let re = cached_regex("\\.");
+                let re = cached_regex!("\\.");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("rule.category", replaced)?;
             }

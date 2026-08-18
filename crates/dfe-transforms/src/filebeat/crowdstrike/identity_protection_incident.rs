@@ -90,7 +90,7 @@ impl Transform for IdentityProtectionIncident {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                let re = cached_regex("\\d{6}$");
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.StartTime", replaced)?;
             }
@@ -166,7 +166,7 @@ impl Transform for IdentityProtectionIncident {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                let re = cached_regex("\\d{6}$");
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.EndTime", replaced)?;
             }

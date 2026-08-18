@@ -204,9 +204,91 @@ fn native_vs_regex(c: &mut Criterion) {
     group.finish();
 }
 
+/// Looking a pattern UP, with every worker doing it at once.
+///
+/// The service runs one transform thread per partition, and each of them hits
+/// the same cache on every grok site of every event. A single-threaded figure
+/// misses the actual cost of `RwLock`: readers share one reader-count atomic,
+/// so the line bounces between cores under exactly the load the service runs.
+///
+/// `map` is the shared cache. `site_local` is what a per-call-site `OnceLock`
+/// costs -- one relaxed atomic load, no shared line, no hash of the pattern.
+fn grok_lookup_contended(c: &mut Criterion) {
+    use std::sync::OnceLock;
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    const PATTERN: &str = "^%{IPV4:_temp.src_ip}:%{PORT:sport}$";
+    const LOOKUPS: usize = 20_000;
+    static SITE: OnceLock<&'static dfe_runtime::grok_cache::CompiledGrok> = OnceLock::new();
+
+    // Warm both so neither pays first-touch inside the measurement.
+    let _ = dfe_runtime::grok_cache::grok(PATTERN);
+    let _ = SITE.get_or_init(|| dfe_runtime::grok_cache::grok(PATTERN));
+
+    let mut group = c.benchmark_group("grok_lookup_contended");
+    // One batch of lookups per iteration, per thread.
+    group.throughput(criterion::Throughput::Elements(LOOKUPS as u64));
+
+    for threads in [1_usize, 4, 8] {
+        group.bench_function(format!("map/{threads}t"), |b| {
+            b.iter_custom(|iters| {
+                spawn_and_time(threads, iters, || {
+                    black_box(dfe_runtime::grok_cache::grok(black_box(PATTERN)));
+                })
+            });
+        });
+
+        group.bench_function(format!("site_local/{threads}t"), |b| {
+            b.iter_custom(|iters| {
+                spawn_and_time(threads, iters, || {
+                    black_box(SITE.get());
+                })
+            });
+        });
+    }
+
+    group.finish();
+
+    // Keeps the helpers below out of the reader's way above.
+    fn spawn_and_time(
+        threads: usize,
+        iters: u64,
+        work: impl Fn() + Send + Sync + Copy,
+    ) -> std::time::Duration {
+        let go = AtomicBool::new(false);
+        std::thread::scope(|scope| {
+            let handles: Vec<_> = (0..threads)
+                .map(|_| {
+                    let go = &go;
+                    scope.spawn(move || {
+                        while !go.load(Ordering::Acquire) {
+                            std::hint::spin_loop();
+                        }
+                        for _ in 0..iters {
+                            for _ in 0..LOOKUPS {
+                                work();
+                            }
+                        }
+                    })
+                })
+                .collect();
+
+            // Start the clock only once every thread is spinning on the gate,
+            // so thread spawn-up is not counted as lookup time.
+            let start = std::time::Instant::now();
+            go.store(true, Ordering::Release);
+            for handle in handles {
+                let _ = handle.join();
+            }
+            start.elapsed()
+        })
+    }
+}
+
 criterion_group!(
     benches,
     grok_compilation,
+    grok_lookup_contended,
     native_vs_regex,
     event_paths,
     okta,
