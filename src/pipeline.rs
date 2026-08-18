@@ -37,10 +37,28 @@ pub fn transform_batch(
     transform: &dyn Transform,
     events: Vec<Event>,
 ) -> (Vec<Event>, BatchOutcome) {
+    transform_batch_with(transform, crate::envelope::Envelope::Beats, None, events)
+}
+
+/// Unwrap `envelope`, then apply `transform` to every event.
+///
+/// An event whose envelope will not unwrap is counted as errored, on the same
+/// footing as one the transform rejects -- neither fails the batch.
+pub fn transform_batch_with(
+    transform: &dyn Transform,
+    envelope: crate::envelope::Envelope,
+    framing: Option<crate::registry::Framing>,
+    events: Vec<Event>,
+) -> (Vec<Event>, BatchOutcome) {
     let mut out = Vec::with_capacity(events.len());
     let mut outcome = BatchOutcome::default();
 
     for mut event in events {
+        if let Err(e) = envelope.unwrap_into_beats(&mut event, framing) {
+            outcome.errored += 1;
+            tracing::warn!(error = %e, "envelope unwrap failed");
+            continue;
+        }
         match transform.transform(&mut event) {
             Ok(TransformResult::Continue) => {
                 outcome.emitted += 1;

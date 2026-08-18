@@ -32,6 +32,10 @@ pub enum Error {
     /// Configuration was invalid.
     #[error("config: {0}")]
     Config(String),
+
+    /// Unwrapping the input envelope failed.
+    #[error("envelope: {0}")]
+    Envelope(#[from] dfe_runtime::TransformError),
 }
 
 /// Service result alias.

@@ -62,6 +62,9 @@ pub fn contract() -> DeploymentContract {
             "pipeline_name": "dfe-transform-elastic",
             "source": {
                 "name": "filebeat.okta.default",
+                // `syslog` reads dfe-receiver's output instead, for the
+                // sources a device can emit over syslog.
+                "envelope": "beats",
                 "topics": ["raw_events"],
                 // Batch-first default: amortises commit, allocation and SIMD setup.
                 "batch_size": 20000,
@@ -169,8 +172,14 @@ pub fn retarget_keda_trigger(chart_dir: &str) -> crate::Result<()> {
 /// adds it here.
 fn capabilities() -> Vec<Capability> {
     let sources = crate::registry::sources().map(|name| {
+        let description =
+            if crate::registry::origin(name).is_some_and(crate::registry::Origin::is_syslog) {
+                "Compiled transform. The device can emit over syslog, so either envelope applies."
+            } else {
+                "Compiled transform. Pulled from a vendor API; the beats envelope only."
+            };
         Capability::service(name)
-            .description("Compiled transform for this Beats or Elastic Agent source.")
+            .description(description)
             .maturity("beta")
     });
 
@@ -185,6 +194,12 @@ fn capabilities() -> Vec<Capability> {
                 FieldSpec::string("source.name")
                     .required()
                     .description("Which compiled transform to apply, e.g. filebeat.okta.default."),
+            )
+            .field(
+                FieldSpec::enumeration("source.envelope", ["beats", "syslog"]).description(
+                    "How the payload is wrapped on the way in. `syslog` reads \
+                     dfe-receiver's output and applies only to device sources.",
+                ),
             )
             .children(sources),
         Capability::source("kafka")

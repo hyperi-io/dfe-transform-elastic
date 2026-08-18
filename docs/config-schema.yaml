@@ -24,6 +24,12 @@ $defs:
       name:
         description: Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
         type: string
+      envelope:
+        description: |-
+          How the payload is wrapped on the way in. The transform is the same
+          either way; only the unwrapping differs.
+        $ref: '#/$defs/Envelope'
+        default: beats
       topics:
         description: Topics to consume.
         type: array
@@ -48,6 +54,17 @@ $defs:
     - topics
     - group_id
     - brokers
+  Envelope:
+    description: How the payload is wrapped on the way in.
+    oneOf:
+    - description: 'Beats or Elastic Agent: the raw vendor payload is a string in `message`.'
+      type: string
+      const: beats
+    - description: |-
+        dfe-receiver syslog JSON: header parsed into siblings, body in
+        `message`.
+      type: string
+      const: syslog
   SinkConfig:
     description: Outbound configuration.
     type: object

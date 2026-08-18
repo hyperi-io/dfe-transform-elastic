@@ -783,6 +783,7 @@ name = "dfe-transform-elastic"
 version = "0.1.0"
 dependencies = [
  "bytes",
+ "chrono",
  "clap",
  "dfe-runtime",
  "dfe-transforms",

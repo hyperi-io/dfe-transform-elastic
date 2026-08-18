@@ -3,7 +3,7 @@
   "app": "dfe-transform-elastic",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-08-18T04:17:10Z",
+  "registered_at": "2026-08-18T05:03:14Z",
   "metrics": [
     {
       "name": "dfe-transform-elastic_transport_sent_total",

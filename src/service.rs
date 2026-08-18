@@ -17,7 +17,7 @@ use tokio_util::sync::CancellationToken;
 
 use crate::config::Config;
 use crate::metrics::TransformMetrics;
-use crate::pipeline::{parse_batch, serialise_batch, transform_batch};
+use crate::pipeline::{parse_batch, serialise_batch, transform_batch_with};
 
 /// How often the loop pushes scaling signals. One librdkafka stats read per
 /// interval, independent of batch cadence.
@@ -93,6 +93,8 @@ pub async fn run_loop(
 ) -> crate::Result<()> {
     let transform = crate::registry::lookup(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+    let framing =
+        crate::registry::origin(&config.source.name).and_then(crate::registry::Origin::framing);
 
     metrics.dfe.pipeline_ready(true);
 
@@ -162,7 +164,8 @@ pub async fn run_loop(
             .transport_received_events(TransportKind::Kafka, received);
         metrics.app.records_received.increment(received);
 
-        let (transformed, outcome) = transform_batch(transform, events);
+        let (transformed, outcome) =
+            transform_batch_with(transform, config.source.envelope, framing, events);
         metrics
             .batch_duration
             .record(started.elapsed().as_secs_f64());
@@ -275,6 +278,7 @@ mod tests {
             pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
+                envelope: crate::envelope::Envelope::Beats,
                 topics: vec!["in".into()],
                 batch_size: 100,
                 group_id: "g".into(),

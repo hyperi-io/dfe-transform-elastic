@@ -34,6 +34,11 @@ pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
     pub name: String,
 
+    /// How the payload is wrapped on the way in. The transform is the same
+    /// either way; only the unwrapping differs.
+    #[serde(default)]
+    pub envelope: crate::envelope::Envelope,
+
     /// Topics to consume.
     pub topics: Vec<String>,
 
@@ -122,13 +127,29 @@ impl Config {
         if self.source.batch_size == 0 {
             return Err(crate::Error::Config("source.batch_size is zero".into()));
         }
-        crate::registry::lookup(&self.source.name)
-            .map(|_| ())
-            .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))
+        let origin = crate::registry::origin(&self.source.name)
+            .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))?;
+
+        // An API-only source over the syslog envelope would unwrap a header
+        // that is never there, and quietly emit nothing useful. Refuse it at
+        // startup rather than at the first batch.
+        if self.source.envelope == crate::envelope::Envelope::Syslog && !origin.is_syslog() {
+            return Err(crate::Error::Config(format!(
+                "source '{}' is pulled from an API and cannot arrive over syslog; \
+                 the syslog envelope applies to: {}",
+                self.source.name,
+                crate::registry::syslog_sources()
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            )));
+        }
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
 
@@ -137,6 +158,7 @@ mod tests {
             pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
+                envelope: crate::envelope::Envelope::Beats,
                 topics: vec!["in".into()],
                 batch_size: 100,
                 group_id: "g".into(),
@@ -178,5 +200,48 @@ mod tests {
         let mut c = valid();
         c.source.name = "filebeat.nosuchthing".into();
         assert!(c.validate().is_err());
+    }
+
+    #[test]
+    fn defaults_to_the_beats_envelope() {
+        let parsed: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+             group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+        )
+        .expect("config parses without an envelope key");
+        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Beats);
+    }
+
+    #[test]
+    fn accepts_the_syslog_envelope_on_a_device_source() {
+        let mut c = valid();
+        c.source.name = "filebeat.cisco_ios.default".into();
+        c.source.envelope = crate::envelope::Envelope::Syslog;
+        assert!(c.validate().is_ok());
+    }
+
+    /// okta is pulled from an API. Asking for it over syslog is a config
+    /// error, not a silent no-op at the first batch.
+    #[test]
+    fn rejects_the_syslog_envelope_on_an_api_source() {
+        let mut c = valid();
+        c.source.envelope = crate::envelope::Envelope::Syslog;
+
+        let err = c.validate().expect_err("okta over syslog must be rejected");
+        let message = err.to_string();
+        assert!(message.contains("cannot arrive over syslog"), "{message}");
+        // The error must name what WOULD work.
+        assert!(message.contains("filebeat.cisco_ios.default"), "{message}");
+    }
+
+    #[test]
+    fn envelope_round_trips_through_yaml() {
+        let parsed: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.fortinet.default\n  envelope: syslog\n  \
+             topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+        )
+        .expect("config parses");
+        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Syslog);
+        assert!(parsed.validate().is_ok());
     }
 }

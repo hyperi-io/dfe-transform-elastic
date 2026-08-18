@@ -33,6 +33,7 @@ clap = { workspace = true }
 bytes = { workspace = true }
 metrics = { workspace = true }
 schemars = { workspace = true }
+chrono = { workspace = true }
 tikv-jemallocator = { workspace = true, optional = true }
 
 [dev-dependencies]

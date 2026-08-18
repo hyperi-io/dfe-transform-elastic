@@ -78,6 +78,42 @@ renamed, because every processor after the first reads fields that only exist
 once `message` has been unpacked. If the output looks like the input with an
 `ecs.version` bolted on, this is why.
 
+### Envelopes: the same pipeline, a different wrapper
+
+A device that emits over syslog can be fed from
+[dfe-receiver](https://github.com/hyperi-io/dfe-receiver) instead of from
+Beats. It is the same transform, the same output; only the wrapper differs.
+
+```yaml
+source:
+  name: filebeat.fortinet.default
+  envelope: syslog          # beats (default) | syslog
+  topics: ["logs_syslog_land"]
+```
+
+`envelope: syslog` reads the receiver's syslog JSON: the MSG body in
+`message`, the header parsed into siblings. Unwrapping it puts back whatever
+that pipeline groks, and lifts the parsed header onto `log.syslog.*` so it
+survives regardless.
+
+The two families want different things, and the registry records which is
+which:
+
+- **Body** — `panw.*` and `cisco_meraki` read `message` as CSV or key-value.
+  The receiver's body goes through untouched; a prefixed header would corrupt
+  the first field.
+- **Line** — `fortinet`, `cisco_ios` and `cisco_nexus` grok the header out of
+  `message`, so a line is put back. If the receiver supplied `_raw` that is
+  used verbatim; otherwise an RFC 3164 line is rebuilt from the parsed fields.
+
+Reconstruction is enough for `fortinet`, which only needs `<PRI>`. It is NOT
+enough for `cisco_ios` (wants a source IP) or `cisco_nexus` (wants a sequence
+number) — the receiver keeps neither, so those two need `_raw`.
+
+The envelope applies only to sources a device can actually emit. Asking for
+`envelope: syslog` on an API source such as okta is rejected at startup, with
+the list of sources that would work.
+
 The metrics and probe listener is not configured here. scalo's `--metrics-addr`
 (env `METRICS_ADDR`, default `0.0.0.0:9090`) is the single source of truth, so
 charts and deployments override that rather than a YAML field.

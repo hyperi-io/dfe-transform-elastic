@@ -39,6 +39,7 @@
     "pipeline_name": "dfe-transform-elastic",
     "source": {
       "name": "filebeat.okta.default",
+      "envelope": "beats",
       "topics": [
         "raw_events"
       ],
@@ -133,6 +134,11 @@
             "description": "Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.",
             "type": "string"
           },
+          "envelope": {
+            "description": "How the payload is wrapped on the way in. The transform is the same\neither way; only the unwrapping differs.",
+            "$ref": "#/$defs/Envelope",
+            "default": "beats"
+          },
           "topics": {
             "description": "Topics to consume.",
             "type": "array",
@@ -164,6 +170,21 @@
           "topics",
           "group_id",
           "brokers"
+        ]
+      },
+      "Envelope": {
+        "description": "How the payload is wrapped on the way in.",
+        "oneOf": [
+          {
+            "description": "Beats or Elastic Agent: the raw vendor payload is a string in `message`.",
+            "type": "string",
+            "const": "beats"
+          },
+          {
+            "description": "dfe-receiver syslog JSON: header parsed into siblings, body in\n`message`.",
+            "type": "string",
+            "const": "syslog"
+          }
         ]
       },
       "SinkConfig": {
@@ -204,145 +225,155 @@
           "type": "string",
           "required": true,
           "description": "Which compiled transform to apply, e.g. filebeat.okta.default."
+        },
+        {
+          "name": "source.envelope",
+          "type": "enum",
+          "required": false,
+          "description": "How the payload is wrapped on the way in. `syslog` reads dfe-receiver's output and applies only to device sources.",
+          "enum_values": [
+            "beats",
+            "syslog"
+          ]
         }
       ],
       "children": [
         {
           "kind": "service",
           "name": "filebeat.azure_activitylogs.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.azure_auditlogs.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.azure_platformlogs.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.azure_signinlogs.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.cisco_ios.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.cisco_meraki.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.cisco_nexus.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.crowdstrike.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.fortinet.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.o365.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.okta.default",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.authentication",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.correlated_event",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.decryption",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.globalprotect",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.gtp",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.hipmatch",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.ip_tag",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.sctp",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.system",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.traffic",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.tunnel_inspection",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         },
         {
           "kind": "service",
           "name": "filebeat.panw.userid",
-          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
           "maturity": "beta"
         }
       ]
