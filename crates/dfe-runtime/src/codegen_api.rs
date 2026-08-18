@@ -165,7 +165,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "USER" | "USERNAME" | "HOSTNAME" => r"[a-zA-Z0-9._-]+",
         "IP" | "IPV4" => r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",
         "IPV6" => r"[0-9a-fA-F:]+",
-        "POSINT" => r"\d+",
+        "POSINT" | "PORT" | "NONNEGINT" => r"\d+",
         "INT" => r"[+-]?\d+",
         "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
         "NOTSPACE" | "URI" | "URIPROTO" => r"\S+",
@@ -179,15 +179,40 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "SUBID" => {
             r"(?:\{)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(?:\})?"
         }
-        "GROUPID" | "PROVIDERNAME" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
+        // A path segment. `PROVIDER` on the catch-all `.+?` matched lazily,
+        // so `/providers/Microsoft.aadiam` yielded "M".
+        "GROUPID" | "PROVIDERNAME" | "PROVIDER" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
         "MONTHDAY" => r"\d{1,2}",
         "YEAR" => r"\d{4}",
         "HOUR" | "MINUTE" | "SECOND" => r"\d{2}",
+        // Whitespace, not "anything". The catch-all below made every pattern
+        // containing %{SPACE} match arbitrary text -- 152 sites' worth.
+        "SPACE" => r"\s*",
+        "TIME" => r"\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?",
+        "SYSLOGPRI" => r"<\d+>",
+        "SYSLOG5424PRI" => r"<\d{1,5}>",
+        "SYSLOGTIMESTAMP" => r"\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}",
+        "CISCOMAC" => r"(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}",
+        "QS" | "QUOTEDSTRING" => r#""(?:[^"\\]|\\.)*""#,
+        "LOGLEVEL" => r"(?i:emerg|alert|crit|err|warn|notice|info|debug|trace)\w*",
         "TIMESTAMP_ISO8601" => {
             r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
         }
-        _ => ".+?", // fallback for unknown patterns
+        // Unknown name. `.+?` captures arbitrary text rather than failing, so
+        // the field is populated with the wrong thing and nothing says so --
+        // `unknown_grok_patterns` exists to make that visible.
+        _ => ".+?",
     }
+}
+
+/// Pattern names still falling through to the catch-all, and how often.
+///
+/// The vendor-specific ones (`CISCO_*`, `NEXUS_*`, `IPV6PORTSEP`, ...) come
+/// from `pattern_definitions` in the upstream ingest pipelines and have to be
+/// carried across before they can be defined here.
+#[must_use]
+pub fn is_known_grok_pattern(name: &str) -> bool {
+    grok_pattern_regex(name) != ".+?"
 }
 
 /// Check whether an IP address is in a private/internal range.

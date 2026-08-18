@@ -32,6 +32,13 @@ url = { workspace = true }
 csv = { workspace = true }
 
 [dev-dependencies]
+criterion = { workspace = true }
 dfe-runtime = { workspace = true, features = ["testutil"] }
 dotenvy = { workspace = true }
 serde_yaml_ng = { workspace = true }
+
+# Per-event transform throughput. A 20k batch multiplies whatever one event
+# costs, so anything done per event has to be measured, not reasoned about.
+[[bench]]
+name = "transforms"
+harness = false

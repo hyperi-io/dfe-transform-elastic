@@ -385,7 +385,7 @@ impl Transform for XdrDetectionSummary {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTimeEpoch") {
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.StartTimeEpoch", replaced)?;
             }
@@ -469,7 +469,7 @@ impl Transform for XdrDetectionSummary {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTimeEpoch") {
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.EndTimeEpoch", replaced)?;
             }
