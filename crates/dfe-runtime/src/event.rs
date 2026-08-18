@@ -131,51 +131,55 @@ impl Event {
     // -- Setters --------------------------------------------------------
 
     /// Set a value at a dotted path, creating intermediate objects as needed.
+    ///
+    /// On the hot path this allocates NOTHING for the path itself. The
+    /// segments are walked as an iterator rather than collected, and a key is
+    /// only turned into a `String` when it has to be inserted -- which, after
+    /// the first event of a batch, it usually does not.
     pub fn set(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
         let value = value.into();
-        let segments: Vec<&str> = path.split('.').collect();
+        let mut segments = path.split('.').peekable();
+        let mut depth = 0;
 
         let mut current = &mut self.inner;
-        for (i, segment) in segments.iter().enumerate() {
-            if i == segments.len() - 1 {
-                // Final segment — set the value
-                if current.is_null() {
-                    *current = Value::Object(Map::new());
-                }
-                match current {
-                    Value::Object(map) => {
-                        map.insert((*segment).to_string(), value);
-                        return Ok(());
-                    }
-                    _ => {
-                        return Err(TransformError::TypeMismatch {
-                            path: segments[..i].join("."),
-                            expected: "object",
-                            actual: type_name(current),
-                        });
-                    }
-                }
-            }
-
-            // Intermediate segment — navigate or create object
-            // If current is null, promote it to an empty object (matches Elasticsearch behaviour)
+        while let Some(segment) = segments.next() {
+            // A null is promoted to an object, matching Elasticsearch.
             if current.is_null() {
                 *current = Value::Object(Map::new());
             }
-            match current {
-                Value::Object(map) => {
-                    current = map
-                        .entry((*segment).to_string())
-                        .or_insert_with(|| Value::Object(Map::new()));
+            let Value::Object(map) = current else {
+                return Err(TransformError::TypeMismatch {
+                    path: prefix_of(path, depth),
+                    expected: "object",
+                    actual: type_name(current),
+                });
+            };
+
+            if segments.peek().is_none() {
+                // Final segment. Overwrite in place where the key exists, so
+                // the common case does not allocate a duplicate key.
+                if let Some(slot) = map.get_mut(segment) {
+                    *slot = value;
+                } else {
+                    map.insert(segment.to_string(), value);
                 }
-                _ => {
-                    return Err(TransformError::TypeMismatch {
-                        path: segments[..i].join("."),
-                        expected: "object",
-                        actual: type_name(current),
-                    });
-                }
+                return Ok(());
             }
+
+            if map.get(segment).is_none() {
+                map.insert(segment.to_string(), Value::Object(Map::new()));
+            }
+            let Some(next) = map.get_mut(segment) else {
+                // Unreachable: just inserted above. Reported rather than
+                // panicked, because a panic here takes the pod.
+                return Err(TransformError::TypeMismatch {
+                    path: prefix_of(path, depth),
+                    expected: "object",
+                    actual: "missing".to_string(),
+                });
+            };
+            current = next;
+            depth += 1;
         }
 
         Ok(())
@@ -277,6 +281,13 @@ impl From<Event> for Value {
 }
 
 // -- Internal helpers ----------------------------------------------------
+
+/// The first `depth` segments of a dotted path, for an error message.
+///
+/// Only called on the error path, so it can afford to allocate.
+fn prefix_of(path: &str, depth: usize) -> String {
+    path.split('.').take(depth).collect::<Vec<_>>().join(".")
+}
 
 /// Walk a dotted path to find an immutable reference to the target value.
 fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {

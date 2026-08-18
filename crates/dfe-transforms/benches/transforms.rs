@@ -128,5 +128,48 @@ fn grok_compilation(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, grok_compilation, okta, cisco_meraki, fortinet);
+/// The dotted-path accessors, which a transform calls dozens of times per
+/// event. Whatever these cost is multiplied by that count and then by the
+/// batch size, so they are worth knowing to the nanosecond.
+fn event_paths(c: &mut Criterion) {
+    let mut group = c.benchmark_group("event_paths");
+
+    group.bench_function("set_nested", |b| {
+        let mut event = Event::new(serde_json::json!({}));
+        b.iter(|| {
+            let _ = event.set(black_box("source.geo.country_iso_code"), black_box("AU"));
+        });
+    });
+
+    group.bench_function("set_flat", |b| {
+        let mut event = Event::new(serde_json::json!({}));
+        b.iter(|| {
+            let _ = event.set(black_box("message"), black_box("hello"));
+        });
+    });
+
+    let populated = Event::new(serde_json::json!({
+        "source": { "geo": { "country_iso_code": "AU" } },
+        "message": "hello",
+    }));
+
+    group.bench_function("get_nested", |b| {
+        b.iter(|| black_box(populated.get_str(black_box("source.geo.country_iso_code"))));
+    });
+
+    group.bench_function("get_missing", |b| {
+        b.iter(|| black_box(populated.get_str(black_box("destination.geo.city_name"))));
+    });
+
+    group.finish();
+}
+
+criterion_group!(
+    benches,
+    grok_compilation,
+    event_paths,
+    okta,
+    cisco_meraki,
+    fortinet
+);
 criterion_main!(benches);
