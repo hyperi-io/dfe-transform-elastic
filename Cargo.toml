@@ -1,3 +1,61 @@
+[package]
+name = "dfe-transform-elastic"
+description = "Kafka-to-Kafka transform service for Beats and Elastic Agent data. Runs standalone or as part of the HyperI Data Fusion Engine."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+exclude = [".github/", "chart/", "docs/", ".tmp/", "tests/fixtures/"]
+
+[lib]
+name = "dfe_transform_elastic"
+path = "src/lib.rs"
+
+[[bin]]
+name = "dfe-transform-elastic"
+path = "src/main.rs"
+
+[dependencies]
+dfe-runtime = { workspace = true }
+dfe-transforms = { workspace = true }
+scalo = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml_ng = { workspace = true }
+simd-json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+clap = { workspace = true }
+bytes = { workspace = true }
+tikv-jemallocator = { workspace = true, optional = true }
+
+[features]
+default = ["kafka"]
+# hyperi-ci enables this on spike/alpha/beta/release. Local dev stays on the
+# system allocator so `cargo build` is not paying for it.
+jemalloc = ["dep:tikv-jemallocator"]
+# The Kafka service loop. Separable so the crate still builds and tests on a
+# host without librdkafka-dev; needs >= 2.12.1 when enabled.
+kafka = ["scalo/transport-kafka"]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+dbg_macro = "deny"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+
 [workspace]
 members = [
     "crates/dfe-parse",
@@ -22,10 +80,30 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-scalo = { version = ">=2.10.9, <3", features = ["logger", "memory"] }
+scalo = { version = ">=2.10.9, <3", features = [
+    "cli-service",
+    "config",
+    "deployment",
+    "governor",
+    "http-server",
+    "logger",
+    "memory",
+    "metrics",
+    "scaling",
+] }
 
 # Async runtime
 tokio = { version = ">=1.48", features = ["full"] }
+tokio-util = ">=0.7, <0.8"
+
+# Zero-copy payload bytes -- the currency handed to the transport sender.
+bytes = ">=1.7, <2"
+
+# Global allocator for the binary; behind the `jemalloc` feature.
+tikv-jemallocator = ">=0.6, <0.7"
+
+# CLI surface for the service binary.
+clap = { version = ">=4.5", features = ["derive"] }
 
 # JSON parsing (SIMD-accelerated)
 simd-json = { version = ">=0.14, <0.15", features = ["known-key"] }
