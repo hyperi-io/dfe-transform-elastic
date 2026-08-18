@@ -11,9 +11,8 @@
 //!
 //! The builder executes steps sequentially with no backtracking — if any step
 //! fails, the entire composite parse fails. This gives predictable O(n)
-//! performance and works with the codegen pipeline: dfe-codegen analyses a grok
-//! pattern, maps each capture group to a Layer 1 parser, and emits a composite
-//! chain.
+//! performance for a grok-equivalent pattern expressed as literals and
+//! Layer 1 parser captures.
 //!
 //! # Example
 //!

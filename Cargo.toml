@@ -158,9 +158,6 @@ aho-corasick = ">=1.1"
 regex-automata = ">=0.4"
 regex = ">=1.10"
 
-# Lexer generation (compile-time DFA)
-logos = ">=0.14"
-
 # Timestamp handling
 chrono = { version = ">=0.4", features = ["serde"] }
 
@@ -192,9 +189,6 @@ uuid = { version = ">=1.10, <1.21", features = ["v4"] }
 # Testing (used as dev-dependencies in member crates)
 dotenvy = ">=0.15"
 criterion = { version = ">=0.5, <0.6", features = ["html_reports"] }
-proptest = ">=1.5, <1.7"
-test-case = ">=3.3"
-rstest = ">=0.22"
 tempfile = ">=3.10, <3.20"
 
 # Ephemeral broker for the round-trip test. Same range as the rest of the
