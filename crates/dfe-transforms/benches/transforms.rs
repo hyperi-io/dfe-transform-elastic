@@ -1,0 +1,132 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright (c) 2026 HYPERI PTY LIMITED
+
+//! Per-event transform throughput, measured on committed fixtures.
+//!
+//! The number that matters is events per second through one transform, because
+//! that is what a 20,000-event batch multiplies. Anything a transform does per
+//! event -- converting a grok pattern, compiling a regex, allocating a map --
+//! is paid 20,000 times per batch and shows up here.
+
+use std::hint::black_box;
+
+use criterion::{Criterion, criterion_group, criterion_main};
+use dfe_runtime::{Event, Transform};
+
+/// Beats-shaped events from a committed fixture: the raw vendor payload as a
+/// STRING in `message`, which is what the transforms are written for.
+fn fixture_events(relative: &str) -> Vec<Event> {
+    let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../tests/fixtures")
+        .join(relative);
+    let raw = std::fs::read_to_string(&path)
+        .unwrap_or_else(|e| panic!("fixture {} is committed: {e}", path.display()));
+
+    raw.lines()
+        .filter(|l| !l.trim().is_empty())
+        .map(|line| {
+            let beat = serde_json::json!({ "message": line });
+            Event::new(beat)
+        })
+        .collect()
+}
+
+/// One pass of `transform` over every event.
+///
+/// Takes the events by value because a transform MUTATES them, so each
+/// iteration needs a fresh copy. The copying is done in criterion's setup
+/// closure, not here -- cloning a `serde_json::Value` is not cheap, and timing
+/// it alongside the transform would flatter or bury whatever we are measuring.
+fn run_pass(transform: &dyn Transform, mut events: Vec<Event>) -> usize {
+    let mut emitted = 0;
+    for event in &mut events {
+        if transform.transform(event).is_ok() {
+            emitted += 1;
+        }
+    }
+    emitted
+}
+
+/// Benchmark one transform over one fixture.
+///
+/// The transform structs are named `Default`, which shadows the trait, so each
+/// caller spells out the path rather than importing it.
+fn bench_source(c: &mut Criterion, name: &str, fixture: &str, transform: &dyn Transform) {
+    let events = fixture_events(fixture);
+    assert!(!events.is_empty(), "{name}: fixture produced no events");
+
+    let mut group = c.benchmark_group(name);
+    group.throughput(criterion::Throughput::Elements(events.len() as u64));
+    group.bench_function("default", |b| {
+        b.iter_batched(
+            || events.clone(),
+            |batch| black_box(run_pass(transform, batch)),
+            criterion::BatchSize::SmallInput,
+        );
+    });
+    group.finish();
+}
+
+/// Mostly JSON field moves -- three grok sites. The floor for what a transform
+/// costs when grok is not the work.
+fn okta(c: &mut Criterion) {
+    bench_source(
+        c,
+        "okta",
+        "okta/system/test-okta-system-events.log",
+        &dfe_transforms::filebeat::okta::default::Default,
+    );
+}
+
+/// The grok-heaviest transform in the tree: 30 pattern sites in `default.rs`
+/// alone, over syslog lines that have to be parsed rather than read.
+fn cisco_meraki(c: &mut Criterion) {
+    bench_source(
+        c,
+        "cisco_meraki",
+        "cisco/meraki/logs/test-events.log",
+        &dfe_transforms::filebeat::cisco_meraki::default::Default,
+    );
+}
+
+/// Syslog with a CSV-ish key-value body, and nine grok sites.
+fn fortinet(c: &mut Criterion) {
+    bench_source(
+        c,
+        "fortinet",
+        "fortinet/fortigate/test-fortinet.log",
+        &dfe_transforms::filebeat::fortinet::default::Default,
+    );
+}
+
+/// The change itself, isolated from everything else a transform does.
+///
+/// `per_event` is what every grok site used to do on every event: expand the
+/// pattern to a regex string, then build the DFA. `cached` is what it does
+/// now. Same pattern, same result, and the ratio between them is the reason
+/// the transforms above got faster.
+fn grok_compilation(c: &mut Criterion) {
+    // A representative pattern: two typed captures and a literal separator.
+    const PATTERN: &str = "^%{IPV4:_temp.src_ip}:%{PORT:sport}$";
+
+    let mut group = c.benchmark_group("grok_compilation");
+
+    group.bench_function("per_event", |b| {
+        b.iter(|| {
+            let (expanded, field_map) =
+                dfe_runtime::codegen_api::grok_to_regex_with_map(black_box(PATTERN));
+            #[allow(clippy::expect_used)]
+            let re = regex::Regex::new(&expanded).expect("the pattern compiles");
+            black_box((re, field_map))
+        });
+    });
+
+    group.bench_function("cached", |b| {
+        b.iter(|| black_box(dfe_runtime::grok_cache::grok(black_box(PATTERN))));
+    });
+
+    group.finish();
+}
+
+criterion_group!(benches, grok_compilation, okta, cisco_meraki, fortinet);
+criterion_main!(benches);

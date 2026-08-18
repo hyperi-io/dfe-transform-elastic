@@ -125,9 +125,7 @@ impl Transform for Idsalerts {
                 let input = input.as_str();
                 // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re =
-                    regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.src_ip}:%{PORT:sport}$"))
-                        .unwrap();
+                let grok_re = &cached_grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {

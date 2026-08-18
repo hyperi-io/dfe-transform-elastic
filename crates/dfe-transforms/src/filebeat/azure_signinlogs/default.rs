@@ -318,9 +318,9 @@ impl Transform for Default {
                 {
                     // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) =
-                        grok_to_regex_with_map("%{USERNAME:user.name}@%{HOSTNAME:user.domain}");
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let cached = cached_grok("%{USERNAME:user.name}@%{HOSTNAME:user.domain}");
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -480,10 +480,11 @@ impl Transform for Default {
             if let Some(input) = event.get_string("azure.resource_id") {
                 // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let (grok_pattern, grok_field_map) = grok_to_regex_with_map(
+                let cached = cached_grok(
                     "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}",
                 );
-                let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                let grok_re = &cached.regex;
+                let grok_field_map = &cached.field_map;
                 if let Some(caps) = grok_re.captures(&input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -509,10 +510,11 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) = grok_to_regex_with_map(
+                    let cached = cached_grok(
                         "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}",
                     );
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -539,10 +541,11 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) = grok_to_regex_with_map(
+                    let cached = cached_grok(
                         "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}",
                     );
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -566,9 +569,9 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) =
-                        grok_to_regex_with_map("/providers/%{PROVIDER:azure.resource.provider}");
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let cached = cached_grok("/providers/%{PROVIDER:azure.resource.provider}");
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -593,10 +596,11 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) = grok_to_regex_with_map(
+                    let cached = cached_grok(
                         "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}",
                     );
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -621,10 +625,11 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) = grok_to_regex_with_map(
+                    let cached = cached_grok(
                         "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}",
                     );
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -648,9 +653,9 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) =
-                        grok_to_regex_with_map("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}");
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
+                    let cached = cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}");
+                    let grok_re = &cached.regex;
+                    let grok_field_map = &cached.field_map;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {

@@ -29,10 +29,7 @@ impl Transform for Default {
             let input = input.as_str();
             // Grok pattern: %{SYSLOG5424PRI}%{GREEDYDATA:syslog5424_sd}$
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex(
-                "%{SYSLOG5424PRI}%{GREEDYDATA:syslog5424_sd}$",
-            ))
-            .unwrap();
+            let grok_re = &cached_grok("%{SYSLOG5424PRI}%{GREEDYDATA:syslog5424_sd}$").regex;
             if let Some(caps) = grok_re.captures(input) {
                 for name in grok_re.capture_names().flatten() {
                     if let Some(m) = caps.name(name) {
@@ -52,7 +49,7 @@ impl Transform for Default {
 
         if let Some(s) = event.get_str("syslog5424_sd").map(String::from) {
             let s = s.as_str();
-            let re = regex::Regex::new("[\x00-\x1f\x7f]").unwrap();
+            let re = cached_regex("[\x00-\x1f\x7f]");
             let replaced = re.replace_all(s, "").into_owned();
             event.set("syslog5424_sd", replaced)?;
         }
@@ -107,8 +104,7 @@ impl Transform for Default {
             if event.has("event.timezone") {
                 if let Some(s) = event.get_str("event.timezone").map(String::from) {
                     let s = s.as_str();
-                    let re =
-                        regex::Regex::new("^(?:[A-Z]{1,4})([+-])([0-9]):?([0-9]{2})$").unwrap();
+                    let re = cached_regex("^(?:[A-Z]{1,4})([+-])([0-9]):?([0-9]{2})$");
                     let replaced = re.replace_all(s, "$10$2$3").into_owned();
                     event.set("event.timezone", replaced)?;
                 }
@@ -121,8 +117,7 @@ impl Transform for Default {
             if event.has("event.timezone") {
                 if let Some(s) = event.get_str("event.timezone").map(String::from) {
                     let s = s.as_str();
-                    let re =
-                        regex::Regex::new("^(?:[A-Z]{1,4})([+-][0-9]{2}):?([0-9]{2})$").unwrap();
+                    let re = cached_regex("^(?:[A-Z]{1,4})([+-][0-9]{2}):?([0-9]{2})$");
                     let replaced = re.replace_all(s, "$1$2").into_owned();
                     event.set("event.timezone", replaced)?;
                 }
@@ -212,7 +207,7 @@ impl Transform for Default {
                 .map(String::from)
             {
                 let s = s.as_str();
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex("\\d{6}$");
                 let replaced = re.replace_all(s, "").into_owned();
                 event.set("fortinet.firewall.eventtime", replaced)?;
             }
@@ -395,7 +390,7 @@ impl Transform for Default {
         if event.has("destination.mac") {
             if let Some(s) = event.get_str("destination.mac").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new(":").unwrap();
+                let re = cached_regex(":");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("destination.mac", replaced)?;
             }
@@ -1728,7 +1723,7 @@ impl Transform for Default {
             if event.has("rule.category") {
                 if let Some(s) = event.get_str("rule.category").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("\\.").unwrap();
+                    let re = cached_regex("\\.");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("rule.category", replaced)?;
                 }
@@ -2230,7 +2225,7 @@ impl Transform for Default {
                 if event.has("rule.category") {
                     if let Some(s) = event.get_str("rule.category").map(String::from) {
                         let s = s.as_str();
-                        let re = regex::Regex::new("\\.").unwrap();
+                        let re = cached_regex("\\.");
                         let replaced = re.replace_all(s, "-").into_owned();
                         event.set("rule.category", replaced)?;
                     }
@@ -3509,7 +3504,7 @@ impl Transform for Default {
         if event.has("source.mac") {
             if let Some(s) = event.get_str("source.mac").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[:.]").unwrap();
+                let re = cached_regex("[:.]");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("source.mac", replaced)?;
             }

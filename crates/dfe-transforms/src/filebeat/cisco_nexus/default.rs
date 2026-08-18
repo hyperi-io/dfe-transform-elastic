@@ -39,7 +39,7 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}%{NEXUS_BODY}$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}%{NEXUS_BODY}$")).unwrap();
+                let grok_re = &cached_grok("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}%{NEXUS_BODY}$").regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -528,7 +528,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$")).unwrap();
+                        let grok_re = &cached_grok("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -554,7 +554,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$")).unwrap();
+                        let grok_re = &cached_grok("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -578,7 +578,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$")).unwrap();
+                        let grok_re = &cached_grok("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -602,7 +602,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$")).unwrap();
+                        let grok_re = &cached_grok("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -625,7 +625,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$")).unwrap();
+                        let grok_re = &cached_grok("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -641,7 +641,7 @@ impl Transform for Default {
             if event.has("source.mac") {
                 if let Some(s) = event.get_str("source.mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[.]").unwrap();
+                    let re = cached_regex("[.]");
                     let replaced = re.replace_all(s, "").into_owned();
                     event.set("source.mac", replaced)?;
                 }

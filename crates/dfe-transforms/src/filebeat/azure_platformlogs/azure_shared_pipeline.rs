@@ -25,7 +25,7 @@ impl Transform for AzureSharedPipeline {
             if let Some(input) = event.get_string("azure.resource_id") {
                 // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}")).unwrap();
+                let grok_re = &cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/NAMESPACES/%{NAMESPACE:azure.resource.namespace}/AUTHORIZATIONRULES/%{RULE:azure.resource.authorization_rule}").regex;
                 if let Some(caps) = grok_re.captures(&input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -50,7 +50,7 @@ impl Transform for AzureSharedPipeline {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+                    let grok_re = &cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}").regex;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -76,7 +76,7 @@ impl Transform for AzureSharedPipeline {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}")).unwrap();
+                    let grok_re = &cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}/%{NAME:azure.resource.name}").regex;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -99,10 +99,8 @@ impl Transform for AzureSharedPipeline {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /providers/%{PROVIDER:azure.resource.provider}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex(
-                        "/providers/%{PROVIDER:azure.resource.provider}",
-                    ))
-                    .unwrap();
+                    let grok_re =
+                        &cached_grok("/providers/%{PROVIDER:azure.resource.provider}").regex;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -126,7 +124,7 @@ impl Transform for AzureSharedPipeline {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}")).unwrap();
+                    let grok_re = &cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/PROVIDERS/%{PROVIDERNAME:azure.resource.provider}").regex;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -150,7 +148,7 @@ impl Transform for AzureSharedPipeline {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}")).unwrap();
+                    let grok_re = &cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}/RESOURCEGROUPS/%{GROUPID:azure.resource.group}").regex;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -173,10 +171,8 @@ impl Transform for AzureSharedPipeline {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: /SUBSCRIPTIONS/%{SUBID:azure.subscription_id}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex(
-                        "/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}",
-                    ))
-                    .unwrap();
+                    let grok_re =
+                        &cached_grok("/SUBSCRIPTIONS/%{SUBID:azure.subscription_id}").regex;
                     if let Some(caps) = grok_re.captures(&input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {

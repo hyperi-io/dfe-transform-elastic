@@ -18,7 +18,7 @@ impl Transform for Flows {
             let input = input.as_str();
             // Grok pattern: %{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex("%{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?")).unwrap();
+            let grok_re = &cached_grok("%{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").regex;
             if let Some(caps) = grok_re.captures(input) {
                 for name in grok_re.capture_names().flatten() {
                     if let Some(m) = caps.name(name) {
@@ -39,7 +39,7 @@ impl Transform for Flows {
                     let input = input.as_str();
                     // Grok pattern: %{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}")).unwrap();
+                    let grok_re = &cached_grok("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -60,7 +60,7 @@ impl Transform for Flows {
         if event.has("source.mac") {
             if let Some(s) = event.get_str("source.mac").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[:.]").unwrap();
+                let re = cached_regex("[:.]");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("source.mac", replaced)?;
             }

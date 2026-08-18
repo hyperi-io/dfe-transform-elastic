@@ -92,7 +92,7 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: %{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("%{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?")).unwrap();
+                let grok_re = &cached_grok("%{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -112,7 +112,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: %{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}")).unwrap();
+                        let grok_re = &cached_grok("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -131,7 +131,7 @@ impl Transform for Default {
             if event.has("source.mac") {
                 if let Some(s) = event.get_str("source.mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[:.]").unwrap();
+                    let re = cached_regex("[:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("source.mac", replaced)?;
                 }
@@ -429,10 +429,10 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: %{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex(
+                let grok_re = &cached_grok(
                     "%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}",
-                ))
-                .unwrap();
+                )
+                .regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -476,13 +476,13 @@ impl Transform for Default {
             }
             if let Some(s) = event.get_str("_temp.kv.src").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[-:.]").unwrap();
+                let re = cached_regex("[-:.]");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("source.mac", replaced)?;
             }
             if let Some(s) = event.get_str("_temp.kv.dst").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[-:.]").unwrap();
+                let re = cached_regex("[-:.]");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("destination.mac", replaced)?;
             }
@@ -490,7 +490,7 @@ impl Transform for Default {
             {
                 if let Some(s) = event.get_str("_temp.kv.wired_mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[-:.]").unwrap();
+                    let re = cached_regex("[-:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("_temp.observer.mac", replaced)?;
                 }
@@ -540,7 +540,7 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: ^%{DATA} (security_event|ids-alerts) (%{WORD}\\s)?%{DATA:_temp.kvs}(\\smessage:\\s?%{DATA:message})?$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA} (security_event|ids-alerts) (%{WORD}\\s)?%{DATA:_temp.kvs}(\\smessage:\\s?%{DATA:message})?$")).unwrap();
+                let grok_re = &cached_grok("^%{DATA} (security_event|ids-alerts) (%{WORD}\\s)?%{DATA:_temp.kvs}(\\smessage:\\s?%{DATA:message})?$").regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -568,7 +568,7 @@ impl Transform for Default {
             if event.has("dhost") {
                 if let Some(s) = event.get_str("dhost").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[-:.]").unwrap();
+                    let re = cached_regex("[-:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("cisco_meraki.security.dhost", replaced)?;
                 }
@@ -623,7 +623,7 @@ impl Transform for Default {
             if event.has("mac") {
                 if let Some(s) = event.get_str("mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[-:.]").unwrap();
+                    let re = cached_regex("[-:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("cisco_meraki.security.mac", replaced)?;
                 }
@@ -650,9 +650,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re =
-                        regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.src_ip}:%{PORT:sport}$"))
-                            .unwrap();
+                    let grok_re = &cached_grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -737,9 +735,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^%{IPV4:_temp.dst_ip}:%{PORT:dport}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re =
-                        regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.dst_ip}:%{PORT:dport}$"))
-                            .unwrap();
+                    let grok_re = &cached_grok("^%{IPV4:_temp.dst_ip}:%{PORT:dport}$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -931,9 +927,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re =
-                        regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.src_ip}:%{PORT:sport}$"))
-                            .unwrap();
+                    let grok_re = &cached_grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1173,9 +1167,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: events dhcp %{GREEDYDATA:message}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re =
-                        regex::Regex::new(&grok_to_regex("events dhcp %{GREEDYDATA:message}$"))
-                            .unwrap();
+                    let grok_re = &cached_grok("events dhcp %{GREEDYDATA:message}$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1196,7 +1188,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: %{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}")).unwrap();
+                    let grok_re = &cached_grok("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1218,7 +1210,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$")).unwrap();
+                    let grok_re = &cached_grok("^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1231,7 +1223,7 @@ impl Transform for Default {
             if event.has("source.mac") {
                 if let Some(s) = event.get_str("source.mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[:.]").unwrap();
+                    let re = cached_regex("[:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("source.mac", replaced)?;
                 }
@@ -1259,7 +1251,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$")).unwrap();
+                    let grok_re = &cached_grok("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1272,7 +1264,7 @@ impl Transform for Default {
             if event.has("_temp.port_action") {
                 if let Some(s) = event.get_str("_temp.port_action").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new(" ").unwrap();
+                    let re = cached_regex(" ");
                     let replaced = re.replace_all(s, "_").into_owned();
                     event.set("_temp.port_action", replaced)?;
                 }
@@ -1305,7 +1297,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$")).unwrap();
+                    let grok_re = &cached_grok("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1334,7 +1326,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: %{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}")).unwrap();
+                    let grok_re = &cached_grok("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1402,7 +1394,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re = regex::Regex::new(&grok_to_regex("^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$")).unwrap();
+                        let grok_re = &cached_grok("^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -1459,10 +1451,10 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex(
+                    let grok_re = &cached_grok(
                         "^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$",
-                    ))
-                    .unwrap();
+                    )
+                    .regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1541,10 +1533,8 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: events client_vpn_connect %{GREEDYDATA:message}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex(
-                        "events client_vpn_connect %{GREEDYDATA:message}$",
-                    ))
-                    .unwrap();
+                    let grok_re =
+                        &cached_grok("events client_vpn_connect %{GREEDYDATA:message}$").regex;
                     if let Some(caps) = grok_re.captures(input) {
                         for name in grok_re.capture_names().flatten() {
                             if let Some(m) = caps.name(name) {
@@ -1562,8 +1552,7 @@ impl Transform for Default {
                         let input = input.as_str();
                         // Grok pattern: ^%{IPV4:_temp.client_ip}$
                         // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                        let grok_re =
-                            regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.client_ip}$")).unwrap();
+                        let grok_re = &cached_grok("^%{IPV4:_temp.client_ip}$").regex;
                         if let Some(caps) = grok_re.captures(input) {
                             for name in grok_re.capture_names().flatten() {
                                 if let Some(m) = caps.name(name) {
@@ -1598,7 +1587,7 @@ impl Transform for Default {
             if event.has("client.mac") {
                 if let Some(s) = event.get_str("client.mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[:.]").unwrap();
+                    let re = cached_regex("[:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("client.mac", replaced)?;
                 }
@@ -1613,7 +1602,7 @@ impl Transform for Default {
             if event.has("server.mac") {
                 if let Some(s) = event.get_str("server.mac").map(String::from) {
                     let s = s.as_str();
-                    let re = regex::Regex::new("[:.]").unwrap();
+                    let re = cached_regex("[:.]");
                     let replaced = re.replace_all(s, "-").into_owned();
                     event.set("server.mac", replaced)?;
                 }
@@ -1717,9 +1706,7 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re =
-                    regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.src_ip}:%{PORT:sport}$"))
-                        .unwrap();
+                let grok_re = &cached_grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -1786,9 +1773,7 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: ^%{IPV4:_temp.dst_ip}:%{PORT:dport}$
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re =
-                    regex::Regex::new(&grok_to_regex("^%{IPV4:_temp.dst_ip}:%{PORT:dport}$"))
-                        .unwrap();
+                let grok_re = &cached_grok("^%{IPV4:_temp.dst_ip}:%{PORT:dport}$").regex;
                 if let Some(caps) = grok_re.captures(input) {
                     for name in grok_re.capture_names().flatten() {
                         if let Some(m) = caps.name(name) {
@@ -1858,7 +1843,7 @@ impl Transform for Default {
             }
             if let Some(s) = event.get_str("mac").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[-:.]").unwrap();
+                let re = cached_regex("[-:.]");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("cisco_meraki.urls.mac", replaced)?;
             }
