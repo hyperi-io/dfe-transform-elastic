@@ -7,6 +7,7 @@ authors.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+publish.workspace = true
 exclude = [".github/", "chart/", "docs/", ".tmp/", "tests/fixtures/"]
 
 [lib]
@@ -75,6 +76,9 @@ resolver = "2"
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
+# A black-box service, not a library. Nothing here goes to crates.io, and
+# saying so stops an accidental publish of BUSL-1.1 code.
+publish = false
 authors = ["HyperI <dev@hyperi.com.au>"]
 license = "BUSL-1.1"
 repository = "https://github.com/hyperi-io/dfe-transform-elastic"

@@ -6,17 +6,21 @@
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 #
 # Run: cargo deny check
+#
+# Written against cargo-deny 0.20. The 0.14 spelling of this file --
+# `vulnerability`, `notice`, `unlicensed`, `copyleft`, `default`, and
+# `unmaintained` as a lint level -- was rejected outright, so the check
+# reported "issues found" while never actually running.
 
 [advisories]
 db-path = "~/.cargo/advisory-db"
 db-urls = ["https://github.com/rustsec/advisory-db"]
-vulnerability = "deny"
-unmaintained = "warn"
+# Advisories are errors by default in 0.20; only the scope of the
+# unmaintained check is still configurable.
+unmaintained = "workspace"
 yanked = "warn"
-notice = "warn"
 
 [licenses]
-unlicensed = "deny"
 allow = [
     "BUSL-1.1",
     "MIT",
@@ -27,16 +31,16 @@ allow = [
     "ISC",
     "Zlib",
     "MPL-2.0",
-    "Unicode-DFS-2016",
     "Unicode-3.0",
-    "OpenSSL",
 ]
-copyleft = "warn"
-default = "deny"
+confidence-threshold = 0.8
 
 [bans]
 multiple-versions = "warn"
 wildcards = "deny"
+# The workspace crates depend on each other by path and so carry no version
+# requirement; without this every one of them reads as a wildcard.
+allow-wildcard-paths = true
 highlight = "all"
 
 [sources]
