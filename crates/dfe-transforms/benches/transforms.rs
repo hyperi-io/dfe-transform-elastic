@@ -164,9 +164,50 @@ fn event_paths(c: &mut Criterion) {
     group.finish();
 }
 
+/// Does `dfe-parse` actually beat a COMPILED regex?
+///
+/// The design rests on "grok/regex is the #1 hot-path bottleneck, replace it
+/// with native parsers". That was written when every regex was rebuilt per
+/// event. Now that they are compiled once, the premise deserves a measurement
+/// rather than an assumption -- so this runs the same two jobs both ways.
+fn native_vs_regex(c: &mut Criterion) {
+    const ADDRESS: &str = "192.168.1.100";
+    const PAIR: &str = "10.0.0.7:443";
+
+    let mut group = c.benchmark_group("native_vs_regex");
+
+    group.bench_function("ipv4/regex", |b| {
+        let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:source.ip}$");
+        b.iter(|| black_box(compiled.regex.captures(black_box(ADDRESS))));
+    });
+
+    group.bench_function("ipv4/native", |b| {
+        b.iter(|| black_box(dfe_parse::ip::parse_ipv4(black_box(ADDRESS))));
+    });
+
+    group.bench_function("ip_port/regex", |b| {
+        let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$");
+        b.iter(|| black_box(compiled.regex.captures(black_box(PAIR))));
+    });
+
+    group.bench_function("ip_port/native", |b| {
+        b.iter(|| {
+            // The composite the grok expresses: address, literal colon, port.
+            let parsed = dfe_parse::ip::parse_ipv4(black_box(PAIR)).and_then(|(rest, ip)| {
+                let rest = rest.strip_prefix(':').unwrap_or(rest);
+                dfe_parse::numeric::parse_port(rest).map(|(tail, port)| (tail, ip, port))
+            });
+            black_box(parsed)
+        });
+    });
+
+    group.finish();
+}
+
 criterion_group!(
     benches,
     grok_compilation,
+    native_vs_regex,
     event_paths,
     okta,
     cisco_meraki,
