@@ -54,7 +54,14 @@ impl GeoIpEnrichment {
         let ip: IpAddr = ip_str
             .parse()
             .map_err(|e| format!("invalid IP '{ip_str}': {e}"))?;
+        self.lookup_addr(ip)
+    }
 
+    /// Look up an address that is already parsed.
+    ///
+    /// The caller on the hot path has to parse before it can decide whether the
+    /// address is private, so this is the entry point that does not re-parse.
+    pub fn lookup_addr(&self, ip: IpAddr) -> std::result::Result<GeoIpResult, String> {
         let lookup_result = self
             .reader
             .lookup(ip)

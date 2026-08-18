@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Global `GeoIP` enricher for use by generated transform code.
+//! Global `GeoIP` enricher, shared by every transform that needs one.
 //!
 //! 14 of the 60 source pipelines carry a geoip processor, so this is on the
 //! path for every network-device source. An [LRU cache](super::geoip_cache)
@@ -152,14 +152,22 @@ fn find_db(env_var: &str, filenames: &[&str]) -> Option<PathBuf> {
 pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
     let global = GLOBAL_GEOIP.get_or_init(init_global);
 
+    // Parse FIRST. `ip` is whatever the vendor put in the field, and an
+    // unparseable value has no data in any database -- caching it would let a
+    // vendor string of arbitrary length become a cache key.
+    let Ok(address) = ip.parse::<IpAddr>() else {
+        debug!(ip = ip, "not an IP address, no enrichment");
+        return HashMap::new();
+    };
+
     // Private ranges have no data anywhere, so they never reach the cache or
     // a database.
-    if is_private_ip(ip) {
+    if is_private(address) {
         return HashMap::new();
     }
 
     let database = database_for(db_name);
-    if let Some(cached) = global.cache.get(database, ip) {
+    if let Some(cached) = global.cache.get(database, address) {
         return cached;
     }
 
@@ -169,7 +177,7 @@ pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
     };
 
     let fields = match enricher {
-        Some(e) => match e.lookup(ip) {
+        Some(e) => match e.lookup_addr(address) {
             Ok(result) => result,
             Err(msg) => {
                 debug!(ip = ip, error = %msg, "GeoIP lookup failed");
@@ -179,7 +187,7 @@ pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
         None => HashMap::new(),
     };
 
-    global.cache.put(database, ip, fields.clone());
+    global.cache.put(database, address, fields.clone());
     fields
 }
 
@@ -195,10 +203,10 @@ fn database_for(db_name: &str) -> Database {
     }
 }
 
-/// Check whether an IP is in a private/internal range.
-fn is_private_ip(ip: &str) -> bool {
-    match ip.parse::<IpAddr>() {
-        Ok(IpAddr::V4(v4)) => {
+/// Check whether an address is in a private or internal range.
+fn is_private(address: IpAddr) -> bool {
+    match address {
+        IpAddr::V4(v4) => {
             v4.is_private()
                 || v4.is_loopback()
                 || v4.is_link_local()
@@ -207,25 +215,40 @@ fn is_private_ip(ip: &str) -> bool {
                 // CGNAT range 100.64.0.0/10
                 || (v4.octets()[0] == 100 && (v4.octets()[1] & 0xC0) == 64)
         }
-        Ok(IpAddr::V6(v6)) => v6.is_loopback() || v6.is_multicast(),
-        Err(_) => false,
+        IpAddr::V6(v6) => v6.is_loopback() || v6.is_multicast(),
     }
+}
+
+/// One lock over the process-global cache and its counters.
+///
+/// Every test that reads the counters or the size takes it, wherever in the
+/// crate it lives -- `codegen_api` reaches the same global through its own
+/// wrapper, and without this the two race.
+#[cfg(test)]
+pub(crate) fn test_guard() -> std::sync::MutexGuard<'static, ()> {
+    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    LOCK.lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    fn addr(ip: &str) -> IpAddr {
+        ip.parse().unwrap_or_else(|e| panic!("{ip} parses: {e}"))
+    }
+
     #[test]
     fn private_ip_detection() {
-        assert!(is_private_ip("10.0.0.1"));
-        assert!(is_private_ip("172.16.0.1"));
-        assert!(is_private_ip("192.168.1.1"));
-        assert!(is_private_ip("127.0.0.1"));
-        assert!(is_private_ip("169.254.0.1"));
-        assert!(is_private_ip("100.64.0.1"));
-        assert!(!is_private_ip("8.8.8.8"));
-        assert!(!is_private_ip("175.16.199.1"));
+        assert!(is_private(addr("10.0.0.1")));
+        assert!(is_private(addr("172.16.0.1")));
+        assert!(is_private(addr("192.168.1.1")));
+        assert!(is_private(addr("127.0.0.1")));
+        assert!(is_private(addr("169.254.0.1")));
+        assert!(is_private(addr("100.64.0.1")));
+        assert!(!is_private(addr("8.8.8.8")));
+        assert!(!is_private(addr("175.16.199.1")));
     }
 
     #[test]
@@ -252,13 +275,7 @@ mod tests {
         // This test verifies the lookup path doesn't panic
     }
 
-    /// The cache and its counters are process-global, so the tests that read
-    /// them take one lock rather than racing each other.
-    fn serialised() -> std::sync::MutexGuard<'static, ()> {
-        static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-        LOCK.lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-    }
+    use super::test_guard as serialised;
 
     /// A repeated address must not reach the database twice. Asserted on the
     /// delta, because other tests have already moved the counters.
@@ -324,6 +341,31 @@ mod tests {
         let _ = geoip_lookup("geoip_city", "10.11.12.13");
         let after = cache_stats();
 
+        assert_eq!(after.hits, before.hits);
+        assert_eq!(after.misses, before.misses);
+    }
+
+    /// `source.ip` carries whatever the vendor put there. A value that is not
+    /// an address must not become a cache key: the cache is bounded by ENTRY
+    /// COUNT, so an arbitrary-length key is an arbitrary-length memory leak,
+    /// and junk keys evict the real ones on the way.
+    #[test]
+    fn an_unparseable_address_never_reaches_the_cache() {
+        let _guard = serialised();
+        let before = cache_stats();
+
+        for junk in [
+            "not-an-ip",
+            "10.0.0.1, 10.0.0.2",
+            "example.com",
+            "",
+            "999.999.999.999",
+        ] {
+            assert!(geoip_lookup("geoip_city", junk).is_empty(), "{junk}");
+        }
+
+        let after = cache_stats();
+        assert_eq!(after.size, before.size, "junk was stored in the cache");
         assert_eq!(after.hits, before.hits);
         assert_eq!(after.misses, before.misses);
     }

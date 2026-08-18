@@ -3,7 +3,7 @@
 
 //! Transform trait, `TransformResult`, and `TransformChain`.
 //!
-//! Generated transform modules implement the `Transform` trait. Multiple
+//! Every transform module implements the `Transform` trait. Multiple
 //! transforms compose into a `TransformChain` that runs sequentially,
 //! stopping on `Drop` or error.
 

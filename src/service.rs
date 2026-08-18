@@ -3,25 +3,52 @@
 
 //! The service loop: consume a batch, transform it, produce the survivors.
 //!
-//! The transform is resolved once at startup, not per event. The loop commits
-//! only after a successful send, so a crash between transform and send replays
-//! rather than loses.
+//! The transform is resolved once at startup, not per event.
+//!
+//! ## Delivery
+//!
+//! At-least-once, and the offset commit is what enforces it. Kafka commits are
+//! cumulative -- the highest offset per partition -- so an uncommitted batch is
+//! only replayed if NOTHING after it commits. The loop therefore stops on a
+//! send it cannot complete rather than carrying on: the process exits, and the
+//! restarted consumer resumes from the last committed offset. Carrying on
+//! would let the next batch's commit acknowledge the failed one, which is loss,
+//! not replay.
+//!
+//! Duplicates are the accepted cost. A batch is produced as several Kafka
+//! records, so a failure partway through replays the records that already
+//! landed. The consumer downstream must be idempotent, which is the same
+//! contract every other DFE stage carries.
 
 use std::time::{Duration, Instant};
 
 use scalo::cli::ServiceRuntime;
 use scalo::metrics::TransportKind;
-use scalo::transport::kafka::{KafkaConfig, KafkaProfile, KafkaTransport, total_consumer_lag};
-use scalo::transport::{TransportReceiver, TransportSender};
+use scalo::transport::kafka::{KafkaConfig, KafkaTransport, total_consumer_lag};
+use scalo::transport::{SendResult, TransportReceiver, TransportSender};
 use tokio_util::sync::CancellationToken;
 
 use crate::config::Config;
 use crate::metrics::TransformMetrics;
-use crate::pipeline::{parse_batch, serialise_batch, transform_batch_with};
+use crate::pipeline::{parse_batch, serialise_chunks, transform_batch_with};
 
 /// How often the loop pushes scaling signals. One librdkafka stats read per
 /// interval, independent of batch cadence.
 const SCALING_SIGNAL_INTERVAL: Duration = Duration::from_secs(5);
+
+/// Attempts one record gets before the batch is abandoned uncommitted.
+///
+/// With the backoff below this rides out roughly 25 seconds of a slow or
+/// re-electing sink, which covers a leader change without a restart, and gives
+/// up on a real outage rather than blocking the partition indefinitely.
+const SEND_MAX_ATTEMPTS: u32 = 8;
+
+/// First wait between send attempts. Doubles up to [`SEND_BACKOFF_MAX`].
+const SEND_BACKOFF_BASE: Duration = Duration::from_millis(100);
+
+/// Ceiling on the retry wait, so the backoff cannot outrun `max.poll.interval`
+/// and trigger a rebalance while the loop is still retrying.
+const SEND_BACKOFF_MAX: Duration = Duration::from_secs(5);
 
 /// The per-pod signals `/scaling/pressure` serves to KEDA.
 ///
@@ -39,9 +66,12 @@ pub struct ScalingSignals {
 /// # Errors
 ///
 /// Returns [`crate::Error::UnknownSource`] if the configured source has no
-/// transform, or [`crate::Error::Transport`] if either Kafka side cannot be
-/// created.
+/// transform, [`crate::Error::Config`] if the mounted credentials and the wire
+/// protocol disagree, or [`crate::Error::Transport`] if either Kafka side
+/// cannot be created.
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
+    check_credentials(&transport_defaults())?;
+
     let consumer = KafkaTransport::new(&consumer_config(&config))
         .await
         .map_err(|e| crate::Error::Transport(format!("consumer: {e}")))?;
@@ -80,7 +110,9 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 /// # Errors
 ///
 /// Returns [`crate::Error::UnknownSource`] if the configured source has no
-/// transform, or a serialisation error from the outbound batch.
+/// transform, or [`crate::Error::Transport`] if the sink would not accept a
+/// record. The batch is left uncommitted in that case, so the restarted
+/// service replays it.
 // Batch and byte counts are bounded far below 2^53, so the f64 casts are exact.
 #[allow(clippy::cast_precision_loss)]
 pub async fn run_loop(
@@ -231,23 +263,26 @@ pub async fn run_loop(
         last_signal = Instant::now();
 
         if !transformed.is_empty() {
-            let payload = serialise_batch(&transformed)?;
-            let sent_bytes = payload.len() as u64;
-            if let scalo::transport::SendResult::Fatal(e) = producer
-                .send(&config.sink.topic, bytes::Bytes::from(payload))
-                .await
-            {
-                metrics.send_failures.increment(1);
-                metrics.dfe.transport_send_errors(TransportKind::Kafka, 1);
-                tracing::error!(error = %e, "send failed, batch not committed");
-                continue;
+            match publish(config, producer, shutdown, metrics, &transformed).await {
+                SendOutcome::Sent => {}
+                // The batch is deliberately left uncommitted, and the loop
+                // deliberately does not continue: the next batch's cumulative
+                // commit would acknowledge this one.
+                SendOutcome::Failed(e) => {
+                    metrics.send_failures.increment(1);
+                    metrics.dfe.pipeline_ready(false);
+                    tracing::error!(
+                        error = %e,
+                        "sink send failed; stopping uncommitted so the batch replays"
+                    );
+                    return Err(e);
+                }
+                SendOutcome::ShuttingDown => {
+                    metrics.dfe.pipeline_ready(false);
+                    tracing::info!("shutdown during send; batch left uncommitted for replay");
+                    return Ok(());
+                }
             }
-            metrics.dfe.transport_sent(TransportKind::Kafka, 1);
-            metrics
-                .dfe
-                .transport_sent_bytes(TransportKind::Kafka, sent_bytes);
-            metrics.dfe.records_delivered(outcome.emitted as u64);
-            metrics.app.bytes_written.increment(sent_bytes);
         }
 
         if let Err(e) = consumer.commit(&batch.commit_tokens).await {
@@ -259,6 +294,118 @@ pub async fn run_loop(
     metrics.dfe.pipeline_ready(false);
     tracing::info!("transform service stopped");
     Ok(())
+}
+
+/// What became of one outbound record.
+enum SendOutcome {
+    /// The broker accepted it.
+    Sent,
+    /// Retries ran out, or the transport refused in a way retrying cannot fix.
+    Failed(crate::Error),
+    /// The service was asked to stop mid-retry.
+    ShuttingDown,
+}
+
+/// Serialise a transformed batch and produce every record it splits into.
+///
+/// The batch is one unit for commit purposes: unless every record lands, the
+/// caller must not commit. Records already accepted when a later one fails are
+/// therefore replayed on restart -- the duplicate half of at-least-once.
+#[allow(clippy::cast_precision_loss)]
+async fn publish(
+    config: &Config,
+    producer: &KafkaTransport,
+    shutdown: &CancellationToken,
+    metrics: &TransformMetrics,
+    transformed: &[dfe_runtime::Event],
+) -> SendOutcome {
+    let (chunks, serialised) = serialise_chunks(transformed, config.sink.max_message_bytes);
+
+    if serialised.oversize > 0 {
+        metrics
+            .events_oversize
+            .increment(serialised.oversize as u64);
+    }
+    if serialised.failed > 0 {
+        metrics.events_errored.increment(serialised.failed as u64);
+        metrics
+            .app
+            .records_error
+            .increment(serialised.failed as u64);
+    }
+
+    for chunk in chunks {
+        let chunk_bytes = chunk.len() as u64;
+        match send_chunk(producer, &config.sink.topic, chunk, shutdown, metrics).await {
+            SendOutcome::Sent => {
+                metrics.dfe.transport_sent(TransportKind::Kafka, 1);
+                metrics
+                    .dfe
+                    .transport_sent_bytes(TransportKind::Kafka, chunk_bytes);
+                metrics.app.bytes_written.increment(chunk_bytes);
+            }
+            other => return other,
+        }
+    }
+
+    metrics.dfe.records_delivered(serialised.serialised as u64);
+    SendOutcome::Sent
+}
+
+/// Send one record, retrying while the sink will not take it.
+///
+/// [`SendResult`] has four variants and three of them are not delivery.
+/// Backpressure in particular is the NORMAL response from a slow sink -- a
+/// full local producer queue -- so it is retried rather than counted as sent;
+/// treating it as success is how a batch gets acknowledged and never written.
+async fn send_chunk(
+    producer: &KafkaTransport,
+    topic: &str,
+    payload: Vec<u8>,
+    shutdown: &CancellationToken,
+    metrics: &TransformMetrics,
+) -> SendOutcome {
+    // Refcounted, so each retry re-sends the same buffer rather than copying.
+    let payload = bytes::Bytes::from(payload);
+    let mut backoff = SEND_BACKOFF_BASE;
+
+    for attempt in 1..=SEND_MAX_ATTEMPTS {
+        match producer.send(topic, payload.clone()).await {
+            SendResult::Ok => return SendOutcome::Sent,
+            SendResult::Backpressured => {
+                metrics.send_backpressure.increment(1);
+                tracing::warn!(attempt, "sink is backpressured, retrying");
+            }
+            SendResult::Fatal(e) => {
+                metrics.dfe.transport_send_errors(TransportKind::Kafka, 1);
+                tracing::warn!(attempt, error = %e, "send failed, retrying");
+            }
+            // scalo's contract makes DLQ routing the caller's job. This
+            // service configures no outbound filters and has no DLQ, so the
+            // only honest response is to refuse rather than drop the record.
+            SendResult::FilteredDlq => {
+                metrics.send_filtered_dlq.increment(1);
+                return SendOutcome::Failed(crate::Error::Transport(
+                    "an outbound filter routed a record to a DLQ this service does not \
+                     have; remove the filter or wire a DLQ"
+                        .into(),
+                ));
+            }
+        }
+
+        if attempt == SEND_MAX_ATTEMPTS {
+            break;
+        }
+        tokio::select! {
+            () = shutdown.cancelled() => return SendOutcome::ShuttingDown,
+            () = tokio::time::sleep(backoff) => {}
+        }
+        backoff = backoff.saturating_mul(2).min(SEND_BACKOFF_MAX);
+    }
+
+    SendOutcome::Failed(crate::Error::Transport(format!(
+        "sink did not accept a record after {SEND_MAX_ATTEMPTS} attempts"
+    )))
 }
 
 /// Push the per-pod signals `/scaling/pressure` serves to KEDA.
@@ -285,27 +432,73 @@ fn push_scaling_signals(
         .set_memory(scaling.memory.current_bytes(), scaling.memory.limit_bytes());
 }
 
+/// The transport settings that do not come from this service's own config.
+///
+/// Credentials, the wire protocol and the TLS material are read from the
+/// environment, because that is where the deployment puts them: the contract
+/// projects `KAFKA_SASL_USERNAME` and `KAFKA_SASL_PASSWORD` from a secret, and
+/// a secret must not be readable in a `ConfigMap`. `from_env` takes the service
+/// prefix first and falls back to the bare `KAFKA_*` names the chart mounts.
+fn transport_defaults() -> KafkaConfig {
+    KafkaConfig::from_env(crate::config::ENV_PREFIX)
+}
+
+/// Refuse a credential the transport would not actually send.
+///
+/// librdkafka only presents SASL credentials when `security_protocol` names a
+/// SASL mechanism. Mounting the secret and leaving the protocol at `plaintext`
+/// therefore connects ANONYMOUSLY, in the clear, while the operator believes
+/// the secret is in use -- so the pairing is rejected instead of guessed at.
+fn check_credentials(kafka: &KafkaConfig) -> crate::Result<()> {
+    let has_credentials = kafka.sasl_username.is_some() || kafka.sasl_password.is_some();
+    let is_sasl = kafka
+        .security_protocol
+        .to_ascii_lowercase()
+        .starts_with("sasl");
+
+    if has_credentials && !is_sasl {
+        return Err(crate::Error::Config(format!(
+            "KAFKA_SASL_USERNAME/PASSWORD are set but security_protocol is '{}', so the \
+             credentials would never be sent -- set KAFKA_SECURITY_PROTOCOL=sasl_ssl and \
+             KAFKA_SASL_MECHANISM",
+            kafka.security_protocol
+        )));
+    }
+    if is_sasl && !has_credentials {
+        return Err(crate::Error::Config(format!(
+            "security_protocol is '{}' but no SASL credentials are set -- mount the kafka \
+             secret, or set KAFKA_SECURITY_PROTOCOL to a protocol that needs none",
+            kafka.security_protocol
+        )));
+    }
+    if is_sasl && kafka.sasl_mechanism.is_none() {
+        return Err(crate::Error::Config(
+            "security_protocol names SASL but KAFKA_SASL_MECHANISM is unset".into(),
+        ));
+    }
+    Ok(())
+}
+
 fn consumer_config(config: &Config) -> KafkaConfig {
     KafkaConfig {
-        profile: KafkaProfile::Production,
         brokers: config.source.brokers.clone(),
         group: config.source.group_id.clone(),
         client_id: "dfe-transform-elastic-consumer".to_string(),
         topics: config.source.topics.clone(),
-        ..KafkaConfig::production()
+        ..transport_defaults()
     }
 }
 
 fn producer_config(config: &Config) -> KafkaConfig {
     KafkaConfig {
-        profile: KafkaProfile::Production,
         brokers: config.sink_brokers().to_vec(),
         client_id: "dfe-transform-elastic-producer".to_string(),
-        ..KafkaConfig::production()
+        ..transport_defaults()
     }
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use crate::config::{SinkConfig, SourceConfig};
@@ -324,6 +517,7 @@ mod tests {
             sink: SinkConfig {
                 topic: "out".into(),
                 brokers: Some(vec!["other:9092".into()]),
+                max_message_bytes: crate::config::default_max_message_bytes(),
             },
         }
     }
@@ -355,5 +549,71 @@ mod tests {
     fn consumer_and_producer_have_distinct_client_ids() {
         let c = config();
         assert_ne!(consumer_config(&c).client_id, producer_config(&c).client_id);
+    }
+
+    /// The whole point of reading the environment: a mounted secret has to
+    /// reach the transport, on both the consumer and the producer.
+    #[test]
+    fn mounted_credentials_reach_both_transports() {
+        let kafka = KafkaConfig {
+            security_protocol: "sasl_ssl".into(),
+            sasl_mechanism: Some("SCRAM-SHA-512".into()),
+            sasl_username: Some("svc".into()),
+            sasl_password: Some("hunter2".into()),
+            ..KafkaConfig::default()
+        };
+
+        // What `..transport_defaults()` carries through -- the struct-update
+        // syntax the two builders use keeps every field they do not name.
+        let consumer = KafkaConfig {
+            brokers: vec!["b:9092".into()],
+            ..kafka.clone()
+        };
+        assert_eq!(consumer.sasl_username.as_deref(), Some("svc"));
+        assert_eq!(consumer.security_protocol, "sasl_ssl");
+        assert!(check_credentials(&kafka).is_ok());
+    }
+
+    /// The defect: credentials mounted, protocol left at the default, so
+    /// librdkafka connects anonymously in cleartext and nothing says so.
+    #[test]
+    fn credentials_without_a_sasl_protocol_are_rejected() {
+        let kafka = KafkaConfig {
+            sasl_username: Some("svc".into()),
+            sasl_password: Some("hunter2".into()),
+            ..KafkaConfig::default()
+        };
+        assert_eq!(kafka.security_protocol, "plaintext");
+
+        let err = check_credentials(&kafka).expect_err("plaintext + credentials must be rejected");
+        assert!(err.to_string().contains("never be sent"), "{err}");
+    }
+
+    #[test]
+    fn a_sasl_protocol_without_credentials_is_rejected() {
+        let kafka = KafkaConfig {
+            security_protocol: "sasl_ssl".into(),
+            sasl_mechanism: Some("SCRAM-SHA-512".into()),
+            ..KafkaConfig::default()
+        };
+        assert!(check_credentials(&kafka).is_err());
+    }
+
+    #[test]
+    fn a_sasl_protocol_without_a_mechanism_is_rejected() {
+        let kafka = KafkaConfig {
+            security_protocol: "sasl_ssl".into(),
+            sasl_username: Some("svc".into()),
+            sasl_password: Some("hunter2".into()),
+            ..KafkaConfig::default()
+        };
+        assert!(check_credentials(&kafka).is_err());
+    }
+
+    /// An unauthenticated broker is the local and dev-cluster case, and must
+    /// not be turned into a startup failure.
+    #[test]
+    fn plaintext_without_credentials_is_accepted() {
+        assert!(check_credentials(&KafkaConfig::default()).is_ok());
     }
 }

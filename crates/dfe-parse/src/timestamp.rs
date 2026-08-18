@@ -129,15 +129,23 @@ pub fn parse_syslog_timestamp(input: &str) -> ParseResult<'_, DateTime<Utc>> {
         });
     }
 
-    let (day, time_start) = if bytes[4] == b' ' {
+    // Digits are CHECKED, not assumed: `bytes[4] - b'0'` on a non-digit
+    // underflows, and this parser reads whatever arrived on the wire.
+    let day = if bytes[4] == b' ' {
         // Single-digit day with leading space: "MMM  D HH:MM:SS".
-        let d = u32::from(bytes[5] - b'0');
-        (d, 7)
+        parse_fixed_digits(bytes, 5, 1, "day")?
     } else {
         // Two-digit day: "MMM DD HH:MM:SS".
-        let d = u32::from(bytes[4] - b'0') * 10 + u32::from(bytes[5] - b'0');
-        (d, 7)
+        parse_fixed_digits(bytes, 4, 2, "day")?
     };
+    if !(1..=31).contains(&day) {
+        return Err(ParseError::OutOfRange {
+            value: day.to_string(),
+            min: "1".to_string(),
+            max: "31".to_string(),
+        });
+    }
+    let time_start = 7;
 
     if bytes[6] != b' ' {
         return Err(ParseError::UnexpectedByte {
@@ -473,6 +481,30 @@ mod tests {
         let (_, dt) = parse_syslog_timestamp("Mar  5 08:00:00").unwrap();
         assert_eq!(dt.month(), 3);
         assert_eq!(dt.day(), 5);
+    }
+
+    /// The day was subtracted from `b'0'` without checking it was a digit, so
+    /// a non-digit underflowed the byte. Input arrives from the wire.
+    #[test]
+    fn syslog_rejects_a_non_digit_day() {
+        for input in [
+            "Jan !! 00:00:00",
+            "Jan  ! 00:00:00",
+            "Jan -1 00:00:00",
+            "Jan \u{00}0 00:00:00",
+        ] {
+            assert!(
+                parse_syslog_timestamp(input).is_err(),
+                "{input:?} must be rejected, not parsed"
+            );
+        }
+    }
+
+    #[test]
+    fn syslog_rejects_a_day_out_of_range() {
+        assert!(parse_syslog_timestamp("Jan 00 00:00:00").is_err());
+        assert!(parse_syslog_timestamp("Jan 32 00:00:00").is_err());
+        assert!(parse_syslog_timestamp("Jan 31 00:00:00").is_ok());
     }
 
     // ── parse_year ──────────────────────────────────────────────────

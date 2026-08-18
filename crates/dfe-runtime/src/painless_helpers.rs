@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Runtime helpers for transpiled Painless code.
+//! Painless semantics as Rust functions.
 //!
-//! These functions bridge Painless dynamic typing to Rust's `serde_json::Value`.
-//! They are called by generated transform code that was transpiled from
-//! Painless scripts. All functions are pure — no I/O, no side effects
-//! beyond operating on the provided values.
+//! An Elastic ingest pipeline's Painless scripts are dynamically typed against
+//! a JSON context; these bridge that to `serde_json::Value` so the transform
+//! modules can express the same semantics natively. All functions are pure --
+//! no I/O, no side effects beyond operating on the provided values.
 
 use serde_json::{Map, Value, json};
 

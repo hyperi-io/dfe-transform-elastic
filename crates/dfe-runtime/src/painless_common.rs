@@ -3,9 +3,10 @@
 
 //! Common Painless script patterns implemented in Rust.
 //!
-//! Instead of transpiling each Painless script individually, we identify
-//! common patterns and implement them as shared runtime functions. The
-//! `painless_exec` dispatcher matches known scripts and calls these.
+//! The same handful of script shapes recur across the Elastic pipelines --
+//! drop-empty, snake-case keys, sum both directions -- so they are written
+//! once here rather than once per source. [`try_known_painless`] matches a
+//! script against them and runs the Rust equivalent.
 
 use serde_json::{Map, Value, json};
 
@@ -169,6 +170,10 @@ fn sum_of_directions(script: &str) -> Option<&'static str> {
 ///
 /// Elastic's script would throw on a missing side; skipping instead is the
 /// behaviour the surrounding pipeline already relies on.
+///
+/// The addition saturates. Both operands come off the wire, so a vendor that
+/// reports a nonsense byte count must not panic a debug build or wrap to a
+/// negative total in a release one.
 fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
     let Some(source) = event.get_i64(&format!("source.{unit}")) else {
         return true;
@@ -176,18 +181,24 @@ fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
     let Some(destination) = event.get_i64(&format!("destination.{unit}")) else {
         return true;
     };
-    let _ = event.set(&format!("network.{unit}"), json!(source + destination));
+    let total = source.saturating_add(destination);
+    let _ = event.set(&format!("network.{unit}"), json!(total));
     true
 }
 
 /// `event.duration = <field> * 1_000_000_000`, seconds to nanoseconds.
+///
+/// Returns false when the field name cannot be read out of the SCRIPT: that is
+/// a shape this code does not actually understand, and counting it as handled
+/// would inflate the coverage figure. A field the script names but the EVENT
+/// lacks is a different thing -- the script would have done nothing either.
 fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
     let Some(field) = script
         .split("Long.parseLong(ctx.")
         .nth(1)
         .and_then(|rest| rest.split(')').next())
     else {
-        return true;
+        return false;
     };
 
     let seconds = event
@@ -195,7 +206,12 @@ fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
         .or_else(|| event.get_str(field).and_then(|s| s.parse::<i64>().ok()));
 
     if let Some(seconds) = seconds {
-        let _ = event.set("event.duration", json!(seconds * 1_000_000_000));
+        // A duration above ~9.2 seconds-worth of i64 nanoseconds saturates
+        // rather than wrapping to a negative event.duration.
+        let _ = event.set(
+            "event.duration",
+            json!(seconds.saturating_mul(1_000_000_000)),
+        );
     }
     true
 }
@@ -672,7 +688,7 @@ fn extract_target_field(script: &str) -> Option<String> {
 mod tests {
     use super::*;
 
-    /// The scripts below are the verbatim text the generated transforms pass
+    /// The scripts below are the verbatim text the transform modules pass
     /// to `painless_exec`, so a change upstream shows up here as a miss.
     const SUM_BYTES: &str = "ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes";
     const SUM_PACKETS: &str = "ctx.network.packets = ctx.source.packets + ctx.destination.packets";
@@ -712,6 +728,38 @@ mod tests {
         let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": 42 } } }));
         assert!(try_known_painless(&mut event, DURATION_NANOS));
         assert_eq!(event.get_i64("event.duration"), Some(42_000_000_000));
+    }
+
+    /// Both operands come off the wire. A vendor reporting a nonsense count
+    /// must cost a saturated total, not a debug panic or a negative release
+    /// one -- these are byte counts a dashboard sums.
+    #[test]
+    fn a_nonsense_byte_count_saturates_rather_than_wrapping() {
+        let mut event = Event::new(json!({
+            "source": { "bytes": i64::MAX },
+            "destination": { "bytes": 1 },
+        }));
+
+        assert!(try_known_painless(&mut event, SUM_BYTES));
+        assert_eq!(event.get_i64("network.bytes"), Some(i64::MAX));
+    }
+
+    #[test]
+    fn a_nonsense_duration_saturates_rather_than_wrapping() {
+        let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": i64::MAX } } }));
+
+        assert!(try_known_painless(&mut event, DURATION_NANOS));
+        assert_eq!(event.get_i64("event.duration"), Some(i64::MAX));
+    }
+
+    /// A duration script whose field name this code cannot read is NOT
+    /// handled. Counting it would inflate the coverage figure with scripts
+    /// nothing actually ran.
+    #[test]
+    fn an_unreadable_duration_script_is_not_counted_as_handled() {
+        let mut event = Event::new(json!({}));
+        let script = "ctx.event.duration = Long.parseLong(something) * 1000000000";
+        assert!(!try_known_painless(&mut event, script));
     }
 
     /// The vendor field is often a string, because it came out of a grok.

@@ -228,7 +228,7 @@ impl Transform for AzureSharedPipeline {
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
+        // --- Post-processing ---
         // Dedup related.* arrays (same value can be appended multiple times)
         if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
             dedup_array(&mut arr);

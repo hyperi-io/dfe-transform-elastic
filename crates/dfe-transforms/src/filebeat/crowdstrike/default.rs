@@ -128,7 +128,6 @@ impl Transform for Default {
         if cond {
             // Painless script
             // Source: def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n"#,
@@ -139,7 +138,6 @@ impl Transform for Default {
         if cond {
             // Painless script
             // Source: if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        ctx.tags.add(value.trim());\n    }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        ctx.tags.add(value.trim());\n    }\n}\n"#,
@@ -250,7 +248,6 @@ impl Transform for Default {
         if cond {
             // Painless script
             // Source: ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#,
@@ -261,7 +258,6 @@ impl Transform for Default {
         if cond {
             // Painless script
             // Source: ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n"#,
@@ -272,7 +268,6 @@ impl Transform for Default {
         if cond {
             // Painless script
             // Source: def commandLine = ctx.crowdstrike?.event?.CommandLine;\ncommandLine = commandLine.trim();\n\nif (commandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(commandLine)));\n  args.removeIf(arg -> arg == \"\");\n\n  ctx.process = [\n    'command_line': commandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"def commandLine = ctx.crowdstrike?.event?.CommandLine;\ncommandLine = commandLine.trim();\n\nif (commandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(commandLine)));\n  args.removeIf(arg -> arg == \"\");\n\n  ctx.process = [\n    'command_line': commandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#,
@@ -283,7 +278,6 @@ impl Transform for Default {
         if cond {
             // Painless script
             // Source: def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#,

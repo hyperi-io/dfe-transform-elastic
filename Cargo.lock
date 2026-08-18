@@ -747,13 +747,11 @@ dependencies = [
 name = "dfe-parse"
 version = "0.1.0"
 dependencies = [
- "aho-corasick",
  "chrono",
  "criterion",
  "memchr",
  "regex-automata",
  "thiserror",
- "winnow 1.0.0",
 ]
 
 [[package]]

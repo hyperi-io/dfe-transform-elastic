@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! API functions called by generated transform code.
+//! The free functions the transform modules call.
 //!
-//! The codegen emits calls to these free functions. They wrap the
-//! enrichment modules or provide no-op stubs for features that
-//! require external configuration (`GeoIP` databases, Painless VM).
+//! One flat namespace, re-exported through [`crate::prelude`], so a transform
+//! reads as a sequence of processor calls. They wrap the enrichment modules,
+//! or stub what needs configuration this build may not have (`GeoIP`
+//! databases, a Painless interpreter).
 
 use std::collections::HashMap;
 
@@ -371,6 +372,9 @@ mod tests {
 
     #[test]
     fn geoip_lookup_no_db() {
+        // Reaches the process-global cache, so it takes the same lock the
+        // enrichment tests do.
+        let _guard = crate::enrichment::geoip_global::test_guard();
         // Without MMDB files loaded, should return empty map (not panic)
         let result = geoip_lookup("geoip_city", "8.8.8.8");
         assert!(result.is_ok());
@@ -467,7 +471,7 @@ mod tests {
 
     #[test]
     fn grok_regex_actually_matches() {
-        // Verify generated regex can actually match input
+        // Verify the compiled regex can actually match input
         let regex_str = grok_to_regex("^%{IP:src}:%{POSINT:port}$");
         let re = regex::Regex::new(&regex_str).expect("regex should compile");
         let caps = re.captures("10.0.0.1:8080").expect("should match");

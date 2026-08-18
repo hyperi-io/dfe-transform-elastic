@@ -22,7 +22,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: ctx.message = ctx.message.replace(params.empty_field_name, '')
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#,
@@ -122,7 +121,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#,
@@ -192,7 +190,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) {\n  ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory;\n} else if (ctx?.azure?.activitylogs?.properties?.policies != null)  {\n  ctx.azure.activitylogs.event_category = 'Policy';\n} else {\n  ctx.azure.activitylogs.event_category = 'Administrative';\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) {\n  ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory;\n} else if (ctx?.azure?.activitylogs?.properties?.policies != null)  {\n  ctx.azure.activitylogs.event_category = 'Policy';\n} else {\n  ctx.azure.activitylogs.event_category = 'Administrative';\n}"#,
@@ -394,7 +391,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.surname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.surname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];\n}"#,
@@ -406,7 +402,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.name = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.name = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];\n}"#,
@@ -418,7 +413,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.givenname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.givenname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];\n}"#,
@@ -446,7 +440,6 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#,
@@ -456,7 +449,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: if (ctx?.azure?.activitylogs?.category == null) {\n  return;\n} def category = ctx.azure.activitylogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"if (ctx?.azure?.activitylogs?.category == null) {\n  return;\n} def category = ctx.azure.activitylogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#,
@@ -817,7 +809,7 @@ impl Transform for Default {
             })();
         }
 
-        // --- Post-processing (codegen-emitted) ---
+        // --- Post-processing ---
         // Dedup related.* arrays (same value can be appended multiple times)
         if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
             dedup_array(&mut arr);

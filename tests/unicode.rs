@@ -67,8 +67,8 @@ fn every_sample_survives_a_round_trip_unchanged() {
         );
         assert_eq!(outcome.bad_lines, 0, "{label}: valid JSON must parse");
 
-        let round_tripped =
-            serialise_batch(&events).unwrap_or_else(|e| panic!("{label}: serialise failed: {e}"));
+        let (round_tripped, serialised) = serialise_batch(&events);
+        assert_eq!(serialised.serialised, 1, "{label}: serialise dropped it");
         let (reparsed, _) = parse_batch(&round_tripped);
 
         let value = reparsed[0]
@@ -89,7 +89,7 @@ fn non_ascii_field_names_survive_a_round_trip() {
 
         let payload = ndjson(sample, "value");
         let (events, _) = parse_batch(&payload);
-        let (reparsed, _) = parse_batch(&serialise_batch(&events).expect("serialises"));
+        let (reparsed, _) = parse_batch(&serialise_batch(&events).0);
 
         assert_eq!(
             reparsed[0].get_str(sample),
@@ -184,7 +184,7 @@ fn long_multibyte_lines_split_on_newlines_only() {
 }
 
 /// Every registered transform, fed non-ASCII text in the fields it is most
-/// likely to slice: `message`, and the identity fields the generated dissect
+/// likely to slice: `message`, and the identity fields the dissect
 /// code splits on a delimiter.
 ///
 /// A transform may drop or error -- neither is a failure here. The only
@@ -196,9 +196,9 @@ fn no_transform_panics_on_non_ascii_input() {
         let transform = registry::lookup(source).expect("registered source resolves");
 
         for (label, sample) in SAMPLES {
-            // Fields chosen because the generated code splits, slices or
-            // case-folds them: message text, a domain-prefixed user, an
-            // email-shaped value, and a URL.
+            // Fields chosen because the transforms split, slice or case-fold
+            // them: message text, a domain-prefixed user, an email-shaped
+            // value, and a URL.
             let event = serde_json::json!({
                 "message": sample,
                 "event": { "original": sample, "action": sample, "code": sample },
@@ -224,9 +224,12 @@ fn no_transform_panics_on_non_ascii_input() {
             );
 
             // Whatever came out must still serialise -- a transform that
-            // produced a broken string would fail here.
-            serialise_batch(&out)
-                .unwrap_or_else(|e| panic!("{source} / {label}: output does not serialise: {e}"));
+            // produced a broken string would be counted as failed here.
+            let (_, serialised) = serialise_batch(&out);
+            assert_eq!(
+                serialised.failed, 0,
+                "{source} / {label}: output does not serialise"
+            );
         }
     }
 }
@@ -267,8 +270,11 @@ fn no_transform_panics_on_degenerate_input() {
             let (events, _) = parse_batch(payload.as_bytes());
             let (out, outcome) = transform_batch(transform, events);
             assert_eq!(outcome.total(), 1, "{source} / {label}: event vanished");
-            serialise_batch(&out)
-                .unwrap_or_else(|e| panic!("{source} / {label}: output does not serialise: {e}"));
+            let (_, serialised) = serialise_batch(&out);
+            assert_eq!(
+                serialised.failed, 0,
+                "{source} / {label}: output does not serialise"
+            );
         }
     }
 }

@@ -62,8 +62,21 @@ pub struct TransformMetrics {
     /// Addresses currently held in the `GeoIP` cache.
     pub geoip_cache_size: metrics::Gauge,
 
-    /// Sends that failed, leaving the batch uncommitted for replay.
+    /// Sends that exhausted their retries, stopping the loop with the batch
+    /// uncommitted so the restarted service replays it.
     pub send_failures: Counter,
+
+    /// Sends the sink refused because its queue was full. Retried, not lost.
+    /// A steady rate means the sink, not the transform, is the constraint.
+    pub send_backpressure: Counter,
+
+    /// Sends an outbound transport filter routed to a DLQ. This service
+    /// configures no such filter and has no DLQ, so any value is a defect.
+    pub send_filtered_dlq: Counter,
+
+    /// Events too large for one Kafka record even on their own. Dropped: no
+    /// broker would ever accept one, and retrying blocks the partition.
+    pub events_oversize: Counter,
 
     /// Offset commits that failed after a successful send.
     pub commit_failures: Counter,
@@ -126,7 +139,19 @@ impl TransformMetrics {
             ),
             send_failures: manager.counter(
                 "send_failures_total",
-                "Sends that failed, leaving the batch uncommitted",
+                "Sends that exhausted their retries, leaving the batch uncommitted",
+            ),
+            send_backpressure: manager.counter(
+                "send_backpressure_total",
+                "Sends the sink refused because its queue was full",
+            ),
+            send_filtered_dlq: manager.counter(
+                "send_filtered_dlq_total",
+                "Sends an outbound filter routed to a DLQ this service does not have",
+            ),
+            events_oversize: manager.counter(
+                "events_oversize_total",
+                "Events too large for one Kafka record, dropped",
             ),
             commit_failures: manager.counter(
                 "commit_failures_total",
@@ -184,6 +209,9 @@ mod tests {
             "_geoip_cache_misses_total",
             "_geoip_cache_entries",
             "_send_failures_total",
+            "_send_backpressure_total",
+            "_send_filtered_dlq_total",
+            "_events_oversize_total",
             "_commit_failures_total",
             "_batch_events",
             "_batch_duration_seconds",
@@ -227,5 +255,41 @@ mod tests {
     #[test]
     fn commit_is_never_empty() {
         assert!(!TransformMetrics::commit().is_empty());
+    }
+
+    /// The committed `docs/metrics-manifest.json` is what an operator builds a
+    /// dashboard from, and it went stale the moment three metrics were added
+    /// without regenerating it. Compared by NAME SET rather than byte-for-byte:
+    /// the file carries a `registered_at` timestamp, so no two emits match.
+    ///
+    /// Refresh with `dfe-transform-elastic metrics-manifest > docs/metrics-manifest.json`.
+    #[test]
+    fn the_committed_metrics_manifest_lists_what_is_registered() {
+        let path =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("docs/metrics-manifest.json");
+        let committed: serde_json::Value = serde_json::from_str(
+            &std::fs::read_to_string(&path).expect("metrics-manifest.json is committed"),
+        )
+        .expect("metrics-manifest.json is JSON");
+
+        let mut on_disk: Vec<String> = committed["metrics"]
+            .as_array()
+            .expect("manifest has a metrics array")
+            .iter()
+            .filter_map(|m| m["name"].as_str().map(String::from))
+            .collect();
+        on_disk.sort_unstable();
+        on_disk.dedup();
+
+        let manager = MetricsManager::new("dfe-transform-elastic");
+        let _m = TransformMetrics::register(&manager, "0.1.0", "abc1234");
+        let mut registered = manifest_names(&manager);
+        registered.sort_unstable();
+        registered.dedup();
+
+        assert_eq!(
+            on_disk, registered,
+            "docs/metrics-manifest.json is stale -- regenerate it"
+        );
     }
 }

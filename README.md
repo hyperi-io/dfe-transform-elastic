@@ -57,7 +57,11 @@ source:
 sink:
   topic: normalised_events
   brokers: ["kafka:9092"]        # defaults to the source brokers
+  max_message_bytes: 900000      # ceiling on one produced record
 ```
+
+A batch is split into as many records as `max_message_bytes` allows -- 20,000
+events do not fit in one. Keep it below your broker's `message.max.bytes`.
 
 A config naming a source this build does not carry is rejected at startup, not
 discovered at the first batch.
@@ -139,8 +143,16 @@ rather than assumed:
   `parse_errors_total`. The rest of the payload is unaffected.
 - **An event whose transform errors** is counted on `events_errored_total` and
   left out of the output. The batch continues.
-- **A send failure** leaves the batch uncommitted, so it replays rather than
-  disappears. Offsets are committed only after a successful send.
+- **An event too large for one Kafka record** is dropped and counted on
+  `events_oversize_total`. No broker would accept it, and retrying it forever
+  would block the partition behind it.
+- **A backpressured sink** is retried with a bounded backoff, counted on
+  `send_backpressure_total`. Backpressure is not delivery.
+- **A send that cannot be completed** STOPS the service with the batch
+  uncommitted, and the restarted consumer replays it. Carrying on would let the
+  next batch's commit acknowledge the failed one, because Kafka commits are
+  cumulative -- that is loss, not replay. Delivery is at-least-once, so a
+  downstream consumer must be idempotent.
 
 Non-English text is a first-class case, not an edge case. `tests/unicode.rs`
 runs every registered transform against seventeen scripts and a set of

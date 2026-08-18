@@ -164,7 +164,7 @@ fn raw_reaches_a_line_framed_source_untouched() {
 
 /// `cisco_ios` errors on EVERY event, under either envelope, because a
 /// processor unconditionally reads `_temp_.generic_message` -- a field only
-/// the pipeline's SECOND grok pattern would set, and the generator emitted
+/// the pipeline's SECOND grok pattern would set, and this build carries
 /// that pattern as a comment rather than as code.
 ///
 /// This is a characterisation test: it pins a defect, not a requirement. When

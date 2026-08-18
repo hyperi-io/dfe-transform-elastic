@@ -3,7 +3,7 @@
   "app": "dfe-transform-elastic",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-08-18T05:53:33Z",
+  "registered_at": "2026-08-18T07:57:35Z",
   "metrics": [
     {
       "name": "dfe-transform-elastic_transport_sent_total",
@@ -409,7 +409,31 @@
     {
       "name": "dfe-transform-elastic_send_failures_total",
       "type": "counter",
-      "description": "Sends that failed, leaving the batch uncommitted",
+      "description": "Sends that exhausted their retries, leaving the batch uncommitted",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_send_backpressure_total",
+      "type": "counter",
+      "description": "Sends the sink refused because its queue was full",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_send_filtered_dlq_total",
+      "type": "counter",
+      "description": "Sends an outbound filter routed to a DLQ this service does not have",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_events_oversize_total",
+      "type": "counter",
+      "description": "Events too large for one Kafka record, dropped",
       "unit": "",
       "labels": [],
       "group": "custom"

@@ -19,8 +19,6 @@ publish.workspace = true
 
 [dependencies]
 memchr = { workspace = true }
-winnow = { workspace = true }
-aho-corasick = { workspace = true }
 regex-automata = { workspace = true }
 chrono = { workspace = true }
 thiserror = { workspace = true }

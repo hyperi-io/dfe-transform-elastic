@@ -62,6 +62,14 @@ pub struct SinkConfig {
     /// Broker list. Defaults to the source brokers when unset.
     #[serde(default)]
     pub brokers: Option<Vec<String>>,
+
+    /// Ceiling on one produced Kafka record. A batch is split into as many
+    /// records as it takes to stay under it.
+    ///
+    /// Must sit below the LOWER of the broker's `message.max.bytes` and the
+    /// producer's -- raising the broker limit alone does nothing.
+    #[serde(default = "default_max_message_bytes")]
+    pub max_message_bytes: usize,
 }
 
 fn default_pipeline_name() -> String {
@@ -70,6 +78,17 @@ fn default_pipeline_name() -> String {
 
 const fn default_batch_size() -> usize {
     20_000
+}
+
+/// Default ceiling on one produced Kafka record.
+///
+/// librdkafka's producer `message.max.bytes` defaults to 1,000,000 and scalo
+/// sets no override, so anything above that is rejected before it leaves the
+/// process. 900 KB leaves headroom for the key, headers and record framing,
+/// which count against the same limit.
+#[must_use]
+pub const fn default_max_message_bytes() -> usize {
+    900_000
 }
 
 impl Config {
@@ -127,6 +146,15 @@ impl Config {
         if self.source.batch_size == 0 {
             return Err(crate::Error::Config("source.batch_size is zero".into()));
         }
+        // A budget under one event's worth would drop every event as oversize,
+        // and one over librdkafka's producer default would have every record
+        // rejected at the client before it reaches a broker.
+        if self.sink.max_message_bytes < 4096 || self.sink.max_message_bytes > 1_000_000 {
+            return Err(crate::Error::Config(format!(
+                "sink.max_message_bytes must be between 4096 and 1000000, got {}",
+                self.sink.max_message_bytes
+            )));
+        }
         let origin = crate::registry::origin(&self.source.name)
             .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))?;
 
@@ -167,6 +195,7 @@ mod tests {
             sink: SinkConfig {
                 topic: "out".into(),
                 brokers: None,
+                max_message_bytes: default_max_message_bytes(),
             },
         }
     }
@@ -193,6 +222,29 @@ mod tests {
         let mut c = valid();
         c.source.batch_size = 0;
         assert!(c.validate().is_err());
+    }
+
+    /// The budget bounds one Kafka record, so a value above librdkafka's
+    /// producer default has every record rejected at the client.
+    #[test]
+    fn rejects_a_message_budget_the_producer_cannot_honour() {
+        let mut c = valid();
+        c.sink.max_message_bytes = 4_000_000;
+        assert!(c.validate().is_err());
+
+        c.sink.max_message_bytes = 512;
+        assert!(c.validate().is_err());
+    }
+
+    #[test]
+    fn message_budget_defaults_under_the_librdkafka_ceiling() {
+        let parsed: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+             group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+        )
+        .expect("config parses without a sink budget");
+        assert_eq!(parsed.sink.max_message_bytes, 900_000);
+        assert!(parsed.sink.max_message_bytes < 1_000_000);
     }
 
     #[test]

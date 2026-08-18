@@ -102,6 +102,13 @@
             "type": "string"
           },
           "default": null
+        },
+        "max_message_bytes": {
+          "description": "Ceiling on one produced Kafka record. A batch is split into as many\nrecords as it takes to stay under it.\n\nMust sit below the LOWER of the broker's `message.max.bytes` and the\nproducer's -- raising the broker limit alone does nothing.",
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0,
+          "default": 900000
         }
       },
       "required": [

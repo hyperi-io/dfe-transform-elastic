@@ -8,7 +8,7 @@
 //! emit over syslog can be fed from dfe-receiver instead of from Beats without
 //! a second pipeline.
 //!
-//! [`Envelope::Beats`] is the shape the transforms were generated against: the
+//! [`Envelope::Beats`] is the shape the transforms expect: the
 //! raw vendor payload as a string in `message`.
 //!
 //! [`Envelope::Syslog`] is what dfe-receiver produces: the syslog MSG body in

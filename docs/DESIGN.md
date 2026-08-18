@@ -157,7 +157,7 @@ transform and runs it over every batch on the scalo runtime.
 | `registry.rs` | Source name to `Transform` lookup, and each source's `Origin` (API-only or syslog-capable) |
 | `envelope.rs` | Unwraps the Beats or syslog wrapper into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
-| `service.rs` | Wires the scalo Kafka consumer/producer to `pipeline.rs` |
+| `service.rs` | Wires the scalo Kafka consumer/producer to `pipeline.rs`, and owns the send/commit semantics below |
 | `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here, and pinned against drift by tests |
 | `metrics.rs` | Metric definitions registered with scalo's `MetricsManager` |
 | `error.rs` | The service's top-level error type |
@@ -188,6 +188,36 @@ records which is which via the `Framing` enum:
 
 `envelope: syslog` is rejected at startup for a source whose `Origin` is `Api` rather than
 `Syslog` — okta and the other API-pulled sources have no syslog wrapper to unwrap.
+
+### Delivery: at-least-once, enforced by stopping
+
+Kafka commits are **cumulative** — the highest offset per partition — so an uncommitted batch is
+only replayed if nothing after it commits. The loop therefore stops on a send it cannot complete
+rather than continuing to the next batch, whose commit would acknowledge the failed one. The
+process exits, and the restarted consumer resumes from the last committed offset. scalo's
+transport exposes no consumer seek, so stopping is the only way to keep the guarantee.
+
+All four `SendResult` variants are handled, and three of them are not delivery:
+
+| Variant | Meaning | Response |
+|---|---|---|
+| `Ok` | The broker accepted it | Count as delivered |
+| `Backpressured` | The local producer queue is full | Retry, bounded backoff to ~25s |
+| `Fatal` | The send failed | Retry, then stop uncommitted |
+| `FilteredDlq` | An outbound filter wants DLQ routing | Refuse — this service has no DLQ |
+
+Backpressure is the NORMAL response from a slow sink, so treating it as success would
+acknowledge batches that were never written.
+
+**A batch is not one Kafka record.** `pipeline.rs::serialise_chunks` splits the outbound NDJSON
+by BYTE budget (`sink.max_message_bytes`, default 900 KB) against librdkafka's 1,000,000-byte
+producer `message.max.bytes` default, which scalo does not override. At `batch_size: 20000` a
+single concatenated record is tens of megabytes and no batch would ever produce. An event that
+exceeds the whole budget on its own is dropped and counted on `events_oversize_total` — no
+broker would take it, and retrying it blocks the partition.
+
+Duplicates are the accepted cost: a batch that fails partway through replays the records that
+already landed, so every downstream consumer must be idempotent.
 
 ---
 

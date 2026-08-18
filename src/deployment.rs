@@ -73,7 +73,11 @@ pub fn contract() -> DeploymentContract {
             },
             "sink": {
                 "topic": "normalised_events",
-                "brokers": ["kafka:9092"]
+                "brokers": ["kafka:9092"],
+                // A batch is split into as many records as this allows.
+                // librdkafka's producer ceiling is 1,000,000; the rest is
+                // headroom for the key, headers and framing.
+                "max_message_bytes": 900_000
             },
             // No `health` or `metrics` address here: scalo's `--metrics-addr`
             // (env `METRICS_ADDR`) is the single source of truth, and a key

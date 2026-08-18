@@ -16,8 +16,8 @@
 
 //! Core runtime for dfe-transform-elastic.
 //!
-//! Provides the Event type, Transform trait, and enrichment modules
-//! used by generated transform code.
+//! The Event type, the Transform trait, the enrichment modules and the
+//! processor-shaped API every transform is written against.
 
 pub mod codegen_api;
 pub mod enrichment;

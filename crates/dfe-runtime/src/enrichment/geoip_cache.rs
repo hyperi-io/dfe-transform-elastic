@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! An LRU cache in front of the MMDB readers.
+//! A bounded cache in front of the MMDB readers.
 //!
 //! Ported from dfe-loader's `GeoIpEnricher`, which owns IP enrichment for the
 //! platform. The two repos keep independent copies while both are moving; the
@@ -12,8 +12,19 @@
 //! neighbours for hours. 14 of the 60 source pipelines carry a geoip
 //! processor, several of them four or more, so this sits under a 20k-event
 //! batch several times per event.
+//!
+//! Eviction is oldest-STORED first, not least-recently-USED. True LRU means
+//! taking the write lock on every hit to restamp the entry, which serialises
+//! the read-mostly path this cache exists to keep parallel. With 100,000
+//! entries against a hot set orders of magnitude smaller, the two evict the
+//! same entries anyway.
+//!
+//! The key is a parsed [`IpAddr`], never the event string it came from: a
+//! 17-byte key cannot be grown by whatever a vendor decided to put in
+//! `source.ip`.
 
 use std::collections::HashMap;
+use std::net::IpAddr;
 use std::sync::RwLock;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -54,9 +65,9 @@ pub struct Stats {
     pub size: usize,
 }
 
-/// An LRU cache of lookup results.
+/// A bounded cache of lookup results.
 pub struct Cache {
-    entries: RwLock<HashMap<(Database, String), Entry>>,
+    entries: RwLock<HashMap<(Database, IpAddr), Entry>>,
     capacity: usize,
     hits: AtomicU64,
     misses: AtomicU64,
@@ -85,9 +96,9 @@ impl Cache {
     /// A poisoned lock counts as a miss rather than propagating: a cache that
     /// panics is worse than one that stops caching.
     #[must_use]
-    pub fn get(&self, database: Database, ip: &str) -> Option<HashMap<String, Value>> {
+    pub fn get(&self, database: Database, ip: IpAddr) -> Option<HashMap<String, Value>> {
         let entries = self.entries.read().ok()?;
-        let hit = entries.get(&(database, ip.to_string()));
+        let hit = entries.get(&(database, ip));
         if hit.is_some() {
             self.hits.fetch_add(1, Ordering::Relaxed);
         } else {
@@ -100,7 +111,7 @@ impl Cache {
     ///
     /// An empty result is cached too: a miss in the database is as worth
     /// remembering as a hit, and private ranges are the common case.
-    pub fn put(&self, database: Database, ip: &str, fields: HashMap<String, Value>) {
+    pub fn put(&self, database: Database, ip: IpAddr, fields: HashMap<String, Value>) {
         let Ok(mut entries) = self.entries.write() else {
             return;
         };
@@ -110,7 +121,7 @@ impl Cache {
         }
 
         entries.insert(
-            (database, ip.to_string()),
+            (database, ip),
             Entry {
                 fields,
                 stored_at: now(),
@@ -138,14 +149,14 @@ impl Cache {
 }
 
 /// Remove the `count` oldest entries.
-fn evict_oldest(entries: &mut HashMap<(Database, String), Entry>, count: usize) {
+fn evict_oldest(entries: &mut HashMap<(Database, IpAddr), Entry>, count: usize) {
     if entries.is_empty() || count == 0 {
         return;
     }
 
-    let mut by_age: Vec<((Database, String), u64)> = entries
+    let mut by_age: Vec<((Database, IpAddr), u64)> = entries
         .iter()
-        .map(|(key, entry)| (key.clone(), entry.stored_at))
+        .map(|(key, entry)| (*key, entry.stored_at))
         .collect();
     by_age.sort_unstable_by_key(|(_, stored_at)| *stored_at);
 
@@ -173,13 +184,20 @@ mod tests {
         map
     }
 
+    fn addr(ip: &str) -> IpAddr {
+        ip.parse().expect("test address parses")
+    }
+
     #[test]
     fn a_miss_then_a_hit() {
         let cache = Cache::default();
 
-        assert!(cache.get(Database::City, "8.8.8.8").is_none());
-        cache.put(Database::City, "8.8.8.8", fields("US"));
-        assert_eq!(cache.get(Database::City, "8.8.8.8"), Some(fields("US")));
+        assert!(cache.get(Database::City, addr("8.8.8.8")).is_none());
+        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
+        assert_eq!(
+            cache.get(Database::City, addr("8.8.8.8")),
+            Some(fields("US"))
+        );
 
         let stats = cache.stats();
         assert_eq!(stats.misses, 1);
@@ -192,10 +210,25 @@ mod tests {
     #[test]
     fn city_and_asn_do_not_share_an_entry() {
         let cache = Cache::default();
-        cache.put(Database::City, "8.8.8.8", fields("US"));
+        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
 
-        assert!(cache.get(Database::Asn, "8.8.8.8").is_none());
-        assert!(cache.get(Database::City, "8.8.8.8").is_some());
+        assert!(cache.get(Database::Asn, addr("8.8.8.8")).is_none());
+        assert!(cache.get(Database::City, addr("8.8.8.8")).is_some());
+    }
+
+    /// IPv4 and IPv6 are distinct keys, and a v4-mapped v6 address is the one
+    /// place that could collide by accident.
+    #[test]
+    fn address_families_do_not_collide() {
+        let cache = Cache::default();
+        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
+
+        assert!(
+            cache
+                .get(Database::City, addr("2001:4860:4860::8888"))
+                .is_none()
+        );
+        assert!(cache.get(Database::City, addr("::ffff:8.8.8.8")).is_none());
     }
 
     /// An address with no data is worth remembering: private ranges and
@@ -203,10 +236,10 @@ mod tests {
     #[test]
     fn an_empty_result_is_cached() {
         let cache = Cache::default();
-        cache.put(Database::City, "203.0.113.1", HashMap::new());
+        cache.put(Database::City, addr("203.0.113.1"), HashMap::new());
 
         assert_eq!(
-            cache.get(Database::City, "203.0.113.1"),
+            cache.get(Database::City, addr("203.0.113.1")),
             Some(HashMap::new())
         );
         assert_eq!(cache.stats().hits, 1);
@@ -217,7 +250,11 @@ mod tests {
         let cache = Cache::with_capacity(8);
 
         for i in 0..40 {
-            cache.put(Database::City, &format!("198.51.100.{i}"), fields("AU"));
+            cache.put(
+                Database::City,
+                addr(&format!("198.51.100.{i}")),
+                fields("AU"),
+            );
         }
 
         assert!(
@@ -233,29 +270,29 @@ mod tests {
     fn eviction_takes_the_oldest_first() {
         let cache = Cache::with_capacity(4);
 
-        cache.put(Database::City, "1.1.1.1", fields("AU"));
-        cache.put(Database::City, "2.2.2.2", fields("AU"));
-        cache.put(Database::City, "3.3.3.3", fields("AU"));
+        cache.put(Database::City, addr("1.1.1.1"), fields("AU"));
+        cache.put(Database::City, addr("2.2.2.2"), fields("AU"));
+        cache.put(Database::City, addr("3.3.3.3"), fields("AU"));
         // Fills it and evicts one, which must be 1.1.1.1.
-        cache.put(Database::City, "4.4.4.4", fields("AU"));
-        cache.put(Database::City, "5.5.5.5", fields("AU"));
+        cache.put(Database::City, addr("4.4.4.4"), fields("AU"));
+        cache.put(Database::City, addr("5.5.5.5"), fields("AU"));
 
-        assert!(cache.get(Database::City, "5.5.5.5").is_some());
-        assert!(cache.get(Database::City, "1.1.1.1").is_none());
+        assert!(cache.get(Database::City, addr("5.5.5.5")).is_some());
+        assert!(cache.get(Database::City, addr("1.1.1.1")).is_none());
     }
 
     #[test]
     fn capacity_is_never_zero() {
         let cache = Cache::with_capacity(0);
-        cache.put(Database::City, "8.8.8.8", fields("US"));
+        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
         assert!(cache.stats().size <= 1);
     }
 
     #[test]
     fn clear_drops_entries_but_keeps_counters() {
         let cache = Cache::default();
-        cache.put(Database::City, "8.8.8.8", fields("US"));
-        let _ = cache.get(Database::City, "8.8.8.8");
+        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
+        let _ = cache.get(Database::City, addr("8.8.8.8"));
 
         cache.clear();
 

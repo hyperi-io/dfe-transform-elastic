@@ -3,7 +3,9 @@
 
 #![forbid(unsafe_code)]
 #![warn(clippy::all)]
-// Shapes the generator emits, not defects to fix in place. Correctness lints stay on.
+// These modules mirror the structure of an Elastic ingest pipeline processor
+// for processor, which is deliberately not idiomatic Rust. Correctness lints
+// stay on; only the style ones that fight that shape are off.
 #![allow(
     clippy::needless_return,
     clippy::redundant_closure_for_method_calls,
@@ -15,9 +17,11 @@
     dead_code
 )]
 
-//! Generated and hand-tuned transform modules for Elastic data sources.
+//! Transform modules for Elastic data sources.
 //!
-//! Each submodule corresponds to a Beats source or Elastic Agent integration.
+//! Each submodule corresponds to a Beats source or Elastic Agent integration,
+//! and each transform applies one Elastic ingest pipeline's processors to an
+//! event natively -- no interpreter, no pipeline definition read at runtime.
 
 pub mod auditbeat;
 pub mod elastic_agent;

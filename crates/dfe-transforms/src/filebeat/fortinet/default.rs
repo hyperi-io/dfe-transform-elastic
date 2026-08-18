@@ -45,7 +45,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n"#,
@@ -62,7 +61,6 @@ impl Transform for Default {
         {
             // Painless script
             // Source: def splitUnquoted(String input, String sep) {\n  def tokens = [];\n  def startPosition = 0;\n  def isInQuotes = false;\n  char quote = (char)\"\\\"\";\n  for (def currentPosition = 0; currentPosition < input.length(); currentPosition++) {\n      if (input.charAt(currentPosition) == quote) {\n          isInQuotes = !isInQuotes;\n      }\n      else if (input.charAt(currentPosition) == (char)sep && !isInQuotes) {\n          def token = input.substring(startPosition, currentPosition).trim();\n          if (!token.equals(\"\")) {\n            tokens.add(token);\n          }\n          startPosition = currentPosition + 1;\n      }\n  }\n\n  def lastToken = input.substring(startPosition);\n  if (!lastToken.equals(sep) && !lastToken.equals(\"\")) {\n      tokens.add(lastToken.trim());\n  }\n  return tokens;\n}\n\ndef arr = splitUnquoted(ctx.syslog5424_sd, \" \");\n\nMap map = new HashMap();\nPattern pattern = /^\\\"|\\\"$/;\nfor (def i = 0; i < arr?.length; i++) {\n  def kv = splitUnquoted(arr[i], \"=\");\n  if (kv.length == 2) {\n    map[kv[0]] = pattern.matcher(kv[1]).replaceAll(\"\");\n  }\n}\nif (ctx.fortinet == null) {\n  ctx.fortinet = new HashMap();\n}\nctx.fortinet.firewall = map;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"def splitUnquoted(String input, String sep) {\n  def tokens = [];\n  def startPosition = 0;\n  def isInQuotes = false;\n  char quote = (char)\"\\\"\";\n  for (def currentPosition = 0; currentPosition < input.length(); currentPosition++) {\n      if (input.charAt(currentPosition) == quote) {\n          isInQuotes = !isInQuotes;\n      }\n      else if (input.charAt(currentPosition) == (char)sep && !isInQuotes) {\n          def token = input.substring(startPosition, currentPosition).trim();\n          if (!token.equals(\"\")) {\n            tokens.add(token);\n          }\n          startPosition = currentPosition + 1;\n      }\n  }\n\n  def lastToken = input.substring(startPosition);\n  if (!lastToken.equals(sep) && !lastToken.equals(\"\")) {\n      tokens.add(lastToken.trim());\n  }\n  return tokens;\n}\n\ndef arr = splitUnquoted(ctx.syslog5424_sd, \" \");\n\nMap map = new HashMap();\nPattern pattern = /^\\\"|\\\"$/;\nfor (def i = 0; i < arr?.length; i++) {\n  def kv = splitUnquoted(arr[i], \"=\");\n  if (kv.length == 2) {\n    map[kv[0]] = pattern.matcher(kv[1]).replaceAll(\"\");\n  }\n}\nif (ctx.fortinet == null) {\n  ctx.fortinet = new HashMap();\n}\nctx.fortinet.firewall = map;\n"#,
@@ -71,7 +69,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: def fw = ctx.fortinet?.firewall;\nif (fw != null) {\n    // We will remove any keys that are non-words to avoid polluting documents\n    def pat = /\\W+/; \n    fw.entrySet().removeIf(entry -> entry.getValue() == \"N/A\" || pat.matcher(entry.getKey()).find());\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"def fw = ctx.fortinet?.firewall;\nif (fw != null) {\n    // We will remove any keys that are non-words to avoid polluting documents\n    def pat = /\\W+/; \n    fw.entrySet().removeIf(entry -> entry.getValue() == \"N/A\" || pat.matcher(entry.getKey()).find());\n}\n"#,
@@ -297,7 +294,6 @@ impl Transform for Default {
         {
             // Painless script
             // Source: ctx.event.duration = Long.parseLong(ctx.fortinet.firewall.duration) * 1000000000
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx.event.duration = Long.parseLong(ctx.fortinet.firewall.duration) * 1000000000"#,
@@ -2602,7 +2598,6 @@ impl Transform for Default {
             {
                 // Painless script
                 // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}"#,
@@ -2783,7 +2778,6 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // Source: def k = ctx.network.direction.toLowerCase(); def normalized = params.get(k); if (normalized != null) {\n    ctx.network.direction = normalized;\n    return;\n} ctx.network.direction = k;
-                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     r#"def k = ctx.network.direction.toLowerCase(); def normalized = params.get(k); if (normalized != null) {\n    ctx.network.direction = normalized;\n    return;\n} ctx.network.direction = k;"#,
@@ -3468,7 +3462,6 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#,
@@ -3483,7 +3476,6 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
-                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     r#"ctx.network.packets = ctx.source.packets + ctx.destination.packets"#,
@@ -3498,7 +3490,6 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // Source: def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     r#"def iana_number = ctx.network.iana_number;\nif (iana_number == '0') {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number == '2') {\n    ctx.network.transport = 'igmp';\n} else if (iana_number == '6') {\n    ctx.network.transport = 'tcp';\n} else if (iana_number == '8') {\n    ctx.network.transport = 'egp';\n} else if (iana_number == '17') {\n    ctx.network.transport = 'udp';\n} else if (iana_number == '47') {\n    ctx.network.transport = 'gre';\n} else if (iana_number == '50') {\n    ctx.network.transport = 'esp';\n} else if (iana_number == '58') {\n    ctx.network.transport = 'ipv6-icmp';\n} else if (iana_number == '112') {\n    ctx.network.transport = 'vrrp';\n} else if (iana_number == '132') {\n    ctx.network.transport = 'sctp';\n}\n"#,
@@ -3673,7 +3664,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null && dnsIPs instanceof List) {\n  if (ctx.related?.ip == null) {\n    ctx.related.ip = [];\n  }\n  for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) {\n        ctx.related.ip.add(ip);\n    }\n  }\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null && dnsIPs instanceof List) {\n  if (ctx.related?.ip == null) {\n    ctx.related.ip = [];\n  }\n  for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) {\n        ctx.related.ip.add(ip);\n    }\n  }\n}\n"#,

@@ -16,7 +16,6 @@ impl Transform for SpringcloudlogsInnerPipeline {
         let _ = (|| -> Result<()> {
             // Painless script
             // Source: ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')
-            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#,

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Re-exports for generated transform code.
+//! Re-exports for the transform modules.
 //!
-//! Generated modules use `use dfe_runtime::prelude::*;` to get
+//! Each module opens with `use dfe_runtime::prelude::*;` to get
 //! everything needed to write a transform function.
 
 pub use crate::error::{Result, TransformError};

@@ -27,6 +27,7 @@ sink:
   topic: normalised_events
   brokers:
   - kafka:9092
+  max_message_bytes: 900000
 scaling:
   enabled: true
   memory_gate_threshold: 0.8

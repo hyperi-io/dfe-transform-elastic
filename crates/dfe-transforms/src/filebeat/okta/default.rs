@@ -40,7 +40,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#,
@@ -739,7 +738,7 @@ impl Transform for Default {
         }
 
         // Hand-tuned: extract reasons from risk KV string
-        // The codegen KV parser truncates at commas inside values.
+        // The KV parser truncates at commas inside values.
         // This re-extracts the full reasons value from the original risk string.
         if let Some(risk_str) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
             if let Some(reasons_start) = risk_str.find("reasons=") {
@@ -938,7 +937,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#,
@@ -1230,7 +1228,6 @@ impl Transform for Default {
 
         // Painless script
         // Source: def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n
-        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n"#,

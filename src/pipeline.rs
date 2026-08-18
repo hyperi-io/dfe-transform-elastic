@@ -133,19 +133,86 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
     (events, outcome)
 }
 
-/// Serialise events back to an NDJSON payload.
+/// What serialising a batch produced.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct SerialiseOutcome {
+    /// Events written into a chunk.
+    pub serialised: usize,
+    /// Events that on their own exceed the whole per-message budget. No
+    /// broker will ever accept one, so it is dropped rather than blocking the
+    /// partition behind a record that can only fail.
+    pub oversize: usize,
+    /// Events serde refused to serialise. Dropped, on the same footing as an
+    /// event the transform rejected.
+    pub failed: usize,
+}
+
+/// The smallest per-message budget worth honouring.
 ///
-/// # Errors
+/// Below this a single ordinary event is oversize and the batch is dropped
+/// wholesale, so a misconfigured value is clamped up rather than obeyed.
+const MIN_MESSAGE_BYTES: usize = 4096;
+
+/// Serialise events to NDJSON, split into messages of at most `max_bytes`.
 ///
-/// Returns [`crate::Error::Parse`] if an event cannot be serialised.
-pub fn serialise_batch(events: &[Event]) -> crate::Result<Vec<u8>> {
-    let mut out = Vec::with_capacity(events.len() * 512);
+/// A 20,000-event batch is 2 MB of 100-byte events and tens of MB of real ECS
+/// ones, while librdkafka's producer `message.max.bytes` defaults to 1,000,000
+/// -- so the outbound size is bounded by BYTES here, never by the event count
+/// the batch happened to arrive with.
+///
+/// Every chunk is a complete NDJSON payload: no event is split across two.
+#[must_use]
+pub fn serialise_chunks(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, SerialiseOutcome) {
+    let budget = max_bytes.max(MIN_MESSAGE_BYTES);
+    // One allocation per chunk, sized to whichever is smaller: the budget, or
+    // what the whole batch is likely to need.
+    let reserve = budget.min(events.len().saturating_mul(512).max(MIN_MESSAGE_BYTES));
+
+    let mut chunks = Vec::new();
+    let mut current: Vec<u8> = Vec::with_capacity(reserve);
+    let mut line: Vec<u8> = Vec::with_capacity(1024);
+    let mut outcome = SerialiseOutcome::default();
+
     for event in events {
-        serde_json::to_writer(&mut out, event.as_value())
-            .map_err(|e| crate::Error::Parse(e.to_string()))?;
-        out.push(b'\n');
+        line.clear();
+        if let Err(e) = serde_json::to_writer(&mut line, event.as_value()) {
+            outcome.failed += 1;
+            tracing::warn!(error = %e, "event could not be serialised, dropped");
+            continue;
+        }
+        line.push(b'\n');
+
+        if line.len() > budget {
+            outcome.oversize += 1;
+            tracing::error!(
+                bytes = line.len(),
+                budget,
+                "event exceeds the per-message budget and cannot be produced, dropped"
+            );
+            continue;
+        }
+
+        if !current.is_empty() && current.len() + line.len() > budget {
+            chunks.push(std::mem::replace(&mut current, Vec::with_capacity(reserve)));
+        }
+        current.extend_from_slice(&line);
+        outcome.serialised += 1;
     }
-    Ok(out)
+
+    if !current.is_empty() {
+        chunks.push(current);
+    }
+    (chunks, outcome)
+}
+
+/// Serialise every event into ONE NDJSON payload, whatever its size.
+///
+/// For tests and offline tools. The service uses [`serialise_chunks`], because
+/// a default-sized batch does not fit in one Kafka record.
+#[must_use]
+pub fn serialise_batch(events: &[Event]) -> (Vec<u8>, SerialiseOutcome) {
+    let (mut chunks, outcome) = serialise_chunks(events, usize::MAX);
+    (chunks.pop().unwrap_or_default(), outcome)
 }
 
 #[cfg(test)]
@@ -232,7 +299,95 @@ mod tests {
     #[test]
     fn round_trips_through_serialise() {
         let (out, _) = transform_batch(&Passthrough, three());
-        let bytes = serialise_batch(&out).expect("serialises");
+        let (bytes, outcome) = serialise_batch(&out);
+        assert_eq!(outcome.serialised, 3);
         assert_eq!(parse_batch(&bytes).0.len(), 3);
+    }
+
+    /// Events roughly the size of a real ECS document, so the split is
+    /// exercised at a realistic ratio rather than at one event per chunk.
+    fn padded(count: usize, bytes: usize) -> Vec<Event> {
+        use std::fmt::Write as _;
+
+        let filler = "x".repeat(bytes);
+        let mut lines = String::with_capacity(count * (bytes + 32));
+        for i in 0..count {
+            let _ = writeln!(lines, "{{\"i\":{i},\"pad\":\"{filler}\"}}");
+        }
+        parse_batch(lines.as_bytes()).0
+    }
+
+    #[test]
+    fn every_chunk_stays_within_the_budget() {
+        let events = padded(200, 400);
+        let (chunks, outcome) = serialise_chunks(&events, 8192);
+
+        assert!(chunks.len() > 1, "200 events of 400 bytes must split");
+        assert_eq!(outcome.serialised, 200);
+        for chunk in &chunks {
+            assert!(chunk.len() <= 8192, "chunk of {} bytes", chunk.len());
+        }
+    }
+
+    #[test]
+    fn splitting_loses_no_events() {
+        let events = padded(200, 400);
+        let (chunks, _) = serialise_chunks(&events, 8192);
+
+        let reassembled: usize = chunks.iter().map(|c| parse_batch(c).0.len()).sum();
+        assert_eq!(reassembled, 200);
+    }
+
+    /// The defect this split exists to fix: at the shipped `batch_size` of
+    /// 20,000, one concatenated payload is tens of MB against librdkafka's
+    /// 1,000,000-byte producer default, so every batch fails to produce.
+    #[test]
+    fn a_default_sized_batch_produces_messages_the_broker_accepts() {
+        let events = padded(20_000, 400);
+        let budget = crate::config::default_max_message_bytes();
+        let (chunks, outcome) = serialise_chunks(&events, budget);
+
+        assert_eq!(outcome.serialised, 20_000);
+        for chunk in &chunks {
+            assert!(
+                chunk.len() <= 1_000_000,
+                "chunk of {} bytes exceeds librdkafka's message.max.bytes default",
+                chunk.len()
+            );
+        }
+        let reassembled: usize = chunks.iter().map(|c| parse_batch(c).0.len()).sum();
+        assert_eq!(reassembled, 20_000);
+    }
+
+    /// A record no broker can accept is dropped and counted, rather than
+    /// retried forever behind the rest of the partition.
+    #[test]
+    fn an_event_larger_than_the_budget_is_dropped_and_counted() {
+        let mut events = padded(2, 100);
+        events.extend(padded(1, 20_000));
+
+        let (chunks, outcome) = serialise_chunks(&events, MIN_MESSAGE_BYTES);
+        assert_eq!(outcome.oversize, 1);
+        assert_eq!(outcome.serialised, 2);
+        let reassembled: usize = chunks.iter().map(|c| parse_batch(c).0.len()).sum();
+        assert_eq!(reassembled, 2);
+    }
+
+    /// A budget below one ordinary event would drop the entire batch as
+    /// oversize, so it is clamped rather than obeyed.
+    #[test]
+    fn an_absurd_budget_is_clamped_not_obeyed() {
+        let events = padded(4, 100);
+        let (chunks, outcome) = serialise_chunks(&events, 1);
+        assert_eq!(outcome.oversize, 0);
+        assert_eq!(outcome.serialised, 4);
+        assert_eq!(chunks.len(), 1);
+    }
+
+    #[test]
+    fn an_empty_batch_produces_no_messages() {
+        let (chunks, outcome) = serialise_chunks(&[], 8192);
+        assert!(chunks.is_empty());
+        assert_eq!(outcome.serialised, 0);
     }
 }

@@ -145,14 +145,8 @@ serde = { version = ">=1.0", features = ["derive"] }
 serde_json = ">=1.0"
 serde_yaml_ng = ">=0.10"
 
-# Parser combinators (zero-copy structured parsing)
-winnow = ">=0.6"
-
 # SIMD byte search
 memchr = ">=2.7"
-
-# Multi-pattern matching (SIMD Teddy algorithm)
-aho-corasick = ">=1.1"
 
 # Pre-compiled DFA regex (serialisable, zero-cost startup)
 regex-automata = ">=0.4"

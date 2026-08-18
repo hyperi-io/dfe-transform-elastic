@@ -8,7 +8,7 @@
 
 [package]
 name = "dfe-transforms"
-description = "Generated and hand-tuned transform modules for Elastic data sources"
+description = "Transform modules for Elastic data sources: one Rust module per ingest pipeline"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
