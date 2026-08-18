@@ -8,13 +8,14 @@
 //! recorded in CLAUDE.md.
 
 use scalo::config::{self, ConfigOptions};
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 /// Environment prefix for the config cascade.
 pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 
 /// Top-level service configuration.
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Config {
     /// Name reported in metrics labels.
     #[serde(default = "default_pipeline_name")]
@@ -28,7 +29,7 @@ pub struct Config {
 }
 
 /// Inbound configuration.
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
     pub name: String,
@@ -48,7 +49,7 @@ pub struct SourceConfig {
 }
 
 /// Outbound configuration.
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SinkConfig {
     /// Topic to produce to.
     pub topic: String,

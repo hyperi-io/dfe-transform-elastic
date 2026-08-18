@@ -31,7 +31,12 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 clap = { workspace = true }
 bytes = { workspace = true }
+metrics = { workspace = true }
+schemars = { workspace = true }
 tikv-jemallocator = { workspace = true, optional = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
 
 [features]
 default = ["kafka"]
@@ -83,6 +88,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 scalo = { version = ">=2.10.9, <3", features = [
     "cli-service",
     "config",
+    "config-schema",
     "deployment",
     "governor",
     "http-server",
@@ -90,6 +96,19 @@ scalo = { version = ">=2.10.9, <3", features = [
     "memory",
     "metrics",
     "scaling",
+    "service-metrics",
+] }
+
+# The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands
+# back. scalo re-exports the manager, not the facade crate.
+metrics = ">=0.24.3, <0.25"
+
+# JSON Schema derivation for the reflectable config contract. Same range as
+# scalo's own so cargo unifies to one schemars.
+schemars = { version = ">=1.2.1, <2", default-features = false, features = [
+    "std",
+    "derive",
+    "preserve_order",
 ] }
 
 # Async runtime

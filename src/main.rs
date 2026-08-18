@@ -16,6 +16,12 @@ static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 async fn main() {
     let app = App::parse();
 
+    // The listing and emit subcommands need neither config nor a runtime, so
+    // they are handled before scalo's lifecycle tries to load one.
+    if app.handle_local_command().is_some() {
+        return;
+    }
+
     if let Err(e) = scalo::cli::run_app(app).await {
         eprintln!("fatal: {e}");
         std::process::exit(1);

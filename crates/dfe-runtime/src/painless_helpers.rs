@@ -281,31 +281,129 @@ pub fn painless_keys_to_snake_case(v: &Value) -> Value {
     }
 }
 
-/// Convert a camelCase or `PascalCase` string to `snake_case`.
-fn camel_to_snake(s: &str) -> String {
+/// Where a snake-case conversion puts its underscores.
+///
+/// The two Painless idioms this crate reproduces disagree, and the difference
+/// is visible in the Elastic fixtures, so both are kept.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SnakeRule {
+    /// Underscore only at a lowercase-to-uppercase transition, so
+    /// `HTTPServer` stays one word.
+    OnWordBreak,
+    /// Underscore before every uppercase character after the first.
+    BeforeEveryUpper,
+}
+
+/// Convert a string to `snake_case` under `rule`.
+///
+/// Lowercasing goes through the full `char::to_lowercase` mapping. Taking only
+/// its first character drops the rest, and some codepoints lowercase to more
+/// than one -- U+0130 becomes `i` plus a combining dot.
+#[must_use]
+pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
     let mut result = String::with_capacity(s.len() + 4);
-    for (i, ch) in s.chars().enumerate() {
+    let mut prev_was_lowercase = false;
+    let mut first = true;
+
+    for ch in s.chars() {
         if ch.is_uppercase() {
-            if i > 0 {
-                // Only insert underscore if previous char is lowercase
-                if let Some(prev) = s.chars().nth(i - 1)
-                    && prev.is_lowercase()
-                {
-                    result.push('_');
-                }
+            let separate = match rule {
+                SnakeRule::OnWordBreak => prev_was_lowercase,
+                SnakeRule::BeforeEveryUpper => !first,
+            };
+            if separate {
+                result.push('_');
             }
-            result.push(ch.to_lowercase().next().unwrap_or(ch));
+            result.extend(ch.to_lowercase());
         } else {
             result.push(ch);
         }
+        prev_was_lowercase = ch.is_lowercase();
+        first = false;
     }
+
     result
+}
+
+/// Convert a camelCase or `PascalCase` string to `snake_case`.
+fn camel_to_snake(s: &str) -> String {
+    to_snake_case(s, SnakeRule::OnWordBreak)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// `char::to_lowercase` yields an ITERATOR because some codepoints
+    /// lowercase to more than one character. Taking only the first silently
+    /// drops the rest, so a field name loses characters.
+    #[test]
+    fn camel_to_snake_keeps_every_character_of_a_lowercase_mapping() {
+        // U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE lowercases to two
+        // characters: 'i' + U+0307 COMBINING DOT ABOVE.
+        assert_eq!(camel_to_snake("\u{0130}"), "i\u{0307}");
+        assert_eq!(camel_to_snake("a\u{0130}"), "a_i\u{0307}");
+    }
+
+    /// Non-ASCII uppercase must be treated as uppercase, and the result must
+    /// never lose or reorder characters.
+    #[test]
+    fn camel_to_snake_handles_non_ascii_scripts() {
+        // Cyrillic and Greek have case; CJK and Arabic do not.
+        assert_eq!(camel_to_snake("привет"), "привет");
+        assert_eq!(camel_to_snake("日本語"), "日本語");
+        assert_eq!(camel_to_snake("العربية"), "العربية");
+        assert_eq!(camel_to_snake("userИмя"), "user_имя");
+        assert_eq!(camel_to_snake("\u{00DF}"), "\u{00DF}");
+    }
+
+    /// The ASCII behaviour this is actually used for must not move.
+    #[test]
+    fn camel_to_snake_preserves_the_ascii_rule() {
+        assert_eq!(camel_to_snake("userName"), "user_name");
+        assert_eq!(camel_to_snake("UserName"), "user_name");
+        assert_eq!(camel_to_snake("HTTPServer"), "httpserver");
+        assert_eq!(camel_to_snake("already_snake"), "already_snake");
+        assert_eq!(camel_to_snake(""), "");
+    }
+
+    /// A long key must not cost quadratic time. The old implementation called
+    /// `chars().nth(i - 1)` on every character.
+    #[test]
+    fn camel_to_snake_is_linear_on_a_long_key() {
+        let long = "aB".repeat(20_000);
+        let out = camel_to_snake(&long);
+        assert_eq!(out.chars().filter(|c| *c == '_').count(), 20_000);
+    }
+
+    /// The second rule shares the same lowercase mapping, so it must not drop
+    /// characters either.
+    #[test]
+    fn before_every_upper_rule_keeps_the_full_lowercase_mapping() {
+        assert_eq!(
+            to_snake_case("a\u{0130}", SnakeRule::BeforeEveryUpper),
+            "a_i\u{0307}"
+        );
+        assert_eq!(
+            to_snake_case("HTTPServer", SnakeRule::BeforeEveryUpper),
+            "h_t_t_p_server"
+        );
+        assert_eq!(
+            to_snake_case("userName", SnakeRule::BeforeEveryUpper),
+            "user_name"
+        );
+    }
+
+    /// The two rules must stay distinct: collapsing them changes the key names
+    /// the Elastic fixtures are matched against.
+    #[test]
+    fn the_two_rules_disagree_on_acronyms() {
+        assert_ne!(
+            to_snake_case("HTTPServer", SnakeRule::OnWordBreak),
+            to_snake_case("HTTPServer", SnakeRule::BeforeEveryUpper)
+        );
+    }
 
     #[test]
     fn truthiness() {

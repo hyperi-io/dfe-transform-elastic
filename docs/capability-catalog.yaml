@@ -1,0 +1,115 @@
+- kind: transform
+  name: elastic
+  description: 'Elastic ingest-pipeline logic compiled to native Rust: field extraction, mutation and enrichment applied per event, selected by source name.'
+  maturity: beta
+  fields:
+  - name: source.name
+    type: string
+    required: true
+    description: Which compiled transform to apply, e.g. filebeat.okta.default.
+  children:
+  - kind: service
+    name: filebeat.azure_activitylogs.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.azure_auditlogs.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.azure_platformlogs.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.azure_signinlogs.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.cisco_ios.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.cisco_meraki.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.cisco_nexus.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.crowdstrike.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.fortinet.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.o365.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.okta.default
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.authentication
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.correlated_event
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.decryption
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.globalprotect
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.gtp
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.hipmatch
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.ip_tag
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.sctp
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.system
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.traffic
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.tunnel_inspection
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+  - kind: service
+    name: filebeat.panw.userid
+    description: Compiled transform for this Beats or Elastic Agent source.
+    maturity: beta
+- kind: source
+  name: kafka
+  description: Kafka consumer and producer via the scalo transport.
+  maturity: stable
+  fields:
+  - name: source.topics
+    type: list
+    required: true
+    description: Topics to consume.
+  - name: sink.topic
+    type: string
+    required: true
+    description: Topic the normalised events are produced to.

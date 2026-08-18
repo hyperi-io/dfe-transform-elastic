@@ -1,0 +1,371 @@
+{
+  "schema_version": 3,
+  "app_name": "dfe-transform-elastic",
+  "binary_name": "dfe-transform-elastic",
+  "description": "Beats and Elastic Agent JSON in, DFE-normalised events out",
+  "metrics_port": 9090,
+  "health": {
+    "liveness_path": "/livez",
+    "readiness_path": "/readyz",
+    "metrics_path": "/metrics"
+  },
+  "env_prefix": "DFE_TRANSFORM_ELASTIC",
+  "metric_prefix": "transform_elastic",
+  "config_mount_path": "/etc/dfe-transform-elastic/config.yaml",
+  "image_registry": "ghcr.io/hyperi-io",
+  "extra_ports": [],
+  "entrypoint_args": [
+    "--config",
+    "/etc/dfe-transform-elastic/config.yaml"
+  ],
+  "secrets": [
+    {
+      "group_name": "kafka",
+      "env_vars": [
+        {
+          "env_var": "KAFKA_SASL_USERNAME",
+          "key_name": "username",
+          "secret_key": "kafka-username"
+        },
+        {
+          "env_var": "KAFKA_SASL_PASSWORD",
+          "key_name": "password",
+          "secret_key": "kafka-password"
+        }
+      ]
+    }
+  ],
+  "default_config": {
+    "pipeline_name": "dfe-transform-elastic",
+    "source": {
+      "name": "filebeat.okta.default",
+      "topics": [
+        "raw_events"
+      ],
+      "batch_size": 20000,
+      "group_id": "dfe-transform-elastic",
+      "brokers": [
+        "kafka:9092"
+      ]
+    },
+    "sink": {
+      "topic": "normalised_events",
+      "brokers": [
+        "kafka:9092"
+      ]
+    },
+    "scaling": {
+      "enabled": true,
+      "memory_gate_threshold": 0.8
+    }
+  },
+  "depends_on": [
+    "kafka"
+  ],
+  "keda": {
+    "min_replicas": 1,
+    "max_replicas": 10,
+    "polling_interval": 15,
+    "cooldown_period": 300,
+    "kafka_lag_threshold": 200000,
+    "activation_lag_threshold": 0,
+    "cpu_enabled": true,
+    "cpu_threshold": 80
+  },
+  "base_image": "debian:trixie-slim",
+  "native_deps": {
+    "apt_repos": [
+      {
+        "key_url": "https://packages.confluent.io/clients/deb/archive.key",
+        "keyring": "/usr/share/keyrings/confluent-clients.gpg",
+        "url": "https://packages.confluent.io/clients/deb",
+        "codename": "bookworm",
+        "key_fingerprint": "CBBB821E8FAF364F79835C438B1DA6120C2BF624",
+        "packages": [
+          "librdkafka1"
+        ]
+      }
+    ],
+    "apt_packages": [
+      "libssl3t64",
+      "zlib1g"
+    ],
+    "distro": "trixie"
+  },
+  "image_profile": "production",
+  "oci_labels": {
+    "title": "dfe-transform-elastic",
+    "description": "Beats and Elastic Agent JSON in, DFE-normalised events out",
+    "vendor": "HYPERI PTY LIMITED",
+    "licenses": "BUSL-1.1",
+    "copyright": "(c) 2026 HYPERI PTY LIMITED"
+  },
+  "config_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Config",
+    "description": "Top-level service configuration.",
+    "type": "object",
+    "properties": {
+      "pipeline_name": {
+        "description": "Name reported in metrics labels.",
+        "type": "string",
+        "default": "dfe-transform-elastic"
+      },
+      "source": {
+        "description": "Inbound side.",
+        "$ref": "#/$defs/SourceConfig"
+      },
+      "sink": {
+        "description": "Outbound side.",
+        "$ref": "#/$defs/SinkConfig"
+      }
+    },
+    "required": [
+      "source",
+      "sink"
+    ],
+    "$defs": {
+      "SourceConfig": {
+        "description": "Inbound configuration.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.",
+            "type": "string"
+          },
+          "topics": {
+            "description": "Topics to consume.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "batch_size": {
+            "description": "Events pulled per batch.",
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0,
+            "default": 20000
+          },
+          "group_id": {
+            "description": "Kafka consumer group.",
+            "type": "string"
+          },
+          "brokers": {
+            "description": "Broker list.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "topics",
+          "group_id",
+          "brokers"
+        ]
+      },
+      "SinkConfig": {
+        "description": "Outbound configuration.",
+        "type": "object",
+        "properties": {
+          "topic": {
+            "description": "Topic to produce to.",
+            "type": "string"
+          },
+          "brokers": {
+            "description": "Broker list. Defaults to the source brokers when unset.",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "default": null
+          }
+        },
+        "required": [
+          "topic"
+        ]
+      }
+    }
+  },
+  "capabilities": [
+    {
+      "kind": "transform",
+      "name": "elastic",
+      "description": "Elastic ingest-pipeline logic compiled to native Rust: field extraction, mutation and enrichment applied per event, selected by source name.",
+      "maturity": "beta",
+      "fields": [
+        {
+          "name": "source.name",
+          "type": "string",
+          "required": true,
+          "description": "Which compiled transform to apply, e.g. filebeat.okta.default."
+        }
+      ],
+      "children": [
+        {
+          "kind": "service",
+          "name": "filebeat.azure_activitylogs.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.azure_auditlogs.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.azure_platformlogs.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.azure_signinlogs.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.cisco_ios.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.cisco_meraki.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.cisco_nexus.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.crowdstrike.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.fortinet.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.o365.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.okta.default",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.authentication",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.correlated_event",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.decryption",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.globalprotect",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.gtp",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.hipmatch",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.ip_tag",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.sctp",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.system",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.traffic",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.tunnel_inspection",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        },
+        {
+          "kind": "service",
+          "name": "filebeat.panw.userid",
+          "description": "Compiled transform for this Beats or Elastic Agent source.",
+          "maturity": "beta"
+        }
+      ]
+    },
+    {
+      "kind": "source",
+      "name": "kafka",
+      "description": "Kafka consumer and producer via the scalo transport.",
+      "maturity": "stable",
+      "fields": [
+        {
+          "name": "source.topics",
+          "type": "list",
+          "required": true,
+          "description": "Topics to consume."
+        },
+        {
+          "name": "sink.topic",
+          "type": "string",
+          "required": true,
+          "description": "Topic the normalised events are produced to."
+        }
+      ]
+    }
+  ]
+}

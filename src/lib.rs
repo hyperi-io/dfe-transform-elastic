@@ -11,7 +11,9 @@
 
 pub mod cli;
 pub mod config;
+pub mod deployment;
 pub mod error;
+pub mod metrics;
 pub mod pipeline;
 pub mod registry;
 

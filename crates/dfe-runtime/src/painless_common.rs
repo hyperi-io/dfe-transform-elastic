@@ -11,6 +11,7 @@ use serde_json::{Map, Value, json};
 
 use crate::error::Result;
 use crate::event::Event;
+use crate::painless_helpers::{SnakeRule, to_snake_case};
 
 /// Recursively drop null and empty values from the event.
 ///
@@ -61,13 +62,7 @@ pub fn keys_to_snake_case(value: &mut Value) {
             let entries: Vec<(String, Value)> = map
                 .iter()
                 .map(|(k, v)| {
-                    let mut snake = String::with_capacity(k.len() + 4);
-                    for (i, c) in k.chars().enumerate() {
-                        if c.is_uppercase() && i > 0 {
-                            snake.push('_');
-                        }
-                        snake.push(c.to_lowercase().next().unwrap_or(c));
-                    }
+                    let snake = to_snake_case(k, SnakeRule::BeforeEveryUpper);
                     let mut v = v.clone();
                     keys_to_snake_case(&mut v);
                     (snake, v)

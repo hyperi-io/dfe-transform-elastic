@@ -61,22 +61,53 @@ pub fn transform_batch(
     (out, outcome)
 }
 
+/// What a payload cost to decode.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct ParseOutcome {
+    /// Lines that produced an event.
+    pub parsed: usize,
+    /// Lines that were not valid JSON and were skipped.
+    pub bad_lines: usize,
+    /// The payload was not valid UTF-8 and was decoded with replacements.
+    pub lossy: bool,
+}
+
 /// Parse one NDJSON payload into events.
 ///
-/// # Errors
+/// Nothing about a payload is fatal. Bytes that are not valid UTF-8 are
+/// replaced with U+FFFD, matching what Beats itself substitutes for a file it
+/// cannot decode; a line that is not valid JSON is skipped. Both are counted,
+/// so the damage is visible rather than silent.
 ///
-/// Returns [`crate::Error::Parse`] if a line is not valid JSON.
-pub fn parse_batch(payload: &[u8]) -> crate::Result<Vec<Event>> {
-    let text = std::str::from_utf8(payload).map_err(|e| crate::Error::Parse(e.to_string()))?;
+/// Rejecting either would discard every event already parsed from the same
+/// payload -- up to a full batch for one bad byte.
+pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
+    // Borrowed when the payload is already valid UTF-8, which is the common
+    // case, so the hot path still reads straight out of the Kafka buffer.
+    let text = String::from_utf8_lossy(payload);
+    let mut outcome = ParseOutcome {
+        lossy: matches!(text, std::borrow::Cow::Owned(_)),
+        ..ParseOutcome::default()
+    };
 
     let mut events = Vec::new();
     for line in text.lines() {
         if line.trim().is_empty() {
             continue;
         }
-        events.push(Event::from_json(line).map_err(|e| crate::Error::Parse(e.to_string()))?);
+        match Event::from_json(line) {
+            Ok(event) => {
+                outcome.parsed += 1;
+                events.push(event);
+            }
+            Err(e) => {
+                outcome.bad_lines += 1;
+                tracing::warn!(error = %e, "line is not valid JSON, skipped");
+            }
+        }
     }
-    Ok(events)
+
+    (events, outcome)
 }
 
 /// Serialise events back to an NDJSON payload.
@@ -133,18 +164,23 @@ mod tests {
     }
 
     fn three() -> Vec<Event> {
-        parse_batch(b"{\"a\":1}\n{\"a\":2}\n{\"a\":3}\n").expect("fixture parses")
+        parse_batch(b"{\"a\":1}\n{\"a\":2}\n{\"a\":3}\n").0
     }
 
     #[test]
     fn parses_ndjson_and_skips_blank_lines() {
-        let events = parse_batch(b"{\"a\":1}\n\n{\"a\":2}\n").expect("parses");
+        let (events, outcome) = parse_batch(b"{\"a\":1}\n\n{\"a\":2}\n");
         assert_eq!(events.len(), 2);
+        assert_eq!(outcome.parsed, 2);
+        assert_eq!(outcome.bad_lines, 0);
+        assert!(!outcome.lossy);
     }
 
     #[test]
-    fn rejects_malformed_json() {
-        assert!(parse_batch(b"{not json}\n").is_err());
+    fn counts_malformed_json_without_failing() {
+        let (events, outcome) = parse_batch(b"{not json}\n");
+        assert!(events.is_empty());
+        assert_eq!(outcome.bad_lines, 1);
     }
 
     #[test]
@@ -174,6 +210,6 @@ mod tests {
     fn round_trips_through_serialise() {
         let (out, _) = transform_batch(&Passthrough, three());
         let bytes = serialise_batch(&out).expect("serialises");
-        assert_eq!(parse_batch(&bytes).expect("reparses").len(), 3);
+        assert_eq!(parse_batch(&bytes).0.len(), 3);
     }
 }

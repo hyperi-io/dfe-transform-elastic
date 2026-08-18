@@ -4,7 +4,9 @@
 //! CLI surface and the scalo service lifecycle binding.
 
 use clap::{Parser, Subcommand};
+use scalo::ScalingComponent;
 use scalo::cli::{CliError, CommonArgs, ServiceApp, StandardCommand, VersionInfo};
+use scalo::deployment::{generate_chart, generate_compose_fragment, generate_dockerfile};
 
 use crate::config::Config;
 
@@ -28,6 +30,22 @@ enum AppCommand {
     /// List the source names this build can transform.
     #[command(name = "sources")]
     Sources,
+
+    /// Print the deployment contract's Dockerfile to stdout.
+    #[command(name = "emit-dockerfile")]
+    EmitDockerfile,
+
+    /// Write the deployment contract's Helm chart into `dir`.
+    #[command(name = "emit-chart")]
+    EmitChart {
+        /// Directory to write the chart into.
+        #[arg(default_value = "chart/dfe-transform-elastic")]
+        dir: String,
+    },
+
+    /// Print the deployment contract's docker-compose fragment to stdout.
+    #[command(name = "emit-compose")]
+    EmitCompose,
 }
 
 impl App {
@@ -40,6 +58,32 @@ impl App {
                 for name in crate::registry::sources() {
                     println!("{name}");
                 }
+                Some(())
+            }
+            AppCommand::EmitDockerfile => {
+                println!(
+                    "{}",
+                    generate_dockerfile(&crate::deployment::contract(), None)
+                );
+                Some(())
+            }
+            AppCommand::EmitChart { dir } => {
+                if let Err(e) = generate_chart(&crate::deployment::contract(), dir, None) {
+                    eprintln!("error: failed to generate Helm chart: {e}");
+                    std::process::exit(1);
+                }
+                if let Err(e) = crate::deployment::retarget_keda_trigger(dir) {
+                    eprintln!("error: {e}");
+                    std::process::exit(1);
+                }
+                eprintln!("Helm chart generated in {dir}/");
+                Some(())
+            }
+            AppCommand::EmitCompose => {
+                println!(
+                    "{}",
+                    generate_compose_fragment(&crate::deployment::contract())
+                );
                 Some(())
             }
             AppCommand::Standard(_) => None,
@@ -104,6 +148,29 @@ impl ServiceApp for App {
         Err(CliError::Service(
             "built without the `kafka` feature; there is no transport to run".into(),
         ))
+    }
+
+    fn register_metrics(&self, manager: &scalo::metrics::MetricsManager) {
+        // Registration is the side effect; the handles are discarded because
+        // this path never runs the service.
+        let _ = crate::metrics::TransformMetrics::register(
+            manager,
+            env!("CARGO_PKG_VERSION"),
+            crate::metrics::TransformMetrics::commit(),
+        );
+    }
+
+    fn scaling_components(&self, _config: &Config) -> Vec<ScalingComponent> {
+        // `set_component` is a no-op for an unregistered name, so every
+        // component the service feeds must be declared here.
+        vec![
+            ScalingComponent::new("kafka_lag", 0.70, 200_000.0),
+            ScalingComponent::new("batch_saturation", 0.30, 1.0),
+        ]
+    }
+
+    fn deployment_contract(&self) -> Option<scalo::deployment::DeploymentContract> {
+        Some(crate::deployment::contract())
     }
 }
 

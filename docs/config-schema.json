@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Config",
+  "description": "Top-level service configuration.",
+  "type": "object",
+  "properties": {
+    "pipeline_name": {
+      "description": "Name reported in metrics labels.",
+      "type": "string",
+      "default": "dfe-transform-elastic"
+    },
+    "source": {
+      "description": "Inbound side.",
+      "$ref": "#/$defs/SourceConfig"
+    },
+    "sink": {
+      "description": "Outbound side.",
+      "$ref": "#/$defs/SinkConfig"
+    }
+  },
+  "required": [
+    "source",
+    "sink"
+  ],
+  "$defs": {
+    "SourceConfig": {
+      "description": "Inbound configuration.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.",
+          "type": "string"
+        },
+        "topics": {
+          "description": "Topics to consume.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "batch_size": {
+          "description": "Events pulled per batch.",
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0,
+          "default": 20000
+        },
+        "group_id": {
+          "description": "Kafka consumer group.",
+          "type": "string"
+        },
+        "brokers": {
+          "description": "Broker list.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "topics",
+        "group_id",
+        "brokers"
+      ]
+    },
+    "SinkConfig": {
+      "description": "Outbound configuration.",
+      "type": "object",
+      "properties": {
+        "topic": {
+          "description": "Topic to produce to.",
+          "type": "string"
+        },
+        "brokers": {
+          "description": "Broker list. Defaults to the source brokers when unset.",
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "default": null
+        }
+      },
+      "required": [
+        "topic"
+      ]
+    }
+  }
+}
