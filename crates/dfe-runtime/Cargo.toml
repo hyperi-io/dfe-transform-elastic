@@ -1,3 +1,11 @@
+# Project:   dfe-transform-elastic
+# File:      crates/dfe-runtime/Cargo.toml
+# Purpose:   Runtime crate manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
 [package]
 name = "dfe-runtime"
 description = "Core runtime for dfe-transform-elastic: Event type, Transform trait, enrichment"

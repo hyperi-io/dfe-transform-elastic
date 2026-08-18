@@ -46,6 +46,10 @@ enum AppCommand {
     /// Print the deployment contract's docker-compose fragment to stdout.
     #[command(name = "emit-compose")]
     EmitCompose,
+
+    /// Print the shipped default configuration as YAML.
+    #[command(name = "emit-config")]
+    EmitConfig,
 }
 
 impl App {
@@ -84,6 +88,10 @@ impl App {
                     "{}",
                     generate_compose_fragment(&crate::deployment::contract())
                 );
+                Some(())
+            }
+            AppCommand::EmitConfig => {
+                print!("{}", crate::deployment::default_config_yaml());
                 Some(())
             }
             AppCommand::Standard(_) => None,

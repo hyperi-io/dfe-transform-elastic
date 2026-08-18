@@ -1,4 +1,11 @@
-# Project-specific gitleaks allowlist
+# Project:   dfe-transform-elastic
+# File:      .gitleaks.toml
+# Purpose:   Project-specific gitleaks allowlist
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
 # Extends the CI base configuration (ci/.gitleaks.toml)
 #
 # The CI runs gitleaks to detect secrets in your code. This file lets you

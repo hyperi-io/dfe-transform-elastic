@@ -3,7 +3,7 @@
   "app": "dfe-transform-elastic",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-08-18T05:25:14Z",
+  "registered_at": "2026-08-18T05:53:33Z",
   "metrics": [
     {
       "name": "dfe-transform-elastic_transport_sent_total",
@@ -378,6 +378,30 @@
       "name": "dfe-transform-elastic_painless_unhandled_total",
       "type": "counter",
       "description": "Painless scripts skipped because nothing recognised them",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_geoip_cache_hits_total",
+      "type": "counter",
+      "description": "GeoIP lookups answered from the cache",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_geoip_cache_misses_total",
+      "type": "counter",
+      "description": "GeoIP lookups that reached a database",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_geoip_cache_entries",
+      "type": "gauge",
+      "description": "Addresses currently held in the GeoIP cache",
       "unit": "",
       "labels": [],
       "group": "custom"

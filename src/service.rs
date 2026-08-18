@@ -112,6 +112,18 @@ pub async fn run_loop(
     // `painless_stats` counts cumulatively for the process; the metrics want
     // per-batch deltas.
     let mut painless_seen = (0_u64, 0_u64);
+    let mut geoip_seen = (0_u64, 0_u64);
+
+    // 14 of the source pipelines carry a geoip processor, so a deployment
+    // that mounted no database gets empty geo fields rather than an error.
+    if dfe_runtime::enrichment::geoip_global::enabled() {
+        tracing::info!("GeoIP enrichment active");
+    } else {
+        tracing::warn!(
+            "no GeoIP database found -- geo fields will be empty. Mount one at \
+             /var/lib/dfe/geoip or set GEOIP_CITY_DB and GEOIP_ASN_DB"
+        );
+    }
 
     while !shutdown.is_cancelled() {
         if last_signal.elapsed() >= SCALING_SIGNAL_INTERVAL {
@@ -194,6 +206,16 @@ pub async fn run_loop(
             .painless_unhandled
             .increment(painless_now.1.saturating_sub(painless_seen.1));
         painless_seen = painless_now;
+
+        let geoip = dfe_runtime::enrichment::geoip_global::cache_stats();
+        metrics
+            .geoip_cache_hits
+            .increment(geoip.hits.saturating_sub(geoip_seen.0));
+        metrics
+            .geoip_cache_misses
+            .increment(geoip.misses.saturating_sub(geoip_seen.1));
+        metrics.geoip_cache_size.set(geoip.size as f64);
+        geoip_seen = (geoip.hits, geoip.misses);
 
         tracing::debug!(
             emitted = outcome.emitted,

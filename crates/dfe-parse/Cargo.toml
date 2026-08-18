@@ -1,3 +1,11 @@
+# Project:   dfe-transform-elastic
+# File:      crates/dfe-parse/Cargo.toml
+# Purpose:   Parser crate manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
 [package]
 name = "dfe-parse"
 description = "High-performance parser library replacing grok/regex patterns with native Rust"

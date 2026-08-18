@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Project:   dfe-transform-elastic
+# File:      scripts/download-geoip.sh
+# Purpose:   Fetch the DB-IP Lite MMDB databases the GeoIP tests need
+# Language:  Bash
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
+# The databases themselves are DB-IP Lite, CC BY 4.0, and are gitignored.
+# Same approach as dfe-loader's scripts/download-geoip.sh.
 
-# Download DB-IP Lite MMDB databases (free, CC BY 4.0)
-# Same approach as dfe-loader's scripts/download-geoip.sh
+set -euo pipefail
 
 DEST="${1:-testdata/geoip}"
 mkdir -p "${DEST}"

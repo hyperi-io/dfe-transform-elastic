@@ -53,6 +53,15 @@ pub struct TransformMetrics {
     /// still emitted, so a high rate is silent data loss rather than an error.
     pub painless_unhandled: Counter,
 
+    /// `GeoIP` lookups answered from the cache.
+    pub geoip_cache_hits: Counter,
+
+    /// `GeoIP` lookups that reached a database.
+    pub geoip_cache_misses: Counter,
+
+    /// Addresses currently held in the `GeoIP` cache.
+    pub geoip_cache_size: metrics::Gauge,
+
     /// Sends that failed, leaving the batch uncommitted for replay.
     pub send_failures: Counter,
 
@@ -102,6 +111,18 @@ impl TransformMetrics {
             painless_unhandled: manager.counter(
                 "painless_unhandled_total",
                 "Painless scripts skipped because nothing recognised them",
+            ),
+            geoip_cache_hits: manager.counter(
+                "geoip_cache_hits_total",
+                "GeoIP lookups answered from the cache",
+            ),
+            geoip_cache_misses: manager.counter(
+                "geoip_cache_misses_total",
+                "GeoIP lookups that reached a database",
+            ),
+            geoip_cache_size: manager.gauge(
+                "geoip_cache_entries",
+                "Addresses currently held in the GeoIP cache",
             ),
             send_failures: manager.counter(
                 "send_failures_total",
@@ -159,6 +180,9 @@ mod tests {
             "_lossy_payloads_total",
             "_painless_handled_total",
             "_painless_unhandled_total",
+            "_geoip_cache_hits_total",
+            "_geoip_cache_misses_total",
+            "_geoip_cache_entries",
             "_send_failures_total",
             "_commit_failures_total",
             "_batch_events",

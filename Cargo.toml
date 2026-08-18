@@ -1,3 +1,11 @@
+# Project:   dfe-transform-elastic
+# File:      Cargo.toml
+# Purpose:   Workspace and service manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
 [package]
 name = "dfe-transform-elastic"
 description = "Kafka-to-Kafka transform service for Beats and Elastic Agent data. Runs standalone or as part of the HyperI Data Fusion Engine."
