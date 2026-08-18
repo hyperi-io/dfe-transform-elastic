@@ -43,17 +43,8 @@ impl Transform for Airmarshal {
             let input = input.as_str();
             // Grok pattern: %{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}
             // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            let grok_re = regex::Regex::new(&grok_to_regex(
-                "%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}",
-            ))
-            .unwrap();
-            if let Some(caps) = grok_re.captures(input) {
-                for name in grok_re.capture_names().flatten() {
-                    if let Some(m) = caps.name(name) {
-                        event.set(name, m.as_str())?;
-                    }
-                }
-            }
+            cached_grok!("%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}")
+                .extract_into(input, event)?;
         }
 
         if let Some(input) = event.get_str("_temp.ssid").map(String::from) {
@@ -96,14 +87,14 @@ impl Transform for Airmarshal {
 
         if let Some(s) = event.get_str("_temp.kv.src").map(String::from) {
             let s = s.as_str();
-            let re = regex::Regex::new("[-:.]").unwrap();
+            let re = cached_regex!("[-:.]");
             let replaced = re.replace_all(s, "-").into_owned();
             event.set("source.mac", replaced)?;
         }
 
         if let Some(s) = event.get_str("_temp.kv.dst").map(String::from) {
             let s = s.as_str();
-            let re = regex::Regex::new("[-:.]").unwrap();
+            let re = cached_regex!("[-:.]");
             let replaced = re.replace_all(s, "-").into_owned();
             event.set("destination.mac", replaced)?;
         }
@@ -112,7 +103,7 @@ impl Transform for Airmarshal {
         {
             if let Some(s) = event.get_str("_temp.kv.wired_mac").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[-:.]").unwrap();
+                let re = cached_regex!("[-:.]");
                 let replaced = re.replace_all(s, "-").into_owned();
                 event.set("_temp.observer.mac", replaced)?;
             }

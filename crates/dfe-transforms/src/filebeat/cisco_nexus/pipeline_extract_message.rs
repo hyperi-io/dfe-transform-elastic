@@ -20,14 +20,7 @@ impl Transform for PipelineExtractMessage {
                     let input = input.as_str();
                     // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$").extract_into(input, event)?;
                     // Additional grok pattern 1: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$
                     // Additional grok pattern 2: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$
                     // Additional grok pattern 3: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$
@@ -47,14 +40,7 @@ impl Transform for PipelineExtractMessage {
                     let input = input.as_str();
                     // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$").extract_into(input, event)?;
                     // Additional grok pattern 1: ^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$
                     // Additional grok pattern 2: ^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$
                     // Additional grok pattern 3: ^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$
@@ -72,14 +58,7 @@ impl Transform for PipelineExtractMessage {
                     let input = input.as_str();
                     // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$").extract_into(input, event)?;
                     // Additional grok pattern 1: ^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
                     // Additional grok pattern 2: ^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
                     // Additional grok pattern 3: ^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
@@ -97,14 +76,7 @@ impl Transform for PipelineExtractMessage {
                     let input = input.as_str();
                     // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$").extract_into(input, event)?;
                     // Additional grok pattern 1: ^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$
                     // Additional grok pattern 2: ^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$
                     // Additional grok pattern 3: ^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$
@@ -121,14 +93,7 @@ impl Transform for PipelineExtractMessage {
                     let input = input.as_str();
                     // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re = regex::Regex::new(&grok_to_regex("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$").extract_into(input, event)?;
                     // Additional grok pattern 1: ^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$
                 }
                 Ok(())
@@ -138,7 +103,7 @@ impl Transform for PipelineExtractMessage {
         if event.has("source.mac") {
             if let Some(s) = event.get_str("source.mac").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[.]").unwrap();
+                let re = cached_regex!("[.]");
                 let replaced = re.replace_all(s, "").into_owned();
                 event.set("source.mac", replaced)?;
             }

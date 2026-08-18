@@ -310,18 +310,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("okta.actor.alternate_id") {
                     // Grok pattern: %{USER:user.name}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) =
-                        grok_to_regex_with_map("%{USER:user.name}");
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
-                    if let Some(caps) = grok_re.captures(&input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                let field_path =
-                                    grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
-                                event.set(field_path, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("%{USER:user.name}").extract_into(input, event)?;
                 }
             }
             Ok(())
@@ -720,18 +709,8 @@ impl Transform for Default {
                 {
                     // Grok pattern: level=%{NOTSPACE:_risk_object.level}
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let (grok_pattern, grok_field_map) =
-                        grok_to_regex_with_map("level=%{NOTSPACE:_risk_object.level}");
-                    let grok_re = regex::Regex::new(&grok_pattern).unwrap();
-                    if let Some(caps) = grok_re.captures(&input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                let field_path =
-                                    grok_field_map.get(name).map(|s| s.as_str()).unwrap_or(name);
-                                event.set(field_path, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("level=%{NOTSPACE:_risk_object.level}")
+                        .extract_into(input, event)?;
                 }
                 Ok(())
             })();
@@ -743,9 +722,8 @@ impl Transform for Default {
         if let Some(risk_str) = event.get_string("okta.debug_context.debug_data.flattened.risk") {
             if let Some(reasons_start) = risk_str.find("reasons=") {
                 let after = &risk_str[reasons_start + 8..];
-                let reasons_end = regex::Regex::new(r", \w+=")
-                    .ok()
-                    .and_then(|re| re.find(after))
+                let reasons_end = cached_regex!(r", \w+=")
+                    .find(after)
                     .map(|m| m.start())
                     .unwrap_or(after.len());
                 let reasons = after[..reasons_end].trim();

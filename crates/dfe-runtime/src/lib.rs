@@ -23,6 +23,7 @@ pub mod codegen_api;
 pub mod enrichment;
 pub mod error;
 pub mod event;
+pub mod grok_cache;
 pub mod painless_common;
 pub mod painless_helpers;
 pub mod painless_stats;

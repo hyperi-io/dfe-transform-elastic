@@ -909,7 +909,7 @@ impl Transform for Default {
         if event.has("client._temp") {
             if let Some(s) = event.get_str("client._temp").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)").unwrap();
+                let re = cached_regex!("::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)");
                 let replaced = re.replace_all(s, "$1").into_owned();
                 event.set("client._temp", replaced)?;
             }
@@ -928,14 +928,7 @@ impl Transform for Default {
                 let input = input.as_str();
                 // Grok pattern: %{IPANDPORTBRACKETS}
                 // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                let grok_re = regex::Regex::new(&grok_to_regex("%{IPANDPORTBRACKETS}")).unwrap();
-                if let Some(caps) = grok_re.captures(input) {
-                    for name in grok_re.capture_names().flatten() {
-                        if let Some(m) = caps.name(name) {
-                            event.set(name, m.as_str())?;
-                        }
-                    }
-                }
+                cached_grok!("%{IPANDPORTBRACKETS}").extract_into(input, event)?;
                 // Additional grok pattern 1: ^%{IP:client.address}$
                 // Additional grok pattern 2: ^\\[%{IP:client.address}\\]$
                 // Additional grok pattern 3: %{IPANDPORT}
@@ -951,7 +944,7 @@ impl Transform for Default {
         if event.has("server._temp") {
             if let Some(s) = event.get_str("server._temp").map(String::from) {
                 let s = s.as_str();
-                let re = regex::Regex::new("[\n\r]").unwrap();
+                let re = cached_regex!("[\n\r]");
                 let replaced = re.replace_all(s, "").into_owned();
                 event.set("server._temp", replaced)?;
             }
@@ -968,15 +961,7 @@ impl Transform for Default {
                     let input = input.as_str();
                     // Grok pattern: ^\\[%{HOSTNAMEANDIP}\\]$
                     // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    let grok_re =
-                        regex::Regex::new(&grok_to_regex("^\\[%{HOSTNAMEANDIP}\\]$")).unwrap();
-                    if let Some(caps) = grok_re.captures(input) {
-                        for name in grok_re.capture_names().flatten() {
-                            if let Some(m) = caps.name(name) {
-                                event.set(name, m.as_str())?;
-                            }
-                        }
-                    }
+                    cached_grok!("^\\[%{HOSTNAMEANDIP}\\]$").extract_into(input, event)?;
                     // Additional grok pattern 1: %{HOSTNAMEANDIP}
                     // Additional grok pattern 2: %{GREEDYDATA:server.address}
                 }

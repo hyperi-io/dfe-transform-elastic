@@ -171,7 +171,7 @@ impl Transform for IpdDetectionSummary {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
             }
@@ -247,7 +247,7 @@ impl Transform for IpdDetectionSummary {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
             }
@@ -327,7 +327,7 @@ impl Transform for IpdDetectionSummary {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.StartTime", replaced)?;
             }
@@ -403,7 +403,7 @@ impl Transform for IpdDetectionSummary {
         };
         if cond {
             if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                let re = regex::Regex::new("\\d{6}$").unwrap();
+                let re = cached_regex!("\\d{6}$");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("crowdstrike.event.EndTime", replaced)?;
             }
