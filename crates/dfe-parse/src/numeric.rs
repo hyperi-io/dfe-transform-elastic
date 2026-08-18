@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Efficient numeric parsers replacing %{INT}, %{NUMBER}, %{POSINT}, %{NONNEGINT}.
@@ -47,7 +47,7 @@ pub fn parse_int(input: &str) -> ParseResult<'_, i64> {
     for &b in &bytes[digit_start..pos] {
         val = val
             .checked_mul(10)
-            .and_then(|v| v.checked_add((b - b'0') as i64))
+            .and_then(|v| v.checked_add(i64::from(b - b'0')))
             .ok_or_else(|| ParseError::invalid("integer overflow"))?;
     }
 
@@ -76,7 +76,7 @@ pub fn parse_nonneg_int(input: &str) -> ParseResult<'_, u64> {
     while pos < len && bytes[pos].is_ascii_digit() {
         val = val
             .checked_mul(10)
-            .and_then(|v| v.checked_add((bytes[pos] - b'0') as u64))
+            .and_then(|v| v.checked_add(u64::from(bytes[pos] - b'0')))
             .ok_or_else(|| ParseError::invalid("integer overflow"))?;
         pos += 1;
     }
@@ -307,8 +307,8 @@ mod tests {
 
     #[test]
     fn number_float() {
-        let (_, val) = parse_number("3.14").unwrap();
-        assert!((val - 3.14).abs() < 1e-10);
+        let (_, val) = parse_number("2.75").unwrap();
+        assert!((val - 2.75).abs() < 1e-10);
     }
 
     #[test]

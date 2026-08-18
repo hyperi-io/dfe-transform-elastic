@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! User Agent string parsing and enrichment.
@@ -99,7 +99,7 @@ pub fn parse(ua: &str) -> UserAgentResult {
     // OS detection
     if let Some(caps) = re_windows_nt().captures(ua) {
         result.os_name = Some("Windows".into());
-        let nt_version = caps.get(1).map(|m| m.as_str()).unwrap_or("");
+        let nt_version = caps.get(1).map_or("", |m| m.as_str());
         result.os_version = Some(match nt_version {
             "10.0" => "10".into(),
             "6.3" => "8.1".into(),

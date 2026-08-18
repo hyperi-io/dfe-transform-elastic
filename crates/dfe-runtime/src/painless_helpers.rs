@@ -1,12 +1,12 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Runtime helpers for transpiled Painless code.
+//! Painless semantics as Rust functions.
 //!
-//! These functions bridge Painless dynamic typing to Rust's `serde_json::Value`.
-//! They are called by generated transform code that was transpiled from
-//! Painless scripts. All functions are pure — no I/O, no side effects
-//! beyond operating on the provided values.
+//! An Elastic ingest pipeline's Painless scripts are dynamically typed against
+//! a JSON context; these bridge that to `serde_json::Value` so the transform
+//! modules can express the same semantics natively. All functions are pure --
+//! no I/O, no side effects beyond operating on the provided values.
 
 use serde_json::{Map, Value, json};
 
@@ -113,13 +113,7 @@ pub fn painless_to_f64(v: &Value) -> f64 {
     match v {
         Value::Number(n) => n.as_f64().unwrap_or(0.0),
         Value::String(s) => s.parse::<f64>().unwrap_or(0.0),
-        Value::Bool(b) => {
-            if *b {
-                1.0
-            } else {
-                0.0
-            }
-        }
+        Value::Bool(b) if *b => 1.0,
         _ => 0.0,
     }
 }
@@ -147,15 +141,17 @@ pub fn painless_eq(a: &Value, b: &Value) -> bool {
         return painless_to_f64(a) == painless_to_f64(b);
     }
     // Compare string to number
-    if a.is_string() && b.is_number() {
-        if let Ok(n) = a.as_str().unwrap_or("").parse::<f64>() {
-            return n == painless_to_f64(b);
-        }
+    if a.is_string()
+        && b.is_number()
+        && let Ok(n) = a.as_str().unwrap_or("").parse::<f64>()
+    {
+        return n == painless_to_f64(b);
     }
-    if a.is_number() && b.is_string() {
-        if let Ok(n) = b.as_str().unwrap_or("").parse::<f64>() {
-            return painless_to_f64(a) == n;
-        }
+    if a.is_number()
+        && b.is_string()
+        && let Ok(n) = b.as_str().unwrap_or("").parse::<f64>()
+    {
+        return painless_to_f64(a) == n;
     }
     false
 }
@@ -169,7 +165,7 @@ pub fn painless_cmp(a: &Value, b: &Value) -> Option<std::cmp::Ordering> {
 
 /// Recursive removal of null and empty values from a `Value` tree.
 ///
-/// Used by okta, cisco_nexus, and fortinet `drop` scripts.
+/// Used by okta, `cisco_nexus`, and fortinet `drop` scripts.
 /// Returns `true` if the value itself should be removed.
 pub fn painless_drop_empty(v: &mut Value) -> bool {
     match v {
@@ -201,7 +197,7 @@ pub fn painless_drop_empty(v: &mut Value) -> bool {
 
 /// Remove entries from a JSON object whose values match sentinel values.
 ///
-/// Used by CrowdStrike and other pipelines that use Painless scripts like:
+/// Used by `CrowdStrike` and other pipelines that use Painless scripts like:
 /// ```painless
 /// ctx.crowdstrike.event.entrySet().removeIf(
 ///     entry -> params.values.contains(entry.getValue())
@@ -219,7 +215,7 @@ pub fn remove_sentinel_values(obj: &mut Map<String, Value>, sentinels: &[Value])
 /// Values above `0x0100000000000000` (72057594037927936) are FILETIME;
 /// smaller values are already UNIX timestamps (seconds or milliseconds).
 ///
-/// Used by CrowdStrike for StartTime, EndTime, ContextTimeStamp, etc.
+/// Used by `CrowdStrike` for `StartTime`, `EndTime`, `ContextTimeStamp`, etc.
 /// Reference: <https://devblogs.microsoft.com/oldnewthing/20030905-02/?p=42653>
 #[inline]
 pub fn filetime_to_unix_ms(value: i64) -> i64 {
@@ -252,7 +248,7 @@ pub fn dedup_array(arr: &mut Vec<Value>) {
 
 /// Recursive camelCase-to-snake_case key renaming on a `Value` tree.
 ///
-/// Used by azure_signinlogs `keysToSnakeCase` script.
+/// Used by `azure_signinlogs` `keysToSnakeCase` script.
 pub fn painless_keys_to_snake_case(v: &Value) -> Value {
     match v {
         Value::Object(map) => {
@@ -280,40 +276,134 @@ pub fn painless_keys_to_snake_case(v: &Value) -> Value {
             }
             Value::Object(out)
         }
-        Value::Array(arr) => Value::Array(
-            arr.iter()
-                .map(|item| painless_keys_to_snake_case(item))
-                .collect(),
-        ),
+        Value::Array(arr) => Value::Array(arr.iter().map(painless_keys_to_snake_case).collect()),
         _ => v.clone(),
     }
 }
 
-/// Convert a camelCase or PascalCase string to snake_case.
-fn camel_to_snake(s: &str) -> String {
+/// Where a snake-case conversion puts its underscores.
+///
+/// The two Painless idioms this crate reproduces disagree, and the difference
+/// is visible in the Elastic fixtures, so both are kept.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SnakeRule {
+    /// Underscore only at a lowercase-to-uppercase transition, so
+    /// `HTTPServer` stays one word.
+    OnWordBreak,
+    /// Underscore before every uppercase character after the first.
+    BeforeEveryUpper,
+}
+
+/// Convert a string to `snake_case` under `rule`.
+///
+/// Lowercasing goes through the full `char::to_lowercase` mapping. Taking only
+/// its first character drops the rest, and some codepoints lowercase to more
+/// than one -- U+0130 becomes `i` plus a combining dot.
+#[must_use]
+pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
     let mut result = String::with_capacity(s.len() + 4);
-    for (i, ch) in s.chars().enumerate() {
+    let mut prev_was_lowercase = false;
+    let mut first = true;
+
+    for ch in s.chars() {
         if ch.is_uppercase() {
-            if i > 0 {
-                // Only insert underscore if previous char is lowercase
-                if let Some(prev) = s.chars().nth(i - 1) {
-                    if prev.is_lowercase() {
-                        result.push('_');
-                    }
-                }
+            let separate = match rule {
+                SnakeRule::OnWordBreak => prev_was_lowercase,
+                SnakeRule::BeforeEveryUpper => !first,
+            };
+            if separate {
+                result.push('_');
             }
-            result.push(ch.to_lowercase().next().unwrap_or(ch));
+            result.extend(ch.to_lowercase());
         } else {
             result.push(ch);
         }
+        prev_was_lowercase = ch.is_lowercase();
+        first = false;
     }
+
     result
+}
+
+/// Convert a camelCase or `PascalCase` string to `snake_case`.
+fn camel_to_snake(s: &str) -> String {
+    to_snake_case(s, SnakeRule::OnWordBreak)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// `char::to_lowercase` yields an ITERATOR because some codepoints
+    /// lowercase to more than one character. Taking only the first silently
+    /// drops the rest, so a field name loses characters.
+    #[test]
+    fn camel_to_snake_keeps_every_character_of_a_lowercase_mapping() {
+        // U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE lowercases to two
+        // characters: 'i' + U+0307 COMBINING DOT ABOVE.
+        assert_eq!(camel_to_snake("\u{0130}"), "i\u{0307}");
+        assert_eq!(camel_to_snake("a\u{0130}"), "a_i\u{0307}");
+    }
+
+    /// Non-ASCII uppercase must be treated as uppercase, and the result must
+    /// never lose or reorder characters.
+    #[test]
+    fn camel_to_snake_handles_non_ascii_scripts() {
+        // Cyrillic and Greek have case; CJK and Arabic do not.
+        assert_eq!(camel_to_snake("привет"), "привет");
+        assert_eq!(camel_to_snake("日本語"), "日本語");
+        assert_eq!(camel_to_snake("العربية"), "العربية");
+        assert_eq!(camel_to_snake("userИмя"), "user_имя");
+        assert_eq!(camel_to_snake("\u{00DF}"), "\u{00DF}");
+    }
+
+    /// The ASCII behaviour this is actually used for must not move.
+    #[test]
+    fn camel_to_snake_preserves_the_ascii_rule() {
+        assert_eq!(camel_to_snake("userName"), "user_name");
+        assert_eq!(camel_to_snake("UserName"), "user_name");
+        assert_eq!(camel_to_snake("HTTPServer"), "httpserver");
+        assert_eq!(camel_to_snake("already_snake"), "already_snake");
+        assert_eq!(camel_to_snake(""), "");
+    }
+
+    /// A long key must not cost quadratic time. The old implementation called
+    /// `chars().nth(i - 1)` on every character.
+    #[test]
+    fn camel_to_snake_is_linear_on_a_long_key() {
+        let long = "aB".repeat(20_000);
+        let out = camel_to_snake(&long);
+        assert_eq!(out.chars().filter(|c| *c == '_').count(), 20_000);
+    }
+
+    /// The second rule shares the same lowercase mapping, so it must not drop
+    /// characters either.
+    #[test]
+    fn before_every_upper_rule_keeps_the_full_lowercase_mapping() {
+        assert_eq!(
+            to_snake_case("a\u{0130}", SnakeRule::BeforeEveryUpper),
+            "a_i\u{0307}"
+        );
+        assert_eq!(
+            to_snake_case("HTTPServer", SnakeRule::BeforeEveryUpper),
+            "h_t_t_p_server"
+        );
+        assert_eq!(
+            to_snake_case("userName", SnakeRule::BeforeEveryUpper),
+            "user_name"
+        );
+    }
+
+    /// The two rules must stay distinct: collapsing them changes the key names
+    /// the Elastic fixtures are matched against.
+    #[test]
+    fn the_two_rules_disagree_on_acronyms() {
+        assert_ne!(
+            to_snake_case("HTTPServer", SnakeRule::OnWordBreak),
+            to_snake_case("HTTPServer", SnakeRule::BeforeEveryUpper)
+        );
+    }
 
     #[test]
     fn truthiness() {

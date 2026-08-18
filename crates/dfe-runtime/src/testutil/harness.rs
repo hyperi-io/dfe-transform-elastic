@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Test harness for running transforms against fixture data.
@@ -271,7 +271,7 @@ mod tests {
     struct NoopTransform;
 
     impl Transform for NoopTransform {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "noop"
         }
 
@@ -283,7 +283,7 @@ mod tests {
     struct SetKindTransform;
 
     impl Transform for SetKindTransform {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "set_kind"
         }
 

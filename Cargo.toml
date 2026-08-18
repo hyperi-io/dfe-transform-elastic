@@ -1,8 +1,82 @@
+# Project:   dfe-transform-elastic
+# File:      Cargo.toml
+# Purpose:   Workspace and service manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "dfe-transform-elastic"
+description = "Kafka-to-Kafka transform service for Beats and Elastic Agent data. Runs standalone or as part of the HyperI Data Fusion Engine."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+exclude = [".github/", "chart/", "docs/", ".tmp/", "tests/fixtures/"]
+
+[lib]
+name = "dfe_transform_elastic"
+path = "src/lib.rs"
+
+[[bin]]
+name = "dfe-transform-elastic"
+path = "src/main.rs"
+
+[dependencies]
+dfe-runtime = { workspace = true }
+dfe-transforms = { workspace = true }
+scalo = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml_ng = { workspace = true }
+simd-json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+clap = { workspace = true }
+bytes = { workspace = true }
+metrics = { workspace = true }
+schemars = { workspace = true }
+chrono = { workspace = true }
+tikv-jemallocator = { workspace = true, optional = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+testcontainers = { workspace = true }
+testcontainers-modules = { workspace = true }
+
+[features]
+default = ["kafka"]
+# hyperi-ci enables this on spike/alpha/beta/release. Local dev stays on the
+# system allocator so `cargo build` is not paying for it.
+jemalloc = ["dep:tikv-jemallocator"]
+# The Kafka service loop. Separable so the crate still builds and tests on a
+# host without librdkafka-dev; needs >= 2.12.1 when enabled.
+kafka = ["scalo/transport-kafka"]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+dbg_macro = "deny"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+
 [workspace]
 members = [
     "crates/dfe-parse",
     "crates/dfe-runtime",
-    "crates/dfe-codegen",
     "crates/dfe-transforms",
 ]
 resolver = "2"
@@ -10,24 +84,60 @@ resolver = "2"
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
+# A black-box service, not a library. Nothing here goes to crates.io, and
+# saying so stops an accidental publish of BUSL-1.1 code.
+publish = false
 authors = ["HyperI <dev@hyperi.com.au>"]
-license = "FSL-1.1-ALv2"
+license = "BUSL-1.1"
 repository = "https://github.com/hyperi-io/dfe-transform-elastic"
-rust-version = "1.94"
+rust-version = "1.95"
 
 [workspace.dependencies]
 # Workspace crates
 dfe-parse = { path = "crates/dfe-parse" }
 dfe-runtime = { path = "crates/dfe-runtime" }
-dfe-codegen = { path = "crates/dfe-codegen" }
 dfe-transforms = { path = "crates/dfe-transforms" }
 
-# Shared library (crates.io) — NEVER use path dependency, always crates.io
-# Read /projects/hyperi-rustlib/ for API reference only
-hyperi-rustlib = { version = ">=1.19.6", features = ["logger", "memory"] }
+# Batteries-included runtime (crates.io) — NEVER a path dependency.
+# Features are added when their API is actually referenced, not speculatively.
+scalo = { version = ">=2.10.9, <3", features = [
+    "cli-service",
+    "config",
+    "config-schema",
+    "deployment",
+    "governor",
+    "http-server",
+    "logger",
+    "memory",
+    "metrics",
+    "scaling",
+    "service-metrics",
+] }
+
+# The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands
+# back. scalo re-exports the manager, not the facade crate.
+metrics = ">=0.24.3, <0.25"
+
+# JSON Schema derivation for the reflectable config contract. Same range as
+# scalo's own so cargo unifies to one schemars.
+schemars = { version = ">=1.2.1, <2", default-features = false, features = [
+    "std",
+    "derive",
+    "preserve_order",
+] }
 
 # Async runtime
 tokio = { version = ">=1.48", features = ["full"] }
+tokio-util = ">=0.7, <0.8"
+
+# Zero-copy payload bytes -- the currency handed to the transport sender.
+bytes = ">=1.7, <2"
+
+# Global allocator for the binary; behind the `jemalloc` feature.
+tikv-jemallocator = ">=0.6, <0.7"
+
+# CLI surface for the service binary.
+clap = { version = ">=4.5", features = ["derive"] }
 
 # JSON parsing (SIMD-accelerated)
 simd-json = { version = ">=0.14, <0.15", features = ["known-key"] }
@@ -35,21 +145,12 @@ serde = { version = ">=1.0", features = ["derive"] }
 serde_json = ">=1.0"
 serde_yaml_ng = ">=0.10"
 
-# Parser combinators (zero-copy structured parsing)
-winnow = ">=0.6"
-
 # SIMD byte search
 memchr = ">=2.7"
-
-# Multi-pattern matching (SIMD Teddy algorithm)
-aho-corasick = ">=1.1"
 
 # Pre-compiled DFA regex (serialisable, zero-cost startup)
 regex-automata = ">=0.4"
 regex = ">=1.10"
-
-# Lexer generation (compile-time DFA)
-logos = ">=0.14"
 
 # Timestamp handling
 chrono = { version = ">=0.4", features = ["serde"] }
@@ -63,13 +164,6 @@ anyhow = ">=1.0"
 
 # Logging
 tracing = ">=0.1"
-tracing-subscriber = { version = ">=0.3", features = ["env-filter", "json"] }
-
-# ANTLR4 parser (Painless language)
-antlr-rust = "0.3.0-beta"
-
-# Go template engine (for codegen templates)
-gtmpl = ">=0.7"
 
 # Hashing
 rustc-hash = ">=2.0"
@@ -85,19 +179,17 @@ csv = ">=1.3"
 
 # Utilities
 uuid = { version = ">=1.10, <1.21", features = ["v4"] }
-lazy_static = ">=1.4"
-paste = ">=1.0"
 
 # Testing (used as dev-dependencies in member crates)
 dotenvy = ">=0.15"
 criterion = { version = ">=0.5, <0.6", features = ["html_reports"] }
-pretty_assertions = ">=1.4"
-proptest = ">=1.5, <1.7"
-test-case = ">=3.3"
-rstest = ">=0.22"
 tempfile = ">=3.10, <3.20"
-syn = { version = ">=2.0", features = ["full", "parsing"] }
-clap = { version = ">=4.5", features = ["derive"] }
+
+# Ephemeral broker for the round-trip test. Same range as the rest of the
+# fleet so one version is shared across dfe-receiver, dfe-loader and the
+# transform services.
+testcontainers = ">=0.27, <0.28"
+testcontainers-modules = { version = ">=0.15, <0.16", features = ["kafka"] }
 
 [profile.release]
 lto = "thin"

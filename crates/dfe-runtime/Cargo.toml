@@ -1,3 +1,11 @@
+# Project:   dfe-transform-elastic
+# File:      crates/dfe-runtime/Cargo.toml
+# Purpose:   Runtime crate manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
 [package]
 name = "dfe-runtime"
 description = "Core runtime for dfe-transform-elastic: Event type, Transform trait, enrichment"
@@ -7,13 +15,14 @@ authors.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+publish.workspace = true
 
 [features]
 testutil = []
 
 [dependencies]
 dfe-parse = { workspace = true }
-hyperi-rustlib = { workspace = true }
+scalo = { workspace = true }
 simd-json = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
@@ -29,5 +38,4 @@ base64 = { workspace = true }
 regex = { workspace = true }
 
 [dev-dependencies]
-criterion = { workspace = true }
 tempfile = { workspace = true }

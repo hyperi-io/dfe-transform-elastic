@@ -1,9 +1,9 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Transform trait, TransformResult, and TransformChain.
+//! Transform trait, `TransformResult`, and `TransformChain`.
 //!
-//! Generated transform modules implement the `Transform` trait. Multiple
+//! Every transform module implements the `Transform` trait. Multiple
 //! transforms compose into a `TransformChain` that runs sequentially,
 //! stopping on `Drop` or error.
 
@@ -78,7 +78,7 @@ mod tests {
     }
 
     impl Transform for SetField {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "set"
         }
 
@@ -91,7 +91,7 @@ mod tests {
     struct DropAll;
 
     impl Transform for DropAll {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "drop"
         }
 
@@ -103,7 +103,7 @@ mod tests {
     struct FailAlways;
 
     impl Transform for FailAlways {
-        fn name(&self) -> &str {
+        fn name(&self) -> &'static str {
             "fail"
         }
 

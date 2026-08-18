@@ -1,11 +1,12 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! API functions called by generated transform code.
+//! The free functions the transform modules call.
 //!
-//! The codegen emits calls to these free functions. They wrap the
-//! enrichment modules or provide no-op stubs for features that
-//! require external configuration (GeoIP databases, Painless VM).
+//! One flat namespace, re-exported through [`crate::prelude`], so a transform
+//! reads as a sequence of processor calls. They wrap the enrichment modules,
+//! or stub what needs configuration this build may not have (`GeoIP`
+//! databases, a Painless interpreter).
 
 use std::collections::HashMap;
 
@@ -13,7 +14,7 @@ use serde_json::Value;
 use tracing::debug;
 
 use crate::enrichment::user_agent;
-use crate::error::{Result, TransformError};
+use crate::error::Result;
 use crate::event::Event;
 
 /// Result from a registered domain lookup.
@@ -23,9 +24,9 @@ pub struct RegisteredDomainResult {
     pub subdomain: Option<String>,
 }
 
-/// Look up GeoIP data for an IP address.
+/// Look up `GeoIP` data for an IP address.
 ///
-/// Returns a flat map of field names to values (e.g., "country_iso_code" -> "AU").
+/// Returns a flat map of field names to values (e.g., "`country_iso_code`" -> "AU").
 /// Uses the global auto-initialised enricher (auto-detects MMDB files).
 pub fn geoip_lookup(db_name: &str, ip: &str) -> Result<HashMap<String, Value>> {
     Ok(crate::enrichment::geoip_global::geoip_lookup(db_name, ip))
@@ -79,11 +80,15 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
 /// Execute a Painless script against an event.
 ///
 /// Tries known common patterns first (drop nulls, command line extraction,
-/// keys_to_snake_case, etc.). Falls back to a no-op for unrecognised scripts.
+/// `keys_to_snake_case`, etc.). Falls back to a no-op for unrecognised scripts.
 pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
     if crate::painless_common::try_known_painless(event, script) {
+        crate::painless_stats::record_handled();
         return Ok(());
     }
+    // Counted, because an uncounted skip is indistinguishable from a script
+    // that did nothing.
+    crate::painless_stats::record_unhandled(script);
     debug!(
         script_len = script.len(),
         "painless_exec: unrecognised script skipped"
@@ -94,7 +99,7 @@ pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
 /// Convert a grok pattern string to a regex pattern string.
 ///
 /// Expands `%{NAME:field}` to named capture groups with type-appropriate
-/// sub-patterns. Returns `(regex_string, field_map)` where field_map maps
+/// sub-patterns. Returns `(regex_string, field_map)` where `field_map` maps
 /// safe capture names back to original dotted field paths.
 ///
 /// Phase 3 will replace grok with native dfe-parse parsers.
@@ -102,7 +107,7 @@ pub fn grok_to_regex(pattern: &str) -> String {
     grok_to_regex_with_map(pattern).0
 }
 
-/// Like `grok_to_regex` but also returns a map of capture_name → original_field_path.
+/// Like `grok_to_regex` but also returns a map of `capture_name` → `original_field_path`.
 ///
 /// This is needed because regex capture names can't contain dots, so
 /// `user.name` becomes `user_name` in the regex. The map lets callers
@@ -135,14 +140,16 @@ pub fn grok_to_regex_with_map(
 
             let sub_pattern = grok_pattern_regex(&name);
 
-            if !field.is_empty() {
+            if field.is_empty() {
+                use std::fmt::Write as _;
+                let _ = write!(result, "({sub_pattern})");
+            } else {
+                use std::fmt::Write as _;
                 // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
                 let field_name = field.split(':').next().unwrap_or(&field);
                 let safe_field = field_name.replace('.', "_");
                 field_map.insert(safe_field.clone(), field_name.to_string());
-                result.push_str(&format!("(?P<{safe_field}>{sub_pattern})"));
-            } else {
-                result.push_str(&format!("({sub_pattern})"));
+                let _ = write!(result, "(?P<{safe_field}>{sub_pattern})");
             }
         } else {
             result.push(c);
@@ -155,21 +162,18 @@ pub fn grok_to_regex_with_map(
 /// Map well-known grok pattern names to their regex equivalents.
 fn grok_pattern_regex(name: &str) -> &'static str {
     match name {
-        "USER" | "USERNAME" => r"[a-zA-Z0-9._-]+",
+        "USER" | "USERNAME" | "HOSTNAME" => r"[a-zA-Z0-9._-]+",
         "IP" | "IPV4" => r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",
         "IPV6" => r"[0-9a-fA-F:]+",
         "POSINT" => r"\d+",
         "INT" => r"[+-]?\d+",
-        "NUMBER" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
-        "NOTSPACE" => r"\S+",
+        "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
+        "NOTSPACE" | "URI" | "URIPROTO" => r"\S+",
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
-        "WORD" => r"\w+",
-        "HOSTNAME" => r"[a-zA-Z0-9._-]+",
+        "WORD" | "MONTH" => r"\w+",
         "MAC" => r"(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}",
-        "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
         "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
-        "URI" | "URIPROTO" => r"\S+",
         "PATH" | "UNIXPATH" | "WINPATH" => r"[^\s]+",
         // Azure custom patterns (from pipeline pattern_definitions)
         "SUBID" => {
@@ -177,11 +181,8 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         }
         "GROUPID" | "PROVIDERNAME" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
         "MONTHDAY" => r"\d{1,2}",
-        "MONTH" => r"\w+",
         "YEAR" => r"\d{4}",
-        "HOUR" => r"\d{2}",
-        "MINUTE" => r"\d{2}",
-        "SECOND" => r"\d{2}",
+        "HOUR" | "MINUTE" | "SECOND" => r"\d{2}",
         "TIMESTAMP_ISO8601" => {
             r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
         }
@@ -371,6 +372,9 @@ mod tests {
 
     #[test]
     fn geoip_lookup_no_db() {
+        // Reaches the process-global cache, so it takes the same lock the
+        // enrichment tests do.
+        let _guard = crate::enrichment::geoip_global::test_guard();
         // Without MMDB files loaded, should return empty map (not panic)
         let result = geoip_lookup("geoip_city", "8.8.8.8");
         assert!(result.is_ok());
@@ -467,7 +471,7 @@ mod tests {
 
     #[test]
     fn grok_regex_actually_matches() {
-        // Verify generated regex can actually match input
+        // Verify the compiled regex can actually match input
         let regex_str = grok_to_regex("^%{IP:src}:%{POSINT:port}$");
         let re = regex::Regex::new(&regex_str).expect("regex should compile");
         let caps = re.captures("10.0.0.1:8080").expect("should match");

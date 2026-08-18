@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Pre-compiled DFA fallback for patterns that genuinely require regex.
@@ -61,10 +61,9 @@ impl DfaParser {
                     .regex
                     .group_info()
                     .to_index(PatternID::ZERO, name.as_str())
+                    && let Some(span) = caps.get_group(group_index)
                 {
-                    if let Some(span) = caps.get_group(group_index) {
-                        fields.insert(name.clone(), &input[span.start..span.end]);
-                    }
+                    fields.insert(name.clone(), &input[span.start..span.end]);
                 }
             }
             Ok(fields)
@@ -90,10 +89,9 @@ impl DfaParser {
                     .regex
                     .group_info()
                     .to_index(PatternID::ZERO, name.as_str())
+                    && let Some(span) = caps.get_group(group_index)
                 {
-                    if let Some(span) = caps.get_group(group_index) {
-                        fields.insert(name.clone(), &input[span.start..span.end]);
-                    }
+                    fields.insert(name.clone(), &input[span.start..span.end]);
                 }
             }
             Ok((&input[overall.end()..], fields))

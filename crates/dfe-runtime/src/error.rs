@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Error types for the transform runtime.
@@ -27,7 +27,7 @@ pub enum TransformError {
     #[error("parse error at '{path}': {message}")]
     ParseError { path: String, message: String },
 
-    /// An enrichment module (geoip, user_agent, community_id) failed.
+    /// An enrichment module (geoip, `user_agent`, `community_id`) failed.
     #[error("enrichment '{enrichment}' failed: {message}")]
     EnrichmentError { enrichment: String, message: String },
 
@@ -50,6 +50,7 @@ pub enum TransformError {
 
 impl TransformError {
     /// Wrap this error with processor context.
+    #[must_use]
     pub fn with_processor(self, processor: impl Into<String>) -> Self {
         TransformError::ProcessorError {
             processor: processor.into(),

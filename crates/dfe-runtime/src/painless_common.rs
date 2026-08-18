@@ -1,16 +1,18 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Common Painless script patterns implemented in Rust.
 //!
-//! Instead of transpiling each Painless script individually, we identify
-//! common patterns and implement them as shared runtime functions. The
-//! `painless_exec` dispatcher matches known scripts and calls these.
+//! The same handful of script shapes recur across the Elastic pipelines --
+//! drop-empty, snake-case keys, sum both directions -- so they are written
+//! once here rather than once per source. [`try_known_painless`] matches a
+//! script against them and runs the Rust equivalent.
 
 use serde_json::{Map, Value, json};
 
 use crate::error::Result;
 use crate::event::Event;
+use crate::painless_helpers::{SnakeRule, to_snake_case};
 
 /// Recursively drop null and empty values from the event.
 ///
@@ -51,9 +53,9 @@ fn drop_value(value: &mut Value) -> bool {
     }
 }
 
-/// Convert a Painless keys_to_snake_case operation.
+/// Convert a Painless `keys_to_snake_case` operation.
 ///
-/// Converts camelCase JSON object keys to snake_case recursively.
+/// Converts camelCase JSON object keys to `snake_case` recursively.
 /// Common in Okta and other pipelines for normalising field names.
 pub fn keys_to_snake_case(value: &mut Value) {
     match value {
@@ -61,13 +63,7 @@ pub fn keys_to_snake_case(value: &mut Value) {
             let entries: Vec<(String, Value)> = map
                 .iter()
                 .map(|(k, v)| {
-                    let mut snake = String::with_capacity(k.len() + 4);
-                    for (i, c) in k.chars().enumerate() {
-                        if c.is_uppercase() && i > 0 {
-                            snake.push('_');
-                        }
-                        snake.push(c.to_lowercase().next().unwrap_or(c));
-                    }
+                    let snake = to_snake_case(k, SnakeRule::BeforeEveryUpper);
                     let mut v = v.clone();
                     keys_to_snake_case(&mut v);
                     (snake, v)
@@ -89,7 +85,7 @@ pub fn keys_to_snake_case(value: &mut Value) {
 
 /// Extract process fields from a command line string.
 ///
-/// Sets: process.command_line, process.args, process.executable
+/// Sets: `process.command_line`, process.args, process.executable
 pub fn extract_process_fields(
     event: &mut Event,
     cmd_field: &str,
@@ -154,12 +150,198 @@ pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &
     Ok(())
 }
 
+/// The ECS field a `ctx.source.X + ctx.destination.X` script totals into.
+///
+/// Both `bytes` and `packets` appear verbatim across the network sources.
+fn sum_of_directions(script: &str) -> Option<&'static str> {
+    for unit in ["bytes", "packets"] {
+        let target = format!("ctx.network.{unit}");
+        if script.contains(&target)
+            && script.contains(&format!("ctx.source.{unit}"))
+            && script.contains(&format!("ctx.destination.{unit}"))
+        {
+            return Some(if unit == "bytes" { "bytes" } else { "packets" });
+        }
+    }
+    None
+}
+
+/// `network.{unit} = source.{unit} + destination.{unit}`.
+///
+/// Elastic's script would throw on a missing side; skipping instead is the
+/// behaviour the surrounding pipeline already relies on.
+///
+/// The addition saturates. Both operands come off the wire, so a vendor that
+/// reports a nonsense byte count must not panic a debug build or wrap to a
+/// negative total in a release one.
+fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
+    let Some(source) = event.get_i64(&format!("source.{unit}")) else {
+        return true;
+    };
+    let Some(destination) = event.get_i64(&format!("destination.{unit}")) else {
+        return true;
+    };
+    let total = source.saturating_add(destination);
+    let _ = event.set(&format!("network.{unit}"), json!(total));
+    true
+}
+
+/// `event.duration = <field> * 1_000_000_000`, seconds to nanoseconds.
+///
+/// Returns false when the field name cannot be read out of the SCRIPT: that is
+/// a shape this code does not actually understand, and counting it as handled
+/// would inflate the coverage figure. A field the script names but the EVENT
+/// lacks is a different thing -- the script would have done nothing either.
+fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
+    let Some(field) = script
+        .split("Long.parseLong(ctx.")
+        .nth(1)
+        .and_then(|rest| rest.split(')').next())
+    else {
+        return false;
+    };
+
+    let seconds = event
+        .get_i64(field)
+        .or_else(|| event.get_str(field).and_then(|s| s.parse::<i64>().ok()));
+
+    if let Some(seconds) = seconds {
+        // A duration above ~9.2 seconds-worth of i64 nanoseconds saturates
+        // rather than wrapping to a negative event.duration.
+        let _ = event.set(
+            "event.duration",
+            json!(seconds.saturating_mul(1_000_000_000)),
+        );
+    }
+    true
+}
+
+/// IANA protocol number `0` means no transport was identified.
+fn try_iana_zero_transport(event: &mut Event) -> bool {
+    let iana = event
+        .get_str("network.iana_number")
+        .map(String::from)
+        .or_else(|| event.get_i64("network.iana_number").map(|n| n.to_string()));
+
+    if iana.as_deref() == Some("0") {
+        let _ = event.set("network.transport", json!("unknown"));
+    }
+    true
+}
+
+/// The source and destination arrays of an append-if-absent script.
+///
+/// The shape is `for (x in ctx.A) { if (!ctx.B.contains(x)) ctx.B.add(x) }`,
+/// which the network sources use to fold resolved addresses into
+/// `related.ip`.
+fn append_unique_fields(script: &str) -> Option<(&'static str, &'static str)> {
+    let appends_uniquely = script.contains(".contains(") && script.contains(".add(");
+    if !appends_uniquely {
+        return None;
+    }
+    if script.contains("ctx.dns?.resolved_ip") && script.contains("ctx.related.ip") {
+        return Some(("dns.resolved_ip", "related.ip"));
+    }
+    None
+}
+
+/// Append every element of `from` into `into`, skipping ones already present.
+fn try_append_unique(event: &mut Event, from: &str, into: &str) -> bool {
+    let Some(Value::Array(source)) = event.get(from).cloned() else {
+        return true;
+    };
+
+    let mut target = match event.get(into).cloned() {
+        Some(Value::Array(existing)) => existing,
+        _ => Vec::new(),
+    };
+    for item in source {
+        if !target.contains(&item) {
+            target.push(item);
+        }
+    }
+    let _ = event.set(into, Value::Array(target));
+    true
+}
+
+/// Decompose a syslog PRI into ECS `log.syslog.{facility,severity}.{code,name}`.
+///
+/// The PRI is read from wherever the script found it: `log.syslog.priority`
+/// for the generic pipelines, or a vendor field such as
+/// `cisco_nexus.log.priority_number`.
+fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
+    let pri = priority_source(script)
+        .and_then(|field| read_u16(event, field))
+        .or_else(|| read_u16(event, "log.syslog.priority"));
+
+    let Some(pri) = pri else {
+        return true;
+    };
+
+    let (facility, severity) = crate::syslog_pri::decompose(pri);
+    let _ = event.set("log.syslog.facility.code", json!(facility));
+    let _ = event.set("log.syslog.severity.code", json!(severity));
+    if let Some(name) = crate::syslog_pri::facility_name(facility) {
+        let _ = event.set("log.syslog.facility.name", json!(name));
+    }
+    if let Some(name) = crate::syslog_pri::severity_name(severity) {
+        let _ = event.set("log.syslog.severity.name", json!(name));
+    }
+    true
+}
+
+/// The vendor field a priority script reads, when it is not the ECS one.
+fn priority_source(script: &str) -> Option<&str> {
+    script
+        .split("ctx.")
+        .find(|s| s.starts_with("cisco_nexus.log.priority_number"))
+        .map(|_| "cisco_nexus.log.priority_number")
+}
+
+/// A field as a `u16`, whether it is stored as a number or a string.
+fn read_u16(event: &Event, field: &str) -> Option<u16> {
+    event
+        .get_i64(field)
+        .and_then(|n| u16::try_from(n).ok())
+        .or_else(|| event.get_str(field).and_then(|s| s.parse::<u16>().ok()))
+}
+
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
-/// to the generic painless_exec stub.
+/// to the generic `painless_exec` stub.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = script.replace("\\n", "\n").replace("\\\"", "\"");
+
+    // Pattern: network.bytes / network.packets as the sum of both directions.
+    if let Some(total) = sum_of_directions(&normalised) {
+        return try_sum_directions(event, total);
+    }
+
+    // Pattern: seconds to nanoseconds for event.duration.
+    if normalised.contains("ctx.event.duration")
+        && normalised.contains("Long.parseLong")
+        && normalised.contains("1000000000")
+    {
+        return try_duration_to_nanos(event, &normalised);
+    }
+
+    // Pattern: IANA protocol number 0 means the transport is unknown.
+    if normalised.contains("ctx.network.iana_number")
+        && normalised.contains("ctx.network.transport")
+    {
+        return try_iana_zero_transport(event);
+    }
+
+    // Pattern: decompose a syslog PRI into ECS facility and severity.
+    if normalised.contains("log.syslog") && normalised.contains("priority") {
+        return try_syslog_priority(event, &normalised);
+    }
+
+    // Pattern: append one array into another, skipping duplicates.
+    if let Some((from, into)) = append_unique_fields(&normalised) {
+        return try_append_unique(event, from, into);
+    }
 
     // Pattern: drop null/empty values recursively
     if normalised.contains("drop(ctx)") && normalised.contains("removeIf") {
@@ -205,7 +387,7 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 
     // Pattern: email split — splitOnToken("@") → user.email, user.domain, user.name
     // Used in Okta, O365, Azure, and many other sources
-    if normalised.contains("splitOnToken") && normalised.contains("@") {
+    if normalised.contains("splitOnToken") && normalised.contains('@') {
         return try_email_split(event, &normalised);
     }
 
@@ -290,17 +472,17 @@ fn try_email_split(event: &mut Event, script: &str) -> bool {
     true
 }
 
-/// Extract risk behaviors from okta.debug_context.debug_data.flattened.behaviors.
+/// Extract risk behaviors from `okta.debug_context.debug_data.flattened.behaviors`.
 ///
 /// The Painless script iterates the behaviors object and collects keys
-/// where the value is "POSITIVE" into an array at risk_behaviors.
+/// where the value is "POSITIVE" into an array at `risk_behaviors`.
 fn try_risk_behaviors(event: &mut Event) -> bool {
-    let behaviors = match event
+    // No behaviors, or not an object -- the script returns early.
+    let Some(Value::Object(behaviors)) = event
         .get("okta.debug_context.debug_data.flattened.behaviors")
         .cloned()
-    {
-        Some(Value::Object(map)) => map,
-        _ => return true, // No behaviors or not an object — script returns early
+    else {
+        return true;
     };
 
     let positive: Vec<Value> = behaviors
@@ -322,14 +504,14 @@ fn try_risk_behaviors(event: &mut Event) -> bool {
 /// Handle the Okta target array key rename + user/group extraction pattern.
 ///
 /// The Painless script:
-/// 1. Renames alternateId→alternate_id, displayName→display_name in each target element
+/// 1. Renames `alternateId→alternate_id`, `displayName→display_name` in each target element
 /// 2. Filters detailEntry to only keep methodTypeUsed and methodUsedVerifiedProperties
-/// 3. Extracts first "User" type target → okta_target_user
-/// 4. Extracts first "UserGroup" type target → okta_target_group
+/// 3. Extracts first "User" type target → `okta_target_user`
+/// 4. Extracts first "`UserGroup`" type target → `okta_target_group`
 fn try_okta_target_rename(event: &mut Event) -> bool {
-    let target = match event.get("okta.target").cloned() {
-        Some(Value::Array(arr)) => arr,
-        _ => return true, // No target array — script returns early
+    // No target array -- the script returns early.
+    let Some(Value::Array(target)) = event.get("okta.target").cloned() else {
+        return true;
     };
 
     let mut result = Vec::with_capacity(target.len());
@@ -399,7 +581,7 @@ fn try_okta_target_rename(event: &mut Event) -> bool {
 /// Azure category → event type mapping.
 ///
 /// Maps activitylogs.category to event.type via params lookup:
-/// write/action → ["change"], read → ["access"], delete → ["deletion"]
+/// write/action → `["change"]`, read → `["access"]`, delete → `["deletion"]`
 fn try_azure_category_to_event_type(event: &mut Event) -> bool {
     let category = match event.get_str("azure.activitylogs.category") {
         Some(c) => c.to_lowercase(),
@@ -422,7 +604,7 @@ fn try_azure_category_to_event_type(event: &mut Event) -> bool {
     true
 }
 
-/// Azure activitylogs event_category conditional assignment.
+/// Azure activitylogs `event_category` conditional assignment.
 ///
 /// Sets `azure.activitylogs.event_category` based on:
 /// 1. `properties.eventCategory` if present
@@ -470,9 +652,9 @@ fn try_replace_dots_in_keys(event: &mut Event, script: &str) -> bool {
     let pointer = format!("/{}", field_path.replace('.', "/"));
     let inner = event.as_value_mut();
     let resolved = inner.pointer_mut(&pointer);
-    let obj = match resolved {
-        Some(Value::Object(map)) => map,
-        _ => return true, // Field missing or not an object — skip
+    // Field missing or not an object -- skip.
+    let Some(Value::Object(obj)) = resolved else {
+        return true;
     };
 
     let new_map: Map<String, Value> = obj
@@ -489,7 +671,7 @@ fn extract_target_field(script: &str) -> Option<String> {
     // Look for patterns like ctx.okta.request or ctx.field
     for line in script.lines() {
         let trimmed = line.trim();
-        if trimmed.starts_with("ctx.") && !trimmed.contains("(") {
+        if trimmed.starts_with("ctx.") && !trimmed.contains('(') {
             let field = trimmed
                 .trim_start_matches("ctx.")
                 .trim_end_matches(';')
@@ -505,6 +687,140 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The scripts below are the verbatim text the transform modules pass
+    /// to `painless_exec`, so a change upstream shows up here as a miss.
+    const SUM_BYTES: &str = "ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes";
+    const SUM_PACKETS: &str = "ctx.network.packets = ctx.source.packets + ctx.destination.packets";
+    const DURATION_NANOS: &str =
+        "ctx.event.duration = Long.parseLong(ctx.fortinet.firewall.duration) * 1000000000";
+    const IANA_ZERO: &str = "def iana_number = ctx.network.iana_number;\nif (iana_number == '0') \
+                             {\n    ctx.network.transport = 'unknown';\n}";
+    const APPEND_DNS: &str = "def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null) {\n  \
+                              for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) \
+                              {\n ctx.related.ip.add(ip);\n }\n  }\n}";
+
+    #[test]
+    fn sums_bytes_and_packets_across_directions() {
+        let mut event = Event::new(json!({
+            "source": { "bytes": 100, "packets": 3 },
+            "destination": { "bytes": 250, "packets": 4 },
+        }));
+
+        assert!(try_known_painless(&mut event, SUM_BYTES));
+        assert!(try_known_painless(&mut event, SUM_PACKETS));
+
+        assert_eq!(event.get_i64("network.bytes"), Some(350));
+        assert_eq!(event.get_i64("network.packets"), Some(7));
+    }
+
+    /// Elastic's script throws when a side is missing; skipping is what the
+    /// surrounding pipeline already relies on.
+    #[test]
+    fn a_missing_direction_leaves_the_total_unset() {
+        let mut event = Event::new(json!({ "source": { "bytes": 100 } }));
+        assert!(try_known_painless(&mut event, SUM_BYTES));
+        assert!(!event.has("network.bytes"));
+    }
+
+    #[test]
+    fn converts_a_duration_from_seconds_to_nanoseconds() {
+        let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": 42 } } }));
+        assert!(try_known_painless(&mut event, DURATION_NANOS));
+        assert_eq!(event.get_i64("event.duration"), Some(42_000_000_000));
+    }
+
+    /// Both operands come off the wire. A vendor reporting a nonsense count
+    /// must cost a saturated total, not a debug panic or a negative release
+    /// one -- these are byte counts a dashboard sums.
+    #[test]
+    fn a_nonsense_byte_count_saturates_rather_than_wrapping() {
+        let mut event = Event::new(json!({
+            "source": { "bytes": i64::MAX },
+            "destination": { "bytes": 1 },
+        }));
+
+        assert!(try_known_painless(&mut event, SUM_BYTES));
+        assert_eq!(event.get_i64("network.bytes"), Some(i64::MAX));
+    }
+
+    #[test]
+    fn a_nonsense_duration_saturates_rather_than_wrapping() {
+        let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": i64::MAX } } }));
+
+        assert!(try_known_painless(&mut event, DURATION_NANOS));
+        assert_eq!(event.get_i64("event.duration"), Some(i64::MAX));
+    }
+
+    /// A duration script whose field name this code cannot read is NOT
+    /// handled. Counting it would inflate the coverage figure with scripts
+    /// nothing actually ran.
+    #[test]
+    fn an_unreadable_duration_script_is_not_counted_as_handled() {
+        let mut event = Event::new(json!({}));
+        let script = "ctx.event.duration = Long.parseLong(something) * 1000000000";
+        assert!(!try_known_painless(&mut event, script));
+    }
+
+    /// The vendor field is often a string, because it came out of a grok.
+    #[test]
+    fn a_string_duration_converts_too() {
+        let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": "7" } } }));
+        assert!(try_known_painless(&mut event, DURATION_NANOS));
+        assert_eq!(event.get_i64("event.duration"), Some(7_000_000_000));
+    }
+
+    #[test]
+    fn iana_zero_means_the_transport_is_unknown() {
+        let mut event = Event::new(json!({ "network": { "iana_number": "0" } }));
+        assert!(try_known_painless(&mut event, IANA_ZERO));
+        assert_eq!(event.get_str("network.transport"), Some("unknown"));
+
+        let mut event = Event::new(json!({ "network": { "iana_number": "6" } }));
+        assert!(try_known_painless(&mut event, IANA_ZERO));
+        assert!(!event.has("network.transport"));
+    }
+
+    #[test]
+    fn syslog_priority_decomposes_into_facility_and_severity() {
+        // Verbatim from the fortinet transform.
+        const PRIORITY: &str = "if (ctx.log?.syslog?.priority != null) {\n  \
+             def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  \
+             ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  \
+             facility['code'] = ctx.log.syslog.priority>>3;\n  \
+             ctx.log.syslog['facility'] = facility;\n}";
+
+        let mut event = Event::new(json!({ "log": { "syslog": { "priority": 165 } } }));
+        assert!(try_known_painless(&mut event, PRIORITY));
+
+        // 165 = local4(20) * 8 + notice(5).
+        assert_eq!(event.get_i64("log.syslog.facility.code"), Some(20));
+        assert_eq!(event.get_str("log.syslog.facility.name"), Some("local4"));
+        assert_eq!(event.get_i64("log.syslog.severity.code"), Some(5));
+        assert_eq!(event.get_str("log.syslog.severity.name"), Some("notice"));
+    }
+
+    #[test]
+    fn append_unique_skips_duplicates_and_keeps_order() {
+        let mut event = Event::new(json!({
+            "dns": { "resolved_ip": ["1.1.1.1", "2.2.2.2", "1.1.1.1"] },
+            "related": { "ip": ["1.1.1.1"] },
+        }));
+
+        assert!(try_known_painless(&mut event, APPEND_DNS));
+        assert_eq!(
+            event.get("related.ip"),
+            Some(&json!(["1.1.1.1", "2.2.2.2"]))
+        );
+    }
+
+    /// The destination array may not exist yet.
+    #[test]
+    fn append_unique_creates_the_target_array() {
+        let mut event = Event::new(json!({ "dns": { "resolved_ip": ["9.9.9.9"] } }));
+        assert!(try_known_painless(&mut event, APPEND_DNS));
+        assert_eq!(event.get("related.ip"), Some(&json!(["9.9.9.9"])));
+    }
 
     #[test]
     fn drop_empty_removes_nulls() {
@@ -554,7 +870,7 @@ mod tests {
 
     #[test]
     fn epoch_to_iso8601() {
-        let mut event = Event::new(json!({"ts": 1536846339}));
+        let mut event = Event::new(json!({"ts": 1_536_846_339}));
         epoch_to_timestamp(&mut event, "ts", "@timestamp").unwrap();
         let ts = event.get_str("@timestamp").unwrap();
         assert!(ts.starts_with("2018-09-13"));
@@ -606,7 +922,7 @@ mod tests {
                 "Velocity": "POSITIVE"
             }}}}}
         }));
-        let script = r#"if POSITIVE risk_behaviors"#;
+        let script = r"if POSITIVE risk_behaviors";
         assert!(try_known_painless(&mut event, script));
         let behaviors = event.get("okta.debug_context.debug_data.risk_behaviors");
         assert!(behaviors.is_some());
@@ -621,7 +937,7 @@ mod tests {
                 "New Device": "NEGATIVE"
             }}}}}
         }));
-        let script = r#"if POSITIVE risk_behaviors"#;
+        let script = r"if POSITIVE risk_behaviors";
         assert!(try_known_painless(&mut event, script));
         // No POSITIVE entries — risk_behaviors should not be set
         assert!(!event.has("okta.debug_context.debug_data.risk_behaviors"));
@@ -635,7 +951,8 @@ mod tests {
                 {"type": "UserGroup", "alternateId": "admins", "displayName": "Admins", "id": "002", "detailEntry": null}
             ]}
         }));
-        let script = r#"def target = ctx.okta.target; alternateId alternate_id displayName display_name okta"#;
+        let script =
+            r"def target = ctx.okta.target; alternateId alternate_id displayName display_name okta";
         assert!(try_known_painless(&mut event, script));
 
         // Check renamed fields
@@ -663,7 +980,7 @@ mod tests {
                 "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "user"
             }}}}
         }));
-        let script = r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#;
+        let script = r"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}";
         assert!(try_known_painless(&mut event, script));
         // Verify dots replaced with underscores in claim keys
         let claims = event
@@ -686,7 +1003,7 @@ mod tests {
         let mut event = Event::new(json!({
             "azure": {"activitylogs": {"properties": {}}}
         }));
-        let script = r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) { ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory; } else { ctx.azure.activitylogs.event_category = 'Administrative'; }"#;
+        let script = r"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) { ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory; } else { ctx.azure.activitylogs.event_category = 'Administrative'; }";
         assert!(try_known_painless(&mut event, script));
         assert_eq!(
             event.get_str("azure.activitylogs.event_category"),
