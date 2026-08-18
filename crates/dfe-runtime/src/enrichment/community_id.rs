@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Community ID hash algorithm for network flow identification.
@@ -47,7 +47,7 @@ pub fn community_id_v1(
         protocol_number(transport).ok_or_else(|| format!("unknown transport: {transport}"))?;
 
     // Determine ordering: lower IP first, then lower port for tie-breaking
-    let (ordered_src, ordered_dst, ordered_sport, ordered_dport) =
+    let (ordered_src, ordered_dst, ordered_src_port, ordered_dst_port) =
         if src < dst || (src == dst && src_port < dst_port) {
             (src, dst, src_port, dst_port)
         } else {
@@ -78,10 +78,10 @@ pub fn community_id_v1(
     hasher.update([0u8]);
 
     // Source port (2 bytes, big-endian)
-    hasher.update(ordered_sport.to_be_bytes());
+    hasher.update(ordered_src_port.to_be_bytes());
 
     // Destination port (2 bytes, big-endian)
-    hasher.update(ordered_dport.to_be_bytes());
+    hasher.update(ordered_dst_port.to_be_bytes());
 
     let hash = hasher.finalize();
     Ok(format!("1:{}", BASE64.encode(hash)))
@@ -132,8 +132,9 @@ pub fn enrich(event: &mut Event, config: &CommunityIdConfig<'_>) -> Result<()> {
         }
     };
 
-    let src_port = event.get_i64(src_port_field).unwrap_or(0) as u16;
-    let dst_port = event.get_i64(dst_port_field).unwrap_or(0) as u16;
+    // A port outside 0-65535 is malformed input, not a value to wrap around.
+    let src_port = u16::try_from(event.get_i64(src_port_field).unwrap_or(0)).unwrap_or(0);
+    let dst_port = u16::try_from(event.get_i64(dst_port_field).unwrap_or(0)).unwrap_or(0);
 
     let transport = event
         .get_str("network.transport")

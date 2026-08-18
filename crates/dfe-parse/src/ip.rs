@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Efficient IP address parsers replacing %{IP}, %{IPV4}, %{IPV6}, %{IPORHOST}.
@@ -89,13 +89,13 @@ pub fn parse_ipv6(input: &str) -> ParseResult<'_, &str> {
 
     loop {
         // Try IPv4-mapped suffix (e.g., `::ffff:192.168.1.1`).
-        if groups >= 2 || saw_double_colon {
-            if let Ok((rem, _)) = parse_ipv4(&input[pos..]) {
-                // The IPv4 part counts as 2 groups.
-                let ipv4_len = input[pos..].len() - rem.len();
-                pos += ipv4_len;
-                return Ok((&input[pos..], &input[..pos]));
-            }
+        if (groups >= 2 || saw_double_colon)
+            && let Ok((rem, _)) = parse_ipv4(&input[pos..])
+        {
+            // The IPv4 part counts as 2 groups.
+            let ipv4_len = input[pos..].len() - rem.len();
+            pos += ipv4_len;
+            return Ok((&input[pos..], &input[..pos]));
         }
 
         // Parse hex group (1-4 hex digits).
@@ -255,7 +255,7 @@ pub fn parse_hostname(input: &str) -> ParseResult<'_, &str> {
 fn fast_parse_u16(bytes: &[u8], start: usize, end: usize) -> u16 {
     let mut val: u16 = 0;
     for &b in &bytes[start..end] {
-        val = val * 10 + (b - b'0') as u16;
+        val = val * 10 + u16::from(b - b'0');
     }
     val
 }

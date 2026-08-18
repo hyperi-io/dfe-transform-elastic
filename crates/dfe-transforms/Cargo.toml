@@ -1,12 +1,21 @@
+# Project:   dfe-transform-elastic
+# File:      crates/dfe-transforms/Cargo.toml
+# Purpose:   Transform crate manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
 [package]
 name = "dfe-transforms"
-description = "Generated and hand-tuned transform modules for Elastic data sources"
+description = "Transform modules for Elastic data sources: one Rust module per ingest pipeline"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+publish.workspace = true
 
 [dependencies]
 dfe-parse = { workspace = true }
@@ -23,10 +32,6 @@ url = { workspace = true }
 csv = { workspace = true }
 
 [dev-dependencies]
-criterion = { workspace = true }
-test-case = { workspace = true }
 dfe-runtime = { workspace = true, features = ["testutil"] }
-tempfile = { workspace = true }
-serde_yaml_ng = { workspace = true }
-serde_json = { workspace = true }
 dotenvy = { workspace = true }
+serde_yaml_ng = { workspace = true }

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Shared test helpers for integration tests.
@@ -7,6 +7,9 @@
 //! - Raw events from .log files are wrapped into the `message` field as JSON strings
 //! - Config YAML provides pre-set fields (@timestamp, tags, etc.)
 //! - The transform then processes message → event.original → json.* → ECS fields
+
+// Shared by the integration and e2e test binaries, which use different subsets.
+#![allow(dead_code)]
 
 pub mod test_infra;
 
@@ -147,19 +150,25 @@ fn wrap_event(raw: RawEvent, config_fields: &Map<String, Value>) -> Event {
 /// Run a fixture test: input file + {"expected": [...]} output.
 ///
 /// Uses Semantic mode (skips @timestamp, event.created, @metadata).
-/// Reports match rate — does not assert failure (transforms still being refined).
-pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str) {
+///
+/// `baseline` is the number of events that must match. It is a ratchet: set it
+/// to the current measured rate, and raise it as transforms improve. A missing
+/// fixture is a failure, not a skip -- a silently absent fixture reads as a
+/// passing test.
+pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str, baseline: usize) {
     let dir = Path::new(fixture_dir);
     let (log_path, expected_path) = find_fixture_pair(dir, log_name);
 
-    if !log_path.exists() {
-        eprintln!("SKIP: fixture not found: {}", log_path.display());
-        return;
-    }
-    if !expected_path.exists() {
-        eprintln!("SKIP: expected not found: {}", expected_path.display());
-        return;
-    }
+    assert!(
+        log_path.exists(),
+        "fixture input not found: {}",
+        log_path.display()
+    );
+    assert!(
+        expected_path.exists(),
+        "fixture expectation not found: {}",
+        expected_path.display()
+    );
 
     let config_fields = load_config_fields(dir, log_name);
     let mut events = load_and_wrap_events(&log_path, &config_fields);
@@ -193,6 +202,12 @@ pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str)
 
     println!(
         "[{}] {passed}/{total} matched, {errors} errors (fixture: {log_name})",
+        transform.name(),
+    );
+
+    assert!(
+        passed >= baseline,
+        "{} regressed on {log_name}: {passed}/{total} matched, baseline is {baseline}",
         transform.name(),
     );
 }

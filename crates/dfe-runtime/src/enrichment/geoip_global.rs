@@ -1,35 +1,63 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Global GeoIP enricher for use by generated transform code.
+//! Global `GeoIP` enricher, shared by every transform that needs one.
 //!
-//! Initialised lazily on first lookup. Auto-detects MMDB files from:
-//! 1. `GEOIP_CITY_DB` / `GEOIP_ASN_DB` env vars (explicit paths)
-//! 2. `GEOIP_DB_DIR` env var (directory containing `*.mmdb` files)
-//! 3. Default search paths: `testdata/geoip/`, `/var/lib/dfe/geoip/`
+//! 14 of the 60 source pipelines carry a geoip processor, so this is on the
+//! path for every network-device source. An [LRU cache](super::geoip_cache)
+//! fronts the MMDB readers.
 //!
-//! Approach ported from dfe-loader's auto-works GeoIP pattern.
+//! Databases are resolved once, lazily, from:
+//! 1. `GEOIP_CITY_DB` / `GEOIP_ASN_DB` (explicit paths)
+//! 2. `GEOIP_DB_DIR` (a directory of `*.mmdb`)
+//! 3. `/var/lib/dfe/geoip`, which is where dfe-loader's downloader puts them
+//!
+//! Finding none is not an error: lookups return empty and the transform
+//! carries on. [`enabled`] says which happened, so a deployment that expects
+//! enrichment can tell it is not getting any.
+//!
+//! The ECS field shaping is this crate's own: dfe-loader flattens to `geo_*`
+//! for `ClickHouse` columns, whereas the Elastic pipelines nest under
+//! `source.geo`, `destination.geo`, `client.geo` and `server.geo`, up to four
+//! per event.
 
 use std::collections::HashMap;
 use std::net::IpAddr;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::OnceLock;
 
-use maxminddb::Reader;
-use serde_json::{Value, json};
+use serde_json::Value;
 use tracing::{debug, info, warn};
 
-use super::geoip::{GeoIpDbType, GeoIpEnrichment};
+use super::geoip::GeoIpEnrichment;
+use super::geoip_cache::{Cache, Database, Stats};
 
 /// Global enrichers — one per database type.
 struct GlobalGeoIp {
     city: Option<GeoIpEnrichment>,
     asn: Option<GeoIpEnrichment>,
+    cache: Cache,
 }
 
 static GLOBAL_GEOIP: OnceLock<GlobalGeoIp> = OnceLock::new();
 
-/// Initialise the global GeoIP enricher.
+/// Whether any database loaded.
+///
+/// Forces initialisation. A service that expects enrichment can check this at
+/// startup rather than discovering empty geo fields in production.
+#[must_use]
+pub fn enabled() -> bool {
+    let global = GLOBAL_GEOIP.get_or_init(init_global);
+    global.city.is_some() || global.asn.is_some()
+}
+
+/// Cache hits, misses and size.
+#[must_use]
+pub fn cache_stats() -> Stats {
+    GLOBAL_GEOIP.get_or_init(init_global).cache.stats()
+}
+
+/// Initialise the global `GeoIP` enricher.
 ///
 /// Called lazily on first `geoip_lookup()`. Searches for MMDB files
 /// in standard locations. Non-fatal: if no databases found, lookups
@@ -67,7 +95,11 @@ fn init_global() -> GlobalGeoIp {
         debug!("no GeoIP databases found — enrichment disabled");
     }
 
-    GlobalGeoIp { city, asn }
+    GlobalGeoIp {
+        city,
+        asn,
+        cache: Cache::default(),
+    }
 }
 
 /// Find a database file by env var or by searching standard directories.
@@ -90,7 +122,8 @@ fn find_db(env_var: &str, filenames: &[&str]) -> Option<PathBuf> {
         }
     }
 
-    // 3. Default search paths (includes workspace root for dev/test)
+    // 3. Default search paths. `/var/lib/dfe/geoip` is where dfe-loader's
+    //    downloader puts them, so a shared volume needs no configuration.
     let workspace_testdata = concat!(env!("CARGO_MANIFEST_DIR"), "/../../testdata/geoip");
     let search_dirs = [
         "testdata/geoip",
@@ -111,34 +144,40 @@ fn find_db(env_var: &str, filenames: &[&str]) -> Option<PathBuf> {
     None
 }
 
-/// Perform a GeoIP lookup using the global enricher.
+/// Perform a `GeoIP` lookup using the global enricher.
 ///
-/// `db_name` selects the database: "geoip_city" or "geoip_asn".
+/// `db_name` selects the database: "`geoip_city`" or "`geoip_asn`".
 /// Returns a flat map of field names to values, or an empty map if
 /// the database is not loaded or the IP is private.
 pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
     let global = GLOBAL_GEOIP.get_or_init(init_global);
 
-    // Fast-path: private IPs don't have GeoIP data
-    if is_private_ip(ip) {
+    // Parse FIRST. `ip` is whatever the vendor put in the field, and an
+    // unparseable value has no data in any database -- caching it would let a
+    // vendor string of arbitrary length become a cache key.
+    let Ok(address) = ip.parse::<IpAddr>() else {
+        debug!(ip = ip, "not an IP address, no enrichment");
+        return HashMap::new();
+    };
+
+    // Private ranges have no data anywhere, so they never reach the cache or
+    // a database.
+    if is_private(address) {
         return HashMap::new();
     }
 
-    let enricher = match db_name {
-        "geoip_city" | "GeoLite2-City.mmdb" | "dbip-city-lite.mmdb" => global.city.as_ref(),
-        "geoip_asn" | "GeoLite2-ASN.mmdb" | "dbip-asn-lite.mmdb" => global.asn.as_ref(),
-        other => {
-            // Try city as default
-            if other.contains("ASN") || other.contains("asn") {
-                global.asn.as_ref()
-            } else {
-                global.city.as_ref()
-            }
-        }
+    let database = database_for(db_name);
+    if let Some(cached) = global.cache.get(database, address) {
+        return cached;
+    }
+
+    let enricher = match database {
+        Database::City => global.city.as_ref(),
+        Database::Asn => global.asn.as_ref(),
     };
 
-    match enricher {
-        Some(e) => match e.lookup(ip) {
+    let fields = match enricher {
+        Some(e) => match e.lookup_addr(address) {
             Ok(result) => result,
             Err(msg) => {
                 debug!(ip = ip, error = %msg, "GeoIP lookup failed");
@@ -146,13 +185,28 @@ pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
             }
         },
         None => HashMap::new(),
+    };
+
+    global.cache.put(database, address, fields.clone());
+    fields
+}
+
+/// Which database a processor's `database_file` names.
+///
+/// The pipelines spell it several ways, and anything unrecognised is city:
+/// that is what Elastic's own default is.
+fn database_for(db_name: &str) -> Database {
+    match db_name {
+        "geoip_asn" | "GeoLite2-ASN.mmdb" | "dbip-asn-lite.mmdb" => Database::Asn,
+        other if other.contains("ASN") || other.contains("asn") => Database::Asn,
+        _ => Database::City,
     }
 }
 
-/// Check whether an IP is in a private/internal range.
-fn is_private_ip(ip: &str) -> bool {
-    match ip.parse::<IpAddr>() {
-        Ok(IpAddr::V4(v4)) => {
+/// Check whether an address is in a private or internal range.
+fn is_private(address: IpAddr) -> bool {
+    match address {
+        IpAddr::V4(v4) => {
             v4.is_private()
                 || v4.is_loopback()
                 || v4.is_link_local()
@@ -161,46 +215,159 @@ fn is_private_ip(ip: &str) -> bool {
                 // CGNAT range 100.64.0.0/10
                 || (v4.octets()[0] == 100 && (v4.octets()[1] & 0xC0) == 64)
         }
-        Ok(IpAddr::V6(v6)) => v6.is_loopback() || v6.is_multicast(),
-        Err(_) => false,
+        IpAddr::V6(v6) => v6.is_loopback() || v6.is_multicast(),
     }
+}
+
+/// One lock over the process-global cache and its counters.
+///
+/// Every test that reads the counters or the size takes it, wherever in the
+/// crate it lives -- `codegen_api` reaches the same global through its own
+/// wrapper, and without this the two race.
+#[cfg(test)]
+pub(crate) fn test_guard() -> std::sync::MutexGuard<'static, ()> {
+    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    LOCK.lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    fn addr(ip: &str) -> IpAddr {
+        ip.parse().unwrap_or_else(|e| panic!("{ip} parses: {e}"))
+    }
+
     #[test]
     fn private_ip_detection() {
-        assert!(is_private_ip("10.0.0.1"));
-        assert!(is_private_ip("172.16.0.1"));
-        assert!(is_private_ip("192.168.1.1"));
-        assert!(is_private_ip("127.0.0.1"));
-        assert!(is_private_ip("169.254.0.1"));
-        assert!(is_private_ip("100.64.0.1"));
-        assert!(!is_private_ip("8.8.8.8"));
-        assert!(!is_private_ip("175.16.199.1"));
+        assert!(is_private(addr("10.0.0.1")));
+        assert!(is_private(addr("172.16.0.1")));
+        assert!(is_private(addr("192.168.1.1")));
+        assert!(is_private(addr("127.0.0.1")));
+        assert!(is_private(addr("169.254.0.1")));
+        assert!(is_private(addr("100.64.0.1")));
+        assert!(!is_private(addr("8.8.8.8")));
+        assert!(!is_private(addr("175.16.199.1")));
     }
 
     #[test]
     fn private_ip_returns_empty() {
+        let _guard = serialised();
         let result = geoip_lookup("geoip_city", "192.168.1.1");
         assert!(result.is_empty());
     }
 
     #[test]
     fn invalid_ip_returns_empty() {
+        let _guard = serialised();
         let result = geoip_lookup("geoip_city", "not-an-ip");
         assert!(result.is_empty());
     }
 
     #[test]
     fn public_ip_lookup() {
+        let _guard = serialised();
         // 8.8.8.8 (Google DNS) should have GeoIP data if DB is loaded
         let result = geoip_lookup("geoip_city", "8.8.8.8");
-        eprintln!("GeoIP 8.8.8.8 result: {:?}", result);
+        eprintln!("GeoIP 8.8.8.8 result: {result:?}");
         // Don't assert on specific values — DB may or may not be present
         // This test verifies the lookup path doesn't panic
+    }
+
+    use super::test_guard as serialised;
+
+    /// A repeated address must not reach the database twice. Asserted on the
+    /// delta, because other tests have already moved the counters.
+    #[test]
+    fn a_repeated_lookup_is_served_from_the_cache() {
+        let _guard = serialised();
+        // Globally routable and used by no other test. The documentation
+        // ranges are not an option: Rust classes them as private, so they
+        // never reach the cache.
+        let ip = "93.184.216.34";
+
+        let first = geoip_lookup("geoip_city", ip);
+        let after_first = cache_stats();
+        let second = geoip_lookup("geoip_city", ip);
+        let after_second = cache_stats();
+
+        assert_eq!(first, second, "the cache must return the same fields");
+        assert_eq!(
+            after_second.hits - after_first.hits,
+            1,
+            "the second lookup must be served from the cache"
+        );
+        assert_eq!(
+            after_second.misses, after_first.misses,
+            "the second lookup must not reach a database"
+        );
+    }
+
+    /// The city and ASN databases answer differently, so a city hit must not
+    /// satisfy an ASN lookup.
+    #[test]
+    fn city_and_asn_lookups_are_cached_separately() {
+        let _guard = serialised();
+        let ip = "208.67.222.222";
+        let _ = geoip_lookup("geoip_city", ip);
+
+        let before = cache_stats();
+        let _ = geoip_lookup("geoip_asn", ip);
+        assert_eq!(
+            cache_stats().misses - before.misses,
+            1,
+            "the ASN lookup must not be served by the city entry"
+        );
+    }
+
+    #[test]
+    fn database_names_map_to_the_right_database() {
+        assert_eq!(database_for("geoip_asn"), Database::Asn);
+        assert_eq!(database_for("GeoLite2-ASN.mmdb"), Database::Asn);
+        assert_eq!(database_for("dbip-asn-lite.mmdb"), Database::Asn);
+        assert_eq!(database_for("geoip_city"), Database::City);
+        assert_eq!(database_for("GeoLite2-City.mmdb"), Database::City);
+        // Elastic's own default is the city database.
+        assert_eq!(database_for("anything-else"), Database::City);
+    }
+
+    /// A private address must not reach the cache at all -- it has no data in
+    /// any database, and caching it would fill the map with RFC 1918 space.
+    #[test]
+    fn private_addresses_never_reach_the_cache() {
+        let _guard = serialised();
+        let before = cache_stats();
+        let _ = geoip_lookup("geoip_city", "10.11.12.13");
+        let after = cache_stats();
+
+        assert_eq!(after.hits, before.hits);
+        assert_eq!(after.misses, before.misses);
+    }
+
+    /// `source.ip` carries whatever the vendor put there. A value that is not
+    /// an address must not become a cache key: the cache is bounded by ENTRY
+    /// COUNT, so an arbitrary-length key is an arbitrary-length memory leak,
+    /// and junk keys evict the real ones on the way.
+    #[test]
+    fn an_unparseable_address_never_reaches_the_cache() {
+        let _guard = serialised();
+        let before = cache_stats();
+
+        for junk in [
+            "not-an-ip",
+            "10.0.0.1, 10.0.0.2",
+            "example.com",
+            "",
+            "999.999.999.999",
+        ] {
+            assert!(geoip_lookup("geoip_city", junk).is_empty(), "{junk}");
+        }
+
+        let after = cache_stats();
+        assert_eq!(after.size, before.size, "junk was stored in the cache");
+        assert_eq!(after.hits, before.hits);
+        assert_eq!(after.misses, before.misses);
     }
 
     #[test]

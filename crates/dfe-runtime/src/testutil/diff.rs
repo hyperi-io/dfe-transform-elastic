@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Structured JSON comparison with readable diff output.
@@ -246,10 +246,11 @@ fn format_value(v: &Value) -> String {
         Value::Null => "null".to_string(),
         other => {
             let s = other.to_string();
-            if s.len() > 80 {
-                format!("{}...", &s[..77])
-            } else {
-                s
+            // Truncate by CHARACTER, not byte: a byte index lands inside a
+            // codepoint on any non-ASCII value and slicing there panics.
+            match s.char_indices().nth(77) {
+                Some((end, _)) if s.chars().count() > 80 => format!("{}...", &s[..end]),
+                _ => s,
             }
         }
     }
@@ -259,6 +260,39 @@ fn format_value(v: &Value) -> String {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// The truncation used to slice at byte 77, which cuts inside a codepoint
+    /// and panics -- taking the whole fixture harness with it whenever a
+    /// fixture carried non-ASCII text.
+    #[test]
+    fn format_value_truncates_on_a_character_boundary() {
+        for filler in ["日", "Ä", "\u{1F600}", "한", "\u{0301}"] {
+            let long = filler.repeat(200);
+            let value = json!({ "message": long });
+            let rendered = format_value(&value);
+            assert!(
+                rendered.ends_with("..."),
+                "{filler:?}: long values must be truncated"
+            );
+        }
+    }
+
+    /// Truncation must not split a grapheme's underlying codepoint, and must
+    /// stay bounded regardless of how wide the characters are.
+    #[test]
+    fn format_value_truncation_is_bounded_in_characters() {
+        let value = json!({ "message": "日".repeat(500) });
+        let rendered = format_value(&value);
+        assert!(rendered.chars().count() <= 81, "{rendered}");
+    }
+
+    /// A short non-ASCII value is returned whole.
+    #[test]
+    fn format_value_leaves_short_values_alone() {
+        assert_eq!(format_value(&json!("日本語")), "\"日本語\"");
+        assert_eq!(format_value(&json!(42)), "42");
+        assert_eq!(format_value(&Value::Null), "null");
+    }
 
     #[test]
     fn exact_match_identical() {

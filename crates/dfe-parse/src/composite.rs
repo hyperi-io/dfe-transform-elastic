@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! Composite parser builder for chaining Layer 1 parsers into full grok-equivalent
@@ -11,9 +11,8 @@
 //!
 //! The builder executes steps sequentially with no backtracking — if any step
 //! fails, the entire composite parse fails. This gives predictable O(n)
-//! performance and works with the codegen pipeline: dfe-codegen analyses a grok
-//! pattern, maps each capture group to a Layer 1 parser, and emits a composite
-//! chain.
+//! performance for a grok-equivalent pattern expressed as literals and
+//! Layer 1 parser captures.
 //!
 //! # Example
 //!
@@ -153,12 +152,14 @@ pub struct CompositeParserBuilder {
 
 impl CompositeParserBuilder {
     /// Add a literal string step. The input must match this exactly.
+    #[must_use]
     pub fn literal(mut self, s: &str) -> Self {
         self.steps.push(Step::Literal(s.to_string()));
         self
     }
 
     /// Add a capture step. The parser runs and the result is stored under `field`.
+    #[must_use]
     pub fn capture(mut self, field: &str, parser: ParserFn) -> Self {
         self.steps.push(Step::Capture {
             field: field.to_string(),
@@ -168,6 +169,7 @@ impl CompositeParserBuilder {
     }
 
     /// Add a step that skips optional whitespace.
+    #[must_use]
     pub fn skip_space(mut self) -> Self {
         self.steps.push(Step::SkipSpace);
         self
@@ -186,7 +188,7 @@ mod tests {
     use crate::numeric::take_int;
     use crate::string::take_word;
 
-    /// Wrapper to adapt `parse_ipv4` (which returns `&str`) to our ParserFn signature.
+    /// Wrapper to adapt `parse_ipv4` (which returns `&str`) to our `ParserFn` signature.
     fn parse_ipv4_fn(input: &str) -> Result<(&str, &str), ParseError> {
         parse_ipv4(input)
     }

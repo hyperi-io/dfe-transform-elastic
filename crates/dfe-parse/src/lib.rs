@@ -1,14 +1,20 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 #![forbid(unsafe_code)]
 #![warn(clippy::all, clippy::pedantic)]
+// Byte-level parsing: the casts are the algorithm and the digit-count checks
+// bound them, and `inline(always)` on the byte predicates is deliberate.
 #![allow(
     clippy::module_name_repetitions,
     clippy::must_use_candidate,
     clippy::missing_errors_doc,
     clippy::missing_panics_doc,
-    clippy::redundant_closure_for_method_calls
+    clippy::redundant_closure_for_method_calls,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap,
+    clippy::cast_sign_loss,
+    clippy::inline_always
 )]
 
 //! High-performance parser library replacing grok/regex patterns with native Rust.

@@ -1,58 +1,58 @@
-# Shared Crates Strategy: dfe-parse + dfe-runtime
+# Shared crates: dfe-parse and dfe-runtime
 
-## Current State: Independent Copies
+## Today: independent copies
 
-`dfe-parse` and `dfe-runtime` exist as workspace crates in this project. A copy of both was taken by `dfe-transform-splack` (the Splunk equivalent). Both projects evolve their copies independently during the spike phase.
+`dfe-parse` and `dfe-runtime` are workspace crates here, and `dfe-transform-splack`
+(the Splunk equivalent) took a copy of both. The two projects evolve their copies
+independently, and that is deliberate: both are still changing shape, and extracting
+them now would make every breaking change block both projects at once.
 
-This is intentional. Both projects are changing fast and will break fast while maturing. Extracting shared crates now would mean every breaking change blocks both projects simultaneously — a coordination tax that outweighs the duplication cost.
+The duplication costs less than that coordination would.
 
-## What's Shared (Conceptually)
+## What is common, conceptually
 
-| Component | In dfe-parse | In dfe-runtime |
-|-----------|-------------|----------------|
-| IP parser (v4, v6, host) | Yes | |
-| Timestamp parsers (ISO8601, syslog, epoch) | Yes | |
+| Component | dfe-parse | dfe-runtime |
+|-----------|-----------|-------------|
+| IP parsers (v4, v6, host) | Yes | |
+| Timestamp parsers (ISO 8601, syslog, epoch) | Yes | |
 | Numeric parsers (int, float) | Yes | |
 | String parsers (word, quoted, greedy) | Yes | |
 | Network parsers (MAC, hostname, URI) | Yes | |
 | Composite parser builder | Yes | |
 | DFA fallback (pre-compiled regex) | Yes | |
-| Event type (dotted-path JSON wrapper) | | Yes |
-| Transform trait + TransformChain | | Yes |
-| Enrichment (GeoIP, UA, Community ID) | | Yes |
+| `Event` (dotted-path JSON wrapper) | | Yes |
+| `Transform` trait and `TransformChain` | | Yes |
+| Enrichment (GeoIP, user agent, community ID) | | Yes |
 | Error types | | Yes |
 | Prelude re-exports | | Yes |
 | Test utilities (harness, diff, flatten) | | Yes |
 
-## What's NOT Shared (Project-Specific)
+## What is not
 
-| Project | Specific Code |
-|---------|--------------|
-| dfe-transform-elastic | `painless_helpers.rs`, `painless_common.rs`, `codegen_api.rs` |
-| dfe-transform-splack | (TBD — Splunk eval expression helpers, lookup transforms) |
+| Project | Specific code |
+|---------|---------------|
+| dfe-transform-elastic | `painless_helpers.rs`, `painless_common.rs`, `codegen_api.rs` — Painless semantics have no Splunk counterpart |
+| dfe-transform-splack | Splunk eval expressions and lookup transforms |
 
-## Plan: Extract When Stable
+## Extracting later
 
-When both projects reach beta stability (post-spike):
+When both sides settle:
 
-1. Diff the two copies of `dfe-parse` and `dfe-runtime` to identify what's actually common
-2. Create `hyperi-io/dfe-core` private GitHub repo as a Cargo workspace
-3. Move genuinely shared code there
-4. Both projects depend via git: `dfe-parse = { git = "ssh://git@github.com/hyperi-io/dfe-core.git" }`
-5. Project-specific code stays in each project's workspace
+1. Diff the two copies to find what is genuinely common, rather than assuming.
+2. Stand up a shared private workspace repo. **`dfe-core` is already taken**, so the
+   name is an open question.
+3. Move the common code there; project-specific code stays put.
+4. Both projects depend on it by git reference.
 
-## Coordination Between LLM Sessions
+## When to do it
 
-During the spike, both projects are developed largely by LLMs in separate sessions.
+Not on a date — on these signals:
 
-**No cross-project coordination needed.** Each LLM works in its own project workspace. If a parser or Event method is needed that doesn't exist, add it locally. Divergence is expected and acceptable.
+- Both parser sets have stopped growing.
+- The `Event` API has settled: no breaking changes to get/set/remove.
+- The `Transform` trait is identical in both.
+- Test utilities are being copy-pasted between the two with no edits.
+- A change to shared logic already requires updating both by hand.
 
-**Periodic human review:** Derek reviews both projects periodically and identifies convergent patterns. These inform the eventual extraction.
-
-## Signals That It's Time to Extract
-
-- Both projects have stabilised their parser sets (no new parsers weekly)
-- Event type API has settled (no breaking changes to get/set/remove)
-- Transform trait is identical in both
-- Test utilities are copy-pasted between projects with no changes
-- A change to shared logic requires updating both projects manually
+Until then, divergence is expected. If a parser or an `Event` method is missing, add it
+locally rather than waiting for the other project.

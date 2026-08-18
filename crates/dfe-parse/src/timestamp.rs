@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Efficient timestamp parsers replacing %{TIMESTAMP_ISO8601}, %{SYSLOGTIMESTAMP},
+//! Efficient timestamp parsers replacing %{`TIMESTAMP_ISO8601`}, %{SYSLOGTIMESTAMP},
 //! and related date/time patterns.
 //!
 //! Uses fixed-position byte extraction instead of regex for 10-12x speedup.
@@ -61,7 +61,7 @@ pub fn parse_iso8601(input: &str) -> ParseResult<'_, DateTime<Utc>> {
         if frac_len > 0 {
             let mut frac_val: u64 = 0;
             for &b in &bytes[frac_start..pos] {
-                frac_val = frac_val * 10 + (b - b'0') as u64;
+                frac_val = frac_val * 10 + u64::from(b - b'0');
             }
             // Normalise to nanoseconds (9 digits).
             if frac_len <= 9 {
@@ -104,7 +104,7 @@ pub fn parse_iso8601(input: &str) -> ParseResult<'_, DateTime<Utc>> {
 ///
 /// Format: `MMM DD HH:MM:SS` or `MMM  D HH:MM:SS` (leading space for single-digit day).
 ///
-/// Returns a DateTime in UTC for the current year (syslog timestamps lack year).
+/// Returns a `DateTime` in UTC for the current year (syslog timestamps lack year).
 /// Replaces `%{SYSLOGTIMESTAMP}`.
 pub fn parse_syslog_timestamp(input: &str) -> ParseResult<'_, DateTime<Utc>> {
     let bytes = input.as_bytes();
@@ -115,9 +115,10 @@ pub fn parse_syslog_timestamp(input: &str) -> ParseResult<'_, DateTime<Utc>> {
         return Err(ParseError::eof("syslog timestamp"));
     }
 
-    // Month abbreviation (3 chars).
-    let month_str = &input[..3];
-    let month = month_from_abbrev(month_str)?;
+    // Month abbreviation (3 bytes). Matched on bytes, not a `&str` slice:
+    // a multibyte first character puts byte 3 inside a codepoint, and slicing
+    // there panics.
+    let month = month_from_abbrev(&bytes[..3])?;
 
     // Space + day (may have leading space for single-digit).
     if bytes[3] != b' ' {
@@ -128,15 +129,23 @@ pub fn parse_syslog_timestamp(input: &str) -> ParseResult<'_, DateTime<Utc>> {
         });
     }
 
-    let (day, time_start) = if bytes[4] == b' ' {
+    // Digits are CHECKED, not assumed: `bytes[4] - b'0'` on a non-digit
+    // underflows, and this parser reads whatever arrived on the wire.
+    let day = if bytes[4] == b' ' {
         // Single-digit day with leading space: "MMM  D HH:MM:SS".
-        let d = (bytes[5] - b'0') as u32;
-        (d, 7)
+        parse_fixed_digits(bytes, 5, 1, "day")?
     } else {
         // Two-digit day: "MMM DD HH:MM:SS".
-        let d = (bytes[4] - b'0') as u32 * 10 + (bytes[5] - b'0') as u32;
-        (d, 7)
+        parse_fixed_digits(bytes, 4, 2, "day")?
     };
+    if !(1..=31).contains(&day) {
+        return Err(ParseError::OutOfRange {
+            value: day.to_string(),
+            min: "1".to_string(),
+            max: "31".to_string(),
+        });
+    }
+    let time_start = 7;
 
     if bytes[6] != b' ' {
         return Err(ParseError::UnexpectedByte {
@@ -270,7 +279,7 @@ fn parse_fixed_digits(
                 got: b,
             });
         }
-        val = val * 10 + (b - b'0') as u32;
+        val = val * 10 + u32::from(b - b'0');
     }
     Ok(val)
 }
@@ -341,20 +350,20 @@ fn parse_tz_offset(bytes: &[u8], pos: &mut usize) -> Result<i32, ParseError> {
 }
 
 /// Convert 3-letter month abbreviation to 1-based month number.
-fn month_from_abbrev(s: &str) -> Result<u32, ParseError> {
+fn month_from_abbrev(s: &[u8]) -> Result<u32, ParseError> {
     match s {
-        "Jan" => Ok(1),
-        "Feb" => Ok(2),
-        "Mar" => Ok(3),
-        "Apr" => Ok(4),
-        "May" => Ok(5),
-        "Jun" => Ok(6),
-        "Jul" => Ok(7),
-        "Aug" => Ok(8),
-        "Sep" => Ok(9),
-        "Oct" => Ok(10),
-        "Nov" => Ok(11),
-        "Dec" => Ok(12),
+        b"Jan" => Ok(1),
+        b"Feb" => Ok(2),
+        b"Mar" => Ok(3),
+        b"Apr" => Ok(4),
+        b"May" => Ok(5),
+        b"Jun" => Ok(6),
+        b"Jul" => Ok(7),
+        b"Aug" => Ok(8),
+        b"Sep" => Ok(9),
+        b"Oct" => Ok(10),
+        b"Nov" => Ok(11),
+        b"Dec" => Ok(12),
         _ => Err(ParseError::invalid("unknown month abbreviation")),
     }
 }
@@ -364,6 +373,40 @@ use chrono::Datelike;
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // ── Unicode resilience ──────────────────────────────────────────
+
+    /// A syslog line whose first characters are multibyte must be rejected,
+    /// not panic. Slicing the month abbreviation by byte offset cuts inside a
+    /// codepoint unless the bytes are checked first.
+    #[test]
+    fn syslog_timestamp_rejects_multibyte_input_without_panicking() {
+        // Each of these is at least the 15 bytes the parser requires, with a
+        // multibyte character straddling byte offset 3.
+        for input in [
+            "ÄÄÄ 17 12:00:00 rest",
+            "日本語 17 12:00:00",
+            "\u{1F600}\u{1F600} 17 12:00:00",
+            "aÄb 17 12:00:00 rest",
+            "\u{0130}st 17 12:00:00",
+        ] {
+            assert!(
+                parse_syslog_timestamp(input).is_err(),
+                "{input:?} must be rejected, not parsed"
+            );
+        }
+    }
+
+    /// Every byte prefix of a multibyte string is a potential slice point.
+    #[test]
+    fn syslog_timestamp_survives_every_multibyte_prefix() {
+        let base = "日本語한국어Ää\u{1F600} 17 12:00:00 padding padding";
+        for end in 0..base.len() {
+            if base.is_char_boundary(end) {
+                let _ = parse_syslog_timestamp(&base[end..]);
+            }
+        }
+    }
 
     // ── ISO 8601 ────────────────────────────────────────────────────
 
@@ -395,7 +438,7 @@ mod tests {
     #[test]
     fn iso8601_with_micros() {
         let (_, dt) = parse_iso8601("2024-01-15T10:30:00.123456Z").unwrap();
-        assert_eq!(dt.nanosecond() / 1_000, 123456);
+        assert_eq!(dt.nanosecond() / 1_000, 123_456);
     }
 
     #[test]
@@ -438,6 +481,30 @@ mod tests {
         let (_, dt) = parse_syslog_timestamp("Mar  5 08:00:00").unwrap();
         assert_eq!(dt.month(), 3);
         assert_eq!(dt.day(), 5);
+    }
+
+    /// The day was subtracted from `b'0'` without checking it was a digit, so
+    /// a non-digit underflowed the byte. Input arrives from the wire.
+    #[test]
+    fn syslog_rejects_a_non_digit_day() {
+        for input in [
+            "Jan !! 00:00:00",
+            "Jan  ! 00:00:00",
+            "Jan -1 00:00:00",
+            "Jan \u{00}0 00:00:00",
+        ] {
+            assert!(
+                parse_syslog_timestamp(input).is_err(),
+                "{input:?} must be rejected, not parsed"
+            );
+        }
+    }
+
+    #[test]
+    fn syslog_rejects_a_day_out_of_range() {
+        assert!(parse_syslog_timestamp("Jan 00 00:00:00").is_err());
+        assert!(parse_syslog_timestamp("Jan 32 00:00:00").is_err());
+        assert!(parse_syslog_timestamp("Jan 31 00:00:00").is_ok());
     }
 
     // ── parse_year ──────────────────────────────────────────────────

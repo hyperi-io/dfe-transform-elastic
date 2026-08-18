@@ -1,0 +1,56 @@
+{
+  "schema_version": "1",
+  "app_name": "dfe-transform-elastic",
+  "binary_name": "dfe-transform-elastic",
+  "base_image": "debian:trixie-slim",
+  "image_registry": "ghcr.io/hyperi-io",
+  "image_profile": "production",
+  "runtime_packages": {
+    "apt_repos": [
+      {
+        "key_url": "https://packages.confluent.io/clients/deb/archive.key",
+        "keyring": "/usr/share/keyrings/confluent-clients.gpg",
+        "url": "https://packages.confluent.io/clients/deb",
+        "codename": "bookworm",
+        "packages": [
+          "librdkafka1"
+        ]
+      }
+    ],
+    "apt_packages": [
+      "libssl3t64",
+      "zlib1g"
+    ],
+    "distro": "trixie",
+    "unresolved_base_image": null
+  },
+  "expose_ports": [
+    9090
+  ],
+  "healthcheck": {
+    "path": "/livez",
+    "port": 9090,
+    "interval": "30s",
+    "timeout": "3s",
+    "start_period": "5s",
+    "retries": 3
+  },
+  "entrypoint": [
+    "dfe-transform-elastic"
+  ],
+  "cmd": [
+    "--config",
+    "/etc/dfe-transform-elastic/config.yaml"
+  ],
+  "user": "appuser",
+  "uid": 1000,
+  "labels": {
+    "io.hyperi.profile": "production",
+    "io.hyperi.app": "dfe-transform-elastic",
+    "io.hyperi.metrics_port": "9090",
+    "org.opencontainers.image.title": "dfe-transform-elastic",
+    "org.opencontainers.image.description": "Beats and Elastic Agent JSON in, DFE-normalised events out",
+    "org.opencontainers.image.vendor": "HYPERI PTY LIMITED",
+    "org.opencontainers.image.licenses": "BUSL-1.1"
+  }
+}

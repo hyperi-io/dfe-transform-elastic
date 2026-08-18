@@ -1,21 +1,40 @@
-.claude/
-.idea/
-.vscode/
+# OS junk
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 *~
-.DS_Store
-Thumbs.db
+
+# Editor / IDE local state
+.idea/
+.vscode/
+
+# Local environment files (never commit -- contain secrets)
 .env
 .env.local
 .env.*.local
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+secrets.yaml
+secrets.yml
+
+# Build output
 *.log
+# Elastic fixture inputs are .log files and must survive the rule above.
+!tests/fixtures/**/*.log
 dist/
 dist-bin/
 build/
 out/
 test-results/
 coverage/
+
+# Rust build artefacts
+target
 target/
 **/*.rs.bk
 *.pdb
@@ -23,20 +42,32 @@ target/
 *.profdata
 coverage-html/
 coverage.lcov
-.cargo/
+tarpaulin-report.json
+cobertura.xml
+
+# cargo -- glob the contents, not the directory, so the negation applies.
+.cargo/*
 !.cargo/config.toml
 
-# Test fixtures (copied from elastic_to_vrl, not committed)
+# Elastic upstream test corpus -- large, fetched not committed
 testdata/
 
-# Temp working files
+# Project temp directory
 .tmp/
 
 # Local working files (not committed)
 docs/superpowers/
+.claude/
+.codex/
+.cursor/
+.gemini/
+.cursorrules
 hyperi-ai/
 .mcp.json
-STATE.md
+.worktrees/
 CLAUDE.md
+STATE.md
 TODO.md
+AGENTS.md
+GEMINI.md
 .ai-version

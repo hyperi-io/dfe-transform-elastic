@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: FSL-1.1-ALv2
+// SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//\! Generated transforms for the crowdstrike integration.
+//! Transforms for the crowdstrike integration.
 
 pub mod auth_activity_audit;
 pub mod cspm_events;

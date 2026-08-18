@@ -1,4 +1,11 @@
-# Project-specific gitleaks allowlist
+# Project:   dfe-transform-elastic
+# File:      .gitleaks.toml
+# Purpose:   Project-specific gitleaks allowlist
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+#
 # Extends the CI base configuration (ci/.gitleaks.toml)
 #
 # The CI runs gitleaks to detect secrets in your code. This file lets you
@@ -17,19 +24,18 @@ paths = [
     # Git submodules (have their own scanning)
     '''(^|/)ci/''',
     '''(^|/)ai/''',
-    # Uncomment and customise as needed
-    # '''tests/.*\.py''',
-    # '''tests/fixtures/.*''',
-    # '''.env.example''',
+    # Elastic's upstream test corpus -- synthetic ids that trip the entropy rules.
+    '''(^|/)tests/fixtures/''',
+    '''(^|/)tests/pipelines/''',
 ]
 
 # Regex patterns for known false positives
-# regexes = [
-#     '''YOUR_.*_TOKEN''',
-#     '''your-.*-token''',
-#     '''test-token''',
-#     '''example\.com''',
-# ]
-
-# Stopwords - findings containing these are likely false positives
-# stopwords = ["example", "sample", "test", "mock", "fake", "dummy", "placeholder"]
+regexes = [
+    # Meraki event-type literal carried through from the Elastic pipeline.
+    '''8021x_eap_failure''',
+    # Confluent's PUBLIC signing-key fingerprint, pinned by the generated
+    # Dockerfile and carried into docs/deployment-contract.json. Publishing it
+    # is the security control -- the build verifies the downloaded key against
+    # it before trusting the apt repo.
+    '''CBBB821E8FAF364F79835C438B1DA6120C2BF624''',
+]
