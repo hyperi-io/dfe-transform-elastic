@@ -3,7 +3,7 @@
   "app": "dfe-transform-elastic",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-08-18T05:03:14Z",
+  "registered_at": "2026-08-18T05:25:14Z",
   "metrics": [
     {
       "name": "dfe-transform-elastic_transport_sent_total",
@@ -362,6 +362,22 @@
       "name": "dfe-transform-elastic_lossy_payloads_total",
       "type": "counter",
       "description": "Payloads decoded with U+FFFD replacements for invalid UTF-8",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_painless_handled_total",
+      "type": "counter",
+      "description": "Painless scripts the runtime recognised and ran",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_painless_unhandled_total",
+      "type": "counter",
+      "description": "Painless scripts skipped because nothing recognised them",
       "unit": "",
       "labels": [],
       "group": "custom"

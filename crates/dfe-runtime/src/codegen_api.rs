@@ -82,8 +82,12 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
 /// `keys_to_snake_case`, etc.). Falls back to a no-op for unrecognised scripts.
 pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
     if crate::painless_common::try_known_painless(event, script) {
+        crate::painless_stats::record_handled();
         return Ok(());
     }
+    // Counted, because an uncounted skip is indistinguishable from a script
+    // that did nothing.
+    crate::painless_stats::record_unhandled(script);
     debug!(
         script_len = script.len(),
         "painless_exec: unrecognised script skipped"

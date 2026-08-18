@@ -16,7 +16,7 @@
 //! putting a syslog-shaped line back in `message`, because that is what the
 //! transforms grok.
 
-use dfe_runtime::Event;
+use dfe_runtime::{Event, syslog_pri};
 use serde_json::{Value, json};
 
 use crate::registry::Framing;
@@ -33,49 +33,6 @@ const RECEIVER_KEYS: &[&str] = &[
     "msgid",
     "timestamp",
     "structured_data",
-];
-
-/// Facility name to its RFC 5424 number.
-///
-/// Pinned to `syslog_loose::SyslogFacility::as_str`, which is what dfe-receiver
-/// serialises. The crate offers no public reverse, so the table lives here.
-const FACILITIES: [(&str, u8); 24] = [
-    ("kern", 0),
-    ("user", 1),
-    ("mail", 2),
-    ("daemon", 3),
-    ("auth", 4),
-    ("syslog", 5),
-    ("lpr", 6),
-    ("news", 7),
-    ("uucp", 8),
-    ("cron", 9),
-    ("authpriv", 10),
-    ("ftp", 11),
-    ("ntp", 12),
-    ("audit", 13),
-    ("alert", 14),
-    ("clockd", 15),
-    ("local0", 16),
-    ("local1", 17),
-    ("local2", 18),
-    ("local3", 19),
-    ("local4", 20),
-    ("local5", 21),
-    ("local6", 22),
-    ("local7", 23),
-];
-
-/// Severity name to its RFC 5424 number.
-const SEVERITIES: [(&str, u8); 8] = [
-    ("emerg", 0),
-    ("alert", 1),
-    ("crit", 2),
-    ("err", 3),
-    ("warning", 4),
-    ("notice", 5),
-    ("info", 6),
-    ("debug", 7),
 ];
 
 /// The facility used when the receiver saw no PRI. 1 (user) is what a syslogd
@@ -170,14 +127,14 @@ fn reconstruct(event: &Event) -> String {
 
     let facility = event
         .get_str("facility")
-        .and_then(facility_number)
+        .and_then(syslog_pri::facility_code)
         .unwrap_or(DEFAULT_FACILITY);
     let severity = event
         .get_str("severity")
-        .and_then(severity_number)
+        .and_then(syslog_pri::severity_code)
         .unwrap_or(DEFAULT_SEVERITY);
     line.push('<');
-    line.push_str(&(u16::from(facility) * 8 + u16::from(severity)).to_string());
+    line.push_str(&syslog_pri::compose(facility, severity).to_string());
     line.push('>');
 
     if let Some(ts) = event.get_str("timestamp").and_then(rfc3164_timestamp) {
@@ -212,20 +169,6 @@ fn rfc3164_timestamp(rfc3339: &str) -> Option<String> {
     chrono::DateTime::parse_from_rfc3339(rfc3339)
         .ok()
         .map(|dt| dt.format("%b %e %H:%M:%S").to_string())
-}
-
-fn facility_number(name: &str) -> Option<u8> {
-    FACILITIES
-        .iter()
-        .find(|(n, _)| *n == name)
-        .map(|(_, code)| *code)
-}
-
-fn severity_number(name: &str) -> Option<u8> {
-    SEVERITIES
-        .iter()
-        .find(|(n, _)| *n == name)
-        .map(|(_, code)| *code)
 }
 
 /// Copy the parsed header onto ECS `log.syslog.*` and `host.hostname`.
@@ -406,28 +349,12 @@ mod tests {
         assert_eq!(event.get_str("message"), Some("<13>plain line"));
     }
 
-    #[test]
-    fn every_facility_and_severity_name_maps_to_its_rfc_number() {
-        assert_eq!(facility_number("kern"), Some(0));
-        assert_eq!(facility_number("local7"), Some(23));
-        assert_eq!(severity_number("emerg"), Some(0));
-        assert_eq!(severity_number("debug"), Some(7));
-        assert_eq!(facility_number("nonsense"), None);
-        assert_eq!(severity_number("nonsense"), None);
-
-        // Codes must be dense, unique and in range, or a PRI is wrong.
-        let codes: Vec<u8> = FACILITIES.iter().map(|(_, c)| *c).collect();
-        assert_eq!(codes, (0..24).collect::<Vec<u8>>());
-        let codes: Vec<u8> = SEVERITIES.iter().map(|(_, c)| *c).collect();
-        assert_eq!(codes, (0..8).collect::<Vec<u8>>());
-    }
-
-    /// The PRI arithmetic must round-trip against the RFC 5424 definition for
-    /// every combination, not just the one in the fixture.
+    /// The PRI the envelope writes must match the RFC for every combination,
+    /// not just the one in the fixture.
     #[test]
     fn pri_is_facility_times_eight_plus_severity() {
-        for (fname, fcode) in FACILITIES {
-            for (sname, scode) in SEVERITIES {
+        for (fcode, fname) in syslog_pri::FACILITIES.iter().enumerate() {
+            for (scode, sname) in syslog_pri::SEVERITIES.iter().enumerate() {
                 let mut event = Event::new(json!({
                     "message": "b",
                     "facility": fname,
@@ -437,7 +364,7 @@ mod tests {
                     .unwrap_into_beats(&mut event, Some(Framing::Line))
                     .unwrap();
 
-                let expected = format!("<{}>", u16::from(fcode) * 8 + u16::from(scode));
+                let expected = format!("<{}>", fcode * 8 + scode);
                 let line = event.get_str("message").unwrap();
                 assert!(
                     line.starts_with(&expected),

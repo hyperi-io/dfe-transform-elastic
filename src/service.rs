@@ -109,6 +109,9 @@ pub async fn run_loop(
 
     push_scaling_signals(scaling, consumer, 0.0);
     let mut last_signal = Instant::now();
+    // `painless_stats` counts cumulatively for the process; the metrics want
+    // per-batch deltas.
+    let mut painless_seen = (0_u64, 0_u64);
 
     while !shutdown.is_cancelled() {
         if last_signal.elapsed() >= SCALING_SIGNAL_INTERVAL {
@@ -179,6 +182,18 @@ pub async fn run_loop(
             .records_processed
             .increment(outcome.emitted as u64);
         metrics.app.records_error.increment(outcome.errored as u64);
+
+        let painless_now = (
+            dfe_runtime::painless_stats::handled(),
+            dfe_runtime::painless_stats::unhandled(),
+        );
+        metrics
+            .painless_handled
+            .increment(painless_now.0.saturating_sub(painless_seen.0));
+        metrics
+            .painless_unhandled
+            .increment(painless_now.1.saturating_sub(painless_seen.1));
+        painless_seen = painless_now;
 
         tracing::debug!(
             emitted = outcome.emitted,

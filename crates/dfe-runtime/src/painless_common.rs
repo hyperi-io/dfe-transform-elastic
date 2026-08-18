@@ -149,12 +149,183 @@ pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &
     Ok(())
 }
 
+/// The ECS field a `ctx.source.X + ctx.destination.X` script totals into.
+///
+/// Both `bytes` and `packets` appear verbatim across the network sources.
+fn sum_of_directions(script: &str) -> Option<&'static str> {
+    for unit in ["bytes", "packets"] {
+        let target = format!("ctx.network.{unit}");
+        if script.contains(&target)
+            && script.contains(&format!("ctx.source.{unit}"))
+            && script.contains(&format!("ctx.destination.{unit}"))
+        {
+            return Some(if unit == "bytes" { "bytes" } else { "packets" });
+        }
+    }
+    None
+}
+
+/// `network.{unit} = source.{unit} + destination.{unit}`.
+///
+/// Elastic's script would throw on a missing side; skipping instead is the
+/// behaviour the surrounding pipeline already relies on.
+fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
+    let Some(source) = event.get_i64(&format!("source.{unit}")) else {
+        return true;
+    };
+    let Some(destination) = event.get_i64(&format!("destination.{unit}")) else {
+        return true;
+    };
+    let _ = event.set(&format!("network.{unit}"), json!(source + destination));
+    true
+}
+
+/// `event.duration = <field> * 1_000_000_000`, seconds to nanoseconds.
+fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
+    let Some(field) = script
+        .split("Long.parseLong(ctx.")
+        .nth(1)
+        .and_then(|rest| rest.split(')').next())
+    else {
+        return true;
+    };
+
+    let seconds = event
+        .get_i64(field)
+        .or_else(|| event.get_str(field).and_then(|s| s.parse::<i64>().ok()));
+
+    if let Some(seconds) = seconds {
+        let _ = event.set("event.duration", json!(seconds * 1_000_000_000));
+    }
+    true
+}
+
+/// IANA protocol number `0` means no transport was identified.
+fn try_iana_zero_transport(event: &mut Event) -> bool {
+    let iana = event
+        .get_str("network.iana_number")
+        .map(String::from)
+        .or_else(|| event.get_i64("network.iana_number").map(|n| n.to_string()));
+
+    if iana.as_deref() == Some("0") {
+        let _ = event.set("network.transport", json!("unknown"));
+    }
+    true
+}
+
+/// The source and destination arrays of an append-if-absent script.
+///
+/// The shape is `for (x in ctx.A) { if (!ctx.B.contains(x)) ctx.B.add(x) }`,
+/// which the network sources use to fold resolved addresses into
+/// `related.ip`.
+fn append_unique_fields(script: &str) -> Option<(&'static str, &'static str)> {
+    let appends_uniquely = script.contains(".contains(") && script.contains(".add(");
+    if !appends_uniquely {
+        return None;
+    }
+    if script.contains("ctx.dns?.resolved_ip") && script.contains("ctx.related.ip") {
+        return Some(("dns.resolved_ip", "related.ip"));
+    }
+    None
+}
+
+/// Append every element of `from` into `into`, skipping ones already present.
+fn try_append_unique(event: &mut Event, from: &str, into: &str) -> bool {
+    let Some(Value::Array(source)) = event.get(from).cloned() else {
+        return true;
+    };
+
+    let mut target = match event.get(into).cloned() {
+        Some(Value::Array(existing)) => existing,
+        _ => Vec::new(),
+    };
+    for item in source {
+        if !target.contains(&item) {
+            target.push(item);
+        }
+    }
+    let _ = event.set(into, Value::Array(target));
+    true
+}
+
+/// Decompose a syslog PRI into ECS `log.syslog.{facility,severity}.{code,name}`.
+///
+/// The PRI is read from wherever the script found it: `log.syslog.priority`
+/// for the generic pipelines, or a vendor field such as
+/// `cisco_nexus.log.priority_number`.
+fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
+    let pri = priority_source(script)
+        .and_then(|field| read_u16(event, field))
+        .or_else(|| read_u16(event, "log.syslog.priority"));
+
+    let Some(pri) = pri else {
+        return true;
+    };
+
+    let (facility, severity) = crate::syslog_pri::decompose(pri);
+    let _ = event.set("log.syslog.facility.code", json!(facility));
+    let _ = event.set("log.syslog.severity.code", json!(severity));
+    if let Some(name) = crate::syslog_pri::facility_name(facility) {
+        let _ = event.set("log.syslog.facility.name", json!(name));
+    }
+    if let Some(name) = crate::syslog_pri::severity_name(severity) {
+        let _ = event.set("log.syslog.severity.name", json!(name));
+    }
+    true
+}
+
+/// The vendor field a priority script reads, when it is not the ECS one.
+fn priority_source(script: &str) -> Option<&str> {
+    script
+        .split("ctx.")
+        .find(|s| s.starts_with("cisco_nexus.log.priority_number"))
+        .map(|_| "cisco_nexus.log.priority_number")
+}
+
+/// A field as a `u16`, whether it is stored as a number or a string.
+fn read_u16(event: &Event, field: &str) -> Option<u16> {
+    event
+        .get_i64(field)
+        .and_then(|n| u16::try_from(n).ok())
+        .or_else(|| event.get_str(field).and_then(|s| s.parse::<u16>().ok()))
+}
+
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
 /// to the generic `painless_exec` stub.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = script.replace("\\n", "\n").replace("\\\"", "\"");
+
+    // Pattern: network.bytes / network.packets as the sum of both directions.
+    if let Some(total) = sum_of_directions(&normalised) {
+        return try_sum_directions(event, total);
+    }
+
+    // Pattern: seconds to nanoseconds for event.duration.
+    if normalised.contains("ctx.event.duration")
+        && normalised.contains("Long.parseLong")
+        && normalised.contains("1000000000")
+    {
+        return try_duration_to_nanos(event, &normalised);
+    }
+
+    // Pattern: IANA protocol number 0 means the transport is unknown.
+    if normalised.contains("ctx.network.iana_number")
+        && normalised.contains("ctx.network.transport")
+    {
+        return try_iana_zero_transport(event);
+    }
+
+    // Pattern: decompose a syslog PRI into ECS facility and severity.
+    if normalised.contains("log.syslog") && normalised.contains("priority") {
+        return try_syslog_priority(event, &normalised);
+    }
+
+    // Pattern: append one array into another, skipping duplicates.
+    if let Some((from, into)) = append_unique_fields(&normalised) {
+        return try_append_unique(event, from, into);
+    }
 
     // Pattern: drop null/empty values recursively
     if normalised.contains("drop(ctx)") && normalised.contains("removeIf") {
@@ -500,6 +671,108 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The scripts below are the verbatim text the generated transforms pass
+    /// to `painless_exec`, so a change upstream shows up here as a miss.
+    const SUM_BYTES: &str = "ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes";
+    const SUM_PACKETS: &str = "ctx.network.packets = ctx.source.packets + ctx.destination.packets";
+    const DURATION_NANOS: &str =
+        "ctx.event.duration = Long.parseLong(ctx.fortinet.firewall.duration) * 1000000000";
+    const IANA_ZERO: &str = "def iana_number = ctx.network.iana_number;\nif (iana_number == '0') \
+                             {\n    ctx.network.transport = 'unknown';\n}";
+    const APPEND_DNS: &str = "def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null) {\n  \
+                              for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) \
+                              {\n ctx.related.ip.add(ip);\n }\n  }\n}";
+
+    #[test]
+    fn sums_bytes_and_packets_across_directions() {
+        let mut event = Event::new(json!({
+            "source": { "bytes": 100, "packets": 3 },
+            "destination": { "bytes": 250, "packets": 4 },
+        }));
+
+        assert!(try_known_painless(&mut event, SUM_BYTES));
+        assert!(try_known_painless(&mut event, SUM_PACKETS));
+
+        assert_eq!(event.get_i64("network.bytes"), Some(350));
+        assert_eq!(event.get_i64("network.packets"), Some(7));
+    }
+
+    /// Elastic's script throws when a side is missing; skipping is what the
+    /// surrounding pipeline already relies on.
+    #[test]
+    fn a_missing_direction_leaves_the_total_unset() {
+        let mut event = Event::new(json!({ "source": { "bytes": 100 } }));
+        assert!(try_known_painless(&mut event, SUM_BYTES));
+        assert!(!event.has("network.bytes"));
+    }
+
+    #[test]
+    fn converts_a_duration_from_seconds_to_nanoseconds() {
+        let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": 42 } } }));
+        assert!(try_known_painless(&mut event, DURATION_NANOS));
+        assert_eq!(event.get_i64("event.duration"), Some(42_000_000_000));
+    }
+
+    /// The vendor field is often a string, because it came out of a grok.
+    #[test]
+    fn a_string_duration_converts_too() {
+        let mut event = Event::new(json!({ "fortinet": { "firewall": { "duration": "7" } } }));
+        assert!(try_known_painless(&mut event, DURATION_NANOS));
+        assert_eq!(event.get_i64("event.duration"), Some(7_000_000_000));
+    }
+
+    #[test]
+    fn iana_zero_means_the_transport_is_unknown() {
+        let mut event = Event::new(json!({ "network": { "iana_number": "0" } }));
+        assert!(try_known_painless(&mut event, IANA_ZERO));
+        assert_eq!(event.get_str("network.transport"), Some("unknown"));
+
+        let mut event = Event::new(json!({ "network": { "iana_number": "6" } }));
+        assert!(try_known_painless(&mut event, IANA_ZERO));
+        assert!(!event.has("network.transport"));
+    }
+
+    #[test]
+    fn syslog_priority_decomposes_into_facility_and_severity() {
+        // Verbatim from the fortinet transform.
+        const PRIORITY: &str = "if (ctx.log?.syslog?.priority != null) {\n  \
+             def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  \
+             ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  \
+             facility['code'] = ctx.log.syslog.priority>>3;\n  \
+             ctx.log.syslog['facility'] = facility;\n}";
+
+        let mut event = Event::new(json!({ "log": { "syslog": { "priority": 165 } } }));
+        assert!(try_known_painless(&mut event, PRIORITY));
+
+        // 165 = local4(20) * 8 + notice(5).
+        assert_eq!(event.get_i64("log.syslog.facility.code"), Some(20));
+        assert_eq!(event.get_str("log.syslog.facility.name"), Some("local4"));
+        assert_eq!(event.get_i64("log.syslog.severity.code"), Some(5));
+        assert_eq!(event.get_str("log.syslog.severity.name"), Some("notice"));
+    }
+
+    #[test]
+    fn append_unique_skips_duplicates_and_keeps_order() {
+        let mut event = Event::new(json!({
+            "dns": { "resolved_ip": ["1.1.1.1", "2.2.2.2", "1.1.1.1"] },
+            "related": { "ip": ["1.1.1.1"] },
+        }));
+
+        assert!(try_known_painless(&mut event, APPEND_DNS));
+        assert_eq!(
+            event.get("related.ip"),
+            Some(&json!(["1.1.1.1", "2.2.2.2"]))
+        );
+    }
+
+    /// The destination array may not exist yet.
+    #[test]
+    fn append_unique_creates_the_target_array() {
+        let mut event = Event::new(json!({ "dns": { "resolved_ip": ["9.9.9.9"] } }));
+        assert!(try_known_painless(&mut event, APPEND_DNS));
+        assert_eq!(event.get("related.ip"), Some(&json!(["9.9.9.9"])));
+    }
 
     #[test]
     fn drop_empty_removes_nulls() {

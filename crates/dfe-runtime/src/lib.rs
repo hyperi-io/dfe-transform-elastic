@@ -25,7 +25,9 @@ pub mod error;
 pub mod event;
 pub mod painless_common;
 pub mod painless_helpers;
+pub mod painless_stats;
 pub mod prelude;
+pub mod syslog_pri;
 pub mod transform;
 
 pub use error::{Result, TransformError};

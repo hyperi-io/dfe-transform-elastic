@@ -46,6 +46,13 @@ pub struct TransformMetrics {
     /// replacements. A non-zero rate means an upstream encoding problem.
     pub lossy_payloads: Counter,
 
+    /// Painless scripts the runtime recognised and ran.
+    pub painless_handled: Counter,
+
+    /// Painless scripts skipped because nothing recognised them. The event is
+    /// still emitted, so a high rate is silent data loss rather than an error.
+    pub painless_unhandled: Counter,
+
     /// Sends that failed, leaving the batch uncommitted for replay.
     pub send_failures: Counter,
 
@@ -87,6 +94,14 @@ impl TransformMetrics {
             lossy_payloads: manager.counter(
                 "lossy_payloads_total",
                 "Payloads decoded with U+FFFD replacements for invalid UTF-8",
+            ),
+            painless_handled: manager.counter(
+                "painless_handled_total",
+                "Painless scripts the runtime recognised and ran",
+            ),
+            painless_unhandled: manager.counter(
+                "painless_unhandled_total",
+                "Painless scripts skipped because nothing recognised them",
             ),
             send_failures: manager.counter(
                 "send_failures_total",
@@ -142,6 +157,8 @@ mod tests {
             "_events_errored_total",
             "_parse_errors_total",
             "_lossy_payloads_total",
+            "_painless_handled_total",
+            "_painless_unhandled_total",
             "_send_failures_total",
             "_commit_failures_total",
             "_batch_events",
