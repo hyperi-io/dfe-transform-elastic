@@ -74,6 +74,11 @@ pub struct ParseOutcome {
 
 /// Parse one NDJSON payload into events.
 ///
+/// Each line must be Beats-shaped: the raw vendor payload as a STRING in
+/// `message`. A bare vendor object parses fine and transforms almost not at
+/// all, because every processor after the first reads fields that only exist
+/// once `message` has been unpacked.
+///
 /// Nothing about a payload is fatal. Bytes that are not valid UTF-8 are
 /// replaced with U+FFFD, matching what Beats itself substitutes for a file it
 /// cannot decode; a line that is not valid JSON is skipped. Both are counted,

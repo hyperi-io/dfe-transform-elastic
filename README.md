@@ -62,6 +62,22 @@ sink:
 A config naming a source this build does not carry is rejected at startup, not
 discovered at the first batch.
 
+### Input shape
+
+Events arrive as NDJSON, one JSON object per line, and each object must be
+**Beats-shaped**: the raw vendor payload is a STRING in `message`, which is how
+filebeat and Elastic Agent deliver it.
+
+```json
+{"message": "{\"actor\":{\"displayName\":\"...\"},\"eventType\":\"user.session.end\"}"}
+```
+
+Handing the service a bare vendor object instead is the one failure mode that
+is not loud. The transform still runs and still emits, but almost nothing is
+renamed, because every processor after the first reads fields that only exist
+once `message` has been unpacked. If the output looks like the input with an
+`ecs.version` bolted on, this is why.
+
 The metrics and probe listener is not configured here. scalo's `--metrics-addr`
 (env `METRICS_ADDR`, default `0.0.0.0:9090`) is the single source of truth, so
 charts and deployments override that rather than a YAML field.

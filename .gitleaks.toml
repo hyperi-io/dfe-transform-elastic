@@ -26,4 +26,9 @@ paths = [
 regexes = [
     # Meraki event-type literal carried through from the Elastic pipeline.
     '''8021x_eap_failure''',
+    # Confluent's PUBLIC signing-key fingerprint, pinned by the generated
+    # Dockerfile and carried into docs/deployment-contract.json. Publishing it
+    # is the security control -- the build verifies the downloaded key against
+    # it before trusting the apt repo.
+    '''CBBB821E8FAF364F79835C438B1DA6120C2BF624''',
 ]

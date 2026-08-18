@@ -37,6 +37,8 @@ tikv-jemallocator = { workspace = true, optional = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }
+testcontainers = { workspace = true }
+testcontainers-modules = { workspace = true }
 
 [features]
 default = ["kafka"]
@@ -181,6 +183,12 @@ proptest = ">=1.5, <1.7"
 test-case = ">=3.3"
 rstest = ">=0.22"
 tempfile = ">=3.10, <3.20"
+
+# Ephemeral broker for the round-trip test. Same range as the rest of the
+# fleet so one version is shared across dfe-receiver, dfe-loader and the
+# transform services.
+testcontainers = ">=0.27, <0.28"
+testcontainers-modules = { version = ">=0.15, <0.16", features = ["kafka"] }
 
 [profile.release]
 lto = "thin"

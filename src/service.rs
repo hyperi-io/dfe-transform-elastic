@@ -13,6 +13,7 @@ use scalo::cli::ServiceRuntime;
 use scalo::metrics::TransportKind;
 use scalo::transport::kafka::{KafkaConfig, KafkaProfile, KafkaTransport, total_consumer_lag};
 use scalo::transport::{TransportReceiver, TransportSender};
+use tokio_util::sync::CancellationToken;
 
 use crate::config::Config;
 use crate::metrics::TransformMetrics;
@@ -22,19 +23,25 @@ use crate::pipeline::{parse_batch, serialise_batch, transform_batch};
 /// interval, independent of batch cadence.
 const SCALING_SIGNAL_INTERVAL: Duration = Duration::from_secs(5);
 
-/// Run until the shutdown token is cancelled.
+/// The per-pod signals `/scaling/pressure` serves to KEDA.
+///
+/// `None` when the scaling engine is disabled, in which case nothing is fed
+/// and no librdkafka stats read happens.
+pub struct ScalingSignals {
+    /// The engine the weighted components are pushed into.
+    pub pressure: std::sync::Arc<scalo::ScalingPressure>,
+    /// The cgroup-aware guard feeding the never-OOM hard gate.
+    pub memory: std::sync::Arc<scalo::MemoryGuard>,
+}
+
+/// Build the transports and run until the shutdown token is cancelled.
 ///
 /// # Errors
 ///
 /// Returns [`crate::Error::UnknownSource`] if the configured source has no
 /// transform, or [`crate::Error::Transport`] if either Kafka side cannot be
 /// created.
-// Batch and byte counts are bounded far below 2^53, so the f64 casts are exact.
-#[allow(clippy::cast_precision_loss)]
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
-    let transform = crate::registry::lookup(&config.source.name)
-        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-
     let consumer = KafkaTransport::new(&consumer_config(&config))
         .await
         .map_err(|e| crate::Error::Transport(format!("consumer: {e}")))?;
@@ -48,6 +55,45 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         env!("CARGO_PKG_VERSION"),
         TransformMetrics::commit(),
     );
+
+    let scaling = runtime.scaling.as_ref().map(|pressure| ScalingSignals {
+        pressure: std::sync::Arc::clone(pressure),
+        memory: std::sync::Arc::clone(&runtime.memory_guard),
+    });
+
+    run_loop(
+        &config,
+        &consumer,
+        &producer,
+        &runtime.shutdown,
+        &metrics,
+        scaling.as_ref(),
+    )
+    .await
+}
+
+/// The batch loop, over transports the caller already built.
+///
+/// Separate from [`run`] so a broker round-trip can drive it without a
+/// `ServiceRuntime`, which scalo only constructs inside its own lifecycle.
+///
+/// # Errors
+///
+/// Returns [`crate::Error::UnknownSource`] if the configured source has no
+/// transform, or a serialisation error from the outbound batch.
+// Batch and byte counts are bounded far below 2^53, so the f64 casts are exact.
+#[allow(clippy::cast_precision_loss)]
+pub async fn run_loop(
+    config: &Config,
+    consumer: &KafkaTransport,
+    producer: &KafkaTransport,
+    shutdown: &CancellationToken,
+    metrics: &TransformMetrics,
+    scaling: Option<&ScalingSignals>,
+) -> crate::Result<()> {
+    let transform = crate::registry::lookup(&config.source.name)
+        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+
     metrics.dfe.pipeline_ready(true);
 
     tracing::info!(
@@ -59,17 +105,17 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         "transform service started"
     );
 
-    push_scaling_signals(&runtime, &consumer, 0.0);
+    push_scaling_signals(scaling, consumer, 0.0);
     let mut last_signal = Instant::now();
 
-    while !runtime.shutdown.is_cancelled() {
+    while !shutdown.is_cancelled() {
         if last_signal.elapsed() >= SCALING_SIGNAL_INTERVAL {
-            push_scaling_signals(&runtime, &consumer, 0.0);
+            push_scaling_signals(scaling, consumer, 0.0);
             last_signal = Instant::now();
         }
 
         let batch = tokio::select! {
-            () = runtime.shutdown.cancelled() => break,
+            () = shutdown.cancelled() => break,
             result = consumer.recv(config.source.batch_size) => match result {
                 Ok(batch) => batch,
                 Err(e) => {
@@ -141,7 +187,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         // Batch saturation: how full the pull came back. A consistently full
         // batch means the transform is the constraint, not the topic.
         let saturation = batch.records.len() as f64 / config.source.batch_size as f64;
-        push_scaling_signals(&runtime, &consumer, saturation.min(1.0));
+        push_scaling_signals(scaling, consumer, saturation.min(1.0));
         last_signal = Instant::now();
 
         if !transformed.is_empty() {
@@ -181,17 +227,22 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 /// [`crate::cli::App::scaling_components`]; `set_component` silently ignores an
 /// unregistered name.
 #[allow(clippy::cast_precision_loss)]
-fn push_scaling_signals(runtime: &ServiceRuntime, consumer: &KafkaTransport, saturation: f64) {
-    let Some(scaling) = runtime.scaling.as_ref() else {
+fn push_scaling_signals(
+    scaling: Option<&ScalingSignals>,
+    consumer: &KafkaTransport,
+    saturation: f64,
+) {
+    let Some(scaling) = scaling else {
         return;
     };
     let lag = total_consumer_lag(&consumer.stats()).max(0);
-    scaling.set_component("kafka_lag", lag as f64);
-    scaling.set_component("batch_saturation", saturation);
-    scaling.set_memory(
-        runtime.memory_guard.current_bytes(),
-        runtime.memory_guard.limit_bytes(),
-    );
+    scaling.pressure.set_component("kafka_lag", lag as f64);
+    scaling
+        .pressure
+        .set_component("batch_saturation", saturation);
+    scaling
+        .pressure
+        .set_memory(scaling.memory.current_bytes(), scaling.memory.limit_bytes());
 }
 
 fn consumer_config(config: &Config) -> KafkaConfig {

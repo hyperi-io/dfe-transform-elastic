@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Deployment readiness checks — validates the binary builds and starts.
-//! Phase 5: will add Kafka round-trip, GeoIP enrichment with real DBs.
-
-#[test]
-#[ignore = "Phase 5: requires runtime binary"]
-fn binary_starts_and_responds_to_health_check() {
-    // Phase 5: Build binary, start it, check /healthz responds 200
-}
-
-#[test]
-#[ignore = "Phase 5: requires Kafka"]
-fn kafka_round_trip_single_event() {
-    // Phase 5: Produce event to Kafka, consume transformed output
-}
+//! The broker round-trip and deployment checks live in the service crate,
+//! which owns the service loop and the deployment contract:
+//!
+//! - `tests/broker.rs` -- events in one topic, transformed events out another,
+//!   against a real broker.
+//! - `src/deployment.rs` -- contract tests, plus drift checks on the committed
+//!   Dockerfile and artefacts.
+//!
+//! Nothing belongs here: this crate holds transforms, and a transform is
+//! exercised by `tests/integration.rs` and `tests/smoke.rs` without a broker.
+//! This file is a signpost so the next reader does not add a broker test to the
+//! wrong crate. It previously held two empty `#[ignore]` bodies that asserted
+//! nothing and read as coverage.
