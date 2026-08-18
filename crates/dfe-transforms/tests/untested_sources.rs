@@ -142,15 +142,12 @@ source_case!(
     1
 );
 
-// Errors on every event: an unguarded `rename("protocol", ...)` in the
-// `ipflows` nested pipeline aborts the event. The same rename is guarded
-// elsewhere in the file.
 source_case!(
     cisco_meraki_default,
     dfe_transforms::filebeat::cisco_meraki::default::Default,
     "cisco/meraki/logs/test-events.log",
-    33,
-    0
+    0,
+    33
 );
 
 source_case!(
