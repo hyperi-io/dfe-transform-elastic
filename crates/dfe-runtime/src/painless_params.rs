@@ -63,6 +63,18 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_lookup_merge(event, &normalised, params);
     }
 
+    // Pattern: look a row up in a nested table and fan its columns out,
+    // appending the list-valued ones rather than replacing them.
+    if normalised.contains("params.get(") && normalised.matches(".get(").count() >= 3 {
+        return try_lookup_columns(event, &normalised, params);
+    }
+
+    // Pattern: normalise a field through a params table, keeping the input
+    // when the table has no row for it.
+    if normalised.contains("params.get(") {
+        return try_lookup_normalise(event, &normalised, params);
+    }
+
     // Pattern: index a params array by a numeric field.
     if normalised.contains(".put(") && normalised.contains("params") {
         return try_indexed_lookup(event, &normalised, params);
@@ -160,6 +172,134 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
     for (k, v) in row.clone() {
         let _ = event.set(&format!("{target}.{k}"), v);
     }
+    true
+}
+
+/// `def row = params.get('<table>').get(ctx.<subject>);` then a column each:
+/// `def c = row.get('<key>'); for (def x : c) { ctx.<path>.add(x) }` or
+/// `ctx.<path> = c;`, with `ctx.<path> = ctx.<subject>` when the row is absent.
+///
+/// Cisco Meraki's event map is the shape: one vendor subtype expands into an
+/// ECS action plus additions to `event.type` and `event.category`. Appending
+/// matters -- the pipeline has already put `info` in `event.type`, and a
+/// replacing write drops it.
+fn try_lookup_columns(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some(Value::Object(table)) = params_ref(script, params, "params.get('") else {
+        return false;
+    };
+    // The table is bound to a local first, and the row lookup goes through it.
+    let Some(table_local) = script
+        .split_once("def ")
+        .and_then(|(_, rest)| rest.split_once(" = params.get("))
+        .map(|(name, _)| name.trim().to_string())
+    else {
+        return false;
+    };
+    let Some(key_expr) = last_call_argument(script, &format!("{table_local}.get(")) else {
+        return false;
+    };
+    let Some(key) = resolve_key(event, script, &key_expr) else {
+        return true;
+    };
+
+    let Some(Value::Object(row)) = table.get(&key) else {
+        // Every one of these scripts falls back to writing the raw subtype.
+        if let Some(target) = fallback_target(script) {
+            let _ = event.set(&target, Value::String(key));
+        }
+        return true;
+    };
+    let row = row.clone();
+
+    for (local, column) in column_bindings(script) {
+        let Some(value) = row.get(&column) else {
+            continue;
+        };
+        match appended_target(script, &local) {
+            Some(path) => {
+                let mut existing = match event.get(&path) {
+                    Some(Value::Array(a)) => a.clone(),
+                    _ => Vec::new(),
+                };
+                match value {
+                    Value::Array(items) => existing.extend(items.iter().cloned()),
+                    other => existing.push(other.clone()),
+                }
+                let _ = event.set(&path, Value::Array(existing));
+            }
+            None => {
+                if let Some(path) = assigned_target(script, &local) {
+                    let _ = event.set(&path, value.clone());
+                }
+            }
+        }
+    }
+    true
+}
+
+/// `def <local> = <row>.get('<column>')` pairs, minus the row lookup itself.
+fn column_bindings(script: &str) -> Vec<(String, String)> {
+    let mut found = Vec::new();
+    for segment in script.split("def ").skip(1) {
+        let Some((local, rest)) = segment.split_once(" = ") else {
+            continue;
+        };
+        if rest.contains("params") {
+            continue;
+        }
+        let Some(column) = rest
+            .split_once(".get('")
+            .and_then(|(_, s)| s.split_once('\''))
+        else {
+            continue;
+        };
+        found.push((local.trim().to_string(), column.0.to_string()));
+    }
+    found
+}
+
+/// The `ctx.` path a `for (def x : <local>) { ctx.<path>.add(x) }` appends to.
+fn appended_target(script: &str, local: &str) -> Option<String> {
+    let needle = format!(" : {local})");
+    let (_, tail) = script.split_once(&needle)?;
+    let end = tail.find('}')?;
+    ctx_path_before(&tail[..end], ".add(")
+}
+
+/// The `ctx.` path a bare `ctx.<path> = <local>;` assignment writes.
+fn assigned_target(script: &str, local: &str) -> Option<String> {
+    let needle = format!("= {local};");
+    ctx_path_before(script, &needle)
+}
+
+/// The `ctx.` path the no-row branch writes the raw subject into.
+fn fallback_target(script: &str) -> Option<String> {
+    let (head, _) = script.split_once("== null")?;
+    let (_, tail) = script[head.len()..].split_once('{')?;
+    ctx_path_before(tail, " = ")
+}
+
+/// `def k = ctx.<path>.toLowerCase(); def v = params.get(k);`
+/// `if (v != null) { ctx.<path> = v; return; } ctx.<path> = k;`
+///
+/// A vendor-vocabulary-to-ECS map: fortinet's `outgoing` is ECS `outbound`.
+/// The fallback writes the LOOKUP KEY back, not the original, so a value the
+/// table misses still comes out lower-cased -- and the pipeline's own
+/// allow-list check downstream then sees the same string Elastic would.
+fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some(key_expr) = last_call_argument(script, "params.get(") else {
+        return false;
+    };
+    // Both writes are to the same field, so either assignment names the target.
+    let Some(target) = ctx_assignment_target(script) else {
+        return false;
+    };
+    let Some(key) = resolve_key(event, script, &key_expr) else {
+        return true;
+    };
+
+    let value = params.get(&key).cloned().unwrap_or(Value::String(key));
+    let _ = event.set(&target, value);
     true
 }
 
@@ -301,6 +441,24 @@ pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
     Some(clean_path(&head[start..]))
 }
 
+/// The `ctx.` path a script assigns to, from the LAST `ctx.<path> = ` in it.
+///
+/// A `def x = ctx.a.b` binding reads rather than writes, so the search is for
+/// a path that IS the left-hand side, not merely one before an `=`.
+fn ctx_assignment_target(script: &str) -> Option<String> {
+    let mut found = None;
+    for segment in script.split("ctx.").skip(1) {
+        let end = segment
+            .find(|c: char| !c.is_alphanumeric() && !".?_".contains(c))
+            .unwrap_or(segment.len());
+        let rest = segment[end..].trim_start();
+        if rest.starts_with('=') && !rest.starts_with("==") {
+            found = Some(clean_path(&segment[..end]));
+        }
+    }
+    found
+}
+
 /// The dotted `ctx.` path written between two markers.
 fn ctx_path_between(script: &str, open: &str, close: &str) -> Option<String> {
     let start = script.find(open)? + open.len();
@@ -337,7 +495,7 @@ pub(crate) fn clean_path(path: &str) -> String {
 }
 
 /// A mutable reference to the value at a dotted path.
-fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mut Value> {
+pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mut Value> {
     let mut pointer = String::with_capacity(path.len() + 1);
     for segment in path.split('.') {
         pointer.push('/');

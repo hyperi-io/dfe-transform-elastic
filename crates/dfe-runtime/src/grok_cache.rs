@@ -59,7 +59,8 @@ macro_rules! cached_grok_mapped {
 #[macro_export]
 macro_rules! cached_regex {
     ($pattern:literal $(,)?) => {{
-        static SITE: ::std::sync::OnceLock<&'static ::regex::Regex> = ::std::sync::OnceLock::new();
+        static SITE: ::std::sync::OnceLock<&'static $crate::grok_cache::Pattern> =
+            ::std::sync::OnceLock::new();
         *SITE.get_or_init(|| $crate::grok_cache::regex($pattern))
     }};
 }
@@ -111,7 +112,7 @@ pub struct CompiledGrok {
 const NEVER_MATCHES: &str = r"[^\s\S]";
 
 static GROK: RwLock<Option<HashMap<String, &'static CompiledGrok>>> = RwLock::new(None);
-static PLAIN: RwLock<Option<HashMap<String, &'static Regex>>> = RwLock::new(None);
+static PLAIN: RwLock<Option<HashMap<String, &'static Pattern>>> = RwLock::new(None);
 
 /// The compiled form of a grok `pattern`, built once per distinct pattern.
 ///
@@ -304,12 +305,78 @@ impl CompiledGrok {
     }
 }
 
+/// A compiled pattern, on whichever engine can express it.
+///
+/// `regex` refuses lookaround by design, and the vendor pipelines use it --
+/// cisco nexus formats a MAC with `(..)(?!$)`, azure excludes a literal with
+/// `((?!AUTHORIZATIONRULES).)*`. Those used to compile to nothing and match
+/// nothing, silently. `fancy_regex` is the fallback ONLY: it is reached when
+/// `regex` rejects the pattern, so nothing on the hot path changes.
+pub enum Pattern {
+    /// The linear-time engine, which is every pattern that compiles on it.
+    Fast(Regex),
+    /// The backtracking engine, for lookaround and backreferences.
+    Backtracking(fancy_regex::Regex),
+}
+
+impl Pattern {
+    /// Replace every match, leaving the input untouched when there are none.
+    #[must_use]
+    pub fn replace_all<'t>(&self, text: &'t str, replacement: &str) -> std::borrow::Cow<'t, str> {
+        match self {
+            Self::Fast(re) => re.replace_all(text, replacement),
+            Self::Backtracking(re) => re.replace_all(text, replacement),
+        }
+    }
+
+    /// Split on every match.
+    #[must_use]
+    pub fn split(&self, text: &str) -> Vec<String> {
+        match self {
+            Self::Fast(re) => re.split(text).map(str::to_string).collect(),
+            // A backtracking split can fail mid-way; the text as one piece is
+            // the same answer a pattern that never matched would give.
+            Self::Backtracking(re) => re
+                .split(text)
+                .collect::<std::result::Result<Vec<_>, _>>()
+                .map_or_else(
+                    |_| vec![text.to_string()],
+                    |v| v.into_iter().map(str::to_string).collect(),
+                ),
+        }
+    }
+
+    /// Split on the first `limit - 1` matches, keeping the rest whole.
+    #[must_use]
+    pub fn splitn(&self, text: &str, limit: usize) -> Vec<String> {
+        match self {
+            Self::Fast(re) => re.splitn(text, limit).map(str::to_string).collect(),
+            Self::Backtracking(re) => re
+                .splitn(text, limit)
+                .collect::<std::result::Result<Vec<_>, _>>()
+                .map_or_else(
+                    |_| vec![text.to_string()],
+                    |v| v.into_iter().map(str::to_string).collect(),
+                ),
+        }
+    }
+
+    /// Whether the pattern matches anywhere in the text.
+    #[must_use]
+    pub fn is_match(&self, text: &str) -> bool {
+        match self {
+            Self::Fast(re) => re.is_match(text),
+            Self::Backtracking(re) => re.is_match(text).unwrap_or(false),
+        }
+    }
+}
+
 /// A plain regex literal, compiled once per distinct pattern.
 ///
 /// For the hand-written patterns that are not grok. Prefer a `str` operation
 /// where one exists -- splitting on a character does not need a regex engine.
 #[must_use]
-pub fn regex(pattern: &str) -> &'static Regex {
+pub fn regex(pattern: &str) -> &'static Pattern {
     if let Some(hit) = PLAIN
         .read()
         .ok()
@@ -318,16 +385,25 @@ pub fn regex(pattern: &str) -> &'static Regex {
         return hit;
     }
 
-    let compiled = Regex::new(pattern).unwrap_or_else(|e| {
-        tracing::error!(
-            pattern = pattern,
-            error = %e,
-            "regex does not compile; this processor will match nothing"
-        );
-        #[allow(clippy::expect_used)]
-        Regex::new(NEVER_MATCHES).expect("the never-matching pattern is valid")
-    });
-    let compiled: &'static Regex = Box::leak(Box::new(compiled));
+    let compiled = match Regex::new(pattern) {
+        Ok(re) => Pattern::Fast(re),
+        Err(fast_err) => match fancy_regex::Regex::new(pattern) {
+            Ok(re) => Pattern::Backtracking(re),
+            Err(slow_err) => {
+                tracing::error!(
+                    pattern = pattern,
+                    error = %fast_err,
+                    backtracking_error = %slow_err,
+                    "regex does not compile on either engine; this processor will match nothing"
+                );
+                #[allow(clippy::expect_used)]
+                Pattern::Fast(
+                    Regex::new(NEVER_MATCHES).expect("the never-matching pattern is valid"),
+                )
+            }
+        },
+    };
+    let compiled: &'static Pattern = Box::leak(Box::new(compiled));
 
     if let Ok(mut guard) = PLAIN.write() {
         return guard

@@ -103,16 +103,9 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.UTCTimestamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -125,18 +118,8 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.UTCTimestamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -151,18 +134,8 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.metadata.eventCreationTime")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("event.created", parsed)?;
                     }
                 }
             }
@@ -177,16 +150,9 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.metadata.eventCreationTime")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("event.created", parsed)?;
                     }
                 }
             }
@@ -276,16 +242,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ProcessStartTime")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "process.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("process.start", parsed)?;
                         }
                     }
                 }
@@ -299,18 +259,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ProcessStartTime")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "process.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("process.start", parsed)?;
                         }
                     }
                 }
@@ -323,16 +275,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "process.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("process.end", parsed)?;
                         }
                     }
                 }
@@ -345,18 +291,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "process.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("process.end", parsed)?;
                         }
                     }
                 }
@@ -565,18 +503,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ContextTimeStamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -590,16 +520,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ContextTimeStamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -710,16 +634,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.IncidentStartTime")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -733,18 +651,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.IncidentStartTime")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -757,16 +667,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -779,18 +683,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -1213,16 +1109,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -1235,18 +1125,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -1292,16 +1174,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -1313,18 +1189,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "process.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("process.end", parsed)?;
                         }
                     }
                 }
@@ -1513,16 +1381,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ContextTimeStamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -1536,18 +1398,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ContextTimeStamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -1590,16 +1444,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "crowdstrike.event.AccountCreationTimeStamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?;
                         }
                     }
                 }
@@ -1613,18 +1461,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "crowdstrike.event.AccountCreationTimeStamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?;
                         }
                     }
                 }
@@ -1664,16 +1504,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -1685,18 +1519,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -1736,16 +1562,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -1757,18 +1577,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -1895,16 +1707,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.MatchedTimestamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -1918,18 +1724,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.MatchedTimestamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -1943,16 +1741,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ItemPostedTimestamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -1966,18 +1758,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ItemPostedTimestamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.created",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.created", parsed)?;
                         }
                     }
                 }
@@ -2075,16 +1859,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -2096,18 +1874,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -2147,16 +1917,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -2168,18 +1932,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -2286,16 +2042,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }
@@ -2307,18 +2057,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }
@@ -2332,16 +2074,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }
@@ -2355,18 +2091,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }
@@ -2388,16 +2116,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ResourceCreateTime")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "crowdstrike.event.ResourceCreateTime",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("crowdstrike.event.ResourceCreateTime", parsed)?;
                         }
                     }
                 }
@@ -2412,18 +2134,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ResourceCreateTime")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "crowdstrike.event.ResourceCreateTime",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("crowdstrike.event.ResourceCreateTime", parsed)?;
                         }
                     }
                 }
@@ -2989,16 +2703,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimestamp")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -3011,18 +2719,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimestamp")
                     {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.start",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.start", parsed)?;
                         }
                     }
                 }
@@ -3055,16 +2755,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimestamp") {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -3076,18 +2770,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimestamp") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "event.end",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -3115,16 +2801,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }
@@ -3138,16 +2818,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }
@@ -3161,16 +2835,10 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
                     {
-                        // Try UNIX_MS timestamp (skip epoch 0)
-                        if let Ok(ms) = date_str.parse::<i64>() {
-                            if ms > 0 {
-                                if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                 }

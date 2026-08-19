@@ -120,16 +120,9 @@ impl Transform for CspmEvents {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -142,18 +135,8 @@ impl Transform for CspmEvents {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -168,16 +151,9 @@ impl Transform for CspmEvents {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -192,18 +168,8 @@ impl Transform for CspmEvents {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -226,16 +192,9 @@ impl Transform for CspmEvents {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "crowdstrike.event.ResourceCreateTime",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("crowdstrike.event.ResourceCreateTime", parsed)?;
                     }
                 }
             }
@@ -250,18 +209,8 @@ impl Transform for CspmEvents {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "crowdstrike.event.ResourceCreateTime",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("crowdstrike.event.ResourceCreateTime", parsed)?;
                     }
                 }
             }

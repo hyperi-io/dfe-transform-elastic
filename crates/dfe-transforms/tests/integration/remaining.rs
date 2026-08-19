@@ -26,7 +26,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet",
-    0
+    54
 );
 
 parity!(
@@ -34,7 +34,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-6-2",
-    0
+    56
 );
 
 parity!(
@@ -42,7 +42,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-7-4",
-    0
+    72
 );
 
 parity!(
@@ -50,7 +50,7 @@ parity!(
     cisco_ios::default::Default,
     "cisco/ios",
     "test-cisco-ios",
-    0
+    26
 );
 
 parity!(
@@ -58,7 +58,7 @@ parity!(
     cisco_ios::default::Default,
     "cisco/ios",
     "test-syslog",
-    0
+    12
 );
 
 parity!(
@@ -66,7 +66,7 @@ parity!(
     cisco_nexus::default::Default,
     "cisco/nexus",
     "test-nexus",
-    0
+    68
 );
 
 parity!(
@@ -74,20 +74,23 @@ parity!(
     cisco_meraki::default::Default,
     "cisco/meraki/logs",
     "test-events",
-    0
+    32
 );
 
+// The sub-pipelines are INLINED into `default`, which is also where the
+// syslog header is parsed -- a fixture driven straight at `flows` or `urls`
+// never sees the fields the router keys on and comes out untouched.
 parity!(
     cisco_meraki_flows,
-    cisco_meraki::flows::Flows,
+    cisco_meraki::default::Default,
     "cisco/meraki/logs",
     "test-flows",
-    0
+    16
 );
 
 parity!(
     cisco_meraki_urls,
-    cisco_meraki::urls::Urls,
+    cisco_meraki::default::Default,
     "cisco/meraki/logs",
     "test-urls",
     0

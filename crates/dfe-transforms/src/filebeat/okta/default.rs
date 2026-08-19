@@ -76,19 +76,8 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.published") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "@timestamp",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
                 Ok(())
@@ -900,8 +889,11 @@ impl Transform for Default {
                 if let Some(s) = event.get_string(
                     "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons",
                 ) {
-                    let parts: Vec<Value> =
-                        cached_regex!(",\\s*").split(&s).map(|p| json!(p)).collect();
+                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                        .split(&s)
+                        .into_iter()
+                        .map(|p| json!(p))
+                        .collect();
                     event.set(
                         "okta.debug_context.debug_data.risk_reasons",
                         Value::Array(parts),
@@ -954,8 +946,11 @@ impl Transform for Default {
                 if let Some(s) =
                     event.get_string("okta.debug_context.debug_data.flattened.risk.reasons")
                 {
-                    let parts: Vec<Value> =
-                        cached_regex!(",\\s*").split(&s).map(|p| json!(p)).collect();
+                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                        .split(&s)
+                        .into_iter()
+                        .map(|p| json!(p))
+                        .collect();
                     event.set(
                         "okta.debug_context.debug_data.risk_reasons",
                         Value::Array(parts),

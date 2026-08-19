@@ -132,30 +132,23 @@ impl Transform for Default {
             let _cond = { event.has_value("_temp_.cisco_timestamp") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("_temp_.cisco_timestamp") {
-                    // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss.SSS z\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss.SSS z\")")
-                    // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss.SSS\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss.SSS\")")
-                    // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss z\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss z\")")
-                    // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss\")")
-                    // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS z\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS z\")")
-                    // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
-                    // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss z\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss z\")")
-                    // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
+                    if let Some(parsed) = parse_date_out(
+                        &date_str,
+                        &[
+                            "MMM d yyyy HH:mm:ss.SSS z",
+                            "MMM d yyyy HH:mm:ss.SSS",
+                            "MMM d yyyy HH:mm:ss z",
+                            "MMM d yyyy HH:mm:ss",
+                            "MMM d HH:mm:ss.SSS z",
+                            "MMM d HH:mm:ss.SSS",
+                            "MMM d HH:mm:ss z",
+                            "MMM d HH:mm:ss",
+                        ],
+                        event.get_str("event.timezone"),
+                        None,
+                    ) {
+                        event.set("@timestamp", parsed)?;
+                    }
                 }
             }
 
@@ -1239,18 +1232,35 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has("source.ip") {
                     // Community ID v1 hash
-                    if let (Some(src_ip), Some(dst_ip)) = (
+                    if let (Some(src_ip), Some(dst_ip), Some(protocol)) = (
                         event.get_string("source.ip"),
                         event.get_string("destination.ip"),
-                    ) {
-                        let src_port = event.get_i64("source.port").unwrap_or(0) as u16;
-                        let dst_port = event.get_i64("destination.port").unwrap_or(0) as u16;
-                        let protocol = event
+                        event
                             .get_string("network.transport")
-                            .or_else(|| event.get_string("network.iana_number"))
-                            .unwrap_or_else(|| "tcp".to_string());
-                        let cid = community_id_v1(&src_ip, &dst_ip, src_port, dst_port, &protocol);
-                        event.set("network.community_id", json!(cid))?;
+                            .or_else(|| event.get_string("network.iana_number")),
+                    ) {
+                        let icmp = matches!(
+                            protocol.to_ascii_lowercase().as_str(),
+                            "icmp" | "1" | "icmpv6" | "ipv6-icmp" | "58",
+                        );
+                        let (src_field, dst_field) = if icmp {
+                            ("icmp.type", "icmp.code")
+                        } else {
+                            ("source.port", "destination.port")
+                        };
+                        let src_port =
+                            u16::try_from(event.get_as_i64(src_field).unwrap_or(0)).unwrap_or(0);
+                        let dst_port =
+                            u16::try_from(event.get_as_i64(dst_field).unwrap_or(0)).unwrap_or(0);
+                        match community_id_v1(&src_ip, &dst_ip, src_port, dst_port, &protocol) {
+                            Ok(cid) => event.set("network.community_id", cid)?,
+                            Err(message) => {
+                                return Err(TransformError::ParseError {
+                                    path: "network.community_id".into(),
+                                    message,
+                                });
+                            }
+                        }
                     }
                 }
                 Ok(())

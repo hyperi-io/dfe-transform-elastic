@@ -52,19 +52,8 @@ impl Transform for Default {
             }
 
             if let Some(date_str) = event.get_as_string("azure.signinlogs.time") {
-                // Try ISO8601 format
-                if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                    .or_else(|_| {
-                        chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                    })
-                    .or_else(|_| {
-                        chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                    })
-                {
-                    event.set(
-                        "@timestamp",
-                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                    )?;
+                if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                    event.set("@timestamp", parsed)?;
                 }
             }
 

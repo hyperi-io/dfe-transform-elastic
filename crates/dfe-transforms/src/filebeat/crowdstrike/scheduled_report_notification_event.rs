@@ -28,16 +28,9 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -52,16 +45,9 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -76,16 +62,9 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }

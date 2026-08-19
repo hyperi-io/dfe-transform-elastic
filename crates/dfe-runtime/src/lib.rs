@@ -20,6 +20,7 @@
 //! processor-shaped API every transform is written against.
 
 pub mod codegen_api;
+pub mod date_formats;
 pub mod enrichment;
 pub mod error;
 pub mod event;

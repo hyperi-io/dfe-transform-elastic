@@ -230,9 +230,11 @@ impl Transform for Userid {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["yyyy/MM/dd HH:mm:ss"], None, None)
+                        {
+                            event.set("panw.panos.factorcompletiontime", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -262,9 +264,14 @@ impl Transform for Userid {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss"],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            event.set("panw.panos.factorcompletiontime", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {

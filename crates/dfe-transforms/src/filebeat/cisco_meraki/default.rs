@@ -64,18 +64,13 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp.ts_nano") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &["UNIX"],
+                            event.get_str("_conf.tz_offset"),
+                            None,
+                        ) {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                     Ok(())
@@ -111,18 +106,8 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp.ts_nano") {
-                        // Try UNIX timestamp (skip epoch 0)
-                        if let Ok(ts) = date_str.parse::<f64>() {
-                            if ts > 0.0 {
-                                let secs = ts as i64;
-                                let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                                if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                    event.set(
-                                        "@timestamp",
-                                        dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                    )?;
-                                }
-                            }
+                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
+                            event.set("@timestamp", parsed)?;
                         }
                     }
                     Ok(())
@@ -1489,7 +1474,7 @@ impl Transform for Default {
                             kv_target_prefix.push_str(segment);
                             kv_target_prefix.push('.');
                         }
-                        for pair in cached_regex!("[ \t]{1,}").split(&kv_str) {
+                        for pair in cached_regex!("[ \t]{1,}").split(&kv_str).into_iter() {
                             if pair.trim().is_empty() {
                                 continue;
                             }
@@ -1526,7 +1511,7 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(kv_str) = event.get_string("_temp.rest") {
-                        for pair in cached_regex!("[ \t]{1,}").split(&kv_str) {
+                        for pair in cached_regex!("[ \t]{1,}").split(&kv_str).into_iter() {
                             if pair.trim().is_empty() {
                                 continue;
                             }

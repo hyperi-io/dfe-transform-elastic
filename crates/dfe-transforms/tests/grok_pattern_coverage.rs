@@ -20,38 +20,15 @@ use std::path::{Path, PathBuf};
 ///
 /// Was 391 before `SPACE`, `PORT`, `TIME`, `QS` and the syslog names were
 /// defined; `%{SPACE}` alone accounted for 152 of them.
-const CEILING: usize = 146;
+const CEILING: usize = 0;
 
 /// Names that may still fall through, because their definitions live in the
 /// upstream pipelines' `pattern_definitions` and have not been carried across.
 /// A name NOT on this list falling through is a regression.
-const ALLOWED: &[&str] = &[
-    "BLOCKEDARP",
-    "CISCOTIMESTAMP",
-    "CISCO_HOSTNAME",
-    "CISCO_PRIORITY_MSGCOUNT",
-    "CISCO_TIMESTAMP",
-    "CISCO_TZ",
-    "CISCO_UPTIME",
-    "HOSTNAMEANDIP",
-    "HOSTNAMEANDPORT",
-    "HOSTNAMEANDPORTBRACKETS",
-    "IPANDPORT",
-    "IPANDPORTBRACKETS",
-    "IPV6NOCOMPRESS",
-    "IPV6PORTSEP",
-    "NEXUS_BODY",
-    "NEXUS_TIMESTAMP",
-    "NEXUS_TIMESTAMP_TIMEZONE",
-    "NOTCLOSINGPARENS",
-    "PIM_SOURCE",
-    "PORTACTION",
-    "PROVIDER",
-    "SYSLOGHDR",
-    "SYSLOGVER",
-    "TYPE",
-    "WORDORHOST",
-];
+///
+/// Empty: the generator inlines every `pattern_definitions` entry, so a
+/// vendor name never reaches the emitted Rust.
+const ALLOWED: &[&str] = &[];
 
 fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
     let Ok(entries) = std::fs::read_dir(dir) else {
@@ -109,11 +86,11 @@ fn unknown_grok_patterns_do_not_increase() {
         unknown.len()
     );
 
-    assert!(
-        total <= CEILING,
-        "uses of undefined grok patterns rose from {CEILING} to {total} -- \
+    assert_eq!(
+        total, CEILING,
+        "uses of undefined grok patterns moved off {CEILING} to {total} -- \
          a pattern name was used that `grok_pattern_regex` does not define, so \
-         it silently captures arbitrary text"
+         it silently captures arbitrary text. Lower the ceiling if it FELL."
     );
 }
 

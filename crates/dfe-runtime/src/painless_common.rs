@@ -247,15 +247,102 @@ fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
     true
 }
 
-/// IANA protocol number `0` means no transport was identified.
-fn try_iana_zero_transport(event: &mut Event) -> bool {
-    let iana = event
-        .get_str("network.iana_number")
-        .map(String::from)
-        .or_else(|| event.get_i64("network.iana_number").map(|n| n.to_string()));
+/// One arm of an equality ladder: the literal tested, and what it assigns.
+struct LadderArm<'a> {
+    literal: &'a str,
+    target: String,
+    value: &'a str,
+}
 
-    if iana.as_deref() == Some("0") {
-        let _ = event.set("network.transport", json!("unknown"));
+/// An `if (x == 'a') { ctx.t = 'A' } else if (x == 'b') { ... }` ladder.
+///
+/// The subject is read once -- either bound to a local (`def x = ctx.a.b;`)
+/// or compared inline -- and every arm assigns a string literal to a ctx
+/// path. Fortinet's 11-arm IANA-number-to-transport table is the shape;
+/// writing the table out by hand is how a mapping silently goes stale.
+struct Ladder<'a> {
+    subject: String,
+    arms: Vec<LadderArm<'a>>,
+}
+
+/// Parse an equality ladder, or `None` if the script is a different shape.
+fn parse_ladder(script: &str) -> Option<Ladder<'_>> {
+    use crate::painless_params::clean_path;
+
+    // The subject is whatever the FIRST `if (... == ...)` compares against.
+    let first = script.find("if (")? + 4;
+    let (lhs, _) = script[first..].split_once("==")?;
+    let lhs = lhs.trim();
+
+    // A local binding resolves back to the ctx path it was read from.
+    let subject = match ctx_path_bound_to(script, lhs) {
+        Some(path) => path,
+        None => clean_path(lhs.strip_prefix("ctx.")?),
+    };
+
+    let mut arms = Vec::new();
+    for segment in script.split("if (").skip(1) {
+        let Some((cond, body)) = segment.split_once(')') else {
+            continue;
+        };
+        let Some((_, rhs)) = cond.split_once("==") else {
+            continue;
+        };
+        let (Some(literal), Some(value)) = (quoted_first(rhs), quoted_first(body)) else {
+            continue;
+        };
+        let Some(assign) = body.find('=') else {
+            continue;
+        };
+        let Some(target) = body[..assign]
+            .trim()
+            .trim_start_matches('{')
+            .trim()
+            .strip_prefix("ctx.")
+        else {
+            continue;
+        };
+        // Borrow the literals back out of the script rather than the owned
+        // copies quoted_first returned, so an arm costs no allocation.
+        let lit_at = rhs.find(&literal)?;
+        let val_at = body.find(&value)?;
+        arms.push(LadderArm {
+            literal: &rhs[lit_at..lit_at + literal.len()],
+            target: clean_path(target.trim()),
+            value: &body[val_at..val_at + value.len()],
+        });
+    }
+
+    (arms.len() >= 2).then_some(Ladder { subject, arms })
+}
+
+/// The ctx path a `def name = ctx.a.b;` binding reads, if there is one.
+fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    for form in ["def ", "String ", "int ", "long "] {
+        let needle = format!("{form}{name} = ctx.");
+        if let Some(at) = script.find(&needle) {
+            let rest = &script[at + needle.len()..];
+            let end = rest.find([';', '\n']).unwrap_or(rest.len());
+            return Some(clean_path(rest[..end].trim()));
+        }
+    }
+    None
+}
+
+/// Run an equality ladder: look the subject up, assign the matching arm.
+fn try_ladder(event: &mut Event, ladder: &Ladder<'_>) -> bool {
+    let subject = event
+        .get_str(&ladder.subject)
+        .map(String::from)
+        .or_else(|| event.get_i64(&ladder.subject).map(|n| n.to_string()));
+
+    let Some(subject) = subject else {
+        return true;
+    };
+    if let Some(arm) = ladder.arms.iter().find(|a| a.literal == subject) {
+        let _ = event.set(&arm.target, json!(arm.value));
     }
     true
 }
@@ -670,6 +757,252 @@ fn quoted_after(script: &str, after: &str) -> Vec<String> {
     found
 }
 
+/// `for (def item : ctx.<table>) { if (item.<key> == ctx.<subject>) { ... } }`
+/// followed by a chain of fallback assignments to the same target.
+///
+/// Cisco IOS's timezone map is the shape, and at 89 hits it was the single
+/// largest unhandled script in the corpus. The table lives in `ctx`, not in
+/// `params`, because the deployment supplies it -- so the mapping is data the
+/// matcher READS, never a table transcribed into Rust.
+fn try_row_lookup_with_fallback(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let Some((item, table)) = for_binding(script) else {
+        return false;
+    };
+    // `item.<key> == ctx.<subject>` names the column and the field to match.
+    let Some((key, subject)) = script
+        .split_once(&format!("if ({item}."))
+        .and_then(|(_, rest)| rest.split_once(')'))
+        .and_then(|(cond, _)| cond.split_once("=="))
+    else {
+        return false;
+    };
+    let key = key.trim();
+    let Some(subject) = subject.trim().strip_prefix("ctx.").map(clean_path) else {
+        return false;
+    };
+    let Some(value_col) = script
+        .split_once(&format!("= {item}."))
+        .map(|(_, rest)| rest.trim_end_matches(';'))
+        .and_then(|rest| rest.split([';', '\n']).next())
+    else {
+        return false;
+    };
+    let Some(target) = ctx_assignment_target_before(script, &format!("= {item}.")) else {
+        return false;
+    };
+
+    // The row lookup wins outright; the vendor script returns on a hit.
+    let wanted = event.get_as_string(&subject);
+    if let (Some(wanted), Some(Value::Array(rows))) = (&wanted, event.get(&table)) {
+        let hit = rows.iter().find_map(|row| {
+            (row.get(key).and_then(Value::as_str) == Some(wanted.as_str()))
+                .then(|| row.get(value_col.trim()).cloned())
+                .flatten()
+        });
+        if let Some(value) = hit {
+            let _ = event.set(&target, value);
+            return true;
+        }
+    }
+
+    apply_fallbacks(event, script, &target);
+    true
+}
+
+/// `for (def <item> : ctx.<table>)` -- the loop variable and what it walks.
+fn for_binding(script: &str) -> Option<(String, String)> {
+    use crate::painless_params::clean_path;
+
+    let (_, rest) = script.split_once("for (def ")?;
+    let (item, rest) = rest.split_once(" : ctx.")?;
+    let table = rest.split([')', ' ']).next()?;
+    Some((item.trim().to_string(), clean_path(table)))
+}
+
+/// The `ctx.` path assigned immediately before `marker`.
+fn ctx_assignment_target_before(script: &str, marker: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let head = &script[..script.find(marker)?];
+    let start = head.rfind("ctx.")? + "ctx.".len();
+    Some(clean_path(head[start..].trim_end_matches([' ', '='])))
+}
+
+/// The `if (...) { ctx.<target> = ... }` tail a lookup falls back through.
+///
+/// Each arm assigns either another ctx field or a literal, and is guarded on
+/// that field being present or on the target still being unset. Running them
+/// in order is what makes `UTC` the last resort rather than the first.
+fn apply_fallbacks(event: &mut Event, script: &str, target: &str) {
+    use crate::painless_params::clean_path;
+
+    for segment in script.split("if (").skip(1) {
+        let Some((cond, body)) = segment.split_once(')') else {
+            continue;
+        };
+        let Some((_, assigned)) = body.split_once('=') else {
+            continue;
+        };
+        let assigned = assigned.trim().trim_start_matches(['{', ' ', '\n']);
+
+        let guard_holds = if let Some(path) = cond.trim().strip_prefix("ctx.") {
+            match path.split_once("!=") {
+                Some((p, _)) => event.has_value(&clean_path(p)),
+                None => match path.split_once("==") {
+                    Some((p, _)) => !event.has_value(&clean_path(p)),
+                    None => continue,
+                },
+            }
+        } else {
+            continue;
+        };
+        if !guard_holds {
+            continue;
+        }
+
+        if let Some(literal) = quoted_first(assigned) {
+            let _ = event.set(target, Value::String(literal));
+        } else if let Some(path) = assigned.strip_prefix("ctx.") {
+            let source = clean_path(path.split([';', '\n', ' ']).next().unwrap_or(path));
+            if let Some(value) = event.get(&source).cloned() {
+                let _ = event.set(target, value);
+            }
+        }
+    }
+}
+
+/// `<map>.entrySet().removeIf(entry -> entry.getValue() == "N/A" || ...)`
+///
+/// The params-driven form of this lives in [`crate::painless_params`]; this is
+/// the one that spells its sentinels out as literals. Fortinet ORs in a key
+/// test as well -- `pat.matcher(entry.getKey()).find()` over `/\W+/` -- which
+/// drops every key holding a character a vendor never means as a field name.
+fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    // The map is either named inline or bound to a local read from ctx.
+    let Some(path) = ctx_path_before(script, ".entrySet().removeIf(")
+        .filter(|p| !p.contains(' '))
+        .or_else(|| bound_ctx_path(script))
+        .map(|p| clean_path(&p))
+    else {
+        return false;
+    };
+
+    let sentinels = quoted_after(script, "entry.getValue() == ");
+    let drops_odd_keys = script.contains("entry.getKey()") && script.contains(r"\W+");
+    if sentinels.is_empty() && !drops_odd_keys {
+        return false;
+    }
+
+    if let Some(Value::Object(map)) = crate::painless_params::pointer_mut(event, &path) {
+        map.retain(|k, v| {
+            let sentinel = v.as_str().is_some_and(|s| sentinels.iter().any(|x| x == s));
+            let odd_key = drops_odd_keys && k.chars().any(|c| !c.is_alphanumeric() && c != '_');
+            !sentinel && !odd_key
+        });
+    }
+    true
+}
+
+/// `if (ctx.<src> != null) { ctx.<dst> = ctx.<src>; }`
+///
+/// Azure's SAML claims arrive under URI keys, so the source is written with a
+/// bracket subscript rather than a dotted path; the destination is a plain
+/// ECS field. Nothing is written when the source is absent, which is what
+/// stops an explicit null propagating into the ECS field.
+fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
+    let Some((cond, body)) = script.split_once("!= null") else {
+        return false;
+    };
+    let Some(source) = painless_path(cond) else {
+        return false;
+    };
+    let Some((target_expr, value_expr)) = body.split_once('=') else {
+        return false;
+    };
+    let (Some(target), Some(value)) = (painless_path(target_expr), painless_path(value_expr))
+    else {
+        return false;
+    };
+    if value != source {
+        return false;
+    }
+
+    if let Some(v) = event.get(&source).cloned()
+        && !v.is_null()
+    {
+        let _ = event.set(&target, v);
+    }
+    true
+}
+
+/// The LAST `ctx.` path in a fragment, as a dotted path.
+///
+/// Painless writes a key that is not an identifier as `['a.b/c']`, and those
+/// subscripts are path SEGMENTS -- a dot inside one is part of the key, not a
+/// separator, so the segment is joined whole.
+fn painless_path(fragment: &str) -> Option<String> {
+    let start = fragment.rfind("ctx.")? + "ctx.".len();
+    let mut path = String::new();
+    let mut chars = fragment[start..].chars().peekable();
+
+    while let Some(c) = chars.next() {
+        match c {
+            '[' => {
+                let quote = chars.next().filter(|q| *q == '\'' || *q == '"')?;
+                if !path.is_empty() {
+                    path.push('.');
+                }
+                for k in chars.by_ref() {
+                    if k == quote {
+                        break;
+                    }
+                    path.push(k);
+                }
+                // Consume the closing bracket.
+                chars.next();
+            }
+            '?' => {}
+            c if c.is_alphanumeric() || matches!(c, '_' | '.' | '-' | '@') => path.push(c),
+            _ => break,
+        }
+    }
+
+    let path = path.trim_end_matches('.');
+    (!path.is_empty()).then(|| path.to_string())
+}
+
+/// `ctx.<path> = ctx.<path> * <literal>` -- scale a number in place.
+fn try_scale_by_literal(event: &mut Event, script: &str) -> bool {
+    let Some((head, factor)) = script.rsplit_once('*') else {
+        return false;
+    };
+    let Some(factor) = factor.trim().trim_end_matches(';').parse::<i64>().ok() else {
+        return false;
+    };
+    let Some(target) = painless_path(head.split_once('=').map_or(head, |(t, _)| t)) else {
+        return false;
+    };
+
+    if let Some(n) = event.get_as_i64(&target) {
+        let _ = event.set(&target, json!(n.saturating_mul(factor)));
+    }
+    true
+}
+
+/// The ctx path a `def <name> = ctx.<path>;` binding at the top of a script reads.
+fn bound_ctx_path(script: &str) -> Option<String> {
+    let at = script.find("def ")?;
+    let rest = &script[at..];
+    let start = rest.find("= ctx.")? + "= ctx.".len();
+    let tail = &rest[start..];
+    let end = tail.find([';', '\n']).unwrap_or(tail.len());
+    Some(tail[..end].trim().to_string())
+}
+
 /// Append every element of `from` into `into`, skipping ones already present.
 fn try_append_unique(event: &mut Event, from: &str, into: &str) -> bool {
     let Some(Value::Array(source)) = event.get(from).cloned() else {
@@ -694,6 +1027,11 @@ fn try_append_unique(event: &mut Event, from: &str, into: &str) -> bool {
 /// The PRI is read from wherever the script found it: `log.syslog.priority`
 /// for the generic pipelines, or a vendor field such as
 /// `cisco_nexus.log.priority_number`.
+///
+/// Only the halves the SCRIPT writes are written. A pipeline that sets
+/// `severity.code` with a `set` processor and only the facility here (cisco
+/// nexus) must not gain a severity from us, and none of the vendor scripts
+/// derive the `name` at all -- inventing one is an extra field, not a bonus.
 fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
     let pri = priority_source(script)
         .and_then(|field| read_u16(event, field))
@@ -704,15 +1042,42 @@ fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
     };
 
     let (facility, severity) = crate::syslog_pri::decompose(pri);
-    let _ = event.set("log.syslog.facility.code", json!(facility));
-    let _ = event.set("log.syslog.severity.code", json!(severity));
-    if let Some(name) = crate::syslog_pri::facility_name(facility) {
-        let _ = event.set("log.syslog.facility.name", json!(name));
+    let names = script.contains("name");
+
+    if writes_syslog_half(script, "facility") {
+        let _ = event.set("log.syslog.facility.code", json!(facility));
+        if let Some(name) = names
+            .then(|| crate::syslog_pri::facility_name(facility))
+            .flatten()
+        {
+            let _ = event.set("log.syslog.facility.name", json!(name));
+        }
     }
-    if let Some(name) = crate::syslog_pri::severity_name(severity) {
-        let _ = event.set("log.syslog.severity.name", json!(name));
+    if writes_syslog_half(script, "severity") {
+        let _ = event.set("log.syslog.severity.code", json!(severity));
+        if let Some(name) = names
+            .then(|| crate::syslog_pri::severity_name(severity))
+            .flatten()
+        {
+            let _ = event.set("log.syslog.severity.name", json!(name));
+        }
     }
     true
+}
+
+/// Does the script write `log.syslog.<half>`, in any of Painless's spellings?
+///
+/// Plain `contains("severity")` is not enough: cisco nexus reads
+/// `ctx.event.severity` to compute the FACILITY, and would otherwise gain a
+/// severity code the pipeline sets from its own vendor field.
+fn writes_syslog_half(script: &str, half: &str) -> bool {
+    [
+        format!("syslog.{half}"),
+        format!("syslog['{half}']"),
+        format!("syslog[\"{half}\"]"),
+    ]
+    .iter()
+    .any(|form| script.contains(form.as_str()))
 }
 
 /// The vendor field a priority script reads, when it is not the ECS one.
@@ -751,11 +1116,24 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_duration_to_nanos(event, &normalised);
     }
 
-    // Pattern: IANA protocol number 0 means the transport is unknown.
-    if normalised.contains("ctx.network.iana_number")
-        && normalised.contains("ctx.network.transport")
+    // Pattern: an equality ladder mapping one field onto string literals.
+    if normalised.contains("else if (")
+        && let Some(ladder) = parse_ladder(&normalised)
     {
-        return try_iana_zero_transport(event);
+        return try_ladder(event, &ladder);
+    }
+
+    // Pattern: strip sentinel values and junk keys out of a parsed map.
+    if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
+        return try_sentinel_removal_literal(event, &normalised);
+    }
+
+    // Pattern: look a value up in a ctx-held table of rows, else fall back.
+    if normalised.contains("for (def ")
+        && normalised.contains(" : ctx.")
+        && try_row_lookup_with_fallback(event, &normalised)
+    {
+        return true;
     }
 
     // Pattern: decompose a syslog PRI into ECS facility and severity.
@@ -877,6 +1255,19 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && normalised.contains("okta")
     {
         return try_okta_target_rename(event);
+    }
+
+    // The two catch-alls below are shapes a longer script also CONTAINS, so
+    // they run only after every structural matcher has declined.
+
+    // Pattern: scale a number in place by a literal.
+    if normalised.contains(" * ") && !normalised.contains("params") {
+        return try_scale_by_literal(event, &normalised);
+    }
+
+    // Pattern: copy one field to another when the source is set.
+    if normalised.contains("!= null") && !normalised.contains("for (") {
+        return try_guarded_copy(event, &normalised);
     }
 
     false
@@ -1148,8 +1539,12 @@ mod tests {
     const SUM_PACKETS: &str = "ctx.network.packets = ctx.source.packets + ctx.destination.packets";
     const DURATION_NANOS: &str =
         "ctx.event.duration = Long.parseLong(ctx.fortinet.firewall.duration) * 1000000000";
-    const IANA_ZERO: &str = "def iana_number = ctx.network.iana_number;\nif (iana_number == '0') \
-                             {\n    ctx.network.transport = 'unknown';\n}";
+    /// Verbatim from `pipelines/fortinet/default.yml`, trimmed to four arms.
+    const IANA_LADDER: &str = "def iana_number = ctx.network.iana_number;\nif (iana_number == '0') \
+                               {\n    ctx.network.transport = 'hopopt';\n} else if (iana_number == \
+                               '1') {\n    ctx.network.transport = 'icmp';\n} else if (iana_number \
+                               == '6') {\n    ctx.network.transport = 'tcp';\n} else if \
+                               (iana_number == '17') {\n    ctx.network.transport = 'udp';\n}";
     const APPEND_DNS: &str = "def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null) {\n  \
                               for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) \
                               {\n ctx.related.ip.add(ip);\n }\n  }\n}";
@@ -1312,14 +1707,32 @@ mod tests {
         assert_eq!(event.get_i64("event.duration"), Some(7_000_000_000));
     }
 
+    /// The mapping is read out of the ladder, not transcribed into Rust --
+    /// a hand-written copy is what goes stale when a vendor adds a protocol.
     #[test]
-    fn iana_zero_means_the_transport_is_unknown() {
-        let mut event = Event::new(json!({ "network": { "iana_number": "0" } }));
-        assert!(try_known_painless(&mut event, IANA_ZERO));
-        assert_eq!(event.get_str("network.transport"), Some("unknown"));
+    fn an_equality_ladder_assigns_the_matching_arm() {
+        for (iana, transport) in [("0", "hopopt"), ("6", "tcp"), ("17", "udp")] {
+            let mut event = Event::new(json!({ "network": { "iana_number": iana } }));
+            assert!(try_known_painless(&mut event, IANA_LADDER));
+            assert_eq!(event.get_str("network.transport"), Some(transport));
+        }
+    }
 
-        let mut event = Event::new(json!({ "network": { "iana_number": "6" } }));
-        assert!(try_known_painless(&mut event, IANA_ZERO));
+    /// The grok types this capture as a long, so the ladder has to compare
+    /// the number's text -- Painless is doing the same widening.
+    #[test]
+    fn an_equality_ladder_reads_a_numeric_subject() {
+        let mut event = Event::new(json!({ "network": { "iana_number": 6 } }));
+        assert!(try_known_painless(&mut event, IANA_LADDER));
+        assert_eq!(event.get_str("network.transport"), Some("tcp"));
+    }
+
+    /// A value no arm names leaves the target alone, rather than taking the
+    /// last arm or writing a placeholder.
+    #[test]
+    fn an_equality_ladder_with_no_matching_arm_writes_nothing() {
+        let mut event = Event::new(json!({ "network": { "iana_number": "254" } }));
+        assert!(try_known_painless(&mut event, IANA_LADDER));
         assert!(!event.has("network.transport"));
     }
 
@@ -1337,9 +1750,30 @@ mod tests {
 
         // 165 = local4(20) * 8 + notice(5).
         assert_eq!(event.get_i64("log.syslog.facility.code"), Some(20));
-        assert_eq!(event.get_str("log.syslog.facility.name"), Some("local4"));
         assert_eq!(event.get_i64("log.syslog.severity.code"), Some(5));
-        assert_eq!(event.get_str("log.syslog.severity.name"), Some("notice"));
+
+        // The script derives CODES only, so a name is an extra field Elastic
+        // never emits -- and every one of them was a diff against the vendor.
+        assert!(!event.has("log.syslog.facility.name"));
+        assert!(!event.has("log.syslog.severity.name"));
+    }
+
+    /// Cisco nexus derives only the facility here; a `set` processor earlier
+    /// in the pipeline supplies the severity from the vendor's own field.
+    #[test]
+    fn syslog_priority_writes_only_the_half_the_script_names() {
+        const FACILITY_ONLY: &str = "ctx.log.syslog.facility = new HashMap();\n\
+             ctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - \
+             ctx.event.severity)/8;";
+
+        let mut event = Event::new(json!({
+            "cisco_nexus": { "log": { "priority_number": 165 } },
+            "event": { "severity": 5 },
+        }));
+        assert!(try_known_painless(&mut event, FACILITY_ONLY));
+
+        assert_eq!(event.get_i64("log.syslog.facility.code"), Some(20));
+        assert!(!event.has("log.syslog.severity.code"));
     }
 
     #[test]

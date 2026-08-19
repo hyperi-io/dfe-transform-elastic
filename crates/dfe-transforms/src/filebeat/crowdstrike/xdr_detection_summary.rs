@@ -434,16 +434,9 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("event.start", parsed)?;
                     }
                 }
             }
@@ -456,18 +449,8 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("event.start", parsed)?;
                     }
                 }
             }
@@ -517,16 +500,9 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.end",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                    {
+                        event.set("event.end", parsed)?;
                     }
                 }
             }
@@ -539,18 +515,8 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "process.end",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
-                        }
+                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        event.set("process.end", parsed)?;
                     }
                 }
             }

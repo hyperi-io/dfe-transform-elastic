@@ -270,7 +270,7 @@ impl Transform for PipelineExtractMessage {
             let _ = (|| -> Result<()> {
                 if event.has("temp.message") {
                     if let Some(kv_str) = event.get_string("temp.message") {
-                        for pair in cached_regex!("\\s+").split(&kv_str) {
+                        for pair in cached_regex!("\\s+").split(&kv_str).into_iter() {
                             if pair.trim().is_empty() {
                                 continue;
                             }

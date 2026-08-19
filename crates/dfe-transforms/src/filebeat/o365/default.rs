@@ -52,19 +52,8 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.CreationTime") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.CreationTime") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "@timestamp",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
             }
@@ -1020,19 +1009,8 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("o365audit.SharePointMetaData.LastModifiedTime")
                 {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "file.mtime",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("file.mtime", parsed)?;
                     }
                 }
             }
@@ -1976,19 +1954,8 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.at") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.at") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "o365audit.Data.at",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.Data.at", parsed)?;
                     }
                 }
             }
@@ -1996,19 +1963,8 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.md") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.md") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "o365audit.Data.md",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.Data.md", parsed)?;
                     }
                 }
             }
@@ -2016,19 +1972,8 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.te") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.te") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "o365audit.Data.te",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.Data.te", parsed)?;
                     }
                 }
             }
@@ -2036,19 +1981,8 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.ts") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ts") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "o365audit.Data.ts",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.Data.ts", parsed)?;
                     }
                 }
             }
@@ -2056,19 +1990,8 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.ttdt") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ttdt") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "o365audit.Data.ttdt",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.Data.ttdt", parsed)?;
                     }
                 }
             }

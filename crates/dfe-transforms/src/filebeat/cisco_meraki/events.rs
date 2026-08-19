@@ -443,7 +443,7 @@ impl Transform for Events {
                         kv_target_prefix.push_str(segment);
                         kv_target_prefix.push('.');
                     }
-                    for pair in cached_regex!("[ \t]{1,}").split(&kv_str) {
+                    for pair in cached_regex!("[ \t]{1,}").split(&kv_str).into_iter() {
                         if pair.trim().is_empty() {
                             continue;
                         }
@@ -481,7 +481,7 @@ impl Transform for Events {
             };
             if _cond {
                 if let Some(kv_str) = event.get_string("_temp.rest") {
-                    for pair in cached_regex!("[ \t]{1,}").split(&kv_str) {
+                    for pair in cached_regex!("[ \t]{1,}").split(&kv_str).into_iter() {
                         if pair.trim().is_empty() {
                             continue;
                         }

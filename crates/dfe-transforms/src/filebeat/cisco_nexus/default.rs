@@ -114,24 +114,21 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("cisco_nexus.log.syslog_time") {
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                            ],
+                            None,
+                            None,
+                        ) {
+                            event.set("cisco_nexus.log.syslog_time", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -170,24 +167,21 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.syslog_timestamp") {
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                            ],
+                            None,
+                            Some("yyyy MMM dd HH:mm:ss.SSS"),
+                        ) {
+                            event.set("temp.syslog_timestamp", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -260,60 +254,33 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "yyyy MMM d HH:mm:ss zzz",
+                                "yyyy MMM dd HH:mm:ss zzz",
+                                "yyyy MMM  d HH:mm:ss zzz",
+                                "yyyy MMM d HH:mm:ss.SSS zzz",
+                                "yyyy MMM dd HH:mm:ss.SSS zzz",
+                                "yyyy MMM  d HH:mm:ss.SSS zzz",
+                                "yyyy MMM d HH:mm:ss",
+                                "yyyy MMM dd HH:mm:ss",
+                                "yyyy MMM  d HH:mm:ss",
+                                "yyyy MMM d HH:mm:ss.SSS",
+                                "yyyy MMM dd HH:mm:ss.SSS",
+                                "yyyy MMM  d HH:mm:ss.SSS",
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                            ],
+                            None,
+                            None,
+                        ) {
+                            event.set("@timestamp", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -362,60 +329,33 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "yyyy MMM d HH:mm:ss zzz",
+                                "yyyy MMM dd HH:mm:ss zzz",
+                                "yyyy MMM  d HH:mm:ss zzz",
+                                "yyyy MMM d HH:mm:ss.SSS zzz",
+                                "yyyy MMM dd HH:mm:ss.SSS zzz",
+                                "yyyy MMM  d HH:mm:ss.SSS zzz",
+                                "yyyy MMM d HH:mm:ss",
+                                "yyyy MMM dd HH:mm:ss",
+                                "yyyy MMM  d HH:mm:ss",
+                                "yyyy MMM d HH:mm:ss.SSS",
+                                "yyyy MMM dd HH:mm:ss.SSS",
+                                "yyyy MMM  d HH:mm:ss.SSS",
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                            ],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            event.set("@timestamp", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -468,78 +408,39 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS zzz\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "yyyy MMM d HH:mm:ss zzz",
+                                "yyyy MMM dd HH:mm:ss zzz",
+                                "yyyy MMM  d HH:mm:ss zzz",
+                                "yyyy MMM d HH:mm:ss.SSS zzz",
+                                "yyyy MMM dd HH:mm:ss.SSS zzz",
+                                "yyyy MMM  d HH:mm:ss.SSS zzz",
+                                "yyyy MMM d HH:mm:ss",
+                                "yyyy MMM dd HH:mm:ss",
+                                "yyyy MMM  d HH:mm:ss",
+                                "yyyy MMM d HH:mm:ss.SSS",
+                                "yyyy MMM dd HH:mm:ss.SSS",
+                                "yyyy MMM  d HH:mm:ss.SSS",
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                                "MMM  d HH:mm:ss zzz",
+                                "MMM dd HH:mm:ss zzz",
+                                "MMM d HH:mm:ss zzz",
+                                "MMM  d HH:mm:ss.SSS zzz",
+                                "MMM dd HH:mm:ss.SSS zzz",
+                                "MMM d HH:mm:ss.SSS zzz",
+                            ],
+                            None,
+                            None,
+                        ) {
+                            event.set("cisco_nexus.log.time", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -591,78 +492,39 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM  d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM  d HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM dd HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM dd HH:mm:ss.SSS zzz\")")
-                        // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS zzz\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS zzz\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "yyyy MMM d HH:mm:ss zzz",
+                                "yyyy MMM dd HH:mm:ss zzz",
+                                "yyyy MMM  d HH:mm:ss zzz",
+                                "yyyy MMM d HH:mm:ss.SSS zzz",
+                                "yyyy MMM dd HH:mm:ss.SSS zzz",
+                                "yyyy MMM  d HH:mm:ss.SSS zzz",
+                                "yyyy MMM d HH:mm:ss",
+                                "yyyy MMM dd HH:mm:ss",
+                                "yyyy MMM  d HH:mm:ss",
+                                "yyyy MMM d HH:mm:ss.SSS",
+                                "yyyy MMM dd HH:mm:ss.SSS",
+                                "yyyy MMM  d HH:mm:ss.SSS",
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                                "MMM  d HH:mm:ss zzz",
+                                "MMM dd HH:mm:ss zzz",
+                                "MMM d HH:mm:ss zzz",
+                                "MMM  d HH:mm:ss.SSS zzz",
+                                "MMM dd HH:mm:ss.SSS zzz",
+                                "MMM d HH:mm:ss.SSS zzz",
+                            ],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            event.set("cisco_nexus.log.time", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -1172,7 +1034,7 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has("temp.message") {
                         if let Some(kv_str) = event.get_string("temp.message") {
-                            for pair in cached_regex!("\\s+").split(&kv_str) {
+                            for pair in cached_regex!("\\s+").split(&kv_str).into_iter() {
                                 if pair.trim().is_empty() {
                                     continue;
                                 }

@@ -22,14 +22,13 @@ use dfe_runtime::{Transform, painless_stats};
 use dfe_transforms::filebeat;
 use serde_json::{Map, Value, json};
 
-/// The measured floor: 619 of 1,119 scripts run across 80 fixture files, or
-/// 55.3%. It started at 5.9%. Raise it as the runtime learns more Painless;
-/// never lower it without saying why.
+/// The measured floor: all 1,139 scripts across 80 fixture files run. It
+/// started at 5.9%. Never lower it without saying why.
 ///
-/// The denominator fell when `!= null` stopped opening on an explicit null:
-/// scripts that had been running against a field the vendor pipeline would
-/// have skipped no longer run at all.
-const COVERAGE_FLOOR: f64 = 0.55;
+/// Running is not the same as running CORRECTLY -- the parity baselines in
+/// `tests/integration/` are what measure that. This one only says no script
+/// is being silently skipped.
+const COVERAGE_FLOOR: f64 = 1.0;
 
 /// Every fixture directory with a transform to drive it.
 ///

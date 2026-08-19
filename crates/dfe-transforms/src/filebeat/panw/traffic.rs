@@ -840,12 +840,14 @@ impl Transform for Traffic {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            None,
+                            None,
+                        ) {
+                            event.set("panw.panos.parent_session.start_time", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {
@@ -877,12 +879,14 @@ impl Transform for Traffic {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            event.set("panw.panos.parent_session.start_time", parsed)?;
+                        }
                     }
                     Ok(())
                 })() {

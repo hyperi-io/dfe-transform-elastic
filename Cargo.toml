@@ -152,6 +152,11 @@ memchr = ">=2.7"
 regex-automata = ">=0.4"
 regex = ">=1.10"
 
+# Backtracking fallback for the vendor patterns `regex` rejects by design --
+# lookaround. Only reached when `regex` fails to compile, so the hot path is
+# unchanged; without it those patterns silently match nothing.
+fancy-regex = ">=0.13"
+
 # Timestamp handling
 chrono = { version = ">=0.4", features = ["serde"] }
 

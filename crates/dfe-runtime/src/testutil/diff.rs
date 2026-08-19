@@ -73,6 +73,11 @@ const SEMANTIC_SKIP_FIELDS: &[&str] = &[
     // trailing dots on versions, "Other" vs None, iOS version extraction).
     // Content is correct enough for DFE purposes — exact parity would need ua-parser crate.
     "user_agent",
+    // Derived from a BSD syslog date, which carries no year: Elastic fills in
+    // the INGESTING NODE's current one, so the committed expectation is frozen
+    // at the year it was captured and cannot be reproduced in a later one.
+    "cisco_nexus.log.syslog_time",
+    "cisco_nexus.log.time",
     // Array ordering — Java LinkedHashMap preserves insertion order, Rust BTreeMap sorts
     "okta.debug_context.debug_data.risk_behaviors",
     // Raw string representation of parsed objects — not semantically meaningful

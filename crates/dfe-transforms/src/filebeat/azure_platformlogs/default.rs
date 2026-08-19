@@ -136,19 +136,8 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("azure.platformlogs.time") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "@timestamp",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("@timestamp", parsed)?;
                     }
                 }
                 Ok(())
@@ -157,23 +146,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("azure.platformlogs.EventTimeString") {
-                    // Try ISO8601 format
-                    if let Ok(dt) = chrono::DateTime::parse_from_rfc3339(&date_str)
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%.f%:z")
-                        })
-                        .or_else(|_| {
-                            chrono::DateTime::parse_from_str(&date_str, "%Y-%m-%dT%H:%M:%S%:z")
-                        })
-                    {
-                        event.set(
-                            "@timestamp",
-                            dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                        )?;
+                    if let Some(parsed) = parse_date_out(
+                        &date_str,
+                        &["ISO8601", "M/d/yyyy h:mm:ss a XXX"],
+                        None,
+                        None,
+                    ) {
+                        event.set("@timestamp", parsed)?;
                     }
-                    // Try Java datetime format: CustomTime(\"M/d/yyyy h:mm:ss a XXX\")
-                    // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                    // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"M/d/yyyy h:mm:ss a XXX\")")
                 }
                 Ok(())
             })();

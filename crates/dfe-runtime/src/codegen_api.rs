@@ -221,6 +221,34 @@ fn grok_implicit_capture(name: &str) -> Option<(&'static str, &'static str, &'st
     }
 }
 
+/// A month name, abbreviated or spelled out.
+///
+/// `\w+` would do here too, but it also matches a bare word, so a pattern
+/// meant to anchor on a date matches text that holds none.
+const MONTH: &str = concat!(
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
+    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
+);
+
+/// A clock time. Elastic's `SECOND` carries an optional fraction, so a
+/// pattern anchored on `%{TIME}` has to accept `13:20:48.739`.
+const TIME: &str = r"\d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?";
+
+/// `%{MONTH} +%{MONTHDAY} %{TIME}` -- the BSD syslog date, fraction and all.
+const SYSLOG_TIMESTAMP: &str = concat!(
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
+    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
+    r" +\d{1,2} \d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?",
+);
+
+/// Cisco's syslog date: the year may sit on either side of the time, and the
+/// seconds may carry a fraction -- `Jan  6 2022 20:52:12.861`.
+const CISCO_TIMESTAMP: &str = concat!(
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
+    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
+    r" +\d{1,2}(?: \d{4})? \d{2}:\d{2}:\d{2}(?:\.\d+)?(?: \d{4})?",
+);
+
 /// Map well-known grok pattern names to their regex equivalents.
 fn grok_pattern_regex(name: &str) -> &'static str {
     match name {
@@ -233,7 +261,8 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "NOTSPACE" | "URI" | "URIPROTO" => r"\S+",
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
-        "WORD" | "MONTH" => r"\w+",
+        "WORD" => r"\w+",
+        "MONTH" => MONTH,
         "MAC" => r"(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}",
         "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
         "PATH" | "UNIXPATH" | "WINPATH" => r"[^\s]+",
@@ -250,10 +279,11 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // Whitespace, not "anything". The catch-all below made every pattern
         // containing %{SPACE} match arbitrary text -- 152 sites' worth.
         "SPACE" => r"\s*",
-        "TIME" => r"\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?",
+        "TIME" => TIME,
         "SYSLOGPRI" => r"<\d+>",
         "SYSLOG5424PRI" => r"<\d{1,5}>",
-        "SYSLOGTIMESTAMP" => r"\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}",
+        "SYSLOGTIMESTAMP" => SYSLOG_TIMESTAMP,
+        "CISCOTIMESTAMP" => CISCO_TIMESTAMP,
         "CISCOMAC" => r"(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}",
         "QS" | "QUOTEDSTRING" => r#""(?:[^"\\]|\\.)*""#,
         "LOGLEVEL" => r"(?i:emerg|alert|crit|err|warn|notice|info|debug|trace)\w*",

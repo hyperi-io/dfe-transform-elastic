@@ -103,6 +103,20 @@ impl Event {
         self.get(path).and_then(Value::as_i64)
     }
 
+    /// Get any value at a dotted path as an `i64`.
+    ///
+    /// The mirror of [`Self::get_as_string`]: a vendor field that came out of
+    /// a grok is a string even when it holds a number, and a `convert`
+    /// processor may or may not have run over it yet.
+    pub fn get_as_i64(&self, path: &str) -> Option<i64> {
+        self.get(path).and_then(|v| match v {
+            Value::Number(n) => n.as_i64(),
+            Value::String(s) => s.trim().parse::<i64>().ok(),
+            Value::Bool(b) => Some(i64::from(*b)),
+            _ => None,
+        })
+    }
+
     /// Get an f64 value at a dotted path.
     pub fn get_f64(&self, path: &str) -> Option<f64> {
         self.get(path).and_then(Value::as_f64)
