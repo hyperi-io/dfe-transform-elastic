@@ -268,58 +268,41 @@ impl Transform for Authentication {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.hostname",
-                    event
-                        .get("panw.panos.device_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.device_name").cloned() {
+                    event.set("observer.hostname", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "rule.uuid",
-                    event
-                        .get("panw.panos.rule_uuid")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
+                    event.set("rule.uuid", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.ip",
-                    event
-                        .get("panw.panos.source.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.ip").cloned() {
+                    event.set("source.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.user",
-                    event.get("_temp_.user").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("_temp_.user").cloned() {
+                    event.set("panw.panos.user", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.user_agent",
-                    event
-                        .get("_temp_.user_agent")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("_temp_.user_agent").cloned() {
+                    event.set("panw.panos.user_agent", v)?;
+                }
                 Ok(())
             })();
 
@@ -355,9 +338,6 @@ impl Transform for Authentication {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

@@ -238,13 +238,9 @@ impl Transform for Globalprotect {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.ip",
-                    event
-                        .get("panw.panos.private.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.private.ip").cloned() {
+                    event.set("source.ip", v)?;
+                }
                 Ok(())
             })();
 
@@ -273,13 +269,9 @@ impl Transform for Globalprotect {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.nat.ip",
-                    event
-                        .get("panw.panos.public.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.public.ip").cloned() {
+                    event.set("source.nat.ip", v)?;
+                }
                 Ok(())
             })();
 
@@ -305,61 +297,41 @@ impl Transform for Globalprotect {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "event.code",
-                    event
-                        .get("panw.panos.event.id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.event.id").cloned() {
+                    event.set("event.code", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "event.duration",
-                    event
-                        .get("panw.panos.login_duration")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.login_duration").cloned() {
+                    event.set("event.duration", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "event.outcome",
-                    event
-                        .get("panw.panos.event.status")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.event.status").cloned() {
+                    event.set("event.outcome", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "event.reason",
-                    event
-                        .get("panw.panos.event.reason")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.event.reason").cloned() {
+                    event.set("event.reason", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "host.id",
-                    event
-                        .get("panw.panos.host.id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.host.id").cloned() {
+                    event.set("host.id", v)?;
+                }
                 Ok(())
             })();
 
@@ -373,82 +345,57 @@ impl Transform for Globalprotect {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "host.os.family",
-                    event
-                        .get("panw.panos.client.os")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.client.os").cloned() {
+                    event.set("host.os.family", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "host.os.full",
-                    event
-                        .get("panw.panos.client.os_version")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.client.os_version").cloned() {
+                    event.set("host.os.full", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.geo.name",
-                    event
-                        .get("panw.panos.location")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.location").cloned() {
+                    event.set("observer.geo.name", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.hostname",
-                    event
-                        .get("panw.panos.device_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.device_name").cloned() {
+                    event.set("observer.hostname", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.source.region",
-                    event.get("source.geo.name").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("source.geo.name").cloned() {
+                    event.set("panw.panos.source.region", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.public.ipv6",
-                    event
-                        .get("_temp_.public_ipv6")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("_temp_.public_ipv6").cloned() {
+                    event.set("panw.panos.public.ipv6", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.private.ipv6",
-                    event
-                        .get("_temp_.private_ipv6")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("_temp_.private_ipv6").cloned() {
+                    event.set("panw.panos.private.ipv6", v)?;
+                }
                 Ok(())
             })();
 
@@ -484,9 +431,6 @@ impl Transform for Globalprotect {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

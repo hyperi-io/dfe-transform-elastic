@@ -391,10 +391,9 @@ impl Transform for XdrDetectionSummary {
 
             let _cond = { event.has_value("message") };
             if _cond {
-                event.set(
-                    "rule.description",
-                    event.get("message").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("message").cloned() {
+                    event.set("rule.description", v)?;
+                }
             }
 
             let _cond = { event.has_value("crowdstrike.event.StartTimeEpoch") };
@@ -475,10 +474,9 @@ impl Transform for XdrDetectionSummary {
 
             let _cond = { event.has_value("event.start") };
             if _cond {
-                event.set(
-                    "@timestamp",
-                    event.get("event.start").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("event.start").cloned() {
+                    event.set("@timestamp", v)?;
+                }
             }
 
             let _cond = { event.has_value("crowdstrike.event.EndTimeEpoch") };
@@ -623,9 +621,6 @@ impl Transform for XdrDetectionSummary {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

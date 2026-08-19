@@ -30,11 +30,10 @@ impl Transform for Default {
 
             event.set("event.type", json!(["info"]))?;
 
-            if !event.has("event.original") {
-                event.set(
-                    "event.original",
-                    event.get("message").cloned().unwrap_or(Value::Null),
-                )?;
+            if let Some(v) = event.get("message").cloned() {
+                if !event.has("event.original") {
+                    event.set("event.original", v)?;
+                }
             }
 
             event.remove("message");
@@ -63,13 +62,9 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.ios.sequence") };
             if _cond {
-                event.set(
-                    "event.sequence",
-                    event
-                        .get("cisco.ios.sequence")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("cisco.ios.sequence").cloned() {
+                    event.set("event.sequence", v)?;
+                }
             }
 
             let _cond = { event.has_value("cisco.ios.message_count") };
@@ -111,13 +106,9 @@ impl Transform for Default {
                 event.has_value("cisco.ios.message_count") && !event.has_value("event.sequence")
             };
             if _cond {
-                event.set(
-                    "event.sequence",
-                    event
-                        .get("cisco.ios.message_count")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("cisco.ios.message_count").cloned() {
+                    event.set("event.sequence", v)?;
+                }
             }
 
             if event.has("_temp_.cisco_timestamp") {
@@ -824,16 +815,15 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_destination_ip")?;
-                event.set(
-                    "destination.domain",
-                    event
-                        .get("destination.address")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("destination.address").cloned() {
+                    event.set("destination.domain", v)?;
+                }
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             // on_failure: 1 handler(s)
@@ -856,13 +846,15 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_source_ip")?;
-                event.set(
-                    "source.domain",
-                    event.get("source.address").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("source.address").cloned() {
+                    event.set("source.domain", v)?;
+                }
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             if event.has("cisco.ios.pim.source.ip") {
@@ -1000,10 +992,9 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.packets") };
             if _cond {
-                event.set(
-                    "network.packets",
-                    event.get("source.packets").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("source.packets").cloned() {
+                    event.set("network.packets", v)?;
+                }
             }
 
             let _cond = {
@@ -1320,9 +1311,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

@@ -866,21 +866,21 @@ impl Transform for Utm {
                 )?;
             }
 
-            event.set(
-                "tls.server.x509.not_after",
-                event
-                    .get("tls.server.not_after")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("tls.server.not_after")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("tls.server.x509.not_after", v)?;
+            }
 
-            event.set(
-                "tls.server.x509.not_before",
-                event
-                    .get("tls.server.not_before")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("tls.server.not_before")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("tls.server.x509.not_before", v)?;
+            }
 
             if event.has("fortinet.firewall.san") {
                 if let Some(s) = event.get_string("fortinet.firewall.san") {
@@ -900,13 +900,13 @@ impl Transform for Utm {
                 )?;
             }
 
-            event.set(
-                "tls.client.x509.public_key_algorithm",
-                event
-                    .get("tls.server.x509.public_key_algorithm")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("tls.server.x509.public_key_algorithm")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("tls.client.x509.public_key_algorithm", v)?;
+            }
 
             if event.has("fortinet.firewall.kxcurve") {
                 event.rename("fortinet.firewall.kxcurve", "tls.curve")?;
@@ -922,13 +922,13 @@ impl Transform for Utm {
 
             let _cond = { !event.has_value("destination.domain") };
             if _cond {
-                event.set(
-                    "destination.domain",
-                    event
-                        .get("tls.client.server_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event
+                    .get("tls.client.server_name")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.domain", v)?;
+                }
             }
 
             let _cond = { event.get_str("fortinet.firewall.handshake") == Some("full") };
@@ -1065,9 +1065,6 @@ impl Transform for Utm {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

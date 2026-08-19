@@ -228,10 +228,9 @@ impl Transform for IdentityProtectionIncident {
 
         let _cond = { event.has_value("event.start") };
         if _cond {
-            event.set(
-                "@timestamp",
-                event.get("event.start").cloned().unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event.get("event.start").cloned() {
+                event.set("@timestamp", v)?;
+            }
         }
 
         // --- Post-processing (codegen-emitted) ---
@@ -252,9 +251,6 @@ impl Transform for IdentityProtectionIncident {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

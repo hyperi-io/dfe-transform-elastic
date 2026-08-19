@@ -91,6 +91,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -156,6 +159,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -212,6 +218,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -332,6 +341,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -434,6 +446,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -555,6 +570,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -675,24 +693,27 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
-            event.set(
-                "log.syslog.priority",
-                event
-                    .get("cisco_nexus.log.priority_number")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.priority_number")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("log.syslog.priority", v)?;
+            }
 
-            event.set(
-                "observer.name",
-                event
-                    .get("cisco_nexus.log.switch_name")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.switch_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.name", v)?;
+            }
 
             let _cond = { event.has_value("cisco_nexus.log.ip_address") };
             if _cond {
@@ -716,37 +737,37 @@ impl Transform for Default {
                 )?;
             }
 
-            event.set(
-                "event.code",
-                event
-                    .get("cisco_nexus.log.type")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.type")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.code", v)?;
+            }
 
-            event.set(
-                "event.severity",
-                event
-                    .get("cisco_nexus.log.severity")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.severity")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.severity", v)?;
+            }
 
-            event.set(
-                "log.syslog.severity.code",
-                event
-                    .get("cisco_nexus.log.severity")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.severity")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("log.syslog.severity.code", v)?;
+            }
 
-            event.set(
-                "event.sequence",
-                event
-                    .get("cisco_nexus.log.sequence_number")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.sequence_number")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.sequence", v)?;
+            }
 
             let _cond = { event.has_value("event.severity") };
             if _cond {
@@ -793,6 +814,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -841,6 +865,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -851,13 +878,13 @@ impl Transform for Default {
                 }
             }
 
-            event.set(
-                "message",
-                event
-                    .get("cisco_nexus.log.description")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            if let Some(v) = event
+                .get("cisco_nexus.log.description")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("message", v)?;
+            }
 
             let _cond = {
                 event.has_value("event.code")
@@ -1095,6 +1122,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -1128,6 +1158,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
                 if event.has("source.mac") {
                     if let Some(s) = event.get_string("source.mac") {
@@ -1460,9 +1493,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }
