@@ -14,400 +14,503 @@ impl Transform for PipelineExtractMessage {
     }
 
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
-        let _cond = {
-            event.get_str("event.code").is_some_and(|s| {
-                [
-                    "IF_DOWN_ADMIN_DOWN",
-                    "IF_ADMIN_UP",
-                    "SPEED",
-                    "IF_DUPLEX",
-                    "IF_RX_FLOW_CONTROL",
-                    "IF_TX_FLOW_CONTROL",
-                    "IF_UP",
-                    "IF_XCVR_WARNING",
-                ]
-                .contains(&s.to_uppercase().as_str())
-            })
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_string("message") {
-                    // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
-                    if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$").extract_into(&input, event)? {
-                    // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$
-                    if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$").extract_into(&input, event)? {
-                        // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$
-                        if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$").extract_into(&input, event)? {
-                            // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$
-                            if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$").extract_into(&input, event)? {
-                                // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Receive Flow Control state changed to %{DATA:cisco_nexus.log.operational.receive_flow_control_state}$
-                                if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Receive Flow Control state changed to %{DATA:cisco_nexus.log.operational.receive_flow_control_state}$").extract_into(&input, event)? {
-                                    // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Transmit Flow Control state changed to %{DATA:cisco_nexus.log.operational.transmit_flow_control_state}$
-                                    if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Transmit Flow Control state changed to %{DATA:cisco_nexus.log.operational.transmit_flow_control_state}$").extract_into(&input, event)? {
-                                        // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, %{GREEDYDATA}$
-                                        if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, %{GREEDYDATA}$").extract_into(&input, event)? {
+        // A `drop` returns through here, so the closure carries the outcome.
+        let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            let _cond = {
+                event.get_str("event.code").is_some_and(|s| {
+                    [
+                        "IF_DOWN_ADMIN_DOWN",
+                        "IF_ADMIN_UP",
+                        "SPEED",
+                        "IF_DUPLEX",
+                        "IF_RX_FLOW_CONTROL",
+                        "IF_TX_FLOW_CONTROL",
+                        "IF_UP",
+                        "IF_XCVR_WARNING",
+                    ]
+                    .contains(&s.to_uppercase().as_str())
+                })
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
+                        if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$").extract_into(&input, event)? {
+                        // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$
+                        if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$").extract_into(&input, event)? {
+                            // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$
+                            if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$").extract_into(&input, event)? {
+                                // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$
+                                if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$").extract_into(&input, event)? {
+                                    // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Receive Flow Control state changed to %{DATA:cisco_nexus.log.operational.receive_flow_control_state}$
+                                    if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Receive Flow Control state changed to %{DATA:cisco_nexus.log.operational.receive_flow_control_state}$").extract_into(&input, event)? {
+                                        // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Transmit Flow Control state changed to %{DATA:cisco_nexus.log.operational.transmit_flow_control_state}$
+                                        if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational Transmit Flow Control state changed to %{DATA:cisco_nexus.log.operational.transmit_flow_control_state}$").extract_into(&input, event)? {
+                                            // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, %{GREEDYDATA}$
+                                            if !cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, %{GREEDYDATA}$").extract_into(&input, event)? {
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                }
-                Ok(())
-            })();
-        }
-
-        let _cond = {
-            event.get_str("event.code").is_some_and(|s| {
-                [
-                    "VSHD_SYSLOG_CONFIG_I",
-                    "DETECT_MULTIPLE_PEERS",
-                    "UPDOWN",
-                    "CFGWRITE_STARTED",
-                    "LINEPROTO",
-                ]
-                .contains(&s.to_uppercase().as_str())
-            })
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_string("message") {
-                    // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
-                    if !cached_grok!("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$").extract_into(&input, event)? {
-                    // Grok pattern: ^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$
-                    if !cached_grok!("^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$").extract_into(&input, event)? {
-                        // Grok pattern: ^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$
-                        if !cached_grok!("^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$").extract_into(&input, event)? {
-                            // Grok pattern: ^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$
-                            if !cached_grok!("^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$").extract_into(&input, event)? {
-                                // Grok pattern: ^%{DATA}(PID %{NUMBER:process.pid:long})%{GREEDYDATA}$
-                                if !cached_grok!("^%{DATA}(PID %{NUMBER:process.pid:long})%{GREEDYDATA}$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
                     }
-                }
-                }
-                Ok(())
-            })();
-        }
-
-        let _cond = {
-            event
-                .get_str("event.code")
-                .is_some_and(|s| ["SYSTEM_MSG"].contains(&s.to_uppercase().as_str()))
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_string("message") {
-                    // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
-                    if !cached_grok!("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$").extract_into(&input, event)? {
-                    // Grok pattern: ^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
-                    if !cached_grok!("^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$").extract_into(&input, event)? {
-                        // Grok pattern: ^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
-                        if !cached_grok!("^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$").extract_into(&input, event)? {
-                            // Grok pattern: ^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
-                            if !cached_grok!("^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$").extract_into(&input, event)? {
-                                // Grok pattern: ^%{DATA} : %{GREEDYDATA:temp.message2}$
-                                if !cached_grok!("^%{DATA} : %{GREEDYDATA:temp.message2}$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
-                }
-                }
-                Ok(())
-            })();
-        }
-
-        let _cond = {
-            event.get_str("event.code").is_some_and(|s| {
-                [
-                    "INVAL_IP",
-                    "L2FM_MAC_MOVE2",
-                    "DUPLEX_MISMATCH",
-                    "NATIVE_VLAN_MISMATCH",
-                    "THRESHOLD_VIOLATION",
-                ]
-                .contains(&s.to_uppercase().as_str())
-            })
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_string("message") {
-                    // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
-                    if !cached_grok!("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$").extract_into(&input, event)? {
-                    // Grok pattern: ^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$
-                    if !cached_grok!("^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$").extract_into(&input, event)? {
-                        // Grok pattern: ^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$
-                        if !cached_grok!("^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$").extract_into(&input, event)? {
-                            // Grok pattern: ^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$
-                            if !cached_grok!("^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$").extract_into(&input, event)? {
-                            }
-                        }
-                    }
-                }
-                }
-                Ok(())
-            })();
-        }
-
-        let _cond = {
-            event.get_str("event.code").is_some_and(|s| {
-                ["LOGIN_SUCCESS", "LOGOUT", "LOGOUT_C6K"].contains(&s.to_uppercase().as_str())
-            })
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_string("message") {
-                    // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
-                    if !cached_grok!("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$").extract_into(&input, event)? {
-                    // Grok pattern: ^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$
-                    if !cached_grok!("^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$").extract_into(&input, event)? {
-                    }
-                }
-                }
-                Ok(())
-            })();
-        }
-
-        if event.has("source.mac") {
-            if let Some(s) = event.get_string("source.mac") {
-                let re = cached_regex!("[.]");
-                let replaced = re.replace_all(&s, "").into_owned();
-                event.set("source.mac", replaced)?;
+                    Ok(())
+                })();
             }
-        }
 
-        // SKIPPED: pattern unsupported by the regex engine: (..)(?!$)
-
-        if event.has("source.mac") {
-            if let Some(s) = event.get_string("source.mac") {
-                let uppered = s.to_uppercase();
-                event.set("source.mac", uppered)?;
-            }
-        }
-
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            if event.has("temp.message") {
-                if let Some(kv_str) = event.get_string("temp.message") {
-                    for pair in cached_regex!("\\s+").split(&kv_str) {
-                        if let Some((key, value)) = pair.split_once("=") {
-                            if !key.is_empty() {
-                                event.set(&format!("temp.{}", key), value)?;
-                            }
-                        }
-                    }
-                }
-            }
-            Ok(())
-        })();
-
-        // ignore_failure: true
-        let _ = (|| -> Result<()> {
-            if event.has("temp.message2") {
-                if let Some(kv_str) = event.get_string("temp.message2") {
-                    for pair in kv_str.split(" ; ") {
-                        if let Some((key, value)) = pair.split_once("=") {
-                            if !key.is_empty() {
-                                event.set(&format!("temp.{}", key), value)?;
-                            }
-                        }
-                    }
-                }
-            }
-            Ok(())
-        })();
-
-        if event.has("temp.logname") {
-            event.rename("temp.logname", "cisco_nexus.log.logname")?;
-        }
-
-        if event.has("temp.uid") {
-            event.rename("temp.uid", "cisco_nexus.log.uid")?;
-        }
-
-        if event.has("temp.euid") {
-            event.rename("temp.euid", "cisco_nexus.log.euid")?;
-        }
-
-        if event.has("temp.tty") {
-            event.rename("temp.tty", "cisco_nexus.log.tty")?;
-        }
-
-        if event.has("temp.ruser") {
-            event.rename("temp.ruser", "cisco_nexus.log.ruser")?;
-        }
-
-        if event.has("temp.rhost") {
-            event.rename("temp.rhost", "cisco_nexus.log.rhost")?;
-        }
-
-        if event.has("temp.user") {
-            event.rename("temp.user", "user.name")?;
-        }
-
-        if event.has("temp.COMMAND") {
-            event.rename("temp.COMMAND", "cisco_nexus.log.command")?;
-        }
-
-        if event.has("temp.PWD") {
-            event.rename("temp.PWD", "cisco_nexus.log.pwd")?;
-        }
-
-        if event.has("temp.TTY") {
-            event.rename("temp.TTY", "cisco_nexus.log.tty")?;
-        }
-
-        if event.has("temp.USER") {
-            event.rename("temp.USER", "user.name")?;
-        }
-
-        if event.has("network.protocol") {
-            if let Some(s) = event.get_string("network.protocol") {
-                let lowered = s.to_lowercase();
-                event.set("network.protocol", lowered)?;
-            }
-        }
-
-        let _cond = {
-            event.has("cisco_nexus.log.interface.name")
-                || event.has("cisco_nexus.log.network.ingress_interface")
-                || event.has("cisco_nexus.log.network.egress_interface")
-                || event.get_str("event.code").is_some_and(|s| {
-                    [
-                        "L2FM_MAC_MOVE2",
-                        "L3_VPC_UNEQUAL_WEIGHT",
-                        "AAA_ACCOUNTING_MESSAGE",
-                        "DUP_HOSTS",
-                        "NF_PARITY_ERROR",
-                        "EXCESSIVE_PARITY_ERROR",
-                    ]
-                    .contains(&s.to_uppercase().as_str())
-                })
-                || event
-                    .get_str("message")
-                    .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
-        };
-        if _cond {
-            event.set("event.category", json!(["network"]))?;
-        }
-
-        let _cond = {
-            event.has("cisco_nexus.log.interface.name")
-                || event.has("cisco_nexus.log.network.ingress_interface")
-                || event.has("cisco_nexus.log.network.egress_interface")
-                || event.get_str("event.code").is_some_and(|s| {
+            let _cond = {
+                event.get_str("event.code").is_some_and(|s| {
                     [
                         "VSHD_SYSLOG_CONFIG_I",
-                        "L2FM_MAC_MOVE2",
-                        "L3_VPC_UNEQUAL_WEIGHT",
-                        "AAA_ACCOUNTING_MESSAGE",
-                        "DUP_HOSTS",
-                        "NF_PARITY_ERROR",
-                        "EXCESSIVE_PARITY_ERROR",
+                        "DETECT_MULTIPLE_PEERS",
+                        "UPDOWN",
+                        "CFGWRITE_STARTED",
+                        "LINEPROTO",
                     ]
                     .contains(&s.to_uppercase().as_str())
                 })
-        };
-        if _cond {
-            event.set("event.type", json!(["info"]))?;
-        }
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
+                        if !cached_grok!("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$").extract_into(&input, event)? {
+                        // Grok pattern: ^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$
+                        if !cached_grok!("^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$").extract_into(&input, event)? {
+                            // Grok pattern: ^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$
+                            if !cached_grok!("^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$").extract_into(&input, event)? {
+                                // Grok pattern: ^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$
+                                if !cached_grok!("^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$").extract_into(&input, event)? {
+                                    // Grok pattern: ^%{DATA}(PID %{NUMBER:process.pid:long})%{GREEDYDATA}$
+                                    if !cached_grok!("^%{DATA}(PID %{NUMBER:process.pid:long})%{GREEDYDATA}$").extract_into(&input, event)? {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    }
+                    Ok(())
+                })();
+            }
 
-        let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
-        if _cond {
-            event.set("event.category", json!(["configuration"]))?;
-        }
+            let _cond = {
+                event
+                    .get_str("event.code")
+                    .is_some_and(|s| ["SYSTEM_MSG"].contains(&s.to_uppercase().as_str()))
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
+                        if !cached_grok!("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$").extract_into(&input, event)? {
+                        // Grok pattern: ^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
+                        if !cached_grok!("^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$").extract_into(&input, event)? {
+                            // Grok pattern: ^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
+                            if !cached_grok!("^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$").extract_into(&input, event)? {
+                                // Grok pattern: ^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
+                                if !cached_grok!("^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$").extract_into(&input, event)? {
+                                    // Grok pattern: ^%{DATA} : %{GREEDYDATA:temp.message2}$
+                                    if !cached_grok!("^%{DATA} : %{GREEDYDATA:temp.message2}$").extract_into(&input, event)? {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    }
+                    Ok(())
+                })();
+            }
 
-        let _cond = {
-            event.get_str("event.code") == Some("LOGIN_SUCCESS")
-                || (event.get_str("event.code") == Some("SYSTEM_MSG")
-                    && (event
+            let _cond = {
+                event.get_str("event.code").is_some_and(|s| {
+                    [
+                        "INVAL_IP",
+                        "L2FM_MAC_MOVE2",
+                        "DUPLEX_MISMATCH",
+                        "NATIVE_VLAN_MISMATCH",
+                        "THRESHOLD_VIOLATION",
+                    ]
+                    .contains(&s.to_uppercase().as_str())
+                })
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
+                        if !cached_grok!("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$").extract_into(&input, event)? {
+                        // Grok pattern: ^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$
+                        if !cached_grok!("^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$").extract_into(&input, event)? {
+                            // Grok pattern: ^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$
+                            if !cached_grok!("^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$").extract_into(&input, event)? {
+                                // Grok pattern: ^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$
+                                if !cached_grok!("^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$").extract_into(&input, event)? {
+                                }
+                            }
+                        }
+                    }
+                    }
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.get_str("event.code").is_some_and(|s| {
+                    ["LOGIN_SUCCESS", "LOGOUT", "LOGOUT_C6K"].contains(&s.to_uppercase().as_str())
+                })
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
+                        if !cached_grok!("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$").extract_into(&input, event)? {
+                        // Grok pattern: ^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$
+                        if !cached_grok!("^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$").extract_into(&input, event)? {
+                        }
+                    }
+                    }
+                    Ok(())
+                })();
+            }
+
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if event.has("source.mac") {
+                    if let Some(s) = event.get_string("source.mac") {
+                        let re = cached_regex!("[.]");
+                        let replaced = re.replace_all(&s, "").into_owned();
+                        event.set("source.mac", replaced)?;
+                    }
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "gsub")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "gsub_sourcemac_remove_dot",
+                )?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+            }
+
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                // SKIPPED: pattern unsupported by the regex engine: (..)(?!$)
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "gsub")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "gsub_sourcemac_add_hyphen",
+                )?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+            }
+
+            if event.has("source.mac") {
+                if let Some(s) = event.get_string("source.mac") {
+                    let uppered = s.to_uppercase();
+                    event.set("source.mac", uppered)?;
+                }
+            }
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("temp.message") {
+                    if let Some(kv_str) = event.get_string("temp.message") {
+                        for pair in cached_regex!("\\s+").split(&kv_str) {
+                            if pair.trim().is_empty() {
+                                continue;
+                            }
+                            let Some((key, value)) = pair.split_once("=") else {
+                                return Err(TransformError::ParseError {
+                                    path: "temp.message".into(),
+                                    message: format!("does not contain value_split: {pair}"),
+                                });
+                            };
+                            {
+                                if !key.is_empty() {
+                                    event.set(&format!("temp.{}", key), value)?;
+                                }
+                            }
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("temp.message2") {
+                    if let Some(kv_str) = event.get_string("temp.message2") {
+                        for pair in kv_str.split(" ; ") {
+                            if pair.trim().is_empty() {
+                                continue;
+                            }
+                            let Some((key, value)) = pair.split_once("=") else {
+                                return Err(TransformError::ParseError {
+                                    path: "temp.message2".into(),
+                                    message: format!("does not contain value_split: {pair}"),
+                                });
+                            };
+                            {
+                                if !key.is_empty() {
+                                    event.set(&format!("temp.{}", key), value)?;
+                                }
+                            }
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
+            if event.has("temp.logname") {
+                event.rename("temp.logname", "cisco_nexus.log.logname")?;
+            }
+
+            if event.has("temp.uid") {
+                event.rename("temp.uid", "cisco_nexus.log.uid")?;
+            }
+
+            if event.has("temp.euid") {
+                event.rename("temp.euid", "cisco_nexus.log.euid")?;
+            }
+
+            if event.has("temp.tty") {
+                event.rename("temp.tty", "cisco_nexus.log.tty")?;
+            }
+
+            if event.has("temp.ruser") {
+                event.rename("temp.ruser", "cisco_nexus.log.ruser")?;
+            }
+
+            if event.has("temp.rhost") {
+                event.rename("temp.rhost", "cisco_nexus.log.rhost")?;
+            }
+
+            if event.has("temp.user") {
+                event.rename("temp.user", "user.name")?;
+            }
+
+            if event.has("temp.COMMAND") {
+                event.rename("temp.COMMAND", "cisco_nexus.log.command")?;
+            }
+
+            if event.has("temp.PWD") {
+                event.rename("temp.PWD", "cisco_nexus.log.pwd")?;
+            }
+
+            if event.has("temp.TTY") {
+                event.rename("temp.TTY", "cisco_nexus.log.tty")?;
+            }
+
+            if event.has("temp.USER") {
+                event.rename("temp.USER", "user.name")?;
+            }
+
+            if event.has("network.protocol") {
+                if let Some(s) = event.get_string("network.protocol") {
+                    let lowered = s.to_lowercase();
+                    event.set("network.protocol", lowered)?;
+                }
+            }
+
+            let _cond = {
+                event.has("cisco_nexus.log.interface.name")
+                    || event.has("cisco_nexus.log.network.ingress_interface")
+                    || event.has("cisco_nexus.log.network.egress_interface")
+                    || event.get_str("event.code").is_some_and(|s| {
+                        [
+                            "L2FM_MAC_MOVE2",
+                            "L3_VPC_UNEQUAL_WEIGHT",
+                            "AAA_ACCOUNTING_MESSAGE",
+                            "DUP_HOSTS",
+                            "NF_PARITY_ERROR",
+                            "EXCESSIVE_PARITY_ERROR",
+                        ]
+                        .contains(&s.to_uppercase().as_str())
+                    })
+                    || event
                         .get_str("message")
-                        .is_some_and(|s| s.to_lowercase().contains("authentication"))
-                        || event
-                            .get_str("message")
-                            .is_some_and(|s| s.to_lowercase().contains("authentication failure"))
-                        || event
-                            .get_str("message")
-                            .is_some_and(|s| s.to_lowercase().contains("login"))))
-        };
-        if _cond {
-            event.set("event.category", json!(["authentication"]))?;
-        }
+                        .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
+            };
+            if _cond {
+                event.set("event.category", json!(["network"]))?;
+            }
 
-        let _cond = {
-            event.get_str("event.code") == Some("LOGIN_SUCCESS")
-                || (event.get_str("event.code") == Some("SYSTEM_MSG")
-                    && (event
+            let _cond = {
+                event.has("cisco_nexus.log.interface.name")
+                    || event.has("cisco_nexus.log.network.ingress_interface")
+                    || event.has("cisco_nexus.log.network.egress_interface")
+                    || event.get_str("event.code").is_some_and(|s| {
+                        [
+                            "VSHD_SYSLOG_CONFIG_I",
+                            "L2FM_MAC_MOVE2",
+                            "L3_VPC_UNEQUAL_WEIGHT",
+                            "AAA_ACCOUNTING_MESSAGE",
+                            "DUP_HOSTS",
+                            "NF_PARITY_ERROR",
+                            "EXCESSIVE_PARITY_ERROR",
+                        ]
+                        .contains(&s.to_uppercase().as_str())
+                    })
+            };
+            if _cond {
+                event.set("event.type", json!(["info"]))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
+            if _cond {
+                event.set("event.category", json!(["configuration"]))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("LOGIN_SUCCESS")
+                    || (event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && (event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("authentication"))
+                            || event.get_str("message").is_some_and(|s| {
+                                s.to_lowercase().contains("authentication failure")
+                            })
+                            || event
+                                .get_str("message")
+                                .is_some_and(|s| s.to_lowercase().contains("login"))))
+            };
+            if _cond {
+                event.set("event.category", json!(["authentication"]))?;
+            }
+
+            let _cond =
+                {
+                    event.get_str("event.code") == Some("LOGIN_SUCCESS")
+                        || (event.get_str("event.code") == Some("SYSTEM_MSG")
+                            && (event.get_str("message").is_some_and(|s| {
+                                s.to_lowercase().contains("authentication failed")
+                            }) || event.get_str("message").is_some_and(|s| {
+                                s.to_lowercase().contains("authentication failure")
+                            }) || event
+                                .get_str("message")
+                                .is_some_and(|s| s.to_lowercase().contains("login failed"))))
+                };
+            if _cond {
+                event.set("event.type", json!(["end"]))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
+            };
+            if _cond {
+                event.set("event.type", json!(["connection"]))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| s.to_lowercase().contains("failed"))
+                    || event
                         .get_str("message")
-                        .is_some_and(|s| s.to_lowercase().contains("authentication failed"))
-                        || event
-                            .get_str("message")
-                            .is_some_and(|s| s.to_lowercase().contains("authentication failure"))
-                        || event
-                            .get_str("message")
-                            .is_some_and(|s| s.to_lowercase().contains("login failed"))))
-        };
-        if _cond {
-            event.set("event.type", json!(["end"]))?;
-        }
+                        .is_some_and(|s| s.to_lowercase().contains("failure"))
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
 
-        let _cond = {
-            event
-                .get_str("message")
-                .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
-        };
-        if _cond {
-            event.set("event.type", json!(["connection"]))?;
-        }
-
-        let _cond = {
-            event
-                .get_str("message")
-                .is_some_and(|s| s.to_lowercase().contains("failed"))
-                || event
+            let _cond = {
+                event
                     .get_str("message")
-                    .is_some_and(|s| s.to_lowercase().contains("failure"))
-        };
-        if _cond {
-            event.set("event.outcome", json!("failure"))?;
-        }
+                    .is_some_and(|s| s.to_lowercase().contains("successful"))
+                    || event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("success"))
+                    || event.get_str("event.code") == Some("IF_ADMIN_UP")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
 
-        let _cond = {
-            event
-                .get_str("message")
-                .is_some_and(|s| s.to_lowercase().contains("successful"))
-                || event
-                    .get_str("message")
-                    .is_some_and(|s| s.to_lowercase().contains("success"))
-                || event.get_str("event.code") == Some("IF_ADMIN_UP")
-        };
-        if _cond {
-            event.set("event.outcome", json!("success"))?;
-        }
+            let _cond = { event.has("source.ip") };
+            if _cond {
+                event.append(
+                    "related.ip",
+                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                )?;
+            }
 
-        let _cond = { event.has("source.ip") };
-        if _cond {
-            event.append(
-                "related.ip",
-                event.get("source.ip").cloned().unwrap_or(Value::Null),
-            )?;
-        }
+            let _cond = { event.has("user.name") };
+            if _cond {
+                event.append(
+                    "related.user",
+                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                )?;
+            }
 
-        let _cond = { event.has("user.name") };
-        if _cond {
-            event.append(
-                "related.user",
-                event.get("user.name").cloned().unwrap_or(Value::Null),
-            )?;
+            Ok(TransformResult::Continue)
+        })(event);
+
+        match outcome {
+            Ok(TransformResult::Drop) => return Ok(TransformResult::Drop),
+            Ok(_) => {}
+            Err(err) => {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append(
+                    "error.message",
+                    event
+                        .get("_ingest.on_failure_message")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+                event.remove("_ingest.on_failure_message");
+            }
         }
 
         // --- Post-processing (codegen-emitted) ---

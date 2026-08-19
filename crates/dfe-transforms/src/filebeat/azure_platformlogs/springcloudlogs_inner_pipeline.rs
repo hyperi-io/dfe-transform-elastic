@@ -171,7 +171,7 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 event.set(
                     "error.message",
                     event
-                        .get("_ingest.on_failure_message ")
+                        .get("_ingest.on_failure_message")
                         .cloned()
                         .unwrap_or(Value::Null),
                 )?;
