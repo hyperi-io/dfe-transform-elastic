@@ -117,7 +117,7 @@ impl Transform for Idsalerts {
                 event.set("network.protocol", lowered)?;
             }
 
-            let _cond = { event.has("src") };
+            let _cond = { event.has_value("src") };
             if _cond {
                 if let Some(input) = event.get_string("src") {
                     // Grok pattern: ^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$

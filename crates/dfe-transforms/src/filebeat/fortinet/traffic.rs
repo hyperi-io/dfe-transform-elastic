@@ -26,7 +26,7 @@ impl Transform for Traffic {
                     .unwrap_or(Value::Null),
             )?;
 
-            let _cond = { event.has("fortinet.firewall.action") };
+            let _cond = { event.has_value("fortinet.firewall.action") };
             if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
@@ -41,7 +41,7 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                event.has("fortinet.firewall.action")
+                event.has_value("fortinet.firewall.action")
                     && event.get_str("fortinet.firewall.action") != Some("start")
             };
             if _cond {
@@ -49,7 +49,7 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                event.has("fortinet.firewall.app")
+                event.has_value("fortinet.firewall.app")
                     && event.get_str("fortinet.firewall.action") != Some("deny")
             };
             if _cond {
@@ -57,7 +57,7 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                !event.has("fortinet.firewall.utmaction")
+                !event.has_value("fortinet.firewall.utmaction")
                     && event.get_str("fortinet.firewall.action") != Some("deny")
             };
             if _cond {
@@ -272,7 +272,7 @@ impl Transform for Traffic {
                 Ok(())
             })();
 
-            let _cond = { event.has("fortinet.firewall.dstcollectedemail") };
+            let _cond = { event.has_value("fortinet.firewall.dstcollectedemail") };
             if _cond {
                 event.append(
                     "email.to.address",
@@ -391,14 +391,14 @@ impl Transform for Traffic {
                 event.rename("fortinet.firewall.unauthuser", "source.user.name")?;
             }
 
-            let _cond = { !event.has("source.user.name") };
+            let _cond = { !event.has_value("source.user.name") };
             if _cond {
                 if event.has("fortinet.firewall.user") {
                     event.rename("fortinet.firewall.user", "source.user.name")?;
                 }
             }
 
-            let _cond = { event.has("fortinet.firewall.collectedemail") };
+            let _cond = { event.has_value("fortinet.firewall.collectedemail") };
             if _cond {
                 event.append(
                     "email.from.address",
@@ -533,7 +533,7 @@ impl Transform for Traffic {
                 event.rename("fortinet.firewall.filename", "file.name")?;
             }
 
-            let _cond = { !event.has("event.code") };
+            let _cond = { !event.has_value("event.code") };
             if _cond {
                 if event.has("fortinet.firewall.logid") {
                     event.rename("fortinet.firewall.logid", "event.code")?;
@@ -548,7 +548,7 @@ impl Transform for Traffic {
                 event.rename("fortinet.firewall.comment", "rule.description")?;
             }
 
-            let _cond = { !event.has("rule.id") };
+            let _cond = { !event.has_value("rule.id") };
             if _cond {
                 if event.has("fortinet.firewall.policyid") {
                     event.rename("fortinet.firewall.policyid", "rule.id")?;

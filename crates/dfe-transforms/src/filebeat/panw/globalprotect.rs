@@ -249,8 +249,8 @@ impl Transform for Globalprotect {
             })();
 
             let _cond = {
-                (!event.has("source.ip") || event.get_str("source.ip") == Some("0.0.0.0"))
-                    && event.has("_temp_.private_ipv6")
+                (!event.has_value("source.ip") || event.get_str("source.ip") == Some("0.0.0.0"))
+                    && event.has_value("_temp_.private_ipv6")
                     && event.get_str("_temp_.private_ipv6") != Some("0.0.0.0")
             };
             if _cond {
@@ -263,7 +263,7 @@ impl Transform for Globalprotect {
                 )?;
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.set(
                     "host.ip",
@@ -284,8 +284,9 @@ impl Transform for Globalprotect {
             })();
 
             let _cond = {
-                (!event.has("source.nat.ip") || event.get_str("source.nat.ip") == Some("0.0.0.0"))
-                    && event.has("_temp_.public_ipv6")
+                (!event.has_value("source.nat.ip")
+                    || event.get_str("source.nat.ip") == Some("0.0.0.0"))
+                    && event.has_value("_temp_.public_ipv6")
                     && event.get_str("_temp_.public_ipv6") != Some("0.0.0.0")
             };
             if _cond {
@@ -362,7 +363,7 @@ impl Transform for Globalprotect {
                 Ok(())
             })();
 
-            let _cond = { event.has("panw.panos.machine.name") };
+            let _cond = { event.has_value("panw.panos.machine.name") };
             if _cond {
                 if let Some(s) = event.get_string("panw.panos.machine.name") {
                     let lowered = s.to_lowercase();

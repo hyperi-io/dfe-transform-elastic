@@ -22,14 +22,14 @@ impl Transform for Default {
                 event.rename("azure", "azure-eventhub")?;
             }
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
                 }
             }
 
-            let _cond = { event.has("event.original") };
+            let _cond = { event.has_value("event.original") };
             if _cond {
                 event.remove("message");
             }
@@ -80,13 +80,14 @@ impl Transform for Default {
             // Painless script
             // Source: ctx.event.duration = ctx.event.duration * params.param_nano
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_params(
                 event,
-                r#"ctx.event.duration = ctx.event.duration * params.param_nano"#,
+                cached_script!(r#"ctx.event.duration = ctx.event.duration * params.param_nano"#),
+                cached_params!("{\"param_nano\":1000000}"),
             )?;
 
             let _cond = {
-                event.has("azure.auditlogs.properties.result")
+                event.has_value("azure.auditlogs.properties.result")
                     && event
                         .get("azure.auditlogs.properties.result")
                         .is_some_and(|v| v.is_string())
@@ -205,23 +206,24 @@ impl Transform for Default {
                 event.remove("_ingest.on_failure_processor_tag");
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.remove("azure.auditlogs.callerIpAddress");
             }
 
-            let _cond = { !event.has("azure.auditlogs.properties.initiatedBy.app.appId") };
+            let _cond = { !event.has_value("azure.auditlogs.properties.initiatedBy.app.appId") };
             if _cond {
                 event.remove("azure.auditlogs.properties.initiatedBy.app.appId");
             }
 
-            let _cond =
-                { !event.has("azure.auditlogs.properties.initiatedBy.app.servicePrincipalName") };
+            let _cond = {
+                !event.has_value("azure.auditlogs.properties.initiatedBy.app.servicePrincipalName")
+            };
             if _cond {
                 event.remove("azure.auditlogs.properties.initiatedBy.app.servicePrincipalName");
             }
 
-            let _cond = { !event.has("azure.auditlogs.properties.userAgent") };
+            let _cond = { !event.has_value("azure.auditlogs.properties.userAgent") };
             if _cond {
                 event.remove("azure.auditlogs.properties.userAgent");
             }
@@ -231,7 +233,7 @@ impl Transform for Default {
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
             )?;
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -285,7 +287,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx.azure.auditlogs.properties.targetResources != null) {\n  ctx.azure.auditlogs.properties.target_resources = new HashMap();\n  for (def i = 0; i < ctx.azure.auditlogs.properties.targetResources.length; i++) {\n    String index = String.valueOf(i);\n    ctx.azure.auditlogs.properties.target_resources[index] = new HashMap();\n    if(ctx.azure.auditlogs.properties.targetResources[i].displayName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].display_name = ctx.azure.auditlogs.properties.targetResources[i].displayName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].id = ctx.azure.auditlogs.properties.targetResources[i].id;\n    ctx.azure.auditlogs.properties.target_resources[index].type = ctx.azure.auditlogs.properties.targetResources[i].type;\n    if (ctx.azure.auditlogs.properties.targetResources[i].ipAddress != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].ip_address = ctx.azure.auditlogs.properties.targetResources[i].ipAddress;\n    }\n    if (ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].user_principal_name = ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].modified_properties = new HashMap();\n    for (def j = 0; j < ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties.length; j++) {\n      String n = String.valueOf(j);\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n] = new HashMap();\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].display_name = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].displayName;\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].new_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue;\n      }\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].old_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue;\n      }\n    }\n  }\n  ctx.azure.auditlogs.properties.remove('targetResources');\n}"#,
+                    cached_script!(
+                        r#"if (ctx.azure.auditlogs.properties.targetResources != null) {\n  ctx.azure.auditlogs.properties.target_resources = new HashMap();\n  for (def i = 0; i < ctx.azure.auditlogs.properties.targetResources.length; i++) {\n    String index = String.valueOf(i);\n    ctx.azure.auditlogs.properties.target_resources[index] = new HashMap();\n    if(ctx.azure.auditlogs.properties.targetResources[i].displayName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].display_name = ctx.azure.auditlogs.properties.targetResources[i].displayName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].id = ctx.azure.auditlogs.properties.targetResources[i].id;\n    ctx.azure.auditlogs.properties.target_resources[index].type = ctx.azure.auditlogs.properties.targetResources[i].type;\n    if (ctx.azure.auditlogs.properties.targetResources[i].ipAddress != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].ip_address = ctx.azure.auditlogs.properties.targetResources[i].ipAddress;\n    }\n    if (ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].user_principal_name = ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].modified_properties = new HashMap();\n    for (def j = 0; j < ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties.length; j++) {\n      String n = String.valueOf(j);\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n] = new HashMap();\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].display_name = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].displayName;\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].new_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue;\n      }\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].old_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue;\n      }\n    }\n  }\n  ctx.azure.auditlogs.properties.remove('targetResources');\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
@@ -369,7 +373,7 @@ impl Transform for Default {
                 }
                 Ok(())
             })();
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -384,7 +388,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -399,7 +403,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -423,7 +427,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -438,7 +442,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -453,7 +457,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -480,7 +484,7 @@ impl Transform for Default {
             // End nested pipeline: "azure-shared-pipeline"
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

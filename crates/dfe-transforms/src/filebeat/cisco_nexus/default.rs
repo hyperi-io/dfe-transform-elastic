@@ -26,7 +26,7 @@ impl Transform for Default {
 
             event.set("event.kind", json!("event"))?;
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
@@ -34,7 +34,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.original")
+                event.has_value("event.original")
                     && event
                         .get_str("event.original")
                         .is_some_and(|s| !s.is_empty())
@@ -94,7 +94,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("_conf.tz_offset") };
+            let _cond = { event.has_value("_conf.tz_offset") };
             if _cond {
                 if event.has("_conf.tz_offset") {
                     event.rename("_conf.tz_offset", "event.timezone")?;
@@ -102,7 +102,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("cisco_nexus.log.syslog_time")
+                event.has_value("cisco_nexus.log.syslog_time")
                     && event
                         .get_str("cisco_nexus.log.syslog_time")
                         .is_some_and(|s| !s.is_empty())
@@ -159,7 +159,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("temp.syslog_timestamp") };
+            let _cond = { event.has_value("temp.syslog_timestamp") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -216,9 +216,9 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("temp.timestamp")
-                    && event.has("temp.syslog_timestamp")
-                    && event.has("cisco_nexus.log.timezone")
+                !event.has_value("temp.timestamp")
+                    && event.has_value("temp.syslog_timestamp")
+                    && event.has_value("cisco_nexus.log.timezone")
             };
             if _cond {
                 event.set(
@@ -236,13 +236,13 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("temp.timestamp")
+                event.has_value("temp.timestamp")
                     && event
                         .get_str("temp.timestamp")
                         .is_some_and(|s| !s.is_empty())
-                    && ((!event.has("event.timezone"))
-                        || (event.has("event.timezone")
-                            && (event.has("cisco_nexus.log.timezone")
+                    && ((!event.has_value("event.timezone"))
+                        || (event.has_value("event.timezone")
+                            && (event.has_value("cisco_nexus.log.timezone")
                                 && event
                                     .get_str("cisco_nexus.log.timezone")
                                     .is_some_and(|s| !s.is_empty()))))
@@ -336,12 +336,12 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("temp.timestamp")
+                event.has_value("temp.timestamp")
                     && event
                         .get_str("temp.timestamp")
                         .is_some_and(|s| !s.is_empty())
-                    && event.has("event.timezone")
-                    && (!event.has("cisco_nexus.log.timezone")
+                    && event.has_value("event.timezone")
+                    && (!event.has_value("cisco_nexus.log.timezone")
                         || event
                             .get_str("cisco_nexus.log.timezone")
                             .is_none_or(|s| s.is_empty()))
@@ -438,13 +438,13 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("temp.timestamp")
+                event.has_value("temp.timestamp")
                     && event
                         .get_str("temp.timestamp")
                         .is_some_and(|s| !s.is_empty())
-                    && ((!event.has("event.timezone"))
-                        || (event.has("event.timezone")
-                            && (event.has("cisco_nexus.log.timezone")
+                    && ((!event.has_value("event.timezone"))
+                        || (event.has_value("event.timezone")
+                            && (event.has_value("cisco_nexus.log.timezone")
                                 && event
                                     .get_str("cisco_nexus.log.timezone")
                                     .is_some_and(|s| !s.is_empty()))))
@@ -559,12 +559,12 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("temp.timestamp")
+                event.has_value("temp.timestamp")
                     && event
                         .get_str("temp.timestamp")
                         .is_some_and(|s| !s.is_empty())
-                    && event.has("event.timezone")
-                    && (!event.has("cisco_nexus.log.timezone")
+                    && event.has_value("event.timezone")
+                    && (!event.has_value("cisco_nexus.log.timezone")
                         || event
                             .get_str("cisco_nexus.log.timezone")
                             .is_none_or(|s| s.is_empty()))
@@ -694,7 +694,7 @@ impl Transform for Default {
                     .unwrap_or(Value::Null),
             )?;
 
-            let _cond = { event.has("cisco_nexus.log.ip_address") };
+            let _cond = { event.has_value("cisco_nexus.log.ip_address") };
             if _cond {
                 event.append(
                     "observer.ip",
@@ -705,7 +705,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("cisco_nexus.log.ip_address") };
+            let _cond = { event.has_value("cisco_nexus.log.ip_address") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -748,16 +748,21 @@ impl Transform for Default {
                     .unwrap_or(Value::Null),
             )?;
 
-            let _cond = { event.has("event.severity") };
+            let _cond = { event.has_value("event.severity") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     // Painless script
                     // Source: def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_params(
                         event,
-                        r#"def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}"#,
+                        cached_script!(
+                            r#"def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}"#
+                        ),
+                        cached_params!(
+                            "{\"LogLevel\":[\"emergency\",\"alert\",\"critical\",\"error\",\"warning\",\"notification\",\"informational\",\"debugging\"]}"
+                        ),
                     )?;
                     Ok(())
                 })() {
@@ -791,8 +796,10 @@ impl Transform for Default {
                 }
             }
 
-            let _cond =
-                { event.has("cisco_nexus.log.priority_number") && event.has("event.severity") };
+            let _cond = {
+                event.has_value("cisco_nexus.log.priority_number")
+                    && event.has_value("event.severity")
+            };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -801,7 +808,9 @@ impl Transform for Default {
                     // TODO: Transpile Painless to Rust (2.2.3)
                     painless_exec(
                         event,
-                        r#"ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n"#,
+                        cached_script!(
+                            r#"ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n"#
+                        ),
                     )?;
                     Ok(())
                 })() {
@@ -851,7 +860,7 @@ impl Transform for Default {
             )?;
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && event.get_str("event.code").is_some_and(|s| {
                         [
                             "IF_DOWN_ADMIN_DOWN",
@@ -1214,9 +1223,9 @@ impl Transform for Default {
                     }
                 }
                 let _cond = {
-                    event.has("cisco_nexus.log.interface.name")
-                        || event.has("cisco_nexus.log.network.ingress_interface")
-                        || event.has("cisco_nexus.log.network.egress_interface")
+                    event.has_value("cisco_nexus.log.interface.name")
+                        || event.has_value("cisco_nexus.log.network.ingress_interface")
+                        || event.has_value("cisco_nexus.log.network.egress_interface")
                         || event.get_str("event.code").is_some_and(|s| {
                             [
                                 "L2FM_MAC_MOVE2",
@@ -1236,9 +1245,9 @@ impl Transform for Default {
                     event.set("event.category", json!(["network"]))?;
                 }
                 let _cond = {
-                    event.has("cisco_nexus.log.interface.name")
-                        || event.has("cisco_nexus.log.network.ingress_interface")
-                        || event.has("cisco_nexus.log.network.egress_interface")
+                    event.has_value("cisco_nexus.log.interface.name")
+                        || event.has_value("cisco_nexus.log.network.ingress_interface")
+                        || event.has_value("cisco_nexus.log.network.egress_interface")
                         || event.get_str("event.code").is_some_and(|s| {
                             [
                                 "VSHD_SYSLOG_CONFIG_I",
@@ -1320,14 +1329,14 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.outcome", json!("success"))?;
                 }
-                let _cond = { event.has("source.ip") };
+                let _cond = { event.has_value("source.ip") };
                 if _cond {
                     event.append(
                         "related.ip",
                         event.get("source.ip").cloned().unwrap_or(Value::Null),
                     )?;
                 }
-                let _cond = { event.has("user.name") };
+                let _cond = { event.has_value("user.name") };
                 if _cond {
                     event.append(
                         "related.user",
@@ -1338,7 +1347,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("cisco_nexus.log.facility")
+                event.has_value("cisco_nexus.log.facility")
                     && event
                         .get_str("cisco_nexus.log.facility")
                         .is_some_and(|s| s.to_lowercase().contains("arp"))
@@ -1351,7 +1360,7 @@ impl Transform for Default {
             event.remove("temp");
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()
@@ -1374,7 +1383,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()
@@ -1392,10 +1401,12 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#,
+                cached_script!(
+                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
+                ),
             )?;
 
-            let _cond = { event.has("error.message") };
+            let _cond = { event.has_value("error.message") };
             if _cond {
                 event.set("event.kind", json!("pipeline_error"))?;
             }

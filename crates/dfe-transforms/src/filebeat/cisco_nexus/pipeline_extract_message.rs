@@ -362,9 +362,9 @@ impl Transform for PipelineExtractMessage {
             }
 
             let _cond = {
-                event.has("cisco_nexus.log.interface.name")
-                    || event.has("cisco_nexus.log.network.ingress_interface")
-                    || event.has("cisco_nexus.log.network.egress_interface")
+                event.has_value("cisco_nexus.log.interface.name")
+                    || event.has_value("cisco_nexus.log.network.ingress_interface")
+                    || event.has_value("cisco_nexus.log.network.egress_interface")
                     || event.get_str("event.code").is_some_and(|s| {
                         [
                             "L2FM_MAC_MOVE2",
@@ -385,9 +385,9 @@ impl Transform for PipelineExtractMessage {
             }
 
             let _cond = {
-                event.has("cisco_nexus.log.interface.name")
-                    || event.has("cisco_nexus.log.network.ingress_interface")
-                    || event.has("cisco_nexus.log.network.egress_interface")
+                event.has_value("cisco_nexus.log.interface.name")
+                    || event.has_value("cisco_nexus.log.network.ingress_interface")
+                    || event.has_value("cisco_nexus.log.network.egress_interface")
                     || event.get_str("event.code").is_some_and(|s| {
                         [
                             "VSHD_SYSLOG_CONFIG_I",
@@ -477,7 +477,7 @@ impl Transform for PipelineExtractMessage {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -485,7 +485,7 @@ impl Transform for PipelineExtractMessage {
                 )?;
             }
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.append(
                     "related.user",

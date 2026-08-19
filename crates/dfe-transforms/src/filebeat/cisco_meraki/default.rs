@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.11.0"))?;
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
@@ -57,7 +57,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("_conf.tz_offset") && event.get_str("_conf.tz_offset") != Some("local")
+                event.has_value("_conf.tz_offset")
+                    && event.get_str("_conf.tz_offset") != Some("local")
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -100,7 +101,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("_conf.tz_offset") || event.get_str("_conf.tz_offset") == Some("local")
+                !event.has_value("_conf.tz_offset")
+                    || event.get_str("_conf.tz_offset") == Some("local")
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -160,7 +162,7 @@ impl Transform for Default {
                 }
                 }
                 let _cond = {
-                    event.has("cisco_meraki.firewall.pattern")
+                    event.has_value("cisco_meraki.firewall.pattern")
                         && (event
                             .get_str("cisco_meraki.firewall.pattern")
                             .is_some_and(|s| s.starts_with("allow"))
@@ -179,7 +181,7 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                let _cond = { event.has("cisco_meraki.firewall.rule") };
+                let _cond = { event.has_value("cisco_meraki.firewall.rule") };
                 if _cond {
                     if event.remove("cisco_meraki.firewall.pattern").is_none() {
                         return Err(TransformError::FieldNotFound {
@@ -194,7 +196,7 @@ impl Transform for Default {
                         event.set("source.mac", replaced)?;
                     }
                 }
-                let _cond = { !event.has("cisco_meraki.flows.op") };
+                let _cond = { !event.has_value("cisco_meraki.flows.op") };
                 if _cond {
                     event.set("cisco_meraki.event_subtype", json!("ip_session_initiated"))?;
                 }
@@ -244,7 +246,7 @@ impl Transform for Default {
                     }
                     event.set("_temp.event", remaining)?;
                 }
-                let _cond = { event.has("_temp.event") };
+                let _cond = { event.has_value("_temp.event") };
                 if _cond {
                     if let Some(kv_str) = event.get_string("_temp.event") {
                         for pair in kv_str.split(" ") {
@@ -265,7 +267,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { event.has("translated_src_ip") };
+                let _cond = { event.has_value("translated_src_ip") };
                 if _cond {
                     if let Some(s) = event.get_string("translated_src_ip") {
                         // Validate IP format
@@ -279,7 +281,7 @@ impl Transform for Default {
                         event.set("source.ip", s)?;
                     }
                 }
-                let _cond = { !event.has("translated_src_ip") && event.has("src") };
+                let _cond = { !event.has_value("translated_src_ip") && event.has_value("src") };
                 if _cond {
                     if let Some(s) = event.get_string("src") {
                         // Validate IP format
@@ -293,7 +295,8 @@ impl Transform for Default {
                         event.set("source.ip", s)?;
                     }
                 }
-                let _cond = { event.has("translated_src_ip") && event.has("translated_port") };
+                let _cond =
+                    { event.has_value("translated_src_ip") && event.has_value("translated_port") };
                 if _cond {
                     if let Some(val) = event.get("translated_port") {
                         let converted = match val {
@@ -329,7 +332,7 @@ impl Transform for Default {
                         event.set("source.port", converted)?;
                     }
                 }
-                let _cond = { !event.has("translated_src_ip") && event.has("sport") };
+                let _cond = { !event.has_value("translated_src_ip") && event.has_value("sport") };
                 if _cond {
                     if let Some(val) = event.get("sport") {
                         let converted = match val {
@@ -365,7 +368,7 @@ impl Transform for Default {
                         event.set("source.port", converted)?;
                     }
                 }
-                let _cond = { event.has("translated_dst_ip") };
+                let _cond = { event.has_value("translated_dst_ip") };
                 if _cond {
                     if let Some(s) = event.get_string("translated_dst_ip") {
                         // Validate IP format
@@ -379,7 +382,7 @@ impl Transform for Default {
                         event.set("destination.ip", s)?;
                     }
                 }
-                let _cond = { !event.has("translated_dst_ip") && event.has("dst") };
+                let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dst") };
                 if _cond {
                     if let Some(s) = event.get_string("dst") {
                         // Validate IP format
@@ -393,7 +396,8 @@ impl Transform for Default {
                         event.set("destination.ip", s)?;
                     }
                 }
-                let _cond = { event.has("translated_dst_ip") && event.has("translated_port") };
+                let _cond =
+                    { event.has_value("translated_dst_ip") && event.has_value("translated_port") };
                 if _cond {
                     if let Some(val) = event.get("translated_port") {
                         let converted = match val {
@@ -429,7 +433,7 @@ impl Transform for Default {
                         event.set("destination.port", converted)?;
                     }
                 }
-                let _cond = { !event.has("translated_dst_ip") && event.has("dport") };
+                let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dport") };
                 if _cond {
                     if let Some(val) = event.get("dport") {
                         let converted = match val {
@@ -547,7 +551,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { event.has("_temp.kv.ssid") };
+                let _cond = { event.has_value("_temp.kv.ssid") };
                 if _cond {
                     event.rename("_temp.kv.ssid", "network.name")?;
                 }
@@ -577,7 +581,7 @@ impl Transform for Default {
                         event.set("_temp.observer.mac", replaced)?;
                     }
                 }
-                let _cond = { event.has("_temp.observer.mac") };
+                let _cond = { event.has_value("_temp.observer.mac") };
                 if _cond {
                     event.append(
                         "observer.mac",
@@ -667,7 +671,7 @@ impl Transform for Default {
                 if event.has("decision") {
                     event.rename("decision", "cisco_meraki.security.decision")?;
                 }
-                let _cond = { event.has("url") };
+                let _cond = { event.has_value("url") };
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
@@ -722,7 +726,7 @@ impl Transform for Default {
                 let _cond = {
                     event.get_str("cisco_meraki.event_subtype")
                         != Some("security_filtering_disposition_change")
-                        && event.has("src")
+                        && event.has_value("src")
                 };
                 if _cond {
                     if let Some(input) = event.get_string("src") {
@@ -808,7 +812,7 @@ impl Transform for Default {
                 let _cond = {
                     event.get_str("cisco_meraki.event_subtype")
                         != Some("security_filtering_disposition_change")
-                        && event.has("dst")
+                        && event.has_value("dst")
                 };
                 if _cond {
                     if let Some(input) = event.get_string("dst") {
@@ -1000,7 +1004,7 @@ impl Transform for Default {
                     let lowered = s.to_lowercase();
                     event.set("network.protocol", lowered)?;
                 }
-                let _cond = { event.has("src") };
+                let _cond = { event.has_value("src") };
                 if _cond {
                     if let Some(input) = event.get_string("src") {
                         // Grok pattern: ^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$
@@ -1166,7 +1170,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { event.has("type") };
+                let _cond = { event.has_value("type") };
                 if _cond {
                     event.rename("type", "cisco_meraki.event_subtype")?;
                 }
@@ -1360,7 +1364,7 @@ impl Transform for Default {
                         event.set("source.mac", uppered)?;
                     }
                 }
-                let _cond = { event.has("_temp.blocked_arp") };
+                let _cond = { event.has_value("_temp.blocked_arp") };
                 if _cond {
                     event.set("cisco_meraki.event_subtype", json!("arp_blocked"))?;
                 }
@@ -1390,7 +1394,7 @@ impl Transform for Default {
                         event.set("_temp.port_action", lowered)?;
                     }
                 }
-                let _cond = { event.has("_temp.port_action") };
+                let _cond = { event.has_value("_temp.port_action") };
                 if _cond {
                     event.set(
                         "cisco_meraki.event_subtype",
@@ -1453,7 +1457,7 @@ impl Transform for Default {
                     }
                 }
                 let _cond = {
-                    event.has("_temp.rest")
+                    event.has_value("_temp.rest")
                         && [
                             "dfs_event",
                             "association",
@@ -1510,7 +1514,7 @@ impl Transform for Default {
                     }
                 }
                 let _cond = {
-                    event.has("_temp.rest")
+                    event.has_value("_temp.rest")
                         && event.get_str("cisco_meraki.event_subtype")
                             == Some("vpn_connectivity_change")
                 };
@@ -1609,7 +1613,7 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                let _cond = { event.has("server.ip") };
+                let _cond = { event.has_value("server.ip") };
                 if _cond {
                     if event
                         .remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
@@ -1731,7 +1735,7 @@ impl Transform for Default {
                         {}
                     }
                 }
-                let _cond = { event.has("_temp.client_ip") };
+                let _cond = { event.has_value("_temp.client_ip") };
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
@@ -1749,7 +1753,7 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                let _cond = { event.has("_temp.client_ip") };
+                let _cond = { event.has_value("_temp.client_ip") };
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
@@ -2074,7 +2078,7 @@ impl Transform for Default {
                     }
                 }
                 let _cond = {
-                    event.has("url.original")
+                    event.has_value("url.original")
                         && event.get_str("url.original").is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
@@ -2126,18 +2130,23 @@ impl Transform for Default {
 
             event.append("event.type", json!("info"))?;
 
-            let _cond = { event.has("cisco_meraki.event_subtype") };
+            let _cond = { event.has_value("cisco_meraki.event_subtype") };
             if _cond {
                 // Painless script
                 // Source: def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(ctx.cisco_meraki.event_subtype);\nif (eventData == null) {\n  ctx.event.action = ctx.cisco_meraki.event_subtype;\n  return;\n}\ndef eventCategory = eventData.get('category');\ndef eventType = eventData.get('type');\ndef eventAction = eventData.get('action');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\nif (eventAction != null) {\n  ctx.event.action = eventAction;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(ctx.cisco_meraki.event_subtype);\nif (eventData == null) {\n  ctx.event.action = ctx.cisco_meraki.event_subtype;\n  return;\n}\ndef eventCategory = eventData.get('category');\ndef eventType = eventData.get('type');\ndef eventAction = eventData.get('action');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\nif (eventAction != null) {\n  ctx.event.action = eventAction;\n}"#,
+                    cached_script!(
+                        r#"def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(ctx.cisco_meraki.event_subtype);\nif (eventData == null) {\n  ctx.event.action = ctx.cisco_meraki.event_subtype;\n  return;\n}\ndef eventCategory = eventData.get('category');\ndef eventType = eventData.get('type');\ndef eventAction = eventData.get('action');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\nif (eventAction != null) {\n  ctx.event.action = eventAction;\n}"#
+                    ),
+                    cached_params!(
+                        "{\"eventmap\":{\"8021x_deauth\":{\"action\":\"wifi-8021x-failed-auth-or-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]},\"8021x_eap_failure\":{\"action\":\"wifi-8021x-failed-authentication-attempt\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]},\"8021x_eap_success\":{\"action\":\"wifi-8021x-auth\",\"category\":[\"authentication\"],\"type\":[\"start\"]},\"Site-to-Site VPN\":{\"action\":\"site-to-site-vpn\",\"type\":[\"access\"]},\"aps_association_reject\":{\"action\":\"association-rejected-for-load-balancing\"},\"association\":{\"action\":\"wifi-association-request\",\"type\":[\"access\",\"connection\"]},\"client_vpn_connect\":{\"action\":\"site-to-site-vpn\",\"category\":[\"session\"],\"type\":[\"access\",\"allowed\",\"start\"]},\"device_packet_flood\":{\"action\":\"wireless-packet-flood-detected\"},\"dfs_event\":{\"action\":\"dynamic-frequency-selection-detected\"},\"dhcp_no_offer\":{\"action\":\"dhcp-no-offer\",\"type\":[\"access\",\"denied\"]},\"dhcp_offer\":{\"action\":\"dhcp-offer\",\"type\":[\"access\",\"allowed\"]},\"disassociation\":{\"action\":\"wifi-disassociation-request\",\"category\":[\"session\"],\"type\":[\"access\",\"end\"]},\"flow_allowed\":{\"action\":\"layer3-firewall-allowed-flow\",\"type\":[\"connection\",\"start\"]},\"flow_denied\":{\"action\":\"layer3-firewall-denied-flow\",\"type\":[\"access\",\"denied\"]},\"http_access\":{\"action\":\"http-access\",\"category\":[\"web\"],\"type\":[\"access\"]},\"http_access_error\":{\"action\":\"http-access-error\",\"category\":[\"web\"],\"type\":[\"error\"]},\"ids_alerted\":{\"action\":\"ids-signature-matched\",\"category\":[\"intrusion_detection\"]},\"ip_session_initiated\":{\"action\":\"ip-session-initiated\",\"type\":[\"access\",\"start\"]},\"multiple_dhcp_servers_detected\":{\"action\":[\"multiple_dhcp_servers_detected\"],\"type\":[\"protocol\"]},\"rogue_ssid_detected\":{\"action\":\"rogue-ssid-detected\"},\"security_filtering_disposition_change\":{\"action\":\"issued-retrospective-malicious-disposition\",\"category\":[\"file\",\"malware\"]},\"security_filtering_file_scanned\":{\"action\":\"malicious-file-actioned\",\"category\":[\"file\",\"malware\"]},\"splash_auth\":{\"action\":\"splash-authentication\",\"category\":[\"authentication\"],\"type\":[\"start\"]},\"ssid_spoofing_detected\":{\"action\":\"ssid-spoofing-detected\"},\"vpn_connectivity_change\":{\"action\":\"vpn-connectivity-change\",\"category\":[\"session\"],\"type\":[\"connection\"]},\"wpa_auth\":{\"action\":\"wifi-wpa-authentication\",\"category\":[\"authentication\"],\"type\":[\"start\",\"access\"]},\"wpa_deauth\":{\"action\":\"wifi-wpa-failed-auth-or-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]}}}"
+                    ),
                 )?;
             }
 
-            let _cond = { !event.has("source.geo") && event.has("source.ip") };
+            let _cond = { !event.has_value("source.geo") && event.has_value("source.ip") };
             if _cond {
                 if event.has("source.ip") {
                     if let Some(ip_str) = event.get_string("source.ip") {
@@ -2173,7 +2182,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 if event.has("source.ip") {
                     if let Some(ip_str) = event.get_string("source.ip") {
@@ -2199,7 +2208,8 @@ impl Transform for Default {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            let _cond = { !event.has("destination.geo") && event.has("destination.ip") };
+            let _cond =
+                { !event.has_value("destination.geo") && event.has_value("destination.ip") };
             if _cond {
                 if event.has("destination.ip") {
                     if let Some(ip_str) = event.get_string("destination.ip") {
@@ -2235,7 +2245,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("destination.ip") };
+            let _cond = { event.has_value("destination.ip") };
             if _cond {
                 if event.has("destination.ip") {
                     if let Some(ip_str) = event.get_string("destination.ip") {
@@ -2264,7 +2274,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { !event.has("client.geo") && event.has("client.ip") };
+            let _cond = { !event.has_value("client.geo") && event.has_value("client.ip") };
             if _cond {
                 if event.has("client.ip") {
                     if let Some(ip_str) = event.get_string("client.ip") {
@@ -2300,7 +2310,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("client.ip") };
+            let _cond = { event.has_value("client.ip") };
             if _cond {
                 if event.has("client.ip") {
                     if let Some(ip_str) = event.get_string("client.ip") {
@@ -2351,11 +2361,13 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n"#,
+                cached_script!(
+                    r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n"#
+                ),
             )?;
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

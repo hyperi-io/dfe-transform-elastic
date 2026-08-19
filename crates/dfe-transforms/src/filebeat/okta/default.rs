@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.11.0"))?;
 
-            let _cond = { event.has("event.original") };
+            let _cond = { event.has_value("event.original") };
             if _cond {
                 event.append(
                     "error.message",
@@ -26,7 +26,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
@@ -47,11 +47,14 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#,
+                cached_script!(
+                    r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#
+                ),
             )?;
 
             let _cond = {
-                event.has("json.uuid") && event.get_str("json.uuid").is_some_and(|s| !s.is_empty())
+                event.has_value("json.uuid")
+                    && event.get_str("json.uuid").is_some_and(|s| !s.is_empty())
             };
             if _cond {
                 // ignore_failure: true
@@ -324,7 +327,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.set(
                     "source.user.name",
@@ -332,7 +335,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.set(
                     "client.user.name",
@@ -380,7 +383,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("okta.device.device_integrator") };
+            let _cond = { event.has_value("okta.device.device_integrator") };
             if _cond {
                 if let Some(s) = event.get_string("okta.device.device_integrator") {
                     let parsed: Value =
@@ -607,7 +610,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("okta.debug_context.debug_data.flattened.behaviors") };
+            let _cond = { event.has_value("okta.debug_context.debug_data.flattened.behaviors") };
             if _cond {
                 if let Some(kv_str) =
                     event.get_string("okta.debug_context.debug_data.flattened.behaviors")
@@ -631,7 +634,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("_behaviors_object") };
+            let _cond = { event.has_value("_behaviors_object") };
             if _cond {
                 if event
                     .remove("okta.debug_context.debug_data.flattened.behaviors")
@@ -654,7 +657,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("okta.debug_context.debug_data.flattened.risk") };
+            let _cond = { event.has_value("okta.debug_context.debug_data.flattened.risk") };
             if _cond {
                 event.set(
                     "okta.debug_context.debug_data.flattened.risk_object",
@@ -690,7 +693,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("okta.debug_context.debug_data.flattened.risk") };
+            let _cond = { event.has_value("okta.debug_context.debug_data.flattened.risk") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -729,7 +732,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("_risk_object") };
+            let _cond = { event.has_value("_risk_object") };
             if _cond {
                 if event
                     .remove("okta.debug_context.debug_data.flattened.risk_object")
@@ -742,8 +745,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("okta.debug_context.debug_data.flattened.risk_object")
-                    && event.has("okta.debug_context.debug_data.flattened.risk")
+                event.has_value("okta.debug_context.debug_data.flattened.risk_object")
+                    && event.has_value("okta.debug_context.debug_data.flattened.risk")
             };
             if _cond {
                 // ignore_failure: true
@@ -761,8 +764,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("okta.debug_context.debug_data.flattened.risk_object")
-                    && event.has("okta.debug_context.debug_data.flattened.risk")
+                event.has_value("okta.debug_context.debug_data.flattened.risk_object")
+                    && event.has_value("okta.debug_context.debug_data.flattened.risk")
             };
             if _cond {
                 // ignore_failure: true
@@ -784,7 +787,7 @@ impl Transform for Default {
                 })();
             }
 
-            let _cond = { event.has("_risk_object") };
+            let _cond = { event.has_value("_risk_object") };
             if _cond {
                 if event
                     .remove("okta.debug_context.debug_data.flattened.risk")
@@ -874,14 +877,26 @@ impl Transform for Default {
             })();
 
             let _cond = {
-                event.has("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").is_some_and(|s| !s.is_empty())
+                event.has_value(
+                    "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level",
+                ) && event
+                    .get_str(
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level",
+                    )
+                    .is_some_and(|s| !s.is_empty())
             };
             if _cond {
                 event.set("okta.debug_context.debug_data.risk_level", event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").cloned().unwrap_or(Value::Null))?;
             }
 
             let _cond = {
-                event.has("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons").is_some_and(|s| !s.is_empty())
+                event.has_value(
+                    "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons",
+                ) && event
+                    .get_str(
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons",
+                    )
+                    .is_some_and(|s| !s.is_empty())
             };
             if _cond {
                 if let Some(s) = event.get_string(
@@ -897,8 +912,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("okta.debug_context.debug_data.risk_level")
-                    && event.has("okta.debug_context.debug_data.flattened.risk.level")
+                !event.has_value("okta.debug_context.debug_data.risk_level")
+                    && event.has_value("okta.debug_context.debug_data.flattened.risk.level")
                     && event
                         .get_str("okta.debug_context.debug_data.flattened.risk.level")
                         .is_some_and(|s| !s.is_empty())
@@ -914,8 +929,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("okta.debug_context.debug_data.factor")
-                    && event.has("okta.debug_context.debug_data.flattened.factor")
+                !event.has_value("okta.debug_context.debug_data.factor")
+                    && event.has_value("okta.debug_context.debug_data.flattened.factor")
                     && event
                         .get_str("okta.debug_context.debug_data.flattened.factor")
                         .is_some_and(|s| !s.is_empty())
@@ -931,8 +946,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("okta.debug_context.debug_data.risk_reasons")
-                    && event.has("okta.debug_context.debug_data.flattened.risk.reasons")
+                !event.has_value("okta.debug_context.debug_data.risk_reasons")
+                    && event.has_value("okta.debug_context.debug_data.flattened.risk.reasons")
                     && event
                         .get_str("okta.debug_context.debug_data.flattened.risk.reasons")
                         .is_some_and(|s| !s.is_empty())
@@ -955,7 +970,9 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#,
+                cached_script!(
+                    r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#
+                ),
             )?;
 
             // ignore_failure: true
@@ -1154,7 +1171,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("okta.client.ip") };
+            let _cond = { event.has_value("okta.client.ip") };
             if _cond {
                 event.set(
                     "client.ip",
@@ -1162,7 +1179,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta.client.ip") };
+            let _cond = { event.has_value("okta.client.ip") };
             if _cond {
                 event.set(
                     "source.ip",
@@ -1253,7 +1270,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("okta.outcome.result_lower")
+                event.has_value("okta.outcome.result_lower")
                     && (event.get_str("okta.outcome.result_lower") == Some("success")
                         || event.get_str("okta.outcome.result_lower") == Some("allow"))
             };
@@ -1262,7 +1279,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("okta.outcome.result_lower")
+                event.has_value("okta.outcome.result_lower")
                     && (event.get_str("okta.outcome.result_lower") == Some("failure")
                         || event.get_str("okta.outcome.result_lower") == Some("deny"))
             };
@@ -1270,7 +1287,7 @@ impl Transform for Default {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            let _cond = { !event.has("event.outcome") };
+            let _cond = { !event.has_value("event.outcome") };
             if _cond {
                 event.set("event.outcome", json!("unknown"))?;
             }
@@ -1282,10 +1299,12 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n"#,
+                cached_script!(
+                    r#"def arr = ctx.okta?.target;\nif (arr != null) {\n  for (def i = 0; i < arr.length; i++) {\n    arr[i][\"alternate_id\"] = arr[i][\"alternateId\"];\n    arr[i].remove(\"alternateId\");\n    arr[i][\"display_name\"] = arr[i][\"displayName\"];\n    arr[i].remove(\"displayName\");\n    def de = arr[i].get(\"detailEntry\");\n    if (de != null) {\n      de.entrySet().removeIf(entry -> \n        entry.getKey() != \"methodTypeUsed\" && \n        entry.getKey() != \"methodUsedVerifiedProperties\");\n      if (de.size() == 0) {\n        arr[i].remove(\"detailEntry\");\n      }\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"user\") {\n      ctx[\"okta_target_user\"] = arr[i];\n      break;\n    }\n  }\n\n  for (def i = 0; i < arr.length; i++) {\n    if (arr[i][\"type\"].toLowerCase() == \"usergroup\") {\n      ctx[\"okta_target_group\"] = arr[i];\n      break;\n    }\n  }\n}\n"#
+                ),
             )?;
 
-            let _cond = { event.has("okta_target_user.display_name") };
+            let _cond = { event.has_value("okta_target_user.display_name") };
             if _cond {
                 event.set(
                     "user.target.full_name",
@@ -1296,7 +1315,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta_target_user.id") };
+            let _cond = { event.has_value("okta_target_user.id") };
             if _cond {
                 event.set(
                     "user.target.id",
@@ -1307,7 +1326,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta_target_user.login") };
+            let _cond = { event.has_value("okta_target_user.login") };
             if _cond {
                 event.set(
                     "user.target.email",
@@ -1318,7 +1337,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta_target_group.display_name") };
+            let _cond = { event.has_value("okta_target_group.display_name") };
             if _cond {
                 event.set(
                     "user.target.group.name",
@@ -1329,7 +1348,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta_target_group.id") };
+            let _cond = { event.has_value("okta_target_group.id") };
             if _cond {
                 event.set(
                     "user.target.group.id",
@@ -1343,7 +1362,7 @@ impl Transform for Default {
             event.remove("okta_target_user");
             event.remove("okta_target_group");
 
-            let _cond = { event.has("okta.actor.id") };
+            let _cond = { event.has_value("okta.actor.id") };
             if _cond {
                 event.set(
                     "client.user.id",
@@ -1351,7 +1370,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta.actor.id") };
+            let _cond = { event.has_value("okta.actor.id") };
             if _cond {
                 event.set(
                     "source.user.id",
@@ -1359,7 +1378,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta.actor.display_name") };
+            let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
                 event.set(
                     "client.user.full_name",
@@ -1370,7 +1389,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta.actor.display_name") };
+            let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
                 event.set(
                     "source.user.full_name",
@@ -1381,7 +1400,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta.actor.display_name") };
+            let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
                 event.set(
                     "user.full_name",
@@ -1392,7 +1411,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("okta.actor.display_name") };
+            let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1403,7 +1422,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.target.full_name") };
+            let _cond = { event.has_value("user.target.full_name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1414,7 +1433,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1422,7 +1441,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -1430,7 +1449,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("destination.ip") };
+            let _cond = { event.has_value("destination.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -1585,7 +1604,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

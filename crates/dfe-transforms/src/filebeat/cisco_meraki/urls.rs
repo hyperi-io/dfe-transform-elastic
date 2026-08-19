@@ -295,7 +295,7 @@ impl Transform for Urls {
             }
 
             let _cond = {
-                event.has("url.original")
+                event.has_value("url.original")
                     && event.get_str("url.original").is_some_and(|s| !s.is_empty())
             };
             if _cond {

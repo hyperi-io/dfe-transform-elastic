@@ -8,11 +8,42 @@
 //! once here rather than once per source. [`try_known_painless`] matches a
 //! script against them and runs the Rust equivalent.
 
+use std::borrow::Cow;
+
 use serde_json::{Map, Value, json};
 
 use crate::error::Result;
 use crate::event::Event;
 use crate::painless_helpers::{SnakeRule, to_snake_case};
+
+/// A script's text with its JSON escapes resolved.
+///
+/// The matchers below all scan this rather than the raw literal. Borrowing
+/// when there is nothing to resolve is what makes [`crate::cached_script`]
+/// worth having: the macro resolves the escapes once per call site, so every
+/// event after the first takes the borrow and allocates nothing.
+pub fn normalise(script: &str) -> Cow<'_, str> {
+    if script.contains("\\n") || script.contains("\\\"") {
+        Cow::Owned(script.replace("\\n", "\n").replace("\\\"", "\""))
+    } else {
+        Cow::Borrowed(script)
+    }
+}
+
+/// A Painless script with its escapes resolved once per CALL SITE.
+///
+/// The script is a literal that never changes, but `painless_exec` was
+/// re-resolving its escapes on every event -- two allocations over the whole
+/// script text, per script, per event. Resolving at the site makes
+/// [`normalise`] a borrow from then on. Same shape as [`crate::cached_grok`].
+#[macro_export]
+macro_rules! cached_script {
+    ($script:literal $(,)?) => {{
+        static SITE: ::std::sync::OnceLock<String> = ::std::sync::OnceLock::new();
+        SITE.get_or_init(|| $crate::painless_common::normalise($script).into_owned())
+            .as_str()
+    }};
+}
 
 /// Recursively drop null and empty values from the event.
 ///
@@ -245,6 +276,98 @@ fn append_unique_fields(script: &str) -> Option<(&'static str, &'static str)> {
     None
 }
 
+/// Flatten a field into an array field, one entry per element.
+///
+/// The vendor scripts write both branches of this and pick at runtime on the
+/// source's type, so this does the same rather than guessing from the text:
+///
+/// ```painless
+/// if (ctx.crowdstrike.event.Tags instanceof List) {
+///     for (tag in ctx.crowdstrike.event.Tags) {
+///         if (tag instanceof Map) { ctx.tags.add(tag["Key"] + ":" + tag["ValueString"]); }
+///     }
+/// } else if (ctx.crowdstrike.event.Tags instanceof String) {
+///     for (value in ctx.crowdstrike.event.Tags.splitOnToken(',')) { ctx.tags.add(value.trim()); }
+/// }
+/// ```
+fn try_append_each(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    let Some(target) = ctx_path_before(script, ".add(") else {
+        return false;
+    };
+    let Some(source) = append_source_path(script) else {
+        return false;
+    };
+    // The map branch joins two keys; without both there is nothing to build.
+    let map_keys = quoted_after(script, "tag[");
+    let separator = quoted_after(script, ".splitOnToken(")
+        .into_iter()
+        .next()
+        .unwrap_or_else(|| ",".to_string());
+
+    // A missing source is not a failure -- the processor's `if` guards it.
+    let entries: Vec<Value> = match event.get(&source) {
+        Some(Value::String(s)) => s
+            .split(&separator)
+            .map(str::trim)
+            .filter(|p| !p.is_empty())
+            .map(|p| json!(p))
+            .collect(),
+        Some(Value::Array(items)) => {
+            if map_keys.len() < 2 {
+                return false;
+            }
+            items
+                .iter()
+                .filter_map(|item| {
+                    let obj = item.as_object()?;
+                    let k = obj.get(&map_keys[0])?.as_str()?;
+                    let v = obj.get(&map_keys[1])?.as_str()?;
+                    Some(json!(format!("{k}:{v}")))
+                })
+                .collect()
+        }
+        _ => return true,
+    };
+
+    let mut existing = match event.get(&clean_path(&target)) {
+        Some(Value::Array(arr)) => arr.clone(),
+        _ => Vec::new(),
+    };
+    existing.extend(entries);
+    let _ = event.set(&clean_path(&target), Value::Array(existing));
+    true
+}
+
+/// The field the append reads from -- the one the `instanceof` ladder tests.
+fn append_source_path(script: &str) -> Option<String> {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    ctx_path_before(script, " instanceof List")
+        .or_else(|| ctx_path_before(script, " instanceof String"))
+        .or_else(|| ctx_path_before(script, ".splitOnToken("))
+        .map(|p| clean_path(&p))
+}
+
+/// Every single- or double-quoted string that follows an occurrence of `after`.
+fn quoted_after(script: &str, after: &str) -> Vec<String> {
+    let mut found = Vec::new();
+    for segment in script.split(after).skip(1) {
+        let mut chars = segment.char_indices();
+        let Some((_, quote)) = chars.next() else {
+            continue;
+        };
+        if quote != '\'' && quote != '"' {
+            continue;
+        }
+        if let Some(end) = segment[1..].find(quote) {
+            found.push(segment[1..=end].to_string());
+        }
+    }
+    found
+}
+
 /// Append every element of `from` into `into`, skipping ones already present.
 fn try_append_unique(event: &mut Event, from: &str, into: &str) -> bool {
     let Some(Value::Array(source)) = event.get(from).cloned() else {
@@ -311,7 +434,7 @@ fn read_u16(event: &Event, field: &str) -> Option<u16> {
 /// Returns true if the script was handled, false if it should fall through
 /// to the generic `painless_exec` stub.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
-    let normalised = script.replace("\\n", "\n").replace("\\\"", "\"");
+    let normalised = normalise(script);
 
     // Pattern: network.bytes / network.packets as the sum of both directions.
     if let Some(total) = sum_of_directions(&normalised) {
@@ -341,6 +464,14 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     // Pattern: append one array into another, skipping duplicates.
     if let Some((from, into)) = append_unique_fields(&normalised) {
         return try_append_unique(event, from, into);
+    }
+
+    // Pattern: flatten a field into an array, either by splitting a delimited
+    // string or by joining each map's two keys.
+    if normalised.contains(".add(")
+        && (normalised.contains(".splitOnToken(") || normalised.contains("instanceof Map"))
+    {
+        return try_append_each(event, &normalised);
     }
 
     // Pattern: drop null/empty values recursively
@@ -699,6 +830,59 @@ mod tests {
     const APPEND_DNS: &str = "def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null) {\n  \
                               for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) \
                               {\n ctx.related.ip.add(ip);\n }\n  }\n}";
+
+    /// Verbatim from `pipelines/crowdstrike/default.yml`.
+    const APPEND_TAGS: &str = "if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in \
+         ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) {\n          \
+         ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]);\n        }\n    }\n} else if \
+         (ctx.crowdstrike.event.Tags instanceof String) {\n    def values = \
+         ctx.crowdstrike.event.Tags.splitOnToken(',');\n    for (value in values) {\n        \
+         ctx.tags.add(value.trim());\n    }\n}";
+
+    #[test]
+    fn splits_a_delimited_string_onto_the_end_of_the_array() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "event": { "Tags": "SensorGroupingTags/TEACHER, FalconGroupingTags/X" }},
+            "tags": ["preserve_original_event"],
+        }));
+
+        assert!(try_known_painless(&mut event, APPEND_TAGS));
+
+        assert_eq!(
+            event.get("tags"),
+            Some(&json!([
+                "preserve_original_event",
+                "SensorGroupingTags/TEACHER",
+                "FalconGroupingTags/X"
+            ]))
+        );
+    }
+
+    /// The same script's other branch: the field arrives as maps, not a string.
+    #[test]
+    fn joins_each_map_pair_onto_the_end_of_the_array() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "event": { "Tags": [
+                { "Key": "env", "ValueString": "prod" },
+                { "Key": "team", "ValueString": "sec" },
+            ]}},
+            "tags": ["preserve_original_event"],
+        }));
+
+        assert!(try_known_painless(&mut event, APPEND_TAGS));
+
+        assert_eq!(
+            event.get("tags"),
+            Some(&json!(["preserve_original_event", "env:prod", "team:sec"]))
+        );
+    }
+
+    #[test]
+    fn an_absent_source_leaves_the_array_alone() {
+        let mut event = Event::new(json!({ "tags": ["preserve_original_event"] }));
+        assert!(try_known_painless(&mut event, APPEND_TAGS));
+        assert_eq!(event.get("tags"), Some(&json!(["preserve_original_event"])));
+    }
 
     #[test]
     fn sums_bytes_and_packets_across_directions() {

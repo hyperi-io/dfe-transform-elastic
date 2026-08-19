@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,34 +13,71 @@ impl Transform for UserActivityAudit {
         "user_activity_audit"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        event.set("event.kind", json!("event"))?;
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        // A `drop` returns through here, so the closure carries the outcome.
+        let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            event.set("event.kind", json!("event"))?;
 
-        event.append("event.category", json!("iam"))?;
+            event.append("event.category", json!("iam"))?;
 
-        event.append("event.type", json!("change"))?;
+            event.append("event.type", json!("change"))?;
 
-        event.set("event.action", json!("user_activity_audit_event"))?;
+            event.set("event.action", json!("user_activity_audit_event"))?;
 
-        if event.has("crowdstrike.event.UserId") {
-            event.rename("crowdstrike.event.UserId", "user.name")?;
-        }
+            if event.has("crowdstrike.event.UserId") {
+                event.rename("crowdstrike.event.UserId", "user.name")?;
+            }
 
-        if event.has("crowdstrike.event.OperationName") {
-            event.rename("crowdstrike.event.OperationName", "message")?;
-        }
+            if event.has("crowdstrike.event.OperationName") {
+                event.rename("crowdstrike.event.OperationName", "message")?;
+            }
 
-        let cond = {
-            event.has("crowdstrike.event.UserIp")
-                && event
-                    .get_str("crowdstrike.event.UserIp")
-                    .is_some_and(|s| !s.is_empty())
-        };
-        if cond {
-            if event.has("crowdstrike.event.UserIp") {
-                event.rename("crowdstrike.event.UserIp", "source.ip")?;
+            let _cond = {
+                event.has_value("crowdstrike.event.UserIp")
+                    && event
+                        .get_str("crowdstrike.event.UserIp")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                if event.has("crowdstrike.event.UserIp") {
+                    event.rename("crowdstrike.event.UserIp", "source.ip")?;
+                }
+            }
+
+            Ok(TransformResult::Continue)
+        })(event);
+
+        match outcome {
+            Ok(TransformResult::Drop) => return Ok(TransformResult::Drop),
+            Ok(_) => {}
+            Err(err) => {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.remove("_ingest.on_failure_message");
             }
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }
