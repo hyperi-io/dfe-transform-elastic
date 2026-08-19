@@ -114,6 +114,9 @@ impl Transform for Default {
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             let _cond = { event.has_value("source.ip") };
@@ -121,10 +124,10 @@ impl Transform for Default {
                 event.remove("azure.activitylogs.callerIpAddress");
             }
 
-            event.set(
-                "client.ip",
-                event.get("source.ip").cloned().unwrap_or(Value::Null),
-            )?;
+            let v = event.get("source.ip").cloned().unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("client.ip", v)?;
+            }
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
@@ -591,24 +594,24 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.set(
-                    "user.email",
-                    event
-                        .get("azure.activitylogs.identity.claims_initiated_by_user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("azure.activitylogs.identity.claims_initiated_by_user.name")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("user.email", v)?;
+                }
             }
 
             let _cond = { !event.has_value("user.name") };
             if _cond {
-                event.set(
-                    "user.name",
-                    event
-                        .get("azure.activitylogs.identity.claims_initiated_by_user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("azure.activitylogs.identity.claims_initiated_by_user.name")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("user.name", v)?;
+                }
             }
 
             let _cond = { event.has_value("user.name") };
@@ -809,9 +812,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

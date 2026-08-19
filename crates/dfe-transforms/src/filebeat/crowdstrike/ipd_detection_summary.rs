@@ -128,10 +128,9 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("message") };
             if _cond {
-                event.set(
-                    "rule.description",
-                    event.get("message").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("message").cloned() {
+                    event.set("rule.description", v)?;
+                }
             }
 
             if event.has("crowdstrike.event.DetectName") {
@@ -568,9 +567,6 @@ impl Transform for IpdDetectionSummary {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

@@ -25,10 +25,10 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                event.set(
-                    "event.original",
-                    event.get("o365audit").cloned().unwrap_or(Value::Null),
-                )?;
+                let v = event.get("o365audit").cloned().unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("event.original", v)?;
+                }
             }
 
             event.set("ecs.version", json!("8.11.0"))?;
@@ -116,6 +116,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -212,6 +215,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -483,13 +489,9 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("AzureActiveDirectory") };
             if _cond {
-                event.set(
-                    "user.target.id",
-                    event
-                        .get("o365audit.ObjectId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("o365audit.ObjectId").cloned() {
+                    event.set("user.target.id", v)?;
+                }
             }
 
             let _cond = {
@@ -1548,26 +1550,23 @@ impl Transform for Default {
 
             let _cond = { event.has_value("client.ip") };
             if _cond {
-                event.set(
-                    "source.ip",
-                    event.get("client.ip").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("client.ip").cloned() {
+                    event.set("source.ip", v)?;
+                }
             }
 
             let _cond = { event.has_value("client.port") };
             if _cond {
-                event.set(
-                    "source.port",
-                    event.get("client.port").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("client.port").cloned() {
+                    event.set("source.port", v)?;
+                }
             }
 
             let _cond = { event.has_value("server.ip") };
             if _cond {
-                event.set(
-                    "destination.ip",
-                    event.get("server.ip").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("server.ip").cloned() {
+                    event.set("destination.ip", v)?;
+                }
             }
 
             let _cond = {
@@ -1740,10 +1739,9 @@ impl Transform for Default {
 
             let _cond = { event.has_value("organization.id") };
             if _cond {
-                event.set(
-                    "host.id",
-                    event.get("organization.id").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("organization.id").cloned() {
+                    event.set("host.id", v)?;
+                }
             }
 
             let _cond = { event.has_value("organization.id") && event.has_value("_conf.tenants") };
@@ -1761,21 +1759,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("organization.name") && !event.has_value("host.name") };
             if _cond {
-                event.set(
-                    "host.name",
-                    event
-                        .get("organization.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("organization.name").cloned() {
+                    event.set("host.name", v)?;
+                }
             }
 
             let _cond = { event.has_value("user.domain") && !event.has_value("host.name") };
             if _cond {
-                event.set(
-                    "host.name",
-                    event.get("user.domain").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("user.domain").cloned() {
+                    event.set("host.name", v)?;
+                }
             }
 
             if event.has("o365audit.AzureActiveDirectoryEventType") {
@@ -2287,9 +2280,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

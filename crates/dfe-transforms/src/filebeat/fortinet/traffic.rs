@@ -18,13 +18,13 @@ impl Transform for Traffic {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("event.kind", json!("event"))?;
 
-            event.set(
-                "event.action",
-                event
-                    .get("fortinet.firewall.action")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            let v = event
+                .get("fortinet.firewall.action")
+                .cloned()
+                .unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("event.action", v)?;
+            }
 
             let _cond = { event.has_value("fortinet.firewall.action") };
             if _cond {
@@ -110,6 +110,9 @@ impl Transform for Traffic {
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             // ignore_failure: true
@@ -483,6 +486,9 @@ impl Transform for Traffic {
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             // ignore_failure: true
@@ -649,9 +655,6 @@ impl Transform for Traffic {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

@@ -18,6 +18,6 @@ fn okta_default_system_events() {
         &okta::default::Default,
         FIXTURE_DIR,
         "test-okta-system-events",
-        22,
+        24,
     );
 }

@@ -329,18 +329,18 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.set(
-                    "source.user.name",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
-                )?;
+                let v = event.get("user.name").cloned().unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("source.user.name", v)?;
+                }
             }
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.set(
-                    "client.user.name",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
-                )?;
+                let v = event.get("user.name").cloned().unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("client.user.name", v)?;
+                }
             }
 
             // ignore_failure: true
@@ -556,13 +556,9 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "okta.debug_context.debug_data.flattened",
-                    event
-                        .get("json.debugContext.debugData")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("json.debugContext.debugData").cloned() {
+                    event.set("okta.debug_context.debug_data.flattened", v)?;
+                }
                 Ok(())
             })();
 
@@ -659,13 +655,12 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.debug_context.debug_data.flattened.risk") };
             if _cond {
-                event.set(
-                    "okta.debug_context.debug_data.flattened.risk_object",
-                    event
-                        .get("okta.debug_context.debug_data.flattened.risk")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event
+                    .get("okta.debug_context.debug_data.flattened.risk")
+                    .cloned()
+                {
+                    event.set("okta.debug_context.debug_data.flattened.risk_object", v)?;
+                }
             }
 
             // ignore_failure: true
@@ -729,6 +724,9 @@ impl Transform for Default {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -1173,18 +1171,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.client.ip") };
             if _cond {
-                event.set(
-                    "client.ip",
-                    event.get("okta.client.ip").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta.client.ip").cloned() {
+                    event.set("client.ip", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta.client.ip") };
             if _cond {
-                event.set(
-                    "source.ip",
-                    event.get("okta.client.ip").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta.client.ip").cloned() {
+                    event.set("source.ip", v)?;
+                }
             }
 
             // ignore_failure: true
@@ -1306,57 +1302,37 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta_target_user.display_name") };
             if _cond {
-                event.set(
-                    "user.target.full_name",
-                    event
-                        .get("okta_target_user.display_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta_target_user.display_name").cloned() {
+                    event.set("user.target.full_name", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta_target_user.id") };
             if _cond {
-                event.set(
-                    "user.target.id",
-                    event
-                        .get("okta_target_user.id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta_target_user.id").cloned() {
+                    event.set("user.target.id", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta_target_user.login") };
             if _cond {
-                event.set(
-                    "user.target.email",
-                    event
-                        .get("okta_target_user.login")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta_target_user.login").cloned() {
+                    event.set("user.target.email", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta_target_group.display_name") };
             if _cond {
-                event.set(
-                    "user.target.group.name",
-                    event
-                        .get("okta_target_group.display_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta_target_group.display_name").cloned() {
+                    event.set("user.target.group.name", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta_target_group.id") };
             if _cond {
-                event.set(
-                    "user.target.group.id",
-                    event
-                        .get("okta_target_group.id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("okta_target_group.id").cloned() {
+                    event.set("user.target.group.id", v)?;
+                }
             }
 
             event.remove("okta_target_user");
@@ -1364,51 +1340,51 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.id") };
             if _cond {
-                event.set(
-                    "client.user.id",
-                    event.get("okta.actor.id").cloned().unwrap_or(Value::Null),
-                )?;
+                let v = event.get("okta.actor.id").cloned().unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("client.user.id", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta.actor.id") };
             if _cond {
-                event.set(
-                    "source.user.id",
-                    event.get("okta.actor.id").cloned().unwrap_or(Value::Null),
-                )?;
+                let v = event.get("okta.actor.id").cloned().unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("source.user.id", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                event.set(
-                    "client.user.full_name",
-                    event
-                        .get("okta.actor.display_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("okta.actor.display_name")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("client.user.full_name", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                event.set(
-                    "source.user.full_name",
-                    event
-                        .get("okta.actor.display_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("okta.actor.display_name")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("source.user.full_name", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                event.set(
-                    "user.full_name",
-                    event
-                        .get("okta.actor.display_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("okta.actor.display_name")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("user.full_name", v)?;
+                }
             }
 
             let _cond = { event.has_value("okta.actor.display_name") };
@@ -1673,9 +1649,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

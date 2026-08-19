@@ -196,10 +196,9 @@ impl Transform for Default {
                     && event.has_value("event.created")
             };
             if _cond {
-                event.set(
-                    "@timestamp",
-                    event.get("event.created").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("event.created").cloned() {
+                    event.set("@timestamp", v)?;
+                }
             }
 
             let _cond = { event.has_value("crowdstrike.event") };
@@ -410,10 +409,9 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("message") };
                 if _cond {
-                    event.set(
-                        "rule.description",
-                        event.get("message").cloned().unwrap_or(Value::Null),
-                    )?;
+                    if let Some(v) = event.get("message").cloned() {
+                        event.set("rule.description", v)?;
+                    }
                 }
                 if event.has("crowdstrike.event.FileName") {
                     event.rename("crowdstrike.event.FileName", "process.name")?;
@@ -1174,10 +1172,9 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("message") };
                 if _cond {
-                    event.set(
-                        "rule.description",
-                        event.get("message").cloned().unwrap_or(Value::Null),
-                    )?;
+                    if let Some(v) = event.get("message").cloned() {
+                        event.set("rule.description", v)?;
+                    }
                 }
                 let _cond = { event.has_value("crowdstrike.event.StartTimeEpoch") };
                 if _cond {
@@ -1255,10 +1252,9 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.start") };
                 if _cond {
-                    event.set(
-                        "@timestamp",
-                        event.get("event.start").cloned().unwrap_or(Value::Null),
-                    )?;
+                    if let Some(v) = event.get("event.start").cloned() {
+                        event.set("@timestamp", v)?;
+                    }
                 }
                 let _cond = { event.has_value("crowdstrike.event.EndTimeEpoch") };
                 if _cond {
@@ -1462,10 +1458,9 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("message") };
                 if _cond {
-                    event.set(
-                        "rule.description",
-                        event.get("message").cloned().unwrap_or(Value::Null),
-                    )?;
+                    if let Some(v) = event.get("message").cloned() {
+                        event.set("rule.description", v)?;
+                    }
                 }
                 if event.has("crowdstrike.event.DetectName") {
                     event.rename("crowdstrike.event.DetectName", "rule.name")?;
@@ -2190,10 +2185,9 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.start") };
                 if _cond {
-                    event.set(
-                        "@timestamp",
-                        event.get("event.start").cloned().unwrap_or(Value::Null),
-                    )?;
+                    if let Some(v) = event.get("event.start").cloned() {
+                        event.set("@timestamp", v)?;
+                    }
                 }
                 // End nested pipeline: "identity_protection_incident"
             }
@@ -2705,13 +2699,13 @@ impl Transform for Default {
                         event.set("process.pid", converted)?;
                     }
                 }
-                event.set(
-                    "process.executable",
-                    event
-                        .get("crowdstrike.event.ImageFileName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("crowdstrike.event.ImageFileName")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("process.executable", v)?;
+                }
                 event.remove("crowdstrike.event.ImageFileName");
                 if event.has("crowdstrike.event.RuleId") {
                     event.rename("crowdstrike.event.RuleId", "rule.id")?;
@@ -3299,10 +3293,9 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                event.set(
-                    "user.email",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("user.name").cloned() {
+                    event.set("user.email", v)?;
+                }
             }
 
             let _cond = {
@@ -3584,9 +3577,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

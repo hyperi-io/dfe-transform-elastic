@@ -566,6 +566,9 @@ impl Transform for Decryption {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -601,6 +604,9 @@ impl Transform for Decryption {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -636,6 +642,9 @@ impl Transform for Decryption {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -671,6 +680,9 @@ impl Transform for Decryption {
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
                     event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -699,163 +711,113 @@ impl Transform for Decryption {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.hash",
-                    event.get("_temp_.hash").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("_temp_.hash").cloned() {
+                    event.set("panw.panos.hash", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.tls.version",
-                    event.get("_temp_.tls").cloned().unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("_temp_.tls").cloned() {
+                    event.set("panw.panos.tls.version", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.ip",
-                    event
-                        .get("panw.panos.destination.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
+                    event.set("destination.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.nat.ip",
-                    event
-                        .get("panw.panos.destination.nat.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.nat.ip").cloned() {
+                    event.set("destination.nat.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.nat.port",
-                    event
-                        .get("panw.panos.destination.nat.port")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.nat.port").cloned() {
+                    event.set("destination.nat.port", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.port",
-                    event
-                        .get("panw.panos.destination.port")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.port").cloned() {
+                    event.set("destination.port", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "network.application",
-                    event
-                        .get("panw.panos.network.application")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.network.application").cloned() {
+                    event.set("network.application", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "network.transport",
-                    event
-                        .get("panw.panos.protocol")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.protocol").cloned() {
+                    event.set("network.transport", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.egress.interface.name",
-                    event
-                        .get("panw.panos.outbound_interface")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
+                    event.set("observer.egress.interface.name", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.egress.zone",
-                    event
-                        .get("panw.panos.destination.zone")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
+                    event.set("observer.egress.zone", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.hostname",
-                    event
-                        .get("panw.panos.device_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.device_name").cloned() {
+                    event.set("observer.hostname", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.ingress.interface.name",
-                    event
-                        .get("panw.panos.inbound_interface")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
+                    event.set("observer.ingress.interface.name", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.ingress.zone",
-                    event
-                        .get("panw.panos.source.zone")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.zone").cloned() {
+                    event.set("observer.ingress.zone", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.x509.subject.common_name",
-                    event
-                        .get("panw.panos.subject_common_name.value")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.subject_common_name.value").cloned() {
+                    event.set("tls.client.x509.subject.common_name", v)?;
+                }
                 Ok(())
             })();
 
@@ -873,13 +835,9 @@ impl Transform for Decryption {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.x509.issuer.common_name",
-                    event
-                        .get("panw.panos.issuer_common_name.value")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.issuer_common_name.value").cloned() {
+                    event.set("tls.client.x509.issuer.common_name", v)?;
+                }
                 Ok(())
             })();
 
@@ -897,157 +855,108 @@ impl Transform for Decryption {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "rule.uuid",
-                    event
-                        .get("panw.panos.rule_uuid")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
+                    event.set("rule.uuid", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.ip",
-                    event
-                        .get("panw.panos.source.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.ip").cloned() {
+                    event.set("source.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.nat.ip",
-                    event
-                        .get("panw.panos.source.nat.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.nat.ip").cloned() {
+                    event.set("source.nat.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.port",
-                    event
-                        .get("panw.panos.source.port")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.port").cloned() {
+                    event.set("source.port", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.nat.port",
-                    event
-                        .get("panw.panos.source.nat.port")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.nat.port").cloned() {
+                    event.set("source.nat.port", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.cipher",
-                    event
-                        .get("panw.panos.tls.encryption")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.tls.encryption").cloned() {
+                    event.set("tls.cipher", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.not_after",
-                    event
-                        .get("panw.panos.certificate.not_after")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.certificate.not_after").cloned() {
+                    event.set("tls.client.not_after", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.not_before",
-                    event
-                        .get("panw.panos.certificate.not_before")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.certificate.not_before").cloned() {
+                    event.set("tls.client.not_before", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.server_name",
-                    event
-                        .get("panw.panos.server_name_indication.value")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event
+                    .get("panw.panos.server_name_indication.value")
+                    .cloned()
+                {
+                    event.set("tls.client.server_name", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.x509.public_key_size",
-                    event
-                        .get("panw.panos.certificate.size")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.certificate.size").cloned() {
+                    event.set("tls.client.x509.public_key_size", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.x509.serial_number",
-                    event
-                        .get("panw.panos.certificate.serial_number")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.certificate.serial_number").cloned() {
+                    event.set("tls.client.x509.serial_number", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.client.x509.version_number",
-                    event
-                        .get("panw.panos.certificate.version")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.certificate.version").cloned() {
+                    event.set("tls.client.x509.version_number", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "tls.curve",
-                    event
-                        .get("panw.panos.elliptic_curve")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.elliptic_curve").cloned() {
+                    event.set("tls.curve", v)?;
+                }
                 Ok(())
             })();
 
@@ -1109,9 +1018,6 @@ impl Transform for Decryption {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

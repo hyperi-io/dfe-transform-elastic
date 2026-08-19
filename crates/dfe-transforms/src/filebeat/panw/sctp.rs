@@ -326,193 +326,129 @@ impl Transform for Sctp {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.ip",
-                    event
-                        .get("panw.panos.destination.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
+                    event.set("destination.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.packets",
-                    event
-                        .get("panw.panos.packets_received")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.packets_received").cloned() {
+                    event.set("destination.packets", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "destination.port",
-                    event
-                        .get("panw.panos.destination.port")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.port").cloned() {
+                    event.set("destination.port", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "log.level",
-                    event
-                        .get("panw.panos.severity")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.severity").cloned() {
+                    event.set("log.level", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "network.packets",
-                    event
-                        .get("panw.panos.network.packets")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.network.packets").cloned() {
+                    event.set("network.packets", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "network.transport",
-                    event
-                        .get("panw.panos.protocol")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.protocol").cloned() {
+                    event.set("network.transport", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.egress.interface.name",
-                    event
-                        .get("panw.panos.outbound_interface")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
+                    event.set("observer.egress.interface.name", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.egress.zone",
-                    event
-                        .get("panw.panos.destination.zone")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
+                    event.set("observer.egress.zone", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.hostname",
-                    event
-                        .get("panw.panos.device_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.device_name").cloned() {
+                    event.set("observer.hostname", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.ingress.interface.name",
-                    event
-                        .get("panw.panos.inbound_interface")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
+                    event.set("observer.ingress.interface.name", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "observer.ingress.zone",
-                    event
-                        .get("panw.panos.source.zone")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.zone").cloned() {
+                    event.set("observer.ingress.zone", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "panw.panos.serial_number",
-                    event
-                        .get("observer.serial_number")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("observer.serial_number").cloned() {
+                    event.set("panw.panos.serial_number", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "rule.uuid",
-                    event
-                        .get("panw.panos.rule_uuid")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
+                    event.set("rule.uuid", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.ip",
-                    event
-                        .get("panw.panos.source.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.ip").cloned() {
+                    event.set("source.ip", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.packets",
-                    event
-                        .get("panw.panos.packets_sent")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.packets_sent").cloned() {
+                    event.set("source.packets", v)?;
+                }
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                event.set(
-                    "source.port",
-                    event
-                        .get("panw.panos.source.port")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.source.port").cloned() {
+                    event.set("source.port", v)?;
+                }
                 Ok(())
             })();
 
@@ -568,9 +504,6 @@ impl Transform for Sctp {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

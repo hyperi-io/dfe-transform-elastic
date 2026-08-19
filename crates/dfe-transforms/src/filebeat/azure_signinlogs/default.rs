@@ -92,24 +92,24 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.address") };
             if _cond {
-                event.set(
-                    "source.address",
-                    event
-                        .get("azure.signinlogs.properties.ipaddress")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("azure.signinlogs.properties.ipaddress")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("source.address", v)?;
+                }
             }
 
             let _cond = { !event.has_value("source.address") };
             if _cond {
-                event.set(
-                    "source.address",
-                    event
-                        .get("azure.signinlogs.properties.ip_address")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                let v = event
+                    .get("azure.signinlogs.properties.ip_address")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("source.address", v)?;
+                }
             }
 
             // ignore_failure: true
@@ -159,10 +159,10 @@ impl Transform for Default {
                 )?;
             }
 
-            event.set(
-                "client.ip",
-                event.get("source.ip").cloned().unwrap_or(Value::Null),
-            )?;
+            let v = event.get("source.ip").cloned().unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("client.ip", v)?;
+            }
 
             if event.has("azure.signinlogs.level") {
                 if let Some(val) = event.get("azure.signinlogs.level") {
@@ -313,19 +313,23 @@ impl Transform for Default {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx?.azure?.signinlogs?.properties?.status?.error_code != null && ctx.azure.signinlogs.properties.status.error_code > 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.status.error_code")
+                    && event
+                        .get_i64("azure.signinlogs.properties.status.error_code")
+                        .is_some_and(|n| n > 0)
+            };
+            if _cond {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            event.set(
-                "event.id",
-                event
-                    .get("azure.signinlogs.properties.id")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            let v = event
+                .get("azure.signinlogs.properties.id")
+                .cloned()
+                .unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("event.id", v)?;
+            }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
@@ -657,9 +661,6 @@ impl Transform for Default {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }
