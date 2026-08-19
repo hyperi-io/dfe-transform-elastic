@@ -87,6 +87,31 @@ fn cisco_meraki_idsalerts_writes_dotted_paths() {
     assert_no_underscored_captures(&event, "cisco_meraki::idsalerts");
 }
 
+/// A pipeline's own grok definition captured into a dotted path becomes a raw
+/// `(?P<a_b>...)` group once inlined, which the expander never sees as
+/// `%{NAME:a.b}`. Without the explicit pairs the value lands on `a_b` and every
+/// later processor reading the dotted path misses it.
+#[test]
+fn an_inlined_group_reaches_its_dotted_path_through_the_supplied_map() {
+    let compiled = dfe_runtime::grok_cache::grok_mapped(
+        r"^(?P<temp_timestamp>(?:\d{4}))$",
+        &[("temp_timestamp", "temp.timestamp")],
+    );
+
+    let mut event = Event::new(serde_json::json!({}));
+    assert!(
+        compiled
+            .extract_into("2026", &mut event)
+            .expect("extraction succeeds")
+    );
+    assert_eq!(event.get_str("temp.timestamp"), Some("2026"));
+    assert!(
+        event.as_value().get("temp_timestamp").is_none(),
+        "the capture name must not survive as a flat key: {}",
+        event.as_value()
+    );
+}
+
 /// The mapped path is what the block must use, checked directly against the
 /// runtime rather than through a transform.
 #[test]

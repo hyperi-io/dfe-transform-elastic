@@ -13,7 +13,7 @@ impl Transform for Airmarshal {
         "airmarshal"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         if let Some(input) = event.get_string("event.original") {
             let mut remaining: &str = &input;
             if let Some(pos) = remaining.find(" airmarshal_events ") {
@@ -42,8 +42,11 @@ impl Transform for Airmarshal {
 
         if let Some(input) = event.get_string("event.original") {
             // Grok pattern: %{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}
-            cached_grok!("%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}")
-                .extract_into(&input, event)?;
+            if !cached_grok!(
+                "%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}"
+            )
+            .extract_into(&input, event)?
+            {}
         }
 
         if let Some(input) = event.get_string("_temp.ssid") {
@@ -63,6 +66,18 @@ impl Transform for Airmarshal {
         if let Some(kv_str) = event.get_string("_temp.kvline") {
             for pair in kv_str.split(" ") {
                 if let Some((key, value)) = pair.split_once("=") {
+                    let value = match (value.chars().next(), value.chars().last()) {
+                        (Some('('), Some(')'))
+                        | (Some('['), Some(']'))
+                        | (Some('<'), Some('>'))
+                        | (Some('"'), Some('"'))
+                        | (Some('\''), Some('\''))
+                            if value.chars().count() > 1 =>
+                        {
+                            &value[1..value.len() - 1]
+                        }
+                        _ => value,
+                    };
                     if !key.is_empty() {
                         event.set(&format!("_temp.kv.{}", key), value)?;
                     }
@@ -84,13 +99,13 @@ impl Transform for Airmarshal {
         }
 
         if let Some(s) = event.get_string("_temp.kv.src") {
-            let re = regex::Regex::new("[-:.]").unwrap();
+            let re = cached_regex!("[-:.]");
             let replaced = re.replace_all(&s, "-").into_owned();
             event.set("source.mac", replaced)?;
         }
 
         if let Some(s) = event.get_string("_temp.kv.dst") {
-            let re = regex::Regex::new("[-:.]").unwrap();
+            let re = cached_regex!("[-:.]");
             let replaced = re.replace_all(&s, "-").into_owned();
             event.set("destination.mac", replaced)?;
         }
@@ -98,7 +113,7 @@ impl Transform for Airmarshal {
         let _cond = { event.get_str("cisco_meraki.event_subtype") == Some("rogue_ssid_detected") };
         if _cond {
             if let Some(s) = event.get_string("_temp.kv.wired_mac") {
-                let re = regex::Regex::new("[-:.]").unwrap();
+                let re = cached_regex!("[-:.]");
                 let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("_temp.observer.mac", replaced)?;
             }

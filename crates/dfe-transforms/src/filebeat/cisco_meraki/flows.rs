@@ -13,22 +13,29 @@ impl Transform for Flows {
         "flows"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        // Pattern definitions for grok
-        // TYPE = flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         if let Some(input) = event.get_string("event.original") {
-            // Grok pattern: %{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
-            cached_grok!("%{TYPE}( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").extract_into(&input, event)?;
+            // Grok pattern: (?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
+            if !cached_grok!("(?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").extract_into(&input, event)? {
+                }
         }
 
-        // SKIPPED: condition not transpiled: ctx.cisco_meraki?.firewall?.pattern != null && (ctx.cisco_meraki.firewall.pattern.startsWith('allow') || ctx.cisco_meraki.firewall.pattern.startsWith('deny'))
-        #[allow(unreachable_code, unused_variables)]
-        if false {
+        let _cond = {
+            event.has("cisco_meraki.firewall.pattern")
+                && (event
+                    .get_str("cisco_meraki.firewall.pattern")
+                    .is_some_and(|s| s.starts_with("allow"))
+                    || event
+                        .get_str("cisco_meraki.firewall.pattern")
+                        .is_some_and(|s| s.starts_with("deny")))
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_meraki.firewall.pattern") {
                     // Grok pattern: %{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}
-                    cached_grok!("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}").extract_into(&input, event)?;
+                    if !cached_grok!("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}").extract_into(&input, event)? {
+                }
                 }
                 Ok(())
             })();
@@ -45,7 +52,7 @@ impl Transform for Flows {
 
         if event.has("source.mac") {
             if let Some(s) = event.get_string("source.mac") {
-                let re = regex::Regex::new("[:.]").unwrap();
+                let re = cached_regex!("[:.]");
                 let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("source.mac", replaced)?;
             }
