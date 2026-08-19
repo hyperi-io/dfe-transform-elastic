@@ -14,63 +14,85 @@ impl Transform for Flows {
     }
 
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
-        if let Some(input) = event.get_string("event.original") {
-            // Grok pattern: (?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
-            if !cached_grok!("(?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").extract_into(&input, event)? {
-                }
-        }
+        // A `drop` returns through here, so the closure carries the outcome.
+        let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            if let Some(input) = event.get_string("event.original") {
+                // Grok pattern: (?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
+                if !cached_grok!("(?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").extract_into(&input, event)? {
+                    }
+            }
 
-        let _cond = {
-            event.has("cisco_meraki.firewall.pattern")
-                && (event
-                    .get_str("cisco_meraki.firewall.pattern")
-                    .is_some_and(|s| s.starts_with("allow"))
-                    || event
+            let _cond = {
+                event.has("cisco_meraki.firewall.pattern")
+                    && (event
                         .get_str("cisco_meraki.firewall.pattern")
-                        .is_some_and(|s| s.starts_with("deny")))
-        };
-        if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_string("cisco_meraki.firewall.pattern") {
-                    // Grok pattern: %{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}
-                    if !cached_grok!("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}").extract_into(&input, event)? {
-                }
-                }
-                Ok(())
-            })();
-        }
-
-        let _cond = { event.has("cisco_meraki.firewall.rule") };
-        if _cond {
-            if event.remove("cisco_meraki.firewall.pattern").is_none() {
-                return Err(TransformError::FieldNotFound {
-                    path: "cisco_meraki.firewall.pattern".into(),
-                });
+                        .is_some_and(|s| s.starts_with("allow"))
+                        || event
+                            .get_str("cisco_meraki.firewall.pattern")
+                            .is_some_and(|s| s.starts_with("deny")))
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("cisco_meraki.firewall.pattern") {
+                        // Grok pattern: %{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}
+                        if !cached_grok!("%{NOTSPACE:cisco_meraki.firewall.action} %{GREEDYDATA:cisco_meraki.firewall.rule}").extract_into(&input, event)? {
+                    }
+                    }
+                    Ok(())
+                })();
             }
-        }
 
-        if event.has("source.mac") {
-            if let Some(s) = event.get_string("source.mac") {
-                let re = cached_regex!("[:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("source.mac", replaced)?;
+            let _cond = { event.has("cisco_meraki.firewall.rule") };
+            if _cond {
+                if event.remove("cisco_meraki.firewall.pattern").is_none() {
+                    return Err(TransformError::FieldNotFound {
+                        path: "cisco_meraki.firewall.pattern".into(),
+                    });
+                }
             }
-        }
 
-        let _cond = { !event.has("cisco_meraki.flows.op") };
-        if _cond {
-            event.set("cisco_meraki.event_subtype", json!("ip_session_initiated"))?;
-        }
+            if event.has("source.mac") {
+                if let Some(s) = event.get_string("source.mac") {
+                    let re = cached_regex!("[:.]");
+                    let replaced = re.replace_all(&s, "-").into_owned();
+                    event.set("source.mac", replaced)?;
+                }
+            }
 
-        let _cond = { event.get_str("cisco_meraki.flows.op") == Some("allow") };
-        if _cond {
-            event.set("cisco_meraki.event_subtype", json!("flow_allowed"))?;
-        }
+            let _cond = { !event.has("cisco_meraki.flows.op") };
+            if _cond {
+                event.set("cisco_meraki.event_subtype", json!("ip_session_initiated"))?;
+            }
 
-        let _cond = { event.get_str("cisco_meraki.flows.op") == Some("deny") };
-        if _cond {
-            event.set("cisco_meraki.event_subtype", json!("flow_denied"))?;
+            let _cond = { event.get_str("cisco_meraki.flows.op") == Some("allow") };
+            if _cond {
+                event.set("cisco_meraki.event_subtype", json!("flow_allowed"))?;
+            }
+
+            let _cond = { event.get_str("cisco_meraki.flows.op") == Some("deny") };
+            if _cond {
+                event.set("cisco_meraki.event_subtype", json!("flow_denied"))?;
+            }
+
+            Ok(TransformResult::Continue)
+        })(event);
+
+        match outcome {
+            Ok(TransformResult::Drop) => return Ok(TransformResult::Drop),
+            Ok(_) => {}
+            Err(err) => {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append(
+                    "error.message",
+                    event
+                        .get("_ingest.on_failure_message")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+                event.remove("_ingest.on_failure_message");
+            }
         }
 
         // --- Post-processing (codegen-emitted) ---
