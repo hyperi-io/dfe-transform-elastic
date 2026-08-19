@@ -13,7 +13,7 @@ impl Transform for Events {
         "events"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         if let Some(input) = event.get_string("event.original") {
             let mut remaining: &str = &input;
             if let Some(pos) = remaining.find(" events ") {
@@ -31,39 +31,66 @@ impl Transform for Events {
             }
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("site-to-site") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "site-to-site")
+        };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("Site-to-Site VPN"))?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("client_vpn_connect") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "client_vpn_connect")
+        };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("client_vpn_connect"))?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("blocked") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "blocked")
+        };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("blocked"))?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("auth") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "auth")
+        };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("auth"))?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("port") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "port")
+        };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("port"))?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("carrier_change") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "carrier_change")
+        };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("carrier_change"))?;
         }
 
-        // SKIPPED: condition not transpiled: ctx?.msgtype.startsWith("type=")
-        #[allow(unreachable_code, unused_variables)]
-        if false {
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.starts_with("type="))
+        };
+        if _cond {
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" events type=") {
@@ -87,7 +114,11 @@ impl Transform for Events {
             event.rename("type", "cisco_meraki.event_subtype")?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("dhcp") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
+        };
         if _cond {
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
@@ -114,14 +145,22 @@ impl Transform for Events {
             }
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("dhcp") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
+        };
         if _cond {
             event.set("network.protocol", json!("dhcp"))?;
         }
 
         let _cond = {
-            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
-                && event.get_str("_temp.dhcp_op.toLowerCase()") == Some("lease")
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
+                && event
+                    .get_str("_temp.dhcp_op")
+                    .is_some_and(|s| s.to_lowercase() == "lease")
         };
         if _cond {
             if let Some(input) = event.get_string("event.original") {
@@ -163,9 +202,15 @@ impl Transform for Events {
         }
 
         let _cond = {
-            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
-                && event.get_str("_temp.dhcp_op.toLowerCase()") == Some("no")
-                && event.get_str("_temp.dhcp_op2.toLowerCase()") == Some("offers")
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
+                && event
+                    .get_str("_temp.dhcp_op")
+                    .is_some_and(|s| s.to_lowercase() == "no")
+                && event
+                    .get_str("_temp.dhcp_op2")
+                    .is_some_and(|s| s.to_lowercase() == "offers")
         };
         if _cond {
             if let Some(input) = event.get_string("event.original") {
@@ -187,7 +232,9 @@ impl Transform for Events {
         }
 
         let _cond = {
-            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
                 && event.get_str("_temp.dhcp_op") == Some("lease")
         };
         if _cond {
@@ -195,58 +242,65 @@ impl Transform for Events {
         }
 
         let _cond = {
-            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
-                && event.get_str("_temp.dhcp_op.toLowerCase()") == Some("no")
-                && event.get_str("_temp.dhcp_op2.toLowerCase()") == Some("offers")
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
+                && event
+                    .get_str("_temp.dhcp_op")
+                    .is_some_and(|s| s.to_lowercase() == "no")
+                && event
+                    .get_str("_temp.dhcp_op2")
+                    .is_some_and(|s| s.to_lowercase() == "offers")
         };
         if _cond {
             event.set("cisco_meraki.event_subtype", json!("dhcp_no_offer"))?;
         }
 
-        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("dhcp") };
+        let _cond = {
+            event
+                .get_str("msgtype")
+                .is_some_and(|s| s.to_lowercase() == "dhcp")
+        };
         if _cond {
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: events dhcp %{GREEDYDATA:message}$
-                cached_grok!("events dhcp %{GREEDYDATA:message}$").extract_into(&input, event)?;
+                if !cached_grok!("events dhcp %{GREEDYDATA:message}$")
+                    .extract_into(&input, event)?
+                {}
             }
         }
 
         let _cond = {
-            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
-                == Some("Site-to-Site VPN")
+            event
+                .get_str("event.original")
+                .is_some_and(|s| s.starts_with("<"))
+                && event.get_str("cisco_meraki.event_subtype") == Some("Site-to-Site VPN")
         };
         if _cond {
-            // Pattern definitions for grok
-            // SYSLOGVER = \b(?:\d{1,2})\b
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
             if let Some(input) = event.get_string("event.original") {
-                // Grok pattern: %{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}
-                cached_grok!("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").extract_into(&input, event)?;
+                // Grok pattern: (?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}
+                if !cached_grok!("(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").extract_into(&input, event)? {
+                }
             }
         }
 
         let _cond = {
-            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
-                == Some("blocked")
+            event
+                .get_str("event.original")
+                .is_some_and(|s| s.starts_with("<"))
+                && event.get_str("cisco_meraki.event_subtype") == Some("blocked")
         };
         if _cond {
-            // Pattern definitions for grok
-            // SYSLOGVER = \b(?:\d{1,2})\b
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
-            // BLOCKEDARP = Blocked ARP Packet
             if let Some(input) = event.get_string("event.original") {
-                // Grok pattern: ^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$
-                cached_grok!("^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$").extract_into(&input, event)?;
+                // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$
+                if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$", [("_temp_blocked_arp", "_temp.blocked_arp")]).extract_into(&input, event)? {
+                }
             }
         }
 
         if event.has("source.mac") {
             if let Some(s) = event.get_string("source.mac") {
-                let re = regex::Regex::new("[:.]").unwrap();
+                let re = cached_regex!("[:.]");
                 let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("source.mac", replaced)?;
             }
@@ -265,25 +319,22 @@ impl Transform for Events {
         }
 
         let _cond = {
-            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
-                == Some("port")
+            event
+                .get_str("event.original")
+                .is_some_and(|s| s.starts_with("<"))
+                && event.get_str("cisco_meraki.event_subtype") == Some("port")
         };
         if _cond {
-            // Pattern definitions for grok
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // PORTACTION = (?:changed stp role|status changed)
-            // SYSLOGVER = \b(?:\d{1,2})\b
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
             if let Some(input) = event.get_string("event.original") {
-                // Grok pattern: ^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$
-                cached_grok!("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$").extract_into(&input, event)?;
+                // Grok pattern: ^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} (?P<_temp_port_action>(?:(?:changed stp role|status changed)))(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$
+                if !cached_grok_mapped!("^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} (?P<_temp_port_action>(?:(?:changed stp role|status changed)))(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$", [("_temp_port_action", "_temp.port_action")]).extract_into(&input, event)? {
+                }
             }
         }
 
         if event.has("_temp.port_action") {
             if let Some(s) = event.get_string("_temp.port_action") {
-                let re = regex::Regex::new(" ").unwrap();
+                let re = cached_regex!(" ");
                 let replaced = re.replace_all(&s, "_").into_owned();
                 event.set("_temp.port_action", replaced)?;
             }
@@ -308,18 +359,16 @@ impl Transform for Events {
         }
 
         let _cond = {
-            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
-                == Some("carrier_change")
+            event
+                .get_str("event.original")
+                .is_some_and(|s| s.starts_with("<"))
+                && event.get_str("cisco_meraki.event_subtype") == Some("carrier_change")
         };
         if _cond {
-            // Pattern definitions for grok
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // SYSLOGVER = \b(?:\d{1,2})\b
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
             if let Some(input) = event.get_string("event.original") {
-                // Grok pattern: ^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$
-                cached_grok!("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").extract_into(&input, event)?;
+                // Grok pattern: ^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$
+                if !cached_grok!("^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").extract_into(&input, event)? {
+                }
             }
         }
 
@@ -333,17 +382,33 @@ impl Transform for Events {
             event.set("cisco_meraki.new_port_status", json!("down"))?;
         }
 
-        // SKIPPED: condition not transpiled: ctx.event.original.startsWith('<') && ['dfs_event', 'association', 'disassociation', 'aps_association_reject', 'multiple_dhcp_servers_detected', 'wpa_deauth', 'wpa_auth', 'vpn_connectivity_change', '8021x_eap_failure', '8021x_auth', '8021x_deauth', '8021x_eap_success', 'splash_auth', 'device_packet_flood'].contains(ctx.cisco_meraki.event_subtype)
-        #[allow(unreachable_code, unused_variables)]
-        if false {
-            // Pattern definitions for grok
-            // SYSLOGVER = \b(?:\d{1,2})\b
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
+        let _cond = {
+            event
+                .get_str("event.original")
+                .is_some_and(|s| s.starts_with("<"))
+                && [
+                    "dfs_event",
+                    "association",
+                    "disassociation",
+                    "aps_association_reject",
+                    "multiple_dhcp_servers_detected",
+                    "wpa_deauth",
+                    "wpa_auth",
+                    "vpn_connectivity_change",
+                    "8021x_eap_failure",
+                    "8021x_auth",
+                    "8021x_deauth",
+                    "8021x_eap_success",
+                    "splash_auth",
+                    "device_packet_flood",
+                ]
+                .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
+        };
+        if _cond {
             if let Some(input) = event.get_string("event.original") {
-                // Grok pattern: %{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}
-                cached_grok!("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").extract_into(&input, event)?;
+                // Grok pattern: (?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}
+                if !cached_grok!("(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").extract_into(&input, event)? {
+                }
             }
         }
 
@@ -374,8 +439,20 @@ impl Transform for Events {
                     kv_target_prefix.push_str(segment);
                     kv_target_prefix.push('.');
                 }
-                for pair in kv_str.split("[ \t]{1,}") {
+                for pair in cached_regex!("[ \t]{1,}").split(&kv_str) {
                     if let Some((key, value)) = pair.split_once("=") {
+                        let value = match (value.chars().next(), value.chars().last()) {
+                            (Some('('), Some(')'))
+                            | (Some('['), Some(']'))
+                            | (Some('<'), Some('>'))
+                            | (Some('"'), Some('"'))
+                            | (Some('\''), Some('\''))
+                                if value.chars().count() > 1 =>
+                            {
+                                &value[1..value.len() - 1]
+                            }
+                            _ => value,
+                        };
                         if !key.is_empty() {
                             event.set(&format!("{}{}", kv_target_prefix, key), value)?;
                         }
@@ -390,8 +467,20 @@ impl Transform for Events {
         };
         if _cond {
             if let Some(kv_str) = event.get_string("_temp.rest") {
-                for pair in kv_str.split("[ \t]{1,}") {
+                for pair in cached_regex!("[ \t]{1,}").split(&kv_str) {
                     if let Some((key, value)) = pair.split_once("=") {
+                        let value = match (value.chars().next(), value.chars().last()) {
+                            (Some('('), Some(')'))
+                            | (Some('['), Some(']'))
+                            | (Some('<'), Some('>'))
+                            | (Some('"'), Some('"'))
+                            | (Some('\''), Some('\''))
+                                if value.chars().count() > 1 =>
+                            {
+                                &value[1..value.len() - 1]
+                            }
+                            _ => value,
+                        };
                         if !key.is_empty() {
                             event.set(
                                 &format!(
@@ -433,11 +522,15 @@ impl Transform for Events {
                     .get_string("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
                 {
                     // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
-                    cached_grok!(
+                    if !cached_grok!(
                         "^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$"
                     )
-                    .extract_into(&input, event)?;
-                    // Additional grok pattern 1: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
+                    .extract_into(&input, event)?
+                    {
+                        // Grok pattern: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
+                        if !cached_grok!("^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$").extract_into(&input, event)? {
+                    }
+                    }
                 }
                 Ok(())
             })();
@@ -497,9 +590,16 @@ impl Transform for Events {
                 event.get_string("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
             {
                 // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
-                cached_grok!("^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$")
-                    .extract_into(&input, event)?;
-                // Additional grok pattern 1: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
+                if !cached_grok!("^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$")
+                    .extract_into(&input, event)?
+                {
+                    // Grok pattern: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
+                    if !cached_grok!(
+                        "^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$"
+                    )
+                    .extract_into(&input, event)?
+                    {}
+                }
             }
         }
 
@@ -572,8 +672,9 @@ impl Transform for Events {
         if _cond {
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: events client_vpn_connect %{GREEDYDATA:message}$
-                cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
-                    .extract_into(&input, event)?;
+                if !cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
+                    .extract_into(&input, event)?
+                {}
             }
         }
 
@@ -583,8 +684,11 @@ impl Transform for Events {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_temp.client_ip") {
                     // Grok pattern: ^%{IPV4:_temp.client_ip}$
-                    cached_grok!("^%{IPV4:_temp.client_ip}$").extract_into(&input, event)?;
-                    // Additional grok pattern 1: ^%{IPV6:_temp.client_ip}$
+                    if !cached_grok!("^%{IPV4:_temp.client_ip}$").extract_into(&input, event)? {
+                        // Grok pattern: ^%{IPV6:_temp.client_ip}$
+                        if !cached_grok!("^%{IPV6:_temp.client_ip}$").extract_into(&input, event)? {
+                        }
+                    }
                 }
                 Ok(())
             })();
@@ -611,7 +715,7 @@ impl Transform for Events {
 
         if event.has("client.mac") {
             if let Some(s) = event.get_string("client.mac") {
-                let re = regex::Regex::new("[:.]").unwrap();
+                let re = cached_regex!("[:.]");
                 let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("client.mac", replaced)?;
             }
@@ -626,7 +730,7 @@ impl Transform for Events {
 
         if event.has("server.mac") {
             if let Some(s) = event.get_string("server.mac") {
-                let re = regex::Regex::new("[:.]").unwrap();
+                let re = cached_regex!("[:.]");
                 let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("server.mac", replaced)?;
             }

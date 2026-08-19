@@ -13,7 +13,7 @@ impl Transform for Ipflows {
         "ipflows"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         if let Some(input) = event.get_string("event.original") {
             let mut remaining: &str = &input;
             if let Some(pos) = remaining.find(" ") {

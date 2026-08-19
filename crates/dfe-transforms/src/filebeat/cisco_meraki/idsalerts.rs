@@ -13,7 +13,7 @@ impl Transform for Idsalerts {
         "idsalerts"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         if let Some(input) = event.get_string("event.original") {
             let mut remaining: &str = &input;
             if let Some(pos) = remaining.find(" ids-alerts ") {
@@ -117,16 +117,23 @@ impl Transform for Idsalerts {
 
         let _cond = { event.has("src") };
         if _cond {
-            // Pattern definitions for grok
-            // PORT = [0-9]+
-            // IPV6NOCOMPRESS = ([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}
-            // IPV6PORTSEP = (?: port |[p#.])
             if let Some(input) = event.get_string("src") {
-                // Grok pattern: ^%{IPV4:_temp.src_ip}:%{PORT:sport}$
-                cached_grok!("^%{IPV4:_temp.src_ip}:%{PORT:sport}$").extract_into(&input, event)?;
-                // Additional grok pattern 1: ^\\[%{IPV6:_temp.src_ip}\\]:%{PORT:sport}$
-                // Additional grok pattern 2: ^%{IPV6NOCOMPRESS:_temp.src_ip}:%{PORT:sport}$
-                // Additional grok pattern 3: ^%{IPV6:_temp.src_ip}%{IPV6PORTSEP}%{PORT:sport}$
+                // Grok pattern: ^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$
+                if !cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$")
+                    .extract_into(&input, event)?
+                {
+                    // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
+                    if !cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$")
+                        .extract_into(&input, event)?
+                    {
+                        // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
+                        if !cached_grok_mapped!("^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$", [("_temp_src_ip", "_temp.src_ip")]).extract_into(&input, event)? {
+                            // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
+                            if !cached_grok!("^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$").extract_into(&input, event)? {
+                            }
+                        }
+                    }
+                }
             }
         }
 
