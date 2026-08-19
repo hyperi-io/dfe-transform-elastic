@@ -116,13 +116,13 @@ impl Transform for FirewallMatch {
                 }
             }
 
-            event.set(
-                "process.executable",
-                event
-                    .get("crowdstrike.event.ImageFileName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+            let v = event
+                .get("crowdstrike.event.ImageFileName")
+                .cloned()
+                .unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("process.executable", v)?;
+            }
 
             event.remove("crowdstrike.event.ImageFileName");
 
@@ -408,9 +408,6 @@ impl Transform for FirewallMatch {
             dedup_array(&mut arr);
             event.set("related.hosts", Value::Array(arr))?;
         }
-        // Final cleanup: remove null/empty fields created during processing
-        painless_drop_empty(event.as_value_mut());
-
         Ok(TransformResult::Continue)
     }
 }

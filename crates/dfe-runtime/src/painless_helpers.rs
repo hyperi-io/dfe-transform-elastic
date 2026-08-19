@@ -163,6 +163,17 @@ pub fn painless_cmp(a: &Value, b: &Value) -> Option<std::cmp::Ordering> {
     a_f.partial_cmp(&b_f)
 }
 
+/// Elastic's `ignore_empty_value`: null, or an empty string.
+///
+/// An empty array or object is a REAL value and is written -- the vendor
+/// expectations carry `[]` and `{}` on Azure's properties, and treating them
+/// as empty is how they went missing.
+#[inline]
+#[must_use]
+pub fn painless_is_empty_value(value: &Value) -> bool {
+    matches!(value, Value::Null) || value.as_str() == Some("")
+}
+
 /// Recursive removal of null and empty values from a `Value` tree.
 ///
 /// Used by okta, `cisco_nexus`, and fortinet `drop` scripts.

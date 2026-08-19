@@ -276,6 +276,218 @@ fn append_unique_fields(script: &str) -> Option<(&'static str, &'static str)> {
     None
 }
 
+/// Re-key an array of maps into an object indexed by position.
+///
+/// Azure writes this out longhand -- a loop that builds `target[String.valueOf(i)]`
+/// and copies each field under its `snake_case` name, guarding the optional ones:
+///
+/// ```painless
+/// if (ctx.a.targetResources != null) {
+///   ctx.a.target_resources = new HashMap();
+///   for (def i = 0; i < ctx.a.targetResources.length; i++) {
+///     String index = String.valueOf(i);
+///     ctx.a.target_resources[index] = new HashMap();
+///     ctx.a.target_resources[index].display_name = ctx.a.targetResources[i].displayName;
+///     ...
+///   }
+///   ctx.a.properties.remove('targetResources');
+/// }
+/// ```
+///
+/// Every rename in it is `to_snake_case`, and every guard is "skip a null", so
+/// the loop is those two rules applied recursively.
+fn try_array_to_indexed_object(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    let Some(source) = ctx_path_before(script, " != null") else {
+        return false;
+    };
+    let Some(target) = ctx_path_before(script, " = new HashMap()") else {
+        return false;
+    };
+    let (source, target) = (clean_path(&source), clean_path(&target));
+    if source == target {
+        return false;
+    }
+
+    // A missing source is not a failure -- the script's own `if` guards it.
+    let Some(Value::Array(items)) = event.get(&source).cloned() else {
+        return true;
+    };
+
+    let rekeyed = index_keyed(&Value::Array(items));
+    event.remove(&source);
+    let _ = event.set(&target, rekeyed);
+    true
+}
+
+/// Join two optional fields, falling back to whichever one is present.
+///
+/// ```painless
+/// String reason = ctx?.a?.failure_reason;
+/// String details = ctx?.a?.additional_details;
+/// if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; }
+/// else if (reason != null) { ctx['message'] = reason; }
+/// else if (details != null) { ctx['message'] = details; }
+/// ```
+fn try_join_optional(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let bindings = string_bindings(script);
+    let [(first, first_path), (second, second_path)] = bindings.as_slice() else {
+        return false;
+    };
+    let Some(target) = bracket_assignment_target(script) else {
+        return false;
+    };
+
+    let a = event.get_str(&clean_path(first_path)).map(str::to_string);
+    let b = event.get_str(&clean_path(second_path)).map(str::to_string);
+
+    let joined = match (a, b) {
+        (Some(a), Some(b)) => {
+            let Some(expr) = both_present_expression(script) else {
+                return false;
+            };
+            concat_expression(&expr, &[(first.as_str(), &a), (second.as_str(), &b)])
+        }
+        (Some(a), None) => a,
+        (None, Some(b)) => b,
+        // Neither present -- the script assigns nothing.
+        (None, None) => return true,
+    };
+
+    let _ = event.set(&target, json!(joined));
+    true
+}
+
+/// The `String <name> = ctx...;` bindings, in source order.
+fn string_bindings(script: &str) -> Vec<(String, String)> {
+    let mut out = Vec::new();
+    for segment in script.split("String ").skip(1) {
+        let Some((name, rest)) = segment.split_once(" = ctx") else {
+            continue;
+        };
+        let path = rest.split(';').next().unwrap_or("");
+        out.push((
+            name.trim().to_string(),
+            path.trim_start_matches(['?', '.']).to_string(),
+        ));
+    }
+    out
+}
+
+/// The field a `ctx['<name>'] =` assignment writes to.
+fn bracket_assignment_target(script: &str) -> Option<String> {
+    let start = script.find("ctx['")? + "ctx['".len();
+    let end = script[start..].find('\'')?;
+    Some(script[start..start + end].to_string())
+}
+
+/// The right-hand side of the branch taken when BOTH fields are present.
+fn both_present_expression(script: &str) -> Option<String> {
+    let head = script.find("&&")? + 2;
+    let start = head + assignment_offset(&script[head..])?;
+    let end = script[start..].find(';')?;
+    Some(script[start..start + end].trim().to_string())
+}
+
+/// The offset just past the first ASSIGNMENT `=`, skipping `!=` `==` `<=` `>=`.
+fn assignment_offset(text: &str) -> Option<usize> {
+    let bytes = text.as_bytes();
+    for (i, c) in bytes.iter().enumerate() {
+        if *c != b'=' {
+            continue;
+        }
+        let before = i.checked_sub(1).map(|p| bytes[p]);
+        if matches!(before, Some(b'!' | b'=' | b'<' | b'>')) || bytes.get(i + 1) == Some(&b'=') {
+            continue;
+        }
+        return Some(i + 1);
+    }
+    None
+}
+
+/// Evaluate a `a + ' (' + b + ')'` concatenation against the bound variables.
+fn concat_expression(expr: &str, bound: &[(&str, &String)]) -> String {
+    let mut out = String::new();
+    for token in expr.split('+') {
+        let token = token.trim();
+        if let Some(literal) = token
+            .strip_prefix('\'')
+            .and_then(|t| t.strip_suffix('\''))
+            .or_else(|| token.strip_prefix('"').and_then(|t| t.strip_suffix('"')))
+        {
+            out.push_str(literal);
+        } else if let Some((_, value)) = bound.iter().find(|(name, _)| *name == token) {
+            out.push_str(value);
+        }
+    }
+    out
+}
+
+/// Collapse an array of `{key, value}` maps into one object.
+///
+/// `[{key: 'k1', value: 'v1'}]` becomes `{k1: 'v1'}`, in place.
+fn try_key_value_pairs(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    let Some(field) = ctx_path_before(script, " = tmp") else {
+        return false;
+    };
+    let field = clean_path(&field);
+
+    // Already an object, or absent -- the processor's `instanceof List` guards
+    // both, so there is nothing to do either way.
+    let Some(Value::Array(items)) = event.get(&field).cloned() else {
+        return true;
+    };
+
+    let mut out = Map::new();
+    for item in &items {
+        let Some(obj) = item.as_object() else {
+            continue;
+        };
+        let Some(key) = obj.get("key").and_then(Value::as_str) else {
+            continue;
+        };
+        out.insert(
+            key.to_string(),
+            obj.get("value").cloned().unwrap_or(Value::Null),
+        );
+    }
+    let _ = event.set(&field, Value::Object(out));
+    true
+}
+
+/// An array of maps as an object keyed "0", "1", ...; keys `snake_cased`,
+/// nulls dropped, recursively.
+fn index_keyed(value: &Value) -> Value {
+    match value {
+        Value::Array(items) if items.iter().any(Value::is_object) => {
+            let mut out = Map::new();
+            for (i, item) in items.iter().enumerate() {
+                out.insert(i.to_string(), index_keyed(item));
+            }
+            Value::Object(out)
+        }
+        Value::Object(map) => {
+            let mut out = Map::new();
+            for (k, v) in map {
+                if v.is_null() {
+                    continue;
+                }
+                out.insert(
+                    to_snake_case(k, SnakeRule::BeforeEveryUpper),
+                    index_keyed(v),
+                );
+            }
+            Value::Object(out)
+        }
+        other => other.clone(),
+    }
+}
+
 /// Flatten a field into an array field, one entry per element.
 ///
 /// The vendor scripts write both branches of this and pick at runtime on the
@@ -464,6 +676,21 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     // Pattern: append one array into another, skipping duplicates.
     if let Some((from, into)) = append_unique_fields(&normalised) {
         return try_append_unique(event, from, into);
+    }
+
+    // Pattern: re-key an array of maps into an object indexed by position.
+    if normalised.contains("new HashMap()") && normalised.contains("String.valueOf(") {
+        return try_array_to_indexed_object(event, &normalised);
+    }
+
+    // Pattern: collapse an array of `{key, value}` maps into one object.
+    if normalised.contains("[item.key] = item.value") {
+        return try_key_value_pairs(event, &normalised);
+    }
+
+    // Pattern: join two optional fields, each alone if the other is absent.
+    if normalised.matches("String ").count() == 2 && normalised.contains("} else if (") {
+        return try_join_optional(event, &normalised);
     }
 
     // Pattern: flatten a field into an array, either by splitting a delimited
@@ -657,8 +884,9 @@ fn try_okta_target_rename(event: &mut Event) -> bool {
                 let new_key = match k.as_str() {
                     "alternateId" => "alternate_id",
                     "displayName" => "display_name",
+                    // Filtered in place: the script narrows the map and drops
+                    // the key only when nothing survives, so the name stays.
                     "detailEntry" => {
-                        // Filter detailEntry to only keep specific keys
                         if let Some(de) = v.as_object() {
                             let filtered: serde_json::Map<String, Value> = de
                                 .iter()
@@ -669,10 +897,10 @@ fn try_okta_target_rename(event: &mut Event) -> bool {
                                 .map(|(k, v)| (k.clone(), v.clone()))
                                 .collect();
                             if !filtered.is_empty() {
-                                new_obj.insert("detail_entry".to_string(), Value::Object(filtered));
+                                new_obj.insert("detailEntry".to_string(), Value::Object(filtered));
                             }
                         }
-                        continue; // Don't insert the original key
+                        continue;
                     }
                     other => other,
                 };
@@ -1146,8 +1374,8 @@ mod tests {
         assert!(first.contains_key("display_name"));
         assert!(!first.contains_key("alternateId"));
 
-        // Check detailEntry filtered to only methodTypeUsed
-        let de = first.get("detail_entry").unwrap().as_object().unwrap();
+        // detailEntry is narrowed in place, keeping its own name.
+        let de = first.get("detailEntry").unwrap().as_object().unwrap();
         assert!(de.contains_key("methodTypeUsed"));
         assert!(!de.contains_key("extra"));
 
