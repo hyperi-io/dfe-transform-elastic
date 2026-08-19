@@ -690,10 +690,10 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // on_failure: 1 handler(s)
-            if let Err(err) = (|| -> Result<()> {
-                let _cond = { event.has("okta.debug_context.debug_data.flattened.risk") };
-                if _cond {
+            let _cond = { event.has("okta.debug_context.debug_data.flattened.risk") };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
                     if let Some(kv_str) =
                         event.get_string("okta.debug_context.debug_data.flattened.risk")
                     {
@@ -714,19 +714,19 @@ impl Transform for Default {
                             }
                         }
                     }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "kv")?;
+                    if event.remove("_risk_object").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "_risk_object".into(),
+                        });
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
                 }
-                Ok(())
-            })() {
-                event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("_ingest.on_failure_processor_type", "kv")?;
-                if event.remove("_risk_object").is_none() {
-                    return Err(TransformError::FieldNotFound {
-                        path: "_risk_object".into(),
-                    });
-                }
-                event.remove("_ingest.on_failure_message");
-                event.remove("_ingest.on_failure_processor_type");
-                event.remove("_ingest.on_failure_processor_tag");
             }
 
             let _cond = { event.has("_risk_object") };
@@ -1616,18 +1616,20 @@ impl Transform for Default {
                     json!(format!(
                         "Processor '{}' {}with tag '{}' {}failed with message '{}'",
                         event
-                            .get_str("_ingest.on_failure_processor_type ")
-                            .unwrap_or(""),
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
                         event
-                            .get_str("#_ingest.on_failure_processor_tag")
-                            .unwrap_or(""),
+                            .get("#_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
                         event
-                            .get_str("_ingest.on_failure_processor_tag ")
-                            .unwrap_or(""),
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
                         event
-                            .get_str("/_ingest.on_failure_processor_tag")
-                            .unwrap_or(""),
-                        event.get_str("_ingest.on_failure_message ").unwrap_or("")
+                            .get("/_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");
