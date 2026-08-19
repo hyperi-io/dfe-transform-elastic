@@ -167,13 +167,14 @@ source_case!(
     1
 );
 
-// Errors on every event, reading `o365audit.Parameters` unconditionally.
+// Raw Office 365 Management Activity records, as the API returns them and the
+// filebeat o365 input nests them. Splunk Boss of the SOC v3, CC0-1.0.
 source_case!(
     o365_default,
     dfe_transforms::filebeat::o365::default::Default,
-    "o365/audit/08-azuread.log",
-    100,
-    0
+    "o365/audit/o365-management-activity-botsv3.log",
+    0,
+    1071
 );
 
 /// `cisco_ios` errors on EVERY event: a processor reads
