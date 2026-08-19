@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,9 +13,8 @@ impl Transform for Userid {
         "userid"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        if let Some(csv_str) = event.get_string("message") {
             let mut rdr = csv::ReaderBuilder::new()
                 .delimiter(b',')
                 .quote(b'\"')
@@ -244,31 +245,45 @@ impl Transform for Userid {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.panw?.panos?.factorcompletiontime != null && ctx.event?.timezone == null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.factorcompletiontime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond =
+            { event.has("panw.panos.factorcompletiontime") && !event.has("event.timezone") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
             }
         }
 
-        // TODO: conditional: ctx.panw?.panos?.factorcompletiontime != null && ctx.event?.timezone != null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.factorcompletiontime")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond = { event.has("panw.panos.factorcompletiontime") && event.has("event.timezone") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
             }
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

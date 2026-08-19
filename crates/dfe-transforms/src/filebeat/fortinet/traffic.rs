@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,7 +13,7 @@ impl Transform for Traffic {
         "traffic"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
         event.set(
@@ -22,8 +24,8 @@ impl Transform for Traffic {
                 .unwrap_or(Value::Null),
         )?;
 
-        // TODO: conditional: ctx.fortinet?.firewall?.action != null
-        {
+        let _cond = { event.has("fortinet.firewall.action") };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
@@ -31,28 +33,40 @@ impl Transform for Traffic {
 
         event.append("event.type", json!("connection"))?;
 
-        // TODO: conditional: ctx.fortinet?.firewall?.action == 'start'
-        {
+        let _cond = { event.get_str("fortinet.firewall.action") == Some("start") };
+        if _cond {
             event.append("event.type", json!("start"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.action != null && ctx.fortinet?.firewall?.action !='start'
-        {
+        let _cond = {
+            event.has("fortinet.firewall.action")
+                && event.get_str("fortinet.firewall.action") != Some("start")
+        };
+        if _cond {
             event.append("event.type", json!("end"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.app != null && ctx.fortinet?.firewall?.action != 'deny'
-        {
+        let _cond = {
+            event.has("fortinet.firewall.app")
+                && event.get_str("fortinet.firewall.action") != Some("deny")
+        };
+        if _cond {
             event.append("event.type", json!("protocol"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.utmaction == null && ctx.fortinet?.firewall?.action != 'deny'
-        {
+        let _cond = {
+            !event.has("fortinet.firewall.utmaction")
+                && event.get_str("fortinet.firewall.action") != Some("deny")
+        };
+        if _cond {
             event.append("event.type", json!("allowed"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.utmaction == 'block' || ctx.fortinet?.firewall?.action == 'deny'
-        {
+        let _cond = {
+            event.get_str("fortinet.firewall.utmaction") == Some("block")
+                || event.get_str("fortinet.firewall.action") == Some("deny")
+        };
+        if _cond {
             event.append("event.type", json!("denied"))?;
         }
 
@@ -61,8 +75,7 @@ impl Transform for Traffic {
         }
 
         if event.has("fortinet.firewall.tranip") {
-            if let Some(s) = event.get_str("fortinet.firewall.tranip").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("fortinet.firewall.tranip") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -227,8 +240,8 @@ impl Transform for Traffic {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.fortinet?.firewall?.dstcollectedemail != null
-        {
+        let _cond = { event.has("fortinet.firewall.dstcollectedemail") };
+        if _cond {
             event.append(
                 "email.to.address",
                 event
@@ -342,15 +355,15 @@ impl Transform for Traffic {
             event.rename("fortinet.firewall.unauthuser", "source.user.name")?;
         }
 
-        // TODO: conditional: ctx.source?.user?.name == null
-        {
+        let _cond = { !event.has("source.user.name") };
+        if _cond {
             if event.has("fortinet.firewall.user") {
                 event.rename("fortinet.firewall.user", "source.user.name")?;
             }
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.collectedemail != null
-        {
+        let _cond = { event.has("fortinet.firewall.collectedemail") };
+        if _cond {
             event.append(
                 "email.from.address",
                 event
@@ -399,8 +412,7 @@ impl Transform for Traffic {
         })();
 
         if event.has("fortinet.firewall.transip") {
-            if let Some(s) = event.get_str("fortinet.firewall.transip").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("fortinet.firewall.transip") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -459,8 +471,8 @@ impl Transform for Traffic {
             event.rename("fortinet.firewall.filename", "file.name")?;
         }
 
-        // TODO: conditional: ctx.event?.code == null
-        {
+        let _cond = { !event.has("event.code") };
+        if _cond {
             if event.has("fortinet.firewall.logid") {
                 event.rename("fortinet.firewall.logid", "event.code")?;
             }
@@ -474,8 +486,8 @@ impl Transform for Traffic {
             event.rename("fortinet.firewall.comment", "rule.description")?;
         }
 
-        // TODO: conditional: ctx.rule?.id == null
-        {
+        let _cond = { !event.has("rule.id") };
+        if _cond {
             if event.has("fortinet.firewall.policyid") {
                 event.rename("fortinet.firewall.policyid", "rule.id")?;
             }
@@ -498,10 +510,9 @@ impl Transform for Traffic {
         }
 
         if event.has("rule.category") {
-            if let Some(s) = event.get_str("rule.category").map(String::from) {
-                let s = s.as_str();
-                let re = cached_regex!("\\.");
-                let replaced = re.replace_all(s, "-").into_owned();
+            if let Some(s) = event.get_string("rule.category") {
+                let re = regex::Regex::new("\\.").unwrap();
+                let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("rule.category", replaced)?;
             }
         }
@@ -519,8 +530,7 @@ impl Transform for Traffic {
         }
 
         if event.has("network.protocol") {
-            if let Some(s) = event.get_str("network.protocol").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("network.protocol") {
                 let lowered = s.to_lowercase();
                 event.set("network.protocol", lowered)?;
             }
@@ -538,6 +548,27 @@ impl Transform for Traffic {
         event.remove("fortinet.firewall.srcport");
         event.remove("fortinet.firewall.sentpkt");
         event.remove("fortinet.firewall.transport");
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

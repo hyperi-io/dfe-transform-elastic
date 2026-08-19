@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,11 +13,10 @@ impl Transform for Decryption {
         "decryption"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(csv_str) = event.get_str("message").map(String::from) {
-                let csv_str = csv_str.as_str();
+            if let Some(csv_str) = event.get_string("message") {
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -531,67 +532,51 @@ impl Transform for Decryption {
             event.rename("_temp_.config_version", "panw.panos.config_version")?;
         }
 
-        // TODO: conditional: ctx.event?.timezone == null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.certificate.not_after")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond = { !event.has("event.timezone") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_after") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
             }
         }
 
-        // TODO: conditional: ctx.event?.timezone != null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.certificate.not_after")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond = { event.has("event.timezone") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_after") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
             }
         }
 
-        // TODO: conditional: ctx.event?.timezone == null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.certificate.not_before")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond = { !event.has("event.timezone") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_before") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
             }
         }
 
-        // TODO: conditional: ctx.event?.timezone != null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.certificate.not_before")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond = { event.has("event.timezone") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_before") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
             }
         }
 
@@ -599,13 +584,22 @@ impl Transform for Decryption {
 
         event.append("event.category", json!("network"))?;
 
-        // TODO: conditional: ctx.panw?.panos?.error_message == null || ctx.panw.panos.error_message == ""
-        {
+        let _cond = {
+            !event.has("panw.panos.error_message")
+                || event
+                    .get_str("panw.panos.error_message")
+                    .is_none_or(|s| s.is_empty())
+        };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ctx.panw?.panos?.error_message != ""
-        {
+        let _cond = {
+            event
+                .get_str("panw.panos.error_message")
+                .is_some_and(|s| !s.is_empty())
+        };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
@@ -771,8 +765,12 @@ impl Transform for Decryption {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.tls?.client?.x509?.subject?.common_name instanceof String
-        {
+        let _cond = {
+            event
+                .get("tls.client.x509.subject.common_name")
+                .is_some_and(|v| v.is_string())
+        };
+        if _cond {
             event.set(
                 "tls.client.x509.subject.common_name",
                 json!(["{{{tls.client.x509.subject.common_name}}}"]),
@@ -791,8 +789,12 @@ impl Transform for Decryption {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.tls?.client?.x509?.issuer?.common_name instanceof String
-        {
+        let _cond = {
+            event
+                .get("tls.client.x509.issuer.common_name")
+                .is_some_and(|v| v.is_string())
+        };
+        if _cond {
             event.set(
                 "tls.client.x509.issuer.common_name",
                 json!(["{{{tls.client.x509.issuer.common_name}}}"]),
@@ -955,25 +957,48 @@ impl Transform for Decryption {
             Ok(())
         })();
 
-        // TODO: conditional: ctx._temp_?.hash != null
-        {
+        let _cond = { event.has("_temp_.hash") };
+        if _cond {
             // Painless script
             // Source: ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n
+            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#,
             )?;
         }
 
-        // TODO: conditional: ctx._temp_?.tls != null
-        {
+        let _cond = { event.has("_temp_.tls") };
+        if _cond {
             // Painless script
             // Source: ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n
+            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#,
             )?;
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

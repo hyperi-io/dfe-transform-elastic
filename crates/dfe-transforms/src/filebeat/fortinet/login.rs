@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,7 +13,7 @@ impl Transform for Login {
         "login"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
         if !event.has("event.action") {
@@ -20,8 +22,8 @@ impl Transform for Login {
 
         event.append("event.category", json!("authentication"))?;
 
-        // TODO: conditional: ctx.source?.user?.name != null
-        {
+        let _cond = { event.has("source.user.name") };
+        if _cond {
             event.set(
                 "user.name",
                 event
@@ -31,8 +33,8 @@ impl Transform for Login {
             )?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.adminprof != null
-        {
+        let _cond = { event.has("fortinet.firewall.adminprof") };
+        if _cond {
             event.append(
                 "user.roles",
                 event
@@ -42,8 +44,8 @@ impl Transform for Login {
             )?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.adminprof != null
-        {
+        let _cond = { event.has("fortinet.firewall.adminprof") };
+        if _cond {
             event.append(
                 "source.user.roles",
                 event
@@ -53,14 +55,15 @@ impl Transform for Login {
             )?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.userfrom != null && ctx.fortinet.firewall.userfrom.startsWith('JSON(')
-        {
-            if let Some(input) = event
-                .get_str("fortinet.firewall.userfrom")
-                .map(String::from)
-            {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            event.has("fortinet.firewall.userfrom")
+                && event
+                    .get_str("fortinet.firewall.userfrom")
+                    .is_some_and(|s| s.starts_with("JSON("))
+        };
+        if _cond {
+            if let Some(input) = event.get_string("fortinet.firewall.userfrom") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("JSON(") {
                     remaining = rest;
                 }
@@ -74,11 +77,15 @@ impl Transform for Login {
             }
         }
 
-        // TODO: conditional: ctx.message != null && ctx.message.startsWith('user')
-        {
-            if let Some(input) = event.get_str("fortinet.firewall.desc").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            event.has("message")
+                && event
+                    .get_str("message")
+                    .is_some_and(|s| s.starts_with("user"))
+        };
+        if _cond {
+            if let Some(input) = event.get_string("fortinet.firewall.desc") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("User login/logout ") {
                     remaining = rest;
                 }
@@ -86,11 +93,15 @@ impl Transform for Login {
             }
         }
 
-        // TODO: conditional: ctx.message != null && ctx.message.startsWith('Login from ssh:')
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            event.has("message")
+                && event
+                    .get_str("message")
+                    .is_some_and(|s| s.starts_with("Login from ssh:"))
+        };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("Login from ssh: ") {
                     remaining = rest;
                 }
@@ -119,11 +130,15 @@ impl Transform for Login {
             }
         }
 
-        // TODO: conditional: ctx.message != null && ctx.message.startsWith('Administrator')
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            event.has("message")
+                && event
+                    .get_str("message")
+                    .is_some_and(|s| s.starts_with("Administrator"))
+        };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" ") {
                     event.set("_tmp.user.roles", &remaining[..pos])?;
                     remaining = &remaining[pos..];
@@ -161,13 +176,23 @@ impl Transform for Login {
             }
         }
 
-        // TODO: conditional: ctx.event?.outcome != null && ctx.event?.outcome.toLowerCase().startsWith('fail')
-        {
+        let _cond = {
+            event.has("event.outcome")
+                && event
+                    .get_str("event.outcome")
+                    .is_some_and(|s| s.to_lowercase().starts_with("fail"))
+        };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
-        // TODO: conditional: ctx.event?.outcome != null && ctx.event?.outcome.toLowerCase().startsWith('success')
-        {
+        let _cond = {
+            event.has("event.outcome")
+                && event
+                    .get_str("event.outcome")
+                    .is_some_and(|s| s.to_lowercase().starts_with("success"))
+        };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
@@ -183,8 +208,8 @@ impl Transform for Login {
             event.rename("fortinet.firewall.device_id", "observer.serial_number")?;
         }
 
-        // TODO: conditional: ctx._tmp?.user?.roles != null
-        {
+        let _cond = { event.has("_tmp.user.roles") };
+        if _cond {
             event.append(
                 "user.roles",
                 event
@@ -194,8 +219,8 @@ impl Transform for Login {
             )?;
         }
 
-        // TODO: conditional: ctx._tmp?.user?.roles != null
-        {
+        let _cond = { event.has("_tmp.user.roles") };
+        if _cond {
             event.append(
                 "source.user.roles",
                 event
@@ -205,8 +230,8 @@ impl Transform for Login {
             )?;
         }
 
-        // TODO: conditional: ctx.source?.port != null
-        {
+        let _cond = { event.has("source.port") };
+        if _cond {
             if let Some(val) = event.get("source.port") {
                 let converted = match val {
                     Value::String(s) => {
@@ -240,8 +265,8 @@ impl Transform for Login {
             }
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.valid != null
-        {
+        let _cond = { event.has("fortinet.firewall.valid") };
+        if _cond {
             if let Some(val) = event.get("fortinet.firewall.valid") {
                 let converted = match val {
                     Value::String(s) => {
@@ -286,6 +311,27 @@ impl Transform for Login {
             event.remove("_tmp.user.roles");
             Ok(())
         })();
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

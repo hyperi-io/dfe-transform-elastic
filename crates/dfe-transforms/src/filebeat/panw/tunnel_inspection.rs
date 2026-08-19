@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,11 +13,10 @@ impl Transform for TunnelInspection {
         "tunnel_inspection"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(csv_str) = event.get_str("message").map(String::from) {
-                let csv_str = csv_str.as_str();
+            if let Some(csv_str) = event.get_string("message") {
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -411,13 +412,16 @@ impl Transform for TunnelInspection {
 
         event.append("event.category", json!("network"))?;
 
-        // TODO: conditional: ctx.panw?.panos?.action == "allow"
-        {
+        let _cond = { event.get_str("panw.panos.action") == Some("allow") };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ctx.event?.outcome == null || ctx.event.outcome == ""
-        {
+        let _cond = {
+            !event.has("event.outcome")
+                || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
+        };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
@@ -750,6 +754,27 @@ impl Transform for TunnelInspection {
             )?;
             Ok(())
         })();
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }
