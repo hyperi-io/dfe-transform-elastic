@@ -79,7 +79,13 @@ enum Native {
     /// `^%{IPV4:field}$`
     Ipv4 { field: String },
     /// `^%{IPV4:addr}:%{PORT:port}$`
-    Ipv4Port { addr: String, port: String },
+    Ipv4Port {
+        addr: String,
+        port: String,
+        /// Whether the port capture declared a numeric type, which the regex
+        /// path honours -- the two must write the same type.
+        port_numeric: bool,
+    },
 }
 
 /// A grok pattern in its compiled form.
@@ -91,6 +97,10 @@ pub struct CompiledGrok {
     /// contain dots, so `user.name` is captured as `user_name` and restored
     /// through this map.
     pub field_map: HashMap<String, String>,
+    /// Capture names Elastic's `:long` / `:int` / `:float` suffix types as a
+    /// number. Without this every one lands as a string and the expectations
+    /// -- and every numeric comparison downstream -- see the wrong type.
+    pub numeric: HashMap<String, bool>,
     /// A native parser for this pattern, when one covers it exactly.
     native: Option<Native>,
 }
@@ -131,7 +141,7 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         return hit;
     }
 
-    let (expanded, mut field_map) = crate::codegen_api::grok_to_regex_with_map(pattern);
+    let (expanded, mut field_map, numeric) = crate::codegen_api::grok_to_regex_typed(pattern);
     for (capture, path) in extra {
         field_map.insert((*capture).to_string(), (*path).to_string());
     }
@@ -149,6 +159,7 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
         regex,
         field_map,
+        numeric,
         native: native_form(pattern),
     }));
 
@@ -182,8 +193,16 @@ fn native_form(pattern: &str) -> Option<Native> {
     // inside `%{IPV4:field}` -- `split_once(':')` finds the wrong one.
     let (left, right) = body.split_once("}:%{")?;
     let addr = capture_of(&format!("{left}}}"), "IPV4")?.to_string();
-    let port = capture_of(&format!("%{{{right}"), "PORT")?.to_string();
-    Some(Native::Ipv4Port { addr, port })
+    let port_spec = format!("%{{{right}");
+    let port = capture_of(&port_spec, "PORT")?.to_string();
+    Some(Native::Ipv4Port {
+        addr,
+        port,
+        port_numeric: port_spec.ends_with(":long}")
+            || port_spec.ends_with(":int}")
+            || port_spec.ends_with(":float}")
+            || port_spec.ends_with(":double}"),
+    })
 }
 
 /// The field name in `%{TYPE:field}`, when `text` is exactly that and nothing
@@ -229,7 +248,10 @@ impl CompiledGrok {
         for name in self.regex.capture_names().flatten() {
             if let Some(m) = caps.name(name) {
                 let path = self.field_map.get(name).map_or(name, String::as_str);
-                event.set(path, m.as_str())?;
+                match m.as_str().parse::<i64>() {
+                    Ok(n) if self.numeric.contains_key(name) => event.set(path, n)?,
+                    _ => event.set(path, m.as_str())?,
+                }
             }
         }
         Ok(true)
@@ -250,7 +272,11 @@ impl CompiledGrok {
                 }
                 _ => Ok(false),
             },
-            Native::Ipv4Port { addr, port } => {
+            Native::Ipv4Port {
+                addr,
+                port,
+                port_numeric,
+            } => {
                 let Ok((rest, parsed_addr)) = dfe_parse::ip::parse_ipv4(input) else {
                     return Ok(false);
                 };
@@ -266,9 +292,12 @@ impl CompiledGrok {
                     return Ok(false);
                 }
                 event.set(addr, parsed_addr)?;
-                // The regex path captures text, so the port is set as text too
-                // -- changing the type here would be a silent behaviour change.
-                event.set(port, parsed_port.to_string())?;
+                if *port_numeric {
+                    // Bounded above by the 65535 check, so this always fits.
+                    event.set(port, i64::try_from(parsed_port).unwrap_or_default())?;
+                } else {
+                    event.set(port, parsed_port.to_string())?;
+                }
                 Ok(true)
             }
         }
@@ -341,6 +370,35 @@ mod tests {
         );
     }
 
+    /// Elastic's `:long` is a type, not part of the field name. Dropping it
+    /// left every numeric capture a string.
+    #[test]
+    fn a_typed_capture_lands_as_a_number() {
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok("^%{NUMBER:network.bytes:long} %{WORD:event.action}$")
+                .extract_into("2282 blocked", &mut event)
+                .expect("extraction")
+        );
+
+        assert_eq!(event.get_i64("network.bytes"), Some(2282));
+        assert_eq!(event.get_str("event.action"), Some("blocked"));
+    }
+
+    /// `%{SYSLOG5424PRI}` is written without a field name because Elastic's
+    /// own definition carries the destination.
+    #[test]
+    fn a_bare_pri_still_captures_its_priority() {
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok("%{SYSLOG5424PRI}%{GREEDYDATA:rest}$")
+                .extract_into("<188>date=2020-04-23", &mut event)
+                .expect("extraction")
+        );
+
+        assert_eq!(event.get_i64("log.syslog.priority"), Some(188));
+    }
+
     #[test]
     fn a_plain_pattern_is_cached_too() {
         let first = regex(r"\d{6}$");
@@ -379,6 +437,7 @@ mod tests {
         let regex_only = CompiledGrok {
             regex: compiled.regex.clone(),
             field_map: compiled.field_map.clone(),
+            numeric: compiled.numeric.clone(),
             native: None,
         };
         let mut regex_event = crate::Event::new(serde_json::json!({}));

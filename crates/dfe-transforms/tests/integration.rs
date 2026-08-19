@@ -19,3 +19,6 @@ mod crowdstrike;
 
 #[path = "integration/okta.rs"]
 mod okta;
+
+#[path = "integration/remaining.rs"]
+mod remaining;

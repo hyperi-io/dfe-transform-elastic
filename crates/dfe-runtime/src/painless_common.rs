@@ -321,6 +321,96 @@ fn try_array_to_indexed_object(event: &mut Event, script: &str) -> bool {
     true
 }
 
+/// Quote-aware key/value split of a whole vendor payload into one map.
+///
+/// Fortinet ships `key=value key2="value with spaces"` as one syslog field and
+/// the pipeline hand-rolls the parse, because a plain split on space would
+/// break inside the quotes:
+///
+/// ```painless
+/// def arr = splitUnquoted(ctx.syslog5424_sd, " ");
+/// for (def i = 0; i < arr?.length; i++) {
+///   def kv = splitUnquoted(arr[i], "=");
+///   if (kv.length == 2) { map[kv[0]] = pattern.matcher(kv[1]).replaceAll(""); }
+/// }
+/// ctx.fortinet.firewall = map;
+/// ```
+///
+/// A fragment without the pair separator is skipped, which is what the
+/// `kv.length == 2` guard does.
+fn try_split_unquoted_kv(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let calls: Vec<&str> = script.split("splitUnquoted(").skip(1).collect();
+    // The definition, the field split, then the pair split.
+    let [_, fields, pairs, ..] = calls.as_slice() else {
+        return false;
+    };
+    let Some(source) = fields
+        .strip_prefix("ctx.")
+        .and_then(|rest| rest.split(',').next())
+    else {
+        return false;
+    };
+    let (Some(field_sep), Some(pair_sep)) = (quoted_first(fields), quoted_first(pairs)) else {
+        return false;
+    };
+    let Some(target) = crate::painless_params::ctx_path_before(script, " = map") else {
+        return false;
+    };
+
+    // A missing source is not a failure -- the processor's `if` guards it.
+    let Some(payload) = event.get_str(&clean_path(source)).map(str::to_string) else {
+        return true;
+    };
+
+    let mut map = Map::new();
+    for token in split_unquoted(&payload, &field_sep) {
+        let Some((key, value)) = token.split_once(pair_sep.as_str()) else {
+            continue;
+        };
+        map.insert(
+            key.trim().to_string(),
+            json!(value.trim().trim_matches('"')),
+        );
+    }
+    let _ = event.set(&clean_path(&target), Value::Object(map));
+    true
+}
+
+/// Split on `separator`, ignoring any occurrence inside double quotes.
+fn split_unquoted(input: &str, separator: &str) -> Vec<String> {
+    let sep = separator.chars().next().unwrap_or(' ');
+    let mut out = Vec::new();
+    let mut start = 0;
+    let mut in_quotes = false;
+
+    for (i, c) in input.char_indices() {
+        if c == '"' {
+            in_quotes = !in_quotes;
+        } else if c == sep && !in_quotes {
+            let token = input[start..i].trim();
+            if !token.is_empty() {
+                out.push(token.to_string());
+            }
+            start = i + c.len_utf8();
+        }
+    }
+    let last = input[start..].trim();
+    if !last.is_empty() && last != separator {
+        out.push(last.to_string());
+    }
+    out
+}
+
+/// The first single- or double-quoted string in `text`.
+fn quoted_first(text: &str) -> Option<String> {
+    let start = text.find(['\'', '"'])?;
+    let quote = text.as_bytes()[start] as char;
+    let end = text[start + 1..].find(quote)?;
+    Some(text[start + 1..=start + end].to_string())
+}
+
 /// Join two optional fields, falling back to whichever one is present.
 ///
 /// ```painless
@@ -676,6 +766,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     // Pattern: append one array into another, skipping duplicates.
     if let Some((from, into)) = append_unique_fields(&normalised) {
         return try_append_unique(event, from, into);
+    }
+
+    // Pattern: quote-aware KV split of a whole vendor payload.
+    if normalised.contains("splitUnquoted(") {
+        return try_split_unquoted_kv(event, &normalised);
     }
 
     // Pattern: re-key an array of maps into an object indexed by position.
@@ -1110,6 +1205,41 @@ mod tests {
         let mut event = Event::new(json!({ "tags": ["preserve_original_event"] }));
         assert!(try_known_painless(&mut event, APPEND_TAGS));
         assert_eq!(event.get("tags"), Some(&json!(["preserve_original_event"])));
+    }
+
+    /// Shortened from `pipelines/fortinet/default.yml` -- the parts that
+    /// identify the shape, not the whole 30-line definition.
+    const SPLIT_UNQUOTED: &str = "def splitUnquoted(String input, String sep) {\n  def tokens = \
+                                  [];\n}\ndef arr = splitUnquoted(ctx.syslog5424_sd, \" \");\n\
+                                  Map map = new HashMap();\nfor (def i = 0; i < arr?.length; i++) \
+                                  {\n  def kv = splitUnquoted(arr[i], \"=\");\n}\n\
+                                  ctx.fortinet.firewall = map;\n";
+
+    #[test]
+    fn a_quoted_value_keeps_its_spaces() {
+        let mut event = Event::new(json!({
+            "syslog5424_sd": "type=\"utm\" msg=\"URL belongs to a denied category\" policyid=100602",
+        }));
+
+        assert!(try_known_painless(&mut event, SPLIT_UNQUOTED));
+
+        assert_eq!(event.get_str("fortinet.firewall.type"), Some("utm"));
+        assert_eq!(
+            event.get_str("fortinet.firewall.msg"),
+            Some("URL belongs to a denied category")
+        );
+        assert_eq!(event.get_str("fortinet.firewall.policyid"), Some("100602"));
+    }
+
+    /// The vendor's `kv.length == 2` guard: a fragment with no `=` is skipped.
+    #[test]
+    fn a_fragment_without_the_pair_separator_is_skipped() {
+        let mut event = Event::new(json!({ "syslog5424_sd": "bare a=1" }));
+        assert!(try_known_painless(&mut event, SPLIT_UNQUOTED));
+
+        let map = event.get_object("fortinet.firewall").unwrap();
+        assert_eq!(map.len(), 1);
+        assert_eq!(map.get("a").and_then(Value::as_str), Some("1"));
     }
 
     #[test]

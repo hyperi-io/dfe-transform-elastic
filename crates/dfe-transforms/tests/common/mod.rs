@@ -130,9 +130,19 @@ fn collect_raw_events(content: &str) -> Vec<RawEvent> {
 ///
 /// This simulates what Filebeat/Agent does: the raw event JSON arrives as a
 /// string in the `message` field, and the ingest pipeline parses it.
+///
+/// An object that ALREADY carries `message` is the envelope, not the payload.
+/// Wrapping it again puts JSON text where the transform expects a log line.
 fn wrap_event(raw: RawEvent, config_fields: &Map<String, Value>) -> Event {
     let message_str = match raw {
         RawEvent::JsonString(s) => s,
+        RawEvent::Structured(Value::Object(obj)) if obj.contains_key("message") => {
+            let mut event_obj = obj;
+            for (k, v) in config_fields {
+                event_obj.entry(k.clone()).or_insert_with(|| v.clone());
+            }
+            return Event::new(Value::Object(event_obj));
+        }
         RawEvent::Structured(v) => serde_json::to_string(&v).unwrap_or_default(),
     };
 
