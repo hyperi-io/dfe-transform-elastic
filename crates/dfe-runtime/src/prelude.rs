@@ -15,7 +15,7 @@ pub use serde_json::{Value, json};
 pub use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
 
 // Compiled once per process, then looked up once per call site.
-pub use crate::{cached_grok, cached_regex};
+pub use crate::{cached_grok, cached_grok_mapped, cached_regex};
 
 pub use crate::codegen_api::{
     RegisteredDomainResult, community_id_v1, geoip_lookup, grok_to_regex, grok_to_regex_with_map,

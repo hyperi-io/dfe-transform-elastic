@@ -39,6 +39,22 @@ macro_rules! cached_grok {
     }};
 }
 
+/// As [`cached_grok`], plus capture names the pattern carries as raw groups.
+///
+/// A pipeline may define its own grok name and capture it into a dotted path.
+/// Inlining the definition turns that into a plain `(?P<a_b>...)` group, which
+/// the expander never sees as `%{NAME:a.b}` and so never maps -- the value
+/// would land on `a_b` and every later processor would miss it. The pairs here
+/// are that mapping, supplied by whoever built the pattern.
+#[macro_export]
+macro_rules! cached_grok_mapped {
+    ($pattern:literal, [$(($capture:literal, $path:literal)),* $(,)?] $(,)?) => {{
+        static SITE: ::std::sync::OnceLock<&'static $crate::grok_cache::CompiledGrok> =
+            ::std::sync::OnceLock::new();
+        *SITE.get_or_init(|| $crate::grok_cache::grok_mapped($pattern, &[$(($capture, $path)),*]))
+    }};
+}
+
 /// A plain regex literal, looked up once per CALL SITE. See [`cached_grok`].
 #[macro_export]
 macro_rules! cached_regex {
@@ -96,6 +112,17 @@ static PLAIN: RwLock<Option<HashMap<String, &'static Regex>>> = RwLock::new(None
 /// a test.
 #[must_use]
 pub fn grok(pattern: &str) -> &'static CompiledGrok {
+    grok_mapped(pattern, &[])
+}
+
+/// As [`grok`], with `extra` capture-name to dotted-path pairs merged into the
+/// field map for groups the expander cannot see. See [`cached_grok_mapped`].
+///
+/// # Panics
+///
+/// Does not panic -- see [`grok`].
+#[must_use]
+pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGrok {
     if let Some(hit) = GROK
         .read()
         .ok()
@@ -104,7 +131,10 @@ pub fn grok(pattern: &str) -> &'static CompiledGrok {
         return hit;
     }
 
-    let (expanded, field_map) = crate::codegen_api::grok_to_regex_with_map(pattern);
+    let (expanded, mut field_map) = crate::codegen_api::grok_to_regex_with_map(pattern);
+    for (capture, path) in extra {
+        field_map.insert((*capture).to_string(), (*path).to_string());
+    }
     let regex = Regex::new(&expanded).unwrap_or_else(|e| {
         tracing::error!(
             grok = pattern,

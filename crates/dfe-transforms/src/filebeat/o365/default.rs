@@ -13,7 +13,7 @@ impl Transform for Default {
         "default"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         let _cond = { !event.has("event.original") };
         if _cond {
             if event.has("message") {
@@ -161,11 +161,10 @@ impl Transform for Default {
 
         let _cond = {
             event.has("o365audit.ResultStatus")
-                && ["succeeded", "success", "partiallysucceeded", "true"].contains(
-                    &event
-                        .get_str("o365audit.ResultStatus.toLowerCase()")
-                        .unwrap_or(""),
-                )
+                && event.get_str("o365audit.ResultStatus").is_some_and(|s| {
+                    ["succeeded", "success", "partiallysucceeded", "true"]
+                        .contains(&s.to_lowercase().as_str())
+                })
         };
         if _cond {
             event.set("event.outcome", json!("success"))?;
@@ -173,11 +172,9 @@ impl Transform for Default {
 
         let _cond = {
             event.has("o365audit.ResultStatus")
-                && ["failed", "false"].contains(
-                    &event
-                        .get_str("o365audit.ResultStatus.toLowerCase()")
-                        .unwrap_or(""),
-                )
+                && event
+                    .get_str("o365audit.ResultStatus")
+                    .is_some_and(|s| ["failed", "false"].contains(&s.to_lowercase().as_str()))
         };
         if _cond {
             event.set("event.outcome", json!("failure"))?;
@@ -1299,7 +1296,7 @@ impl Transform for Default {
 
         if event.has("client._temp") {
             if let Some(s) = event.get_string("client._temp") {
-                let re = regex::Regex::new("::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)").unwrap();
+                let re = cached_regex!("::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)");
                 let replaced = re.replace_all(&s, "$1").into_owned();
                 event.set("client._temp", replaced)?;
             }
@@ -1310,31 +1307,51 @@ impl Transform for Default {
                 && !(event.get_str("client._temp").is_none_or(|s| s.is_empty()))
         };
         if _cond {
-            // Pattern definitions for grok
-            // NOTCLOSINGPARENS = [^)]*
-            // IPANDPORT = ^%{IP:client.address}:%{POSINT:client._port}
-            // HOSTNAMEANDIP = %{NOTSPACE:client.domain} \(%{NOTCLOSINGPARENS:client.address}\)
-            // HOSTNAMEANDPORT = ^%{NOTSPACE:client.domain}:%{POSINT:client._port}
-            // HOSTNAMEANDPORTBRACKETS = ^\[%{NOTSPACE:client.domain}\]:%{POSINT:client._port}
-            // IPANDPORTBRACKETS = ^\[%{IP:client.address}\]:%{POSINT:client._port}
             if let Some(input) = event.get_string("client._temp") {
-                // Grok pattern: %{IPANDPORTBRACKETS}
-                cached_grok!("%{IPANDPORTBRACKETS}").extract_into(&input, event)?;
-                // Additional grok pattern 1: ^%{IP:client.address}$
-                // Additional grok pattern 2: ^\\[%{IP:client.address}\\]$
-                // Additional grok pattern 3: %{IPANDPORT}
-                // Additional grok pattern 4: ^%{NOTSPACE:client.domain}$
-                // Additional grok pattern 5: %{HOSTNAMEANDPORTBRACKETS}
-                // Additional grok pattern 6: %{HOSTNAMEANDPORT}
-                // Additional grok pattern 7: ^\\[%{HOSTNAMEANDIP}\\]$
-                // Additional grok pattern 8: ^%{HOSTNAMEANDIP}$
-                // Additional grok pattern 9: %{GREEDYDATA:client.address}
+                // Grok pattern: (?:^\\[%{IP:client.address}\\]:%{POSINT:client._port})
+                if !cached_grok!("(?:^\\[%{IP:client.address}\\]:%{POSINT:client._port})")
+                    .extract_into(&input, event)?
+                {
+                    // Grok pattern: ^%{IP:client.address}$
+                    if !cached_grok!("^%{IP:client.address}$").extract_into(&input, event)? {
+                        // Grok pattern: ^\\[%{IP:client.address}\\]$
+                        if !cached_grok!("^\\[%{IP:client.address}\\]$")
+                            .extract_into(&input, event)?
+                        {
+                            // Grok pattern: (?:^%{IP:client.address}:%{POSINT:client._port})
+                            if !cached_grok!("(?:^%{IP:client.address}:%{POSINT:client._port})")
+                                .extract_into(&input, event)?
+                            {
+                                // Grok pattern: ^%{NOTSPACE:client.domain}$
+                                if !cached_grok!("^%{NOTSPACE:client.domain}$")
+                                    .extract_into(&input, event)?
+                                {
+                                    // Grok pattern: (?:^\\[%{NOTSPACE:client.domain}\\]:%{POSINT:client._port})
+                                    if !cached_grok!("(?:^\\[%{NOTSPACE:client.domain}\\]:%{POSINT:client._port})").extract_into(&input, event)? {
+                                        // Grok pattern: (?:^%{NOTSPACE:client.domain}:%{POSINT:client._port})
+                                        if !cached_grok!("(?:^%{NOTSPACE:client.domain}:%{POSINT:client._port})").extract_into(&input, event)? {
+                                            // Grok pattern: ^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$
+                                            if !cached_grok_mapped!("^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$", [("client_address", "client.address")]).extract_into(&input, event)? {
+                                                // Grok pattern: ^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$
+                                                if !cached_grok_mapped!("^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$", [("client_address", "client.address")]).extract_into(&input, event)? {
+                                                    // Grok pattern: %{GREEDYDATA:client.address}
+                                                    if !cached_grok!("%{GREEDYDATA:client.address}").extract_into(&input, event)? {
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         if event.has("server._temp") {
             if let Some(s) = event.get_string("server._temp") {
-                let re = regex::Regex::new("[\n\r]").unwrap();
+                let re = cached_regex!("[\n\r]");
                 let replaced = re.replace_all(&s, "").into_owned();
                 event.set("server._temp", replaced)?;
             }
@@ -1347,14 +1364,27 @@ impl Transform for Default {
         if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Pattern definitions for grok
-                // NOTCLOSINGPARENS = [^)]*
-                // HOSTNAMEANDIP = %{NOTSPACE:server.domain} \(%{NOTCLOSINGPARENS:server.address}\)
                 if let Some(input) = event.get_string("server._temp") {
-                    // Grok pattern: ^\\[%{HOSTNAMEANDIP}\\]$
-                    cached_grok!("^\\[%{HOSTNAMEANDIP}\\]$").extract_into(&input, event)?;
-                    // Additional grok pattern 1: %{HOSTNAMEANDIP}
-                    // Additional grok pattern 2: %{GREEDYDATA:server.address}
+                    // Grok pattern: ^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$
+                    if !cached_grok_mapped!(
+                        "^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$",
+                        [("server_address", "server.address")]
+                    )
+                    .extract_into(&input, event)?
+                    {
+                        // Grok pattern: (?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))
+                        if !cached_grok_mapped!(
+                            "(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))",
+                            [("server_address", "server.address")]
+                        )
+                        .extract_into(&input, event)?
+                        {
+                            // Grok pattern: %{GREEDYDATA:server.address}
+                            if !cached_grok!("%{GREEDYDATA:server.address}")
+                                .extract_into(&input, event)?
+                            {}
+                        }
+                    }
                 }
                 Ok(())
             })();
@@ -1694,10 +1724,9 @@ impl Transform for Default {
         let _cond = { event.get("o365audit.Actor").is_some_and(|v| v.is_array()) };
         if _cond {
             if let Some(Value::Array(items)) = event.get("o365audit.Actor").cloned() {
-                for (idx, _item) in items.iter().enumerate() {
-                    // Set _ingest._value for inner processor access
-                    let item_path = format!("o365audit.Actor[{}]", idx);
-                    // Inner processor operates on the element:
+                let mut out = Vec::with_capacity(items.len());
+                for item in items {
+                    event.set("_ingest._value", item)?;
                     if event.has("_ingest._value.Type") {
                         if let Some(val) = event.get("_ingest._value.Type") {
                             let converted = match val {
@@ -1710,17 +1739,19 @@ impl Transform for Default {
                             event.set("_ingest._value.Type", converted)?;
                         }
                     }
+                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                 }
+                event.remove("_ingest");
+                event.set("o365audit.Actor", Value::Array(out))?;
             }
         }
 
         let _cond = { event.get("o365audit.Target").is_some_and(|v| v.is_array()) };
         if _cond {
             if let Some(Value::Array(items)) = event.get("o365audit.Target").cloned() {
-                for (idx, _item) in items.iter().enumerate() {
-                    // Set _ingest._value for inner processor access
-                    let item_path = format!("o365audit.Target[{}]", idx);
-                    // Inner processor operates on the element:
+                let mut out = Vec::with_capacity(items.len());
+                for item in items {
+                    event.set("_ingest._value", item)?;
                     if event.has("_ingest._value.Type") {
                         if let Some(val) = event.get("_ingest._value.Type") {
                             let converted = match val {
@@ -1733,7 +1764,10 @@ impl Transform for Default {
                             event.set("_ingest._value.Type", converted)?;
                         }
                     }
+                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                 }
+                event.remove("_ingest");
+                event.set("o365audit.Target", Value::Array(out))?;
             }
         }
 
