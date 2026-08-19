@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,9 +13,8 @@ impl Transform for Hipmatch {
         "hipmatch"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        if let Some(csv_str) = event.get_string("message") {
             let mut rdr = csv::ReaderBuilder::new()
                 .delimiter(b',')
                 .quote(b'\"')
@@ -155,8 +156,14 @@ impl Transform for Hipmatch {
             Ok(())
         })();
 
-        // TODO: conditional: ctx._temp_?.source_ipv6 != null && ctx._temp_.source_ipv6 != '' && ctx._temp_.source_ipv6 != '0.0.0.0'
-        {
+        let _cond = {
+            event.has("_temp_.source_ipv6")
+                && event
+                    .get_str("_temp_.source_ipv6")
+                    .is_some_and(|s| !s.is_empty())
+                && event.get_str("_temp_.source_ipv6") != Some("0.0.0.0")
+        };
+        if _cond {
             event.set(
                 "source.ip",
                 event
@@ -194,10 +201,9 @@ impl Transform for Hipmatch {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.panw?.panos?.machine?.name != null
-        {
-            if let Some(s) = event.get_str("panw.panos.machine.name").map(String::from) {
-                let s = s.as_str();
+        let _cond = { event.has("panw.panos.machine.name") };
+        if _cond {
+            if let Some(s) = event.get_string("panw.panos.machine.name") {
                 let lowered = s.to_lowercase();
                 event.set("host.name", lowered)?;
             }
@@ -238,6 +244,27 @@ impl Transform for Hipmatch {
             )?;
             Ok(())
         })();
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

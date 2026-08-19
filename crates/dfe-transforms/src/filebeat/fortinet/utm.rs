@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,26 +13,31 @@ impl Transform for Utm {
         "utm"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         event.set("event.kind", json!("event"))?;
 
-        // TODO: conditional: ['block', 'blocked'].contains(ctx.fortinet?.firewall?.action)
-        {
+        let _cond = {
+            ["block", "blocked"].contains(&event.get_str("fortinet.firewall.action").unwrap_or(""))
+        };
+        if _cond {
             event.append("event.type", json!("denied"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.subtype == 'dns'
-        {
+        let _cond = { event.get_str("fortinet.firewall.subtype") == Some("dns") };
+        if _cond {
             event.append("event.type", json!("info"))?;
         }
 
-        // TODO: conditional: ['pass', 'passthrough'].contains(ctx.fortinet?.firewall?.action)
-        {
+        let _cond = {
+            ["pass", "passthrough"]
+                .contains(&event.get_str("fortinet.firewall.action").unwrap_or(""))
+        };
+        if _cond {
             event.append("event.type", json!("allowed"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.action != null
-        {
+        let _cond = { event.has("fortinet.firewall.action") };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
@@ -40,8 +47,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.dstip", "destination.ip")?;
         }
 
-        // TODO: conditional: ctx.destination?.ip == null
-        {
+        let _cond = { !event.has("destination.ip") };
+        if _cond {
             if event.has("fortinet.firewall.remip") {
                 event.rename("fortinet.firewall.remip", "destination.ip")?;
             }
@@ -85,8 +92,8 @@ impl Transform for Utm {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.destination?.port == null
-        {
+        let _cond = { !event.has("destination.port") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.remport") {
@@ -128,8 +135,8 @@ impl Transform for Utm {
             })();
         }
 
-        // TODO: conditional: ctx.destination?.port == null
-        {
+        let _cond = { !event.has("destination.port") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.dstport") {
@@ -213,8 +220,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.recipient", "email.to.address")?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.recipient != null
-        {
+        let _cond = { event.has("fortinet.firewall.recipient") };
+        if _cond {
             event.append(
                 "email.to.address",
                 event
@@ -270,8 +277,8 @@ impl Transform for Utm {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.source?.port == null
-        {
+        let _cond = { !event.has("source.port") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.src_port") {
@@ -313,8 +320,8 @@ impl Transform for Utm {
             })();
         }
 
-        // TODO: conditional: ctx.source?.port == null
-        {
+        let _cond = { !event.has("source.port") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.srcport") {
@@ -398,8 +405,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.srcdomain", "source.domain")?;
         }
 
-        // TODO: conditional: ctx.source?.ip == null
-        {
+        let _cond = { !event.has("source.ip") };
+        if _cond {
             if event.has("fortinet.firewall.srcip") {
                 event.rename("fortinet.firewall.srcip", "source.ip")?;
             }
@@ -421,15 +428,15 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.unauthuser", "source.user.name")?;
         }
 
-        // TODO: conditional: ctx.source?.user?.name == null
-        {
+        let _cond = { !event.has("source.user.name") };
+        if _cond {
             if event.has("fortinet.firewall.user") {
                 event.rename("fortinet.firewall.user", "source.user.name")?;
             }
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.sender != null
-        {
+        let _cond = { event.has("fortinet.firewall.sender") };
+        if _cond {
             event.append(
                 "email.sender.address",
                 event
@@ -439,8 +446,8 @@ impl Transform for Utm {
             )?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.from != null
-        {
+        let _cond = { event.has("fortinet.firewall.from") };
+        if _cond {
             event.append(
                 "email.from.address",
                 event
@@ -466,20 +473,19 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.applist", "rule.ruleset")?;
         }
 
-        // TODO: conditional: ctx.rule?.category == null
-        {
+        let _cond = { !event.has("rule.category") };
+        if _cond {
             if event.has("fortinet.firewall.catdesc") {
                 event.rename("fortinet.firewall.catdesc", "rule.category")?;
             }
         }
 
-        // TODO: conditional: ctx.rule?.category != null
-        {
+        let _cond = { event.has("rule.category") };
+        if _cond {
             if event.has("rule.category") {
-                if let Some(s) = event.get_str("rule.category").map(String::from) {
-                    let s = s.as_str();
-                    let re = cached_regex!("\\.");
-                    let replaced = re.replace_all(s, "-").into_owned();
+                if let Some(s) = event.get_string("rule.category") {
+                    let re = regex::Regex::new("\\.").unwrap();
+                    let replaced = re.replace_all(&s, "-").into_owned();
                     event.set("rule.category", replaced)?;
                 }
             }
@@ -497,8 +503,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.event_id", "event.id")?;
         }
 
-        // TODO: conditional: ctx.event?.id == null
-        {
+        let _cond = { !event.has("event.id") };
+        if _cond {
             if event.has("fortinet.firewall.eventid") {
                 event.rename("fortinet.firewall.eventid", "event.id")?;
             }
@@ -550,36 +556,36 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.filetype", "file.extension")?;
         }
 
-        // TODO: conditional: ctx.file?.name == null
-        {
+        let _cond = { !event.has("file.name") };
+        if _cond {
             if event.has("fortinet.firewall.infectedfilename") {
                 event.rename("fortinet.firewall.infectedfilename", "file.name")?;
             }
         }
 
-        // TODO: conditional: ctx.file?.size == null
-        {
+        let _cond = { !event.has("file.size") };
+        if _cond {
             if event.has("fortinet.firewall.infectedfilesize") {
                 event.rename("fortinet.firewall.infectedfilesize", "file.size")?;
             }
         }
 
-        // TODO: conditional: ctx.file?.extension == null
-        {
+        let _cond = { !event.has("file.extension") };
+        if _cond {
             if event.has("fortinet.firewall.infectedfiletype") {
                 event.rename("fortinet.firewall.infectedfiletype", "file.extension")?;
             }
         }
 
-        // TODO: conditional: ctx.file?.name == null
-        {
+        let _cond = { !event.has("file.name") };
+        if _cond {
             if event.has("fortinet.firewall.matchedfilename") {
                 event.rename("fortinet.firewall.matchedfilename", "file.name")?;
             }
         }
 
-        // TODO: conditional: ctx.file?.extension == null
-        {
+        let _cond = { !event.has("file.extension") };
+        if _cond {
             if event.has("fortinet.firewall.matchedfiletype") {
                 event.rename("fortinet.firewall.matchedfiletype", "file.extension")?;
             }
@@ -594,8 +600,7 @@ impl Transform for Utm {
         }
 
         if event.has("dns.resolved_ip") {
-            if let Some(s) = event.get_str("dns.resolved_ip").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("dns.resolved_ip") {
                 let parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
                 event.set("dns.resolved_ip", Value::Array(parts))?;
             }
@@ -605,8 +610,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.level", "log.level")?;
         }
 
-        // TODO: conditional: ctx.event?.code == null
-        {
+        let _cond = { !event.has("event.code") };
+        if _cond {
             if event.has("fortinet.firewall.logid") {
                 event.rename("fortinet.firewall.logid", "event.code")?;
             }
@@ -616,22 +621,22 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.msg", "message")?;
         }
 
-        // TODO: conditional: ctx.rule?.id == null
-        {
+        let _cond = { !event.has("rule.id") };
+        if _cond {
             if event.has("fortinet.firewall.policy_id") {
                 event.rename("fortinet.firewall.policy_id", "rule.id")?;
             }
         }
 
-        // TODO: conditional: ctx.rule?.id == null
-        {
+        let _cond = { !event.has("rule.id") };
+        if _cond {
             if event.has("fortinet.firewall.policyid") {
                 event.rename("fortinet.firewall.policyid", "rule.id")?;
             }
         }
 
-        // TODO: conditional: ctx.rule?.ruleset == null
-        {
+        let _cond = { !event.has("rule.ruleset") };
+        if _cond {
             if event.has("fortinet.firewall.profile") {
                 event.rename("fortinet.firewall.profile", "rule.ruleset")?;
             }
@@ -658,8 +663,7 @@ impl Transform for Utm {
         }
 
         if event.has("network.protocol") {
-            if let Some(s) = event.get_str("network.protocol").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("network.protocol") {
                 let lowered = s.to_lowercase();
                 event.set("network.protocol", lowered)?;
             }
@@ -673,8 +677,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.xid", "dns.id")?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.scertcname != null
-        {
+        let _cond = { event.has("fortinet.firewall.scertcname") };
+        if _cond {
             event.append(
                 "tls.server.x509.subject.common_name",
                 event
@@ -688,8 +692,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.scertissuer", "tls.server.issuer")?;
         }
 
-        // TODO: conditional: ctx.tls?.server?.issuer != null
-        {
+        let _cond = { event.has("tls.server.issuer") };
+        if _cond {
             event.append(
                 "tls.server.x509.issuer.common_name",
                 event
@@ -703,8 +707,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.ccertissuer", "tls.client.issuer")?;
         }
 
-        // TODO: conditional: ctx.tls?.client?.issuer != null
-        {
+        let _cond = { event.has("tls.client.issuer") };
+        if _cond {
             event.append(
                 "tls.client.x509.issuer.common_name",
                 event
@@ -718,8 +722,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.sender", "tls.server.issuer")?;
         }
 
-        // TODO: conditional: ctx.tls?.server?.issuer == null
-        {
+        let _cond = { !event.has("tls.server.issuer") };
+        if _cond {
             if event.has("fortinet.firewall.issuer") {
                 event.rename("fortinet.firewall.issuer", "tls.server.issuer")?;
             }
@@ -732,8 +736,8 @@ impl Transform for Utm {
             )?;
         }
 
-        // TODO: conditional: ctx.tls?.server?.x509?.public_key_algorithm == null
-        {
+        let _cond = { !event.has("tls.server.x509.public_key_algorithm") };
+        if _cond {
             if event.has("fortinet.firewall.keyalgo") {
                 event.rename(
                     "fortinet.firewall.keyalgo",
@@ -742,22 +746,22 @@ impl Transform for Utm {
             }
         }
 
-        // TODO: conditional: ctx.tls?.server?.not_before == null
-        {
+        let _cond = { !event.has("tls.server.not_before") };
+        if _cond {
             if event.has("fortinet.firewall.notbefore") {
                 event.rename("fortinet.firewall.notbefore", "tls.server.not_before")?;
             }
         }
 
-        // TODO: conditional: ctx.tls?.server?.not_after == null
-        {
+        let _cond = { !event.has("tls.server.not_after") };
+        if _cond {
             if event.has("fortinet.firewall.notafter") {
                 event.rename("fortinet.firewall.notafter", "tls.server.not_after")?;
             }
         }
 
-        // TODO: conditional: ctx.tls?.server?.x509?.public_key_size == null
-        {
+        let _cond = { !event.has("tls.server.x509.public_key_size") };
+        if _cond {
             if event.has("fortinet.firewall.keysize") {
                 event.rename(
                     "fortinet.firewall.keysize",
@@ -800,22 +804,22 @@ impl Transform for Utm {
             }
         }
 
-        // TODO: conditional: ctx.tls?.server?.x509?.serial_number == null
-        {
+        let _cond = { !event.has("tls.server.x509.serial_number") };
+        if _cond {
             if event.has("fortinet.firewall.sn") {
                 event.rename("fortinet.firewall.sn", "tls.server.x509.serial_number")?;
             }
         }
 
-        // TODO: conditional: ctx.tls?.server?.hash?.sha1 == null
-        {
+        let _cond = { !event.has("tls.server.hash.sha1") };
+        if _cond {
             if event.has("fortinet.firewall.certhash") {
                 event.rename("fortinet.firewall.certhash", "tls.server.hash.sha1")?;
             }
         }
 
-        // TODO: conditional: ctx.tls?.server?.hash?.sha1 != null
-        {
+        let _cond = { event.has("tls.server.hash.sha1") };
+        if _cond {
             event.append(
                 "related.hash",
                 event
@@ -842,15 +846,14 @@ impl Transform for Utm {
         )?;
 
         if event.has("fortinet.firewall.san") {
-            if let Some(s) = event.get_str("fortinet.firewall.san").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("fortinet.firewall.san") {
                 let parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
                 event.set("tls.server.x509.alternative_names", Value::Array(parts))?;
             }
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.cn != null
-        {
+        let _cond = { event.has("fortinet.firewall.cn") };
+        if _cond {
             event.append(
                 "tls.server.x509.alternative_names",
                 event
@@ -880,8 +883,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.sni", "tls.client.server_name")?;
         }
 
-        // TODO: conditional: ctx.destination?.domain == null
-        {
+        let _cond = { !event.has("destination.domain") };
+        if _cond {
             event.set(
                 "destination.domain",
                 event
@@ -891,23 +894,32 @@ impl Transform for Utm {
             )?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.handshake == "full"
-        {
+        let _cond = { event.get_str("fortinet.firewall.handshake") == Some("full") };
+        if _cond {
             event.set("tls.established", json!(true))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.tlsver instanceof String
-        {
+        let _cond = {
+            event
+                .get("fortinet.firewall.tlsver")
+                .is_some_and(|v| v.is_string())
+        };
+        if _cond {
             // Painless script
             // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}
+            // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}"#,
             )?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.dtype instanceof String
-        {
+        let _cond = {
+            event
+                .get("fortinet.firewall.dtype")
+                .is_some_and(|v| v.is_string())
+        };
+        if _cond {
             event.append(
                 "vulnerability.category",
                 event
@@ -925,8 +937,8 @@ impl Transform for Utm {
             event.rename("fortinet.firewall.filehash", "fortinet.file.hash.crc32")?;
         }
 
-        // TODO: conditional: ctx.fortinet?.file?.hash?.crc32 != null
-        {
+        let _cond = { event.has("fortinet.file.hash.crc32") };
+        if _cond {
             event.append(
                 "related.hash",
                 event
@@ -939,8 +951,7 @@ impl Transform for Utm {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("dns.question.name") {
-                if let Some(domain_str) = event.get_str("dns.question.name").map(String::from) {
-                    let domain_str = domain_str.as_str();
+                if let Some(domain_str) = event.get_string("dns.question.name") {
                     let domain = domain_str.to_string();
                     event.set("dns.question.domain", json!(domain.clone()))?;
                     // Public suffix list lookup for registered domain extraction
@@ -975,6 +986,27 @@ impl Transform for Utm {
         event.remove("fortinet.firewall.filesize");
         event.remove("fortinet.firewall.dtype");
         event.remove("fortinet.firewall.tlsver");
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

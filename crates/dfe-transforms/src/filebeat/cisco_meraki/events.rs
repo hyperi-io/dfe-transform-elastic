@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -12,9 +14,8 @@ impl Transform for Events {
     }
 
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        if let Some(input) = event.get_str("event.original").map(String::from) {
-            let input = input.as_str();
-            let mut remaining = input;
+        if let Some(input) = event.get_string("event.original") {
+            let mut remaining: &str = &input;
             if let Some(pos) = remaining.find(" events ") {
                 remaining = &remaining[pos..];
             }
@@ -30,41 +31,41 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx.msgtype.toLowerCase() == "site-to-site"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("site-to-site") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("Site-to-Site VPN"))?;
         }
 
-        // TODO: conditional: ctx.msgtype.toLowerCase() == "client_vpn_connect"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("client_vpn_connect") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("client_vpn_connect"))?;
         }
 
-        // TODO: conditional: ctx.msgtype.toLowerCase() == "blocked"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("blocked") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("blocked"))?;
         }
 
-        // TODO: conditional: ctx.msgtype.toLowerCase() == "auth"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("auth") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("auth"))?;
         }
 
-        // TODO: conditional: ctx.msgtype.toLowerCase() == "port"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("port") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("port"))?;
         }
 
-        // TODO: conditional: ctx.msgtype.toLowerCase() == "carrier_change"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("carrier_change") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("carrier_change"))?;
         }
 
-        // TODO: conditional: ctx?.msgtype.startsWith("type=")
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        // SKIPPED: condition not transpiled: ctx?.msgtype.startsWith("type=")
+        #[allow(unreachable_code, unused_variables)]
+        if false {
+            if let Some(input) = event.get_string("event.original") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" events type=") {
                     remaining = &remaining[pos..];
                 }
@@ -81,16 +82,15 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.type != null
-        {
+        let _cond = { event.has("type") };
+        if _cond {
             event.rename("type", "cisco_meraki.event_subtype")?;
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp"
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("dhcp") };
+        if _cond {
+            if let Some(input) = event.get_string("event.original") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" events dhcp ") {
                     remaining = &remaining[pos..];
                 }
@@ -114,16 +114,18 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp"
-        {
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("dhcp") };
+        if _cond {
             event.set("network.protocol", json!("dhcp"))?;
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp" && ctx?._temp?.dhcp_op.toLowerCase() == 'lease'
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
+                && event.get_str("_temp.dhcp_op.toLowerCase()") == Some("lease")
+        };
+        if _cond {
+            if let Some(input) = event.get_string("event.original") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" events dhcp lease of ip ") {
                     remaining = &remaining[pos..];
                 }
@@ -160,11 +162,14 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp" && ctx?._temp?.dhcp_op.toLowerCase() == 'no' && ctx?._temp?.dhcp_op2.toLowerCase() == 'offers'
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
+                && event.get_str("_temp.dhcp_op.toLowerCase()") == Some("no")
+                && event.get_str("_temp.dhcp_op2.toLowerCase()") == Some("offers")
+        };
+        if _cond {
+            if let Some(input) = event.get_string("event.original") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" events dhcp no offers for mac ") {
                     remaining = &remaining[pos..];
                 }
@@ -181,114 +186,118 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp" && ctx?._temp?.dhcp_op == 'lease'
-        {
+        let _cond = {
+            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
+                && event.get_str("_temp.dhcp_op") == Some("lease")
+        };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("dhcp_offer"))?;
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp" && ctx?._temp?.dhcp_op.toLowerCase() == 'no' && ctx?._temp?.dhcp_op2.toLowerCase() == 'offers'
-        {
+        let _cond = {
+            event.get_str("msgtype.toLowerCase()") == Some("dhcp")
+                && event.get_str("_temp.dhcp_op.toLowerCase()") == Some("no")
+                && event.get_str("_temp.dhcp_op2.toLowerCase()") == Some("offers")
+        };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("dhcp_no_offer"))?;
         }
 
-        // TODO: conditional: ctx?.msgtype.toLowerCase() == "dhcp"
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+        let _cond = { event.get_str("msgtype.toLowerCase()") == Some("dhcp") };
+        if _cond {
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: events dhcp %{GREEDYDATA:message}$
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("events dhcp %{GREEDYDATA:message}$").extract_into(input, event)?;
+                cached_grok!("events dhcp %{GREEDYDATA:message}$").extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx.event.original.startsWith('<') && ctx?.cisco_meraki?.event_subtype == "Site-to-Site VPN"
-        {
+        let _cond = {
+            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
+                == Some("Site-to-Site VPN")
+        };
+        if _cond {
             // Pattern definitions for grok
+            // SYSLOGVER = \b(?:\d{1,2})\b
             // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
             // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
             // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
-            // SYSLOGVER = \b(?:\d{1,2})\b
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: %{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").extract_into(input, event)?;
+                cached_grok!("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx.event.original.startsWith('<') && ctx?.cisco_meraki?.event_subtype == "blocked"
-        {
+        let _cond = {
+            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
+                == Some("blocked")
+        };
+        if _cond {
             // Pattern definitions for grok
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // BLOCKEDARP = Blocked ARP Packet
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
             // SYSLOGVER = \b(?:\d{1,2})\b
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
+            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
+            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
+            // BLOCKEDARP = Blocked ARP Packet
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$").extract_into(input, event)?;
+                cached_grok!("^%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>%{BLOCKEDARP:_temp.blocked_arp} from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$").extract_into(&input, event)?;
             }
         }
 
         if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-                let s = s.as_str();
-                let re = cached_regex!("[:.]");
-                let replaced = re.replace_all(s, "-").into_owned();
+            if let Some(s) = event.get_string("source.mac") {
+                let re = regex::Regex::new("[:.]").unwrap();
+                let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("source.mac", replaced)?;
             }
         }
 
         if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("source.mac") {
                 let uppered = s.to_uppercase();
                 event.set("source.mac", uppered)?;
             }
         }
 
-        // TODO: conditional: ctx._temp?.blocked_arp != null
-        {
+        let _cond = { event.has("_temp.blocked_arp") };
+        if _cond {
             event.set("cisco_meraki.event_subtype", json!("arp_blocked"))?;
         }
 
-        // TODO: conditional: ctx.event.original.startsWith('<') && ctx.cisco_meraki?.event_subtype == "port"
-        {
+        let _cond = {
+            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
+                == Some("port")
+        };
+        if _cond {
             // Pattern definitions for grok
+            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
             // PORTACTION = (?:changed stp role|status changed)
             // SYSLOGVER = \b(?:\d{1,2})\b
             // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
             // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$").extract_into(input, event)?;
+                cached_grok!("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}(?<message>port %{NOTSPACE:cisco_meraki.port} %{PORTACTION:_temp.port_action}(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$").extract_into(&input, event)?;
             }
         }
 
         if event.has("_temp.port_action") {
-            if let Some(s) = event.get_str("_temp.port_action").map(String::from) {
-                let s = s.as_str();
-                let re = cached_regex!(" ");
-                let replaced = re.replace_all(s, "_").into_owned();
+            if let Some(s) = event.get_string("_temp.port_action") {
+                let re = regex::Regex::new(" ").unwrap();
+                let replaced = re.replace_all(&s, "_").into_owned();
                 event.set("_temp.port_action", replaced)?;
             }
         }
 
         if event.has("_temp.port_action") {
-            if let Some(s) = event.get_str("_temp.port_action").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("_temp.port_action") {
                 let lowered = s.to_lowercase();
                 event.set("_temp.port_action", lowered)?;
             }
         }
 
-        // TODO: conditional: ctx._temp?.port_action != null
-        {
+        let _cond = { event.has("_temp.port_action") };
+        if _cond {
             event.set(
                 "cisco_meraki.event_subtype",
                 json!(format!(
@@ -298,67 +307,89 @@ impl Transform for Events {
             )?;
         }
 
-        // TODO: conditional: ctx.event.original.startsWith('<') && ctx.cisco_meraki?.event_subtype == "carrier_change"
-        {
+        let _cond = {
+            event.get_str("event.original.startsWith('<') && ctx.cisco_meraki.event_subtype")
+                == Some("carrier_change")
+        };
+        if _cond {
             // Pattern definitions for grok
-            // SYSLOGVER = \b(?:\d{1,2})\b
             // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
             // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+            // SYSLOGVER = \b(?:\d{1,2})\b
+            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").extract_into(input, event)?;
+                cached_grok!("^(?i)%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx._temp?.up == 'true'
-        {
+        let _cond = { event.get_str("_temp.up") == Some("true") };
+        if _cond {
             event.set("cisco_meraki.new_port_status", json!("up"))?;
         }
 
-        // TODO: conditional: ctx._temp?.up == 'false'
-        {
+        let _cond = { event.get_str("_temp.up") == Some("false") };
+        if _cond {
             event.set("cisco_meraki.new_port_status", json!("down"))?;
         }
 
-        // TODO: conditional: ctx.event.original.startsWith('<') && ['dfs_event', 'association', 'disassociation', 'aps_association_reject', 'multiple_dhcp_servers_detected', 'wpa_deauth', 'wpa_auth', 'vpn_connectivity_change', '8021x_eap_failure', '8021x_auth', '8021x_deauth', '8021x_eap_success', 'splash_auth', 'device_packet_flood'].contains(ctx.cisco_meraki.event_subtype)
-        {
+        // SKIPPED: condition not transpiled: ctx.event.original.startsWith('<') && ['dfs_event', 'association', 'disassociation', 'aps_association_reject', 'multiple_dhcp_servers_detected', 'wpa_deauth', 'wpa_auth', 'vpn_connectivity_change', '8021x_eap_failure', '8021x_auth', '8021x_deauth', '8021x_eap_success', 'splash_auth', 'device_packet_flood'].contains(ctx.cisco_meraki.event_subtype)
+        #[allow(unreachable_code, unused_variables)]
+        if false {
             // Pattern definitions for grok
-            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
-            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
-            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
             // SYSLOGVER = \b(?:\d{1,2})\b
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+            // SYSLOGPRI = <%{NONNEGINT:log.syslog.priority:long}>
+            // SYSLOGHDR = %{SYSLOGPRI}%{SYSLOGVER}
+            // WORDORHOST = (?:%{WORD}|%{HOSTNAME})
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: %{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").extract_into(input, event)?;
+                cached_grok!("%{SYSLOGHDR}%{SPACE}%{NUMBER}%{SPACE}%{WORDORHOST}%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx?._temp?.rest != null && ['dfs_event', 'association', 'disassociation', 'aps_association_reject', 'multiple_dhcp_servers_detected', 'wpa_deauth', 'wpa_auth', '8021x_eap_failure', '8021x_auth', '8021x_deauth', '8021x_eap_success', 'splash_auth', 'device_packet_flood'].contains(ctx.cisco_meraki.event_subtype)
-        {
-            if let Some(kv_str) = event.get_str("_temp.rest").map(String::from) {
-                let kv_str = kv_str.as_str();
+        let _cond = {
+            event.has("_temp.rest")
+                && [
+                    "dfs_event",
+                    "association",
+                    "disassociation",
+                    "aps_association_reject",
+                    "multiple_dhcp_servers_detected",
+                    "wpa_deauth",
+                    "wpa_auth",
+                    "8021x_eap_failure",
+                    "8021x_auth",
+                    "8021x_deauth",
+                    "8021x_eap_success",
+                    "splash_auth",
+                    "device_packet_flood",
+                ]
+                .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
+        };
+        if _cond {
+            if let Some(kv_str) = event.get_string("_temp.rest") {
+                let mut kv_target_prefix = String::new();
+                kv_target_prefix.push_str("cisco_meraki.");
+                if let Some(segment) = event.get_str("cisco_meraki.event_subtype") {
+                    kv_target_prefix.push_str(segment);
+                    kv_target_prefix.push('.');
+                }
                 for pair in kv_str.split("[ \t]{1,}") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
-                            let event_subtype = event
-                                .get_str("cisco_meraki.event_subtype")
-                                .unwrap_or("unknown");
-                            event.set(&format!("cisco_meraki.{event_subtype}.{}", key), value)?;
+                            event.set(&format!("{}{}", kv_target_prefix, key), value)?;
                         }
                     }
                 }
             }
         }
 
-        // TODO: conditional: ctx?._temp?.rest != null && ctx?.cisco_meraki?.event_subtype == 'vpn_connectivity_change'
-        {
-            if let Some(kv_str) = event.get_str("_temp.rest").map(String::from) {
-                let kv_str = kv_str.as_str();
+        let _cond = {
+            event.has("_temp.rest")
+                && event.get_str("cisco_meraki.event_subtype") == Some("vpn_connectivity_change")
+        };
+        if _cond {
+            if let Some(kv_str) = event.get_string("_temp.rest") {
                 for pair in kv_str.split("[ \t]{1,}") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
@@ -375,49 +406,52 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
             event.set("network.protocol", json!("dhcp"))?;
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
             event.rename(
                 "cisco_meraki.multiple_dhcp_servers_detected.original_server_mac",
                 "server.mac",
             )?;
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(input) = event
-                    .get_str("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
-                    .map(String::from)
+                    .get_string("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
                 {
-                    let input = input.as_str();
                     // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
                     cached_grok!(
                         "^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$"
                     )
-                    .extract_into(input, event)?;
+                    .extract_into(&input, event)?;
                     // Additional grok pattern 1: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
                 }
                 Ok(())
             })();
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(s) = event
-                    .get_str("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
-                    .map(String::from)
+                    .get_string("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
                 {
-                    let s = s.as_str();
                     // Validate IP format
                     let s = s.trim();
                     if s.parse::<std::net::IpAddr>().is_err() {
@@ -433,41 +467,49 @@ impl Transform for Events {
             })();
         }
 
-        // TODO: conditional: ctx?.server?.ip != null
-        {
-            event.remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip");
+        let _cond = { event.has("server.ip") };
+        if _cond {
+            if event
+                .remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
+                .is_none()
+            {
+                return Err(TransformError::FieldNotFound {
+                    path: "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip".into(),
+                });
+            }
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
             event.append(
                 "related.ip",
                 event.get("server.ip").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
-            if let Some(input) = event
-                .get_str("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
-                .map(String::from)
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
+            if let Some(input) =
+                event.get_string("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
             {
-                let input = input.as_str();
                 // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
                 cached_grok!("^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$")
-                    .extract_into(input, event)?;
+                    .extract_into(&input, event)?;
                 // Additional grok pattern 1: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
             }
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
-            if let Some(s) = event
-                .get_str("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
-                .map(String::from)
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
+            if let Some(s) =
+                event.get_string("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
             {
-                let s = s.as_str();
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -480,8 +522,10 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'multiple_dhcp_servers_detected'
-        {
+        let _cond = {
+            event.get_str("cisco_meraki.event_subtype") == Some("multiple_dhcp_servers_detected")
+        };
+        if _cond {
             event.append(
                 "related.ip",
                 event
@@ -491,16 +535,15 @@ impl Transform for Events {
             )?;
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == 'wpa_deauth'
-        {
+        let _cond = { event.get_str("cisco_meraki.event_subtype") == Some("wpa_deauth") };
+        if _cond {
             event.rename("cisco_meraki.wpa_deauth.client_mac", "client.mac")?;
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == "client_vpn_connect"
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("cisco_meraki.event_subtype") == Some("client_vpn_connect") };
+        if _cond {
+            if let Some(input) = event.get_string("event.original") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" events client_vpn_connect user id '") {
                     remaining = &remaining[pos..];
                 }
@@ -525,38 +568,33 @@ impl Transform for Events {
             }
         }
 
-        // TODO: conditional: ctx?.cisco_meraki?.event_subtype == "client_vpn_connect"
-        {
-            if let Some(input) = event.get_str("event.original").map(String::from) {
-                let input = input.as_str();
+        let _cond = { event.get_str("cisco_meraki.event_subtype") == Some("client_vpn_connect") };
+        if _cond {
+            if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: events client_vpn_connect %{GREEDYDATA:message}$
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
                 cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
-                    .extract_into(input, event)?;
+                    .extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx?._temp?.client_ip != null
-        {
+        let _cond = { event.has("_temp.client_ip") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_str("_temp.client_ip").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("_temp.client_ip") {
                     // Grok pattern: ^%{IPV4:_temp.client_ip}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^%{IPV4:_temp.client_ip}$").extract_into(input, event)?;
+                    cached_grok!("^%{IPV4:_temp.client_ip}$").extract_into(&input, event)?;
                     // Additional grok pattern 1: ^%{IPV6:_temp.client_ip}$
                 }
                 Ok(())
             })();
         }
 
-        // TODO: conditional: ctx?._temp?.client_ip != null
-        {
+        let _cond = { event.has("_temp.client_ip") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_str("_temp.client_ip").map(String::from) {
-                    let s = s.as_str();
+                if let Some(s) = event.get_string("_temp.client_ip") {
                     // Validate IP format
                     let s = s.trim();
                     if s.parse::<std::net::IpAddr>().is_err() {
@@ -572,38 +610,55 @@ impl Transform for Events {
         }
 
         if event.has("client.mac") {
-            if let Some(s) = event.get_str("client.mac").map(String::from) {
-                let s = s.as_str();
-                let re = cached_regex!("[:.]");
-                let replaced = re.replace_all(s, "-").into_owned();
+            if let Some(s) = event.get_string("client.mac") {
+                let re = regex::Regex::new("[:.]").unwrap();
+                let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("client.mac", replaced)?;
             }
         }
 
         if event.has("client.mac") {
-            if let Some(s) = event.get_str("client.mac").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("client.mac") {
                 let uppered = s.to_uppercase();
                 event.set("client.mac", uppered)?;
             }
         }
 
         if event.has("server.mac") {
-            if let Some(s) = event.get_str("server.mac").map(String::from) {
-                let s = s.as_str();
-                let re = cached_regex!("[:.]");
-                let replaced = re.replace_all(s, "-").into_owned();
+            if let Some(s) = event.get_string("server.mac") {
+                let re = regex::Regex::new("[:.]").unwrap();
+                let replaced = re.replace_all(&s, "-").into_owned();
                 event.set("server.mac", replaced)?;
             }
         }
 
         if event.has("server.mac") {
-            if let Some(s) = event.get_str("server.mac").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("server.mac") {
                 let uppered = s.to_uppercase();
                 event.set("server.mac", uppered)?;
             }
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

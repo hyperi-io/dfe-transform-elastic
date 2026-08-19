@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -12,9 +14,8 @@ impl Transform for Ipflows {
     }
 
     fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        if let Some(input) = event.get_str("event.original").map(String::from) {
-            let input = input.as_str();
-            let mut remaining = input;
+        if let Some(input) = event.get_string("event.original") {
+            let mut remaining: &str = &input;
             if let Some(pos) = remaining.find(" ") {
                 remaining = &remaining[pos..];
             }
@@ -43,10 +44,9 @@ impl Transform for Ipflows {
             event.set("_temp.event", remaining)?;
         }
 
-        // TODO: conditional: ctx._temp?.event != null
-        {
-            if let Some(kv_str) = event.get_str("_temp.event").map(String::from) {
-                let kv_str = kv_str.as_str();
+        let _cond = { event.has("_temp.event") };
+        if _cond {
+            if let Some(kv_str) = event.get_string("_temp.event") {
                 for pair in kv_str.split(" ") {
                     if let Some((key, value)) = pair.split_once("=") {
                         if !key.is_empty() {
@@ -57,10 +57,9 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_src_ip != null
-        {
-            if let Some(s) = event.get_str("translated_src_ip").map(String::from) {
-                let s = s.as_str();
+        let _cond = { event.has("translated_src_ip") };
+        if _cond {
+            if let Some(s) = event.get_string("translated_src_ip") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -73,10 +72,9 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_src_ip == null && ctx?.src != null
-        {
-            if let Some(s) = event.get_str("src").map(String::from) {
-                let s = s.as_str();
+        let _cond = { !event.has("translated_src_ip") && event.has("src") };
+        if _cond {
+            if let Some(s) = event.get_string("src") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -89,8 +87,8 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_src_ip != null && ctx?.translated_port != null
-        {
+        let _cond = { event.has("translated_src_ip") && event.has("translated_port") };
+        if _cond {
             if let Some(val) = event.get("translated_port") {
                 let converted = match val {
                     Value::String(s) => {
@@ -124,8 +122,8 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_src_ip == null && ctx?.sport != null
-        {
+        let _cond = { !event.has("translated_src_ip") && event.has("sport") };
+        if _cond {
             if let Some(val) = event.get("sport") {
                 let converted = match val {
                     Value::String(s) => {
@@ -159,10 +157,9 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_dst_ip != null
-        {
-            if let Some(s) = event.get_str("translated_dst_ip").map(String::from) {
-                let s = s.as_str();
+        let _cond = { event.has("translated_dst_ip") };
+        if _cond {
+            if let Some(s) = event.get_string("translated_dst_ip") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -175,10 +172,9 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_dst_ip == null && ctx?.dst != null
-        {
-            if let Some(s) = event.get_str("dst").map(String::from) {
-                let s = s.as_str();
+        let _cond = { !event.has("translated_dst_ip") && event.has("dst") };
+        if _cond {
+            if let Some(s) = event.get_string("dst") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -191,8 +187,8 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_dst_ip != null && ctx?.translated_port != null
-        {
+        let _cond = { event.has("translated_dst_ip") && event.has("translated_port") };
+        if _cond {
             if let Some(val) = event.get("translated_port") {
                 let converted = match val {
                     Value::String(s) => {
@@ -226,8 +222,8 @@ impl Transform for Ipflows {
             }
         }
 
-        // TODO: conditional: ctx?.translated_dst_ip == null && ctx?.dport != null
-        {
+        let _cond = { !event.has("translated_dst_ip") && event.has("dport") };
+        if _cond {
             if let Some(val) = event.get("dport") {
                 let converted = match val {
                     Value::String(s) => {
@@ -262,6 +258,27 @@ impl Transform for Ipflows {
         }
 
         event.rename("protocol", "network.protocol")?;
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

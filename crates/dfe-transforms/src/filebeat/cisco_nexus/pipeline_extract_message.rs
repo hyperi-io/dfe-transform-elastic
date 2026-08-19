@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,16 +13,28 @@ impl Transform for PipelineExtractMessage {
         "pipeline_extract_message"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        // TODO: conditional: ['IF_DOWN_ADMIN_DOWN','IF_ADMIN_UP','SPEED','IF_DUPLEX','IF_RX_FLOW_CONTROL','IF_TX_FLOW_CONTROL','IF_UP','IF_XCVR_WARNING'].contains(ctx.event?.code.toUpperCase())
-        {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        let _cond = {
+            event.get_str("event.code").is_some_and(|s| {
+                [
+                    "IF_DOWN_ADMIN_DOWN",
+                    "IF_ADMIN_UP",
+                    "SPEED",
+                    "IF_DUPLEX",
+                    "IF_RX_FLOW_CONTROL",
+                    "IF_TX_FLOW_CONTROL",
+                    "IF_UP",
+                    "IF_XCVR_WARNING",
+                ]
+                .contains(&s.to_uppercase().as_str())
+            })
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$").extract_into(input, event)?;
+                    cached_grok!("^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is up in mode %{DATA:cisco_nexus.log.interface.mode}$").extract_into(&input, event)?;
                     // Additional grok pattern 1: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name} is %{GREEDYDATA}$
                     // Additional grok pattern 2: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational speed changed to %{DATA:cisco_nexus.log.operational.speed}$
                     // Additional grok pattern 3: ^(?:%{GREEDYDATA}%{SPACE}(?i)interface)%{SPACE}%{DATA:cisco_nexus.log.interface.name}, operational duplex mode changed to %{DATA:cisco_nexus.log.operational.duplex_mode}$
@@ -32,15 +46,24 @@ impl Transform for PipelineExtractMessage {
             })();
         }
 
-        // TODO: conditional: ['VSHD_SYSLOG_CONFIG_I','DETECT_MULTIPLE_PEERS','UPDOWN','CFGWRITE_STARTED','LINEPROTO'].contains(ctx.event?.code.toUpperCase())
-        {
+        let _cond = {
+            event.get_str("event.code").is_some_and(|s| {
+                [
+                    "VSHD_SYSLOG_CONFIG_I",
+                    "DETECT_MULTIPLE_PEERS",
+                    "UPDOWN",
+                    "CFGWRITE_STARTED",
+                    "LINEPROTO",
+                ]
+                .contains(&s.to_uppercase().as_str())
+            })
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$").extract_into(input, event)?;
+                    cached_grok!("^Configured from vty by %{USERNAME:user.name} on %{IP:source.ip}@%{DATA:cisco_nexus.log.terminal}$").extract_into(&input, event)?;
                     // Additional grok pattern 1: ^Multiple peers detected on %{DATA:cisco_nexus.log.interface.name}$
                     // Additional grok pattern 2: ^Line (?i)protocol on Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.line_protocol_state}$
                     // Additional grok pattern 3: ^Interface %{DATA:cisco_nexus.log.interface.name}, changed state to %{DATA:cisco_nexus.log.state}$
@@ -50,15 +73,17 @@ impl Transform for PipelineExtractMessage {
             })();
         }
 
-        // TODO: conditional: ['SYSTEM_MSG'].contains(ctx.event?.code.toUpperCase())
-        {
+        let _cond = {
+            event
+                .get_str("event.code")
+                .is_some_and(|s| ["SYSTEM_MSG"].contains(&s.to_uppercase().as_str()))
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$").extract_into(input, event)?;
+                    cached_grok!("^%{DATA}authentication failure; %{GREEDYDATA:temp.message} - %{GREEDYDATA}$").extract_into(&input, event)?;
                     // Additional grok pattern 1: ^%{DATA}Authentication failure for %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
                     // Additional grok pattern 2: ^%{DATA}Authentication failed for user %{USERNAME:user.name} from %{IP:source.ip} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
                     // Additional grok pattern 3: ^Login failed for user %{USERNAME:user.name} - %{WORD:network.protocol}\\[%{NUMBER:process.pid:long}\\]%{GREEDYDATA}$
@@ -68,15 +93,24 @@ impl Transform for PipelineExtractMessage {
             })();
         }
 
-        // TODO: conditional: ['INVAL_IP','L2FM_MAC_MOVE2','DUPLEX_MISMATCH','NATIVE_VLAN_MISMATCH','THRESHOLD_VIOLATION'].contains(ctx.event?.code.toUpperCase())
-        {
+        let _cond = {
+            event.get_str("event.code").is_some_and(|s| {
+                [
+                    "INVAL_IP",
+                    "L2FM_MAC_MOVE2",
+                    "DUPLEX_MISMATCH",
+                    "NATIVE_VLAN_MISMATCH",
+                    "THRESHOLD_VIOLATION",
+                ]
+                .contains(&s.to_uppercase().as_str())
+            })
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$").extract_into(input, event)?;
+                    cached_grok!("^%{DATA:network.protocol} %{DATA}%{SPACE}Received packet with invalid destination IP address (%{DATA}) from %{CISCOMAC:source.mac} on %{DATA:cisco_nexus.log.interface.name}$").extract_into(&input, event)?;
                     // Additional grok pattern 1: ^Mac %{CISCOMAC:source.mac} in %{DATA:cisco_nexus.log.interface.name} has moved from %{GREEDYDATA}$
                     // Additional grok pattern 2: ^%{DATA} mismatch discovered on %{DATA:cisco_nexus.log.network.ingress_interface}(?:\\(%{DATA}\\))?, with %{DATA:cisco_nexus.log.network.egress_interface}(?:\\(%{DATA}\\))?$
                     // Additional grok pattern 3: ^%{DATA:cisco_nexus.log.interface.name}: Rx power high warning; Operating value: %{DATA:cisco_nexus.log.operating_value}, Threshold value: %{DATA:cisco_nexus.log.threshold_value}.$
@@ -85,15 +119,17 @@ impl Transform for PipelineExtractMessage {
             })();
         }
 
-        // TODO: conditional: ['LOGIN_SUCCESS','LOGOUT','LOGOUT_C6K'].contains(ctx.event?.code.toUpperCase())
-        {
+        let _cond = {
+            event.get_str("event.code").is_some_and(|s| {
+                ["LOGIN_SUCCESS", "LOGOUT", "LOGOUT_C6K"].contains(&s.to_uppercase().as_str())
+            })
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$").extract_into(input, event)?;
+                    cached_grok!("^Login Success \\[user: %{USERNAME:user.name}\\] \\[Source: %{IP:source.ip}\\] \\[localport: %{NUMBER:source.port:long}\\] at %{GREEDYDATA}$").extract_into(&input, event)?;
                     // Additional grok pattern 1: ^User %{USERNAME:user.name} %{GREEDYDATA}\\(%{IP:source.ip}\\)$
                 }
                 Ok(())
@@ -101,32 +137,17 @@ impl Transform for PipelineExtractMessage {
         }
 
         if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("source.mac") {
                 let re = cached_regex!("[.]");
-                let replaced = re.replace_all(s, "").into_owned();
+                let replaced = re.replace_all(&s, "").into_owned();
                 event.set("source.mac", replaced)?;
             }
         }
 
-        if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-                let s = s.as_str();
-                // Dash-separate the MAC in pairs. The upstream pipeline uses a
-                // negative lookahead, which the regex crate cannot compile.
-                let chars: Vec<char> = s.chars().collect();
-                let dashed = chars
-                    .chunks(2)
-                    .map(|pair| pair.iter().collect::<String>())
-                    .collect::<Vec<_>>()
-                    .join("-");
-                event.set("source.mac", dashed)?;
-            }
-        }
+        // SKIPPED: pattern unsupported by the regex engine: (..)(?!$)
 
         if event.has("source.mac") {
-            if let Some(s) = event.get_str("source.mac").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("source.mac") {
                 let uppered = s.to_uppercase();
                 event.set("source.mac", uppered)?;
             }
@@ -135,8 +156,7 @@ impl Transform for PipelineExtractMessage {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("temp.message") {
-                if let Some(kv_str) = event.get_str("temp.message").map(String::from) {
-                    let kv_str = kv_str.as_str();
+                if let Some(kv_str) = event.get_string("temp.message") {
                     for pair in kv_str.split("\\s+") {
                         if let Some((key, value)) = pair.split_once("=") {
                             if !key.is_empty() {
@@ -152,8 +172,7 @@ impl Transform for PipelineExtractMessage {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if event.has("temp.message2") {
-                if let Some(kv_str) = event.get_str("temp.message2").map(String::from) {
-                    let kv_str = kv_str.as_str();
+                if let Some(kv_str) = event.get_string("temp.message2") {
                     for pair in kv_str.split(" ; ") {
                         if let Some((key, value)) = pair.split_once("=") {
                             if !key.is_empty() {
@@ -211,68 +230,165 @@ impl Transform for PipelineExtractMessage {
         }
 
         if event.has("network.protocol") {
-            if let Some(s) = event.get_str("network.protocol").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("network.protocol") {
                 let lowered = s.to_lowercase();
                 event.set("network.protocol", lowered)?;
             }
         }
 
-        // TODO: conditional: ctx.cisco_nexus?.log?.interface?.name != null || ctx.cisco_nexus?.log?.network?.ingress_interface != null || ctx.cisco_nexus?.log?.network?.egress_interface != null || ['L2FM_MAC_MOVE2','L3_VPC_UNEQUAL_WEIGHT','AAA_ACCOUNTING_MESSAGE','DUP_HOSTS','NF_PARITY_ERROR','EXCESSIVE_PARITY_ERROR'].contains(ctx.event?.code.toUpperCase()) || ctx.message.toLowerCase().contains('kex_exchange_identification')
-        {
+        let _cond = {
+            event.has("cisco_nexus.log.interface.name")
+                || event.has("cisco_nexus.log.network.ingress_interface")
+                || event.has("cisco_nexus.log.network.egress_interface")
+                || event.get_str("event.code").is_some_and(|s| {
+                    [
+                        "L2FM_MAC_MOVE2",
+                        "L3_VPC_UNEQUAL_WEIGHT",
+                        "AAA_ACCOUNTING_MESSAGE",
+                        "DUP_HOSTS",
+                        "NF_PARITY_ERROR",
+                        "EXCESSIVE_PARITY_ERROR",
+                    ]
+                    .contains(&s.to_uppercase().as_str())
+                })
+                || event
+                    .get_str("message")
+                    .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
+        };
+        if _cond {
             event.set("event.category", json!(["network"]))?;
         }
 
-        // TODO: conditional: ctx.cisco_nexus?.log?.interface?.name != null || ctx.cisco_nexus?.log?.network?.ingress_interface != null || ctx.cisco_nexus?.log?.network?.egress_interface != null || ['VSHD_SYSLOG_CONFIG_I','L2FM_MAC_MOVE2','L3_VPC_UNEQUAL_WEIGHT','AAA_ACCOUNTING_MESSAGE','DUP_HOSTS','NF_PARITY_ERROR','EXCESSIVE_PARITY_ERROR'].contains(ctx.event?.code.toUpperCase())
-        {
+        let _cond = {
+            event.has("cisco_nexus.log.interface.name")
+                || event.has("cisco_nexus.log.network.ingress_interface")
+                || event.has("cisco_nexus.log.network.egress_interface")
+                || event.get_str("event.code").is_some_and(|s| {
+                    [
+                        "VSHD_SYSLOG_CONFIG_I",
+                        "L2FM_MAC_MOVE2",
+                        "L3_VPC_UNEQUAL_WEIGHT",
+                        "AAA_ACCOUNTING_MESSAGE",
+                        "DUP_HOSTS",
+                        "NF_PARITY_ERROR",
+                        "EXCESSIVE_PARITY_ERROR",
+                    ]
+                    .contains(&s.to_uppercase().as_str())
+                })
+        };
+        if _cond {
             event.set("event.type", json!(["info"]))?;
         }
 
-        // TODO: conditional: ctx.event?.code == 'VSHD_SYSLOG_CONFIG_I'
-        {
+        let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
+        if _cond {
             event.set("event.category", json!(["configuration"]))?;
         }
 
-        // TODO: conditional: ctx.event?.code == 'LOGIN_SUCCESS' || (ctx.event?.code == 'SYSTEM_MSG' && (ctx.message.toLowerCase().contains('authentication') || ctx.message.toLowerCase().contains('authentication failure') || ctx.message.toLowerCase().contains('login')))
-        {
+        let _cond = {
+            event.get_str("event.code") == Some("LOGIN_SUCCESS")
+                || (event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && (event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("authentication"))
+                        || event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("authentication failure"))
+                        || event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("login"))))
+        };
+        if _cond {
             event.set("event.category", json!(["authentication"]))?;
         }
 
-        // TODO: conditional: ctx.event?.code == 'LOGIN_SUCCESS' || (ctx.event?.code == 'SYSTEM_MSG' && (ctx.message.toLowerCase().contains('authentication failed') || ctx.message.toLowerCase().contains('authentication failure') || ctx.message.toLowerCase().contains('login failed')))
-        {
+        let _cond = {
+            event.get_str("event.code") == Some("LOGIN_SUCCESS")
+                || (event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && (event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("authentication failed"))
+                        || event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("authentication failure"))
+                        || event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("login failed"))))
+        };
+        if _cond {
             event.set("event.type", json!(["end"]))?;
         }
 
-        // TODO: conditional: ctx.message.toLowerCase().contains('kex_exchange_identification')
-        {
+        let _cond = {
+            event
+                .get_str("message")
+                .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
+        };
+        if _cond {
             event.set("event.type", json!(["connection"]))?;
         }
 
-        // TODO: conditional: ctx.message.toLowerCase().contains('failed') || ctx.message.toLowerCase().contains('failure')
-        {
+        let _cond = {
+            event
+                .get_str("message")
+                .is_some_and(|s| s.to_lowercase().contains("failed"))
+                || event
+                    .get_str("message")
+                    .is_some_and(|s| s.to_lowercase().contains("failure"))
+        };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
-        // TODO: conditional: ctx.message.toLowerCase().contains('successful') || ctx.message.toLowerCase().contains('success') || ctx.event?.code == 'IF_ADMIN_UP'
-        {
+        let _cond = {
+            event
+                .get_str("message")
+                .is_some_and(|s| s.to_lowercase().contains("successful"))
+                || event
+                    .get_str("message")
+                    .is_some_and(|s| s.to_lowercase().contains("success"))
+                || event.get_str("event.code") == Some("IF_ADMIN_UP")
+        };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ctx.source?.ip != null
-        {
+        let _cond = { event.has("source.ip") };
+        if _cond {
             event.append(
                 "related.ip",
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        // TODO: conditional: ctx.user?.name != null
-        {
+        let _cond = { event.has("user.name") };
+        if _cond {
             event.append(
                 "related.user",
                 event.get("user.name").cloned().unwrap_or(Value::Null),
             )?;
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

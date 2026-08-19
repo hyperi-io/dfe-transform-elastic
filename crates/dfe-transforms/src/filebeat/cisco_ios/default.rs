@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,7 +13,7 @@ impl Transform for Default {
         "default"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         event.set("ecs.version", json!("8.11.0"))?;
 
         event.set("event.category", json!(["network"]))?;
@@ -36,30 +38,26 @@ impl Transform for Default {
         event.remove("message");
 
         // Pattern definitions for grok
-        // CISCO_PRIORITY_MSGCOUNT = <%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?
         // CISCO_HOSTNAME = [a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?
-        // CISCO_TIMESTAMP = [*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: %{CISCO_TZ:_temp_.tz})?
         // CISCO_UPTIME = [0-9a-zA-Z]+
+        // CISCO_TIMESTAMP = [*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: %{CISCO_TZ:_temp_.tz})?
+        // CISCO_PRIORITY_MSGCOUNT = <%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?
         // CISCO_TZ = [a-zA-Z]{1,4}
-        if let Some(input) = event.get_str("event.original").map(String::from) {
-            let input = input.as_str();
+        if let Some(input) = event.get_string("event.original") {
             // Grok pattern: ^%{CISCO_PRIORITY_MSGCOUNT}?%{SYSLOGTIMESTAMP} %{IP} %{CISCO_HOSTNAME:log.syslog.hostname}: (?:%{NUMBER:cisco.ios.sequence}: )?(?:%{CISCO_UPTIME:cisco.ios.uptime}|%{CISCO_TIMESTAMP}): %{GREEDYDATA:_temp_.message}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            cached_grok!("^%{CISCO_PRIORITY_MSGCOUNT}?%{SYSLOGTIMESTAMP} %{IP} %{CISCO_HOSTNAME:log.syslog.hostname}: (?:%{NUMBER:cisco.ios.sequence}: )?(?:%{CISCO_UPTIME:cisco.ios.uptime}|%{CISCO_TIMESTAMP}): %{GREEDYDATA:_temp_.message}$").extract_into(input, event)?;
+            cached_grok!("^%{CISCO_PRIORITY_MSGCOUNT}?%{SYSLOGTIMESTAMP} %{IP} %{CISCO_HOSTNAME:log.syslog.hostname}: (?:%{NUMBER:cisco.ios.sequence}: )?(?:%{CISCO_UPTIME:cisco.ios.uptime}|%{CISCO_TIMESTAMP}): %{GREEDYDATA:_temp_.message}$").extract_into(&input, event)?;
             // Additional grok pattern 1: ^%{CISCO_PRIORITY_MSGCOUNT}?%{SYSLOGTIMESTAMP} (?:%{IP}|%{CISCO_HOSTNAME:log.syslog.hostname}) %{NUMBER:cisco.ios.sequence}: (?:%{CISCO_UPTIME:cisco.ios.uptime}|%{CISCO_TIMESTAMP}): %{GREEDYDATA:_temp_.message}$
             // Additional grok pattern 2: ^%{CISCO_PRIORITY_MSGCOUNT}?(?:(?:%{CISCO_HOSTNAME:log.syslog.hostname}|%{IP})[:]? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:%{CISCO_UPTIME:cisco.ios.uptime}|%{CISCO_TIMESTAMP}): %{GREEDYDATA:_temp_.message}$
         }
 
-        if let Some(input) = event.get_str("_temp_.message").map(String::from) {
-            let input = input.as_str();
+        if let Some(input) = event.get_string("_temp_.message") {
             // Grok pattern: ^%%{GREEDYDATA:message}$
-            // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-            cached_grok!("^%%{GREEDYDATA:message}$").extract_into(input, event)?;
+            cached_grok!("^%%{GREEDYDATA:message}$").extract_into(&input, event)?;
             // Additional grok pattern 1: ^%{GREEDYDATA:_temp_.generic_message}$
         }
 
-        // TODO: conditional: ctx.cisco?.ios?.sequence != null
-        {
+        let _cond = { event.has("cisco.ios.sequence") };
+        if _cond {
             event.set(
                 "event.sequence",
                 event
@@ -69,8 +67,8 @@ impl Transform for Default {
             )?;
         }
 
-        // TODO: conditional: ctx.cisco?.ios?.message_count != null
-        {
+        let _cond = { event.has("cisco.ios.message_count") };
+        if _cond {
             if let Some(val) = event.get("cisco.ios.message_count") {
                 let converted = match val {
                     Value::String(s) => {
@@ -104,8 +102,8 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.cisco?.ios?.message_count != null && ctx.event?.sequence == null
-        {
+        let _cond = { event.has("cisco.ios.message_count") && !event.has("event.sequence") };
+        if _cond {
             event.set(
                 "event.sequence",
                 event
@@ -116,99 +114,99 @@ impl Transform for Default {
         }
 
         if event.has("_temp_.cisco_timestamp") {
-            if let Some(s) = event.get_str("_temp_.cisco_timestamp").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("_temp_.cisco_timestamp") {
                 let re = cached_regex!(" {2,}");
-                let replaced = re.replace_all(s, " ").into_owned();
+                let replaced = re.replace_all(&s, " ").into_owned();
                 event.set("_temp_.cisco_timestamp", replaced)?;
             }
         }
 
         // Painless script
         // Source: if (ctx._temp_?.tz != null && ctx._conf?.tz_map != null) {\n  for (def item : ctx._conf.tz_map) {\n    if (item.tz_short == ctx._temp_.tz) {\n      ctx.event.timezone = item.tz_long;\n      return;\n    }\n  }\n}\nif (ctx._conf?.tz_offset != null) {\n  ctx.event.timezone = ctx._conf.tz_offset;\n}\nif (ctx.event?.timezone == null) {\n  ctx.event.timezone = 'UTC';\n}
+        // TODO: Transpile Painless to Rust (2.2.3)
         painless_exec(
             event,
             r#"if (ctx._temp_?.tz != null && ctx._conf?.tz_map != null) {\n  for (def item : ctx._conf.tz_map) {\n    if (item.tz_short == ctx._temp_.tz) {\n      ctx.event.timezone = item.tz_long;\n      return;\n    }\n  }\n}\nif (ctx._conf?.tz_offset != null) {\n  ctx.event.timezone = ctx._conf.tz_offset;\n}\nif (ctx.event?.timezone == null) {\n  ctx.event.timezone = 'UTC';\n}"#,
         )?;
 
-        // TODO: conditional: ctx?._temp_.cisco_timestamp != null
-        {
-            if let Some(date_str) = event.get_str("_temp_.cisco_timestamp").map(String::from) {
-                let date_str = date_str.as_str();
+        let _cond = { event.has("_temp_.cisco_timestamp") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("_temp_.cisco_timestamp") {
                 // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss.SSS z\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d yyyy HH:mm:ss.SSS z\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss.SSS z\")")
                 // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss.SSS\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d yyyy HH:mm:ss.SSS\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss.SSS\")")
                 // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss z\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d yyyy HH:mm:ss z\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss z\")")
                 // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d yyyy HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d yyyy HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS z\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d HH:mm:ss.SSS z\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS z\")")
                 // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss.SSS\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss.SSS\")")
                 // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss z\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d HH:mm:ss z\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss z\")")
                 // Try Java datetime format: CustomTime(\"MMM d HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"MMM d HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"MMM d HH:mm:ss\")")
             }
         }
 
         if event.has("message") {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
+            if let Some(input) = event.get_string("message") {
                 // Grok pattern: %{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(input, event)?;
+                cached_grok!("%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx.cisco?.ios?.facility == 'IOSXE' && ctx.event?.code == 'PLATFORM'
-        {
+        let _cond = {
+            event.get_str("cisco.ios.facility") == Some("IOSXE")
+                && event.get_str("event.code") == Some("PLATFORM")
+        };
+        if _cond {
             if event.has("message") {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: %%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(input, event)?;
+                    cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)?;
                 }
             }
         }
 
-        // TODO: conditional: ctx.cisco?.ios?.facility == 'FW' && ctx.event?.code == 'SESS_AUDIT_TRAIL'
-        {
+        let _cond = {
+            event.get_str("cisco.ios.facility") == Some("FW")
+                && event.get_str("event.code") == Some("SESS_AUDIT_TRAIL")
+        };
+        if _cond {
             if event.has("message") {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(input, event)?;
+                    cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(&input, event)?;
                 }
             }
         }
 
-        // TODO: conditional: ctx.cisco?.ios?.facility == 'FW' && ctx.event?.code == 'DROP_PKT'
-        {
+        let _cond = {
+            event.get_str("cisco.ios.facility") == Some("FW")
+                && event.get_str("event.code") == Some("DROP_PKT")
+        };
+        if _cond {
             if event.has("message") {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(input, event)?;
+                    cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(&input, event)?;
                 }
             }
         }
 
-        // TODO: conditional: ctx._temp_?.generic_message != null
-        {
+        let _cond = { event.has("_temp_.generic_message") };
+        if _cond {
             event.rename("_temp_.generic_message", "message")?;
         }
 
@@ -280,11 +278,11 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ['IPACCESSLOGP', 'ACCESSLOGP'].contains(ctx.event?.code)
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond =
+            { ["IPACCESSLOGP", "ACCESSLOGP"].contains(&event.get_str("event.code").unwrap_or("")) };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("list ") {
                     remaining = rest;
                 }
@@ -353,11 +351,12 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ['IPACCESSLOGDP', 'ACCESSLOGDP'].contains(ctx.event?.code)
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            ["IPACCESSLOGDP", "ACCESSLOGDP"].contains(&event.get_str("event.code").unwrap_or(""))
+        };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("list ") {
                     remaining = rest;
                 }
@@ -426,11 +425,10 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'IPACCESSLOGRP'
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("event.code") == Some("IPACCESSLOGRP") };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("list ") {
                     remaining = rest;
                 }
@@ -485,11 +483,10 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'IPACCESSLOGSP'
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("event.code") == Some("IPACCESSLOGSP") };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("list ") {
                     remaining = rest;
                 }
@@ -551,11 +548,10 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'ACCESSLOGSP'
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("event.code") == Some("ACCESSLOGSP") };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("list ") {
                     remaining = rest;
                 }
@@ -610,11 +606,12 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ['IPACCESSLOGNP', 'ACCESSLOGNP'].contains(ctx.event?.code)
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = {
+            ["IPACCESSLOGNP", "ACCESSLOGNP"].contains(&event.get_str("event.code").unwrap_or(""))
+        };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("list ") {
                     remaining = rest;
                 }
@@ -669,11 +666,10 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'LOGIN_SUCCESS'
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("event.code") == Some("LOGIN_SUCCESS") };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" ") {
                     event.set("cisco.ios.action", &remaining[..pos])?;
                     remaining = &remaining[pos..];
@@ -712,11 +708,10 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'LOGOUT'
-        {
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
-                let mut remaining = input;
+        let _cond = { event.get_str("event.code") == Some("LOGOUT") };
+        if _cond {
+            if let Some(input) = event.get_string("message") {
+                let mut remaining: &str = &input;
                 if let Some(rest) = remaining.strip_prefix("User ") {
                     remaining = rest;
                 }
@@ -758,48 +753,43 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'BADAUTH'
-        {
+        let _cond = { event.get_str("event.code") == Some("BADAUTH") };
+        if _cond {
             if event.has("message") {
-                if let Some(input) = event.get_str("message").map(String::from) {
-                    let input = input.as_str();
+                if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$
-                    // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                    cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(input, event)?;
+                    cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(&input, event)?;
                 }
             }
         }
 
-        // TODO: conditional: ctx.event?.code == 'INVALID_RP_JOIN'
-        {
+        let _cond = { event.get_str("event.code") == Some("INVALID_RP_JOIN") };
+        if _cond {
             // Pattern definitions for grok
             // PIM_SOURCE = (%{IP:cisco.ios.pim.source.ip}|%{DATA})
-            if let Some(input) = event.get_str("message").map(String::from) {
-                let input = input.as_str();
+            if let Some(input) = event.get_string("message") {
                 // Grok pattern: Received \\(%{PIM_SOURCE}, %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}
-                // TODO: Replace with dfe-parse Layer 1/2/3 calls after grok analyser (2.1.2)
-                cached_grok!("Received \\(%{PIM_SOURCE}, %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}").extract_into(input, event)?;
+                cached_grok!("Received \\(%{PIM_SOURCE}, %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}").extract_into(&input, event)?;
             }
         }
 
-        // TODO: conditional: ctx.event?.code == "INVALID_RP_JOIN"
-        {
+        let _cond = { event.get_str("event.code") == Some("INVALID_RP_JOIN") };
+        if _cond {
             event.set("event.action", json!("multicast-join"))?;
         }
 
-        // TODO: conditional: ctx.event?.code == "INVALID_RP_JOIN"
-        {
+        let _cond = { event.get_str("event.code") == Some("INVALID_RP_JOIN") };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
-        // TODO: conditional: ctx.event?.code == "INVALID_RP_JOIN"
-        {
+        let _cond = { event.get_str("event.code") == Some("INVALID_RP_JOIN") };
+        if _cond {
             event.set("event.reason", json!("Invalid RP"))?;
         }
 
         if event.has("destination.address") {
-            if let Some(s) = event.get_str("destination.address").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("destination.address") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -813,8 +803,7 @@ impl Transform for Default {
         }
 
         if event.has("source.address") {
-            if let Some(s) = event.get_str("source.address").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("source.address") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -828,8 +817,7 @@ impl Transform for Default {
         }
 
         if event.has("cisco.ios.pim.source.ip") {
-            if let Some(s) = event.get_str("cisco.ios.pim.source.ip").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("cisco.ios.pim.source.ip") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -944,12 +932,13 @@ impl Transform for Default {
             }
         }
 
-        // TODO: conditional: ctx.source?.bytes != null || ctx.destination?.bytes != null
-        {
+        let _cond = { event.has("source.bytes") || event.has("destination.bytes") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 // Painless script
                 // Source: long n = 0;\nif (ctx.source?.bytes != null) {\n  n += ctx.source.bytes\n}\nif (ctx.destination?.bytes != null) {\n  n += ctx.destination.bytes\n}\nif (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nctx.network.bytes = n;\n
+                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     r#"long n = 0;\nif (ctx.source?.bytes != null) {\n  n += ctx.source.bytes\n}\nif (ctx.destination?.bytes != null) {\n  n += ctx.destination.bytes\n}\nif (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nctx.network.bytes = n;\n"#,
@@ -958,87 +947,93 @@ impl Transform for Default {
             })();
         }
 
-        // TODO: conditional: ctx.source?.packets != null
-        {
+        let _cond = { event.has("source.packets") };
+        if _cond {
             event.set(
                 "network.packets",
                 event.get("source.packets").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        // TODO: conditional: ctx.source?.ip != null && ctx.source?.ip.contains('.')
-        {
+        let _cond = {
+            event.has("source.ip")
+                && event.get("source.ip").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(".")),
+                    serde_json::Value::String(s) => s.contains("."),
+                    _ => false,
+                })
+        };
+        if _cond {
             event.set("network.type", json!("ipv4"))?;
         }
 
-        // TODO: conditional: ctx.source?.ip != null && ctx.network?.type == null
-        {
+        let _cond = { event.has("source.ip") && !event.has("network.type") };
+        if _cond {
             event.set("network.type", json!("ipv6"))?;
         }
 
-        // TODO: conditional: ctx._temp_?.event?.action == 'denied'
-        {
+        let _cond = { event.get_str("_temp_.event.action") == Some("denied") };
+        if _cond {
             event.set("event.action", json!("deny"))?;
         }
 
-        // TODO: conditional: ctx.event?.action == 'deny'
-        {
+        let _cond = { event.get_str("event.action") == Some("deny") };
+        if _cond {
             event.append("event.type", json!("denied"))?;
         }
 
-        // TODO: conditional: ctx._temp_?.event?.action == 'permitted'
-        {
+        let _cond = { event.get_str("_temp_.event.action") == Some("permitted") };
+        if _cond {
             event.set("event.action", json!("allow"))?;
         }
 
-        // TODO: conditional: ctx.event?.action == 'allow'
-        {
+        let _cond = { event.get_str("event.action") == Some("allow") };
+        if _cond {
             event.append("event.type", json!("allowed"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 0
-        {
+        let _cond = { event.get_i64("event.severity") == Some(0) };
+        if _cond {
             event.set("log.level", json!("emergencies"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 1
-        {
+        let _cond = { event.get_i64("event.severity") == Some(1) };
+        if _cond {
             event.set("log.level", json!("alert"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 2
-        {
+        let _cond = { event.get_i64("event.severity") == Some(2) };
+        if _cond {
             event.set("log.level", json!("critical"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 3
-        {
+        let _cond = { event.get_i64("event.severity") == Some(3) };
+        if _cond {
             event.set("log.level", json!("error"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 4
-        {
+        let _cond = { event.get_i64("event.severity") == Some(4) };
+        if _cond {
             event.set("log.level", json!("warning"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 5
-        {
+        let _cond = { event.get_i64("event.severity") == Some(5) };
+        if _cond {
             event.set("log.level", json!("notification"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 6
-        {
+        let _cond = { event.get_i64("event.severity") == Some(6) };
+        if _cond {
             event.set("log.level", json!("informational"))?;
         }
 
-        // TODO: conditional: ctx.event.severity == 7
-        {
+        let _cond = { event.get_i64("event.severity") == Some(7) };
+        if _cond {
             event.set("log.level", json!("debug"))?;
         }
 
         if event.has("source.ip") {
-            if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("source.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -1071,8 +1066,7 @@ impl Transform for Default {
         }
 
         if event.has("destination.ip") {
-            if let Some(ip_str) = event.get_str("destination.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("destination.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-City.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
@@ -1105,8 +1099,7 @@ impl Transform for Default {
         }
 
         if event.has("source.ip") {
-            if let Some(ip_str) = event.get_str("source.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("source.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -1121,8 +1114,7 @@ impl Transform for Default {
         }
 
         if event.has("destination.ip") {
-            if let Some(ip_str) = event.get_str("destination.ip").map(String::from) {
-                let ip_str = ip_str.as_str();
+            if let Some(ip_str) = event.get_string("destination.ip") {
                 let ip_str = ip_str.to_string();
                 // GeoIP enrichment (GeoLite2-ASN.mmdb)
                 if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
@@ -1155,32 +1147,32 @@ impl Transform for Default {
             )?;
         }
 
-        // TODO: conditional: ctx.source?.ip != null
-        {
+        let _cond = { event.has("source.ip") };
+        if _cond {
             event.append(
                 "related.ip",
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        // TODO: conditional: ctx.destination?.ip != null
-        {
+        let _cond = { event.has("destination.ip") };
+        if _cond {
             event.append(
                 "related.ip",
                 event.get("destination.ip").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        // TODO: conditional: ctx.source?.domain != null
-        {
+        let _cond = { event.has("source.domain") };
+        if _cond {
             event.append(
                 "related.hosts",
                 event.get("source.domain").cloned().unwrap_or(Value::Null),
             )?;
         }
 
-        // TODO: conditional: ctx.destination?.domain != null
-        {
+        let _cond = { event.has("destination.domain") };
+        if _cond {
             event.append(
                 "related.hosts",
                 event
@@ -1190,8 +1182,8 @@ impl Transform for Default {
             )?;
         }
 
-        // TODO: conditional: ctx.source?.user?.name != null
-        {
+        let _cond = { event.has("source.user.name") };
+        if _cond {
             event.append(
                 "related.user",
                 event
@@ -1205,18 +1197,16 @@ impl Transform for Default {
         let _ = (|| -> Result<()> {
             if event.has("source.ip") {
                 // Community ID v1 hash
-                if let (Some(src_ip), Some(dst_ip)) =
-                    (event.get_str("source.ip"), event.get_str("destination.ip"))
-                {
-                    let src_ip = src_ip.to_string();
-                    let dst_ip = dst_ip.to_string();
+                if let (Some(src_ip), Some(dst_ip)) = (
+                    event.get_string("source.ip"),
+                    event.get_string("destination.ip"),
+                ) {
                     let src_port = event.get_i64("source.port").unwrap_or(0) as u16;
                     let dst_port = event.get_i64("destination.port").unwrap_or(0) as u16;
                     let protocol = event
-                        .get_str("network.transport")
-                        .or_else(|| event.get_str("network.iana_number"))
-                        .unwrap_or("tcp")
-                        .to_string();
+                        .get_string("network.transport")
+                        .or_else(|| event.get_string("network.iana_number"))
+                        .unwrap_or_else(|| "tcp".to_string());
                     let cid = community_id_v1(&src_ip, &dst_ip, src_port, dst_port, &protocol);
                     event.set("network.community_id", json!(cid))?;
                 }
@@ -1227,14 +1217,44 @@ impl Transform for Default {
         event.remove("_temp_");
         event.remove("_conf");
 
-        // TODO: conditional: ctx.tags == null || !(ctx.tags.contains('preserve_original_event'))
-        {
+        let _cond = {
+            !event.has("tags")
+                || !(event.get("tags").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => a
+                        .iter()
+                        .any(|x| x.as_str() == Some("preserve_original_event")),
+                    serde_json::Value::String(s) => s.contains("preserve_original_event"),
+                    _ => false,
+                }))
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.remove("event.original");
                 Ok(())
             })();
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

@@ -142,15 +142,12 @@ source_case!(
     1
 );
 
-// Errors on every event: an unguarded `rename("protocol", ...)` in the
-// `ipflows` nested pipeline aborts the event. The same rename is guarded
-// elsewhere in the file.
 source_case!(
     cisco_meraki_default,
     dfe_transforms::filebeat::cisco_meraki::default::Default,
     "cisco/meraki/logs/test-events.log",
-    33,
-    0
+    0,
+    33
 );
 
 source_case!(
@@ -170,36 +167,20 @@ source_case!(
     1
 );
 
-// Errors on every event, reading `o365audit.Parameters` unconditionally.
+// Raw Office 365 Management Activity records, as the API returns them and the
+// filebeat o365 input nests them. Splunk Boss of the SOC v3, CC0-1.0.
 source_case!(
     o365_default,
     dfe_transforms::filebeat::o365::default::Default,
-    "o365/audit/08-azuread.log",
-    100,
-    0
+    "o365/audit/o365-management-activity-botsv3.log",
+    0,
+    1071
 );
 
-/// `cisco_ios` errors on EVERY event: a processor reads
-/// `_temp_.generic_message`, which only a grok pattern this build does not
-/// carry would set. Pinned at the full count so the number is stated rather
-/// than rediscovered, and so a fix shows up as a test failure.
-#[test]
-fn cisco_ios_errors_on_every_event() {
-    let outcome = run(
-        &dfe_transforms::filebeat::cisco_ios::default::Default,
-        "cisco/ios/test-cisco-ios.log",
-    );
-    println!(
-        "cisco_ios: {} events, {} errored, {} enriched -- {}",
-        outcome.events,
-        outcome.errored,
-        outcome.enriched,
-        outcome.first_error.as_deref().unwrap_or("no errors")
-    );
-
-    assert_eq!(
-        outcome.errored, outcome.events,
-        "cisco_ios used to error on every event -- if that changed, the fix \
-         landed and this test should be replaced with a real baseline"
-    );
-}
+source_case!(
+    cisco_ios_default,
+    dfe_transforms::filebeat::cisco_ios::default::Default,
+    "cisco/ios/test-cisco-ios.log",
+    0,
+    27
+);
