@@ -1,72 +1,87 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
 /// Transform for the `event` pipeline.
-pub struct FortinetEvent;
+pub struct Event;
 
-impl Transform for FortinetEvent {
+impl Transform for Event {
     fn name(&self) -> &str {
-        "fortinet_event"
+        "event"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        event.set("event.kind", json!("fortinet_event"))?;
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        event.set("event.kind", json!("event"))?;
 
-        // TODO: conditional: ctx.fortinet?.firewall?.result == 'ERROR' || ctx.fortinet?.firewall?.status == 'negotiate_error'
-        {
+        let _cond = {
+            event.get_str("fortinet.firewall.result") == Some("ERROR")
+                || event.get_str("fortinet.firewall.status") == Some("negotiate_error")
+        };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.result == 'OK' || ['FSSO-logon', 'auth-logon', 'FSSO-logoff', 'auth-logout'].contains(ctx.fortinet?.firewall?.action)
-        {
+        let _cond = {
+            event.get_str("fortinet.firewall.result") == Some("OK")
+                || ["FSSO-logon", "auth-logon", "FSSO-logoff", "auth-logout"]
+                    .contains(&event.get_str("fortinet.firewall.action").unwrap_or(""))
+        };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ['FSSO-logon', 'auth-logon'].contains(ctx.fortinet?.firewall?.action)
-        {
+        let _cond = {
+            ["FSSO-logon", "auth-logon"]
+                .contains(&event.get_str("fortinet.firewall.action").unwrap_or(""))
+        };
+        if _cond {
             event.append("event.type", json!("start"))?;
         }
 
-        // TODO: conditional: ['FSSO-logoff', 'auth-logout'].contains(ctx.fortinet?.firewall?.action)
-        {
+        let _cond = {
+            ["FSSO-logoff", "auth-logout"]
+                .contains(&event.get_str("fortinet.firewall.action").unwrap_or(""))
+        };
+        if _cond {
             event.append("event.type", json!("end"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.subtype == 'vpn'
-        {
+        let _cond = { event.get_str("fortinet.firewall.subtype") == Some("vpn") };
+        if _cond {
             event.append("event.type", json!("connection"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.subtype == 'vpn'
-        {
+        let _cond = { event.get_str("fortinet.firewall.subtype") == Some("vpn") };
+        if _cond {
             event.append("event.category", json!("network"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.action == 'perf-stats'
-        {
+        let _cond = { event.get_str("fortinet.firewall.action") == Some("perf-stats") };
+        if _cond {
             event.append("event.type", json!("info"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.action == 'perf-stats'
-        {
+        let _cond = { event.get_str("fortinet.firewall.action") == Some("perf-stats") };
+        if _cond {
             event.append("event.category", json!("host"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.subtype == 'update'
-        {
+        let _cond = { event.get_str("fortinet.firewall.subtype") == Some("update") };
+        if _cond {
             event.append("event.type", json!("info"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.subtype == 'update'
-        {
+        let _cond = { event.get_str("fortinet.firewall.subtype") == Some("update") };
+        if _cond {
             event.append("event.category", json!("host"))?;
             event.append("event.category", json!("malware"))?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.subtype == 'user'
-        {
+        let _cond = { event.get_str("fortinet.firewall.subtype") == Some("user") };
+        if _cond {
             event.append("event.category", json!("authentication"))?;
         }
 
@@ -74,8 +89,8 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.dstip", "destination.ip")?;
         }
 
-        // TODO: conditional: ctx.destination?.ip == null
-        {
+        let _cond = { !event.has("destination.ip") };
+        if _cond {
             if event.has("fortinet.firewall.remip") {
                 event.rename("fortinet.firewall.remip", "destination.ip")?;
             }
@@ -119,8 +134,8 @@ impl Transform for FortinetEvent {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.destination?.port == null
-        {
+        let _cond = { !event.has("destination.port") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.remport") {
@@ -204,15 +219,15 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.daddr", "destination.address")?;
         }
 
-        // TODO: conditional: ctx.destination?.address == null
-        {
+        let _cond = { !event.has("destination.address") };
+        if _cond {
             if event.has("fortinet.firewall.dst_host") {
                 event.rename("fortinet.firewall.dst_host", "destination.address")?;
             }
         }
 
-        // TODO: conditional: ctx.destination?.address == null
-        {
+        let _cond = { !event.has("destination.address") };
+        if _cond {
             if event.has("fortinet.firewall.dst_host") {
                 event.rename("fortinet.firewall.dst_host", "destination.domain")?;
             }
@@ -264,8 +279,8 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.srcip", "source.ip")?;
         }
 
-        // TODO: conditional: ctx.source?.ip == null
-        {
+        let _cond = { !event.has("source.ip") };
+        if _cond {
             if event.has("fortinet.firewall.locip") {
                 event.rename("fortinet.firewall.locip", "source.ip")?;
             }
@@ -275,8 +290,8 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.srcmac", "source.mac")?;
         }
 
-        // TODO: conditional: ctx.source?.mac == null
-        {
+        let _cond = { !event.has("source.mac") };
+        if _cond {
             if event.has("fortinet.firewall.source_mac") {
                 event.rename("fortinet.firewall.source_mac", "source.mac")?;
             }
@@ -320,8 +335,8 @@ impl Transform for FortinetEvent {
             Ok(())
         })();
 
-        // TODO: conditional: ctx.source?.port == null
-        {
+        let _cond = { !event.has("source.port") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.locport") {
@@ -421,8 +436,8 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.level", "log.level")?;
         }
 
-        // TODO: conditional: ctx.event?.code == null
-        {
+        let _cond = { !event.has("event.code") };
+        if _cond {
             if event.has("fortinet.firewall.logid") {
                 event.rename("fortinet.firewall.logid", "event.code")?;
             }
@@ -445,8 +460,7 @@ impl Transform for FortinetEvent {
         }
 
         if event.has("network.protocol") {
-            if let Some(s) = event.get_str("network.protocol").map(String::from) {
-                let s = s.as_str();
+            if let Some(s) = event.get_string("network.protocol") {
                 let lowered = s.to_lowercase();
                 event.set("network.protocol", lowered)?;
             }
@@ -464,10 +478,10 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.logdesc", "rule.description")?;
         }
 
-        // TODO: conditional: ctx.fortinet?.firewall?.addr != null && ctx.fortinet.firewall.addrgrp == null
-        {
-            if let Some(s) = event.get_str("fortinet.firewall.addr").map(String::from) {
-                let s = s.as_str();
+        let _cond =
+            { event.has("fortinet.firewall.addr") && !event.has("fortinet.firewall.addrgrp") };
+        if _cond {
+            if let Some(s) = event.get_string("fortinet.firewall.addr") {
                 // Validate IP format
                 let s = s.trim();
                 if s.parse::<std::net::IpAddr>().is_err() {
@@ -484,8 +498,8 @@ impl Transform for FortinetEvent {
             event.rename("fortinet.firewall.url", "url.path")?;
         }
 
-        // TODO: conditional: ctx.event?.duration == null
-        {
+        let _cond = { !event.has("event.duration") };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has("fortinet.firewall.sess_duration") {
@@ -617,6 +631,27 @@ impl Transform for FortinetEvent {
         event.remove("fortinet.firewall.locport");
         event.remove("fortinet.firewall.filesize");
         event.remove("fortinet.firewall.sess_duration");
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,9 +13,8 @@ impl Transform for Traffic {
         "traffic"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        if let Some(csv_str) = event.get_str("message").map(String::from) {
-            let csv_str = csv_str.as_str();
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        if let Some(csv_str) = event.get_string("message") {
             let mut rdr = csv::ReaderBuilder::new()
                 .delimiter(b',')
                 .quote(b'\"')
@@ -563,8 +564,12 @@ impl Transform for Traffic {
             }
         }
 
-        // TODO: conditional: ctx.panw?.panos?.http2_connection != null && ctx.panw.panos.http2_connection != 0 && ctx.panw.panos.http2_connection != '0'
-        {
+        let _cond = {
+            event.has("panw.panos.http2_connection")
+                && event.get_i64("panw.panos.http2_connection") != Some(0)
+                && event.get_str("panw.panos.http2_connection") != Some("0")
+        };
+        if _cond {
             event.set("http.version", json!("2"))?;
         }
 
@@ -572,13 +577,16 @@ impl Transform for Traffic {
 
         event.append("event.category", json!("network"))?;
 
-        // TODO: conditional: ctx.panw?.panos?.action == "allow"
-        {
+        let _cond = { event.get_str("panw.panos.action") == Some("allow") };
+        if _cond {
             event.set("event.outcome", json!("success"))?;
         }
 
-        // TODO: conditional: ctx.event?.outcome == null || ctx.event.outcome == ""
-        {
+        let _cond = {
+            !event.has("event.outcome")
+                || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
+        };
+        if _cond {
             event.set("event.outcome", json!("failure"))?;
         }
 
@@ -888,76 +896,82 @@ impl Transform for Traffic {
             Ok(())
         })();
 
-        // TODO: conditional: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.ingress.zone) && ctx._temp_.internal_zones.contains(ctx.observer.egress.zone)
-
-        {
+        // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.i ...
+        #[allow(unreachable_code, unused_variables)]
+        if false {
             event.set("network.direction", json!("inbound"))?;
         }
 
-        // TODO: conditional: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && ctx._temp_.internal_zones.contains(ctx.observer.ingress.zone)
-
-        {
+        // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.e ...
+        #[allow(unreachable_code, unused_variables)]
+        if false {
             event.set("network.direction", json!("outbound"))?;
         }
 
-        // TODO: conditional: ctx._temp_?.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.internal_zones.contains(ctx.observer.egress.zone) && ctx._temp_.internal_zones.contains(ctx.observer.ingress.zone)
-
-        {
+        // SKIPPED: condition not transpiled: ctx._temp_?.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.internal_zones.contains(ctx.observer.egress.zone) && ctx._temp_.internal_zo ...
+        #[allow(unreachable_code, unused_variables)]
+        if false {
             event.set("network.direction", json!("internal"))?;
         }
 
-        // TODO: conditional: ctx._temp_?.external_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && ctx._temp_.external_zones.contains(ctx.observer.ingress.zone)
-
-        {
+        // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && ctx._temp_.external_zo ...
+        #[allow(unreachable_code, unused_variables)]
+        if false {
             event.set("network.direction", json!("external"))?;
         }
 
-        // TODO: conditional: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && (
-        // (
-        // !ctx._temp_.external_zones.contains(ctx.observer.egress.zone) &&
-        // !ctx._temp_.internal_zones.contains(ctx.observer.egress.zone)
-        // ) ||
-        // (
-        // !ctx._temp_.external_zones.contains(ctx.observer.ingress.zone) &&
-        // !ctx._temp_.internal_zones.contains(ctx.observer.ingress.zone)
-        // )
-        // )
-
-        {
+        // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ( ( !ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && !ctx._temp_.internal_zones.contains(ctx.observer.egress. ...
+        #[allow(unreachable_code, unused_variables)]
+        if false {
             event.set("network.direction", json!("unknown"))?;
         }
 
-        // TODO: conditional: ctx.event?.timezone == null && ctx.panw?.panos?.parent_session?.start_time != null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.parent_session.start_time")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond =
+            { !event.has("event.timezone") && event.has("panw.panos.parent_session.start_time") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.parent_session.start_time") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
             }
         }
 
-        // TODO: conditional: ctx.event?.timezone != null && ctx.panw?.panos?.parent_session?.start_time != null
-        {
-            if let Some(date_str) = event
-                .get_str("panw.panos.parent_session.start_time")
-                .map(String::from)
-            {
-                let date_str = date_str.as_str();
+        let _cond =
+            { event.has("event.timezone") && event.has("panw.panos.parent_session.start_time") };
+        if _cond {
+            if let Some(date_str) = event.get_as_string("panw.panos.parent_session.start_time") {
                 // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
                 // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
                 // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                // chrono::NaiveDateTime::parse_from_str(date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
             }
         }
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

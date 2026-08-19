@@ -162,16 +162,9 @@ fn raw_reaches_a_line_framed_source_untouched() {
     assert_eq!(event.get_str("message"), Some(raw));
 }
 
-/// `cisco_ios` errors on EVERY event, under either envelope, because a
-/// processor unconditionally reads `_temp_.generic_message` -- a field only
-/// the pipeline's SECOND grok pattern would set, and this build carries
-/// that pattern as a comment rather than as code.
-///
-/// This is a characterisation test: it pins a defect, not a requirement. When
-/// the grok pattern-list gap is closed it will fail, and the fix is to delete
-/// it and give `cisco_ios` a real integration test.
+/// `cisco_ios` emits under either envelope.
 #[test]
-fn cisco_ios_errors_on_every_event() {
+fn cisco_ios_emits_under_either_envelope() {
     let transform = registry::lookup("filebeat.cisco_ios.default").expect("registered");
     let line = "<189>29: foo: Mar  3 10:30:00: %SYS-5-CONFIG_I: Configured from console";
 
@@ -186,14 +179,8 @@ fn cisco_ios_errors_on_every_event() {
             vec![dfe_runtime::Event::new(source)],
         );
 
-        assert!(
-            out.is_empty(),
-            "{envelope:?}: cisco_ios unexpectedly emitted"
-        );
-        assert_eq!(
-            outcome.errored, 1,
-            "{envelope:?}: expected the known _temp_.generic_message error"
-        );
+        assert_eq!(outcome.errored, 0, "{envelope:?}: cisco_ios errored");
+        assert!(!out.is_empty(), "{envelope:?}: cisco_ios emitted nothing");
     }
 }
 

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,11 +13,10 @@ impl Transform for Authentication {
         "authentication"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
-            if let Some(csv_str) = event.get_str("message").map(String::from) {
-                let csv_str = csv_str.as_str();
+            if let Some(csv_str) = event.get_string("message") {
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -222,8 +223,10 @@ impl Transform for Authentication {
             Ok(())
         })();
 
-        // TODO: conditional: ctx._temp_?.user != null && ctx._temp_.user != ''
-        {
+        let _cond = {
+            event.has("_temp_.user") && event.get_str("_temp_.user").is_some_and(|s| !s.is_empty())
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.append(
@@ -234,8 +237,13 @@ impl Transform for Authentication {
             })();
         }
 
-        // TODO: conditional: ctx.panw?.panos?.normalize_user != null && ctx.panw.panos.normalize_user != ''
-        {
+        let _cond = {
+            event.has("panw.panos.normalize_user")
+                && event
+                    .get_str("panw.panos.normalize_user")
+                    .is_some_and(|s| !s.is_empty())
+        };
+        if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 event.append(
@@ -311,6 +319,27 @@ impl Transform for Authentication {
             )?;
             Ok(())
         })();
+
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
+        }
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
+        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }
