@@ -132,8 +132,25 @@ pub fn grok_to_regex(pattern: &str) -> String {
 pub fn grok_to_regex_with_map(
     pattern: &str,
 ) -> (String, std::collections::HashMap<String, String>) {
+    let (regex, field_map, _) = grok_to_regex_typed(pattern);
+    (regex, field_map)
+}
+
+/// As [`grok_to_regex_with_map`], plus the captures Elastic types as numbers.
+///
+/// A `%{NUMBER:bytes:long}` suffix is a type, not part of the field name, and
+/// dropping it leaves every numeric field a string.
+#[must_use]
+pub fn grok_to_regex_typed(
+    pattern: &str,
+) -> (
+    String,
+    std::collections::HashMap<String, String>,
+    std::collections::HashMap<String, bool>,
+) {
     let mut result = String::with_capacity(pattern.len());
     let mut field_map = std::collections::HashMap::new();
+    let mut numeric = std::collections::HashMap::new();
     let mut chars = pattern.chars().peekable();
 
     while let Some(c) = chars.next() {
@@ -159,12 +176,24 @@ pub fn grok_to_regex_with_map(
 
             if field.is_empty() {
                 use std::fmt::Write as _;
-                let _ = write!(result, "({sub_pattern})");
+                // A few builtins carry their own destination, as Elastic's own
+                // registry defines them -- used bare, they still capture.
+                if let Some((safe, path, inner)) = grok_implicit_capture(&name) {
+                    field_map.insert(safe.to_string(), path.to_string());
+                    numeric.insert(safe.to_string(), true);
+                    let _ = write!(result, "{inner}");
+                } else {
+                    let _ = write!(result, "({sub_pattern})");
+                }
             } else {
                 use std::fmt::Write as _;
                 // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
-                let field_name = field.split(':').next().unwrap_or(&field);
+                let mut parts = field.splitn(2, ':');
+                let field_name = parts.next().unwrap_or(&field);
                 let safe_field = field_name.replace('.', "_");
+                if matches!(parts.next(), Some("long" | "int" | "float" | "double")) {
+                    numeric.insert(safe_field.clone(), true);
+                }
                 field_map.insert(safe_field.clone(), field_name.to_string());
                 let _ = write!(result, "(?P<{safe_field}>{sub_pattern})");
             }
@@ -173,7 +202,23 @@ pub fn grok_to_regex_with_map(
         }
     }
 
-    (result, field_map)
+    (result, field_map, numeric)
+}
+
+/// Builtins whose Elastic definition captures a field of its own.
+///
+/// `%{SYSLOG5424PRI}` is written without a field name throughout the vendor
+/// pipelines because the destination is part of the pattern. Returns
+/// `(safe capture name, dotted path, the regex to emit)`.
+fn grok_implicit_capture(name: &str) -> Option<(&'static str, &'static str, &'static str)> {
+    match name {
+        "SYSLOG5424PRI" => Some((
+            "log_syslog_priority",
+            "log.syslog.priority",
+            r"<(?P<log_syslog_priority>\d{1,5})>",
+        )),
+        _ => None,
+    }
 }
 
 /// Map well-known grok pattern names to their regex equivalents.

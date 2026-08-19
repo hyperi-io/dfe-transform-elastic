@@ -178,18 +178,19 @@ pub fn load_integration_events(path: &Path) -> crate::error::Result<Vec<Event>> 
 
 /// Load expected outputs from an Elastic integration expected file.
 ///
-/// The file contains `{"expected": [{ ... }, { ... }]}`.
-/// Each element is a nested JSON object (not flat dot-notation).
+/// Either `{"expected": [{ ... }]}` or the bare `[{ ... }]` the older
+/// fixtures use. Each element is a nested JSON object, not flat dot-notation.
 pub fn load_integration_expected(path: &Path) -> crate::error::Result<Vec<Value>> {
     let content = std::fs::read_to_string(path).map_err(crate::error::TransformError::Io)?;
     let wrapper: Value = serde_json::from_str(&content)?;
 
     let expected_array = wrapper
         .get("expected")
-        .and_then(|v| v.as_array())
+        .and_then(Value::as_array)
+        .or_else(|| wrapper.as_array())
         .ok_or_else(|| crate::error::TransformError::ParseError {
             path: path.display().to_string(),
-            message: "expected {\"expected\": [...]}".to_string(),
+            message: "expected {\"expected\": [...]} or a bare [...]".to_string(),
         })?;
 
     Ok(expected_array.clone())
