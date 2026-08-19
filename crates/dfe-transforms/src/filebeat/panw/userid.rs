@@ -247,8 +247,10 @@ impl Transform for Userid {
                 Ok(())
             })();
 
-            let _cond =
-                { event.has("panw.panos.factorcompletiontime") && !event.has("event.timezone") };
+            let _cond = {
+                event.has_value("panw.panos.factorcompletiontime")
+                    && !event.has_value("event.timezone")
+            };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -274,8 +276,10 @@ impl Transform for Userid {
                 }
             }
 
-            let _cond =
-                { event.has("panw.panos.factorcompletiontime") && event.has("event.timezone") };
+            let _cond = {
+                event.has_value("panw.panos.factorcompletiontime")
+                    && event.has_value("event.timezone")
+            };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {

@@ -534,7 +534,7 @@ impl Transform for Decryption {
                 event.rename("_temp_.config_version", "panw.panos.config_version")?;
             }
 
-            let _cond = { !event.has("event.timezone") };
+            let _cond = { !event.has_value("event.timezone") };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -569,7 +569,7 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { event.has("event.timezone") };
+            let _cond = { event.has_value("event.timezone") };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -604,7 +604,7 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { !event.has("event.timezone") };
+            let _cond = { !event.has_value("event.timezone") };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -639,7 +639,7 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { event.has("event.timezone") };
+            let _cond = { event.has_value("event.timezone") };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -679,7 +679,7 @@ impl Transform for Decryption {
             event.append("event.category", json!("network"))?;
 
             let _cond = {
-                !event.has("panw.panos.error_message")
+                !event.has_value("panw.panos.error_message")
                     || event
                         .get_str("panw.panos.error_message")
                         .is_none_or(|s| s.is_empty())
@@ -1051,25 +1051,29 @@ impl Transform for Decryption {
                 Ok(())
             })();
 
-            let _cond = { event.has("_temp_.hash") };
+            let _cond = { event.has_value("_temp_.hash") };
             if _cond {
                 // Painless script
                 // Source: ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#,
+                    cached_script!(
+                        r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#
+                    ),
                 )?;
             }
 
-            let _cond = { event.has("_temp_.tls") };
+            let _cond = { event.has_value("_temp_.tls") };
             if _cond {
                 // Painless script
                 // Source: ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#,
+                    cached_script!(
+                        r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#
+                    ),
                 )?;
             }
 

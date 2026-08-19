@@ -61,7 +61,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("cisco.ios.sequence") };
+            let _cond = { event.has_value("cisco.ios.sequence") };
             if _cond {
                 event.set(
                     "event.sequence",
@@ -72,7 +72,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("cisco.ios.message_count") };
+            let _cond = { event.has_value("cisco.ios.message_count") };
             if _cond {
                 if let Some(val) = event.get("cisco.ios.message_count") {
                     let converted = match val {
@@ -107,7 +107,9 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("cisco.ios.message_count") && !event.has("event.sequence") };
+            let _cond = {
+                event.has_value("cisco.ios.message_count") && !event.has_value("event.sequence")
+            };
             if _cond {
                 event.set(
                     "event.sequence",
@@ -131,10 +133,12 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"if (ctx._temp_?.tz != null && ctx._conf?.tz_map != null) {\n  for (def item : ctx._conf.tz_map) {\n    if (item.tz_short == ctx._temp_.tz) {\n      ctx.event.timezone = item.tz_long;\n      return;\n    }\n  }\n}\nif (ctx._conf?.tz_offset != null) {\n  ctx.event.timezone = ctx._conf.tz_offset;\n}\nif (ctx.event?.timezone == null) {\n  ctx.event.timezone = 'UTC';\n}"#,
+                cached_script!(
+                    r#"if (ctx._temp_?.tz != null && ctx._conf?.tz_map != null) {\n  for (def item : ctx._conf.tz_map) {\n    if (item.tz_short == ctx._temp_.tz) {\n      ctx.event.timezone = item.tz_long;\n      return;\n    }\n  }\n}\nif (ctx._conf?.tz_offset != null) {\n  ctx.event.timezone = ctx._conf.tz_offset;\n}\nif (ctx.event?.timezone == null) {\n  ctx.event.timezone = 'UTC';\n}"#
+                ),
             )?;
 
-            let _cond = { event.has("_temp_.cisco_timestamp") };
+            let _cond = { event.has_value("_temp_.cisco_timestamp") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("_temp_.cisco_timestamp") {
                     // Try Java datetime format: CustomTime(\"MMM d yyyy HH:mm:ss.SSS z\")
@@ -214,7 +218,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("_temp_.generic_message") };
+            let _cond = { event.has_value("_temp_.generic_message") };
             if _cond {
                 event.rename("_temp_.generic_message", "message")?;
             }
@@ -977,7 +981,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("source.bytes") || event.has("destination.bytes") };
+            let _cond = { event.has_value("source.bytes") || event.has_value("destination.bytes") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -986,13 +990,15 @@ impl Transform for Default {
                     // TODO: Transpile Painless to Rust (2.2.3)
                     painless_exec(
                         event,
-                        r#"long n = 0;\nif (ctx.source?.bytes != null) {\n  n += ctx.source.bytes\n}\nif (ctx.destination?.bytes != null) {\n  n += ctx.destination.bytes\n}\nif (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nctx.network.bytes = n;\n"#,
+                        cached_script!(
+                            r#"long n = 0;\nif (ctx.source?.bytes != null) {\n  n += ctx.source.bytes\n}\nif (ctx.destination?.bytes != null) {\n  n += ctx.destination.bytes\n}\nif (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nctx.network.bytes = n;\n"#
+                        ),
                     )?;
                     Ok(())
                 })();
             }
 
-            let _cond = { event.has("source.packets") };
+            let _cond = { event.has_value("source.packets") };
             if _cond {
                 event.set(
                     "network.packets",
@@ -1001,7 +1007,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("source.ip")
+                event.has_value("source.ip")
                     && event.get("source.ip").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(".")),
                         serde_json::Value::String(s) => s.contains("."),
@@ -1012,7 +1018,7 @@ impl Transform for Default {
                 event.set("network.type", json!("ipv4"))?;
             }
 
-            let _cond = { event.has("source.ip") && !event.has("network.type") };
+            let _cond = { event.has_value("source.ip") && !event.has_value("network.type") };
             if _cond {
                 event.set("network.type", json!("ipv6"))?;
             }
@@ -1192,7 +1198,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -1200,7 +1206,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("destination.ip") };
+            let _cond = { event.has_value("destination.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -1208,7 +1214,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("source.domain") };
+            let _cond = { event.has_value("source.domain") };
             if _cond {
                 event.append(
                     "related.hosts",
@@ -1216,7 +1222,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("destination.domain") };
+            let _cond = { event.has_value("destination.domain") };
             if _cond {
                 event.append(
                     "related.hosts",
@@ -1227,7 +1233,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("source.user.name") };
+            let _cond = { event.has_value("source.user.name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1263,7 +1269,7 @@ impl Transform for Default {
             event.remove("_conf");
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

@@ -39,7 +39,7 @@ impl Transform for Utm {
                 event.append("event.type", json!("allowed"))?;
             }
 
-            let _cond = { event.has("fortinet.firewall.action") };
+            let _cond = { event.has_value("fortinet.firewall.action") };
             if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
@@ -50,7 +50,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.dstip", "destination.ip")?;
             }
 
-            let _cond = { !event.has("destination.ip") };
+            let _cond = { !event.has_value("destination.ip") };
             if _cond {
                 if event.has("fortinet.firewall.remip") {
                     event.rename("fortinet.firewall.remip", "destination.ip")?;
@@ -97,7 +97,7 @@ impl Transform for Utm {
                 Ok(())
             })();
 
-            let _cond = { !event.has("destination.port") };
+            let _cond = { !event.has_value("destination.port") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -146,7 +146,7 @@ impl Transform for Utm {
                 })();
             }
 
-            let _cond = { !event.has("destination.port") };
+            let _cond = { !event.has_value("destination.port") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -239,7 +239,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.recipient", "email.to.address")?;
             }
 
-            let _cond = { event.has("fortinet.firewall.recipient") };
+            let _cond = { event.has_value("fortinet.firewall.recipient") };
             if _cond {
                 event.append(
                     "email.to.address",
@@ -298,7 +298,7 @@ impl Transform for Utm {
                 Ok(())
             })();
 
-            let _cond = { !event.has("source.port") };
+            let _cond = { !event.has_value("source.port") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -347,7 +347,7 @@ impl Transform for Utm {
                 })();
             }
 
-            let _cond = { !event.has("source.port") };
+            let _cond = { !event.has_value("source.port") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -440,7 +440,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.srcdomain", "source.domain")?;
             }
 
-            let _cond = { !event.has("source.ip") };
+            let _cond = { !event.has_value("source.ip") };
             if _cond {
                 if event.has("fortinet.firewall.srcip") {
                     event.rename("fortinet.firewall.srcip", "source.ip")?;
@@ -463,14 +463,14 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.unauthuser", "source.user.name")?;
             }
 
-            let _cond = { !event.has("source.user.name") };
+            let _cond = { !event.has_value("source.user.name") };
             if _cond {
                 if event.has("fortinet.firewall.user") {
                     event.rename("fortinet.firewall.user", "source.user.name")?;
                 }
             }
 
-            let _cond = { event.has("fortinet.firewall.sender") };
+            let _cond = { event.has_value("fortinet.firewall.sender") };
             if _cond {
                 event.append(
                     "email.sender.address",
@@ -481,7 +481,7 @@ impl Transform for Utm {
                 )?;
             }
 
-            let _cond = { event.has("fortinet.firewall.from") };
+            let _cond = { event.has_value("fortinet.firewall.from") };
             if _cond {
                 event.append(
                     "email.from.address",
@@ -508,14 +508,14 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.applist", "rule.ruleset")?;
             }
 
-            let _cond = { !event.has("rule.category") };
+            let _cond = { !event.has_value("rule.category") };
             if _cond {
                 if event.has("fortinet.firewall.catdesc") {
                     event.rename("fortinet.firewall.catdesc", "rule.category")?;
                 }
             }
 
-            let _cond = { event.has("rule.category") };
+            let _cond = { event.has_value("rule.category") };
             if _cond {
                 if event.has("rule.category") {
                     if let Some(s) = event.get_string("rule.category") {
@@ -538,7 +538,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.event_id", "event.id")?;
             }
 
-            let _cond = { !event.has("event.id") };
+            let _cond = { !event.has_value("event.id") };
             if _cond {
                 if event.has("fortinet.firewall.eventid") {
                     event.rename("fortinet.firewall.eventid", "event.id")?;
@@ -593,35 +593,35 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.filetype", "file.extension")?;
             }
 
-            let _cond = { !event.has("file.name") };
+            let _cond = { !event.has_value("file.name") };
             if _cond {
                 if event.has("fortinet.firewall.infectedfilename") {
                     event.rename("fortinet.firewall.infectedfilename", "file.name")?;
                 }
             }
 
-            let _cond = { !event.has("file.size") };
+            let _cond = { !event.has_value("file.size") };
             if _cond {
                 if event.has("fortinet.firewall.infectedfilesize") {
                     event.rename("fortinet.firewall.infectedfilesize", "file.size")?;
                 }
             }
 
-            let _cond = { !event.has("file.extension") };
+            let _cond = { !event.has_value("file.extension") };
             if _cond {
                 if event.has("fortinet.firewall.infectedfiletype") {
                     event.rename("fortinet.firewall.infectedfiletype", "file.extension")?;
                 }
             }
 
-            let _cond = { !event.has("file.name") };
+            let _cond = { !event.has_value("file.name") };
             if _cond {
                 if event.has("fortinet.firewall.matchedfilename") {
                     event.rename("fortinet.firewall.matchedfilename", "file.name")?;
                 }
             }
 
-            let _cond = { !event.has("file.extension") };
+            let _cond = { !event.has_value("file.extension") };
             if _cond {
                 if event.has("fortinet.firewall.matchedfiletype") {
                     event.rename("fortinet.firewall.matchedfiletype", "file.extension")?;
@@ -647,7 +647,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.level", "log.level")?;
             }
 
-            let _cond = { !event.has("event.code") };
+            let _cond = { !event.has_value("event.code") };
             if _cond {
                 if event.has("fortinet.firewall.logid") {
                     event.rename("fortinet.firewall.logid", "event.code")?;
@@ -658,21 +658,21 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.msg", "message")?;
             }
 
-            let _cond = { !event.has("rule.id") };
+            let _cond = { !event.has_value("rule.id") };
             if _cond {
                 if event.has("fortinet.firewall.policy_id") {
                     event.rename("fortinet.firewall.policy_id", "rule.id")?;
                 }
             }
 
-            let _cond = { !event.has("rule.id") };
+            let _cond = { !event.has_value("rule.id") };
             if _cond {
                 if event.has("fortinet.firewall.policyid") {
                     event.rename("fortinet.firewall.policyid", "rule.id")?;
                 }
             }
 
-            let _cond = { !event.has("rule.ruleset") };
+            let _cond = { !event.has_value("rule.ruleset") };
             if _cond {
                 if event.has("fortinet.firewall.profile") {
                     event.rename("fortinet.firewall.profile", "rule.ruleset")?;
@@ -714,7 +714,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.xid", "dns.id")?;
             }
 
-            let _cond = { event.has("fortinet.firewall.scertcname") };
+            let _cond = { event.has_value("fortinet.firewall.scertcname") };
             if _cond {
                 event.append(
                     "tls.server.x509.subject.common_name",
@@ -729,7 +729,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.scertissuer", "tls.server.issuer")?;
             }
 
-            let _cond = { event.has("tls.server.issuer") };
+            let _cond = { event.has_value("tls.server.issuer") };
             if _cond {
                 event.append(
                     "tls.server.x509.issuer.common_name",
@@ -744,7 +744,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.ccertissuer", "tls.client.issuer")?;
             }
 
-            let _cond = { event.has("tls.client.issuer") };
+            let _cond = { event.has_value("tls.client.issuer") };
             if _cond {
                 event.append(
                     "tls.client.x509.issuer.common_name",
@@ -759,7 +759,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.sender", "tls.server.issuer")?;
             }
 
-            let _cond = { !event.has("tls.server.issuer") };
+            let _cond = { !event.has_value("tls.server.issuer") };
             if _cond {
                 if event.has("fortinet.firewall.issuer") {
                     event.rename("fortinet.firewall.issuer", "tls.server.issuer")?;
@@ -773,7 +773,7 @@ impl Transform for Utm {
                 )?;
             }
 
-            let _cond = { !event.has("tls.server.x509.public_key_algorithm") };
+            let _cond = { !event.has_value("tls.server.x509.public_key_algorithm") };
             if _cond {
                 if event.has("fortinet.firewall.keyalgo") {
                     event.rename(
@@ -783,21 +783,21 @@ impl Transform for Utm {
                 }
             }
 
-            let _cond = { !event.has("tls.server.not_before") };
+            let _cond = { !event.has_value("tls.server.not_before") };
             if _cond {
                 if event.has("fortinet.firewall.notbefore") {
                     event.rename("fortinet.firewall.notbefore", "tls.server.not_before")?;
                 }
             }
 
-            let _cond = { !event.has("tls.server.not_after") };
+            let _cond = { !event.has_value("tls.server.not_after") };
             if _cond {
                 if event.has("fortinet.firewall.notafter") {
                     event.rename("fortinet.firewall.notafter", "tls.server.not_after")?;
                 }
             }
 
-            let _cond = { !event.has("tls.server.x509.public_key_size") };
+            let _cond = { !event.has_value("tls.server.x509.public_key_size") };
             if _cond {
                 if event.has("fortinet.firewall.keysize") {
                     event.rename(
@@ -841,21 +841,21 @@ impl Transform for Utm {
                 }
             }
 
-            let _cond = { !event.has("tls.server.x509.serial_number") };
+            let _cond = { !event.has_value("tls.server.x509.serial_number") };
             if _cond {
                 if event.has("fortinet.firewall.sn") {
                     event.rename("fortinet.firewall.sn", "tls.server.x509.serial_number")?;
                 }
             }
 
-            let _cond = { !event.has("tls.server.hash.sha1") };
+            let _cond = { !event.has_value("tls.server.hash.sha1") };
             if _cond {
                 if event.has("fortinet.firewall.certhash") {
                     event.rename("fortinet.firewall.certhash", "tls.server.hash.sha1")?;
                 }
             }
 
-            let _cond = { event.has("tls.server.hash.sha1") };
+            let _cond = { event.has_value("tls.server.hash.sha1") };
             if _cond {
                 event.append(
                     "related.hash",
@@ -889,7 +889,7 @@ impl Transform for Utm {
                 }
             }
 
-            let _cond = { event.has("fortinet.firewall.cn") };
+            let _cond = { event.has_value("fortinet.firewall.cn") };
             if _cond {
                 event.append(
                     "tls.server.x509.alternative_names",
@@ -920,7 +920,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.sni", "tls.client.server_name")?;
             }
 
-            let _cond = { !event.has("destination.domain") };
+            let _cond = { !event.has_value("destination.domain") };
             if _cond {
                 event.set(
                     "destination.domain",
@@ -947,7 +947,9 @@ impl Transform for Utm {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}"#,
+                    cached_script!(
+                        r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}"#
+                    ),
                 )?;
             }
 
@@ -974,7 +976,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.filehash", "fortinet.file.hash.crc32")?;
             }
 
-            let _cond = { event.has("fortinet.file.hash.crc32") };
+            let _cond = { event.has_value("fortinet.file.hash.crc32") };
             if _cond {
                 event.append(
                     "related.hash",

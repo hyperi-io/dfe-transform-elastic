@@ -23,7 +23,9 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#,
+                    cached_script!(
+                        r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#
+                    ),
                 )?;
                 Ok(())
             })();

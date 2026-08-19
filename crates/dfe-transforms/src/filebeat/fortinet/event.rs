@@ -91,7 +91,7 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.dstip", "destination.ip")?;
             }
 
-            let _cond = { !event.has("destination.ip") };
+            let _cond = { !event.has_value("destination.ip") };
             if _cond {
                 if event.has("fortinet.firewall.remip") {
                     event.rename("fortinet.firewall.remip", "destination.ip")?;
@@ -138,7 +138,7 @@ impl Transform for Event {
                 Ok(())
             })();
 
-            let _cond = { !event.has("destination.port") };
+            let _cond = { !event.has_value("destination.port") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -231,14 +231,14 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.daddr", "destination.address")?;
             }
 
-            let _cond = { !event.has("destination.address") };
+            let _cond = { !event.has_value("destination.address") };
             if _cond {
                 if event.has("fortinet.firewall.dst_host") {
                     event.rename("fortinet.firewall.dst_host", "destination.address")?;
                 }
             }
 
-            let _cond = { !event.has("destination.address") };
+            let _cond = { !event.has_value("destination.address") };
             if _cond {
                 if event.has("fortinet.firewall.dst_host") {
                     event.rename("fortinet.firewall.dst_host", "destination.domain")?;
@@ -293,7 +293,7 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.srcip", "source.ip")?;
             }
 
-            let _cond = { !event.has("source.ip") };
+            let _cond = { !event.has_value("source.ip") };
             if _cond {
                 if event.has("fortinet.firewall.locip") {
                     event.rename("fortinet.firewall.locip", "source.ip")?;
@@ -304,7 +304,7 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.srcmac", "source.mac")?;
             }
 
-            let _cond = { !event.has("source.mac") };
+            let _cond = { !event.has_value("source.mac") };
             if _cond {
                 if event.has("fortinet.firewall.source_mac") {
                     event.rename("fortinet.firewall.source_mac", "source.mac")?;
@@ -351,7 +351,7 @@ impl Transform for Event {
                 Ok(())
             })();
 
-            let _cond = { !event.has("source.port") };
+            let _cond = { !event.has_value("source.port") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -460,7 +460,7 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.level", "log.level")?;
             }
 
-            let _cond = { !event.has("event.code") };
+            let _cond = { !event.has_value("event.code") };
             if _cond {
                 if event.has("fortinet.firewall.logid") {
                     event.rename("fortinet.firewall.logid", "event.code")?;
@@ -502,8 +502,10 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.logdesc", "rule.description")?;
             }
 
-            let _cond =
-                { event.has("fortinet.firewall.addr") && !event.has("fortinet.firewall.addrgrp") };
+            let _cond = {
+                event.has_value("fortinet.firewall.addr")
+                    && !event.has_value("fortinet.firewall.addrgrp")
+            };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -533,7 +535,7 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.url", "url.path")?;
             }
 
-            let _cond = { !event.has("event.duration") };
+            let _cond = { !event.has_value("event.duration") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {

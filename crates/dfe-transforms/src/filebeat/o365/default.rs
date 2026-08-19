@@ -16,14 +16,14 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
                 }
             }
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 event.set(
                     "event.original",
@@ -49,7 +49,7 @@ impl Transform for Default {
                 event.set("_id", json!(hash))?;
             }
 
-            let _cond = { event.has("o365audit.CreationTime") };
+            let _cond = { event.has_value("o365audit.CreationTime") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.CreationTime") {
                     // Try ISO8601 format
@@ -73,7 +73,7 @@ impl Transform for Default {
                 event.rename("o365audit.Id", "event.id")?;
             }
 
-            let _cond = { event.has("o365audit.ListBaseType") };
+            let _cond = { event.has_value("o365audit.ListBaseType") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -123,14 +123,14 @@ impl Transform for Default {
                 event.rename("o365audit.ClientIPAddress", "client._temp")?;
             }
 
-            let _cond = { !event.has("client._temp") };
+            let _cond = { !event.has_value("client._temp") };
             if _cond {
                 if event.has("o365audit.ClientIP") {
                     event.rename("o365audit.ClientIP", "client._temp")?;
                 }
             }
 
-            let _cond = { !event.has("client._temp") };
+            let _cond = { !event.has_value("client._temp") };
             if _cond {
                 if event.has("o365audit.ActorIpAddress") {
                     event.rename("o365audit.ActorIpAddress", "client._temp")?;
@@ -219,19 +219,24 @@ impl Transform for Default {
                 event.rename("o365audit.UserAgent", "user_agent.original")?;
             }
 
-            let _cond = { event.has("o365audit.RecordType") };
+            let _cond = { event.has_value("o365audit.RecordType") };
             if _cond {
                 // Painless script
                 // Source: def schemaId = ctx.o365audit.RecordType.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.code = schema;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"def schemaId = ctx.o365audit.RecordType.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.code = schema;\n}\n"#,
+                    cached_script!(
+                        r#"def schemaId = ctx.o365audit.RecordType.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.code = schema;\n}\n"#
+                    ),
+                    cached_params!(
+                        "{\"1\":\"ExchangeAdmin\",\"10\":\"DataCenterSecurityCmdlet\",\"100\":\"OnPremisesSharePointScannerDlp\",\"101\":\"ExchangeSearch\",\"102\":\"SharePointSearch\",\"103\":\"PrivacyInsights\",\"105\":\"MyAnalyticsSettings\",\"106\":\"SecurityComplianceUserChange\",\"107\":\"ComplianceDLPExchangeClassification\",\"109\":\"MipExactDataMatch\",\"11\":\"ComplianceDLPSharePoint\",\"113\":\"MS365DCustomDetection\",\"12\":\"Sway\",\"13\":\"ComplianceDLPExchange\",\"14\":\"SharePointSharingOperation\",\"147\":\"CoreReportingSettings\",\"148\":\"ComplianceConnector\",\"15\":\"AzureActiveDirectoryStsLogon\",\"16\":\"SkypeForBusinessPSTNUsage\",\"17\":\"SkypeForBusinessUsersBlocked\",\"174\":\"DataShareOperation\",\"18\":\"SecurityComplianceCenterEOPCmdlet\",\"181\":\"EduDataLakeDownloadOperation\",\"19\":\"ExchangeAggregatedOperation\",\"2\":\"ExchangeItem\",\"20\":\"PowerBIAudit\",\"21\":\"CRM\",\"22\":\"Yammer\",\"23\":\"SkypeForBusinessCmdlets\",\"24\":\"Discovery\",\"25\":\"MicrosoftTeams\",\"28\":\"ThreatIntelligence\",\"29\":\"MailSubmission\",\"3\":\"ExchangeItemGroup\",\"30\":\"MicrosoftFlow\",\"31\":\"AeD\",\"32\":\"MicrosoftStream\",\"33\":\"ComplianceDLPSharePointClassification\",\"34\":\"ThreatFinder\",\"35\":\"Project\",\"36\":\"SharePointListOperation\",\"37\":\"SharePointCommentOperation\",\"38\":\"DataGovernance\",\"39\":\"Kaizala\",\"4\":\"SharePoint\",\"40\":\"SecurityComplianceAlerts\",\"41\":\"ThreatIntelligenceUrl\",\"42\":\"SecurityComplianceInsights\",\"43\":\"MIPLabel\",\"44\":\"WorkplaceAnalytics\",\"45\":\"PowerAppsApp\",\"46\":\"PowerAppsPlan\",\"47\":\"ThreatIntelligenceAtpContent\",\"48\":\"LabelContentExplorer\",\"49\":\"TeamsHealthcare\",\"50\":\"ExchangeItemAggregated\",\"51\":\"HygieneEvent\",\"52\":\"DataInsightsRestApiAudit\",\"53\":\"InformationBarrierPolicyApplication\",\"54\":\"SharePointListItemOperation\",\"55\":\"SharePointContentTypeOperation\",\"56\":\"SharePointFieldOperation\",\"57\":\"MicrosoftTeamsAdmin\",\"58\":\"HRSignal\",\"59\":\"MicrosoftTeamsDevice\",\"6\":\"SharePointFileOperation\",\"60\":\"MicrosoftTeamsAnalytics\",\"61\":\"InformationWorkerProtection\",\"62\":\"Campaign\",\"63\":\"DLPEndpoint\",\"64\":\"AirInvestigation\",\"65\":\"Quarantine\",\"66\":\"MicrosoftForms\",\"67\":\"ApplicationAudit\",\"68\":\"ComplianceSupervisionExchange\",\"69\":\"CustomerKeyServiceEncryption\",\"7\":\"OneDrive\",\"70\":\"OfficeNative\",\"71\":\"MipAutoLabelSharePointItem\",\"72\":\"MipAutoLabelSharePointPolicyLocation\",\"73\":\"MicrosoftTeamsShifts\",\"75\":\"MipAutoLabelExchangeItem\",\"76\":\"CortanaBriefing\",\"78\":\"WDATPAlerts\",\"8\":\"AzureActiveDirectory\",\"82\":\"SensitivityLabelPolicyMatch\",\"83\":\"SensitivityLabelAction\",\"84\":\"SensitivityLabeledFileAction\",\"85\":\"AttackSim\",\"86\":\"AirManualInvestigation\",\"87\":\"SecurityComplianceRBAC\",\"88\":\"UserTraining\",\"89\":\"AirAdminActionInvestigation\",\"9\":\"AzureActiveDirectoryAccountLogon\",\"90\":\"MSTIC\",\"91\":\"PhysicalBadgingSignal\",\"93\":\"AipDiscover\",\"94\":\"AipSensitivityLabelAction\",\"95\":\"AipProtectionAction\",\"96\":\"AipFileDeleted\",\"97\":\"AipHeartBeat\",\"98\":\"MCASAlerts\",\"99\":\"OnPremisesFileShareScannerDlp\"}"
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("o365audit.ResultStatus")
+                event.has_value("o365audit.ResultStatus")
                     && event.get_str("o365audit.ResultStatus").is_some_and(|s| {
                         ["succeeded", "success", "partiallysucceeded", "true"]
                             .contains(&s.to_lowercase().as_str())
@@ -242,7 +247,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("o365audit.ResultStatus")
+                event.has_value("o365audit.ResultStatus")
                     && event
                         .get_str("o365audit.ResultStatus")
                         .is_some_and(|s| ["failed", "false"].contains(&s.to_lowercase().as_str()))
@@ -251,13 +256,13 @@ impl Transform for Default {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            let _cond = { !event.has("event.outcome") };
+            let _cond = { !event.has_value("event.outcome") };
             if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
 
             let _cond = {
-                event.has("o365audit.Parameters")
+                event.has_value("o365audit.Parameters")
                     && event
                         .get("o365audit.Parameters")
                         .is_some_and(|v| v.is_array())
@@ -268,12 +273,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.Parameters; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.Parameters = newparams;\n"#,
+                    cached_script!(
+                        r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.Parameters; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.Parameters = newparams;\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("o365audit.Parameters")
+                event.has_value("o365audit.Parameters")
                     && event
                         .get("o365audit.Parameters")
                         .is_some_and(|v| v.is_string())
@@ -282,19 +289,24 @@ impl Transform for Default {
                 event.rename("o365audit.Parameters", "o365audit.Parameters._raw")?;
             }
 
-            let _cond = { event.has("o365audit.Platform") };
+            let _cond = { event.has_value("o365audit.Platform") };
             if _cond {
                 // Painless script
                 // Source: def value = ctx.o365audit.Platform.toString(); def name = params[value]; if (name != null) {\n  ctx.o365audit.Platform = name;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"def value = ctx.o365audit.Platform.toString(); def name = params[value]; if (name != null) {\n  ctx.o365audit.Platform = name;\n}\n"#,
+                    cached_script!(
+                        r#"def value = ctx.o365audit.Platform.toString(); def name = params[value]; if (name != null) {\n  ctx.o365audit.Platform = name;\n}\n"#
+                    ),
+                    cached_params!(
+                        "{\"0\":\"Unknown\",\"1\":\"Windows\",\"2\":\"MacOS\",\"3\":\"iOS\",\"4\":\"Android\",\"5\":\"Web Browser\"}"
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("o365audit.ExtendedProperties")
+                event.has_value("o365audit.ExtendedProperties")
                     && event
                         .get("o365audit.ExtendedProperties")
                         .is_some_and(|v| v.is_array())
@@ -305,12 +317,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ExtendedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.ExtendedProperties = newparams;\n"#,
+                    cached_script!(
+                        r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ExtendedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.ExtendedProperties = newparams;\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("o365audit.ExtendedProperties")
+                event.has_value("o365audit.ExtendedProperties")
                     && event
                         .get("o365audit.ExtendedProperties")
                         .is_some_and(|v| v.is_string())
@@ -323,7 +337,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("o365audit.ModifiedProperties")
+                event.has_value("o365audit.ModifiedProperties")
                     && event
                         .get("o365audit.ModifiedProperties")
                         .is_some_and(|v| v.is_array())
@@ -334,12 +348,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ModifiedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i] instanceof Map && oldparams[i][\"OldValue\"] != null && oldparams[i][\"NewValue\"] != null) {\n    def validname = oldparams[i][\"Name\"].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n    newparams[validname][\"NewValue\"] = oldparams[i][\"NewValue\"];\n    newparams[validname][\"OldValue\"] = oldparams[i][\"OldValue\"];\n  }\n  if (oldparams[i] instanceof String) {\n    def validname = oldparams[i].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n  }\n} if (newparams.isEmpty()) {\n  ctx.o365audit.remove(\"ModifiedProperties\");\n  return;\n} ctx.o365audit.ModifiedProperties = newparams;\n"#,
+                    cached_script!(
+                        r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ModifiedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i] instanceof Map && oldparams[i][\"OldValue\"] != null && oldparams[i][\"NewValue\"] != null) {\n    def validname = oldparams[i][\"Name\"].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n    newparams[validname][\"NewValue\"] = oldparams[i][\"NewValue\"];\n    newparams[validname][\"OldValue\"] = oldparams[i][\"OldValue\"];\n  }\n  if (oldparams[i] instanceof String) {\n    def validname = oldparams[i].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n  }\n} if (newparams.isEmpty()) {\n  ctx.o365audit.remove(\"ModifiedProperties\");\n  return;\n} ctx.o365audit.ModifiedProperties = newparams;\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("o365audit.ModifiedProperties")
+                event.has_value("o365audit.ModifiedProperties")
                     && event
                         .get("o365audit.ModifiedProperties")
                         .is_some_and(|v| v.is_string())
@@ -352,7 +368,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("o365audit.AlertLinks")
+                event.has_value("o365audit.AlertLinks")
                     && event
                         .get("o365audit.AlertLinks")
                         .is_some_and(|v| v.is_array())
@@ -363,7 +379,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def list = ctx.o365audit.AlertLinks; def links = new ArrayList(); for (int i = 0; i < list.length; ++i) {\n  if (list[i] instanceof Map && list[i].containsKey(\"AlertLinkHref\") && list[i][\"AlertLinkHref\"] != null && list[i][\"AlertLinkHref\"] instanceof String) {\n    links.add(list[i][\"AlertLinkHref\"]);\n  }\n} if (links.length == 0) {\n  ctx.o365audit.remove(\"AlertLinks\");\n  return;\n} ctx.o365audit.AlertLinks = links;\n"#,
+                    cached_script!(
+                        r#"def list = ctx.o365audit.AlertLinks; def links = new ArrayList(); for (int i = 0; i < list.length; ++i) {\n  if (list[i] instanceof Map && list[i].containsKey(\"AlertLinkHref\") && list[i][\"AlertLinkHref\"] != null && list[i][\"AlertLinkHref\"] instanceof String) {\n    links.add(list[i][\"AlertLinkHref\"]);\n  }\n} if (links.length == 0) {\n  ctx.o365audit.remove(\"AlertLinks\");\n  return;\n} ctx.o365audit.AlertLinks = links;\n"#
+                    ),
                 )?;
             }
 
@@ -409,8 +427,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("user.id")
-                    && event.has("o365audit.LogonUserSid")
+                !event.has_value("user.id")
+                    && event.has_value("o365audit.LogonUserSid")
                     && event.get_str("event.code") == Some("ExchangeItem")
             };
             if _cond {
@@ -586,7 +604,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["SharePointFileOperation", "SharePointSharingOperation"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -597,7 +615,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["SharePointFileOperation", "SharePointSharingOperation"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -608,7 +626,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["SharePointFileOperation", "SharePointSharingOperation"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -619,7 +637,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["SharePointFileOperation", "SharePointSharingOperation"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -630,7 +648,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.action")
+                event.has_value("event.action")
                     && [
                         "FileAccessed",
                         "FileDeleted",
@@ -660,7 +678,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.action")
+                event.has_value("event.action")
                     && ["FileAccessed", "FileDownloaded"]
                         .contains(&event.get_str("event.action").unwrap_or(""))
             };
@@ -669,7 +687,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.action")
+                event.has_value("event.action")
                     && [
                         "ComplianceSettingChanged",
                         "FileModified",
@@ -688,7 +706,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.action")
+                event.has_value("event.action")
                     && ["FileDeleted", "FolderDeleted"]
                         .contains(&event.get_str("event.action").unwrap_or(""))
             };
@@ -697,7 +715,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.action")
+                event.has_value("event.action")
                     && ["FileUploaded", "FolderCopied", "FolderCreated"]
                         .contains(&event.get_str("event.action").unwrap_or(""))
             };
@@ -769,7 +787,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("SecurityComplianceAlerts")
-                    && event.has("o365audit.Category")
+                    && event.has_value("o365audit.Category")
                     && ["DataGovernance", "DataLossPrevention"]
                         .contains(&event.get_str("o365audit.Category").unwrap_or(""))
             };
@@ -787,7 +805,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("SecurityComplianceAlerts")
-                    && event.has("o365audit.Category")
+                    && event.has_value("o365audit.Category")
                     && !([
                         "DataGovernance",
                         "DataLossPrevention",
@@ -811,7 +829,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("user.id")
+                !event.has_value("user.id")
                     && event.get_str("event.code") == Some("SecurityComplianceAlerts")
                     && event.get_str("rule.ruleset") == Some("User")
             };
@@ -832,7 +850,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("SecurityComplianceAlerts")
-                    && event.has("rule.ruleset")
+                    && event.has_value("rule.ruleset")
                     && ["Recipients", "Sender"]
                         .contains(&event.get_str("rule.ruleset").unwrap_or(""))
             };
@@ -853,7 +871,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -862,7 +880,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -871,7 +889,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -880,8 +898,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("user.id")
-                    && event.has("event.code")
+                !event.has_value("user.id")
+                    && event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -892,7 +910,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -903,7 +921,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -914,7 +932,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -925,7 +943,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -936,7 +954,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -947,7 +965,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -958,7 +976,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -969,7 +987,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -980,7 +998,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -991,10 +1009,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
-                    && event.has("o365audit.SharePointMetaData.LastModifiedTime")
+                    && event.has_value("o365audit.SharePointMetaData.LastModifiedTime")
             };
             if _cond {
                 if let Some(date_str) =
@@ -1018,8 +1036,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
-                    && event.has("o365audit.ExchangeMetaData")
+                event.has_value("event.code")
+                    && event.has_value("o365audit.ExchangeMetaData")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
@@ -1029,15 +1047,17 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def fields = new def[] {\"To\", \"CC\", \"BCC\"}; if (ctx.destination == null) {\n  ctx.destination = new HashMap();\n} if (ctx.destination.user == null) {\n  ctx.destination.user = new HashMap();\n} ctx.destination.user.email = new ArrayList(); for (int i = 0; i < fields.length; ++i) {\n  if (ctx.o365audit.ExchangeMetaData instanceof Map && ctx.o365audit.ExchangeMetaData.containsKey(fields[i])) {\n    def emails = ctx.o365audit.ExchangeMetaData[fields[i]];\n    if (emails instanceof List){\n      for (int e = 0; e < emails.length; ++e) {\n        ctx.destination.user.email.add(emails[e]);\n      }\n    }\n    if (emails instanceof String){\n      ctx.destination.user.email.add(emails);\n    }\n  }\n}\n"#,
+                    cached_script!(
+                        r#"def fields = new def[] {\"To\", \"CC\", \"BCC\"}; if (ctx.destination == null) {\n  ctx.destination = new HashMap();\n} if (ctx.destination.user == null) {\n  ctx.destination.user = new HashMap();\n} ctx.destination.user.email = new ArrayList(); for (int i = 0; i < fields.length; ++i) {\n  if (ctx.o365audit.ExchangeMetaData instanceof Map && ctx.o365audit.ExchangeMetaData.containsKey(fields[i])) {\n    def emails = ctx.o365audit.ExchangeMetaData[fields[i]];\n    if (emails instanceof List){\n      for (int e = 0; e < emails.length; ++e) {\n        ctx.destination.user.email.add(emails[e]);\n      }\n    }\n    if (emails instanceof String){\n      ctx.destination.user.email.add(emails);\n    }\n  }\n}\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
-                    && event.has("o365audit.ExceptionInfo")
+                    && event.has_value("o365audit.ExceptionInfo")
                     && event
                         .get("o365audit.ExceptionInfo")
                         .is_some_and(|v| v.is_string())
@@ -1049,10 +1069,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("event.code")
+                event.has_value("event.code")
                     && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
-                    && event.has("o365audit.PolicyDetails")
+                    && event.has_value("o365audit.PolicyDetails")
             };
             if _cond {
                 // Painless script
@@ -1060,7 +1080,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"int severityToCode(def x) { \n  if (x.toLowerCase() == \"informational\") {\n    return 1;\n  }\n  if (x.toLowerCase() == \"low\") {\n    return 2;\n  }\n  if (x.toLowerCase() == \"medium\") {\n    return 3;\n  }\n  if (x.toLowerCase() == \"high\") {\n    return 4;\n  }\n  return 0;\n} def policies = ctx.o365audit.PolicyDetails; if (policies == null) {\n  return;\n} if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n} if (ctx.rule.id == null) {\n  ctx.rule.id = new ArrayList();\n} if (ctx.rule.name == null) {\n  ctx.rule.name = new ArrayList();\n} def maxSeverity = 0; def allowed = true; for (int i = 0; i < policies.length && policies instanceof List; ++i) {\n  def rules = policies[i].Rules;\n  if (rules == null) {\n    continue;\n  }\n  for (int j = 0; j < rules.length; ++j) {\n    def rule = rules[j];\n    def id = rule.RuleId;\n    def name = rule.RuleName;\n    def sev = severityToCode(rule.Severity);\n    if (id != null && name != null) {\n      ctx.rule.id.add(id);\n      ctx.rule.name.add(name);\n    }\n    if (sev > maxSeverity) {\n      maxSeverity = sev;\n    }\n    if (allowed) {\n      if (rule.Actions != null && rule.Actions.contains(\"BlockAccess\")) {\n        allowed = false;\n      }\n    }\n  }\n} if (maxSeverity > -1) {\n  ctx.event.severity = maxSeverity;\n} if (allowed) {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpRuleUndo\") {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpInfo\") {\n  ctx.event.outcome = \"failure\";\n  return;\n} if (ctx.o365audit?.ExceptionInfo != null && !ctx.o365audit?.ExceptionInfo.isEmpty()) {\n  ctx.event.outcome = \"success\";\n  return;\n} ctx.event.outcome = \"failure\";\n"#,
+                    cached_script!(
+                        r#"int severityToCode(def x) { \n  if (x.toLowerCase() == \"informational\") {\n    return 1;\n  }\n  if (x.toLowerCase() == \"low\") {\n    return 2;\n  }\n  if (x.toLowerCase() == \"medium\") {\n    return 3;\n  }\n  if (x.toLowerCase() == \"high\") {\n    return 4;\n  }\n  return 0;\n} def policies = ctx.o365audit.PolicyDetails; if (policies == null) {\n  return;\n} if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n} if (ctx.rule.id == null) {\n  ctx.rule.id = new ArrayList();\n} if (ctx.rule.name == null) {\n  ctx.rule.name = new ArrayList();\n} def maxSeverity = 0; def allowed = true; for (int i = 0; i < policies.length && policies instanceof List; ++i) {\n  def rules = policies[i].Rules;\n  if (rules == null) {\n    continue;\n  }\n  for (int j = 0; j < rules.length; ++j) {\n    def rule = rules[j];\n    def id = rule.RuleId;\n    def name = rule.RuleName;\n    def sev = severityToCode(rule.Severity);\n    if (id != null && name != null) {\n      ctx.rule.id.add(id);\n      ctx.rule.name.add(name);\n    }\n    if (sev > maxSeverity) {\n      maxSeverity = sev;\n    }\n    if (allowed) {\n      if (rule.Actions != null && rule.Actions.contains(\"BlockAccess\")) {\n        allowed = false;\n      }\n    }\n  }\n} if (maxSeverity > -1) {\n  ctx.event.severity = maxSeverity;\n} if (allowed) {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpRuleUndo\") {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpInfo\") {\n  ctx.event.outcome = \"failure\";\n  return;\n} if (ctx.o365audit?.ExceptionInfo != null && !ctx.o365audit?.ExceptionInfo.isEmpty()) {\n  ctx.event.outcome = \"success\";\n  return;\n} ctx.event.outcome = \"failure\";\n"#
+                    ),
                 )?;
             }
 
@@ -1071,7 +1093,8 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { !event.has("user.id") && event.get_str("event.code") == Some("Yammer") };
+            let _cond =
+                { !event.has_value("user.id") && event.get_str("event.code") == Some("Yammer") };
             if _cond {
                 if event.has("o365audit.ActorYammerUserId") {
                     if let Some(val) = event.get("o365audit.ActorYammerUserId") {
@@ -1124,7 +1147,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && [
                         "NetworkConfigurationUpdated",
                         "NetworkSecurityConfigurationUpdated",
@@ -1140,7 +1163,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && [
                         "NetworkSecurityConfigurationUpdated",
                         "GroupCreation",
@@ -1156,7 +1179,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && [
                         "FileCreated",
                         "FileDownloaded",
@@ -1173,7 +1196,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && [
                         "NetworkConfigurationUpdated",
                         "NetworkSecurityConfigurationUpdated",
@@ -1197,7 +1220,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && ["FileCreated", "GroupCreation", "FileUpdateName"]
                         .contains(&event.get_str("event.action").unwrap_or(""))
             };
@@ -1215,7 +1238,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && [
                         "FileDownloaded",
                         "FileShared",
@@ -1230,7 +1253,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("Yammer")
-                    && event.has("event.action")
+                    && event.has_value("event.action")
                     && ["GroupCreation", "GroupDeletion"]
                         .contains(&event.get_str("event.action").unwrap_or(""))
             };
@@ -1353,7 +1376,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.get_str("event.code") == Some("MicrosoftTeams")
-                    && event.has("o365audit.Members")
+                    && event.has_value("o365audit.Members")
                     && event.get("o365audit.Members").is_some_and(|v| v.is_array())
             };
             if _cond {
@@ -1362,7 +1385,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def members = ctx.o365audit?.Members; if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} for (int i = 0; i < members.length; ++i) {\n  if (members[i] instanceof Map && members[i].containsKey(\"UPN\") && !members[i][\"UPN\"].isEmpty()) {\n    ctx.related.user.add(members[i][\"UPN\"]);\n  }\n}\n"#,
+                    cached_script!(
+                        r#"def members = ctx.o365audit?.Members; if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} for (int i = 0; i < members.length; ++i) {\n  if (members[i] instanceof Map && members[i].containsKey(\"UPN\") && !members[i][\"UPN\"].isEmpty()) {\n    ctx.related.user.add(members[i][\"UPN\"]);\n  }\n}\n"#
+                    ),
                 )?;
             }
 
@@ -1375,7 +1400,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("client._temp")
+                event.has_value("client._temp")
                     && !(event.get_str("client._temp").is_none_or(|s| s.is_empty()))
             };
             if _cond {
@@ -1430,7 +1455,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("server._temp")
+                event.has_value("server._temp")
                     && !(event.get_str("server._temp").is_none_or(|s| s.is_empty()))
             };
             if _cond {
@@ -1521,7 +1546,7 @@ impl Transform for Default {
             event.remove("client._temp");
             event.remove("server._temp");
 
-            let _cond = { event.has("client.ip") };
+            let _cond = { event.has_value("client.ip") };
             if _cond {
                 event.set(
                     "source.ip",
@@ -1529,7 +1554,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("client.port") };
+            let _cond = { event.has_value("client.port") };
             if _cond {
                 event.set(
                     "source.port",
@@ -1537,7 +1562,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("server.ip") };
+            let _cond = { event.has_value("server.ip") };
             if _cond {
                 event.set(
                     "destination.ip",
@@ -1546,7 +1571,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("user.id")
+                event.has_value("user.id")
                     && event.get("user.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1559,12 +1584,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"String[] splitmail = ctx.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.email = ctx.user.id; ctx.user.domain = splitmail[1]; ctx.user.name = splitmail[0];\n"#,
+                    cached_script!(
+                        r#"String[] splitmail = ctx.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.email = ctx.user.id; ctx.user.domain = splitmail[1]; ctx.user.name = splitmail[0];\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("user.target.id")
+                event.has_value("user.target.id")
                     && event.get("user.target.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1577,12 +1604,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"String[] splitmail = ctx.user.target.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.target.email = ctx.user.target.id; ctx.user.target.domain = splitmail[1]; ctx.user.target.name = splitmail[0];\n"#,
+                    cached_script!(
+                        r#"String[] splitmail = ctx.user.target.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.target.email = ctx.user.target.id; ctx.user.target.domain = splitmail[1]; ctx.user.target.name = splitmail[0];\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("source.user.id")
+                event.has_value("source.user.id")
                     && event.get("source.user.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1595,12 +1624,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"String[] splitmail = ctx.source.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.source.user.email = ctx.source.user.id; ctx.source.user.domain = splitmail[1]; ctx.source.user.name = splitmail[0];\n"#,
+                    cached_script!(
+                        r#"String[] splitmail = ctx.source.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.source.user.email = ctx.source.user.id; ctx.source.user.domain = splitmail[1]; ctx.source.user.name = splitmail[0];\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("destination.user.id")
+                event.has_value("destination.user.id")
                     && event.get("destination.user.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1613,12 +1644,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"String[] splitmail = ctx.destination.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.destination.user.email = ctx.destination.user.id; ctx.destination.user.domain = splitmail[1]; ctx.destination.user.name = splitmail[0];\n"#,
+                    cached_script!(
+                        r#"String[] splitmail = ctx.destination.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.destination.user.email = ctx.destination.user.id; ctx.destination.user.domain = splitmail[1]; ctx.destination.user.name = splitmail[0];\n"#
+                    ),
                 )?;
             }
 
             let _cond = {
-                event.has("client.ip")
+                event.has_value("client.ip")
                     && event.get("client.ip").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(":")),
                         serde_json::Value::String(s) => s.contains(":"),
@@ -1629,12 +1662,12 @@ impl Transform for Default {
                 event.set("network.type", json!("ipv6"))?;
             }
 
-            let _cond = { !event.has("network.type") && event.has("client.ip") };
+            let _cond = { !event.has_value("network.type") && event.has_value("client.ip") };
             if _cond {
                 event.set("network.type", json!("ipv4"))?;
             }
 
-            let _cond = { event.has("client.ip") };
+            let _cond = { event.has_value("client.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -1642,7 +1675,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("server.ip") };
+            let _cond = { event.has_value("server.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -1650,7 +1683,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1658,7 +1691,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.target.name") };
+            let _cond = { event.has_value("user.target.name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1669,7 +1702,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("file.owner") };
+            let _cond = { event.has_value("file.owner") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1677,7 +1710,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("o365audit.Parameters.User") };
+            let _cond = { event.has_value("o365audit.Parameters.User") };
             if _cond {
                 event.append(
                     "related.user",
@@ -1688,7 +1721,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("o365audit.ExtendedProperties.UserAgent") };
+            let _cond = { event.has_value("o365audit.ExtendedProperties.UserAgent") };
             if _cond {
                 if event.has("o365audit.ExtendedProperties.UserAgent") {
                     event.rename(
@@ -1705,7 +1738,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("organization.id") };
+            let _cond = { event.has_value("organization.id") };
             if _cond {
                 event.set(
                     "host.id",
@@ -1713,18 +1746,20 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("organization.id") && event.has("_conf.tenants") };
+            let _cond = { event.has_value("organization.id") && event.has_value("_conf.tenants") };
             if _cond {
                 // Painless script
                 // Source: def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n  ctx.host.name = conftenants[orgid];\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n  ctx.host.name = conftenants[orgid];\n}\n"#,
+                    cached_script!(
+                        r#"def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n  ctx.host.name = conftenants[orgid];\n}\n"#
+                    ),
                 )?;
             }
 
-            let _cond = { event.has("organization.name") && !event.has("host.name") };
+            let _cond = { event.has_value("organization.name") && !event.has_value("host.name") };
             if _cond {
                 event.set(
                     "host.name",
@@ -1735,7 +1770,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.domain") && !event.has("host.name") };
+            let _cond = { event.has_value("user.domain") && !event.has_value("host.name") };
             if _cond {
                 event.set(
                     "host.name",
@@ -1925,7 +1960,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def knownKeys = ['ad', 'af', 'aii', 'ail', 'alk', 'als', 'an', 'at',\n  'cid', 'cpid', 'dm', 'dpn', 'eid', 'etps', 'etype', 'f3u', 'fvs',\n  'imsgid', 'lon', 'mat', 'md', 'ms', 'od', 'op', 'ot', 'plk', 'pud',\n  'reid', 'rid', 'sev', 'sict', 'sid', 'sip', 'sitmi', 'srt', 'ssic',\n  'suid', 'tdc', 'te', 'thn', 'tht', 'tid', 'tpid', 'tpt', 'trc', 'ts',\n  'tsd', 'ttdt', 'ttr', 'upfc', 'upfv', 'ut', 'von', 'wl', 'zfh', 'zfn',\n  'zmfh', 'zmfn', 'zu'];\nfor (def key : knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n"#,
+                    cached_script!(
+                        r#"def knownKeys = ['ad', 'af', 'aii', 'ail', 'alk', 'als', 'an', 'at',\n  'cid', 'cpid', 'dm', 'dpn', 'eid', 'etps', 'etype', 'f3u', 'fvs',\n  'imsgid', 'lon', 'mat', 'md', 'ms', 'od', 'op', 'ot', 'plk', 'pud',\n  'reid', 'rid', 'sev', 'sict', 'sid', 'sip', 'sitmi', 'srt', 'ssic',\n  'suid', 'tdc', 'te', 'thn', 'tht', 'tid', 'tpid', 'tpt', 'trc', 'ts',\n  'tsd', 'ttdt', 'ttr', 'upfc', 'upfv', 'ut', 'von', 'wl', 'zfh', 'zfn',\n  'zmfh', 'zmfn', 'zu'];\nfor (def key : knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n"#
+                    ),
                 )?;
             }
 
@@ -1943,7 +1980,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("o365audit.Data.at") };
+            let _cond = { event.has_value("o365audit.Data.at") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.at") {
                     // Try ISO8601 format
@@ -1963,7 +2000,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("o365audit.Data.md") };
+            let _cond = { event.has_value("o365audit.Data.md") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.md") {
                     // Try ISO8601 format
@@ -1983,7 +2020,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("o365audit.Data.te") };
+            let _cond = { event.has_value("o365audit.Data.te") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.te") {
                     // Try ISO8601 format
@@ -2003,7 +2040,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("o365audit.Data.ts") };
+            let _cond = { event.has_value("o365audit.Data.ts") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ts") {
                     // Try ISO8601 format
@@ -2023,7 +2060,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("o365audit.Data.ttdt") };
+            let _cond = { event.has_value("o365audit.Data.ttdt") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ttdt") {
                     // Try ISO8601 format
@@ -2195,7 +2232,7 @@ impl Transform for Default {
             event.remove("_conf");
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

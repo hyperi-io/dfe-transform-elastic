@@ -82,6 +82,23 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
 /// Tries known common patterns first (drop nulls, command line extraction,
 /// `keys_to_snake_case`, etc.). Falls back to a no-op for unrecognised scripts.
 pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
+    painless_exec_params(event, script, &serde_json::Value::Null)
+}
+
+/// Execute a Painless script that carries a `params` block.
+///
+/// The recurring params shapes -- sentinel lists, field lists, lookup tables --
+/// read their whole behaviour out of `params`, so the script text alone cannot
+/// run them. The generated code passes the pipeline's params block verbatim.
+pub fn painless_exec_params(
+    event: &mut Event,
+    script: &str,
+    params: &serde_json::Value,
+) -> Result<()> {
+    if crate::painless_params::try_params_painless(event, script, params) {
+        crate::painless_stats::record_handled();
+        return Ok(());
+    }
     if crate::painless_common::try_known_painless(event, script) {
         crate::painless_stats::record_handled();
         return Ok(());
