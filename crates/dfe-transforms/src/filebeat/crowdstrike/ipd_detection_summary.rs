@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
 
 use dfe_runtime::prelude::*;
 
@@ -11,146 +13,40 @@ impl Transform for IpdDetectionSummary {
         "ipd_detection_summary"
     }
 
-    fn transform(&self, event: &mut Event) -> Result<TransformResult> {
-        event.set("event.kind", json!("alert"))?;
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        // A `drop` returns through here, so the closure carries the outcome.
+        let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            event.set("event.kind", json!("alert"))?;
 
-        event.append("event.category", json!("malware"))?;
+            event.append("event.category", json!("malware"))?;
 
-        event.append("event.type", json!("info"))?;
+            event.append("event.type", json!("info"))?;
 
-        event.set("event.action", json!("ipd-detection"))?;
+            event.set("event.action", json!("ipd-detection"))?;
 
-        let cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(true) };
-        if cond {
-            event.set("event.outcome", json!("success"))?;
-        }
-
-        let cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(false) };
-        if cond {
-            event.set("event.outcome", json!("failure"))?;
-        }
-
-        if event.has("crowdstrike.event.DetectDescription") {
-            event.rename("crowdstrike.event.DetectDescription", "message")?;
-        }
-
-        if event.has("crowdstrike.event.LocationCountryCode") {
-            event.rename(
-                "crowdstrike.event.LocationCountryCode",
-                "host.geo.country_iso_code",
-            )?;
-        }
-
-        if event.has("crowdstrike.event.PatternId") {
-            if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                let converted = match val {
-                    Value::String(_) => val.clone(),
-                    Value::Number(n) => json!(n.to_string()),
-                    Value::Bool(b) => json!(b.to_string()),
-                    Value::Null => json!("null"),
-                    _ => json!(val.to_string()),
-                };
-                event.set("rule.uuid", converted)?;
+            let _cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(true) };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
             }
-        }
 
-        if event.has("crowdstrike.event.Severity") {
-            event.rename("crowdstrike.event.Severity", "event.severity")?;
-        }
+            let _cond = { event.get_bool("crowdstrike.event.AttemptOutcome") == Some(false) };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
 
-        if event.has("crowdstrike.event.SourceAccountDomain") {
-            event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
-        }
+            if event.has("crowdstrike.event.DetectDescription") {
+                event.rename("crowdstrike.event.DetectDescription", "message")?;
+            }
 
-        if event.has("crowdstrike.event.SourceAccountName") {
-            event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
-        }
+            if event.has("crowdstrike.event.LocationCountryCode") {
+                event.rename(
+                    "crowdstrike.event.LocationCountryCode",
+                    "host.geo.country_iso_code",
+                )?;
+            }
 
-        if event.has("crowdstrike.event.SourceAccountObjectSid") {
-            event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
-        }
-
-        if event.has("crowdstrike.event.SourceEndpointHostName") {
-            event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
-        }
-
-        if event.has("crowdstrike.event.SourceEndpointIpAddress") {
-            event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
-        }
-
-        let cond = { event.has("crowdstrike.event.Technique") };
-        if cond {
-            event.append(
-                "threat.technique.name",
-                event
-                    .get("crowdstrike.event.Technique")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        let cond = { event.has("crowdstrike.event.TechniqueId") };
-        if cond {
-            event.append(
-                "threat.technique.id",
-                event
-                    .get("crowdstrike.event.TechniqueId")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        let cond = { event.has("crowdstrike.event.Tactic") };
-        if cond {
-            event.append(
-                "threat.tactic.name",
-                event
-                    .get("crowdstrike.event.Tactic")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        let cond = { event.has("crowdstrike.event.TacticId") };
-        if cond {
-            event.append(
-                "threat.tactic.id",
-                event
-                    .get("crowdstrike.event.TacticId")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        let cond = { event.has("message") };
-        if cond {
-            event.set(
-                "rule.description",
-                event.get("message").cloned().unwrap_or(Value::Null),
-            )?;
-        }
-
-        if event.has("crowdstrike.event.DetectName") {
-            event.rename("crowdstrike.event.DetectName", "rule.name")?;
-        }
-
-        if event.has("crowdstrike.event.DetectId") {
-            event.rename("crowdstrike.event.DetectId", "rule.id")?;
-        }
-
-        if event.has("crowdstrike.event.FalconHostLink") {
-            event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
-        }
-
-        let cond = { event.has("crowdstrike.event.ContextTimeStamp") };
-        if cond {
-            event.remove("event.created");
-        }
-
-        let cond = { event.has("crowdstrike.event.ContextTimeStamp") };
-        if cond {
-            if event.has("crowdstrike.event.ContextTimeStamp") {
-                if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
+            if event.has("crowdstrike.event.PatternId") {
+                if let Some(val) = event.get("crowdstrike.event.PatternId") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
                         Value::Number(n) => json!(n.to_string()),
@@ -158,379 +54,522 @@ impl Transform for IpdDetectionSummary {
                         Value::Null => json!("null"),
                         _ => json!(val.to_string()),
                     };
-                    event.set("crowdstrike.event.ContextTimeStamp", converted)?;
+                    event.set("rule.uuid", converted)?;
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.ContextTimeStamp")
-                && event
-                    .get_as_string("crowdstrike.event.ContextTimeStamp")
-                    .is_some_and(|s| s.len() > 18)
-        };
-        if cond {
-            if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
-                let re = cached_regex!("\\d{6}$");
-                let replaced = re.replace_all(&s, "").into_owned();
-                event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
+            if event.has("crowdstrike.event.Severity") {
+                event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.ContextTimeStamp")
-                && event
-                    .get_as_string("crowdstrike.event.ContextTimeStamp")
-                    .is_some_and(|s| s.len() >= 12)
-        };
-        if cond {
-            if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                // Try UNIX_MS timestamp (skip epoch 0)
-                if let Ok(ms) = date_str.parse::<i64>() {
-                    if ms > 0 {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set(
-                                "event.created",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            if event.has("crowdstrike.event.SourceAccountDomain") {
+                event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
+            }
+
+            if event.has("crowdstrike.event.SourceAccountName") {
+                event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
+            }
+
+            if event.has("crowdstrike.event.SourceAccountObjectSid") {
+                event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
+            }
+
+            if event.has("crowdstrike.event.SourceEndpointHostName") {
+                event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
+            }
+
+            if event.has("crowdstrike.event.SourceEndpointIpAddress") {
+                event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.Technique") };
+            if _cond {
+                event.append(
+                    "threat.technique.name",
+                    event
+                        .get("crowdstrike.event.Technique")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.TechniqueId") };
+            if _cond {
+                event.append(
+                    "threat.technique.id",
+                    event
+                        .get("crowdstrike.event.TechniqueId")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.Tactic") };
+            if _cond {
+                event.append(
+                    "threat.tactic.name",
+                    event
+                        .get("crowdstrike.event.Tactic")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.TacticId") };
+            if _cond {
+                event.append(
+                    "threat.tactic.id",
+                    event
+                        .get("crowdstrike.event.TacticId")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("message") };
+            if _cond {
+                event.set(
+                    "rule.description",
+                    event.get("message").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            if event.has("crowdstrike.event.DetectName") {
+                event.rename("crowdstrike.event.DetectName", "rule.name")?;
+            }
+
+            if event.has("crowdstrike.event.DetectId") {
+                event.rename("crowdstrike.event.DetectId", "rule.id")?;
+            }
+
+            if event.has("crowdstrike.event.FalconHostLink") {
+                event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.ContextTimeStamp") };
+            if _cond {
+                event.remove("event.created");
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.ContextTimeStamp") };
+            if _cond {
+                if event.has("crowdstrike.event.ContextTimeStamp") {
+                    if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
+                        let converted = match val {
+                            Value::String(_) => val.clone(),
+                            Value::Number(n) => json!(n.to_string()),
+                            Value::Bool(b) => json!(b.to_string()),
+                            Value::Null => json!("null"),
+                            _ => json!(val.to_string()),
+                        };
+                        event.set("crowdstrike.event.ContextTimeStamp", converted)?;
+                    }
+                }
+            }
+
+            let _cond = {
+                event.has_value("crowdstrike.event.ContextTimeStamp")
+                    && event
+                        .get_as_string("crowdstrike.event.ContextTimeStamp")
+                        .is_some_and(|s| s.len() > 18)
+            };
+            if _cond {
+                if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
+                    let re = cached_regex!("\\d{6}$");
+                    let replaced = re.replace_all(&s, "").into_owned();
+                    event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("crowdstrike.event.ContextTimeStamp")
+                    && event
+                        .get_as_string("crowdstrike.event.ContextTimeStamp")
+                        .is_some_and(|s| s.len() >= 12)
+            };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
+                    // Try UNIX_MS timestamp (skip epoch 0)
+                    if let Ok(ms) = date_str.parse::<i64>() {
+                        if ms > 0 {
+                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                                event.set(
+                                    "event.created",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.ContextTimeStamp")
-                && event
-                    .get_as_string("crowdstrike.event.ContextTimeStamp")
-                    .is_some_and(|s| s.len() <= 11)
-        };
-        if cond {
-            if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                // Try UNIX timestamp (skip epoch 0)
-                if let Ok(ts) = date_str.parse::<f64>() {
-                    if ts > 0.0 {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set(
-                                "event.created",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.ContextTimeStamp")
+                    && event
+                        .get_as_string("crowdstrike.event.ContextTimeStamp")
+                        .is_some_and(|s| s.len() <= 11)
+            };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
+                    // Try UNIX timestamp (skip epoch 0)
+                    if let Ok(ts) = date_str.parse::<f64>() {
+                        if ts > 0.0 {
+                            let secs = ts as i64;
+                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                                event.set(
+                                    "event.created",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = { event.has("crowdstrike.event.AccountCreationTimeStamp") };
-        if cond {
-            if event.has("crowdstrike.event.AccountCreationTimeStamp") {
-                if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
+            let _cond = { event.has_value("crowdstrike.event.AccountCreationTimeStamp") };
+            if _cond {
+                if event.has("crowdstrike.event.AccountCreationTimeStamp") {
+                    if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
+                        let converted = match val {
+                            Value::String(_) => val.clone(),
+                            Value::Number(n) => json!(n.to_string()),
+                            Value::Bool(b) => json!(b.to_string()),
+                            Value::Null => json!("null"),
+                            _ => json!(val.to_string()),
+                        };
+                        event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
+                    }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.AccountCreationTimeStamp")
-                && event
-                    .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
-                    .is_some_and(|s| s.len() > 18)
-        };
-        if cond {
-            if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
-                let re = cached_regex!("\\d{6}$");
-                let replaced = re.replace_all(&s, "").into_owned();
-                event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
+            let _cond = {
+                event.has_value("crowdstrike.event.AccountCreationTimeStamp")
+                    && event
+                        .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
+                        .is_some_and(|s| s.len() > 18)
+            };
+            if _cond {
+                if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
+                    let re = cached_regex!("\\d{6}$");
+                    let replaced = re.replace_all(&s, "").into_owned();
+                    event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
+                }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.AccountCreationTimeStamp")
-                && event
-                    .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
-                    .is_some_and(|s| s.len() >= 12)
-        };
-        if cond {
-            if let Some(date_str) =
-                event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
-            {
-                // Try UNIX_MS timestamp (skip epoch 0)
-                if let Ok(ms) = date_str.parse::<i64>() {
-                    if ms > 0 {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set(
-                                "crowdstrike.event.AccountCreationTimeStamp",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.AccountCreationTimeStamp")
+                    && event
+                        .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
+                        .is_some_and(|s| s.len() >= 12)
+            };
+            if _cond {
+                if let Some(date_str) =
+                    event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
+                {
+                    // Try UNIX_MS timestamp (skip epoch 0)
+                    if let Ok(ms) = date_str.parse::<i64>() {
+                        if ms > 0 {
+                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                                event.set(
+                                    "crowdstrike.event.AccountCreationTimeStamp",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.AccountCreationTimeStamp")
-                && event
-                    .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
-                    .is_some_and(|s| s.len() <= 11)
-        };
-        if cond {
-            if let Some(date_str) =
-                event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
-            {
-                // Try UNIX timestamp (skip epoch 0)
-                if let Ok(ts) = date_str.parse::<f64>() {
-                    if ts > 0.0 {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set(
-                                "crowdstrike.event.AccountCreationTimeStamp",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.AccountCreationTimeStamp")
+                    && event
+                        .get_as_string("crowdstrike.event.AccountCreationTimeStamp")
+                        .is_some_and(|s| s.len() <= 11)
+            };
+            if _cond {
+                if let Some(date_str) =
+                    event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
+                {
+                    // Try UNIX timestamp (skip epoch 0)
+                    if let Ok(ts) = date_str.parse::<f64>() {
+                        if ts > 0.0 {
+                            let secs = ts as i64;
+                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                                event.set(
+                                    "crowdstrike.event.AccountCreationTimeStamp",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = { event.has("crowdstrike.event.StartTime") };
-        if cond {
-            if event.has("crowdstrike.event.StartTime") {
-                if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.StartTime", converted)?;
+            let _cond = { event.has_value("crowdstrike.event.StartTime") };
+            if _cond {
+                if event.has("crowdstrike.event.StartTime") {
+                    if let Some(val) = event.get("crowdstrike.event.StartTime") {
+                        let converted = match val {
+                            Value::String(_) => val.clone(),
+                            Value::Number(n) => json!(n.to_string()),
+                            Value::Bool(b) => json!(b.to_string()),
+                            Value::Null => json!("null"),
+                            _ => json!(val.to_string()),
+                        };
+                        event.set("crowdstrike.event.StartTime", converted)?;
+                    }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.StartTime")
-                && event
-                    .get_as_string("crowdstrike.event.StartTime")
-                    .is_some_and(|s| s.len() > 18)
-        };
-        if cond {
-            if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                let re = cached_regex!("\\d{6}$");
-                let replaced = re.replace_all(&s, "").into_owned();
-                event.set("crowdstrike.event.StartTime", replaced)?;
+            let _cond = {
+                event.has_value("crowdstrike.event.StartTime")
+                    && event
+                        .get_as_string("crowdstrike.event.StartTime")
+                        .is_some_and(|s| s.len() > 18)
+            };
+            if _cond {
+                if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
+                    let re = cached_regex!("\\d{6}$");
+                    let replaced = re.replace_all(&s, "").into_owned();
+                    event.set("crowdstrike.event.StartTime", replaced)?;
+                }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.StartTime")
-                && event
-                    .get_as_string("crowdstrike.event.StartTime")
-                    .is_some_and(|s| s.len() >= 12)
-        };
-        if cond {
-            if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                // Try UNIX_MS timestamp (skip epoch 0)
-                if let Ok(ms) = date_str.parse::<i64>() {
-                    if ms > 0 {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set(
-                                "event.start",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.StartTime")
+                    && event
+                        .get_as_string("crowdstrike.event.StartTime")
+                        .is_some_and(|s| s.len() >= 12)
+            };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
+                    // Try UNIX_MS timestamp (skip epoch 0)
+                    if let Ok(ms) = date_str.parse::<i64>() {
+                        if ms > 0 {
+                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                                event.set(
+                                    "event.start",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.StartTime")
-                && event
-                    .get_as_string("crowdstrike.event.StartTime")
-                    .is_some_and(|s| s.len() <= 11)
-        };
-        if cond {
-            if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                // Try UNIX timestamp (skip epoch 0)
-                if let Ok(ts) = date_str.parse::<f64>() {
-                    if ts > 0.0 {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set(
-                                "event.start",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.StartTime")
+                    && event
+                        .get_as_string("crowdstrike.event.StartTime")
+                        .is_some_and(|s| s.len() <= 11)
+            };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
+                    // Try UNIX timestamp (skip epoch 0)
+                    if let Ok(ts) = date_str.parse::<f64>() {
+                        if ts > 0.0 {
+                            let secs = ts as i64;
+                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                                event.set(
+                                    "event.start",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = { event.has("crowdstrike.event.EndTime") };
-        if cond {
-            if event.has("crowdstrike.event.EndTime") {
-                if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("crowdstrike.event.EndTime", converted)?;
+            let _cond = { event.has_value("crowdstrike.event.EndTime") };
+            if _cond {
+                if event.has("crowdstrike.event.EndTime") {
+                    if let Some(val) = event.get("crowdstrike.event.EndTime") {
+                        let converted = match val {
+                            Value::String(_) => val.clone(),
+                            Value::Number(n) => json!(n.to_string()),
+                            Value::Bool(b) => json!(b.to_string()),
+                            Value::Null => json!("null"),
+                            _ => json!(val.to_string()),
+                        };
+                        event.set("crowdstrike.event.EndTime", converted)?;
+                    }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.EndTime")
-                && event
-                    .get_as_string("crowdstrike.event.EndTime")
-                    .is_some_and(|s| s.len() > 18)
-        };
-        if cond {
-            if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                let re = cached_regex!("\\d{6}$");
-                let replaced = re.replace_all(&s, "").into_owned();
-                event.set("crowdstrike.event.EndTime", replaced)?;
+            let _cond = {
+                event.has_value("crowdstrike.event.EndTime")
+                    && event
+                        .get_as_string("crowdstrike.event.EndTime")
+                        .is_some_and(|s| s.len() > 18)
+            };
+            if _cond {
+                if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
+                    let re = cached_regex!("\\d{6}$");
+                    let replaced = re.replace_all(&s, "").into_owned();
+                    event.set("crowdstrike.event.EndTime", replaced)?;
+                }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.EndTime")
-                && event
-                    .get_as_string("crowdstrike.event.EndTime")
-                    .is_some_and(|s| s.len() >= 12)
-        };
-        if cond {
-            if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                // Try UNIX_MS timestamp (skip epoch 0)
-                if let Ok(ms) = date_str.parse::<i64>() {
-                    if ms > 0 {
-                        if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                            event.set(
-                                "event.end",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.EndTime")
+                    && event
+                        .get_as_string("crowdstrike.event.EndTime")
+                        .is_some_and(|s| s.len() >= 12)
+            };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
+                    // Try UNIX_MS timestamp (skip epoch 0)
+                    if let Ok(ms) = date_str.parse::<i64>() {
+                        if ms > 0 {
+                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
+                                event.set(
+                                    "event.end",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        let cond = {
-            event.has("crowdstrike.event.EndTime")
-                && event
-                    .get_as_string("crowdstrike.event.EndTime")
-                    .is_some_and(|s| s.len() <= 11)
-        };
-        if cond {
-            if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                // Try UNIX timestamp (skip epoch 0)
-                if let Ok(ts) = date_str.parse::<f64>() {
-                    if ts > 0.0 {
-                        let secs = ts as i64;
-                        let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                        if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                            event.set(
-                                "event.end",
-                                dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                            )?;
+            let _cond = {
+                event.has_value("crowdstrike.event.EndTime")
+                    && event
+                        .get_as_string("crowdstrike.event.EndTime")
+                        .is_some_and(|s| s.len() <= 11)
+            };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
+                    // Try UNIX timestamp (skip epoch 0)
+                    if let Ok(ts) = date_str.parse::<f64>() {
+                        if ts > 0.0 {
+                            let secs = ts as i64;
+                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
+                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
+                                event.set(
+                                    "event.end",
+                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+                                )?;
+                            }
                         }
                     }
                 }
             }
+
+            let _cond = { event.has_value("crowdstrike.event.TargetEndpointHostName") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("crowdstrike.event.TargetEndpointHostName")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.TargetDomain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("crowdstrike.event.TargetDomain")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.TargetAccountName") };
+            if _cond {
+                event.append(
+                    "related.user",
+                    event
+                        .get("crowdstrike.event.TargetAccountName")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.AdditionalAccountDomain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("crowdstrike.event.AdditionalAccountDomain")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.AdditionalAccountName") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("crowdstrike.event.AdditionalAccountName")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointHostName") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("crowdstrike.event.AdditionalEndpointHostName")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointIpAddress") };
+            if _cond {
+                event.append(
+                    "related.ip",
+                    event
+                        .get("crowdstrike.event.AdditionalEndpointIpAddress")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            Ok(TransformResult::Continue)
+        })(event);
+
+        match outcome {
+            Ok(TransformResult::Drop) => return Ok(TransformResult::Drop),
+            Ok(_) => {}
+            Err(err) => {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.remove("_ingest.on_failure_message");
+            }
         }
 
-        let cond = { event.has("crowdstrike.event.TargetEndpointHostName") };
-        if cond {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.TargetEndpointHostName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        // --- Post-processing (codegen-emitted) ---
+        // Dedup related.* arrays (same value can be appended multiple times)
+        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.ip", Value::Array(arr))?;
         }
-
-        let cond = { event.has("crowdstrike.event.TargetDomain") };
-        if cond {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.TargetDomain")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.user", Value::Array(arr))?;
         }
-
-        let cond = { event.has("crowdstrike.event.TargetAccountName") };
-        if cond {
-            event.append(
-                "related.user",
-                event
-                    .get("crowdstrike.event.TargetAccountName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hash", Value::Array(arr))?;
         }
-
-        let cond = { event.has("crowdstrike.event.AdditionalAccountDomain") };
-        if cond {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.AdditionalAccountDomain")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
+        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
+            dedup_array(&mut arr);
+            event.set("related.hosts", Value::Array(arr))?;
         }
-
-        let cond = { event.has("crowdstrike.event.AdditionalAccountName") };
-        if cond {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.AdditionalAccountName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        let cond = { event.has("crowdstrike.event.AdditionalEndpointHostName") };
-        if cond {
-            event.append(
-                "related.hosts",
-                event
-                    .get("crowdstrike.event.AdditionalEndpointHostName")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
-
-        let cond = { event.has("crowdstrike.event.AdditionalEndpointIpAddress") };
-        if cond {
-            event.append(
-                "related.ip",
-                event
-                    .get("crowdstrike.event.AdditionalEndpointIpAddress")
-                    .cloned()
-                    .unwrap_or(Value::Null),
-            )?;
-        }
+        // Final cleanup: remove null/empty fields created during processing
+        painless_drop_empty(event.as_value_mut());
 
         Ok(TransformResult::Continue)
     }

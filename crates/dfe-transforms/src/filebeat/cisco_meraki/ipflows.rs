@@ -46,7 +46,7 @@ impl Transform for Ipflows {
                 event.set("_temp.event", remaining)?;
             }
 
-            let _cond = { event.has("_temp.event") };
+            let _cond = { event.has_value("_temp.event") };
             if _cond {
                 if let Some(kv_str) = event.get_string("_temp.event") {
                     for pair in kv_str.split(" ") {
@@ -68,7 +68,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { event.has("translated_src_ip") };
+            let _cond = { event.has_value("translated_src_ip") };
             if _cond {
                 if let Some(s) = event.get_string("translated_src_ip") {
                     // Validate IP format
@@ -83,7 +83,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { !event.has("translated_src_ip") && event.has("src") };
+            let _cond = { !event.has_value("translated_src_ip") && event.has_value("src") };
             if _cond {
                 if let Some(s) = event.get_string("src") {
                     // Validate IP format
@@ -98,7 +98,8 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { event.has("translated_src_ip") && event.has("translated_port") };
+            let _cond =
+                { event.has_value("translated_src_ip") && event.has_value("translated_port") };
             if _cond {
                 if let Some(val) = event.get("translated_port") {
                     let converted = match val {
@@ -133,7 +134,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { !event.has("translated_src_ip") && event.has("sport") };
+            let _cond = { !event.has_value("translated_src_ip") && event.has_value("sport") };
             if _cond {
                 if let Some(val) = event.get("sport") {
                     let converted = match val {
@@ -168,7 +169,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { event.has("translated_dst_ip") };
+            let _cond = { event.has_value("translated_dst_ip") };
             if _cond {
                 if let Some(s) = event.get_string("translated_dst_ip") {
                     // Validate IP format
@@ -183,7 +184,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { !event.has("translated_dst_ip") && event.has("dst") };
+            let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dst") };
             if _cond {
                 if let Some(s) = event.get_string("dst") {
                     // Validate IP format
@@ -198,7 +199,8 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { event.has("translated_dst_ip") && event.has("translated_port") };
+            let _cond =
+                { event.has_value("translated_dst_ip") && event.has_value("translated_port") };
             if _cond {
                 if let Some(val) = event.get("translated_port") {
                     let converted = match val {
@@ -233,7 +235,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { !event.has("translated_dst_ip") && event.has("dport") };
+            let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dport") };
             if _cond {
                 if let Some(val) = event.get("dport") {
                     let converted = match val {

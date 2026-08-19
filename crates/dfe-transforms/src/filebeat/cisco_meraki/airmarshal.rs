@@ -96,7 +96,7 @@ impl Transform for Airmarshal {
                 }
             }
 
-            let _cond = { event.has("_temp.kv.ssid") };
+            let _cond = { event.has_value("_temp.kv.ssid") };
             if _cond {
                 event.rename("_temp.kv.ssid", "network.name")?;
             }
@@ -131,7 +131,7 @@ impl Transform for Airmarshal {
                 }
             }
 
-            let _cond = { event.has("_temp.observer.mac") };
+            let _cond = { event.has_value("_temp.observer.mac") };
             if _cond {
                 event.append(
                     "observer.mac",

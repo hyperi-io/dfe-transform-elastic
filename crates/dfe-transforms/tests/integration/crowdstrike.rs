@@ -36,7 +36,7 @@ fn crowdstrike_default_event_stream() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-event-stream",
-        8,
+        9,
     );
 }
 
@@ -50,15 +50,13 @@ fn crowdstrike_default_audit_events() {
     );
 }
 
-// CSPM events need sub-pipeline routing and ResourceAttributes JSON decode,
-// neither of which the transform does yet.
 #[test]
 fn crowdstrike_default_tags() {
     super::common::run_fixture(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags",
-        0,
+        1,
     );
 }
 
@@ -68,6 +66,6 @@ fn crowdstrike_default_tags_list() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags-list",
-        0,
+        1,
     );
 }

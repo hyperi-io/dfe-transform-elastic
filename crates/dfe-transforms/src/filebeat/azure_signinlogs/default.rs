@@ -35,11 +35,13 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n"#,
+                cached_script!(
+                    r#"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n"#
+                ),
             )?;
 
             let _cond = {
-                !event.has("azure.signinlogs.category")
+                !event.has_value("azure.signinlogs.category")
                     || !(event
                         .get_str("azure.signinlogs.category")
                         .is_some_and(|s| s.ends_with("SignInLogs")))
@@ -71,14 +73,14 @@ impl Transform for Default {
                 });
             }
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
                 }
             }
 
-            let _cond = { event.has("event.original") };
+            let _cond = { event.has_value("event.original") };
             if _cond {
                 event.remove("message");
             }
@@ -87,7 +89,7 @@ impl Transform for Default {
                 event.rename("azure.signinlogs.resource_id", "azure.resource_id")?;
             }
 
-            let _cond = { !event.has("source.address") };
+            let _cond = { !event.has_value("source.address") };
             if _cond {
                 event.set(
                     "source.address",
@@ -98,7 +100,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { !event.has("source.address") };
+            let _cond = { !event.has_value("source.address") };
             if _cond {
                 event.set(
                     "source.address",
@@ -148,7 +150,7 @@ impl Transform for Default {
             event.remove("azure.signinlogs.properties.ipaddress");
             event.remove("azure.signinlogs.properties.ip_address");
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -180,13 +182,13 @@ impl Transform for Default {
                 event.rename("azure.signinlogs.duration_ms", "event.duration")?;
             }
 
-            let _cond = { event.has("event.duration") };
+            let _cond = { event.has_value("event.duration") };
             if _cond {
                 // Painless script
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"ctx.event.duration = ctx.event.duration * 1000000"#,
+                    cached_script!(r#"ctx.event.duration = ctx.event.duration * 1000000"#),
                 )?;
             }
 
@@ -240,7 +242,9 @@ impl Transform for Default {
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
-                r#"String reason = ctx?.azure?.signinlogs?.properties?.status?.failure_reason; String details = ctx?.azure?.signinlogs?.properties?.status?.additional_details; if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; } else if (reason != null) { ctx['message'] = reason; } else if (details != null) { ctx['message'] = details; }"#,
+                cached_script!(
+                    r#"String reason = ctx?.azure?.signinlogs?.properties?.status?.failure_reason; String details = ctx?.azure?.signinlogs?.properties?.status?.additional_details; if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; } else if (reason != null) { ctx['message'] = reason; } else if (details != null) { ctx['message'] = details; }"#
+                ),
             )?;
 
             event.remove("azure.signinlogs.properties.status.failure_reason");
@@ -275,7 +279,7 @@ impl Transform for Default {
             event.remove("azure.signinlogs.properties.location");
 
             let _cond = {
-                event.has("azure.signinlogs.properties.authentication_processing_details")
+                event.has_value("azure.signinlogs.properties.authentication_processing_details")
                     && event
                         .get("azure.signinlogs.properties.authentication_processing_details")
                         .is_some_and(|v| v.is_array())
@@ -285,7 +289,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n"#,
+                    cached_script!(
+                        r#"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n"#
+                    ),
                 )?;
             }
 
@@ -296,7 +302,7 @@ impl Transform for Default {
             event.set("event.type", json!(["info"]))?;
 
             let _cond = {
-                !event.has("azure.signinlogs.properties.status.error_code")
+                !event.has_value("azure.signinlogs.properties.status.error_code")
                     || event.get_i64("azure.signinlogs.properties.status.error_code") == Some(0)
             };
             if _cond {
@@ -350,7 +356,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { !event.has("azure.signinlogs.properties.user_id") };
+            let _cond = { !event.has_value("azure.signinlogs.properties.user_id") };
             if _cond {
                 event.remove("azure.signinlogs.properties.user_id");
             }
@@ -424,7 +430,7 @@ impl Transform for Default {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            let _cond = { !event.has("user_agent.original") };
+            let _cond = { !event.has_value("user_agent.original") };
             if _cond {
                 if event.has("azure.signinlogs.properties.user_agent") {
                     event.rename(
@@ -434,7 +440,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has("user_agent.original") };
+            let _cond = { event.has_value("user_agent.original") };
             if _cond {
                 event.remove("azure.signinlogs.properties.user_agent");
             }
@@ -482,7 +488,7 @@ impl Transform for Default {
                 }
                 Ok(())
             })();
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -497,7 +503,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -512,7 +518,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -536,7 +542,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -551,7 +557,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -566,7 +572,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -593,7 +599,7 @@ impl Transform for Default {
             // End nested pipeline: "azure-shared-pipeline"
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

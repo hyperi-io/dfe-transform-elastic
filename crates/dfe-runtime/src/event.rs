@@ -123,9 +123,22 @@ impl Event {
         self.get(path).and_then(Value::as_object)
     }
 
-    /// Check whether a field exists at the given path.
+    /// Check whether a KEY exists at the given path, null or not.
+    ///
+    /// This is Painless `containsKey`. For `!= null`, which an explicit null
+    /// fails, use [`Event::has_value`].
     pub fn has(&self, path: &str) -> bool {
         self.get(path).is_some()
+    }
+
+    /// Check whether a field holds a non-null value at the given path.
+    ///
+    /// Painless `ctx.a?.b != null` is FALSE when `b` is present and null, and
+    /// a pipeline that writes a null placeholder earlier -- which several do,
+    /// via `set` with an absent `copy_from` -- would otherwise open every gate
+    /// downstream of it.
+    pub fn has_value(&self, path: &str) -> bool {
+        !matches!(self.get(path), None | Some(Value::Null))
     }
 
     // -- Setters --------------------------------------------------------

@@ -420,7 +420,7 @@ impl Transform for TunnelInspection {
             }
 
             let _cond = {
-                !event.has("event.outcome")
+                !event.has_value("event.outcome")
                     || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
             };
             if _cond {

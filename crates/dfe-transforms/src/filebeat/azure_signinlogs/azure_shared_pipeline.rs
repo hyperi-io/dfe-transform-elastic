@@ -31,7 +31,7 @@ impl Transform for AzureSharedPipeline {
                 Ok(())
             })();
 
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -47,7 +47,7 @@ impl Transform for AzureSharedPipeline {
                 })();
             }
 
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -63,7 +63,7 @@ impl Transform for AzureSharedPipeline {
                 })();
             }
 
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -88,7 +88,7 @@ impl Transform for AzureSharedPipeline {
                 })();
             }
 
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -104,7 +104,7 @@ impl Transform for AzureSharedPipeline {
                 })();
             }
 
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -120,7 +120,7 @@ impl Transform for AzureSharedPipeline {
                 })();
             }
 
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {

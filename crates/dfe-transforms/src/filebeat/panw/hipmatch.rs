@@ -159,7 +159,7 @@ impl Transform for Hipmatch {
             })();
 
             let _cond = {
-                event.has("_temp_.source_ipv6")
+                event.has_value("_temp_.source_ipv6")
                     && event
                         .get_str("_temp_.source_ipv6")
                         .is_some_and(|s| !s.is_empty())
@@ -203,7 +203,7 @@ impl Transform for Hipmatch {
                 Ok(())
             })();
 
-            let _cond = { event.has("panw.panos.machine.name") };
+            let _cond = { event.has_value("panw.panos.machine.name") };
             if _cond {
                 if let Some(s) = event.get_string("panw.panos.machine.name") {
                     let lowered = s.to_lowercase();

@@ -24,7 +24,7 @@ impl Transform for Login {
 
             event.append("event.category", json!("authentication"))?;
 
-            let _cond = { event.has("source.user.name") };
+            let _cond = { event.has_value("source.user.name") };
             if _cond {
                 event.set(
                     "user.name",
@@ -35,7 +35,7 @@ impl Transform for Login {
                 )?;
             }
 
-            let _cond = { event.has("fortinet.firewall.adminprof") };
+            let _cond = { event.has_value("fortinet.firewall.adminprof") };
             if _cond {
                 event.append(
                     "user.roles",
@@ -46,7 +46,7 @@ impl Transform for Login {
                 )?;
             }
 
-            let _cond = { event.has("fortinet.firewall.adminprof") };
+            let _cond = { event.has_value("fortinet.firewall.adminprof") };
             if _cond {
                 event.append(
                     "source.user.roles",
@@ -58,7 +58,7 @@ impl Transform for Login {
             }
 
             let _cond = {
-                event.has("fortinet.firewall.userfrom")
+                event.has_value("fortinet.firewall.userfrom")
                     && event
                         .get_str("fortinet.firewall.userfrom")
                         .is_some_and(|s| s.starts_with("JSON("))
@@ -109,7 +109,7 @@ impl Transform for Login {
             }
 
             let _cond = {
-                event.has("message")
+                event.has_value("message")
                     && event
                         .get_str("message")
                         .is_some_and(|s| s.starts_with("user"))
@@ -154,7 +154,7 @@ impl Transform for Login {
             }
 
             let _cond = {
-                event.has("message")
+                event.has_value("message")
                     && event
                         .get_str("message")
                         .is_some_and(|s| s.starts_with("Login from ssh:"))
@@ -220,7 +220,7 @@ impl Transform for Login {
             }
 
             let _cond = {
-                event.has("message")
+                event.has_value("message")
                     && event
                         .get_str("message")
                         .is_some_and(|s| s.starts_with("Administrator"))
@@ -295,7 +295,7 @@ impl Transform for Login {
             }
 
             let _cond = {
-                event.has("event.outcome")
+                event.has_value("event.outcome")
                     && event
                         .get_str("event.outcome")
                         .is_some_and(|s| s.to_lowercase().starts_with("fail"))
@@ -305,7 +305,7 @@ impl Transform for Login {
             }
 
             let _cond = {
-                event.has("event.outcome")
+                event.has_value("event.outcome")
                     && event
                         .get_str("event.outcome")
                         .is_some_and(|s| s.to_lowercase().starts_with("success"))
@@ -326,7 +326,7 @@ impl Transform for Login {
                 event.rename("fortinet.firewall.device_id", "observer.serial_number")?;
             }
 
-            let _cond = { event.has("_tmp.user.roles") };
+            let _cond = { event.has_value("_tmp.user.roles") };
             if _cond {
                 event.append(
                     "user.roles",
@@ -334,7 +334,7 @@ impl Transform for Login {
                 )?;
             }
 
-            let _cond = { event.has("_tmp.user.roles") };
+            let _cond = { event.has_value("_tmp.user.roles") };
             if _cond {
                 event.append(
                     "source.user.roles",
@@ -342,7 +342,7 @@ impl Transform for Login {
                 )?;
             }
 
-            let _cond = { event.has("source.port") };
+            let _cond = { event.has_value("source.port") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -408,7 +408,7 @@ impl Transform for Login {
                 }
             }
 
-            let _cond = { event.has("fortinet.firewall.valid") };
+            let _cond = { event.has_value("fortinet.firewall.valid") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {

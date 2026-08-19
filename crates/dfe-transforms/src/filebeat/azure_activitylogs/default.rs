@@ -26,21 +26,24 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#,
+                    cached_script!(
+                        r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
+                    ),
+                    cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),
                 )?;
                 Ok(())
             })();
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
                 }
             }
 
-            let _cond = { event.has("event.original") };
+            let _cond = { event.has_value("event.original") };
             if _cond {
                 event.remove("message");
             }
@@ -112,7 +115,7 @@ impl Transform for Default {
                 event.remove("_ingest.on_failure_processor_tag");
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.remove("azure.activitylogs.callerIpAddress");
             }
@@ -122,7 +125,7 @@ impl Transform for Default {
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
             )?;
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -142,9 +145,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#,
+                    cached_script!(
+                        r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
+                    ),
+                    cached_params!("{\"param_nano\":1000000}"),
                 )?;
                 Ok(())
             })();
@@ -213,12 +219,14 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) {\n  ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory;\n} else if (ctx?.azure?.activitylogs?.properties?.policies != null)  {\n  ctx.azure.activitylogs.event_category = 'Policy';\n} else {\n  ctx.azure.activitylogs.event_category = 'Administrative';\n}"#,
+                    cached_script!(
+                        r#"if (ctx?.azure?.activitylogs?.properties?.eventCategory != null) {\n  ctx.azure.activitylogs.event_category = ctx.azure.activitylogs.properties.eventCategory;\n} else if (ctx?.azure?.activitylogs?.properties?.policies != null)  {\n  ctx.azure.activitylogs.event_category = 'Policy';\n} else {\n  ctx.azure.activitylogs.event_category = 'Administrative';\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
 
-            let _cond = { event.has("azure.activitylogs.event_category") };
+            let _cond = { event.has_value("azure.activitylogs.event_category") };
             if _cond {
                 event.remove("azure.activitylogs.properties.eventCategory");
             }
@@ -231,7 +239,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("azure.activitylogs.result_type")
+                event.has_value("azure.activitylogs.result_type")
                     && event
                         .get("azure.activitylogs.result_type")
                         .is_some_and(|v| v.is_string())
@@ -256,8 +264,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("event.outcome")
-                    && event.has("azure.activitylogs.properties.result")
+                !event.has_value("event.outcome")
+                    && event.has_value("azure.activitylogs.properties.result")
                     && event
                         .get("azure.activitylogs.properties.result")
                         .is_some_and(|v| v.is_string())
@@ -428,7 +436,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.surname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];\n}"#,
+                    cached_script!(
+                        r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.surname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
@@ -439,7 +449,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.name = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];\n}"#,
+                    cached_script!(
+                        r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.name = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
@@ -450,15 +462,17 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.givenname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];\n}"#,
+                    cached_script!(
+                        r#"if (ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'] != null) {\n  ctx.azure.activitylogs.identity.claims_initiated_by_user.givenname = ctx.azure.activitylogs.identity.claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
 
             let _cond = {
-                event.has("azure.activitylogs.identity")
-                    && event.has("azure.activitylogs.identity.claims_initiated_by_user")
-                    && event.has("azure.activitylogs.identity.claims_initiated_by_user.name")
+                event.has_value("azure.activitylogs.identity")
+                    && event.has_value("azure.activitylogs.identity.claims_initiated_by_user")
+                    && event.has_value("azure.activitylogs.identity.claims_initiated_by_user.name")
             };
             if _cond {
                 // ignore_failure: true
@@ -477,16 +491,23 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#,
+                    cached_script!(
+                        r#"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims; ctx.remove('temp_claims');\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
 
             // Painless script
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_params(
                 event,
-                r#"if (ctx?.azure?.activitylogs?.category == null) {\n  return;\n} def category = ctx.azure.activitylogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#,
+                cached_script!(
+                    r#"if (ctx?.azure?.activitylogs?.category == null) {\n  return;\n} def category = ctx.azure.activitylogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#
+                ),
+                cached_params!(
+                    "{\"action\":{\"type\":[\"change\"]},\"delete\":{\"type\":[\"deletion\"]},\"read\":{\"type\":[\"access\"]},\"write\":{\"type\":[\"change\"]}}"
+                ),
             )?;
 
             if event.has("source.ip") {
@@ -560,7 +581,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.set(
                     "user.email",
@@ -571,7 +592,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { !event.has("user.name") };
+            let _cond = { !event.has_value("user.name") };
             if _cond {
                 event.set(
                     "user.name",
@@ -582,7 +603,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has("user.name") };
+            let _cond = { event.has_value("user.name") };
             if _cond {
                 event.append(
                     "related.user",
@@ -621,7 +642,7 @@ impl Transform for Default {
                 }
                 Ok(())
             })();
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -636,7 +657,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -651,7 +672,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -675,7 +696,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -690,7 +711,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -705,7 +726,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -732,7 +753,7 @@ impl Transform for Default {
             // End nested pipeline: "azure-shared-pipeline"
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()

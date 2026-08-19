@@ -226,7 +226,7 @@ impl Transform for Authentication {
             })();
 
             let _cond = {
-                event.has("_temp_.user")
+                event.has_value("_temp_.user")
                     && event.get_str("_temp_.user").is_some_and(|s| !s.is_empty())
             };
             if _cond {
@@ -241,7 +241,7 @@ impl Transform for Authentication {
             }
 
             let _cond = {
-                event.has("panw.panos.normalize_user")
+                event.has_value("panw.panos.normalize_user")
                     && event
                         .get_str("panw.panos.normalize_user")
                         .is_some_and(|s| !s.is_empty())

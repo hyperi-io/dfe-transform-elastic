@@ -567,7 +567,7 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                event.has("panw.panos.http2_connection")
+                event.has_value("panw.panos.http2_connection")
                     && event.get_i64("panw.panos.http2_connection") != Some(0)
                     && event.get_str("panw.panos.http2_connection") != Some("0")
             };
@@ -585,7 +585,7 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                !event.has("event.outcome")
+                !event.has_value("event.outcome")
                     || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
             };
             if _cond {
@@ -929,7 +929,8 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                !event.has("event.timezone") && event.has("panw.panos.parent_session.start_time")
+                !event.has_value("event.timezone")
+                    && event.has_value("panw.panos.parent_session.start_time")
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -962,7 +963,8 @@ impl Transform for Traffic {
             }
 
             let _cond = {
-                event.has("event.timezone") && event.has("panw.panos.parent_session.start_time")
+                event.has_value("event.timezone")
+                    && event.has_value("panw.panos.parent_session.start_time")
             };
             if _cond {
                 // on_failure: 1 handler(s)

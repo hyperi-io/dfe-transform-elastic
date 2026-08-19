@@ -111,7 +111,7 @@ impl Transform for Events {
                 }
             }
 
-            let _cond = { event.has("type") };
+            let _cond = { event.has_value("type") };
             if _cond {
                 event.rename("type", "cisco_meraki.event_subtype")?;
             }
@@ -315,7 +315,7 @@ impl Transform for Events {
                 }
             }
 
-            let _cond = { event.has("_temp.blocked_arp") };
+            let _cond = { event.has_value("_temp.blocked_arp") };
             if _cond {
                 event.set("cisco_meraki.event_subtype", json!("arp_blocked"))?;
             }
@@ -349,7 +349,7 @@ impl Transform for Events {
                 }
             }
 
-            let _cond = { event.has("_temp.port_action") };
+            let _cond = { event.has_value("_temp.port_action") };
             if _cond {
                 event.set(
                     "cisco_meraki.event_subtype",
@@ -417,7 +417,7 @@ impl Transform for Events {
             }
 
             let _cond = {
-                event.has("_temp.rest")
+                event.has_value("_temp.rest")
                     && [
                         "dfs_event",
                         "association",
@@ -475,7 +475,7 @@ impl Transform for Events {
             }
 
             let _cond = {
-                event.has("_temp.rest")
+                event.has_value("_temp.rest")
                     && event.get_str("cisco_meraki.event_subtype")
                         == Some("vpn_connectivity_change")
             };
@@ -584,7 +584,7 @@ impl Transform for Events {
                 })();
             }
 
-            let _cond = { event.has("server.ip") };
+            let _cond = { event.has_value("server.ip") };
             if _cond {
                 if event
                     .remove("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
@@ -713,7 +713,7 @@ impl Transform for Events {
                 }
             }
 
-            let _cond = { event.has("_temp.client_ip") };
+            let _cond = { event.has_value("_temp.client_ip") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -730,7 +730,7 @@ impl Transform for Events {
                 })();
             }
 
-            let _cond = { event.has("_temp.client_ip") };
+            let _cond = { event.has_value("_temp.client_ip") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {

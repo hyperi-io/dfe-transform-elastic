@@ -26,21 +26,24 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#,
+                    cached_script!(
+                        r#"ctx.message = ctx.message.replace(params.empty_field_name, '')"#
+                    ),
+                    cached_params!("{\"empty_field_name\":\"\\\"\\\":\\\"\\\",\"}"),
                 )?;
                 Ok(())
             })();
 
-            let _cond = { !event.has("event.original") };
+            let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
                     event.rename("message", "event.original")?;
                 }
             }
 
-            let _cond = { event.has("event.original") };
+            let _cond = { event.has_value("event.original") };
             if _cond {
                 event.remove("message");
             }
@@ -194,7 +197,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            let _cond = { event.has("azure.platformlogs.properties") };
+            let _cond = { event.has_value("azure.platformlogs.properties") };
             if _cond {
                 event.remove("azure.platformlogs.EventProperties");
             }
@@ -213,7 +216,7 @@ impl Transform for Default {
             })();
 
             let _cond = {
-                event.has("azure.platformlogs.properties.log")
+                event.has_value("azure.platformlogs.properties.log")
                     && event
                         .get("azure.platformlogs.properties.log")
                         .is_some_and(|v| v.is_string())
@@ -259,7 +262,7 @@ impl Transform for Default {
                 event.remove("_ingest.on_failure_processor_tag");
             }
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.remove("azure.platformlogs.callerIpAddress");
             }
@@ -269,7 +272,7 @@ impl Transform for Default {
                 event.get("source.ip").cloned().unwrap_or(Value::Null),
             )?;
 
-            let _cond = { event.has("source.ip") };
+            let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
                     "related.ip",
@@ -282,7 +285,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("azure.platformlogs.durationMs")
+                event.has_value("azure.platformlogs.durationMs")
                     && event
                         .get("azure.platformlogs.durationMs")
                         .is_some_and(|v| v.is_string())
@@ -331,9 +334,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 // Painless script
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
-                    r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#,
+                    cached_script!(
+                        r#"if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}"#
+                    ),
+                    cached_params!("{\"param_nano\":1000000}"),
                 )?;
                 Ok(())
             })();
@@ -348,7 +354,9 @@ impl Transform for Default {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
-                    r#"if (ctx?.azure?.platformlogs?.properties?.eventCategory != null) {\n  ctx.azure.platformlogs.event_category = ctx.azure.platformlogs.properties.eventCategory;\n} else if (ctx?.azure?.platformlogs?.properties?.policies != null)  {\n  ctx.azure.platformlogs.event_category = 'Policy';\n} else {\n  ctx.azure.platformlogs.event_category = 'Administrative';\n}"#,
+                    cached_script!(
+                        r#"if (ctx?.azure?.platformlogs?.properties?.eventCategory != null) {\n  ctx.azure.platformlogs.event_category = ctx.azure.platformlogs.properties.eventCategory;\n} else if (ctx?.azure?.platformlogs?.properties?.policies != null)  {\n  ctx.azure.platformlogs.event_category = 'Policy';\n} else {\n  ctx.azure.platformlogs.event_category = 'Administrative';\n}"#
+                    ),
                 )?;
                 Ok(())
             })();
@@ -361,7 +369,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("azure.platformlogs.result_type")
+                event.has_value("azure.platformlogs.result_type")
                     && event
                         .get("azure.platformlogs.result_type")
                         .is_some_and(|v| v.is_string())
@@ -386,8 +394,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("event.outcome")
-                    && event.has("azure.platformlogs.properties.result")
+                !event.has_value("event.outcome")
+                    && event.has_value("azure.platformlogs.properties.result")
                     && event
                         .get("azure.platformlogs.properties.result")
                         .is_some_and(|v| v.is_string())
@@ -411,8 +419,8 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has("event.outcome")
-                    && event.has("azure.platformlogs.Status")
+                !event.has_value("event.outcome")
+                    && event.has_value("azure.platformlogs.Status")
                     && event
                         .get("azure.platformlogs.Status")
                         .is_some_and(|v| v.is_string())
@@ -509,9 +517,14 @@ impl Transform for Default {
 
             // Painless script
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_params(
                 event,
-                r#"if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#,
+                cached_script!(
+                    r#"if (ctx?.azure?.platformlogs?.category == null) {\n  return;\n} def category = ctx.azure.platformlogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#
+                ),
+                cached_params!(
+                    "{\"action\":{\"type\":[\"change\"]},\"delete\":{\"type\":[\"deletion\"]},\"read\":{\"type\":[\"access\"]},\"write\":{\"type\":[\"change\"]}}"
+                ),
             )?;
 
             if event.has("source.ip") {
@@ -586,7 +599,7 @@ impl Transform for Default {
                 }
                 Ok(())
             })();
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -601,7 +614,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -616,7 +629,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -640,7 +653,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -655,7 +668,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -670,7 +683,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            let _cond = { !event.has("azure.subscription_id") };
+            let _cond = { !event.has_value("azure.subscription_id") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -697,7 +710,7 @@ impl Transform for Default {
             // End nested pipeline: "azure-shared-pipeline"
 
             let _cond = {
-                !event.has("tags")
+                !event.has_value("tags")
                     || !(event.get("tags").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a
                             .iter()
@@ -715,7 +728,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has("azure_log_forwarder.resource_type")
+                event.has_value("azure_log_forwarder.resource_type")
                     && (event.get_str("azure_log_forwarder.resource_type")
                         == Some("Microsoft.AppPlatform/Spring")
                         || event.get_str("azure_log_forwarder.resource_type")
@@ -729,7 +742,9 @@ impl Transform for Default {
                     // TODO: Transpile Painless to Rust (2.2.3)
                     painless_exec(
                         event,
-                        r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#,
+                        cached_script!(
+                            r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#
+                        ),
                     )?;
                     Ok(())
                 })();

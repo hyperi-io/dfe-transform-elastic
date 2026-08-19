@@ -23,7 +23,7 @@ impl Transform for Flows {
             }
 
             let _cond = {
-                event.has("cisco_meraki.firewall.pattern")
+                event.has_value("cisco_meraki.firewall.pattern")
                     && (event
                         .get_str("cisco_meraki.firewall.pattern")
                         .is_some_and(|s| s.starts_with("allow"))
@@ -43,7 +43,7 @@ impl Transform for Flows {
                 })();
             }
 
-            let _cond = { event.has("cisco_meraki.firewall.rule") };
+            let _cond = { event.has_value("cisco_meraki.firewall.rule") };
             if _cond {
                 if event.remove("cisco_meraki.firewall.pattern").is_none() {
                     return Err(TransformError::FieldNotFound {
@@ -60,7 +60,7 @@ impl Transform for Flows {
                 }
             }
 
-            let _cond = { !event.has("cisco_meraki.flows.op") };
+            let _cond = { !event.has_value("cisco_meraki.flows.op") };
             if _cond {
                 event.set("cisco_meraki.event_subtype", json!("ip_session_initiated"))?;
             }
