@@ -331,6 +331,87 @@ pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     None
 }
 
+/// An equality ladder whose arms COLLECT into a list, then write it as a scalar
+/// when one thing matched and an array when several did.
+///
+/// ```painless
+/// def result = [];
+/// if (ctx.crowdstrike.event.ConnectionDirection == "0") { result.add('egress'); }
+/// else if (ctx.crowdstrike.event.ConnectionDirection == "3") {
+///   result.add('egress'); result.add('ingress');
+/// }
+/// if (result.size() == 1) { ctx.network.direction = result[0]; }
+/// else if (result.size() > 1) { ctx.network.direction = result; }
+/// ```
+///
+/// The two-shapes-one-field ending is the part the plain ladder cannot express,
+/// and `CrowdStrike`'s `network.direction` rides entirely on it -- every rename
+/// of `LocalAddress` and `RemoteAddress` after it is gated on the result.
+fn try_collecting_ladder(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let start = match script.find("if (ctx.") {
+        Some(at) => at + "if (ctx.".len(),
+        None => return false,
+    };
+    let Some(end) = script[start..].find("==") else {
+        return false;
+    };
+    let subject = clean_path(script[start..start + end].trim());
+    let Some(target) = collecting_target(script) else {
+        return false;
+    };
+    let Some(value) = event.get_as_string(&subject) else {
+        return true;
+    };
+
+    for segment in script.split("if (").skip(1) {
+        let Some((cond, body)) = segment.split_once(") {") else {
+            continue;
+        };
+        // Only the arms testing the subject; the size tests at the end are the
+        // same shape and must not be mistaken for one.
+        let Some((_, rhs)) = cond.split_once("==") else {
+            continue;
+        };
+        if !cond.contains("ctx.") || quoted_first(rhs).as_deref() != Some(value.as_str()) {
+            continue;
+        }
+
+        let collected: Vec<Value> = body
+            .split(".add(")
+            .skip(1)
+            .filter_map(quoted_first)
+            .map(Value::String)
+            .collect();
+        let target = clean_path(&target);
+        match collected.len() {
+            0 => {}
+            1 => {
+                let _ = event.set(&target, collected[0].clone());
+            }
+            _ => {
+                let _ = event.set(&target, Value::Array(collected));
+            }
+        }
+        return true;
+    }
+    true
+}
+
+/// The ctx path a collecting ladder writes its result to.
+///
+/// Read off the assignment FROM the accumulator, not off the size test: the
+/// script's first `.size()` guards `ctx.network = ctx.network ?: [:]`, so
+/// looking there names the parent rather than the field.
+fn collecting_target(script: &str) -> Option<String> {
+    let name = script
+        .split_once("def ")
+        .and_then(|(_, rest)| rest.split_once(" = ["))
+        .map(|(name, _)| name.trim().to_string())?;
+    crate::painless_params::ctx_path_before(script, &format!(" = {name};"))
+}
+
 /// Build a string out of ctx fields and literals, with an all-empty fallback.
 ///
 /// ```painless
@@ -1596,6 +1677,15 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: a ladder collecting into a list, written as scalar or array.
+    if normalised.contains(".add(")
+        && normalised.contains(".size()")
+        && normalised.contains("else if (")
+        && try_collecting_ladder(event, &normalised)
+    {
+        return true;
+    }
+
     // Pattern: a case-insensitive ladder mapping one field onto a literal.
     // Tried before the `==` ladder, which cannot read either the multi-literal
     // arms or the numeric right-hand sides.
@@ -2070,6 +2160,68 @@ mod tests {
         ctx.message = \"Office365 Alert\";\n} else {\n  \
         ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + \
         user + \" with subject '\" + subject + \"'\";\n}";
+
+    /// Verbatim from `pipelines/crowdstrike/firewall_match.yml`. Every rename
+    /// of `LocalAddress` and `RemoteAddress` after it is gated on the result.
+    const DIRECTION: &str = "def result = [];\n\
+        if (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n}\n\
+        else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n}\n\
+        else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  \
+        result.add('egress');\n  result.add('ingress');\n}\n\
+        if (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\n\
+        if (result.size() == 1) {\n  ctx.network.direction = result[0];\n}\n\
+        else if (result.size() > 1) {\n  ctx.network.direction = result;\n}";
+
+    /// One match writes a scalar.
+    #[test]
+    fn collecting_ladder_writes_a_single_match_as_a_string() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "event": { "ConnectionDirection": "1" } },
+        }));
+
+        assert!(try_known_painless(&mut event, DIRECTION));
+        assert_eq!(event.get_str("network.direction"), Some("ingress"));
+    }
+
+    /// Several matches write an array, which is the half a plain ladder cannot
+    /// express.
+    #[test]
+    fn collecting_ladder_writes_several_matches_as_an_array() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "event": { "ConnectionDirection": "3" } },
+        }));
+
+        assert!(try_known_painless(&mut event, DIRECTION));
+        assert_eq!(
+            event.get("network.direction"),
+            Some(&json!(["egress", "ingress"]))
+        );
+    }
+
+    /// The target is the field the accumulator is assigned to, not the parent
+    /// the size test creates -- reading the size test named `network`.
+    #[test]
+    fn collecting_ladder_writes_the_field_not_its_parent() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "event": { "ConnectionDirection": "0" } },
+        }));
+
+        assert!(try_known_painless(&mut event, DIRECTION));
+        assert_eq!(event.get_str("network.direction"), Some("egress"));
+        assert!(event.get("network").is_some_and(Value::is_object));
+    }
+
+    /// A value no arm matches leaves the field unwritten, which is what an
+    /// empty accumulator does.
+    #[test]
+    fn collecting_ladder_writes_nothing_when_no_arm_matches() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "event": { "ConnectionDirection": "9" } },
+        }));
+
+        assert!(try_known_painless(&mut event, DIRECTION));
+        assert!(!event.has("network.direction"));
+    }
 
     #[test]
     fn concat_builds_the_message_from_the_fields_it_names() {
