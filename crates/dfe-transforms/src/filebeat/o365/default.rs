@@ -1182,17 +1182,17 @@ impl Transform for Default {
                     .contains(&event.get_str("o365audit.Category").unwrap_or("")))
             };
             if _cond {
-                event.append("event.category", json!("authentication"))?;
+                event.append_unique("event.category", json!("authentication"))?;
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                event.append("event.category", json!("web"))?;
+                event.append_unique("event.category", json!("web"))?;
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                event.append("event.type", json!("info"))?;
+                event.append_unique("event.type", json!("info"))?;
             }
 
             let _cond = {
@@ -2030,7 +2030,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("client.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -2042,7 +2042,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("server.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -2054,7 +2054,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2066,7 +2066,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.target.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2078,7 +2078,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.owner") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2090,7 +2090,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("o365audit.Parameters.User") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2199,7 +2199,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.message_id",
                     json!(
                         event
@@ -2216,7 +2216,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.message_id",
                     json!(
                         event
@@ -2233,7 +2233,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.local_id",
                     json!(
                         event
@@ -2250,7 +2250,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.sender.address",
                     json!(
                         event
@@ -2267,7 +2267,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.sender.address",
                     json!(
                         event
@@ -2290,7 +2290,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.to.address",
                             json!(
                                 event
@@ -2315,7 +2315,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.to.address",
                             json!(
                                 event
@@ -2337,7 +2337,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -2354,7 +2354,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -2371,7 +2371,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.subject",
                     json!(
                         event
@@ -2388,7 +2388,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.subject",
                     json!(
                         event
@@ -2673,7 +2673,7 @@ impl Transform for Default {
                     .is_some_and(|s| s.split('@').count() == 2)
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2706,7 +2706,7 @@ impl Transform for Default {
                     .is_some_and(|s| s.split('@').count() == 2)
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2723,7 +2723,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.sender.address",
                     json!(
                         event
@@ -2739,7 +2739,7 @@ impl Transform for Default {
                     .is_some_and(|s| s.split('@').count() == 2)
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2756,7 +2756,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.to.address",
                     json!(
                         event
@@ -2772,7 +2772,7 @@ impl Transform for Default {
                     .is_some_and(|s| s.split('@').count() == 2)
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2789,7 +2789,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.local_id",
                     json!(
                         event
@@ -2806,7 +2806,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.message_id",
                     json!(
                         event
@@ -2823,7 +2823,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "email.subject",
                     json!(
                         event
@@ -2865,7 +2865,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.message_id",
                             json!(
                                 event
@@ -2892,7 +2892,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.local_id",
                             json!(
                                 event
@@ -2917,7 +2917,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.sender.address",
                             json!(
                                 event
@@ -2942,7 +2942,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.from.address",
                             json!(
                                 event
@@ -2967,7 +2967,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.to.address",
                             json!(
                                 event
@@ -3011,7 +3011,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "related.ip",
                             json!(
                                 event
@@ -3036,7 +3036,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "email.subject",
                             json!(
                                 event
@@ -3057,7 +3057,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "related.user",
                             json!(
                                 event
@@ -3350,7 +3350,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.id") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -3362,7 +3362,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.target.id") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -3374,7 +3374,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.target.email") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -3386,7 +3386,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.email") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -3398,7 +3398,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3414,7 +3414,7 @@ impl Transform for Default {
                         != event.get("host.name").filter(|v| !v.is_null())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3426,7 +3426,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3442,7 +3442,7 @@ impl Transform for Default {
                         != event.get("user.domain").filter(|v| !v.is_null())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3454,7 +3454,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3466,7 +3466,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3478,7 +3478,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("url.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3490,7 +3490,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("server.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3502,7 +3502,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("client.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3514,7 +3514,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.hash.md5") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -3526,7 +3526,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.hash.sha1") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -3538,7 +3538,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.hash.sha256") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -3550,7 +3550,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.hash.sha512") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -3580,7 +3580,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("error.message") };
             if _cond {
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
             }
 
             Ok(TransformResult::Continue)
@@ -3592,7 +3592,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
                     json!(format!(

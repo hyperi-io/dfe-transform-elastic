@@ -1722,9 +1722,9 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_azure_category_to_event_type(event);
     }
 
-    // Pattern: Azure activitylogs event_category assignment
+    // Pattern: Azure event_category assignment, in whichever module's subtree.
     if normalised.contains("event_category") && normalised.contains("eventCategory") {
-        return try_azure_event_category(event);
+        return try_azure_event_category(event, &normalised);
     }
 
     // Pattern: replace dots in map keys (Azure identity claims)
@@ -1935,22 +1935,41 @@ fn try_azure_category_to_event_type(event: &mut Event) -> bool {
     true
 }
 
-/// Azure activitylogs `event_category` conditional assignment.
+/// Azure's `event_category` conditional assignment: `properties.eventCategory`
+/// if present, else a literal per fallback branch.
 ///
-/// Sets `azure.activitylogs.event_category` based on:
-/// 1. `properties.eventCategory` if present
-/// 2. "Policy" if `properties.policies` present
-/// 3. "Administrative" as default
-fn try_azure_event_category(event: &mut Event) -> bool {
-    let category = if let Some(v) = event.get_str("azure.activitylogs.properties.eventCategory") {
-        v.to_string()
-    } else if event.has("azure.activitylogs.properties.policies") {
-        "Policy".to_string()
-    } else {
-        "Administrative".to_string()
+/// The subtree and both literals are read out of the SCRIPT. They were
+/// hardcoded to `azure.activitylogs`, and azure's four modules share this
+/// script with their own prefix -- so platformlogs had its category written
+/// under activitylogs, where nothing downstream reads it.
+fn try_azure_event_category(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::ctx_path_before;
+
+    let Some(prefix) = ctx_path_before(script, ".event_category") else {
+        return false;
     };
 
-    let _ = event.set("azure.activitylogs.event_category", json!(category));
+    // Each fallback branch assigns a literal; the last is the default and any
+    // before it belongs to the `policies` test.
+    let literals: Vec<String> = script
+        .split(".event_category = ")
+        .skip(1)
+        .filter(|branch| branch.trim_start().starts_with(['\'', '"']))
+        .filter_map(quoted_first)
+        .collect();
+    let Some(default) = literals.last() else {
+        return false;
+    };
+
+    let category = if let Some(v) = event.get_str(&format!("{prefix}.properties.eventCategory")) {
+        v.to_string()
+    } else if literals.len() >= 2 && event.has(&format!("{prefix}.properties.policies")) {
+        literals[literals.len() - 2].clone()
+    } else {
+        default.clone()
+    };
+
+    let _ = event.set(&format!("{prefix}.event_category"), json!(category));
     true
 }
 

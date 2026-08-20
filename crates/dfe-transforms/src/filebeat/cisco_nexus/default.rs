@@ -509,7 +509,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.hostname") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -521,7 +521,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco_nexus.log.ip_address") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "observer.ip",
                     json!(
                         event
@@ -533,7 +533,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco_nexus.log.ip_address") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -1563,7 +1563,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("source.ip") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -1574,7 +1574,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("user.name") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.user",
                         json!(
                             event
@@ -1639,7 +1639,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("error.message") };
             if _cond {
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
             }
 
             Ok(TransformResult::Continue)
@@ -1652,7 +1652,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

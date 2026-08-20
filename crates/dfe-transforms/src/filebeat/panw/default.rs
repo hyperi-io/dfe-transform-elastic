@@ -4749,7 +4749,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        event.append(
+                        event.append_unique(
                             "source.user.name",
                             json!(
                                 event
@@ -4769,7 +4769,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        event.append(
+                        event.append_unique(
                             "source.user.name",
                             json!(
                                 event
@@ -11661,8 +11661,8 @@ impl Transform for Default {
 
             let _cond = { event.get_str("panw.panos.sub_type") == Some("drop") };
             if _cond {
-                event.append("event.type", json!("denied"))?;
-                event.append("event.type", json!("connection"))?;
+                event.append_unique("event.type", json!("denied"))?;
+                event.append_unique("event.type", json!("connection"))?;
             }
 
             let _cond = { event.get_str("panw.panos.sub_type") == Some("deny") };
@@ -11672,8 +11672,8 @@ impl Transform for Default {
 
             let _cond = { event.get_str("panw.panos.sub_type") == Some("deny") };
             if _cond {
-                event.append("event.type", json!("denied"))?;
-                event.append("event.type", json!("connection"))?;
+                event.append_unique("event.type", json!("denied"))?;
+                event.append_unique("event.type", json!("connection"))?;
             }
 
             let _cond = { event.get_str("panw.panos.sub_type") == Some("data") };
@@ -11814,7 +11814,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -11826,7 +11826,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -11838,7 +11838,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.nat.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -11850,7 +11850,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.nat.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -11864,7 +11864,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -11884,7 +11884,7 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         // ignore_failure: true
                         let _ = (|| -> Result<()> {
-                            event.append(
+                            event.append_unique(
                                 "related.ip",
                                 json!(
                                     event
@@ -11905,7 +11905,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -11921,7 +11921,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -11937,7 +11937,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -11953,7 +11953,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -12500,7 +12500,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("client.user.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -12515,7 +12515,7 @@ impl Transform for Default {
                     && !(event.get("source.user.name").is_some_and(|v| v.is_array()))
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -12534,7 +12534,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "related.user",
                             json!(
                                 event
@@ -12551,7 +12551,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("server.user.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -12563,7 +12563,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.user.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -12575,7 +12575,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("panw.panos.admin") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -12587,7 +12587,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("panw.panos.file.hash") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -12606,7 +12606,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -12627,7 +12627,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -12648,7 +12648,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -12667,7 +12667,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -12682,7 +12682,7 @@ impl Transform for Default {
                     && event.get_str("host.name").is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -12701,7 +12701,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -12722,7 +12722,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -12843,7 +12843,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("error.message") };
             if _cond {
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
             }
 
             Ok(TransformResult::Continue)
@@ -12859,7 +12859,7 @@ impl Transform for Default {
                 event.remove("_temp_");
                 event.remove("_conf");
                 event.remove("message");
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

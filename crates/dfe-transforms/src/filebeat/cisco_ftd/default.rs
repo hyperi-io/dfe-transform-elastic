@@ -10372,7 +10372,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "url.domain",
                         json!(
                             event
@@ -10740,7 +10740,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -10752,7 +10752,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.nat.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -10764,7 +10764,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -10776,7 +10776,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.nat.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -10788,7 +10788,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.ftd.security_event.encrypt_peer_ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -10803,7 +10803,7 @@ impl Transform for Default {
                     && event.get_str("user.name").is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -10820,7 +10820,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -10837,7 +10837,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -10854,7 +10854,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -10866,7 +10866,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.hash.sha256") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -10883,7 +10883,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -10900,7 +10900,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -10917,7 +10917,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -10934,7 +10934,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -10951,7 +10951,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -10968,7 +10968,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -11028,7 +11028,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("error.message") };
             if _cond {
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
             }
 
             Ok(TransformResult::Continue)
@@ -11048,7 +11048,7 @@ impl Transform for Default {
                 event.remove("_conf");
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

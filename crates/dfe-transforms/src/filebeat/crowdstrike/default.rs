@@ -812,7 +812,7 @@ impl Transform for Default {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
                             event.set("_ingest._value", item)?;
-                            event.append(
+                            event.append_unique(
                                 "threat.indicator.id",
                                 json!(
                                     event
@@ -839,7 +839,7 @@ impl Transform for Default {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
                             event.set("_ingest._value", item)?;
-                            event.append(
+                            event.append_unique(
                                 "threat.indicator.name",
                                 json!(
                                     event
@@ -866,7 +866,7 @@ impl Transform for Default {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
                             event.set("_ingest._value", item)?;
-                            event.append(
+                            event.append_unique(
                                 "threat.indicator.description",
                                 json!(
                                     event
@@ -918,7 +918,7 @@ impl Transform for Default {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
                             event.set("_ingest._value", item)?;
-                            event.append(
+                            event.append_unique(
                                 "related.hosts",
                                 json!(
                                     event
@@ -1258,7 +1258,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -1274,7 +1274,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -1290,7 +1290,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -1306,7 +1306,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -1328,7 +1328,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("error.message") };
                 if _cond {
-                    event.append("tags", json!("preserve_original_event"))?;
+                    event.append_unique("tags", json!("preserve_original_event"))?;
                 }
                 // End nested pipeline: "customer_ioc_event"
             }
@@ -2068,7 +2068,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("file.hash.sha256") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -2198,7 +2198,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("error.message") };
                 if _cond {
-                    event.append("tags", json!("preserve_original_event"))?;
+                    event.append_unique("tags", json!("preserve_original_event"))?;
                 }
                 // End nested pipeline: "data_protection_detection_summary"
             }
@@ -2359,7 +2359,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -2375,7 +2375,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -2391,7 +2391,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -2860,7 +2860,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -2876,7 +2876,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -2892,7 +2892,7 @@ impl Transform for Default {
                             .is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -3443,7 +3443,7 @@ impl Transform for Default {
                         ))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -3483,7 +3483,7 @@ impl Transform for Default {
                         ))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -3523,7 +3523,7 @@ impl Transform for Default {
                             }))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -3563,7 +3563,7 @@ impl Transform for Default {
                             }))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -3603,7 +3603,7 @@ impl Transform for Default {
                             }))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -3643,7 +3643,7 @@ impl Transform for Default {
                             }))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hash",
                         json!(
                             event
@@ -3683,7 +3683,7 @@ impl Transform for Default {
                             }))
                 };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.user",
                         json!(
                             event
@@ -4236,7 +4236,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.TargetEndpointHostName") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -4247,7 +4247,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.TargetDomain") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -4258,7 +4258,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.TargetAccountName") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.user",
                         json!(
                             event
@@ -4269,7 +4269,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalAccountDomain") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -4280,7 +4280,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalAccountName") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -4291,7 +4291,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointHostName") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.hosts",
                         json!(
                             event
@@ -4302,7 +4302,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointIpAddress") };
                 if _cond {
-                    event.append(
+                    event.append_unique(
                         "related.ip",
                         json!(
                             event
@@ -5821,7 +5821,7 @@ impl Transform for Default {
                     && event.get_str("user.name").is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -5833,7 +5833,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.email") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -5848,7 +5848,7 @@ impl Transform for Default {
                     && event.get_str("source.ip").is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -5865,7 +5865,7 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -5880,7 +5880,7 @@ impl Transform for Default {
                     && event.get_str("host.name").is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -6059,7 +6059,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "threat.tactic.name",
                             json!(
                                 event
@@ -6086,7 +6086,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "threat.tactic.id",
                             json!(
                                 event
@@ -6113,7 +6113,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "threat.technique.name",
                             json!(
                                 event
@@ -6140,7 +6140,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "threat.technique.id",
                             json!(
                                 event
@@ -6328,7 +6328,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -2420,7 +2420,7 @@ impl Transform for Default {
                     }))
             };
             if _cond {
-                event.append("event.category", json!("network"))?;
+                event.append_unique("event.category", json!("network"))?;
             }
 
             let _cond = {
@@ -2466,7 +2466,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                event.append("event.category", json!("configuration"))?;
+                event.append_unique("event.category", json!("configuration"))?;
             }
 
             let _cond = {
@@ -2987,7 +2987,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2999,7 +2999,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -3011,7 +3011,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.nat.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -3023,7 +3023,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -3035,7 +3035,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3047,7 +3047,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.domain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3059,7 +3059,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("dns.question.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -3075,7 +3075,7 @@ impl Transform for Default {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        event.append(
+                        event.append_unique(
                             "related.hosts",
                             json!(
                                 event
@@ -3092,7 +3092,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.umbrella.sha_sha256") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -3104,7 +3104,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("file.hash.sha256") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
                     json!(
                         event
@@ -3128,7 +3128,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
                     json!(

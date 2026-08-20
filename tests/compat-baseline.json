@@ -3,12 +3,12 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "azure": { "events": 18, "events_total": 26, "fields_wrong": 16 },
+    "azure": { "events": 25, "events_total": 26, "fields_wrong": 9 },
     "cisco_ios": { "events": 87, "events_total": 89, "fields_wrong": 2 },
     "cisco_meraki": { "events": 241, "events_total": 245, "fields_wrong": 31 },
     "cisco_nexus": { "events": 41, "events_total": 45, "fields_wrong": 25 },
     "crowdstrike": { "events": 46, "events_total": 49, "fields_wrong": 18 },
-    "fortinet_fortigate": { "events": 179, "events_total": 185, "fields_wrong": 7 },
+    "fortinet_fortigate": { "events": 180, "events_total": 185, "fields_wrong": 6 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "panw": { "events": 534, "events_total": 538, "fields_wrong": 8 }

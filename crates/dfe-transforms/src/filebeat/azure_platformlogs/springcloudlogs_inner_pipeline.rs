@@ -174,7 +174,7 @@ impl Transform for SpringcloudlogsInnerPipeline {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
                     json!(format!(

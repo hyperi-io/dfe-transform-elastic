@@ -417,7 +417,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.TargetEndpointHostName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -429,7 +429,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.TargetDomain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -441,7 +441,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.TargetAccountName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -453,7 +453,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalAccountDomain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -465,7 +465,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalAccountName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -477,7 +477,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointHostName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
                     json!(
                         event
@@ -489,7 +489,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointIpAddress") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -509,7 +509,7 @@ impl Transform for IpdDetectionSummary {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -1438,7 +1438,7 @@ impl Transform for Events {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.user",
                         json!(
                             event
@@ -1454,7 +1454,7 @@ impl Transform for Events {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "related.user",
                         json!(
                             event
@@ -1468,7 +1468,7 @@ impl Transform for Events {
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -1480,7 +1480,7 @@ impl Transform for Events {
 
             let _cond = { event.has_value("client.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event

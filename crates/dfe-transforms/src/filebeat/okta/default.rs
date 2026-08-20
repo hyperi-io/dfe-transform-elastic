@@ -130,7 +130,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.category", json!("iam"))?;
+                event.append_unique("event.category", json!("iam"))?;
             }
 
             let _cond = {
@@ -154,7 +154,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.category", json!("configuration"))?;
+                event.append_unique("event.category", json!("configuration"))?;
             }
 
             let _cond = {
@@ -167,7 +167,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.category", json!("authentication"))?;
+                event.append_unique("event.category", json!("authentication"))?;
             }
 
             let _cond = {
@@ -175,7 +175,7 @@ impl Transform for Default {
                     .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.category", json!("session"))?;
+                event.append_unique("event.category", json!("session"))?;
             }
 
             let _cond = {
@@ -187,7 +187,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("info"))?;
+                event.append_unique("event.type", json!("info"))?;
             }
 
             let _cond = {
@@ -195,7 +195,7 @@ impl Transform for Default {
                     .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.category", json!("network"))?;
+                event.append_unique("event.category", json!("network"))?;
             }
 
             let _cond = {
@@ -208,20 +208,20 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.category", json!("network"))?;
+                event.append_unique("event.category", json!("network"))?;
             }
 
             let _cond = {
                 ["user.session.start"].contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("start"))?;
+                event.append_unique("event.type", json!("start"))?;
             }
 
             let _cond =
                 { ["user.session.end"].contains(&event.get_str("okta.event_type").unwrap_or("")) };
             if _cond {
-                event.append("event.type", json!("end"))?;
+                event.append_unique("event.type", json!("end"))?;
             }
 
             let _cond = {
@@ -229,7 +229,7 @@ impl Transform for Default {
                     .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("group"))?;
+                event.append_unique("event.type", json!("group"))?;
             }
 
             let _cond = {
@@ -249,7 +249,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("info"))?;
+                event.append_unique("event.type", json!("info"))?;
             }
 
             let _cond = {
@@ -274,7 +274,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("change"))?;
+                event.append_unique("event.type", json!("change"))?;
             }
 
             let _cond = {
@@ -286,7 +286,7 @@ impl Transform for Default {
                 .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("creation"))?;
+                event.append_unique("event.type", json!("creation"))?;
             }
 
             let _cond = {
@@ -294,7 +294,7 @@ impl Transform for Default {
                     .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("deletion"))?;
+                event.append_unique("event.type", json!("deletion"))?;
             }
 
             let _cond = {
@@ -302,7 +302,7 @@ impl Transform for Default {
                     .contains(&event.get_str("okta.event_type").unwrap_or(""))
             };
             if _cond {
-                event.append("event.type", json!("info"))?;
+                event.append_unique("event.type", json!("info"))?;
             }
 
             // Begin nested pipeline: "ecs_category_type"
@@ -2093,7 +2093,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2105,7 +2105,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.target.full_name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2117,7 +2117,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
                     json!(
                         event
@@ -2129,7 +2129,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -2141,7 +2141,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
                     json!(
                         event
@@ -2353,7 +2353,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                event.append("tags", json!("preserve_original_event"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

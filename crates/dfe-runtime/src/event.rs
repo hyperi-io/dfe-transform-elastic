@@ -279,6 +279,24 @@ impl Event {
         Ok(())
     }
 
+    /// Append a value only if the array does not already hold it.
+    ///
+    /// Elastic's `append` with `allow_duplicates: false`. Azure's signinlogs
+    /// pipeline appends six different fields into `related.entity` and several
+    /// of them carry the same id, so appending regardless writes it twice.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`TransformError`] if the value cannot be set.
+    pub fn append_unique(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
+        let value = value.into();
+        match self.get(path) {
+            Some(Value::Array(existing)) if existing.contains(&value) => Ok(()),
+            Some(existing) if *existing == value => Ok(()),
+            _ => self.append(path, value),
+        }
+    }
+
     /// Merge another event into this one.
     ///
     /// With `deep = false`, top-level keys from `other` overwrite this event.
