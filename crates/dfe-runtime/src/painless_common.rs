@@ -331,6 +331,133 @@ pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     None
 }
 
+/// Build a string out of ctx fields and literals, with an all-empty fallback.
+///
+/// ```painless
+/// def operation = ctx.event?.action ?: '';
+/// def user = ctx.user?.id ?: '';
+/// def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';
+/// if (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {
+///   ctx.message = "Office365 Alert";
+/// } else {
+///   ctx.message = "Office365 Alert: " + operation + " detected in email sent by " + user + ...;
+/// }
+/// ```
+///
+/// A `?:` chain takes the first field that is present and non-empty, which is
+/// not the same as the first that EXISTS -- o365 writes an empty subject and
+/// still expects the empty branch of the chain to fall through.
+fn try_concat_message(event: &mut Event, script: &str) -> bool {
+    let bindings = coalesce_bindings(event, script);
+    let Some((target, fallback, template)) = concat_assignments(script) else {
+        return false;
+    };
+
+    let Some(built) = expand_concat(&template, &bindings) else {
+        return false;
+    };
+    let all_empty = !bindings.is_empty() && bindings.values().all(String::is_empty);
+
+    let _ = event.set(
+        &target,
+        Value::String(if all_empty { fallback } else { built }),
+    );
+    true
+}
+
+/// Every `def <name> = ctx.<a> ?: ctx.<b> ?: '';` in the script, resolved
+/// against the event.
+fn coalesce_bindings(event: &Event, script: &str) -> std::collections::BTreeMap<String, String> {
+    use crate::painless_params::clean_path;
+
+    let mut bindings = std::collections::BTreeMap::new();
+    for segment in script.split("def ").skip(1) {
+        let Some((name, rhs)) = segment.split_once(" = ") else {
+            continue;
+        };
+        let name = name.trim();
+        if name.is_empty() || !name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        let end = rhs.find([';', '\n']).unwrap_or(rhs.len());
+        let rhs = &rhs[..end];
+        if !rhs.contains("?:") {
+            continue;
+        }
+
+        let mut resolved = String::new();
+        for alternative in rhs.split("?:") {
+            let alternative = alternative.trim();
+            let Some(path) = alternative.strip_prefix("ctx.") else {
+                continue;
+            };
+            if let Some(value) = event.get_as_string(&clean_path(path))
+                && !value.is_empty()
+            {
+                resolved = value;
+                break;
+            }
+        }
+        bindings.insert(name.to_string(), resolved);
+    }
+    bindings
+}
+
+/// The two assignments to one target: the all-empty literal and the template.
+fn concat_assignments(script: &str) -> Option<(String, String, String)> {
+    use crate::painless_params::clean_path;
+
+    let mut target = None;
+    let mut fallback = None;
+    let mut template = None;
+
+    for segment in script.split("ctx.").skip(1) {
+        let Some((path, rhs)) = segment.split_once(" = ") else {
+            continue;
+        };
+        if !path
+            .chars()
+            .all(|c| c.is_alphanumeric() || ".?_".contains(c))
+        {
+            continue;
+        }
+        let end = rhs.find([';', '\n']).unwrap_or(rhs.len());
+        let rhs = rhs[..end].trim();
+
+        if rhs.contains(" + ") {
+            target = Some(clean_path(path));
+            template = Some(rhs.to_string());
+        } else if let Some(literal) = quoted_first(rhs)
+            && rhs.starts_with(['"', '\''])
+        {
+            target = target.or_else(|| Some(clean_path(path)));
+            fallback = Some(literal);
+        }
+    }
+
+    Some((target?, fallback?, template?))
+}
+
+/// Evaluate a `"lit" + name + "lit"` chain against the resolved bindings.
+///
+/// Anything in it that is neither a literal nor a binding means the script does
+/// more than this models, so the whole match is abandoned.
+fn expand_concat(
+    template: &str,
+    bindings: &std::collections::BTreeMap<String, String>,
+) -> Option<String> {
+    let mut built = String::new();
+    for token in template.split(" + ") {
+        let token = token.trim();
+        if token.starts_with(['"', '\'']) {
+            built.push_str(&quoted_first(token)?);
+        } else {
+            built.push_str(bindings.get(token)?);
+        }
+    }
+    Some(built)
+}
+
 /// Swap two ctx subtrees, keeping named keys on the side they belong to.
 ///
 /// ```painless
@@ -1455,6 +1582,15 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_duration_to_nanos(event, &normalised);
     }
 
+    // Pattern: build a string out of ctx fields and literals.
+    if normalised.contains("?: ''")
+        && normalised.contains(".isEmpty()")
+        && normalised.contains("\" + ")
+        && try_concat_message(event, &normalised)
+    {
+        return true;
+    }
+
     // Pattern: swap two ctx subtrees, keeping named keys on one side.
     if normalised.contains("def tmp = ctx.") && try_swap_subtrees(event, &normalised) {
         return true;
@@ -1905,6 +2041,60 @@ mod tests {
                             if (ctx.source == null) { ctx.source = [:]; }\n\
                             if ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    \
                             tmp.remove(\"user\");\n}\nctx.destination = tmp;";
+
+    /// Verbatim from `pipelines/o365/default.yml`, which builds `message` for
+    /// a DLP-Exchange alert out of three fields that may each be absent.
+    const DLP_MESSAGE: &str = "def operation = ctx.event?.action ?: '';\n\
+        def user = ctx.user?.id ?: '';\n\
+        def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';\n\
+        if (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {\n  \
+        ctx.message = \"Office365 Alert\";\n} else {\n  \
+        ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + \
+        user + \" with subject '\" + subject + \"'\";\n}";
+
+    #[test]
+    fn concat_builds_the_message_from_the_fields_it_names() {
+        let mut event = Event::new(json!({
+            "event": { "action": "DlpRuleMatch" },
+            "user": { "id": "DlpAgent" },
+        }));
+
+        assert!(try_known_painless(&mut event, DLP_MESSAGE));
+        assert_eq!(
+            event.get_str("message"),
+            Some(
+                "Office365 Alert: DlpRuleMatch detected in email sent by DlpAgent with subject ''"
+            )
+        );
+    }
+
+    /// The `?:` chain takes the first field that is present AND non-empty, so
+    /// an empty subject falls through to the next alternative.
+    #[test]
+    fn concat_falls_through_an_empty_alternative() {
+        let mut event = Event::new(json!({
+            "event": { "action": "DlpRuleMatch" },
+            "o365audit": { "ExchangeMetaData": { "Subject": "" } },
+            "email": { "subject": "Q3 numbers" },
+        }));
+
+        assert!(try_known_painless(&mut event, DLP_MESSAGE));
+        assert_eq!(
+            event.get_str("message"),
+            Some(
+                "Office365 Alert: DlpRuleMatch detected in email sent by  with subject 'Q3 numbers'"
+            )
+        );
+    }
+
+    /// Every field absent takes the other branch, which is a bare literal.
+    #[test]
+    fn concat_takes_the_literal_when_every_field_is_empty() {
+        let mut event = Event::new(json!({ "event": { "code": "ComplianceDLPExchange" } }));
+
+        assert!(try_known_painless(&mut event, DLP_MESSAGE));
+        assert_eq!(event.get_str("message"), Some("Office365 Alert"));
+    }
 
     #[test]
     fn vpn_swap_exchanges_source_and_destination() {
