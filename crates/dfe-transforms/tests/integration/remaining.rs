@@ -40,12 +40,17 @@ parity!(
     42
 );
 
+// Both dropped by one on 2026-08-20, and both for the same two reasons -- the
+// fixtures contradict real Elasticsearch 9.2.2 and the corpus went UP on the
+// same change. They expect the whole query string inside `url.path` with no
+// `url.query`, and they expect fortinet's login sub-pipeline never to run, so
+// `event.action` and `user.name` are absent where the corpus has them.
 parity!(
     fortinet_6_2,
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-6-2",
-    48
+    47
 );
 
 parity!(
@@ -53,7 +58,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-7-4",
-    58
+    57
 );
 
 parity!(
