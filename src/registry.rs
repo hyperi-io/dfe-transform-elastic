@@ -76,76 +76,95 @@ const fn fetched() -> Intake {
 /// Sorted so the `sources()` listing is stable. The entries are hand-wired
 /// because each names a Rust type, and `sources.yaml` is asserted against them
 /// so a source declared there and never wired here fails the build.
-static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
+///
+/// The fourth element is the data stream this source's events belong to,
+/// `<package>.<data_stream>`. Not derivable from the source name -- fortinet's
+/// package is `fortinet_fortigate` and one azure package is four of our
+/// modules -- so it is declared alongside the rest.
+static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
     (
         "filebeat.azure_activitylogs.default",
         &filebeat::azure_activitylogs::default::Default,
         fetched(),
+        "azure.activitylogs",
     ),
     (
         "filebeat.azure_auditlogs.default",
         &filebeat::azure_auditlogs::default::Default,
         fetched(),
+        "azure.auditlogs",
     ),
     (
         "filebeat.azure_platformlogs.default",
         &filebeat::azure_platformlogs::default::Default,
         fetched(),
+        "azure.platformlogs",
     ),
     (
         "filebeat.azure_signinlogs.default",
         &filebeat::azure_signinlogs::default::Default,
         fetched(),
+        "azure.signinlogs",
     ),
     (
         "filebeat.cisco_asa.default",
         &filebeat::cisco_asa::default::Default,
         pushed(Framing::Line),
+        "cisco_asa.log",
     ),
     (
         "filebeat.cisco_ftd.default",
         &filebeat::cisco_ftd::default::Default,
         pushed(Framing::Line),
+        "cisco_ftd.log",
     ),
     (
         "filebeat.cisco_ios.default",
         &filebeat::cisco_ios::default::Default,
         pushed(Framing::Line),
+        "cisco_ios.log",
     ),
     (
         "filebeat.cisco_meraki.default",
         &filebeat::cisco_meraki::default::Default,
         pushed(Framing::Body),
+        "cisco_meraki.log",
     ),
     (
         "filebeat.cisco_nexus.default",
         &filebeat::cisco_nexus::default::Default,
         pushed(Framing::Line),
+        "cisco_nexus.log",
     ),
     (
         "filebeat.cisco_umbrella.default",
         &filebeat::cisco_umbrella::default::Default,
         fetched(),
+        "cisco_umbrella.log",
     ),
     (
         "filebeat.crowdstrike.default",
         &filebeat::crowdstrike::default::Default,
         fetched(),
+        "crowdstrike.falcon",
     ),
     (
         "filebeat.fortinet.default",
         &filebeat::fortinet::default::Default,
         pushed(Framing::Line),
+        "fortinet_fortigate.log",
     ),
     (
         "filebeat.o365.default",
         &filebeat::o365::default::Default,
         fetched(),
+        "o365.audit",
     ),
     (
         "filebeat.okta.default",
         &filebeat::okta::default::Default,
         fetched(),
+        "okta.system",
     ),
     // `panw.default` routes on log type and holds the CSV parse and converts
     // the per-type entries depend on. The per-type entries suit a feed already
@@ -154,66 +173,79 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
         "filebeat.panw.authentication",
         &filebeat::panw::authentication::Authentication,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.correlated_event",
         &filebeat::panw::correlated_event::CorrelatedEvent,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.decryption",
         &filebeat::panw::decryption::Decryption,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.default",
         &filebeat::panw::default::Default,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.globalprotect",
         &filebeat::panw::globalprotect::Globalprotect,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.gtp",
         &filebeat::panw::gtp::Gtp,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.hipmatch",
         &filebeat::panw::hipmatch::Hipmatch,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.ip_tag",
         &filebeat::panw::ip_tag::IpTag,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.sctp",
         &filebeat::panw::sctp::Sctp,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.system",
         &filebeat::panw::system::System,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.traffic",
         &filebeat::panw::traffic::Traffic,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.tunnel_inspection",
         &filebeat::panw::tunnel_inspection::TunnelInspection,
         pushed(Framing::Body),
+        "panw.panos",
     ),
     (
         "filebeat.panw.userid",
         &filebeat::panw::userid::Userid,
         pushed(Framing::Body),
+        "panw.panos",
     ),
 ];
 
@@ -221,29 +253,40 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
 pub fn lookup(name: &str) -> Option<&'static (dyn Transform + Sync)> {
     TRANSFORMS
         .iter()
-        .find(|(key, _, _)| *key == name)
-        .map(|(_, t, _)| *t)
+        .find(|(key, ..)| *key == name)
+        .map(|(_, t, ..)| *t)
 }
 
 /// Every way a source's payload can reach this service.
 pub fn intake(name: &str) -> Option<Intake> {
     TRANSFORMS
         .iter()
-        .find(|(key, _, _)| *key == name)
-        .map(|(_, _, intake)| *intake)
+        .find(|(key, ..)| *key == name)
+        .map(|(_, _, intake, _)| *intake)
+}
+
+/// The data stream this source's events belong to, `<package>.<data_stream>`.
+///
+/// Beats and the Agent stamp this on every event; the receiver and the fetcher
+/// have no way to know it, so the service supplies it from here.
+pub fn dataset(name: &str) -> Option<&'static str> {
+    TRANSFORMS
+        .iter()
+        .find(|(key, ..)| *key == name)
+        .map(|(.., dataset)| *dataset)
 }
 
 /// Every source name this service accepts.
 pub fn sources() -> impl Iterator<Item = &'static str> {
-    TRANSFORMS.iter().map(|(key, _, _)| *key)
+    TRANSFORMS.iter().map(|(key, ..)| *key)
 }
 
 /// Every source that can be delivered in `envelope`.
 pub fn sources_accepting(envelope: Envelope) -> impl Iterator<Item = &'static str> {
     TRANSFORMS
         .iter()
-        .filter(move |(_, _, intake)| intake.accepts(envelope))
-        .map(|(key, _, _)| *key)
+        .filter(move |(_, _, intake, _)| intake.accepts(envelope))
+        .map(|(key, ..)| *key)
 }
 
 #[cfg(test)]
@@ -279,7 +322,7 @@ mod tests {
     /// possible. A fetched source carrying one would be read as a device.
     #[test]
     fn framing_is_present_exactly_when_the_receiver_is() {
-        for (name, _, intake) in TRANSFORMS {
+        for (name, _, intake, _) in TRANSFORMS {
             assert_eq!(
                 intake.accepts(Envelope::Receiver),
                 intake.framing.is_some(),
@@ -315,6 +358,8 @@ mod tests {
 
         #[derive(serde::Deserialize)]
         struct Declared {
+            package: String,
+            data_stream: String,
             intakes: Vec<String>,
             framing: Option<String>,
             transforms: Vec<String>,
@@ -334,7 +379,11 @@ mod tests {
                     "{source} declares intake {name:?}, which is not one"
                 );
             }
-            let described = describe(&declared.intakes, declared.framing.as_deref());
+            let described = describe(
+                &declared.intakes,
+                declared.framing.as_deref(),
+                &format!("{}.{}", declared.package, declared.data_stream),
+            );
             for transform in &declared.transforms {
                 expected.push((format!("filebeat.{source}.{transform}"), described.clone()));
             }
@@ -343,14 +392,17 @@ mod tests {
 
         let wired: Vec<(String, String)> = TRANSFORMS
             .iter()
-            .map(|(name, _, intake)| {
+            .map(|(name, _, intake, dataset)| {
                 let names: Vec<String> = intake
                     .envelopes
                     .iter()
                     .map(|e| format!("{e:?}").to_lowercase())
                     .collect();
                 let framing = intake.framing.map(|f| format!("{f:?}").to_lowercase());
-                ((*name).to_owned(), describe(&names, framing.as_deref()))
+                (
+                    (*name).to_owned(),
+                    describe(&names, framing.as_deref(), dataset),
+                )
             })
             .collect();
 
@@ -361,13 +413,26 @@ mod tests {
     }
 
     /// One string per source, so a mismatch reads as what was declared.
-    fn describe(intakes: &[String], framing: Option<&str>) -> String {
+    fn describe(intakes: &[String], framing: Option<&str>, dataset: &str) -> String {
         let mut names: Vec<&str> = intakes.iter().map(String::as_str).collect();
         names.sort_unstable();
         match framing {
-            Some(f) => format!("{}/{f}", names.join("+")),
-            None => names.join("+"),
+            Some(f) => format!("{dataset} {}/{f}", names.join("+")),
+            None => format!("{dataset} {}", names.join("+")),
         }
+    }
+
+    /// Every source has a dataset, and an unknown name has none.
+    #[test]
+    fn every_source_has_a_dataset() {
+        for name in sources() {
+            let dataset = dataset(name).unwrap_or_else(|| panic!("{name} has no dataset"));
+            assert!(
+                dataset.contains('.') && !dataset.starts_with('.') && !dataset.ends_with('.'),
+                "{name}: `{dataset}` is not <package>.<data_stream>"
+            );
+        }
+        assert_eq!(dataset("filebeat.nosuchthing"), None);
     }
 
     #[test]

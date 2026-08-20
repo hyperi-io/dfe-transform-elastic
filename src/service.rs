@@ -127,7 +127,8 @@ pub async fn run_loop(
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
     let intake = crate::registry::intake(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let framing = intake.framing;
+    let dataset = crate::registry::dataset(&config.source.name)
+        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
 
     metrics.dfe.pipeline_ready(true);
 
@@ -215,46 +216,16 @@ pub async fn run_loop(
             .transport_received_events(TransportKind::Kafka, received);
         metrics.app.records_received.increment(received);
 
-        let resolution = crate::envelope::resolve(config.source.envelope, events.first(), intake);
+        let resolution =
+            crate::envelope::resolve(config.source.envelope, events.first(), intake, dataset);
         report_envelope(&resolution, &mut last_envelope, metrics);
 
-        let (transformed, outcome) =
-            transform_batch_with(transform, resolution.envelope, framing, events);
+        let (transformed, outcome) = transform_batch_with(transform, &resolution.delivery, events);
         metrics
             .batch_duration
             .record(started.elapsed().as_secs_f64());
 
-        metrics.events_transformed.increment(outcome.emitted as u64);
-        metrics.events_dropped.increment(outcome.dropped as u64);
-        metrics.events_errored.increment(outcome.errored as u64);
-        metrics.dfe.records_filtered(outcome.dropped as u64);
-        metrics
-            .app
-            .records_processed
-            .increment(outcome.emitted as u64);
-        metrics.app.records_error.increment(outcome.errored as u64);
-
-        let painless_now = (
-            dfe_runtime::painless_stats::handled(),
-            dfe_runtime::painless_stats::unhandled(),
-        );
-        metrics
-            .painless_handled
-            .increment(painless_now.0.saturating_sub(painless_seen.0));
-        metrics
-            .painless_unhandled
-            .increment(painless_now.1.saturating_sub(painless_seen.1));
-        painless_seen = painless_now;
-
-        let geoip = dfe_runtime::enrichment::geoip_global::cache_stats();
-        metrics
-            .geoip_cache_hits
-            .increment(geoip.hits.saturating_sub(geoip_seen.0));
-        metrics
-            .geoip_cache_misses
-            .increment(geoip.misses.saturating_sub(geoip_seen.1));
-        metrics.geoip_cache_size.set(geoip.size as f64);
-        geoip_seen = (geoip.hits, geoip.misses);
+        record_batch(metrics, outcome, &mut painless_seen, &mut geoip_seen);
 
         tracing::debug!(
             emitted = outcome.emitted,
@@ -504,6 +475,52 @@ fn producer_config(config: &Config) -> KafkaConfig {
     }
 }
 
+/// Record what a transformed batch produced.
+///
+/// `painless_stats` and the `GeoIP` cache count cumulatively for the process,
+/// so the two `seen` pairs carry the previous reading and the metrics take the
+/// delta.
+// Batch counts are bounded far below 2^53, so the f64 cast is exact.
+#[allow(clippy::cast_precision_loss)]
+fn record_batch(
+    metrics: &TransformMetrics,
+    outcome: crate::pipeline::BatchOutcome,
+    painless_seen: &mut (u64, u64),
+    geoip_seen: &mut (u64, u64),
+) {
+    metrics.events_transformed.increment(outcome.emitted as u64);
+    metrics.events_dropped.increment(outcome.dropped as u64);
+    metrics.events_errored.increment(outcome.errored as u64);
+    metrics.dfe.records_filtered(outcome.dropped as u64);
+    metrics
+        .app
+        .records_processed
+        .increment(outcome.emitted as u64);
+    metrics.app.records_error.increment(outcome.errored as u64);
+
+    let painless_now = (
+        dfe_runtime::painless_stats::handled(),
+        dfe_runtime::painless_stats::unhandled(),
+    );
+    metrics
+        .painless_handled
+        .increment(painless_now.0.saturating_sub(painless_seen.0));
+    metrics
+        .painless_unhandled
+        .increment(painless_now.1.saturating_sub(painless_seen.1));
+    *painless_seen = painless_now;
+
+    let geoip = dfe_runtime::enrichment::geoip_global::cache_stats();
+    metrics
+        .geoip_cache_hits
+        .increment(geoip.hits.saturating_sub(geoip_seen.0));
+    metrics
+        .geoip_cache_misses
+        .increment(geoip.misses.saturating_sub(geoip_seen.1));
+    metrics.geoip_cache_size.set(geoip.size as f64);
+    *geoip_seen = (geoip.hits, geoip.misses);
+}
+
 /// Log the batch's envelope when it changes, and count what was wrong with it.
 ///
 /// The counters fire every batch; the log line only on a change, because the
@@ -530,7 +547,7 @@ fn report_envelope(
 
     if resolution.contradicted {
         tracing::warn!(
-            configured = ?resolution.envelope,
+            configured = ?resolution.delivery.envelope,
             detected = ?detected.family,
             variant = %detected.variant,
             "events do not look like the configured envelope; unwrapping as configured"
@@ -543,8 +560,9 @@ fn report_envelope(
         );
     } else {
         tracing::info!(
-            envelope = ?resolution.envelope,
+            envelope = ?resolution.delivery.envelope,
             variant = %detected.variant,
+            dataset = resolution.delivery.dataset,
             "envelope in use"
         );
     }

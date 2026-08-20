@@ -14,20 +14,60 @@
 // A test asserts by panicking; the workspace lints ban that in library code.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
-use dfe_transform_elastic::envelope::Envelope;
+use dfe_transform_elastic::envelope::{self, Delivery, Envelope};
 use dfe_transform_elastic::pipeline::transform_batch_with;
 use dfe_transform_elastic::registry;
 use serde_json::{Value, json};
 
-/// Run one event through `source` under `envelope`, with the framing the
-/// registry declares for that source, returning the output.
+/// How `source` arrives under `envelope`, with the variant detected off the
+/// event and the framing and dataset the registry declares.
+fn delivery(source: &str, envelope: Envelope, event: &dfe_runtime::Event) -> Delivery {
+    Delivery {
+        envelope,
+        variant: envelope::detect(event).variant,
+        framing: registry::intake(source).and_then(|i| i.framing),
+        dataset: registry::dataset(source).expect("source is registered"),
+    }
+}
+
+/// Run one event through `source` under `envelope`, returning the output.
 fn run(source: &str, envelope: Envelope, event: Value) -> Option<Value> {
     let transform = registry::lookup(source).expect("source is registered");
-    let framing = registry::intake(source).and_then(|i| i.framing);
-    let events = vec![dfe_runtime::Event::new(event)];
-    let (out, outcome) = transform_batch_with(transform, envelope, framing, events);
+    let event = dfe_runtime::Event::new(event);
+    let delivery = delivery(source, envelope, &event);
+    let (out, outcome) = transform_batch_with(transform, &delivery, vec![event]);
     assert_eq!(outcome.total(), 1, "{source}: event vanished");
     out.first().map(|e| e.as_value().clone())
+}
+
+/// Every leaf in `value`, keyed by its dotted path.
+///
+/// Compared leaf by leaf rather than object by object: an envelope that adds a
+/// field the Beats path never had -- `event.provider` from a Splunk sourcetype,
+/// `log.syslog.*` from a parsed header -- must not read as the whole `event`
+/// object differing.
+fn leaves(value: &Value) -> std::collections::BTreeMap<String, Value> {
+    fn walk(prefix: &str, value: &Value, out: &mut std::collections::BTreeMap<String, Value>) {
+        match value {
+            Value::Object(map) if !map.is_empty() => {
+                for (key, child) in map {
+                    let path = if prefix.is_empty() {
+                        key.clone()
+                    } else {
+                        format!("{prefix}.{key}")
+                    };
+                    walk(&path, child, out);
+                }
+            }
+            _ => {
+                out.insert(prefix.to_string(), value.clone());
+            }
+        }
+    }
+
+    let mut out = std::collections::BTreeMap::new();
+    walk("", value, &mut out);
+    out
 }
 
 /// A PAN-OS traffic line. panw reads `message` as CSV and wants no header, so
@@ -68,11 +108,12 @@ fn panw_produces_the_same_output_from_either_envelope() {
 
     // The syslog path additionally carries the parsed header, which the Beats
     // path never had. Everything the transform itself produced must match.
-    for (key, beats_value) in via_beats.as_object().expect("object") {
+    let syslog_leaves = leaves(&via_syslog);
+    for (path, expected) in leaves(&via_beats) {
         assert_eq!(
-            via_syslog.get(key),
-            Some(beats_value),
-            "`{key}` differs between envelopes"
+            syslog_leaves.get(&path),
+            Some(&expected),
+            "`{path}` differs between envelopes"
         );
     }
 }
@@ -135,7 +176,7 @@ fn a_line_framed_source_is_handed_a_pri_prefixed_line() {
     let framing = registry::intake("filebeat.fortinet.default").and_then(|i| i.framing);
     assert_eq!(framing, Some(registry::Framing::Line));
     Envelope::Receiver
-        .unwrap_into_beats(&mut event, framing)
+        .unwrap_into_beats(&mut event, framing, "syslog")
         .expect("unwraps");
 
     // local0(16)*8 + info(6) = 134.
@@ -156,7 +197,7 @@ fn raw_reaches_a_line_framed_source_untouched() {
 
     let framing = registry::intake("filebeat.cisco_ios.default").and_then(|i| i.framing);
     Envelope::Receiver
-        .unwrap_into_beats(&mut event, framing)
+        .unwrap_into_beats(&mut event, framing, "syslog")
         .expect("unwraps");
 
     assert_eq!(event.get_str("message"), Some(raw));
@@ -171,13 +212,9 @@ fn cisco_ios_emits_under_either_envelope() {
     for envelope in [Envelope::Beats, Envelope::Receiver] {
         let mut source = receiver_syslog("%SYS-5-CONFIG_I: Configured from console");
         source["_raw"] = json!(line);
-        let framing = registry::intake("filebeat.cisco_ios.default").and_then(|i| i.framing);
-        let (out, outcome) = transform_batch_with(
-            transform,
-            envelope,
-            framing,
-            vec![dfe_runtime::Event::new(source)],
-        );
+        let event = dfe_runtime::Event::new(source);
+        let delivery = delivery("filebeat.cisco_ios.default", envelope, &event);
+        let (out, outcome) = transform_batch_with(transform, &delivery, vec![event]);
 
         assert_eq!(outcome.errored, 0, "{envelope:?}: cisco_ios errored");
         assert!(!out.is_empty(), "{envelope:?}: cisco_ios emitted nothing");
@@ -222,5 +259,178 @@ fn the_envelope_is_safe_even_on_a_source_config_would_reject() {
         "filebeat.okta.default",
         Envelope::Receiver,
         receiver_syslog("{\"eventType\":\"user.session.start\"}"),
+    );
+}
+
+/// Every receiver transport that can carry a device line must deliver the same
+/// line to the transform.
+///
+/// The reason the envelope layer exists: one set of parsers, whatever brought
+/// the bytes. Each wrapper here is the transport's real shape, from
+/// `tests/envelopes/receiver/`, so a converter that changes where it puts the
+/// body fails this rather than quietly parsing nothing.
+#[test]
+fn every_transport_that_carries_a_line_produces_the_same_output() {
+    let baseline = run(
+        "filebeat.panw.traffic",
+        Envelope::Beats,
+        json!({ "message": PANW_BODY }),
+    )
+    .expect("beats path emitted");
+
+    let wrapped: [(&str, Value); 4] = [
+        ("syslog", receiver_syslog(PANW_BODY)),
+        (
+            "gelf",
+            json!({
+                "_source": "gelf",
+                "version": "1.1",
+                "host": "fw01",
+                "short_message": PANW_BODY,
+                "message": PANW_BODY,
+                "level": 6,
+                "severity": "informational",
+            }),
+        ),
+        (
+            "fluent",
+            json!({
+                "_source": "fluent",
+                "message": PANW_BODY,
+                "tag": "panw.traffic",
+                "timestamp": 1_771_459_200.5,
+            }),
+        ),
+        (
+            "splunk_hec",
+            json!({
+                "message": PANW_BODY,
+                "host": "fw01",
+                "source": "/var/log/panw",
+                "sourcetype": "pan:traffic",
+                "index": "main",
+            }),
+        ),
+    ];
+
+    let expected = leaves(&baseline);
+    for (transport, event) in wrapped {
+        let out = run("filebeat.panw.traffic", Envelope::Receiver, event)
+            .unwrap_or_else(|| panic!("{transport}: emitted nothing"));
+        let got = leaves(&out);
+
+        for (path, value) in &expected {
+            assert_eq!(
+                got.get(path),
+                Some(value),
+                "{transport}: `{path}` differs from the beats path"
+            );
+        }
+    }
+}
+
+/// Beats stamps the metadata every downstream consumer indexes on -- what
+/// shipped it, which data stream it belongs to, how it arrived. The receiver
+/// and the fetcher cannot know most of it, so the service supplies it, or the
+/// events land unroutable.
+#[test]
+fn a_receiver_delivery_carries_the_metadata_beats_would_have_stamped() {
+    let out = run(
+        "filebeat.panw.traffic",
+        Envelope::Receiver,
+        receiver_syslog(PANW_BODY),
+    )
+    .expect("emitted");
+
+    assert_eq!(
+        out.pointer("/agent/type").and_then(Value::as_str),
+        Some("dfe-receiver")
+    );
+    assert_eq!(
+        out.pointer("/data_stream/dataset").and_then(Value::as_str),
+        Some("panw.panos")
+    );
+    assert_eq!(
+        out.pointer("/data_stream/type").and_then(Value::as_str),
+        Some("logs")
+    );
+    assert_eq!(
+        out.pointer("/input/type").and_then(Value::as_str),
+        Some("syslog")
+    );
+    assert!(
+        out.pointer("/agent/version")
+            .and_then(Value::as_str)
+            .is_some_and(|v| !v.is_empty()),
+        "agent.version is the service's own, and must not be blank"
+    );
+}
+
+/// A Beats delivery already carries its own, and ours would overwrite the
+/// truth with a guess.
+#[test]
+fn a_beats_delivery_is_left_exactly_as_it_arrived() {
+    let out = run(
+        "filebeat.panw.traffic",
+        Envelope::Beats,
+        json!({ "message": PANW_BODY }),
+    )
+    .expect("emitted");
+
+    assert_eq!(out.pointer("/agent/type"), None);
+    assert_eq!(out.pointer("/data_stream/dataset"), None);
+}
+
+/// The receiver records no receive time, and the transform's own clock is not
+/// one: on a replay it would stamp the replay day.
+#[test]
+fn a_receiver_delivery_claims_no_ingest_time() {
+    let out = run(
+        "filebeat.panw.traffic",
+        Envelope::Receiver,
+        receiver_syslog(PANW_BODY),
+    )
+    .expect("emitted");
+
+    assert_eq!(out.pointer("/event/ingested"), None);
+}
+
+/// dfe-fetcher DOES record one, in epoch milliseconds, and it must survive the
+/// re-serialisation that moves the payload into `message`.
+#[test]
+fn a_fetcher_delivery_keeps_the_receive_time_it_was_given() {
+    let transform = registry::lookup("filebeat.okta.default").expect("registered");
+    let delivery = Delivery {
+        envelope: Envelope::Fetcher,
+        variant: std::borrow::Cow::Borrowed("okta.system_log"),
+        framing: None,
+        dataset: registry::dataset("filebeat.okta.default").expect("registered"),
+    };
+    let event = dfe_runtime::Event::new(json!({
+        "eventType": "user.session.start",
+        "published": "2026-02-19T00:00:00.000Z",
+        "_timestamp_fetcher": 1_771_459_200_000_u64,
+        "_timestamp_received": 1_771_459_200_000_u64,
+        "_source_fetcher": "okta.system_log",
+    }));
+
+    let (out, _) = transform_batch_with(transform, &delivery, vec![event]);
+    let out = out.first().map(|e| e.as_value().clone()).expect("emitted");
+
+    assert_eq!(
+        out.pointer("/event/ingested").and_then(Value::as_str),
+        Some("2026-02-19T00:00:00.000Z")
+    );
+    assert_eq!(
+        out.pointer("/agent/type").and_then(Value::as_str),
+        Some("dfe-fetcher")
+    );
+    assert_eq!(
+        out.pointer("/input/type").and_then(Value::as_str),
+        Some("okta.system_log")
+    );
+    assert_eq!(
+        out.pointer("/data_stream/dataset").and_then(Value::as_str),
+        Some("okta.system")
     );
 }

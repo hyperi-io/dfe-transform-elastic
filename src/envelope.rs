@@ -8,20 +8,26 @@
 //! across every transport that can carry the same vendor payload rather than
 //! being tied to the one Elastic happens to ship.
 //!
-//! [`Envelope::Beats`] is the shape the transforms expect: the
-//! raw vendor payload as a string in `message`.
+//! [`Envelope::Beats`] is the shape the transforms expect: the raw vendor
+//! payload as a string in `message`. It covers Elastic Agent too, and anything
+//! that passed a Beats document through unaltered.
 //!
 //! [`Envelope::Receiver`] is what dfe-receiver produces, on any of its
-//! transports -- syslog, gelf, fluent, splunk-hec, otlp, prometheus, netflow.
-//! Every converter tags its output with `_source`, which is what selects the
-//! unwrap. The syslog arm puts a syslog-shaped line back in `message`, because
-//! that is what the transforms grok.
+//! transports -- syslog, gelf, fluent, splunk-hec, otlp, grpc, prometheus,
+//! netflow, sflow. The syslog arm puts a syslog-shaped line back in `message`,
+//! because that is what the transforms grok; the rest pass their payload
+//! through with their own field names moved onto the ECS paths those names
+//! would otherwise shadow.
 //!
 //! [`Envelope::Fetcher`] is what dfe-fetcher produces: the provider's own JSON
 //! at the top level with three keys of its own added. It applies wherever
 //! Elastic's agent input is a pure transport -- `httpjson`, `cel`, `aws-s3`,
 //! `azure-eventhub` -- because there the ingest pipeline does all the parsing
 //! and fetching the data ourselves loses nothing.
+//!
+//! Which one it is comes from [`detect`], off the first event of each batch.
+//! `source.envelope` in the config pins it instead, for the shapes that carry
+//! no marker at all.
 
 use std::borrow::Cow;
 
@@ -42,6 +48,60 @@ const RECEIVER_KEYS: &[&str] = &[
     "msgid",
     "timestamp",
     "structured_data",
+];
+
+/// What one dfe-receiver transport calls things, and what ECS calls them.
+///
+/// A transport with no entry keeps its payload and loses only `_source` and
+/// `_raw`, which is the conservative reading: the transform's grok gets what
+/// arrived rather than a shape invented for it.
+struct Transport {
+    /// The value the converter writes into `_source`.
+    name: &'static str,
+    /// Copied onto the ECS path, then removed.
+    ///
+    /// The removal is not tidiness. `host` and `source` are bare STRINGS on
+    /// these transports and ECS objects everywhere else, so leaving one in
+    /// place shadows the whole `source.*` subtree and the pipeline's writes
+    /// under it go nowhere.
+    lift: &'static [(&'static str, &'static str)],
+    /// Removed without being lifted: describes the delivery, not the event.
+    drop: &'static [&'static str],
+}
+
+/// Epoch seconds rather than a string, so the lift has to convert.
+const EPOCH_SECONDS: &str = "@timestamp:epoch_seconds";
+
+/// Every transport whose own field names need moving out of ECS's way.
+///
+/// syslog is absent because it has an arm of its own -- it is the only one that
+/// rebuilds a line rather than passing the payload through.
+const TRANSPORTS: &[Transport] = &[
+    Transport {
+        name: "gelf",
+        lift: &[
+            ("host", "host.name"),
+            ("level", "log.syslog.severity.code"),
+            ("severity", "log.syslog.severity.name"),
+        ],
+        // `short_message` was copied into `message` by the converter.
+        drop: &["version", "short_message", "timestamp"],
+    },
+    Transport {
+        name: "fluent",
+        lift: &[("timestamp", EPOCH_SECONDS)],
+        drop: &[],
+    },
+    Transport {
+        name: "splunk_hec",
+        lift: &[
+            ("host", "host.name"),
+            ("source", "log.file.path"),
+            ("sourcetype", "event.provider"),
+            ("_time", EPOCH_SECONDS),
+        ],
+        drop: &["index"],
+    },
 ];
 
 /// The fetcher's own field names, added to every record it delivers.
@@ -136,7 +196,11 @@ pub enum Envelope {
 impl Envelope {
     /// Rewrite `event` into the shape `framing` expects in `message`.
     ///
-    /// [`Envelope::Beats`] is already that shape and is a no-op.
+    /// `variant` names which of the producer's transports it came from, since
+    /// they do not all agree on where the body goes. It is what detection
+    /// returned, not `_source`: Splunk HEC writes no `_source` at all.
+    ///
+    /// [`Envelope::Beats`] is already the target shape and is a no-op.
     ///
     /// # Errors
     ///
@@ -145,14 +209,29 @@ impl Envelope {
         self,
         event: &mut Event,
         framing: Option<Framing>,
+        variant: &str,
     ) -> crate::Result<()> {
         match self {
             Self::Beats => Ok(()),
-            Self::Receiver => unwrap_receiver(event, framing.unwrap_or(Framing::Line)),
+            Self::Receiver => unwrap_receiver(event, framing.unwrap_or(Framing::Line), variant),
             Self::Fetcher => {
                 unwrap_fetcher(event);
                 Ok(())
             }
+        }
+    }
+
+    /// What wrote the wrapper, as `agent.type`.
+    ///
+    /// Beats stamps the beat's own name here, so the DFE producers stamp
+    /// theirs -- an operator reading `agent.type` learns what actually
+    /// delivered the event either way.
+    #[must_use]
+    pub const fn producer(self) -> &'static str {
+        match self {
+            Self::Beats => "filebeat",
+            Self::Receiver => "dfe-receiver",
+            Self::Fetcher => "dfe-fetcher",
         }
     }
 }
@@ -249,11 +328,89 @@ pub fn detect(event: &Event) -> Detected {
 /// The fallback rather than a detected shape, since it carries no marker.
 pub const BARE: &str = "bare";
 
+/// How a batch arrived, worked out once and applied to every event in it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Delivery {
+    /// The family to unwrap with.
+    pub envelope: Envelope,
+    /// Which of that producer's shapes, and what `input.type` becomes.
+    pub variant: Cow<'static, str>,
+    /// What a syslog delivery must leave in `message`.
+    pub framing: Option<Framing>,
+    /// `<package>.<data_stream>` for the configured source.
+    pub dataset: &'static str,
+}
+
+impl Delivery {
+    /// A Beats delivery, which needs no unwrap and no metadata put back.
+    ///
+    /// For callers with no source to hand -- offline tools and tests -- where
+    /// the dataset would go unused anyway.
+    #[must_use]
+    pub const fn beats() -> Self {
+        Self {
+            envelope: Envelope::Beats,
+            variant: Cow::Borrowed(BARE),
+            framing: None,
+            dataset: "",
+        }
+    }
+
+    /// Remove the wrapper, then put back the metadata Beats would have set.
+    ///
+    /// A Beats delivery already carries all of it, so it is left alone.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`crate::Error`] if a field cannot be set on the event.
+    pub fn apply(&self, event: &mut Event) -> crate::Result<()> {
+        if self.envelope == Envelope::Beats {
+            return Ok(());
+        }
+
+        // Read before the unwrap: `unwrap_fetcher` re-serialises the payload
+        // into `message`, taking the delivery keys with it.
+        let ingested = ingest_time(event);
+
+        self.envelope
+            .unwrap_into_beats(event, self.framing, &self.variant)?;
+
+        event.set("agent.type", json!(self.envelope.producer()))?;
+        event.set("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
+        event.set("input.type", json!(self.variant.as_ref()))?;
+        event.set("data_stream.type", json!("logs"))?;
+        event.set("data_stream.dataset", json!(self.dataset))?;
+        event.set("data_stream.namespace", json!("default"))?;
+        if let Some(ingested) = ingested {
+            event.set("event.ingested", ingested)?;
+        }
+        Ok(())
+    }
+}
+
+/// When the producer says it took delivery, if it says at all.
+///
+/// dfe-fetcher stamps `_timestamp_received` in epoch milliseconds and the flow
+/// transports stamp `t_collected` in RFC 3339. Nothing else records one, and
+/// this service's own clock is no substitute: it would read as the receive time
+/// while actually being the time the batch was transformed, which for a replay
+/// is a different day.
+fn ingest_time(event: &Event) -> Option<Value> {
+    if let Some(collected) = event.get_str("t_collected") {
+        return Some(json!(collected));
+    }
+    let millis = event.get("_timestamp_received")?.as_i64()?;
+    let stamped = chrono::DateTime::from_timestamp_millis(millis)?;
+    Some(json!(
+        stamped.to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+    ))
+}
+
 /// Which envelope a batch will be unwrapped with, and what was odd about it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Resolution {
-    /// The family to unwrap with.
-    pub envelope: Envelope,
+    /// How to unwrap, and what to stamp back on.
+    pub delivery: Delivery,
     /// What the batch's first event looked like, when there was one.
     pub detected: Option<Detected>,
     /// The operator pinned a family the events do not look like.
@@ -262,7 +419,7 @@ pub struct Resolution {
     pub unaccepted: bool,
 }
 
-/// Decide the envelope for a batch from its first event.
+/// Decide how a batch arrived, from its first event.
 ///
 /// A pinned setting wins over what the events look like, because the whole
 /// point of pinning is to name a shape detection cannot see. A contradiction is
@@ -272,26 +429,37 @@ pub struct Resolution {
 /// Detection that lands on a family the source cannot arrive in falls back to
 /// `Beats`, which every source accepts.
 #[must_use]
-pub fn resolve(setting: EnvelopeSetting, first: Option<&Event>, intake: Intake) -> Resolution {
+pub fn resolve(
+    setting: EnvelopeSetting,
+    first: Option<&Event>,
+    intake: Intake,
+    dataset: &'static str,
+) -> Resolution {
     let detected = first.map(detect);
+    let variant = detected
+        .as_ref()
+        .map_or(Cow::Borrowed(BARE), |d| d.variant.clone());
 
-    let Some(pinned) = setting.pinned() else {
+    let (envelope, contradicted, unaccepted) = if let Some(pinned) = setting.pinned() {
+        let contradicted = detected.as_ref().is_some_and(|d| d.family != pinned);
+        (pinned, contradicted, false)
+    } else {
         let family = detected.as_ref().map_or(Envelope::Beats, |d| d.family);
         let unaccepted = !intake.accepts(family);
-        return Resolution {
-            envelope: if unaccepted { Envelope::Beats } else { family },
-            detected,
-            contradicted: false,
-            unaccepted,
-        };
+        let envelope = if unaccepted { Envelope::Beats } else { family };
+        (envelope, false, unaccepted)
     };
 
-    let contradicted = detected.as_ref().is_some_and(|d| d.family != pinned);
     Resolution {
-        envelope: pinned,
+        delivery: Delivery {
+            envelope,
+            variant,
+            framing: intake.framing,
+            dataset,
+        },
         detected,
         contradicted,
-        unaccepted: false,
+        unaccepted,
     }
 }
 
@@ -325,21 +493,74 @@ fn unwrap_fetcher(event: &mut Event) {
 
 /// Dispatch on the transport the receiver took it from.
 ///
-/// Every converter tags its output with `_source` -- `syslog`, `gelf`,
-/// `fluent`, `prometheus` and the rest -- so that is what selects the unwrap.
-/// A transport with no arm of its own keeps its payload and loses only the
-/// receiver's own keys, which is the conservative reading: the transform's
-/// grok gets what arrived rather than a shape invented for it.
-fn unwrap_receiver(event: &mut Event, framing: Framing) -> crate::Result<()> {
-    match event.get_str("_source") {
-        Some("syslog") | None => unwrap_syslog(event, framing),
-        Some(_) => {
-            for key in RECEIVER_KEYS {
-                event.remove(key);
-            }
-            Ok(())
-        }
+/// `variant` is what detection returned, which is `_source` for the six
+/// transports that write one and the marker key for the ones that do not.
+/// syslog is the only transport that rebuilds a line; the rest pass their
+/// payload through with their own names moved out of ECS's way.
+fn unwrap_receiver(event: &mut Event, framing: Framing, variant: &str) -> crate::Result<()> {
+    let transport = variant_or_source(event, variant);
+    if transport == "syslog" {
+        return unwrap_syslog(event, framing);
     }
+
+    if let Some(spec) = TRANSPORTS.iter().find(|t| t.name == transport) {
+        apply_transport(event, spec)?;
+    }
+    for key in RECEIVER_KEYS {
+        event.remove(key);
+    }
+    Ok(())
+}
+
+/// The transport's name, from the producer first and detection second.
+///
+/// `_source` is what the converter wrote and settles it for the six transports
+/// that write one. The detected variant covers the ones that do not, chiefly
+/// Splunk HEC. With neither, syslog is the only transport a bare payload can
+/// still be.
+fn variant_or_source<'a>(event: &'a Event, variant: &'a str) -> &'a str {
+    if let Some(source) = event.get_str("_source") {
+        return source;
+    }
+    if TRANSPORTS.iter().any(|t| t.name == variant) {
+        return variant;
+    }
+    "syslog"
+}
+
+/// Move a transport's own field names onto their ECS homes.
+///
+/// Lifted before dropped, and the source key is removed as it is lifted: a bare
+/// `host` string left in place makes `host.name` unwritable, since ECS wants an
+/// object where the transport put a scalar.
+fn apply_transport(event: &mut Event, spec: &Transport) -> crate::Result<()> {
+    for (from, to) in spec.lift {
+        let Some(value) = event.remove(from) else {
+            continue;
+        };
+        if *to == EPOCH_SECONDS {
+            if let Some(stamped) = epoch_seconds(&value) {
+                event.set("@timestamp", stamped)?;
+            }
+            continue;
+        }
+        event.set(to, value)?;
+    }
+    for key in spec.drop {
+        event.remove(key);
+    }
+    Ok(())
+}
+
+/// Epoch seconds, whole or fractional, as the RFC 3339 string ECS wants.
+fn epoch_seconds(value: &Value) -> Option<Value> {
+    let seconds = value.as_f64()?;
+    #[allow(clippy::cast_possible_truncation)]
+    let millis = (seconds * 1000.0) as i64;
+    let stamped = chrono::DateTime::from_timestamp_millis(millis)?;
+    Some(json!(
+        stamped.to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
+    ))
 }
 
 /// Leave `message` holding what the pipeline groks, and lift the parsed header
@@ -429,34 +650,44 @@ fn rfc3164_timestamp(rfc3339: &str) -> Option<String> {
         .map(|dt| dt.format("%b %e %H:%M:%S").to_string())
 }
 
-/// Copy the parsed header onto ECS `log.syslog.*` and `host.hostname`.
+/// The receiver's field names against the ECS ones they belong under.
+///
+/// A list rather than a hand-written arm per field, so a transport that names
+/// its header differently is an entry. Walked directly: building a `Vec` of the
+/// matches first cost an allocation on every event for nothing.
+const SYSLOG_TO_ECS: &[(&str, &str)] = &[
+    ("hostname", "log.syslog.hostname"),
+    ("appname", "log.syslog.appname"),
+    ("procid", "log.syslog.procid"),
+    ("msgid", "log.syslog.msgid"),
+    ("facility", "log.syslog.facility.name"),
+    ("severity", "log.syslog.severity.name"),
+    ("hostname", "host.hostname"),
+    ("timestamp", "@timestamp"),
+];
+
+/// Copy the parsed header onto ECS `log.syslog.*`, `host.hostname` and
+/// `@timestamp`.
 ///
 /// The transform's own grok sets the same fields when it matches. Setting them
 /// here as well means the header survives a grok that does not.
 fn lift_to_ecs(event: &mut Event) -> crate::Result<()> {
-    let pairs: Vec<(&str, Value)> = [
-        ("hostname", "log.syslog.hostname"),
-        ("appname", "log.syslog.appname"),
-        ("procid", "log.syslog.procid"),
-        ("msgid", "log.syslog.msgid"),
-        ("facility", "log.syslog.facility.name"),
-        ("severity", "log.syslog.severity.name"),
-    ]
-    .iter()
-    .filter_map(|(from, to)| event.get(from).cloned().map(|v| (*to, v)))
-    .collect();
+    apply_renames(event, SYSLOG_TO_ECS)
+}
 
-    for (path, value) in pairs {
-        event.set(path, value)?;
+/// Copy each `from` onto its `to`, skipping the fields this event does not
+/// carry.
+///
+/// The source field stays put: `unwrap_syslog` needs `hostname` twice, and the
+/// receiver's own names are removed as a set afterwards.
+fn apply_renames(event: &mut Event, renames: &[(&str, &str)]) -> crate::Result<()> {
+    for (from, to) in renames {
+        // Cloned rather than borrowed because `set` needs the event mutably,
+        // and the same source feeds more than one destination.
+        if let Some(value) = event.get(from).cloned() {
+            event.set(to, value)?;
+        }
     }
-
-    if let Some(host) = event.get("hostname").cloned() {
-        event.set("host.hostname", host)?;
-    }
-    if let Some(ts) = event.get("timestamp").cloned() {
-        event.set("@timestamp", ts)?;
-    }
-
     Ok(())
 }
 
@@ -517,7 +748,7 @@ mod tests {
     fn beats_envelope_leaves_the_event_alone() {
         let mut event = Event::new(json!({ "message": "raw payload" }));
         Envelope::Beats
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
         assert_eq!(event.get_str("message"), Some("raw payload"));
     }
@@ -528,19 +759,90 @@ mod tests {
     #[test]
     fn a_receiver_transport_without_an_arm_keeps_its_payload() {
         let mut event = Event::new(json!({
-            "_source": "gelf",
-            "message": "short message",
-            "host": "web01",
-            "level": 6,
+            "_source": "prometheus",
+            "__name__": "http_requests_total",
+            "job": "api",
+            "value": 1234.0,
         }));
 
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "prometheus")
+            .unwrap();
+
+        assert_eq!(event.get_str("__name__"), Some("http_requests_total"));
+        assert_eq!(event.get_str("job"), Some("api"));
+        assert!(!event.has("_source"));
+    }
+
+    /// A bare `host` string is an ECS OBJECT everywhere else, so leaving one
+    /// where gelf and Splunk HEC put it shadows the whole `host.*` subtree and
+    /// every write the pipeline makes under it goes nowhere.
+    #[test]
+    fn a_transports_own_names_move_off_the_ecs_paths_they_shadow() {
+        let mut event = Event::new(json!({
+            "_source": "gelf",
+            "message": "short message",
+            "host": "web01",
+            "version": "1.1",
+            "short_message": "short message",
+            "level": 6,
+            "severity": "informational",
+        }));
+
+        Envelope::Receiver
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "gelf")
             .unwrap();
 
         assert_eq!(event.get_str("message"), Some("short message"));
-        assert_eq!(event.get_str("host"), Some("web01"));
-        assert!(!event.has("_source"));
+        assert_eq!(event.get_str("host.name"), Some("web01"));
+        assert_eq!(
+            event.get_str("log.syslog.severity.name"),
+            Some("informational")
+        );
+        // `host` is present, but as the ECS object -- what must not survive is
+        // the bare string that was standing where the object goes.
+        assert_eq!(event.get_str("host"), None);
+        for gone in ["version", "short_message", "severity", "_source"] {
+            assert!(!event.has(gone), "{gone} survived");
+        }
+    }
+
+    /// Splunk HEC writes no `_source`, so only the detected variant says which
+    /// transport it is -- and without that its `source` string shadows ECS.
+    #[test]
+    fn the_hec_arm_is_selected_by_the_detected_variant_alone() {
+        let mut event = Event::new(json!({
+            "message": "a line",
+            "host": "fw01",
+            "source": "/var/log/panw",
+            "sourcetype": "pan:traffic",
+            "index": "main",
+            "_time": 1_771_459_200_u64,
+        }));
+
+        Envelope::Receiver
+            .unwrap_into_beats(&mut event, Some(Framing::Body), "splunk_hec")
+            .unwrap();
+
+        assert_eq!(event.get_str("host.name"), Some("fw01"));
+        assert_eq!(event.get_str("log.file.path"), Some("/var/log/panw"));
+        assert_eq!(event.get_str("event.provider"), Some("pan:traffic"));
+        assert_eq!(
+            event.get_str("@timestamp"),
+            Some("2026-02-19T00:00:00.000Z")
+        );
+        // Each is now the ECS object its name belongs to, never the bare
+        // string that was shadowing it.
+        for shadowed in ["host", "source", "sourcetype"] {
+            assert_eq!(
+                event.get_str(shadowed),
+                None,
+                "{shadowed} is still a bare string and shadows ECS"
+            );
+        }
+        for gone in ["index", "_time"] {
+            assert!(!event.has(gone), "{gone} survived");
+        }
     }
 
     /// The syslog arm is selected by `_source`, not by being the only one.
@@ -550,7 +852,7 @@ mod tests {
         assert_eq!(event.get_str("_source"), Some("syslog"));
 
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
 
         assert_eq!(
@@ -573,7 +875,7 @@ mod tests {
         }));
 
         Envelope::Fetcher
-            .unwrap_into_beats(&mut event, None)
+            .unwrap_into_beats(&mut event, None, "syslog")
             .unwrap();
 
         let message = event.get_str("message").expect("payload in message");
@@ -600,7 +902,7 @@ mod tests {
         }));
 
         Envelope::Fetcher
-            .unwrap_into_beats(&mut event, None)
+            .unwrap_into_beats(&mut event, None, "syslog")
             .unwrap();
 
         let message = event.get_str("message").expect("payload in message");
@@ -620,7 +922,7 @@ mod tests {
         }));
 
         Envelope::Fetcher
-            .unwrap_into_beats(&mut event, None)
+            .unwrap_into_beats(&mut event, None, "syslog")
             .unwrap();
         assert_eq!(event.get_str("message"), Some("<134>1 raw syslog line"));
     }
@@ -629,7 +931,7 @@ mod tests {
     fn syslog_reconstructs_a_line_into_message() {
         let mut event = receiver_event();
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
 
         // local4 = 20, notice = 5 -> 20*8+5 = 165.
@@ -646,7 +948,7 @@ mod tests {
     fn body_framing_leaves_message_alone() {
         let mut event = receiver_event();
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Body))
+            .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
             .unwrap();
 
         assert_eq!(event.get_str("message"), Some("the body"));
@@ -661,7 +963,7 @@ mod tests {
         event.set("_raw", json!("<165>a full line")).unwrap();
 
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Body))
+            .unwrap_into_beats(&mut event, Some(Framing::Body), "syslog")
             .unwrap();
         assert_eq!(event.get_str("message"), Some("the body"));
     }
@@ -675,7 +977,7 @@ mod tests {
             .unwrap();
 
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
         assert_eq!(
             event.get_str("message"),
@@ -690,7 +992,7 @@ mod tests {
         event.set("_raw", json!("   ")).unwrap();
 
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
         assert!(event.get_str("message").unwrap().contains("the body"));
     }
@@ -699,7 +1001,7 @@ mod tests {
     fn parsed_header_survives_on_ecs_fields() {
         let mut event = receiver_event();
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
 
         assert_eq!(event.get_str("log.syslog.hostname"), Some("web01"));
@@ -721,7 +1023,7 @@ mod tests {
     fn receiver_fields_are_removed() {
         let mut event = receiver_event();
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
 
         for key in RECEIVER_KEYS {
@@ -735,7 +1037,7 @@ mod tests {
     fn a_missing_pri_defaults_rather_than_being_omitted() {
         let mut event = Event::new(json!({ "message": "plain line", "_source": "syslog" }));
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
 
         // user(1)*8 + notice(5) = 13.
@@ -754,7 +1056,7 @@ mod tests {
                     "severity": sname,
                 }));
                 Envelope::Receiver
-                    .unwrap_into_beats(&mut event, Some(Framing::Line))
+                    .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
                     .unwrap();
 
                 let expected = format!("<{}>", fcode * 8 + scode);
@@ -773,7 +1075,7 @@ mod tests {
     fn a_bare_body_still_produces_a_line() {
         let mut event = Event::new(json!({ "message": "" }));
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
         assert_eq!(event.get_str("message"), Some("<13>"));
     }
@@ -783,7 +1085,7 @@ mod tests {
         let mut event = receiver_event();
         event.set("timestamp", json!("not a timestamp")).unwrap();
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap_into_beats(&mut event, Some(Framing::Line), "syslog")
             .unwrap();
 
         let line = event.get_str("message").unwrap();

@@ -189,7 +189,9 @@ fn every_recorded_shape_unwraps_without_panicking() {
         for source in registry::sources_accepting(detected.family) {
             let framing = registry::intake(source).and_then(|i| i.framing);
             let mut event = fixture.event();
-            let _ = detected.family.unwrap_into_beats(&mut event, framing);
+            let _ = detected
+                .family
+                .unwrap_into_beats(&mut event, framing, &detected.variant);
         }
     }
 }
@@ -204,12 +206,12 @@ fn a_pinned_envelope_beats_detection_and_is_counted() {
         "_source": "syslog",
     }));
 
-    let auto = envelope::resolve(EnvelopeSetting::Auto, Some(&event), intake);
-    assert_eq!(auto.envelope, Envelope::Receiver);
+    let auto = envelope::resolve(EnvelopeSetting::Auto, Some(&event), intake, "test.dataset");
+    assert_eq!(auto.delivery.envelope, Envelope::Receiver);
     assert!(!auto.contradicted);
 
-    let pinned = envelope::resolve(EnvelopeSetting::Beats, Some(&event), intake);
-    assert_eq!(pinned.envelope, Envelope::Beats);
+    let pinned = envelope::resolve(EnvelopeSetting::Beats, Some(&event), intake, "test.dataset");
+    assert_eq!(pinned.delivery.envelope, Envelope::Beats);
     assert!(pinned.contradicted, "the mismatch must be reported");
 }
 
@@ -224,9 +226,9 @@ fn an_envelope_the_source_cannot_take_falls_back_to_beats() {
         "message": "a line",
         "_source": "syslog",
     }));
-    let resolved = envelope::resolve(EnvelopeSetting::Auto, Some(&event), intake);
+    let resolved = envelope::resolve(EnvelopeSetting::Auto, Some(&event), intake, "test.dataset");
 
-    assert_eq!(resolved.envelope, Envelope::Beats);
+    assert_eq!(resolved.delivery.envelope, Envelope::Beats);
     assert!(resolved.unaccepted);
 }
 
@@ -234,9 +236,9 @@ fn an_envelope_the_source_cannot_take_falls_back_to_beats() {
 #[test]
 fn an_empty_batch_resolves_to_beats() {
     let intake = registry::intake("filebeat.okta.default").expect("registered");
-    let resolved = envelope::resolve(EnvelopeSetting::Auto, None, intake);
+    let resolved = envelope::resolve(EnvelopeSetting::Auto, None, intake, "test.dataset");
 
-    assert_eq!(resolved.envelope, Envelope::Beats);
+    assert_eq!(resolved.delivery.envelope, Envelope::Beats);
     assert_eq!(resolved.detected, None);
     assert!(!resolved.contradicted);
     assert!(!resolved.unaccepted);

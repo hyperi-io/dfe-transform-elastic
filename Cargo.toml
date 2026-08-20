@@ -49,6 +49,11 @@ tikv-jemallocator = { workspace = true, optional = true }
 tempfile = { workspace = true }
 testcontainers = { workspace = true }
 testcontainers-modules = { workspace = true }
+criterion = { workspace = true }
+
+[[bench]]
+name = "envelope"
+harness = false
 
 [features]
 default = ["kafka"]

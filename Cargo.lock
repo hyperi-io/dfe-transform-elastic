@@ -833,6 +833,7 @@ dependencies = [
  "bytes",
  "chrono",
  "clap",
+ "criterion",
  "dfe-runtime",
  "dfe-transforms",
  "metrics",
