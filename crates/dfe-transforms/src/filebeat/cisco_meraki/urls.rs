@@ -57,7 +57,7 @@ impl Transform for Urls {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("src", &remaining[..pos]));
+                    let dissect_key_src = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -66,7 +66,7 @@ impl Transform for Urls {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("src", &remaining[..pos]));
+                    captured.push((dissect_key_src, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -75,7 +75,7 @@ impl Transform for Urls {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("dst", &remaining[..pos]));
+                    let dissect_key_dst = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -84,7 +84,7 @@ impl Transform for Urls {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("dst", &remaining[..pos]));
+                    captured.push((dissect_key_dst, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -93,7 +93,7 @@ impl Transform for Urls {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("mac", &remaining[..pos]));
+                    let dissect_key_mac = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -102,7 +102,7 @@ impl Transform for Urls {
                     let Some(pos) = remaining.find(" request: ") else {
                         break 'dissect false;
                     };
-                    captured.push(("mac", &remaining[..pos]));
+                    captured.push((dissect_key_mac, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" request: ") else {
                         break 'dissect false;

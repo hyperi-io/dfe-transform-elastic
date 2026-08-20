@@ -5,7 +5,7 @@
   "sources": {
     "azure": { "events": 25, "events_total": 26, "fields_wrong": 9 },
     "cisco_ios": { "events": 87, "events_total": 89, "fields_wrong": 2 },
-    "cisco_meraki": { "events": 241, "events_total": 245, "fields_wrong": 31 },
+    "cisco_meraki": { "events": 243, "events_total": 245, "fields_wrong": 13 },
     "cisco_nexus": { "events": 44, "events_total": 45, "fields_wrong": 22 },
     "crowdstrike": { "events": 49, "events_total": 49, "fields_wrong": 0 },
     "fortinet_fortigate": { "events": 183, "events_total": 185, "fields_wrong": 3 },

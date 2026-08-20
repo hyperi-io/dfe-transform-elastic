@@ -57,7 +57,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("sig", &remaining[..pos]));
+                    let dissect_key_sig = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -66,7 +66,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("sig", &remaining[..pos]));
+                    captured.push((dissect_key_sig, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -75,7 +75,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("pri", &remaining[..pos]));
+                    let dissect_key_pri = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -84,7 +84,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("pri", &remaining[..pos]));
+                    captured.push((dissect_key_pri, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -93,7 +93,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("ts", &remaining[..pos]));
+                    let dissect_key_ts = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -102,7 +102,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("ts", &remaining[..pos]));
+                    captured.push((dissect_key_ts, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -111,7 +111,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("dir", &remaining[..pos]));
+                    let dissect_key_dir = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -120,7 +120,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("dir", &remaining[..pos]));
+                    captured.push((dissect_key_dir, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -129,7 +129,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("prot", &remaining[..pos]));
+                    let dissect_key_prot = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -138,7 +138,7 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("prot", &remaining[..pos]));
+                    captured.push((dissect_key_prot, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
@@ -147,13 +147,13 @@ impl Transform for Idsalerts {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("src", &remaining[..pos]));
+                    let dissect_key_src = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
                     };
                     remaining = rest;
-                    captured.push(("src", remaining));
+                    captured.push((dissect_key_src, remaining));
                     true
                 };
                 if matched {

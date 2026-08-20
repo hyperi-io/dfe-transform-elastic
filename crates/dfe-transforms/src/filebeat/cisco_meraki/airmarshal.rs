@@ -57,7 +57,7 @@ impl Transform for Airmarshal {
                     let Some(pos) = remaining.find("=") else {
                         break 'dissect false;
                     };
-                    captured.push(("type", &remaining[..pos]));
+                    let dissect_key_type = &remaining[..pos];
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix("=") else {
                         break 'dissect false;
@@ -66,7 +66,7 @@ impl Transform for Airmarshal {
                     let Some(pos) = remaining.find(" ") else {
                         break 'dissect false;
                     };
-                    captured.push(("type", &remaining[..pos]));
+                    captured.push((dissect_key_type, &remaining[..pos]));
                     remaining = &remaining[pos..];
                     let Some(rest) = remaining.strip_prefix(" ") else {
                         break 'dissect false;
