@@ -496,9 +496,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.auditlogs.properties.initiated_by.user.id")
-                    && event
-                        .get_str("azure.auditlogs.properties.initiated_by.user.id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.auditlogs.properties.initiated_by.user.id") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -515,7 +513,7 @@ impl Transform for Default {
                 event.has_value("azure.auditlogs.properties.initiated_by.app.servicePrincipalId")
                     && event
                         .get_str("azure.auditlogs.properties.initiated_by.app.servicePrincipalId")
-                        .is_some_and(|s| !s.is_empty())
+                        != Some("")
             };
             if _cond {
                 event.append_unique(

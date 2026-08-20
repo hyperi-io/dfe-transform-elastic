@@ -97,6 +97,18 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.microsoft_dnsserver_analytical.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.microsoft_dnsserver_audit.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.o365.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"

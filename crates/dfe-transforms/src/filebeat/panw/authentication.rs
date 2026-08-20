@@ -226,10 +226,8 @@ impl Transform for Authentication {
                 Ok(())
             })();
 
-            let _cond = {
-                event.has_value("_temp_.user")
-                    && event.get_str("_temp_.user").is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("_temp_.user") && event.get_str("_temp_.user") != Some("") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -247,9 +245,7 @@ impl Transform for Authentication {
 
             let _cond = {
                 event.has_value("panw.panos.normalize_user")
-                    && event
-                        .get_str("panw.panos.normalize_user")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("panw.panos.normalize_user") != Some("")
             };
             if _cond {
                 // ignore_failure: true

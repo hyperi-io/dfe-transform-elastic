@@ -86,9 +86,7 @@ impl Transform for IdentityProtectionIncident {
 
             let _cond = {
                 event.has_value("crowdstrike.event.EndpointIp")
-                    && event
-                        .get_str("crowdstrike.event.EndpointIp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("crowdstrike.event.EndpointIp") != Some("")
             };
             if _cond {
                 event.append(

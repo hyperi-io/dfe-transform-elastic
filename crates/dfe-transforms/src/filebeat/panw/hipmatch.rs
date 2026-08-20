@@ -157,9 +157,7 @@ impl Transform for Hipmatch {
 
             let _cond = {
                 event.has_value("_temp_.source_ipv6")
-                    && event
-                        .get_str("_temp_.source_ipv6")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("_temp_.source_ipv6") != Some("")
                     && event.get_str("_temp_.source_ipv6") != Some("0.0.0.0")
             };
             if _cond {

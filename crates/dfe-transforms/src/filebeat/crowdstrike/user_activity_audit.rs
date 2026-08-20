@@ -61,9 +61,7 @@ impl Transform for UserActivityAudit {
 
             let _cond = {
                 event.has_value("crowdstrike.event.UserIp")
-                    && event
-                        .get_str("crowdstrike.event.UserIp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("crowdstrike.event.UserIp") != Some("")
             };
             if _cond {
                 if event.has("crowdstrike.event.UserIp") {

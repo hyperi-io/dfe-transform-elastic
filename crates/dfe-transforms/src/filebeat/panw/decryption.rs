@@ -721,19 +721,13 @@ impl Transform for Decryption {
 
             let _cond = {
                 !event.has_value("panw.panos.error_message")
-                    || event
-                        .get_str("panw.panos.error_message")
-                        .is_none_or(|s| s.is_empty())
+                    || event.get_str("panw.panos.error_message") == Some("")
             };
             if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            let _cond = {
-                event
-                    .get_str("panw.panos.error_message")
-                    .is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.get_str("panw.panos.error_message") != Some("") };
             if _cond {
                 event.set("event.outcome", json!("failure"))?;
             }

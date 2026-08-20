@@ -461,10 +461,8 @@ impl Transform for Config {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            let _cond = {
-                !event.has_value("event.outcome")
-                    || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
-            };
+            let _cond =
+                { !event.has_value("event.outcome") || event.get_str("event.outcome") == Some("") };
             if _cond {
                 event.set("event.outcome", json!("unknown"))?;
             }

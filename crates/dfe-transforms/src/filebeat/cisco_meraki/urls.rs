@@ -361,10 +361,8 @@ impl Transform for Urls {
                 }
             }
 
-            let _cond = {
-                event.has_value("url.original")
-                    && event.get_str("url.original").is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("url.original") && event.get_str("url.original") != Some("") };
             if _cond {
                 uri_parts(event, "url.original", "url", true, false)?;
             }

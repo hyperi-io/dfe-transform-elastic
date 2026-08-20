@@ -523,9 +523,7 @@ impl Transform for Default {
 
             let _cond = {
                 !event.has_value("o365audit.NetworkMessageId")
-                    || event
-                        .get_str("o365audit.NetworkMessageId")
-                        .is_none_or(|s| s.is_empty())
+                    || event.get_str("o365audit.NetworkMessageId") == Some("")
             };
             if _cond {
                 // ignore_failure: true
@@ -2177,9 +2175,7 @@ impl Transform for Default {
             let _cond = {
                 !event.has_value("event.provider")
                     && event.has_value("o365audit.UserType")
-                    && event
-                        .get_str("o365audit.UserType")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.UserType") != Some("")
             };
             if _cond {
                 let v = json!(
@@ -2194,9 +2190,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.InternetMessageId")
-                    && event
-                        .get_str("o365audit.InternetMessageId")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.InternetMessageId") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2211,9 +2205,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Item.InternetMessageId")
-                    && event
-                        .get_str("o365audit.Item.InternetMessageId")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Item.InternetMessageId") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2228,9 +2220,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.NetworkMessageId")
-                    && event
-                        .get_str("o365audit.NetworkMessageId")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.NetworkMessageId") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2245,9 +2235,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.P1Sender")
-                    && event
-                        .get_str("o365audit.P1Sender")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.P1Sender") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2262,9 +2250,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("source.user.email")
-                    && event
-                        .get_str("source.user.email")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("source.user.email") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2327,9 +2313,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.SenderIp")
-                    && event
-                        .get_str("o365audit.SenderIp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.SenderIp") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2344,9 +2328,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.SenderIP")
-                    && event
-                        .get_str("o365audit.SenderIP")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.SenderIP") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2361,9 +2343,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Subject")
-                    && event
-                        .get_str("o365audit.Subject")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Subject") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2378,9 +2358,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Item.Subject")
-                    && event
-                        .get_str("o365audit.Item.Subject")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Item.Subject") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2395,9 +2373,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Item.Attachments")
-                    && event
-                        .get_str("o365audit.Item.Attachments")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Item.Attachments") != Some("")
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -2568,11 +2544,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = {
-                event
-                    .get_str("o365audit.Data.sip")
-                    .is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.get_str("o365audit.Data.sip") != Some("") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -2713,9 +2685,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Data.tsd")
-                    && event
-                        .get_str("o365audit.Data.tsd")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Data.tsd") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2746,9 +2716,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Data.trc")
-                    && event
-                        .get_str("o365audit.Data.trc")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Data.trc") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2779,9 +2747,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Data.aii")
-                    && event
-                        .get_str("o365audit.Data.aii")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Data.aii") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2796,9 +2762,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Data.imsgid")
-                    && event
-                        .get_str("o365audit.Data.imsgid")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Data.imsgid") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -2813,9 +2777,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("o365audit.Data.ms")
-                    && event
-                        .get_str("o365audit.Data.ms")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("o365audit.Data.ms") != Some("")
             };
             if _cond {
                 event.append_unique(

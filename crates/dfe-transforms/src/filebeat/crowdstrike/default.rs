@@ -321,10 +321,7 @@ impl Transform for Default {
                 {
                     event.set("message", v)?;
                 }
-                let _cond = {
-                    !event.has_value("message")
-                        || event.get_str("message").is_none_or(|s| s.is_empty())
-                };
+                let _cond = { !event.has_value("message") || event.get_str("message") == Some("") };
                 if _cond {
                     if let Some(v) = event
                         .get("crowdstrike.event.Description")
@@ -977,11 +974,7 @@ impl Transform for Default {
                 {
                     event.set("file.path", v)?;
                 }
-                let _cond = {
-                    event
-                        .get_str("crowdstrike.event.IPv4")
-                        .is_some_and(|s| !s.is_empty())
-                };
+                let _cond = { event.get_str("crowdstrike.event.IPv4") != Some("") };
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -1029,11 +1022,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = {
-                    event
-                        .get_str("crowdstrike.event.IPv6")
-                        .is_some_and(|s| !s.is_empty())
-                };
+                let _cond = { event.get_str("crowdstrike.event.IPv6") != Some("") };
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -1152,9 +1141,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.ProcessStartTime")
-                        && event
-                            .get_str("crowdstrike.event.ProcessStartTime")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.ProcessStartTime") != Some("")
                 };
                 if _cond {
                     // on_failure: 1 handler(s)
@@ -1253,9 +1240,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("threat.indicator.ip")
-                        && event
-                            .get_str("threat.indicator.ip")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("threat.indicator.ip") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -1269,9 +1254,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.SHA256String")
-                        && event
-                            .get_str("crowdstrike.event.SHA256String")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.SHA256String") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -1285,9 +1268,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.MD5String")
-                        && event
-                            .get_str("crowdstrike.event.MD5String")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.MD5String") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -1301,9 +1282,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.DomainName")
-                        && event
-                            .get_str("crowdstrike.event.DomainName")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.DomainName") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -2282,9 +2261,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.LocalIP")
-                        && event
-                            .get_str("crowdstrike.event.LocalIP")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.LocalIP") != Some("")
                 };
                 if _cond {
                     if event.has("crowdstrike.event.LocalIP") {
@@ -2353,10 +2330,7 @@ impl Transform for Default {
                     event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
                 }
                 let _cond = {
-                    event.has_value("file.hash.sha1")
-                        && event
-                            .get_str("file.hash.sha1")
-                            .is_some_and(|s| !s.is_empty())
+                    event.has_value("file.hash.sha1") && event.get_str("file.hash.sha1") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -2370,9 +2344,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("file.hash.sha256")
-                        && event
-                            .get_str("file.hash.sha256")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("file.hash.sha256") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -2385,10 +2357,7 @@ impl Transform for Default {
                     )?;
                 }
                 let _cond = {
-                    event.has_value("file.hash.md5")
-                        && event
-                            .get_str("file.hash.md5")
-                            .is_some_and(|s| !s.is_empty())
+                    event.has_value("file.hash.md5") && event.get_str("file.hash.md5") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -2531,9 +2500,7 @@ impl Transform for Default {
                 })();
                 let _cond = {
                     event.has_value("crowdstrike.event.LocalIPv6")
-                        && event
-                            .get_str("crowdstrike.event.LocalIPv6")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.LocalIPv6") != Some("")
                 };
                 if _cond {
                     // on_failure: 2 handler(s)
@@ -2783,9 +2750,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.LocalIP")
-                        && event
-                            .get_str("crowdstrike.event.LocalIP")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.LocalIP") != Some("")
                 };
                 if _cond {
                     if event.has("crowdstrike.event.LocalIP") {
@@ -2854,10 +2819,7 @@ impl Transform for Default {
                     event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
                 }
                 let _cond = {
-                    event.has_value("file.hash.sha1")
-                        && event
-                            .get_str("file.hash.sha1")
-                            .is_some_and(|s| !s.is_empty())
+                    event.has_value("file.hash.sha1") && event.get_str("file.hash.sha1") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -2871,9 +2833,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("file.hash.sha256")
-                        && event
-                            .get_str("file.hash.sha256")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("file.hash.sha256") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -2886,10 +2846,7 @@ impl Transform for Default {
                     )?;
                 }
                 let _cond = {
-                    event.has_value("file.hash.md5")
-                        && event
-                            .get_str("file.hash.md5")
-                            .is_some_and(|s| !s.is_empty())
+                    event.has_value("file.hash.md5") && event.get_str("file.hash.md5") != Some("")
                 };
                 if _cond {
                     event.append_unique(
@@ -3905,9 +3862,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.SourceEndpointIpAddress")
-                        && event
-                            .get_str("crowdstrike.event.SourceEndpointIpAddress")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.SourceEndpointIpAddress") != Some("")
                 };
                 if _cond {
                     event.append(
@@ -4496,9 +4451,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.EndpointIp")
-                        && event
-                            .get_str("crowdstrike.event.EndpointIp")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.EndpointIp") != Some("")
                 };
                 if _cond {
                     event.append(
@@ -4901,9 +4854,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.UserIp")
-                        && event
-                            .get_str("crowdstrike.event.UserIp")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("crowdstrike.event.UserIp") != Some("")
                 };
                 if _cond {
                     if event.has("crowdstrike.event.UserIp") {
@@ -5816,10 +5767,7 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = {
-                event.has_value("user.name")
-                    && event.get_str("user.name").is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.has_value("user.name") && event.get_str("user.name") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.user",
@@ -5843,10 +5791,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = {
-                event.has_value("source.ip")
-                    && event.get_str("source.ip").is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.has_value("source.ip") && event.get_str("source.ip") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.ip",
@@ -5859,10 +5804,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("destination.ip")
-                    && event
-                        .get_str("destination.ip")
-                        .is_some_and(|s| !s.is_empty())
+                event.has_value("destination.ip") && event.get_str("destination.ip") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -5875,10 +5817,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = {
-                event.has_value("host.name")
-                    && event.get_str("host.name").is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.has_value("host.name") && event.get_str("host.name") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.hosts",

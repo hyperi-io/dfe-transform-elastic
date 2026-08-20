@@ -55,6 +55,10 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("cisco_umbrella", _) => &filebeat::cisco_umbrella::default::Default,
         ("crowdstrike", _) => &filebeat::crowdstrike::default::Default,
         ("fortinet_fortigate", _) => &filebeat::fortinet::default::Default,
+        ("microsoft_dnsserver", "analytical") => {
+            &filebeat::microsoft_dnsserver_analytical::default::Default
+        }
+        ("microsoft_dnsserver", "audit") => &filebeat::microsoft_dnsserver_audit::default::Default,
         ("o365", _) => &filebeat::o365::default::Default,
         ("okta", _) => &filebeat::okta::default::Default,
         ("panw", _) => &filebeat::panw::default::Default,

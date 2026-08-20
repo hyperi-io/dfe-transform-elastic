@@ -121,7 +121,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("_temp_.tz")
-                    && event.get_str("_temp_.tz").is_some_and(|s| !s.is_empty())
+                    && event.get_str("_temp_.tz") != Some("")
                     && event.has_value("_conf.tz_map")
             };
             if _cond {
@@ -8521,9 +8521,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("_temp_.cisco.source_username")
-                    && event
-                        .get_str("_temp_.cisco.source_username")
-                        .is_none_or(|s| s.is_empty())
+                    && event.get_str("_temp_.cisco.source_username") == Some("")
             };
             if _cond {
                 if event.remove("_temp_.cisco.source_username").is_none() {
@@ -8535,9 +8533,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("_temp_.cisco.destination_username")
-                    && event
-                        .get_str("_temp_.cisco.destination_username")
-                        .is_none_or(|s| s.is_empty())
+                    && event.get_str("_temp_.cisco.destination_username") == Some("")
             };
             if _cond {
                 if event.remove("_temp_.cisco.destination_username").is_none() {
@@ -8578,10 +8574,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("source.user.name")
-                    && event
-                        .get_str("source.user.name")
-                        .is_some_and(|s| !s.is_empty())
+                event.has_value("source.user.name") && event.get_str("source.user.name") != Some("")
             };
             if _cond {
                 if let Some(input) = event.get_string("source.user.name") {
@@ -9830,9 +9823,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("_temp_.cisco.message_id")
-                    && event
-                        .get_str("_temp_.cisco.message_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("_temp_.cisco.message_id") != Some("")
             };
             if _cond {
                 event.rename("_temp_.cisco.message_id", "event.code")?;
@@ -10013,7 +10004,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("user.name")
-                    && event.get_str("user.name").is_some_and(|s| !s.is_empty())
+                    && event.get_str("user.name") != Some("")
                     && event.get_str("user.name") != Some("*****")
             };
             if _cond {
@@ -10029,9 +10020,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("server.user.name")
-                    && event
-                        .get_str("server.user.name")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("server.user.name") != Some("")
                     && event.get_str("server.user.name") != Some("*****")
             };
             if _cond {
@@ -10047,9 +10036,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("source.user.name")
-                    && event
-                        .get_str("source.user.name")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("source.user.name") != Some("")
                     && event.get_str("source.user.name") != Some("*****")
             };
             if _cond {
@@ -10065,9 +10052,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("destination.user.name")
-                    && event
-                        .get_str("destination.user.name")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("destination.user.name") != Some("")
                     && event.get_str("destination.user.name") != Some("*****")
             };
             if _cond {
@@ -10093,12 +10078,8 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = {
-                event.has_value("host.hostname")
-                    && event
-                        .get_str("host.hostname")
-                        .is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("host.hostname") && event.get_str("host.hostname") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.hosts",
@@ -10112,9 +10093,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("observer.hostname")
-                    && event
-                        .get_str("observer.hostname")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("observer.hostname") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -10129,9 +10108,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("destination.domain")
-                    && event
-                        .get_str("destination.domain")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("destination.domain") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -10144,12 +10121,8 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = {
-                event.has_value("source.domain")
-                    && event
-                        .get_str("source.domain")
-                        .is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("source.domain") && event.get_str("source.domain") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.hosts",
@@ -10163,9 +10136,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("source.user.domain")
-                    && event
-                        .get_str("source.user.domain")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("source.user.domain") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -10180,9 +10151,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("destination.user.domain")
-                    && event
-                        .get_str("destination.user.domain")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("destination.user.domain") != Some("")
             };
             if _cond {
                 event.append_unique(

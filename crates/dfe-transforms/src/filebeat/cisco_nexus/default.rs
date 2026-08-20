@@ -34,10 +34,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("event.original")
-                    && event
-                        .get_str("event.original")
-                        .is_some_and(|s| !s.is_empty())
+                event.has_value("event.original") && event.get_str("event.original") != Some("")
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -99,9 +96,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("temp.timezone")
-                    && event
-                        .get_str("temp.timezone")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("temp.timezone") != Some("")
                     && event.has_value("_conf.tz_map")
                     && !event.has_value("event.timezone")
             };
@@ -156,9 +151,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("temp.timestamp")
-                    && event
-                        .get_str("temp.timestamp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("temp.timestamp") != Some("")
                     && !event.has_value("event.timezone")
             };
             if _cond {
@@ -227,9 +220,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("temp.timestamp")
-                    && event
-                        .get_str("temp.timestamp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("temp.timestamp") != Some("")
                     && event.has_value("event.timezone")
             };
             if _cond {

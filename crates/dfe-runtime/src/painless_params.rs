@@ -63,6 +63,11 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_bit_flags(event, &normalised, params);
     }
 
+    // Pattern: rename an object's keys, recursively, through a name map.
+    if normalised.contains("keyMap.containsKey(key)") {
+        return try_rename_keys(event, &normalised, params);
+    }
+
     // Pattern: several fields each normalised through their own value map.
     // Ahead of the reversible lookup, whose trigger this shape also matches.
     if normalised.contains(".map?.getOrDefault(") || normalised.contains("param.map.") {
@@ -685,6 +690,53 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
     let value = params.get(&key).cloned().unwrap_or(Value::String(key));
     let _ = event.set(&target, value);
     true
+}
+
+/// Rename an object's keys, recursively, through a name map.
+///
+/// Windows hands its event data over in the vendor's own casing --
+/// `AdditionalInfo`, `QNAME`, `XID` -- and the pipeline renames the lot in one
+/// pass before anything else reads them. Everything downstream is keyed on the
+/// renamed form, so a miss here costs far more than the keys themselves.
+///
+/// A key the map does not name keeps its own, and a value that is not an
+/// object or a list is carried across untouched.
+fn try_rename_keys(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some((path, _)) = ctx_writes(script)
+        .into_iter()
+        .find(|(_, rhs)| rhs.contains(", params)"))
+    else {
+        return false;
+    };
+    let Some(subject) = event.get(&path).cloned() else {
+        // The processor's own `if` guards the object being absent.
+        return false;
+    };
+    let _ = event.set(&path, renamed_keys(&subject, params));
+    true
+}
+
+/// `value` with every key the map names replaced, at any depth.
+fn renamed_keys(value: &Value, names: &Map<String, Value>) -> Value {
+    match value {
+        Value::Object(members) => Value::Object(
+            members
+                .iter()
+                .map(|(key, member)| {
+                    let key = names
+                        .get(key)
+                        .and_then(Value::as_str)
+                        .unwrap_or(key)
+                        .to_string();
+                    (key, renamed_keys(member, names))
+                })
+                .collect(),
+        ),
+        Value::Array(items) => {
+            Value::Array(items.iter().map(|item| renamed_keys(item, names)).collect())
+        }
+        other => other.clone(),
+    }
 }
 
 /// Normalise several fields, each through a value map of its own.
@@ -1541,6 +1593,58 @@ mod tests {
                               ctx.event.type = addUnique(ctx.event.type, p.type);\n\
                               ctx.event.category = addUnique(ctx.event.category, p.category);\n\
                               ctx.tags = addUnique(ctx.tags, p.tags);";
+
+    /// Verbatim from `pipelines/microsoft_dnsserver/analytical/default.yml`,
+    /// cut to the branches that decide a key's fate.
+    const RENAME_KEYS: &str = "def renameKeys(Map src, Map keyMap) {\n  \
+        def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    \
+        def key = entry.getKey();\n    def value = entry.getValue();\n    \
+        if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        \
+        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        \
+        dst[key] = renameKeys(value, keyMap);\n      }\n    } else {\n      \
+        if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } \
+        else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\
+        ctx.microsoft_dnsserver.analytical = \
+        renameKeys(ctx.microsoft_dnsserver.analytical, params)";
+
+    fn rename_params() -> Value {
+        json!({ "QNAME": "question_name", "XID": "xid", "SID": "sid" })
+    }
+
+    /// A named key is renamed at any depth; one the map does not name keeps
+    /// its own, and the values are carried across untouched.
+    #[test]
+    fn named_keys_are_renamed_at_every_depth() {
+        let mut event = Event::new(json!({
+            "microsoft_dnsserver": { "analytical": {
+                "QNAME": "google.es.",
+                "XID": "7",
+                "Untouched": "kept",
+                "extended_data": { "SID": "S-1-5-21" },
+                "listed": [{ "XID": "9" }, "plain"],
+            } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            RENAME_KEYS,
+            &rename_params()
+        ));
+
+        let analytical = event.get("microsoft_dnsserver.analytical").unwrap();
+        assert_eq!(analytical.get("question_name"), Some(&json!("google.es.")));
+        assert_eq!(analytical.get("xid"), Some(&json!("7")));
+        assert_eq!(analytical.get("Untouched"), Some(&json!("kept")));
+        assert_eq!(analytical.get("QNAME"), None);
+        assert_eq!(
+            event.get("microsoft_dnsserver.analytical.extended_data.sid"),
+            Some(&json!("S-1-5-21"))
+        );
+        assert_eq!(
+            analytical.get("listed"),
+            Some(&json!([{ "xid": "9" }, "plain"]))
+        );
+    }
 
     /// Verbatim from `pipelines/cisco_asa/default.yml`, tagged
     /// `script_ecs_outcome_categorization`: a message id, then its outcome.

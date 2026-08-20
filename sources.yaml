@@ -148,6 +148,26 @@ sources:
     framing: line
     transforms: [default]
 
+  # Two data streams from two different Windows subsystems: `analytical` is the
+  # per-query ETW trace, `audit` the change log from the Windows event log.
+  # Neither agent input is a pure transport and neither is pushed by a device,
+  # so both are Beats-only.
+  microsoft_dnsserver_analytical:
+    package: microsoft_dnsserver
+    data_stream: analytical
+    pipelines: microsoft_dnsserver/analytical
+    fixtures: microsoft_dnsserver/analytical
+    intakes: [beats]
+    transforms: [default]
+
+  microsoft_dnsserver_audit:
+    package: microsoft_dnsserver
+    data_stream: audit
+    pipelines: microsoft_dnsserver/audit
+    fixtures: microsoft_dnsserver/audit
+    intakes: [beats]
+    transforms: [default]
+
   o365:
     package: o365
     data_stream: audit

@@ -68,10 +68,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            let _cond = {
-                event.has_value("json.uuid")
-                    && event.get_str("json.uuid").is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.has_value("json.uuid") && event.get_str("json.uuid") != Some("") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -997,13 +994,21 @@ impl Transform for Default {
                     Ok(())
                 })();
                 let _cond = {
-                    event.has_value("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").is_some_and(|s| !s.is_empty())
+                    event.has_value(
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level",
+                    ) && event.get_str(
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level",
+                    ) != Some("")
                 };
                 if _cond {
                     event.set("okta.debug_context.debug_data.risk_level", json!(event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").map_or_else(String::new, painless_to_string)))?;
                 }
                 let _cond = {
-                    event.has_value("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons").is_some_and(|s| !s.is_empty())
+                    event.has_value(
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons",
+                    ) && event.get_str(
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons",
+                    ) != Some("")
                 };
                 if _cond {
                     if let Some(s) = event.get_string(
@@ -1023,9 +1028,8 @@ impl Transform for Default {
                 let _cond = {
                     !event.has_value("okta.debug_context.debug_data.risk_level")
                         && event.has_value("okta.debug_context.debug_data.flattened.risk.level")
-                        && event
-                            .get_str("okta.debug_context.debug_data.flattened.risk.level")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("okta.debug_context.debug_data.flattened.risk.level")
+                            != Some("")
                 };
                 if _cond {
                     event.set(
@@ -1040,9 +1044,8 @@ impl Transform for Default {
                 let _cond = {
                     !event.has_value("okta.debug_context.debug_data.factor")
                         && event.has_value("okta.debug_context.debug_data.flattened.factor")
-                        && event
-                            .get_str("okta.debug_context.debug_data.flattened.factor")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("okta.debug_context.debug_data.flattened.factor")
+                            != Some("")
                 };
                 if _cond {
                     event.set(
@@ -1057,9 +1060,8 @@ impl Transform for Default {
                 let _cond = {
                     !event.has_value("okta.debug_context.debug_data.risk_reasons")
                         && event.has_value("okta.debug_context.debug_data.flattened.risk.reasons")
-                        && event
-                            .get_str("okta.debug_context.debug_data.flattened.risk.reasons")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("okta.debug_context.debug_data.flattened.risk.reasons")
+                            != Some("")
                 };
                 if _cond {
                     if let Some(s) =
@@ -1395,7 +1397,7 @@ impl Transform for Default {
                     event.has_value("okta.debug_context.debug_data.logOnlySecurityData.risk.level")
                         && event
                             .get_str("okta.debug_context.debug_data.logOnlySecurityData.risk.level")
-                            .is_some_and(|s| !s.is_empty())
+                            != Some("")
                 };
                 if _cond {
                     event.set(
@@ -1410,11 +1412,9 @@ impl Transform for Default {
                 let _cond = {
                     event
                         .has_value("okta.debug_context.debug_data.logOnlySecurityData.risk.reasons")
-                        && event
-                            .get_str(
-                                "okta.debug_context.debug_data.logOnlySecurityData.risk.reasons",
-                            )
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str(
+                            "okta.debug_context.debug_data.logOnlySecurityData.risk.reasons",
+                        ) != Some("")
                 };
                 if _cond {
                     if let Some(s) = event.get_string(
@@ -1434,9 +1434,7 @@ impl Transform for Default {
                 let _cond = {
                     !event.has_value("okta.debug_context.debug_data.risk_level")
                         && event.has_value("okta.debug_context.debug_data.risk.level")
-                        && event
-                            .get_str("okta.debug_context.debug_data.risk.level")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("okta.debug_context.debug_data.risk.level") != Some("")
                 };
                 if _cond {
                     event.set(
@@ -1451,9 +1449,7 @@ impl Transform for Default {
                 let _cond = {
                     !event.has_value("okta.debug_context.debug_data.factor")
                         && event.has_value("okta.debug_context.debug_data.factor")
-                        && event
-                            .get_str("okta.debug_context.debug_data.factor")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("okta.debug_context.debug_data.factor") != Some("")
                 };
                 if _cond {
                     event.set(
@@ -1468,9 +1464,7 @@ impl Transform for Default {
                 let _cond = {
                     !event.has_value("okta.debug_context.debug_data.risk_reasons")
                         && event.has_value("okta.debug_context.debug_data.risk.reasons")
-                        && event
-                            .get_str("okta.debug_context.debug_data.risk.reasons")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("okta.debug_context.debug_data.risk.reasons") != Some("")
                 };
                 if _cond {
                     if let Some(s) = event.get_string("okta.debug_context.debug_data.risk.reasons")

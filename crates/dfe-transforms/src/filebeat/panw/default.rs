@@ -622,8 +622,7 @@ impl Transform for Default {
                     event.set("event.outcome", json!("success"))?;
                 }
                 let _cond = {
-                    !event.has_value("event.outcome")
-                        || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
+                    !event.has_value("event.outcome") || event.get_str("event.outcome") == Some("")
                 };
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
@@ -1699,8 +1698,7 @@ impl Transform for Default {
                     event.set("event.outcome", json!("success"))?;
                 }
                 let _cond = {
-                    !event.has_value("event.outcome")
-                        || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
+                    !event.has_value("event.outcome") || event.get_str("event.outcome") == Some("")
                 };
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
@@ -2269,9 +2267,7 @@ impl Transform for Default {
                 })();
                 let _cond = {
                     event.has_value("_temp_.source_ipv6")
-                        && event
-                            .get_str("_temp_.source_ipv6")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("_temp_.source_ipv6") != Some("")
                         && event.get_str("_temp_.source_ipv6") != Some("0.0.0.0")
                 };
                 if _cond {
@@ -3420,8 +3416,7 @@ impl Transform for Default {
                     event.set("event.outcome", json!("failure"))?;
                 }
                 let _cond = {
-                    !event.has_value("event.outcome")
-                        || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
+                    !event.has_value("event.outcome") || event.get_str("event.outcome") == Some("")
                 };
                 if _cond {
                     event.set("event.outcome", json!("unknown"))?;
@@ -4133,18 +4128,12 @@ impl Transform for Default {
                 event.append("event.category", json!("network"))?;
                 let _cond = {
                     !event.has_value("panw.panos.error_message")
-                        || event
-                            .get_str("panw.panos.error_message")
-                            .is_none_or(|s| s.is_empty())
+                        || event.get_str("panw.panos.error_message") == Some("")
                 };
                 if _cond {
                     event.set("event.outcome", json!("success"))?;
                 }
-                let _cond = {
-                    event
-                        .get_str("panw.panos.error_message")
-                        .is_some_and(|s| !s.is_empty())
-                };
+                let _cond = { event.get_str("panw.panos.error_message") != Some("") };
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
                 }
@@ -4757,10 +4746,8 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                let _cond = {
-                    event.has_value("_temp_.user")
-                        && event.get_str("_temp_.user").is_some_and(|s| !s.is_empty())
-                };
+                let _cond =
+                    { event.has_value("_temp_.user") && event.get_str("_temp_.user") != Some("") };
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
@@ -4777,9 +4764,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("panw.panos.normalize_user")
-                        && event
-                            .get_str("panw.panos.normalize_user")
-                            .is_some_and(|s| !s.is_empty())
+                        && event.get_str("panw.panos.normalize_user") != Some("")
                 };
                 if _cond {
                     // ignore_failure: true
@@ -6501,8 +6486,7 @@ impl Transform for Default {
                     event.set("event.outcome", json!("success"))?;
                 }
                 let _cond = {
-                    !event.has_value("event.outcome")
-                        || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
+                    !event.has_value("event.outcome") || event.get_str("event.outcome") == Some("")
                 };
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
@@ -12625,9 +12609,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("tls.client.hash.md5")
-                    && event
-                        .get_str("tls.client.hash.md5")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("tls.client.hash.md5") != Some("")
             };
             if _cond {
                 // ignore_failure: true
@@ -12646,9 +12628,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("tls.client.hash.sha1")
-                    && event
-                        .get_str("tls.client.hash.sha1")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("tls.client.hash.sha1") != Some("")
             };
             if _cond {
                 // ignore_failure: true
@@ -12667,9 +12647,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("tls.client.hash.sha256")
-                    && event
-                        .get_str("tls.client.hash.sha256")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("tls.client.hash.sha256") != Some("")
             };
             if _cond {
                 // ignore_failure: true
@@ -12688,9 +12666,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("observer.hostname")
-                    && event
-                        .get_str("observer.hostname")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("observer.hostname") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -12703,10 +12679,7 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = {
-                event.has_value("host.name")
-                    && event.get_str("host.name").is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.has_value("host.name") && event.get_str("host.name") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.hosts",
@@ -12720,9 +12693,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("panw.panos.dst.host")
-                    && event
-                        .get_str("panw.panos.dst.host")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("panw.panos.dst.host") != Some("")
             };
             if _cond {
                 // ignore_failure: true
@@ -12741,9 +12712,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("panw.panos.src.host")
-                    && event
-                        .get_str("panw.panos.src.host")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("panw.panos.src.host") != Some("")
             };
             if _cond {
                 // ignore_failure: true

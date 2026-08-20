@@ -55,6 +55,18 @@ impl Intake {
     }
 }
 
+/// Beats and nothing else.
+///
+/// The agent input is neither a pure transport nor something a device pushes:
+/// an ETW trace or a Windows event log is read off the host by the agent, and
+/// there is no other way to the same bytes.
+const fn agent_only() -> Intake {
+    Intake {
+        envelopes: &[Envelope::Beats],
+        framing: None,
+    }
+}
+
 /// Beats plus a device pushing into dfe-receiver.
 const fn pushed(framing: Framing) -> Intake {
     Intake {
@@ -153,6 +165,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::fortinet::default::Default,
         pushed(Framing::Line),
         "fortinet_fortigate.log",
+    ),
+    (
+        "filebeat.microsoft_dnsserver_analytical.default",
+        &filebeat::microsoft_dnsserver_analytical::default::Default,
+        agent_only(),
+        "microsoft_dnsserver.analytical",
+    ),
+    (
+        "filebeat.microsoft_dnsserver_audit.default",
+        &filebeat::microsoft_dnsserver_audit::default::Default,
+        agent_only(),
+        "microsoft_dnsserver.audit",
     ),
     (
         "filebeat.o365.default",
@@ -302,19 +326,24 @@ mod tests {
     /// Which intakes each source has are declared in `sources.yaml` and checked
     /// below. All this adds is the two invariants the declaration cannot state:
     /// Beats always works, and an unknown name has no intake at all.
+    ///
+    /// A source may be pushed by a device or fetchable or NEITHER: an ETW trace
+    /// and a Windows event log are read off the host by the agent, and there is
+    /// no other route to the same bytes. What no source may be is both, which
+    /// would mean one payload arriving in two different wrappers.
     #[test]
-    fn every_source_accepts_beats_and_one_other() {
+    fn every_source_accepts_beats_and_at_most_one_other() {
         assert_eq!(
             sources_accepting(Envelope::Beats).count(),
             sources().count(),
             "every source has an Elastic integration, so Beats always applies"
         );
-        assert_eq!(
-            sources_accepting(Envelope::Receiver).count()
-                + sources_accepting(Envelope::Fetcher).count(),
-            sources().count(),
-            "a source is either pushed by a device or fetchable, never neither"
-        );
+        for (name, _, intake, _) in TRANSFORMS {
+            assert!(
+                !(intake.accepts(Envelope::Receiver) && intake.accepts(Envelope::Fetcher)),
+                "{name} claims both a device push and a fetch"
+            );
+        }
         assert_eq!(intake("filebeat.nosuchthing"), None);
     }
 

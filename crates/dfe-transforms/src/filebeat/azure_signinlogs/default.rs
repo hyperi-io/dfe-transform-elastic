@@ -624,9 +624,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.signinlogs.properties.app_id")
-                    && event
-                        .get_str("azure.signinlogs.properties.app_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.signinlogs.properties.app_id") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -641,9 +639,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.signinlogs.properties.resource_id")
-                    && event
-                        .get_str("azure.signinlogs.properties.resource_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.signinlogs.properties.resource_id") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -666,9 +662,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.signinlogs.properties.service_principal_id")
-                    && event
-                        .get_str("azure.signinlogs.properties.service_principal_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.signinlogs.properties.service_principal_id") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -685,7 +679,7 @@ impl Transform for Default {
                 event.has_value("azure.signinlogs.properties.service_principal_credential_key_id")
                     && event
                         .get_str("azure.signinlogs.properties.service_principal_credential_key_id")
-                        .is_some_and(|s| !s.is_empty())
+                        != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -700,9 +694,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.signinlogs.properties.user_id")
-                    && event
-                        .get_str("azure.signinlogs.properties.user_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.signinlogs.properties.user_id") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -717,9 +709,8 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.signinlogs.properties.device_detail.device_id")
-                    && event
-                        .get_str("azure.signinlogs.properties.device_detail.device_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.signinlogs.properties.device_detail.device_id")
+                        != Some("")
             };
             if _cond {
                 event.append_unique(

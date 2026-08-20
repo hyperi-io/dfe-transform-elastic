@@ -698,9 +698,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("azure.resource_id")
-                    && event
-                        .get_str("azure.resource_id")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("azure.resource_id") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -717,7 +715,7 @@ impl Transform for Default {
                 event.has_value("azure.activitylogs.identity.authorization.evidence.principal_id")
                     && event
                         .get_str("azure.activitylogs.identity.authorization.evidence.principal_id")
-                        .is_some_and(|s| !s.is_empty())
+                        != Some("")
             };
             if _cond {
                 event.append_unique(

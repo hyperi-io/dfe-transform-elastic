@@ -633,13 +633,16 @@ class TestConfig:
     multiline_pattern: str | None
     dynamic_fields: dict[str, str]
     numeric_keyword_fields: list[str]
+    documents_are_events: bool = False
 
 
-def load_test_config(path: Path | None) -> TestConfig:
+def load_test_config(path: Path | None, fixture: Path | None = None) -> TestConfig:
     """Read a ``*-config.yml``, tolerating its absence.
 
     Args:
         path: Config path, or None when the fixture has no config.
+        fixture: The fixture the config belongs to, which decides whether its
+            events are whole documents or lines of text.
 
     Returns:
         The parsed config, defaulted where keys are absent.
@@ -653,19 +656,35 @@ def load_test_config(path: Path | None) -> TestConfig:
         multiline_pattern=multiline.get("first_line_pattern"),
         dynamic_fields=raw.get("dynamic_fields") or {},
         numeric_keyword_fields=raw.get("numeric_keyword_fields") or [],
+        documents_are_events=fixture is not None and fixture.suffix == ".json",
     )
 
 
 def split_events(text: str, pattern: str | None) -> list[str]:
     """Split raw log text into events.
 
+    A `.json` fixture is one object with an ``events`` array, which is the form
+    upstream uses where the whole document is the event rather than a line of
+    text in ``message`` -- every winlog and ETW source is laid out that way.
+    Each member comes back as its own JSON text, so the rest of the pipeline
+    treats it exactly like a line.
+
     Args:
-        text: Whole contents of the ``.log`` fixture.
+        text: Whole contents of the fixture.
         pattern: ``first_line_pattern`` regex, or None for one event per line.
 
     Returns:
         The events, in file order, with blank lines dropped.
     """
+    stripped = text.lstrip()
+    if stripped.startswith("{") and '"events"' in stripped[:200]:
+        try:
+            members = json.loads(text).get("events")
+        except (json.JSONDecodeError, ValueError):
+            members = None
+        if isinstance(members, list):
+            return [json.dumps(member) for member in members]
+
     lines = text.splitlines()
     if pattern is None:
         return [line for line in lines if line.strip()]
@@ -692,6 +711,10 @@ def build_docs(events: list[str], config: TestConfig) -> list[dict[str, Any]]:
     document rather than wrapped a second time. A source whose payload is bare
     JSON, such as okta, has no ``message`` key and is still wrapped.
 
+    A `.json` fixture's members ARE the documents -- a winlog event has no text
+    form to put in ``message``, and wrapping one would hand the pipeline a
+    document with none of the fields it reads.
+
     Args:
         events: Raw event texts.
         config: The fixture's test config.
@@ -705,7 +728,7 @@ def build_docs(events: list[str], config: TestConfig) -> list[dict[str, Any]]:
             parsed = json.loads(event)
         except (json.JSONDecodeError, ValueError):
             parsed = None
-        if isinstance(parsed, dict) and "message" in parsed:
+        if isinstance(parsed, dict) and ("message" in parsed or config.documents_are_events):
             docs.append({"_source": {**parsed, **config.fields}})
         else:
             docs.append({"_source": {"message": event, **config.fields}})
@@ -902,10 +925,14 @@ def _write_ndjson(path: Path, records: list[Any]) -> None:
 
 
 def list_fixtures(source: Source) -> list[Path]:
-    """List a source's fixture logs that carry a committed expectation.
+    """List a source's fixtures that carry a committed expectation.
 
     A fixture with no expectation cannot answer the vintage question, so it is
     not returned.
+
+    Two forms: a `.log` of raw text, and a `.json` holding whole documents,
+    which is what upstream ships wherever the event has no text form -- every
+    winlog and ETW source.
 
     The glob is ONE level deep, matching how upstream lays every package out.
     A fixture in a subdirectory would be skipped in silence, and a source whose
@@ -917,7 +944,7 @@ def list_fixtures(source: Source) -> list[Path]:
         source: The source to look under.
 
     Returns:
-        Fixture log paths, in name order.
+        Fixture paths, in name order.
 
     Raises:
         SystemExit: If any fixture with an expectation sits below the top level.
@@ -925,9 +952,18 @@ def list_fixtures(source: Source) -> list[Path]:
     directory = REPO_ROOT / "tests" / "fixtures" / source.fixture_dir
 
     def paired(paths: Iterable[Path]) -> list[Path]:
-        return sorted(p for p in paths if p.with_name(p.name + "-expected.json").is_file())
+        return sorted(
+            p
+            for p in paths
+            # `x.json-expected.json` would otherwise pair with itself.
+            if not p.name.endswith("-expected.json")
+            and p.with_name(p.name + "-expected.json").is_file()
+        )
 
-    nested = paired(p for p in directory.rglob("*.log") if p.parent != directory)
+    def every(root: Path) -> Iterable[Path]:
+        return (p for p in root.rglob("*") if p.suffix in {".log", ".json"})
+
+    nested = paired(p for p in every(directory) if p.parent != directory)
     if nested:
         listing = "\n  ".join(str(p.relative_to(directory)) for p in nested)
         raise SystemExit(
@@ -935,7 +971,7 @@ def list_fixtures(source: Source) -> list[Path]:
             f"{directory}, where the capture cannot see them. "
             f"Flatten them into that directory:\n  {listing}"
         )
-    return paired(directory.glob("*.log"))
+    return paired(p for p in directory.iterdir() if p.suffix in {".log", ".json"})
 
 
 def config_for(log_path: Path) -> Path | None:
@@ -1257,7 +1293,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
                 failure = pipelines
                 continue
 
-            config = load_test_config(config_for(log_path))
+            config = load_test_config(config_for(log_path), log_path)
             events = split_events(
                 log_path.read_text(encoding="utf-8"), config.multiline_pattern
             )
@@ -1336,7 +1372,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
         raise CompatError(f"no fixture with a committed expectation for {args.source}")
 
     for log_path in fixtures:
-        config = load_test_config(config_for(log_path))
+        config = load_test_config(config_for(log_path), log_path)
         events = split_events(
             log_path.read_text(encoding="utf-8"), config.multiline_pattern
         )

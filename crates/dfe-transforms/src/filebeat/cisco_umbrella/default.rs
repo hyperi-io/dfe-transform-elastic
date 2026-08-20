@@ -649,9 +649,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("cisco.umbrella.first_packet_timestamp")
-                    && event
-                        .get_str("cisco.umbrella.first_packet_timestamp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("cisco.umbrella.first_packet_timestamp") != Some("")
             };
             if _cond {
                 // on_failure: 2 handler(s)
@@ -708,9 +706,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("cisco.umbrella.last_packet_timestamp")
-                    && event
-                        .get_str("cisco.umbrella.last_packet_timestamp")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("cisco.umbrella.last_packet_timestamp") != Some("")
             };
             if _cond {
                 // on_failure: 2 handler(s)

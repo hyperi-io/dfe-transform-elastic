@@ -86,9 +86,7 @@ impl Transform for DetectionSummary {
 
             let _cond = {
                 event.has_value("crowdstrike.event.LocalIP")
-                    && event
-                        .get_str("crowdstrike.event.LocalIP")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("crowdstrike.event.LocalIP") != Some("")
             };
             if _cond {
                 if event.has("crowdstrike.event.LocalIP") {
@@ -172,10 +170,7 @@ impl Transform for DetectionSummary {
             }
 
             let _cond = {
-                event.has_value("file.hash.sha1")
-                    && event
-                        .get_str("file.hash.sha1")
-                        .is_some_and(|s| !s.is_empty())
+                event.has_value("file.hash.sha1") && event.get_str("file.hash.sha1") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -189,10 +184,7 @@ impl Transform for DetectionSummary {
             }
 
             let _cond = {
-                event.has_value("file.hash.sha256")
-                    && event
-                        .get_str("file.hash.sha256")
-                        .is_some_and(|s| !s.is_empty())
+                event.has_value("file.hash.sha256") && event.get_str("file.hash.sha256") != Some("")
             };
             if _cond {
                 event.append_unique(
@@ -205,12 +197,8 @@ impl Transform for DetectionSummary {
                 )?;
             }
 
-            let _cond = {
-                event.has_value("file.hash.md5")
-                    && event
-                        .get_str("file.hash.md5")
-                        .is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("file.hash.md5") && event.get_str("file.hash.md5") != Some("") };
             if _cond {
                 event.append_unique(
                     "related.hash",

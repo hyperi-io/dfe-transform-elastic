@@ -15,6 +15,8 @@ pub mod cisco_nexus;
 pub mod cisco_umbrella;
 pub mod crowdstrike;
 pub mod fortinet;
+pub mod microsoft_dnsserver_analytical;
+pub mod microsoft_dnsserver_audit;
 pub mod o365;
 pub mod okta;
 pub mod panw;
