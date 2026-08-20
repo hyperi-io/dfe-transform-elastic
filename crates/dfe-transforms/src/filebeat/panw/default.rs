@@ -1003,10 +1003,11 @@ impl Transform for Default {
                         event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_809881d3")?;
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -1042,10 +1043,11 @@ impl Transform for Default {
                         event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_65e492d1")?;
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -2268,10 +2270,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "source.ip",
-                        event
-                            .get("_temp_.source_ipv6")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_temp_.source_ipv6")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 event.set("event.kind", json!("event"))?;
@@ -2536,10 +2539,11 @@ impl Transform for Default {
                         event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_527c776e")?;
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -2575,10 +2579,11 @@ impl Transform for Default {
                         event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_02fdb26c")?;
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -2828,17 +2833,22 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "source.ip",
-                        event
-                            .get("_temp_.private_ipv6")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_temp_.private_ipv6")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("source.ip") };
                 if _cond {
                     event.set(
                         "host.ip",
-                        event.get("source.ip").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("source.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // ignore_failure: true
@@ -2857,10 +2867,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "source.nat.ip",
-                        event
-                            .get("_temp_.public_ipv6")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_temp_.public_ipv6")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 event.set("event.kind", json!("event"))?;
@@ -3956,10 +3967,11 @@ impl Transform for Default {
                         }
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -4000,10 +4012,11 @@ impl Transform for Default {
                         }
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -4044,10 +4057,11 @@ impl Transform for Default {
                         }
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -4088,10 +4102,11 @@ impl Transform for Default {
                         }
                         event.append(
                             "error.message",
-                            event
-                                .get("_ingest.on_failure_message")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         event.remove("_ingest.on_failure_message");
                         event.remove("_ingest.on_failure_processor_type");
@@ -4226,12 +4241,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "tls.client.x509.subject.common_name",
-                        Value::Array(vec![
+                        Value::Array(vec![json!(
                             event
                                 .get("tls.client.x509.subject.common_name")
-                                .cloned()
-                                .unwrap_or(Value::Null),
-                        ]),
+                                .map_or_else(String::new, painless_to_string)
+                        )]),
                     )?;
                 }
                 // ignore_failure: true
@@ -4249,12 +4263,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "tls.client.x509.issuer.common_name",
-                        Value::Array(vec![
+                        Value::Array(vec![json!(
                             event
                                 .get("tls.client.x509.issuer.common_name")
-                                .cloned()
-                                .unwrap_or(Value::Null),
-                        ]),
+                                .map_or_else(String::new, painless_to_string)
+                        )]),
                     )?;
                 }
                 // ignore_failure: true
@@ -4738,7 +4751,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         event.append(
                             "source.user.name",
-                            event.get("_temp_.user").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_temp_.user")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         Ok(())
                     })();
@@ -4754,10 +4771,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         event.append(
                             "source.user.name",
-                            event
-                                .get("panw.panos.normalize_user")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("panw.panos.normalize_user")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         Ok(())
                     })();
@@ -6769,10 +6787,11 @@ impl Transform for Default {
                     )?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -6807,10 +6826,11 @@ impl Transform for Default {
                     )?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -6846,10 +6866,11 @@ impl Transform for Default {
                     )?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -6885,10 +6906,11 @@ impl Transform for Default {
                     )?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -6933,10 +6955,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -6981,10 +7004,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7042,10 +7066,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7088,10 +7113,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7153,10 +7179,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7200,10 +7227,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7248,10 +7276,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7296,10 +7325,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7348,10 +7378,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7400,10 +7431,11 @@ impl Transform for Default {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -7485,10 +7517,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7528,10 +7561,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7571,10 +7605,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7614,10 +7649,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7657,10 +7693,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7674,7 +7711,11 @@ impl Transform for Default {
             if _cond {
                 event.set(
                     "host.ip",
-                    Value::Array(vec![event.get("host.ip").cloned().unwrap_or(Value::Null)]),
+                    Value::Array(vec![json!(
+                        event
+                            .get("host.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    )]),
                 )?;
             }
 
@@ -7708,10 +7749,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7751,10 +7793,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7794,10 +7837,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7837,10 +7881,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7880,10 +7925,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7923,10 +7969,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -7966,10 +8013,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8009,10 +8057,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8052,10 +8101,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8095,10 +8145,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8138,10 +8189,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8181,10 +8233,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8224,10 +8277,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8267,10 +8321,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8310,10 +8365,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8375,10 +8431,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8440,10 +8497,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8505,10 +8563,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8570,10 +8629,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8635,10 +8695,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8700,10 +8761,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8765,10 +8827,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8830,10 +8893,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8895,10 +8959,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -8960,10 +9025,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9025,10 +9091,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9090,10 +9157,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9155,10 +9223,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9220,10 +9289,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9285,10 +9355,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9350,10 +9421,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9415,10 +9487,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9480,10 +9553,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9545,10 +9619,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9610,10 +9685,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9675,10 +9751,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9740,10 +9817,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9805,10 +9883,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9870,10 +9949,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -9935,10 +10015,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10000,10 +10081,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10065,10 +10147,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10130,10 +10213,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10195,10 +10279,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10260,10 +10345,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10443,10 +10529,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10508,10 +10595,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10576,10 +10664,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10644,10 +10733,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10709,10 +10799,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10774,10 +10865,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10839,10 +10931,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10904,10 +10997,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -10969,10 +11063,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -11034,10 +11129,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -11099,10 +11195,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -11164,10 +11261,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -11229,10 +11327,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -11294,10 +11393,11 @@ impl Transform for Default {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -11716,7 +11816,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -11724,7 +11828,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("destination.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -11732,7 +11840,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.nat.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.nat.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -11740,10 +11852,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("destination.nat.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.nat.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -11753,7 +11866,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.ip",
-                        event.get("host.ip").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("host.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -11769,7 +11886,11 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             event.append(
                                 "related.ip",
-                                event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                                json!(
+                                    event
+                                        .get("_ingest._value")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
                             )?;
                             Ok(())
                         })();
@@ -11786,10 +11907,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.ip",
-                        event
-                            .get("panw.panos.xff.ip")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.xff.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -11801,10 +11923,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.ip",
-                        event
-                            .get("network.forwarded_ip")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("network.forwarded_ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -11816,10 +11939,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.ip",
-                        event
-                            .get("panw.panos.remote_user.ip")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.remote_user.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -11831,10 +11955,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.ip",
-                        event
-                            .get("panw.panos.end_ip_address")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.end_ip_address")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -12336,10 +12461,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "network.community_id",
-                    event
-                        .get("panw.panos.network.nat.community_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("panw.panos.network.nat.community_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12376,10 +12502,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("client.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("client.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12390,10 +12517,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("source.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12408,7 +12536,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "related.user",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -12421,10 +12553,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("server.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("server.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12432,10 +12565,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("destination.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12443,10 +12577,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("panw.panos.admin")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("panw.panos.admin")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12454,10 +12589,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("panw.panos.file.hash")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("panw.panos.file.hash")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12472,10 +12608,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.hash",
-                        event
-                            .get("tls.client.hash.md5")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("tls.client.hash.md5")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -12492,10 +12629,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.hash",
-                        event
-                            .get("tls.client.hash.sha1")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("tls.client.hash.sha1")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -12512,10 +12650,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.hash",
-                        event
-                            .get("tls.client.hash.sha256")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("tls.client.hash.sha256")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -12530,10 +12669,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("observer.hostname")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("observer.hostname")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12544,7 +12684,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -12559,10 +12703,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("panw.panos.dst.host")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.dst.host")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -12579,10 +12724,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("panw.panos.src.host")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.src.host")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();

@@ -164,10 +164,11 @@ impl Transform for Hipmatch {
             if _cond {
                 event.set(
                     "source.ip",
-                    event
-                        .get("_temp_.source_ipv6")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp_.source_ipv6")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

@@ -243,10 +243,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "email.to.address",
-                    event
-                        .get("fortinet.firewall.recipient")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.recipient")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -474,10 +475,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "email.sender.address",
-                    event
-                        .get("fortinet.firewall.sender")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.sender")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -485,10 +487,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "email.from.address",
-                    event
-                        .get("fortinet.firewall.from")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.from")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -817,10 +820,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.server.x509.subject.common_name",
-                    event
-                        .get("fortinet.firewall.scertcname")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.scertcname")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -832,10 +836,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.server.x509.issuer.common_name",
-                    event
-                        .get("tls.server.issuer")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("tls.server.issuer")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -847,10 +852,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.client.x509.issuer.common_name",
-                    event
-                        .get("tls.client.issuer")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("tls.client.issuer")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -958,10 +964,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("tls.server.hash.sha1")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("tls.server.hash.sha1")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -992,10 +999,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.server.x509.alternative_names",
-                    event
-                        .get("fortinet.firewall.cn")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.cn")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1060,10 +1068,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "vulnerability.category",
-                    event
-                        .get("fortinet.firewall.dtype")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.dtype")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1079,10 +1088,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("fortinet.file.hash.crc32")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.file.hash.crc32")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

@@ -141,10 +141,11 @@ impl Transform for AuthActivityAudit {
             if _cond {
                 event.append(
                     "event.action",
-                    event
-                        .get("crowdstrike.event.OperationName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.OperationName")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

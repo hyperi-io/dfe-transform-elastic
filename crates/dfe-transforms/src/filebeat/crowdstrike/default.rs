@@ -814,10 +814,11 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             event.append(
                                 "threat.indicator.id",
-                                event
-                                    .get("_ingest._value.IndicatorId")
-                                    .cloned()
-                                    .unwrap_or(Value::Null),
+                                json!(
+                                    event
+                                        .get("_ingest._value.IndicatorId")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
                             )?;
                             out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
@@ -840,10 +841,11 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             event.append(
                                 "threat.indicator.name",
-                                event
-                                    .get("_ingest._value.DisplayName")
-                                    .cloned()
-                                    .unwrap_or(Value::Null),
+                                json!(
+                                    event
+                                        .get("_ingest._value.DisplayName")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
                             )?;
                             out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
@@ -866,10 +868,11 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             event.append(
                                 "threat.indicator.description",
-                                event
-                                    .get("_ingest._value.Description")
-                                    .cloned()
-                                    .unwrap_or(Value::Null),
+                                json!(
+                                    event
+                                        .get("_ingest._value.Description")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
                             )?;
                             out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
@@ -917,10 +920,11 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             event.append(
                                 "related.hosts",
-                                event
-                                    .get("_ingest._value.Hostname")
-                                    .cloned()
-                                    .unwrap_or(Value::Null),
+                                json!(
+                                    event
+                                        .get("_ingest._value.Hostname")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
                             )?;
                             out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
@@ -1256,10 +1260,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event
-                            .get("threat.indicator.ip")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("threat.indicator.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1271,10 +1276,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("crowdstrike.event.SHA256String")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.SHA256String")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1286,10 +1292,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("crowdstrike.event.MD5String")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.MD5String")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1301,10 +1308,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.DomainName")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.DomainName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 event.remove("crowdstrike.event.ComputerName");
@@ -2062,10 +2070,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("file.hash.sha256")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.sha256")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 if let Some(v) = event
@@ -2352,7 +2361,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.sha1")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -2364,10 +2377,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("file.hash.sha256")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.sha256")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -2379,7 +2393,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.md5")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 if event.has("crowdstrike.event.FileName") {
@@ -2413,40 +2431,44 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "threat.technique.name",
-                        event
-                            .get("crowdstrike.event.Technique")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Technique")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TechniqueId") };
                 if _cond {
                     event.append(
                         "threat.technique.id",
-                        event
-                            .get("crowdstrike.event.TechniqueId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TechniqueId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.Tactic") };
                 if _cond {
                     event.append(
                         "threat.tactic.name",
-                        event
-                            .get("crowdstrike.event.Tactic")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Tactic")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TacticId") };
                 if _cond {
                     event.append(
                         "threat.tactic.id",
-                        event
-                            .get("crowdstrike.event.TacticId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TacticId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // End nested pipeline: "detection_summary"
@@ -2840,7 +2862,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.sha1")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -2852,10 +2878,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("file.hash.sha256")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.sha256")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -2867,7 +2894,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("file.hash.md5")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 if event.has("crowdstrike.event.FileName") {
@@ -2901,40 +2932,44 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "threat.technique.name",
-                        event
-                            .get("crowdstrike.event.Technique")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Technique")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TechniqueId") };
                 if _cond {
                     event.append(
                         "threat.technique.id",
-                        event
-                            .get("crowdstrike.event.TechniqueId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TechniqueId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.Tactic") };
                 if _cond {
                     event.append(
                         "threat.tactic.name",
-                        event
-                            .get("crowdstrike.event.Tactic")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Tactic")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TacticId") };
                 if _cond {
                     event.append(
                         "threat.tactic.id",
-                        event
-                            .get("crowdstrike.event.TacticId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TacticId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // End nested pipeline: "detection_summary"
@@ -3017,40 +3052,44 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "threat.technique.name",
-                        event
-                            .get("crowdstrike.event.Technique")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Technique")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TechniqueId") };
                 if _cond {
                     event.append(
                         "threat.technique.id",
-                        event
-                            .get("crowdstrike.event.TechniqueId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TechniqueId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.Tactic") };
                 if _cond {
                     event.append(
                         "threat.tactic.name",
-                        event
-                            .get("crowdstrike.event.Tactic")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Tactic")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TacticId") };
                 if _cond {
                     event.append(
                         "threat.tactic.id",
-                        event
-                            .get("crowdstrike.event.TacticId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TacticId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 if event.has("crowdstrike.event.ComputerName") {
@@ -3309,10 +3348,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "rule.author",
-                        event
-                            .get("crowdstrike.event.Author")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Author")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 if event.has("crowdstrike.event.Name") {
@@ -3405,10 +3445,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event
-                            .get("crowdstrike.event.IPV4Addresses")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.IPV4Addresses")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -3444,10 +3485,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event
-                            .get("crowdstrike.event.IPV6Addresses")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.IPV6Addresses")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -3483,10 +3525,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.HostNames")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.HostNames")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -3522,10 +3565,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.DomainNames")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.DomainNames")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -3561,10 +3605,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("crowdstrike.event.SHA256Hashes")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.SHA256Hashes")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -3600,10 +3645,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hash",
-                        event
-                            .get("crowdstrike.event.MD5Hashes")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.MD5Hashes")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -3639,10 +3685,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.user",
-                        event
-                            .get("crowdstrike.event.Users")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Users")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("message") };
@@ -3865,10 +3912,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "host.ip",
-                        event
-                            .get("crowdstrike.event.SourceEndpointIpAddress")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.SourceEndpointIpAddress")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.SourceEndpointIpAddress") };
@@ -3886,40 +3934,44 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "threat.technique.name",
-                        event
-                            .get("crowdstrike.event.Technique")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Technique")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TechniqueId") };
                 if _cond {
                     event.append(
                         "threat.technique.id",
-                        event
-                            .get("crowdstrike.event.TechniqueId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TechniqueId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.Tactic") };
                 if _cond {
                     event.append(
                         "threat.tactic.name",
-                        event
-                            .get("crowdstrike.event.Tactic")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Tactic")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TacticId") };
                 if _cond {
                     event.append(
                         "threat.tactic.id",
-                        event
-                            .get("crowdstrike.event.TacticId")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TacticId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("message") };
@@ -4186,70 +4238,77 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.TargetEndpointHostName")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TargetEndpointHostName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TargetDomain") };
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.TargetDomain")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TargetDomain")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.TargetAccountName") };
                 if _cond {
                     event.append(
                         "related.user",
-                        event
-                            .get("crowdstrike.event.TargetAccountName")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.TargetAccountName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalAccountDomain") };
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.AdditionalAccountDomain")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.AdditionalAccountDomain")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalAccountName") };
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.AdditionalAccountName")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.AdditionalAccountName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointHostName") };
                 if _cond {
                     event.append(
                         "related.hosts",
-                        event
-                            .get("crowdstrike.event.AdditionalEndpointHostName")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.AdditionalEndpointHostName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointIpAddress") };
                 if _cond {
                     event.append(
                         "related.ip",
-                        event
-                            .get("crowdstrike.event.AdditionalEndpointIpAddress")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.AdditionalEndpointIpAddress")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // End nested pipeline: "ipd_detection_summary"
@@ -4428,10 +4487,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "host.ip",
-                        event
-                            .get("crowdstrike.event.EndpointIp")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.EndpointIp")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.EndpointIp") };
@@ -4761,20 +4821,22 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "threat.tactic.name",
-                        event
-                            .get("crowdstrike.event.Tactic")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Tactic")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
                 if _cond {
                     event.append(
                         "threat.technique.name",
-                        event
-                            .get("crowdstrike.event.Technique")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.Technique")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // End nested pipeline: "cspm_events"
@@ -4956,10 +5018,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "event.action",
-                        event
-                            .get("crowdstrike.event.OperationName")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("crowdstrike.event.OperationName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { !event.has_value("event.action") };
@@ -5081,10 +5144,11 @@ impl Transform for Default {
                         event.set("process.pid", converted)?;
                     }
                 }
-                let v = event
-                    .get("crowdstrike.event.ImageFileName")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("crowdstrike.event.ImageFileName")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("process.executable", v)?;
                 }
@@ -5688,15 +5752,20 @@ impl Transform for Default {
                 // End nested pipeline: "scheduled_report_notification_event"
             }
 
-            let v = event.get("process.pid").cloned().unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("process.pid")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("process.entity_id", v)?;
             }
 
-            let v = event
-                .get("process.parent.pid")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("process.parent.pid")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("process.parent.entity_id", v)?;
             }
@@ -5722,7 +5791,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -5730,7 +5803,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.email").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.email")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -5741,7 +5818,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -5754,7 +5835,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("destination.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -5765,7 +5850,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -5940,10 +6029,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "threat.tactic.name",
-                            event
-                                .get("_ingest._value.Tactic")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value.Tactic")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -5966,10 +6056,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "threat.tactic.id",
-                            event
-                                .get("_ingest._value.TacticID")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value.TacticID")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -5992,10 +6083,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "threat.technique.name",
-                            event
-                                .get("_ingest._value.Technique")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value.Technique")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -6018,10 +6110,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "threat.technique.id",
-                            event
-                                .get("_ingest._value.TechniqueID")
-                                .cloned()
-                                .unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value.TechniqueID")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }

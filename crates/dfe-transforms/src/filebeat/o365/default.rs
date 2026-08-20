@@ -2032,7 +2032,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("client.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("client.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2040,7 +2044,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("server.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("server.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2048,7 +2056,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2056,10 +2068,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("user.target.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.target.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2067,7 +2080,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("file.owner").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.owner")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2075,10 +2092,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("o365audit.Parameters.User")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Parameters.User")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2164,10 +2182,11 @@ impl Transform for Default {
                         .is_some_and(|s| !s.is_empty())
             };
             if _cond {
-                let v = event
-                    .get("o365audit.UserType")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("o365audit.UserType")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("event.provider", v)?;
                 }
@@ -2182,10 +2201,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.message_id",
-                    event
-                        .get("o365audit.InternetMessageId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.InternetMessageId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2198,10 +2218,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.message_id",
-                    event
-                        .get("o365audit.Item.InternetMessageId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Item.InternetMessageId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2214,10 +2235,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.local_id",
-                    event
-                        .get("o365audit.NetworkMessageId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.NetworkMessageId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2230,10 +2252,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.sender.address",
-                    event
-                        .get("o365audit.P1Sender")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.P1Sender")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2246,10 +2269,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.sender.address",
-                    event
-                        .get("source.user.email")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.email")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2268,7 +2292,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.to.address",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2289,7 +2317,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.to.address",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2307,10 +2339,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("o365audit.SenderIp")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.SenderIp")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2323,10 +2356,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("o365audit.SenderIP")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.SenderIP")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2339,10 +2373,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.subject",
-                    event
-                        .get("o365audit.Subject")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Subject")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2355,10 +2390,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.subject",
-                    event
-                        .get("o365audit.Item.Subject")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Item.Subject")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2639,10 +2675,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("o365audit.Data.f3u")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.f3u")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2653,10 +2690,11 @@ impl Transform for Default {
                         .is_some_and(|s| s.split('@').count() == 2)
             };
             if _cond {
-                let v = event
-                    .get("o365audit.Data.f3u")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("o365audit.Data.f3u")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("user.email", v)?;
                 }
@@ -2670,10 +2708,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("o365audit.Data.suid")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.suid")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2686,10 +2725,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.sender.address",
-                    event
-                        .get("o365audit.Data.tsd")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.tsd")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2701,10 +2741,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("o365audit.Data.tsd")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.tsd")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2717,10 +2758,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.to.address",
-                    event
-                        .get("o365audit.Data.trc")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.trc")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2732,10 +2774,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("o365audit.Data.trc")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.trc")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2748,10 +2791,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.local_id",
-                    event
-                        .get("o365audit.Data.aii")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.aii")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2764,10 +2808,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.message_id",
-                    event
-                        .get("o365audit.Data.imsgid")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.imsgid")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2780,10 +2825,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "email.subject",
-                    event
-                        .get("o365audit.Data.ms")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("o365audit.Data.ms")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2821,7 +2867,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.message_id",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2844,7 +2894,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.local_id",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2865,7 +2919,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.sender.address",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2886,7 +2944,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.from.address",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2907,7 +2969,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.to.address",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2947,7 +3013,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "related.ip",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2968,7 +3038,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "email.subject",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -2985,7 +3059,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "related.user",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -3274,7 +3352,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.id").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3282,7 +3364,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.target.id").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.target.id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3290,10 +3376,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("user.target.email")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.target.email")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3301,7 +3388,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.email").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.email")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3309,7 +3400,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3321,7 +3416,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.hostname").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.hostname")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3329,7 +3428,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("user.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3341,10 +3444,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("user.target.domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.target.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3352,7 +3456,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("source.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3360,10 +3468,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("destination.domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3371,7 +3480,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("url.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("url.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3379,7 +3492,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("server.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("server.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3387,7 +3504,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("client.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("client.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3395,7 +3516,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.md5")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3403,7 +3528,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha1")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3411,10 +3540,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("file.hash.sha256")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha256")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3422,10 +3552,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("file.hash.sha512")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha512")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

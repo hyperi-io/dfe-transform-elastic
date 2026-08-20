@@ -1419,7 +1419,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1427,7 +1431,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("destination.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1435,7 +1443,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("source.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1443,10 +1455,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("destination.domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1454,10 +1467,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("source.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

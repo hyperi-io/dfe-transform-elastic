@@ -331,6 +331,79 @@ pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     None
 }
 
+/// `if (x.equalsIgnoreCase('low') || x.equalsIgnoreCase('info')) { ctx.t = 21 }`
+/// `else if (x.equalsIgnoreCase('medium')) { ctx.t = 47 } ...`
+///
+/// Two things the `==` ladder cannot read: an arm matching several literals,
+/// and a numeric right-hand side. `CrowdStrike`'s `SeverityName` mapping is
+/// both, and severity ladders are written this way across the vendor pipelines.
+///
+/// Only the FIRST matching arm fires, which is what an `else if` chain does.
+fn try_case_insensitive_ladder(event: &mut Event, script: &str) -> bool {
+    let Some(first) = script.find("if (") else {
+        return false;
+    };
+    let Some((var, _)) = script[first + "if (".len()..].split_once('.') else {
+        return false;
+    };
+    let Some(subject) = ctx_path_bound_to(script, var.trim()) else {
+        return false;
+    };
+    // Absent is not a miss: every one of these scripts is gated on the field
+    // being a String, so it never runs without one.
+    let Some(value) = event.get_str(&subject).map(str::to_lowercase) else {
+        return true;
+    };
+
+    for segment in script.split("if (").skip(1) {
+        let Some((cond, body)) = segment.split_once(") {") else {
+            continue;
+        };
+        let matched = cond
+            .split(".equalsIgnoreCase(")
+            .skip(1)
+            .filter_map(quoted_first)
+            .any(|literal| literal.to_lowercase() == value);
+        if !matched {
+            continue;
+        }
+
+        let Some((lhs, rhs)) = body.split(';').next().and_then(|s| s.split_once('=')) else {
+            continue;
+        };
+        let Some(target) = lhs.trim().strip_prefix("ctx.") else {
+            continue;
+        };
+        let Some(assigned) = painless_literal(rhs.trim()) else {
+            continue;
+        };
+        let _ = event.set(&crate::painless_params::clean_path(target), assigned);
+        return true;
+    }
+    true
+}
+
+/// A Painless literal as the JSON value it stands for.
+///
+/// A trailing `L` is Painless's long suffix and is not part of the number.
+fn painless_literal(text: &str) -> Option<Value> {
+    if let Some(quoted) = quoted_first(text) {
+        return Some(Value::String(quoted));
+    }
+    let text = text.trim().trim_end_matches(['L', 'l']);
+    if let Ok(int) = text.parse::<i64>() {
+        return Some(json!(int));
+    }
+    if let Ok(float) = text.parse::<f64>() {
+        return Some(json!(float));
+    }
+    match text {
+        "true" => Some(Value::Bool(true)),
+        "false" => Some(Value::Bool(false)),
+        _ => None,
+    }
+}
+
 /// Run an equality ladder: look the subject up, assign the matching arm.
 fn try_ladder(event: &mut Event, ladder: &Ladder<'_>) -> bool {
     let subject = event
@@ -1277,6 +1350,13 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && normalised.contains("1000000000")
     {
         return try_duration_to_nanos(event, &normalised);
+    }
+
+    // Pattern: a case-insensitive ladder mapping one field onto a literal.
+    // Tried before the `==` ladder, which cannot read either the multi-literal
+    // arms or the numeric right-hand sides.
+    if normalised.contains(".equalsIgnoreCase(") && normalised.contains("else if (") {
+        return try_case_insensitive_ladder(event, &normalised);
     }
 
     // Pattern: an equality ladder mapping one field onto string literals.

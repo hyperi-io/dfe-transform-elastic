@@ -2160,7 +2160,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338001") };
             if _cond {
-                let v = event.get("source.domain").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -2293,10 +2297,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338002") };
             if _cond {
-                let v = event
-                    .get("destination.domain")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -2719,7 +2724,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338005") };
             if _cond {
-                let v = event.get("source.domain").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -2866,10 +2875,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338006") };
             if _cond {
-                let v = event
-                    .get("destination.domain")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -3278,7 +3288,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338101") };
             if _cond {
-                let v = event.get("source.domain").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -3411,10 +3425,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338102") };
             if _cond {
-                let v = event
-                    .get("destination.domain")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -3809,7 +3824,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338201") };
             if _cond {
-                let v = event.get("source.domain").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -3956,10 +3975,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338202") };
             if _cond {
-                let v = event
-                    .get("destination.domain")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -4106,7 +4126,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338203") };
             if _cond {
-                let v = event.get("source.domain").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -4253,10 +4277,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338204") };
             if _cond {
-                let v = event
-                    .get("destination.domain")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.domain")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
                 }
@@ -4325,10 +4350,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338301") };
             if _cond {
-                let v = event
-                    .get("destination.address")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.address")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("client.address", v)?;
                 }
@@ -4336,10 +4362,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338301") };
             if _cond {
-                let v = event
-                    .get("destination.port")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.port")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("client.port", v)?;
                 }
@@ -4347,7 +4374,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338301") };
             if _cond {
-                let v = event.get("source.address").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.address")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.address", v)?;
                 }
@@ -4355,7 +4386,11 @@ impl Transform for Default {
 
             let _cond = { event.get_str("_temp_.cisco.message_id") == Some("338301") };
             if _cond {
-                let v = event.get("source.port").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("source.port")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("server.port", v)?;
                 }
@@ -6017,7 +6052,11 @@ impl Transform for Default {
                 event.set("event.action", json!("malware-detected"))?;
             }
 
-            let v = event.get("event.duration").cloned().unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("event.duration")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("_temp_.duration_hms", v)?;
             }
@@ -6187,10 +6226,11 @@ impl Transform for Default {
             if _cond {
                 event.set(
                     "source.user.name",
-                    event
-                        .get("_temp_.cisco.source_username")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp_.cisco.source_username")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -6201,10 +6241,11 @@ impl Transform for Default {
             if _cond {
                 event.set(
                     "destination.user.name",
-                    event
-                        .get("_temp_.cisco.destination_username")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp_.cisco.destination_username")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7088,10 +7129,11 @@ impl Transform for Default {
                     != event.get("source.ip").filter(|v| !v.is_null())
             };
             if _cond {
-                let v = event
-                    .get("_temp_.cisco.mapped_source_ip")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("_temp_.cisco.mapped_source_ip")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("source.nat.ip", v)?;
                 }
@@ -7118,10 +7160,11 @@ impl Transform for Default {
                     != event.get("source.port").filter(|v| !v.is_null())
             };
             if _cond {
-                let v = event
-                    .get("_temp_.cisco.mapped_source_port")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("_temp_.cisco.mapped_source_port")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("source.nat.port", v)?;
                 }
@@ -7168,10 +7211,11 @@ impl Transform for Default {
                     != event.get("destination.ip").filter(|v| !v.is_null())
             };
             if _cond {
-                let v = event
-                    .get("_temp_.cisco.mapped_destination_ip")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("_temp_.cisco.mapped_destination_ip")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("destination.nat.ip", v)?;
                 }
@@ -7198,10 +7242,11 @@ impl Transform for Default {
                     != event.get("destination.port").filter(|v| !v.is_null())
             };
             if _cond {
-                let v = event
-                    .get("_temp_.cisco.mapped_destination_port")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("_temp_.cisco.mapped_destination_port")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("destination.nat.port", v)?;
                 }
@@ -7400,7 +7445,11 @@ impl Transform for Default {
             if _cond {
                 event.set(
                     "_temp_.url_domain",
-                    event.get("url.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("url.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7413,10 +7462,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "url.domain",
-                    event
-                        .get("_temp_.url_domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp_.url_domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7521,10 +7571,11 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("user.name") };
             if _cond {
-                let v = event
-                    .get("destination.user.name")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("destination.user.name")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("user.name", v)?;
                 }
@@ -7539,7 +7590,11 @@ impl Transform for Default {
                 }
             }
 
-            let v = event.get("host.hostname").cloned().unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("host.hostname")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("observer.hostname", v)?;
             }
@@ -7550,18 +7605,20 @@ impl Transform for Default {
 
             event.set("observer.product", json!("asa"))?;
 
-            let v = event
-                .get("cisco.asa.destination_interface")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("cisco.asa.destination_interface")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("observer.egress.interface.name", v)?;
             }
 
-            let v = event
-                .get("cisco.asa.source_interface")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("cisco.asa.source_interface")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("observer.ingress.interface.name", v)?;
             }
@@ -7570,7 +7627,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7578,7 +7639,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.nat.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.nat.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7586,7 +7651,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("destination.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7594,10 +7663,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("destination.nat.ip")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.nat.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7605,10 +7675,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("cisco.asa.pool_address")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("cisco.asa.pool_address")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7620,7 +7691,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7634,10 +7709,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("server.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("server.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7651,10 +7727,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("source.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7668,10 +7745,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("destination.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7679,10 +7757,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("file.hash.sha256")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha256")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7695,7 +7774,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.hostname").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.hostname")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7708,10 +7791,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("observer.hostname")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("observer.hostname")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7724,10 +7808,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("destination.domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7740,7 +7825,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("source.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7753,10 +7842,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("source.user.domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -7769,10 +7859,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("destination.user.domain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.user.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

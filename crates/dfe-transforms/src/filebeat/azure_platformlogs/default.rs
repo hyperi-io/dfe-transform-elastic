@@ -180,10 +180,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.set(
                         "temp_properties",
-                        event
-                            .get("azure.platformlogs.properties")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("azure.platformlogs.properties")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -403,7 +404,11 @@ impl Transform for Default {
                 event.remove("azure.platformlogs.callerIpAddress");
             }
 
-            let v = event.get("source.ip").cloned().unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("source.ip")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("client.ip", v)?;
             }
@@ -412,7 +417,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

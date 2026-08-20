@@ -28,10 +28,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "rule.author",
-                    event
-                        .get("crowdstrike.event.Author")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Author")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -132,10 +133,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("crowdstrike.event.IPV4Addresses")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.IPV4Addresses")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -173,10 +175,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("crowdstrike.event.IPV6Addresses")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.IPV6Addresses")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -214,10 +217,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.HostNames")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.HostNames")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -255,10 +259,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.DomainNames")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.DomainNames")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -296,10 +301,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("crowdstrike.event.SHA256Hashes")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.SHA256Hashes")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -337,10 +343,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("crowdstrike.event.MD5Hashes")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.MD5Hashes")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -378,10 +385,11 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("crowdstrike.event.Users")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Users")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

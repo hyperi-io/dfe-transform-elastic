@@ -564,10 +564,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -608,10 +609,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -652,10 +654,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -696,10 +699,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -853,12 +857,11 @@ impl Transform for Decryption {
             if _cond {
                 event.set(
                     "tls.client.x509.subject.common_name",
-                    Value::Array(vec![
+                    Value::Array(vec![json!(
                         event
                             .get("tls.client.x509.subject.common_name")
-                            .cloned()
-                            .unwrap_or(Value::Null),
-                    ]),
+                            .map_or_else(String::new, painless_to_string)
+                    )]),
                 )?;
             }
 
@@ -878,12 +881,11 @@ impl Transform for Decryption {
             if _cond {
                 event.set(
                     "tls.client.x509.issuer.common_name",
-                    Value::Array(vec![
+                    Value::Array(vec![json!(
                         event
                             .get("tls.client.x509.issuer.common_name")
-                            .cloned()
-                            .unwrap_or(Value::Null),
-                    ]),
+                            .map_or_else(String::new, painless_to_string)
+                    )]),
                 )?;
             }
 

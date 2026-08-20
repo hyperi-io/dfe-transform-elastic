@@ -104,10 +104,11 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.address") };
             if _cond {
-                let v = event
-                    .get("azure.signinlogs.properties.ipaddress")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("azure.signinlogs.properties.ipaddress")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("source.address", v)?;
                 }
@@ -115,10 +116,11 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.address") };
             if _cond {
-                let v = event
-                    .get("azure.signinlogs.properties.ip_address")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("azure.signinlogs.properties.ip_address")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("source.address", v)?;
                 }
@@ -167,11 +169,19 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
-            let v = event.get("source.ip").cloned().unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("source.ip")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("client.ip", v)?;
             }
@@ -402,10 +412,11 @@ impl Transform for Default {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            let v = event
-                .get("azure.signinlogs.properties.id")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("azure.signinlogs.properties.id")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("event.id", v)?;
             }
@@ -469,7 +480,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.user",
-                        event.get("user.id").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("user.id")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -481,7 +496,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.user",
-                        event.get("user.name").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("user.name")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -493,7 +512,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "related.user",
-                        event.get("user.full_name").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("user.full_name")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -608,10 +631,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.signinlogs.properties.app_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.signinlogs.properties.app_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -624,10 +648,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.signinlogs.properties.resource_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.signinlogs.properties.resource_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -648,10 +673,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.signinlogs.properties.service_principal_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.signinlogs.properties.service_principal_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -664,10 +690,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.signinlogs.properties.service_principal_credential_key_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.signinlogs.properties.service_principal_credential_key_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -680,10 +707,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.signinlogs.properties.user_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.signinlogs.properties.user_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -696,10 +724,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.signinlogs.properties.device_detail.device_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.signinlogs.properties.device_detail.device_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

@@ -18,10 +18,11 @@ impl Transform for Traffic {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("event.kind", json!("event"))?;
 
-            let v = event
-                .get("fortinet.firewall.action")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("fortinet.firewall.action")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("event.action", v)?;
             }
@@ -106,10 +107,11 @@ impl Transform for Traffic {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
@@ -323,10 +325,11 @@ impl Transform for Traffic {
             if _cond {
                 event.append(
                     "email.to.address",
-                    event
-                        .get("fortinet.firewall.dstcollectedemail")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.dstcollectedemail")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -489,10 +492,11 @@ impl Transform for Traffic {
             if _cond {
                 event.append(
                     "email.from.address",
-                    event
-                        .get("fortinet.firewall.collectedemail")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.collectedemail")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -566,10 +570,11 @@ impl Transform for Traffic {
                 }
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");

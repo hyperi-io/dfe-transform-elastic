@@ -150,10 +150,11 @@ impl Transform for Airmarshal {
             if _cond {
                 event.append(
                     "observer.mac",
-                    event
-                        .get("_temp.observer.mac")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp.observer.mac")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -180,10 +181,11 @@ impl Transform for Airmarshal {
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }

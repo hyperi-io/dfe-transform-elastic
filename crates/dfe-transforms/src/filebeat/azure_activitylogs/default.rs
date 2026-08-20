@@ -126,7 +126,11 @@ impl Transform for Default {
                 event.remove("azure.activitylogs.callerIpAddress");
             }
 
-            let v = event.get("source.ip").cloned().unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("source.ip")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("client.ip", v)?;
             }
@@ -135,7 +139,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -637,10 +645,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                let v = event
-                    .get("azure.activitylogs.identity.claims_initiated_by_user.name")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("azure.activitylogs.identity.claims_initiated_by_user.name")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("user.email", v)?;
                 }
@@ -648,10 +657,11 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("user.name") };
             if _cond {
-                let v = event
-                    .get("azure.activitylogs.identity.claims_initiated_by_user.name")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("azure.activitylogs.identity.claims_initiated_by_user.name")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("user.name", v)?;
                 }
@@ -661,7 +671,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -691,10 +705,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.resource_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.resource_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -707,10 +722,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.entity",
-                    event
-                        .get("azure.activitylogs.identity.authorization.evidence.principal_id")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("azure.activitylogs.identity.authorization.evidence.principal_id")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

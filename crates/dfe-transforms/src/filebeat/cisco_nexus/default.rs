@@ -511,7 +511,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.hostname").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.hostname")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -519,10 +523,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "observer.ip",
-                    event
-                        .get("cisco_nexus.log.ip_address")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("cisco_nexus.log.ip_address")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -530,10 +535,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("cisco_nexus.log.ip_address")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("cisco_nexus.log.ip_address")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -1559,14 +1565,22 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event.get("source.ip").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("source.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("user.name") };
                 if _cond {
                     event.append(
                         "related.user",
-                        event.get("user.name").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("user.name")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // End nested pipeline: "pipeline_extract_message"

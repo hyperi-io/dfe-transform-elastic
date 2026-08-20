@@ -28,10 +28,11 @@ impl Transform for Login {
             if _cond {
                 event.set(
                     "user.name",
-                    event
-                        .get("source.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -39,10 +40,11 @@ impl Transform for Login {
             if _cond {
                 event.append(
                     "user.roles",
-                    event
-                        .get("fortinet.firewall.adminprof")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.adminprof")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -50,10 +52,11 @@ impl Transform for Login {
             if _cond {
                 event.append(
                     "source.user.roles",
-                    event
-                        .get("fortinet.firewall.adminprof")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.adminprof")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -394,7 +397,11 @@ impl Transform for Login {
             if _cond {
                 event.append(
                     "user.roles",
-                    event.get("_tmp.user.roles").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_tmp.user.roles")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -402,7 +409,11 @@ impl Transform for Login {
             if _cond {
                 event.append(
                     "source.user.roles",
-                    event.get("_tmp.user.roles").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_tmp.user.roles")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

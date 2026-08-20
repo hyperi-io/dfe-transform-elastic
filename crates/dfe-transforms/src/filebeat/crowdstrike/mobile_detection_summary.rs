@@ -91,10 +91,11 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -102,10 +103,11 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TechniqueId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -113,10 +115,11 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -124,10 +127,11 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TacticId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

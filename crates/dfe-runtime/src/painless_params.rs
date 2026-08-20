@@ -100,7 +100,162 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_add_unique_row(event, &normalised, params);
     }
 
+    // Pattern: pick one framework name from the prefixes of several ID lists.
+    if normalised.contains("new HashSet()") && normalised.contains("params.framework_preference") {
+        return try_framework_preference(event, &normalised, params);
+    }
+
     false
+}
+
+/// Collect a set of framework names from several ID lists, then pick one by a
+/// declared preference order.
+///
+/// `CrowdStrike`'s `threat.framework`: a tactic id starting `TA` means MITRE, one
+/// starting `CS` means Falcon, and a tactic NAME in the params list means Falcon
+/// too. Every name, prefix and list member is read out of the script and its
+/// params rather than transcribed, so the vendor extending any of them is picked
+/// up by regenerating.
+fn try_framework_preference(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some(Value::Array(preference)) = params.get("framework_preference") else {
+        return false;
+    };
+
+    let mut found: Vec<Value> = Vec::new();
+    for (var, block) in loop_blocks(script) {
+        let Some(path) = crate::painless_common::ctx_path_bound_to(script, &var) else {
+            continue;
+        };
+        for member in string_members(event, &path) {
+            for (prefix, key) in prefix_rules(block) {
+                if member.starts_with(&prefix)
+                    && let Some(name) = params.get(&key)
+                    && !found.contains(name)
+                {
+                    found.push(name.clone());
+                }
+            }
+            for (list_key, key) in membership_rules(block) {
+                let Some(Value::Array(list)) = params.get(&list_key) else {
+                    continue;
+                };
+                let lowered = Value::String(member.to_lowercase());
+                if list.contains(&lowered)
+                    && let Some(name) = params.get(&key)
+                    && !found.contains(name)
+                {
+                    found.push(name.clone());
+                }
+            }
+        }
+    }
+
+    if found.is_empty() {
+        return true;
+    }
+    let chosen = if found.len() == 1 {
+        found[0].clone()
+    } else {
+        // The preference list decides; a framework absent from it falls back to
+        // whichever was collected first, which is what the script's final line
+        // does with an unordered set.
+        preference
+            .iter()
+            .find(|wanted| found.contains(wanted))
+            .unwrap_or(&found[0])
+            .clone()
+    };
+    let _ = event.set("threat.framework", chosen);
+    true
+}
+
+/// Each `for (String t: <var>) { ... }` in the script, as its variable and the
+/// text of its body.
+///
+/// The body runs to the next loop header, which is enough: the rules inside one
+/// are all that is read from it.
+fn loop_blocks(script: &str) -> Vec<(String, &str)> {
+    const HEADER: &str = "for (String t: ";
+
+    let mut blocks = Vec::new();
+    let parts: Vec<&str> = script.split(HEADER).collect();
+    for part in parts.iter().skip(1) {
+        let Some((var, body)) = part.split_once(')') else {
+            continue;
+        };
+        blocks.push((var.trim().to_string(), body));
+    }
+    blocks
+}
+
+/// Every `t.startsWith('<prefix>')` paired with the `params.<key>` its arm adds.
+fn prefix_rules(block: &str) -> Vec<(String, String)> {
+    rules_in(block, ".startsWith(")
+}
+
+/// Every `params.<list>.contains(...)` paired with the `params.<key>` its arm
+/// adds.
+fn membership_rules(block: &str) -> Vec<(String, String)> {
+    const MARKER: &str = ".contains(";
+
+    let mut rules = Vec::new();
+    let mut at = 0;
+    while let Some(found) = block[at..].find(MARKER) {
+        let call = at + found;
+        at = call + MARKER.len();
+
+        // The list is whatever `params.` name sits immediately before the call.
+        let head = &block[..call];
+        let Some(start) = head.rfind("params.") else {
+            continue;
+        };
+        let list = &head[start + "params.".len()..];
+        if list.is_empty() || !list.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        let Some(key) = added_params_key(&block[at..]) else {
+            continue;
+        };
+        rules.push((list.to_string(), key));
+    }
+    rules
+}
+
+/// The `(<literal>, params.<key>)` pairs an arm opened by `marker` names.
+fn rules_in(block: &str, marker: &str) -> Vec<(String, String)> {
+    let mut rules = Vec::new();
+    for segment in block.split(marker).skip(1) {
+        let Some(literal) = quoted_after(segment, "") else {
+            continue;
+        };
+        let Some(key) = added_params_key(segment) else {
+            continue;
+        };
+        rules.push((literal, key));
+    }
+    rules
+}
+
+/// The params key of the FIRST `frameworks.add(params.<key>)` in `text`.
+fn added_params_key(text: &str) -> Option<String> {
+    let start = text.find(".add(params.")? + ".add(params.".len();
+    let tail = &text[start..];
+    let end = tail
+        .find(|c: char| !c.is_alphanumeric() && c != '_')
+        .unwrap_or(tail.len());
+    Some(tail[..end].to_string())
+}
+
+/// The string members of a field, whether it holds one or a list of them.
+fn string_members(event: &Event, path: &str) -> Vec<String> {
+    match event.get(path) {
+        Some(Value::Array(items)) => items
+            .iter()
+            .filter_map(|v| v.as_str().map(str::to_owned))
+            .collect(),
+        Some(Value::String(one)) => vec![one.clone()],
+        _ => Vec::new(),
+    }
 }
 
 /// `def p = params[ctx.<subject>];` then, per column,
@@ -803,6 +958,100 @@ mod tests {
             event.get("event.category"),
             Some(&json!(["authentication"]))
         );
+    }
+
+    /// Verbatim from `pipelines/crowdstrike/default.yml`, trimmed to the loops
+    /// that decide the answer.
+    const FRAMEWORK: &str = "def tid = ctx.threat.tactic?.id;\n\
+        def nid = ctx.threat.technique?.id;\n\
+        def tname = ctx.threat.tactic?.name;\n\
+        Set frameworks = new HashSet();\n\
+        if (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    \
+        if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    \
+        else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n\
+        if (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    \
+        if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n\
+        if (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    \
+        if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      \
+        frameworks.add(params.framework_cs);\n    }\n  }\n}\n\
+        for (def preferred : params.framework_preference) {\n  \
+        if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    \
+        return;\n  }\n}";
+
+    fn framework_params() -> Value {
+        json!({
+            "framework_preference": ["MITRE ATT&CK", "CrowdStrike Falcon Detections Framework"],
+            "framework_cs": "CrowdStrike Falcon Detections Framework",
+            "framework_ma": "MITRE ATT&CK",
+            "falcon_tactic_names": ["malware", "exploit", "falcon overwatch"],
+        })
+    }
+
+    #[test]
+    fn framework_reads_mitre_off_a_ta_prefixed_tactic() {
+        let mut event = Event::new(json!({
+            "threat": { "tactic": { "id": ["TA0002"] } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            FRAMEWORK,
+            &framework_params()
+        ));
+        assert_eq!(event.get_str("threat.framework"), Some("MITRE ATT&CK"));
+    }
+
+    /// A tactic NAME in the params list is Falcon's own framework, and the
+    /// comparison is case-insensitive because the script lower-cases first.
+    #[test]
+    fn framework_reads_falcon_off_a_named_tactic() {
+        let mut event = Event::new(json!({
+            "threat": { "tactic": { "name": ["Falcon OverWatch"] } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            FRAMEWORK,
+            &framework_params()
+        ));
+        assert_eq!(
+            event.get_str("threat.framework"),
+            Some("CrowdStrike Falcon Detections Framework")
+        );
+    }
+
+    /// Both frameworks present is what the preference list exists for, and
+    /// MITRE is first in it.
+    #[test]
+    fn framework_follows_the_declared_preference_when_both_match() {
+        let mut event = Event::new(json!({
+            "threat": {
+                "tactic": { "id": ["CS0001", "TA0002"] },
+            },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            FRAMEWORK,
+            &framework_params()
+        ));
+        assert_eq!(event.get_str("threat.framework"), Some("MITRE ATT&CK"));
+    }
+
+    /// Nothing matching writes nothing -- the script returns early rather than
+    /// picking the first preference.
+    #[test]
+    fn framework_writes_nothing_when_no_rule_matches() {
+        let mut event = Event::new(json!({
+            "threat": { "tactic": { "id": ["XX0001"] } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            FRAMEWORK,
+            &framework_params()
+        ));
+        assert!(!event.has("threat.framework"));
     }
 
     /// An event type the table does not carry throws in Painless and the

@@ -116,10 +116,11 @@ impl Transform for FirewallMatch {
                 }
             }
 
-            let v = event
-                .get("crowdstrike.event.ImageFileName")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let v = json!(
+                event
+                    .get("crowdstrike.event.ImageFileName")
+                    .map_or_else(String::new, painless_to_string)
+            );
             if !painless_is_empty_value(&v) {
                 event.set("process.executable", v)?;
             }

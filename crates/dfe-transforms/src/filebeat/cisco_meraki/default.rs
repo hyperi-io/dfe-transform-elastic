@@ -609,10 +609,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "observer.mac",
-                        event
-                            .get("_temp.observer.mac")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_temp.observer.mac")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond =
@@ -1457,7 +1458,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "_temp.event_original_lower",
-                        event.get("event.original").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("event.original")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 if event.has("_temp.event_original_lower") {
@@ -1854,7 +1859,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event.get("server.ip").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("server.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1907,10 +1916,11 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event
-                            .get("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond =
@@ -2286,7 +2296,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         event.append(
                             "related.user",
-                            event.get("user.name").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("user.name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         Ok(())
                     })();
@@ -2297,7 +2311,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         event.append(
                             "related.user",
-                            event.get("user.email").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("user.email")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         Ok(())
                     })();
@@ -2306,14 +2324,22 @@ impl Transform for Default {
                 if _cond {
                     event.append(
                         "related.ip",
-                        event.get("source.ip").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("source.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = { event.has_value("client.ip") };
                 if _cond {
                     event.append(
                         "related.ip",
-                        event.get("client.ip").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("client.ip")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 // End nested pipeline: "events"
@@ -2886,10 +2912,11 @@ impl Transform for Default {
                 event.append("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }

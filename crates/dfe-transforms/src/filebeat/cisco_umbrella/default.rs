@@ -1575,7 +1575,11 @@ impl Transform for Default {
             if _cond {
                 event.set(
                     "user.id",
-                    event.get("user.email").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.email")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2985,7 +2989,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2993,7 +3001,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3001,7 +3013,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.nat.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.nat.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3009,7 +3025,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("destination.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3017,7 +3037,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("host.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("host.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3025,7 +3049,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event.get("source.domain").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.domain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3033,10 +3061,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("dns.question.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("dns.question.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3048,7 +3077,11 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         event.append(
                             "related.hosts",
-                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
                         )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -3061,10 +3094,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("cisco.umbrella.sha_sha256")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("cisco.umbrella.sha_sha256")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3072,10 +3106,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("file.hash.sha256")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha256")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -3096,10 +3131,11 @@ impl Transform for Default {
                 event.append("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }

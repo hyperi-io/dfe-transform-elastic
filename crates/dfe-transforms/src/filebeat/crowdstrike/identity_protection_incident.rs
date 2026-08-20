@@ -77,10 +77,11 @@ impl Transform for IdentityProtectionIncident {
             if _cond {
                 event.append(
                     "host.ip",
-                    event
-                        .get("crowdstrike.event.EndpointIp")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.EndpointIp")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

@@ -83,10 +83,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "host.ip",
-                    event
-                        .get("crowdstrike.event.SourceEndpointIpAddress")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.SourceEndpointIpAddress")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -106,10 +107,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -117,10 +119,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TechniqueId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -128,10 +131,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -139,10 +143,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TacticId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -414,10 +419,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.TargetEndpointHostName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TargetEndpointHostName")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -425,10 +431,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.TargetDomain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TargetDomain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -436,10 +443,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("crowdstrike.event.TargetAccountName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TargetAccountName")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -447,10 +455,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalAccountDomain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalAccountDomain")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -458,10 +467,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalAccountName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalAccountName")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -469,10 +479,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalEndpointHostName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalEndpointHostName")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -480,10 +491,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "related.ip",
-                    event
-                        .get("crowdstrike.event.AdditionalEndpointIpAddress")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalEndpointIpAddress")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

@@ -180,7 +180,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "related.hash",
-                    event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha1")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -193,10 +197,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("file.hash.sha256")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.sha256")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -209,7 +214,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "related.hash",
-                    event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("file.hash.md5")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -250,10 +259,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -261,10 +271,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TechniqueId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -272,10 +283,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -283,10 +295,11 @@ impl Transform for DetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TacticId")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

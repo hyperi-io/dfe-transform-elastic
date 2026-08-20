@@ -252,10 +252,11 @@ impl Transform for Globalprotect {
             if _cond {
                 event.set(
                     "source.ip",
-                    event
-                        .get("_temp_.private_ipv6")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp_.private_ipv6")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -263,7 +264,11 @@ impl Transform for Globalprotect {
             if _cond {
                 event.set(
                     "host.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -284,10 +289,11 @@ impl Transform for Globalprotect {
             if _cond {
                 event.set(
                     "source.nat.ip",
-                    event
-                        .get("_temp_.public_ipv6")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp_.public_ipv6")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

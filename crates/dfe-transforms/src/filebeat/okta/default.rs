@@ -976,7 +976,7 @@ impl Transform for Default {
                     event.has_value("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").is_some_and(|s| !s.is_empty())
                 };
                 if _cond {
-                    event.set("okta.debug_context.debug_data.risk_level", event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").cloned().unwrap_or(Value::Null))?;
+                    event.set("okta.debug_context.debug_data.risk_level", json!(event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").map_or_else(String::new, painless_to_string)))?;
                 }
                 let _cond = {
                     event.has_value("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons") && event.get_str("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.reasons").is_some_and(|s| !s.is_empty())
@@ -1006,10 +1006,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "okta.debug_context.debug_data.risk_level",
-                        event
-                            .get("okta.debug_context.debug_data.flattened.risk.level")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("okta.debug_context.debug_data.flattened.risk.level")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1022,10 +1023,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "okta.debug_context.debug_data.factor",
-                        event
-                            .get("okta.debug_context.debug_data.flattened.factor")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("okta.debug_context.debug_data.flattened.factor")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1348,10 +1350,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "okta.debug_context.debug_data.risk_level",
-                        event
-                            .get("okta.debug_context.debug_data.logOnlySecurityData.risk.level")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("okta.debug_context.debug_data.logOnlySecurityData.risk.level")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1388,10 +1391,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "okta.debug_context.debug_data.risk_level",
-                        event
-                            .get("okta.debug_context.debug_data.risk.level")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("okta.debug_context.debug_data.risk.level")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1404,10 +1408,11 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "okta.debug_context.debug_data.factor",
-                        event
-                            .get("okta.debug_context.debug_data.factor")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("okta.debug_context.debug_data.factor")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                 }
                 let _cond = {
@@ -1978,7 +1983,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.id") };
             if _cond {
-                let v = event.get("okta.actor.id").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("okta.actor.id")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("client.user.id", v)?;
                 }
@@ -1986,7 +1995,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.id") };
             if _cond {
-                let v = event.get("okta.actor.id").cloned().unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("okta.actor.id")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("source.user.id", v)?;
                 }
@@ -1994,10 +2007,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                let v = event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("okta.actor.display_name")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("client.user.full_name", v)?;
                 }
@@ -2005,10 +2019,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                let v = event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("okta.actor.display_name")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("source.user.full_name", v)?;
                 }
@@ -2016,10 +2031,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.actor.display_name") };
             if _cond {
-                let v = event
-                    .get("okta.actor.display_name")
-                    .cloned()
-                    .unwrap_or(Value::Null);
+                let v = json!(
+                    event
+                        .get("okta.actor.display_name")
+                        .map_or_else(String::new, painless_to_string)
+                );
                 if !painless_is_empty_value(&v) {
                     event.set("user.full_name", v)?;
                 }
@@ -2029,10 +2045,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("okta.actor.display_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("okta.actor.display_name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2040,10 +2057,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event
-                        .get("user.target.full_name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.target.full_name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2051,7 +2069,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.user",
-                    event.get("user.name").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("user.name")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2059,7 +2081,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 
@@ -2067,7 +2093,11 @@ impl Transform for Default {
             if _cond {
                 event.append(
                     "related.ip",
-                    event.get("destination.ip").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("destination.ip")
+                            .map_or_else(String::new, painless_to_string)
+                    ),
                 )?;
             }
 

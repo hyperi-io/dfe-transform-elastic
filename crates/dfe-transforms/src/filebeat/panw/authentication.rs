@@ -234,7 +234,11 @@ impl Transform for Authentication {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "source.user.name",
-                        event.get("_temp_.user").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_temp_.user")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -251,10 +255,11 @@ impl Transform for Authentication {
                 let _ = (|| -> Result<()> {
                     event.append(
                         "source.user.name",
-                        event
-                            .get("panw.panos.normalize_user")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.normalize_user")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
