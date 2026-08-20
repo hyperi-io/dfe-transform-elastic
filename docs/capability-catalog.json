@@ -49,6 +49,18 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.cisco_asa.default",
+        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_ftd.default",
+        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.cisco_ios.default",
         "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
         "maturity": "beta"
@@ -63,6 +75,12 @@
         "kind": "service",
         "name": "filebeat.cisco_nexus.default",
         "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_umbrella.default",
+        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
         "maturity": "beta"
       },
       {

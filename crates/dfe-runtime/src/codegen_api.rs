@@ -280,7 +280,11 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // containing %{SPACE} match arbitrary text -- 152 sites' worth.
         "SPACE" => r"\s*",
         "TIME" => TIME,
-        "IPORHOST" => r"(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[a-zA-Z0-9._-]+)",
+        "IPORHOST" | "SYSLOGHOST" => r"(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[a-zA-Z0-9._-]+)",
+        // Elastic accepts the abbreviation or the full name, either case.
+        "DAY" => {
+            r"(?i:Mon(?:day)?|Tue(?:sday)?|Wed(?:nesday)?|Thu(?:rsday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)"
+        }
         "SYSLOGPRI" => r"<\d+>",
         "SYSLOG5424PRI" => r"<\d{1,5}>",
         // Printable ASCII minus space, `=`, `]` and `"` -- RFC 5424's own

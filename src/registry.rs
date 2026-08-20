@@ -80,6 +80,16 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
         Origin::Api,
     ),
     (
+        "filebeat.cisco_asa.default",
+        &filebeat::cisco_asa::default::Default,
+        Origin::Syslog(Framing::Line),
+    ),
+    (
+        "filebeat.cisco_ftd.default",
+        &filebeat::cisco_ftd::default::Default,
+        Origin::Syslog(Framing::Line),
+    ),
+    (
         "filebeat.cisco_ios.default",
         &filebeat::cisco_ios::default::Default,
         Origin::Syslog(Framing::Line),
@@ -93,6 +103,11 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
         "filebeat.cisco_nexus.default",
         &filebeat::cisco_nexus::default::Default,
         Origin::Syslog(Framing::Line),
+    ),
+    (
+        "filebeat.cisco_umbrella.default",
+        &filebeat::cisco_umbrella::default::Default,
+        Origin::Api,
     ),
     (
         "filebeat.crowdstrike.default",

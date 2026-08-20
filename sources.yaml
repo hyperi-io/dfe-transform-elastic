@@ -62,6 +62,24 @@ sources:
     origin: api
     transforms: [default]
 
+  cisco_asa:
+    package: cisco_asa
+    data_stream: log
+    pipelines: cisco/asa
+    fixtures: cisco/asa
+    origin: syslog
+    framing: line
+    transforms: [default]
+
+  cisco_ftd:
+    package: cisco_ftd
+    data_stream: log
+    pipelines: cisco/ftd
+    fixtures: cisco/ftd
+    origin: syslog
+    framing: line
+    transforms: [default]
+
   cisco_ios:
     package: cisco_ios
     data_stream: log
@@ -87,6 +105,15 @@ sources:
     fixtures: cisco/nexus
     origin: syslog
     framing: line
+    transforms: [default]
+
+  # Delivered as CSV out of an S3 bucket, not by a device over syslog.
+  cisco_umbrella:
+    package: cisco_umbrella
+    data_stream: log
+    pipelines: cisco/umbrella
+    fixtures: cisco/umbrella
+    origin: api
     transforms: [default]
 
   crowdstrike:
