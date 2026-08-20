@@ -76,7 +76,40 @@ macro_rules! cached_script {
     }};
 }
 
-/// Recursively drop null and empty values from the event.
+/// What a drop-empty script's OWN predicate says is droppable.
+///
+/// The shape recurs across 245 of the 351 packages with an ingest pipeline, and
+/// it is not one script. Most spell the predicate
+/// `v == null || v == '' || (v instanceof Map && v.size() == 0) || ...`, but 16
+/// packages -- `cisco_asa` among them -- write `removeIf(v -> v == null)` and
+/// mean it: an empty string stays. Applying the fullest reading to all of them
+/// drops fields Elastic keeps.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct DropPolicy {
+    /// `v == ''` appears in the predicate.
+    pub empty_strings: bool,
+    /// `v.size() == 0` or `v.length == 0` appears in the predicate.
+    pub empty_collections: bool,
+    /// The script prunes list ENTRIES as well as map values. The null-only
+    /// variant's `handleList` walks without removing anything.
+    pub prune_lists: bool,
+}
+
+impl DropPolicy {
+    /// The reading of a script's predicate, taken off its own text.
+    #[must_use]
+    pub fn read(script: &str) -> Self {
+        Self {
+            empty_strings: script.contains("== ''") || script.contains("== \"\""),
+            empty_collections: script.contains(".size() == 0") || script.contains(".length == 0"),
+            // One `removeIf` prunes the map alone; the shapes that prune both
+            // spell it twice, once per collection kind.
+            prune_lists: script.matches("removeIf").count() >= 2,
+        }
+    }
+}
+
+/// Recursively drop null and empty values from the event, per `policy`.
 ///
 /// This is the most common Painless script across all Elastic pipelines:
 /// ```painless
@@ -88,28 +121,40 @@ macro_rules! cached_script {
 /// }
 /// drop(ctx);
 /// ```
-pub fn drop_empty_recursive(event: &mut Event) {
+pub fn drop_empty_recursive(event: &mut Event, policy: DropPolicy) {
     let inner = event.as_value_mut();
-    drop_value(inner);
+    drop_value(inner, policy);
 }
 
-fn drop_value(value: &mut Value) -> bool {
+fn drop_value(value: &mut Value, policy: DropPolicy) -> bool {
     match value {
         Value::Null => true,
-        Value::String(s) if s.is_empty() => true,
+        Value::String(s) if s.is_empty() => policy.empty_strings,
         Value::Object(map) => {
             let keys_to_remove: Vec<String> = map
                 .iter_mut()
-                .filter_map(|(k, v)| if drop_value(v) { Some(k.clone()) } else { None })
+                .filter_map(|(k, v)| {
+                    if drop_value(v, policy) {
+                        Some(k.clone())
+                    } else {
+                        None
+                    }
+                })
                 .collect();
             for key in keys_to_remove {
                 map.remove(&key);
             }
-            map.is_empty()
+            policy.empty_collections && map.is_empty()
         }
         Value::Array(arr) => {
-            arr.retain_mut(|v| !drop_value(v));
-            arr.is_empty()
+            if policy.prune_lists {
+                arr.retain_mut(|v| !drop_value(v, policy));
+            } else {
+                for item in arr.iter_mut() {
+                    drop_value(item, policy);
+                }
+            }
+            policy.empty_collections && arr.is_empty()
         }
         _ => false,
     }
@@ -2022,13 +2067,14 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 
     // Pattern: drop null and empty values recursively. Matched on the SHAPE,
     // not the helper's name -- panw spells it `dropEmptyFields`, and keying
-    // on `drop(ctx)` left every emptied object behind.
+    // on `drop(ctx)` left every emptied object behind. What counts as empty
+    // comes from the script's own predicate, which is not the same everywhere.
     if normalised.contains("removeIf")
         && normalised.contains("instanceof Map")
         && normalised.contains("instanceof List")
         && normalised.contains("(ctx)")
     {
-        drop_empty_recursive(event);
+        drop_empty_recursive(event, DropPolicy::read(&normalised));
         return true;
     }
 
@@ -3248,6 +3294,14 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(event.get("related.ip"), Some(&json!(["9.9.9.9"])));
     }
 
+    /// The predicate 245 of the 351 packages spell: null, empty string, empty
+    /// collection, in both maps and lists.
+    const DROP_EVERYTHING: DropPolicy = DropPolicy {
+        empty_strings: true,
+        empty_collections: true,
+        prune_lists: true,
+    };
+
     #[test]
     fn drop_empty_removes_nulls() {
         let mut event = Event::new(json!({
@@ -3257,12 +3311,65 @@ def event_timezone = get_timezone(ctx);
             "d": {"e": null, "f": "keep"},
             "g": [null, "", "keep"]
         }));
-        drop_empty_recursive(&mut event);
+        drop_empty_recursive(&mut event, DROP_EVERYTHING);
         assert_eq!(event.get_str("a"), Some("keep"));
         assert!(!event.has("b"));
         assert!(!event.has("c"));
         assert!(event.has("d.f"));
         assert!(!event.has("d.e"));
+    }
+
+    /// Verbatim from `pipelines/cisco/asa/default.yml`, which 16 packages
+    /// share: the predicate is `v == null` and nothing else, so an empty string
+    /// and an emptied object both stay.
+    const NULL_ONLY: &str = "void handleMap(Map map) {\n  for (def x : map.values()) {\n    \
+        if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        \
+        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\n\
+        void handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          \
+        handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\n\
+        handleMap(ctx);";
+
+    #[test]
+    fn a_null_only_predicate_keeps_empty_strings_and_objects() {
+        let policy = DropPolicy::read(NULL_ONLY);
+        assert_eq!(
+            policy,
+            DropPolicy {
+                empty_strings: false,
+                empty_collections: false,
+                prune_lists: false,
+            }
+        );
+
+        let mut event = Event::new(json!({
+            "a": "keep",
+            "b": null,
+            "c": "",
+            "d": { "e": null },
+            "g": [null, "", "keep"],
+        }));
+
+        assert!(try_known_painless(&mut event, NULL_ONLY));
+        assert!(!event.has("b"), "a null is still dropped");
+        assert_eq!(event.get_str("c"), Some(""), "an empty string is not");
+        assert!(event.has("d"), "the emptied object stays");
+        assert_eq!(
+            event.get("g"),
+            Some(&json!([null, "", "keep"])),
+            "a list this script never prunes is untouched"
+        );
+    }
+
+    /// The common predicate, read off its own text rather than assumed.
+    #[test]
+    fn the_full_predicate_reads_as_dropping_everything() {
+        let script = "boolean drop(Object o) { if (o == null || o == '') { return true; } \
+            else if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
+            return ((Map) o).size() == 0; } else if (o instanceof List) { \
+            ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } return false; } \
+            drop(ctx);";
+
+        assert_eq!(DropPolicy::read(script), DROP_EVERYTHING);
     }
 
     #[test]
@@ -3443,7 +3550,7 @@ def event_timezone = get_timezone(ctx);
             "keep": "yes",
             "nested": {"arr": [null, "", {"inner": null}]}
         }));
-        drop_empty_recursive(&mut event);
+        drop_empty_recursive(&mut event, DROP_EVERYTHING);
         assert!(event.has("keep"));
         // nested.arr should be empty after removing all null/empty items
         assert!(!event.has("nested"));
