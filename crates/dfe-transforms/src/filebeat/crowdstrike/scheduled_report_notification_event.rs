@@ -176,9 +176,14 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.user?.id != null && ctx.user.id.indexOf("@") > 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("user.id")
+                    && event
+                        .get_str("user.id")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
                 if let Some(v) = event.get("user.id").cloned() {
                     event.set("user.email", v)?;
                 }

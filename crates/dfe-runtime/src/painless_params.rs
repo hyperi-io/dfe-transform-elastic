@@ -58,6 +58,11 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_filetime_field_list(event, &normalised, params);
     }
 
+    // Pattern: decode a bitfield into one boolean label per set bit.
+    if normalised.contains("params.entrySet()") && normalised.contains("& flag") {
+        return try_bit_flags(event, &normalised, params);
+    }
+
     // Pattern: look a field up in a static table and merge the row into ctx.
     if normalised.contains("params.get(") && normalised.contains("forEach((k, v) ->") {
         return try_lookup_merge(event, &normalised, params);
@@ -91,6 +96,62 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
     }
 
     false
+}
+
+/// `long value = ctx.<source>;` then, per params entry,
+/// `if ((value & flag) != 0) { <target>[entry.getKey()] = true; }`
+///
+/// The params block IS the flag table, so a vendor adding a bit is picked up by
+/// regenerating rather than by editing Rust. Only set bits are written; a clear
+/// bit leaves the label absent rather than false, which is what the script does.
+///
+/// panw's decryption-log flags are the shape, and they gate two of its largest
+/// remaining blockers -- `labels.nat_translated` and `labels.captive_portal`.
+fn try_bit_flags(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some(source) = ctx_path_between(script, "long value = ctx.", ";") else {
+        return false;
+    };
+    // The map the labels land in, from `ctx['labels'] = labels;`.
+    let target = quoted_after(script, "ctx[").unwrap_or_else(|| "labels".to_owned());
+
+    let Some(bits) = event.get(&source).and_then(as_u64_flags) else {
+        return false;
+    };
+
+    for (name, flag) in params {
+        // Elastic's own script decodes a string flag, because Kibana has been
+        // known to hand the params block back with the numbers stringified.
+        let Some(flag) = as_u64_flags(flag) else {
+            continue;
+        };
+        if flag != 0 && bits & flag != 0 {
+            let path = format!("{target}.{name}");
+            if event.set(&path, Value::Bool(true)).is_err() {
+                return false;
+            }
+        }
+    }
+    true
+}
+
+/// A bitfield, however the pipeline happens to carry it.
+///
+/// A `0x`-prefixed string is what `Long.decode` in the vendor script exists to
+/// handle, and a float is what a large flag becomes if it round-trips as JSON.
+fn as_u64_flags(value: &Value) -> Option<u64> {
+    match value {
+        Value::Number(n) => n
+            .as_u64()
+            .or_else(|| n.as_i64().and_then(|i| u64::try_from(i).ok()))
+            .or_else(|| n.as_f64().map(|f| f as u64)),
+        Value::String(s) => {
+            let s = s.trim();
+            s.strip_prefix("0x")
+                .or_else(|| s.strip_prefix("0X"))
+                .map_or_else(|| s.parse().ok(), |hex| u64::from_str_radix(hex, 16).ok())
+        }
+        _ => None,
+    }
 }
 
 /// `ctx.<path>.entrySet().removeIf(entry -> params.<name>.contains(entry.getValue()))`
@@ -705,6 +766,81 @@ mod tests {
 
         assert!(try_params_painless(&mut event, LOOKUP, &lookup_params()));
         assert_eq!(event.get_object("event").unwrap().len(), 0);
+    }
+
+    /// panw's decryption-log flags, as the generator emits them.
+    const BIT_FLAGS: &str = r"def labels = ctx.labels; if (labels == null) {
+  labels = new HashMap();
+  ctx['labels'] = labels;
+} long value = ctx._temp_.labels; for (entry in params.entrySet()) {
+  def flag = entry.getValue();
+  if (flag instanceof String) {
+      flag = Long.decode(flag);
+  }
+  if ((value & flag) != 0) {
+      labels[entry.getKey()] = true;
+  }
+}
+";
+
+    fn flag_params() -> Value {
+        json!({
+            "nat_translated": 0x0040_0000,
+            "captive_portal": 0x0020_0000,
+            "ssl_decrypted": 0x0100_0000,
+        })
+    }
+
+    #[test]
+    fn sets_a_label_for_every_bit_the_field_has_set() {
+        let mut event = Event::new(json!({
+            "_temp_": { "labels": 0x0060_0000 },
+        }));
+
+        assert!(try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+        assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+        assert_eq!(event.get("labels.captive_portal"), Some(&json!(true)));
+    }
+
+    /// The script only ever writes `true`, so a clear bit must leave the label
+    /// ABSENT -- writing `false` would be an extra field Elastic never emits.
+    #[test]
+    fn a_clear_bit_leaves_its_label_absent() {
+        let mut event = Event::new(json!({
+            "_temp_": { "labels": 0x0040_0000 },
+        }));
+
+        assert!(try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+        assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+        assert_eq!(event.get("labels.captive_portal"), None);
+        assert_eq!(event.get("labels.ssl_decrypted"), None);
+    }
+
+    /// `Long.decode` is in the vendor script because the flags have been known
+    /// to arrive stringified, and a hex string must decode as hex.
+    #[test]
+    fn a_stringified_hex_flag_decodes() {
+        let mut event = Event::new(json!({ "_temp_": { "labels": 0x0040_0000 } }));
+        let params = json!({ "nat_translated": "0x00400000" });
+
+        assert!(try_params_painless(&mut event, BIT_FLAGS, &params));
+        assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+    }
+
+    #[test]
+    fn a_bitfield_carried_as_a_string_still_decodes() {
+        let mut event = Event::new(json!({ "_temp_": { "labels": "4194304" } }));
+
+        assert!(try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+        assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+    }
+
+    #[test]
+    fn an_absent_bitfield_writes_no_labels() {
+        let mut event = Event::new(json!({ "event": {} }));
+
+        assert!(!try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+        assert_eq!(event.get("labels"), None);
     }
 
     /// Cisco ASA's table is two levels deep, which this does not model -- it

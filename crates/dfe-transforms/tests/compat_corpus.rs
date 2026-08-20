@@ -287,6 +287,10 @@ fn transforms_match_elastics_confirmed_output() {
         return;
     }
 
+    // Whole-diff output for one source. Printing every difference for every
+    // source buries the summary the ranking exists to give.
+    let detail = std::env::var("DFE_COMPAT_DETAIL").ok();
+
     let mut unmapped = Vec::new();
     let mut by_source: BTreeMap<String, Score> = BTreeMap::new();
     let mut failures: BTreeMap<String, Vec<BTreeSet<String>>> = BTreeMap::new();
@@ -336,6 +340,10 @@ fn transforms_match_elastics_confirmed_output() {
             if diff.is_match() {
                 score.events_matched += 1;
                 continue;
+            }
+
+            if detail.as_deref() == Some(capture.source.as_str()) {
+                println!("  {}[{i}]: {diff}", capture.fixture);
             }
 
             let mut paths = BTreeSet::new();

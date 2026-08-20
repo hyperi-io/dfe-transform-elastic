@@ -2250,9 +2250,14 @@ impl Transform for Default {
                         event.set("user.name", lowered)?;
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.user?.name != null && ctx.user.name.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("user.name")
+                        && event
+                            .get_str("user.name")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     event.rename("user.name", "user.email")?;
                 }
                 let _cond = { !event.has_value("user.name") };

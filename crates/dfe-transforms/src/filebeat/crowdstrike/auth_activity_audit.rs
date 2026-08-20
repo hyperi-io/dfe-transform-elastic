@@ -124,9 +124,14 @@ impl Transform for AuthActivityAudit {
                 Ok(())
             })();
 
-            // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("crowdstrike.event.UserId")
+                    && event
+                        .get_str("crowdstrike.event.UserId")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
                 if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
                     event.set("user.email", v)?;
                 }

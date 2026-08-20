@@ -415,9 +415,15 @@ impl Transform for Default {
                 event.set("user.name", v)?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.user?.email == null && ctx.user?.name != null && ctx.user.name.indexOf("@") > 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("user.email")
+                    && event.has_value("user.name")
+                    && event
+                        .get_str("user.name")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
                 if let Some(v) = event.get("user.name").cloned() {
                     event.set("user.email", v)?;
                 }

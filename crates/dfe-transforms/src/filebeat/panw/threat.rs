@@ -1074,9 +1074,11 @@ impl Transform for Threat {
                 }
             }
 
-            // SKIPPED: condition not transpiled: "vulnerability" == ctx.panw?.panos?.sub_type && ctx.file?.name != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("panw.panos.sub_type") == Some("vulnerability")
+                    && event.has_value("file.name")
+            };
+            if _cond {
                 event.remove("url");
             }
 

@@ -2458,9 +2458,10 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.o365audit?.containsKey('Data') == true && ctx.o365audit?.RecordType == '64'
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has("o365audit.Data") && event.get_str("o365audit.RecordType") == Some("64")
+            };
+            if _cond {
                 if let Some(s) = event.get_string("o365audit.Data") {
                     let re = cached_regex!(
                         ",\\\"QueryTime\\\":\\\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\\\"|\\\"QueryTime\\\":\\\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\\\","
@@ -2470,9 +2471,8 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.o365audit?.containsKey('Data') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has("o365audit.Data") };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("o365audit.Data") {
@@ -3301,9 +3301,12 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.host?.hostname != null && ctx.host.hostname != ctx.host?.name
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("host.hostname")
+                    && event.get("host.hostname").filter(|v| !v.is_null())
+                        != event.get("host.name").filter(|v| !v.is_null())
+            };
+            if _cond {
                 event.append(
                     "related.hosts",
                     event.get("host.hostname").cloned().unwrap_or(Value::Null),
@@ -3318,9 +3321,12 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.user?.target?.domain != null && ctx.user.target.domain != ctx.user?.domain
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("user.target.domain")
+                    && event.get("user.target.domain").filter(|v| !v.is_null())
+                        != event.get("user.domain").filter(|v| !v.is_null())
+            };
+            if _cond {
                 event.append(
                     "related.hosts",
                     event

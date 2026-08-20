@@ -557,9 +557,12 @@ impl Transform for Default {
                         event.remove("_ingest");
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.Score instanceof long
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.Score")
+                        .is_some_and(|v| v.is_number())
+                };
+                if _cond {
                     // Painless script
                     // Source: long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
@@ -3185,9 +3188,14 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("crowdstrike.event.UserId")
+                        && event
+                            .get_str("crowdstrike.event.UserId")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
                         event.set("user.email", v)?;
                     }
@@ -4792,9 +4800,14 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("crowdstrike.event.UserId")
+                        && event
+                            .get_str("crowdstrike.event.UserId")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
                         event.set("user.email", v)?;
                     }
@@ -4921,9 +4934,14 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("crowdstrike.event.UserId")
+                        && event
+                            .get_str("crowdstrike.event.UserId")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
                         event.set("user.email", v)?;
                     }
@@ -5356,9 +5374,14 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserName != null && ctx.crowdstrike.event.UserName.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("crowdstrike.event.UserName")
+                        && event
+                            .get_str("crowdstrike.event.UserName")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     if let Some(v) = event.get("crowdstrike.event.UserName").cloned() {
                         event.set("user.email", v)?;
                     }
@@ -5430,9 +5453,14 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserName != null && ctx.crowdstrike.event.UserName.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("crowdstrike.event.UserName")
+                        && event
+                            .get_str("crowdstrike.event.UserName")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     if let Some(v) = event.get("crowdstrike.event.UserName").cloned() {
                         event.set("user.email", v)?;
                     }
@@ -5627,9 +5655,14 @@ impl Transform for Default {
                         event.set("user.domain", remaining)?;
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.user?.id != null && ctx.user.id.indexOf("@") > 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("user.id")
+                        && event
+                            .get_str("user.id")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_some_and(|i| i > 0))
+                };
+                if _cond {
                     if let Some(v) = event.get("user.id").cloned() {
                         event.set("user.email", v)?;
                     }
@@ -5662,9 +5695,15 @@ impl Transform for Default {
                 event.set("process.parent.entity_id", v)?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.user?.email == null && ctx.user?.name != null && ctx.user.name.indexOf("@") > 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("user.email")
+                    && event.has_value("user.name")
+                    && event
+                        .get_str("user.name")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
                 if let Some(v) = event.get("user.name").cloned() {
                     event.set("user.email", v)?;
                 }

@@ -239,9 +239,15 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.cisco?.ios?.facility == 'IOSXE' && ctx.event?.code == 'PLATFORM' && ctx.message.indexOf('%') != -1
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("cisco.ios.facility") == Some("IOSXE")
+                    && event.get_str("event.code") == Some("PLATFORM")
+                    && event
+                        .get_str("message")
+                        .map(|s| s.find("%").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some())
+            };
+            if _cond {
                 if event.has("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}

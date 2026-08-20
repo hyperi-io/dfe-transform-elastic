@@ -816,33 +816,154 @@ impl Transform for Traffic {
                 event.set("_temp_.internal_zones", v)?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.i ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("_temp_.internal_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("inbound"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.e ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("_temp_.internal_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("outbound"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.internal_zones.contains(ctx.observer.egress.zone) && ctx._temp_.internal_zo ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.internal_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("internal"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && ctx._temp_.external_zo ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("external"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ( ( !ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && !ctx._temp_.internal_zones.contains(ctx.observer.egress. ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("_temp_.internal_zones")
+                    && ((!(event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })) && !(event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    }))) || (!(event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })) && !(event.get("_temp_.internal_zones").is_some_and(
+                        |v| match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        },
+                    ))))
+            };
+            if _cond {
                 event.set("network.direction", json!("unknown"))?;
             }
 
