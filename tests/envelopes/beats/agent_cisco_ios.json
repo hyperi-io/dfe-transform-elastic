@@ -1,0 +1,54 @@
+{
+  "provenance": {
+    "file": "elastic/integrations packages/cisco_ios/data_stream/log/sample_event.json",
+    "line": "the whole document, at integrations 2c934eb5223bdfcf0ea0db9e3230154933352bda",
+    "producer": "Elastic Agent 8.0.0, cisco_ios.log data stream, input type tcp",
+    "note": "The package ships this as the OUTPUT of its own pipeline, so the wrapper keys are the Agent's real ones for a source we onboard -- agent.json covers the wrapper alone but comes from cylance, which we do not. Reconstructed here as the INPUT the Agent hands the pipeline: the vendor line moved from event.original back into message, and everything the pipeline itself derives (cisco.*, ecs, observer.*, log.level, log.syslog.*, event.category/code/dataset/provider/sequence/severity/timezone/type) removed. What is left is what the Agent contributes."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "agent"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "agent"
+  },
+  "event": {
+    "@timestamp": "2022-01-06T20:52:12.861Z",
+    "agent": {
+      "ephemeral_id": "960a0fda-a7b7-4362-9018-34b1d0d119c4",
+      "id": "f00ff835-626e-4a18-a8a2-0bb3ebb7503f",
+      "name": "docker-fleet-agent",
+      "type": "filebeat",
+      "version": "8.0.0"
+    },
+    "data_stream": {
+      "dataset": "cisco_ios.log",
+      "namespace": "ep",
+      "type": "logs"
+    },
+    "elastic_agent": {
+      "id": "f00ff835-626e-4a18-a8a2-0bb3ebb7503f",
+      "snapshot": false,
+      "version": "8.0.0"
+    },
+    "event": {
+      "agent_id_status": "verified",
+      "ingested": "2023-07-13T09:20:48Z"
+    },
+    "input": {
+      "type": "tcp"
+    },
+    "log": {
+      "source": {
+        "address": "172.25.0.4:46792"
+      }
+    },
+    "message": "<189>2360957: Jan  6 2022 20:52:12.861: %SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.100.11.10)",
+    "tags": [
+      "preserve_original_event",
+      "cisco-ios",
+      "forwarded"
+    ]
+  }
+}

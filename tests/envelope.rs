@@ -434,3 +434,196 @@ fn a_fetcher_delivery_keeps_the_receive_time_it_was_given() {
         Some("okta.system")
     );
 }
+
+/// The okta record from `tests/envelopes/fetcher/okta_system_log.json`, which
+/// was read off dfe-fetcher's own `enrich_record`.
+///
+/// Beats hands the same provider payload over as a STRING in `message`; the
+/// fetcher leaves it at the top level and appends its three delivery keys. The
+/// bytes either way are these.
+const OKTA_RECORD: &str = r#"{"uuid":"9d5c5a1b-0d3e-4a2f-8a11-2f0c1e6b7d90",
+"published":"2026-02-19T00:00:00.000Z","eventType":"user.session.start",
+"outcome":{"result":"SUCCESS"},
+"actor":{"id":"00u1abcd2efGHIJ3k4l5","type":"User",
+"alternateId":"derek@example.com","displayName":"Derek"},
+"client":{"ipAddress":"203.0.113.7","userAgent":{"rawUserAgent":"Mozilla/5.0"}}}"#;
+
+/// The fetcher side of the equivalence the receiver side already has: one okta
+/// record delivered both ways must parse to the same thing.
+///
+/// This is the claim the whole fetcher path rests on -- that Elastic's agent is
+/// a PURE TRANSPORT for an API-pulled source, so dfe-fetcher can obtain the
+/// same bytes and the chain collapses. Asserting the stamping alone never
+/// tested it; a transform has to run over both.
+#[test]
+fn okta_produces_the_same_output_from_beats_or_the_fetcher() {
+    let record: Value = serde_json::from_str(OKTA_RECORD).expect("the record parses");
+
+    let via_beats = run(
+        "filebeat.okta.default",
+        Envelope::Beats,
+        json!({ "message": OKTA_RECORD }),
+    )
+    .expect("beats path emitted");
+
+    // What the fetcher delivers: the provider's own JSON at the top level, plus
+    // the three keys `enrich_record` appends.
+    let mut delivered = record.as_object().expect("an object").clone();
+    delivered.insert("_source_fetcher".into(), json!("okta.system_log"));
+    delivered.insert("_timestamp_fetcher".into(), json!(1_771_459_200_000_u64));
+    delivered.insert("_timestamp_received".into(), json!(1_771_459_200_000_u64));
+
+    let via_fetcher = run(
+        "filebeat.okta.default",
+        Envelope::Fetcher,
+        Value::Object(delivered),
+    )
+    .expect("fetcher path emitted");
+
+    // The fetcher path additionally carries what Beats would have stamped --
+    // `agent.*`, `data_stream.*`, `input.type`, `event.ingested` -- so the
+    // assertion is one-way, exactly as the syslog equivalence is.
+    //
+    // `event.original` is checked separately, below: the fetcher path
+    // re-serialises the payload to move it into `message`, so the two agree as
+    // JSON rather than as text.
+    let fetcher_leaves = leaves(&via_fetcher);
+    for (path, expected) in leaves(&via_beats) {
+        if path == "event.original" {
+            continue;
+        }
+        assert_eq!(
+            fetcher_leaves.get(&path),
+            Some(&expected),
+            "`{path}` differs between envelopes"
+        );
+    }
+
+    // Same document, whatever the whitespace.
+    let original_of = |out: &Value| -> Value {
+        let text = out
+            .pointer("/event/original")
+            .and_then(Value::as_str)
+            .expect("event.original is set");
+        serde_json::from_str(text).expect("event.original is JSON")
+    };
+    assert_eq!(original_of(&via_beats), original_of(&via_fetcher));
+
+    // A guard against the test passing because BOTH sides parsed nothing.
+    assert_eq!(
+        via_beats.pointer("/event/action").and_then(Value::as_str),
+        Some("user.session.start"),
+        "the transform did not parse the record at all"
+    );
+}
+
+/// The `cisco_ios` line from `tests/envelopes/beats/agent_cisco_ios.json`, which
+/// the package ships in its own `sample_event.json`.
+const AGENT_LINE: &str = "<189>2360957: Jan  6 2022 20:52:12.861: \
+%SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.100.11.10)";
+
+/// What an Elastic Agent wraps around that line, verbatim from the same file.
+fn agent_wrapped(line: &str) -> Value {
+    json!({
+        "@timestamp": "2022-01-06T20:52:12.861Z",
+        "agent": {
+            "ephemeral_id": "960a0fda-a7b7-4362-9018-34b1d0d119c4",
+            "id": "f00ff835-626e-4a18-a8a2-0bb3ebb7503f",
+            "name": "docker-fleet-agent",
+            "type": "filebeat",
+            "version": "8.0.0"
+        },
+        "data_stream": { "dataset": "cisco_ios.log", "namespace": "ep", "type": "logs" },
+        "elastic_agent": {
+            "id": "f00ff835-626e-4a18-a8a2-0bb3ebb7503f",
+            "snapshot": false,
+            "version": "8.0.0"
+        },
+        "event": { "agent_id_status": "verified", "ingested": "2023-07-13T09:20:48Z" },
+        "input": { "type": "tcp" },
+        "log": { "source": { "address": "172.25.0.4:46792" } },
+        "message": line,
+        "tags": ["preserve_original_event", "cisco-ios", "forwarded"]
+    })
+}
+
+/// The Agent path through a whole transform, which detection alone never
+/// tested: `data_stream` and `elastic_agent` appear ZERO times in the corpus,
+/// so every parity number was measured on the module shape.
+#[test]
+fn cisco_ios_produces_the_same_output_from_beats_or_the_agent() {
+    let via_beats = run(
+        "filebeat.cisco_ios.default",
+        Envelope::Beats,
+        json!({ "message": AGENT_LINE, "tags": ["preserve_original_event", "cisco-ios", "forwarded"] }),
+    )
+    .expect("beats path emitted");
+
+    let via_agent = run(
+        "filebeat.cisco_ios.default",
+        Envelope::Beats,
+        agent_wrapped(AGENT_LINE),
+    )
+    .expect("agent path emitted");
+
+    let agent_leaves = leaves(&via_agent);
+    for (path, expected) in leaves(&via_beats) {
+        assert_eq!(
+            agent_leaves.get(&path),
+            Some(&expected),
+            "`{path}` differs between envelopes"
+        );
+    }
+
+    // A guard against both sides parsing nothing.
+    assert_eq!(
+        via_beats.pointer("/event/code").and_then(Value::as_str),
+        Some("CONFIG_I"),
+        "the transform did not parse the line at all"
+    );
+
+    // The Agent's own wrapper survives, because it is the truth about the
+    // delivery and nothing downstream can recover it.
+    assert_eq!(
+        via_agent
+            .pointer("/elastic_agent/version")
+            .and_then(Value::as_str),
+        Some("8.0.0")
+    );
+    assert_eq!(
+        via_agent
+            .pointer("/data_stream/dataset")
+            .and_then(Value::as_str),
+        Some("cisco_ios.log")
+    );
+}
+
+/// The delivery keys are the fetcher's own bookkeeping and must not survive
+/// onto the event, under any spelling.
+#[test]
+fn the_fetchers_own_keys_never_reach_the_output() {
+    let record: Value = serde_json::from_str(OKTA_RECORD).expect("the record parses");
+    let mut delivered = record.as_object().expect("an object").clone();
+    delivered.insert("_source_fetcher".into(), json!("okta.system_log"));
+    delivered.insert("_timestamp_fetcher".into(), json!(1_771_459_200_000_u64));
+    delivered.insert("_timestamp_received".into(), json!(1_771_459_200_000_u64));
+
+    let out = run(
+        "filebeat.okta.default",
+        Envelope::Fetcher,
+        Value::Object(delivered),
+    )
+    .expect("emitted");
+
+    let rendered = serde_json::to_string(&out).expect("serialises");
+    for key in [
+        "_source_fetcher",
+        "_timestamp_fetcher",
+        "_timestamp_received",
+    ] {
+        assert!(
+            !rendered.contains(&format!("\"{key}\"")),
+            "`{key}` reached the output"
+        );
+    }
+}

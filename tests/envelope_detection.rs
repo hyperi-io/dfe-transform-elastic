@@ -84,11 +84,31 @@ fn fixtures() -> Vec<Fixture> {
 
     found.sort_by(|a, b| a.path.cmp(&b.path));
     assert!(
-        found.len() >= 14,
+        found.len() >= 19,
         "only {} envelope fixtures found -- the directory did not load",
         found.len()
     );
     found
+}
+
+/// One fixture by file name, so a transport test names the shape it drives.
+fn fixture(name: &str) -> Fixture {
+    fixtures()
+        .into_iter()
+        .find(|f| f.path.file_name().is_some_and(|f| f == name))
+        .unwrap_or_else(|| panic!("no fixture named {name}"))
+}
+
+/// `name` unwrapped as a source taking the body whole would receive it.
+fn unwrapped(name: &str) -> Value {
+    let fixture = fixture(name);
+    let detected = envelope::detect(&fixture.event());
+    let mut event = fixture.event();
+    detected
+        .family
+        .unwrap_into_beats(&mut event, None, &detected.variant)
+        .expect("unwraps");
+    event.as_value().clone()
 }
 
 /// The whole point: every shape a producer writes detects as the fixture says.
@@ -192,6 +212,158 @@ fn every_recorded_shape_unwraps_without_panicking() {
             let _ = detected
                 .family
                 .unwrap_into_beats(&mut event, framing, &detected.variant);
+        }
+    }
+}
+
+/// OTLP's log body is the message and its severity pair is ECS's, so a
+/// generic-mode log arrives shaped like every other line.
+#[test]
+fn otlp_lifts_its_log_onto_ecs() {
+    let out = unwrapped("otlp.json");
+
+    assert_eq!(
+        out.pointer("/message").and_then(Value::as_str),
+        Some("error occurred")
+    );
+    assert_eq!(
+        out.pointer("/log/level").and_then(Value::as_str),
+        Some("ERROR")
+    );
+    assert_eq!(
+        out.pointer("/event/severity").and_then(Value::as_i64),
+        Some(17)
+    );
+    assert_eq!(
+        out.pointer("/@timestamp").and_then(Value::as_str),
+        Some("2026-02-19T00:00:00Z")
+    );
+
+    // An empty id and an epoch observed-time are what OTLP writes when it had
+    // no value, so neither becomes an ECS field that says otherwise.
+    assert_eq!(out.pointer("/trace/id"), None);
+    assert_eq!(out.pointer("/span/id"), None);
+    assert_eq!(out.pointer("/event/created"), None);
+
+    // The sender's own maps are left where they are.
+    assert!(out.pointer("/attributes").is_some());
+    assert!(out.pointer("/resource").is_some());
+}
+
+/// A flow packet's exporter is an observer and its packet sequence is the
+/// event's; the records themselves stay as the collector wrote them.
+#[test]
+fn a_flow_packet_lifts_its_exporter_and_sequence() {
+    let out = unwrapped("netflow.json");
+
+    assert_eq!(
+        out.pointer("/observer/ip").and_then(Value::as_str),
+        Some("127.0.0.1")
+    );
+    assert_eq!(
+        out.pointer("/event/sequence").and_then(Value::as_i64),
+        Some(0)
+    );
+    assert_eq!(
+        out.pointer("/event/created").and_then(Value::as_str),
+        Some("2026-05-20T00:00:00Z")
+    );
+    assert_eq!(
+        out.pointer("/flows/0/bytes").and_then(Value::as_i64),
+        Some(1500)
+    );
+    assert_eq!(
+        out.pointer("/version").and_then(Value::as_str),
+        Some("netflow_v5")
+    );
+}
+
+/// sflow shares netflow's envelope head, so it must share the lift.
+#[test]
+fn sflow_lifts_the_same_head_as_netflow() {
+    let out = unwrapped("sflow.json");
+
+    assert_eq!(
+        out.pointer("/observer/ip").and_then(Value::as_str),
+        Some("10.0.0.1")
+    );
+    assert_eq!(
+        out.pointer("/event/sequence").and_then(Value::as_i64),
+        Some(42)
+    );
+}
+
+/// Prometheus sends its labels as top-level fields. Two have an exact ECS home
+/// and the rest are the sender's own naming, which is left alone.
+#[test]
+fn prometheus_lifts_the_two_labels_ecs_has_a_home_for() {
+    let out = unwrapped("prometheus.json");
+
+    assert_eq!(
+        out.pointer("/service/name").and_then(Value::as_str),
+        Some("api")
+    );
+    assert_eq!(
+        out.pointer("/service/address").and_then(Value::as_str),
+        Some("10.0.0.5:9090")
+    );
+    assert_eq!(
+        out.pointer("/@timestamp").and_then(Value::as_str),
+        Some("2026-02-19T00:00:00.000Z")
+    );
+    assert_eq!(
+        out.pointer("/__name__").and_then(Value::as_str),
+        Some("http_requests_total")
+    );
+}
+
+/// `timestamp` is on the list of receiver keys stripped before the transform,
+/// so a Vector metric lost its stamp entirely until the arm lifted it first.
+#[test]
+fn a_vector_metric_keeps_its_stamp() {
+    let out = unwrapped("grpc_metric.json");
+
+    assert_eq!(
+        out.pointer("/@timestamp").and_then(Value::as_str),
+        Some("2026-02-19T00:00:00Z")
+    );
+    assert_eq!(
+        out.pointer("/name").and_then(Value::as_str),
+        Some("http_requests_total")
+    );
+}
+
+/// A producer's delivery keys describe the delivery, so none may reach a
+/// transform under any transport.
+#[test]
+fn no_producer_key_survives_unwrapping() {
+    const KEYS: &[&str] = &[
+        "_source",
+        "_raw",
+        "_signal",
+        "_vector_type",
+        "_timestamp",
+        "_observed_timestamp",
+    ];
+
+    for fixture in fixtures() {
+        if fixture.family("shape") != Envelope::Receiver {
+            continue;
+        }
+        let detected = envelope::detect(&fixture.event());
+        let mut event = fixture.event();
+        detected
+            .family
+            .unwrap_into_beats(&mut event, None, &detected.variant)
+            .expect("unwraps");
+
+        let rendered = event.as_value().to_string();
+        for key in KEYS {
+            assert!(
+                !rendered.contains(&format!("\"{key}\"")),
+                "{}: `{key}` reached the transform",
+                fixture.name()
+            );
         }
     }
 }

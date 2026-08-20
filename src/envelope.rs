@@ -40,6 +40,10 @@ use crate::registry::{Framing, Intake};
 const RECEIVER_KEYS: &[&str] = &[
     "_source",
     "_raw",
+    // OTLP and Vector's gRPC tag with these instead of `_source`; both are
+    // routing marks rather than event data.
+    "_signal",
+    "_vector_type",
     "facility",
     "severity",
     "hostname",
@@ -72,6 +76,22 @@ struct Transport {
 /// Epoch seconds rather than a string, so the lift has to convert.
 const EPOCH_SECONDS: &str = "@timestamp:epoch_seconds";
 
+/// Epoch milliseconds rather than a string. Prometheus remote-write is the only
+/// transport that sends this resolution.
+const EPOCH_MILLIS: &str = "@timestamp:epoch_millis";
+
+/// What netflow and sflow share: one envelope head, written by the same
+/// `write_envelope_head`, with the protocol name substituted.
+///
+/// The exporter is an observer in ECS's sense and the packet sequence is the
+/// event's. `protocol`, `version`, `observation_domain`, `record_count` and
+/// `flows` are the packet's own structure, and ECS has no home for them.
+const FLOW_LIFT: &[(&str, &str)] = &[
+    ("exporter_ip", "observer.ip"),
+    ("packet_seq", "event.sequence"),
+    ("t_collected", "event.created"),
+];
+
 /// Every transport whose own field names need moving out of ECS's way.
 ///
 /// syslog is absent because it has an arm of its own -- it is the only one that
@@ -101,6 +121,53 @@ const TRANSPORTS: &[Transport] = &[
             ("_time", EPOCH_SECONDS),
         ],
         drop: &["index"],
+    },
+    // OTLP's generic mode. `body` is the log line and the tracing pair is ECS's
+    // own. `attributes`, `resource` and the scope pair stay put: they carry the
+    // sender's data, and inventing a home for them would be a guess.
+    Transport {
+        name: "otlp",
+        lift: &[
+            ("body", "message"),
+            ("severity_text", "log.level"),
+            ("severity_number", "event.severity"),
+            ("trace_id", "trace.id"),
+            ("span_id", "span.id"),
+            ("_timestamp", "@timestamp"),
+            ("_observed_timestamp", "event.created"),
+        ],
+        drop: &[],
+    },
+    // Vector's gRPC transport tags metrics and traces with `_vector_type` and
+    // adds nothing else. A log event is the sender's own map, untagged, and is
+    // read as a bare payload instead -- so this arm only ever sees a metric or
+    // a trace, whose stamp is the one field with an ECS home.
+    Transport {
+        name: "grpc",
+        lift: &[("timestamp", "@timestamp")],
+        drop: &[],
+    },
+    // Prometheus remote-write, native mode: the series labels arrive as
+    // top-level fields, so `__name__` and the rest are the sender's own naming.
+    // `job` and `instance` are the two with an exact ECS home.
+    Transport {
+        name: "prometheus",
+        lift: &[
+            ("job", "service.name"),
+            ("instance", "service.address"),
+            ("timestamp", EPOCH_MILLIS),
+        ],
+        drop: &[],
+    },
+    Transport {
+        name: "netflow",
+        lift: FLOW_LIFT,
+        drop: &[],
+    },
+    Transport {
+        name: "sflow",
+        lift: FLOW_LIFT,
+        drop: &[],
     },
 ];
 
@@ -538,13 +605,22 @@ fn apply_transport(event: &mut Event, spec: &Transport) -> crate::Result<()> {
         let Some(value) = event.remove(from) else {
             continue;
         };
-        if *to == EPOCH_SECONDS {
-            if let Some(stamped) = epoch_seconds(&value) {
-                event.set("@timestamp", stamped)?;
-            }
+        if is_unset(&value) {
             continue;
         }
-        event.set(to, value)?;
+        match *to {
+            EPOCH_SECONDS => {
+                if let Some(stamped) = epoch_stamp(&value, 1000.0) {
+                    event.set("@timestamp", stamped)?;
+                }
+            }
+            EPOCH_MILLIS => {
+                if let Some(stamped) = epoch_stamp(&value, 1.0) {
+                    event.set("@timestamp", stamped)?;
+                }
+            }
+            path => event.set(path, value)?,
+        }
     }
     for key in spec.drop {
         event.remove(key);
@@ -552,11 +628,27 @@ fn apply_transport(event: &mut Event, spec: &Transport) -> crate::Result<()> {
     Ok(())
 }
 
-/// Epoch seconds, whole or fractional, as the RFC 3339 string ECS wants.
-fn epoch_seconds(value: &Value) -> Option<Value> {
-    let seconds = value.as_f64()?;
+/// Whether a transport wrote this to mean "I did not have one".
+///
+/// OTLP fills `trace_id`, `span_id` and `_observed_timestamp` in every log,
+/// with an empty string or the Unix epoch where it had no value, and lifting
+/// those writes an ECS field that says something false.
+fn is_unset(value: &Value) -> bool {
+    match value {
+        Value::Null => true,
+        Value::String(s) => s.is_empty() || s.starts_with("1970-01-01T00:00:00"),
+        _ => false,
+    }
+}
+
+/// An epoch stamp, whole or fractional, as the RFC 3339 string ECS wants.
+///
+/// `per_milli` is what one unit of the incoming number is worth in
+/// milliseconds: 1000 for seconds, 1 for milliseconds.
+fn epoch_stamp(value: &Value, per_milli: f64) -> Option<Value> {
+    let count = value.as_f64()?;
     #[allow(clippy::cast_possible_truncation)]
-    let millis = (seconds * 1000.0) as i64;
+    let millis = (count * per_milli) as i64;
     let stamped = chrono::DateTime::from_timestamp_millis(millis)?;
     Some(json!(
         stamped.to_rfc3339_opts(chrono::SecondsFormat::Millis, true)
@@ -753,25 +845,32 @@ mod tests {
         assert_eq!(event.get_str("message"), Some("raw payload"));
     }
 
-    /// A receiver transport with no arm of its own must not be run through the
+    /// A transport this table has never heard of must not be run through the
     /// syslog reconstruction, which would build a line out of fields it never
-    /// set. The payload survives and only the receiver's own keys go.
+    /// set. The payload survives and only `_source` goes.
+    ///
+    /// Every transport dfe-receiver ships today has an arm, so the case this
+    /// guards is the next one it grows.
     #[test]
     fn a_receiver_transport_without_an_arm_keeps_its_payload() {
         let mut event = Event::new(json!({
-            "_source": "prometheus",
-            "__name__": "http_requests_total",
-            "job": "api",
+            "_source": "a_transport_from_the_future",
+            "whatever": "the sender called it",
             "value": 1234.0,
         }));
 
         Envelope::Receiver
-            .unwrap_into_beats(&mut event, Some(Framing::Line), "prometheus")
+            .unwrap_into_beats(
+                &mut event,
+                Some(Framing::Line),
+                "a_transport_from_the_future",
+            )
             .unwrap();
 
-        assert_eq!(event.get_str("__name__"), Some("http_requests_total"));
-        assert_eq!(event.get_str("job"), Some("api"));
+        assert_eq!(event.get_str("whatever"), Some("the sender called it"));
+        assert_eq!(event.get("value"), Some(&json!(1234.0)));
         assert!(!event.has("_source"));
+        assert!(!event.has("message"), "no line may be reconstructed");
     }
 
     /// A bare `host` string is an ECS OBJECT everywhere else, so leaving one
