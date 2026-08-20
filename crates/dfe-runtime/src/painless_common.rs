@@ -363,6 +363,157 @@ fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
     true
 }
 
+/// Two parallel arrays, one naming what the other holds.
+///
+/// Cisco's Umbrella reports every identity behind a request in one list and
+/// what KIND each is in another, position for position: an AD user, a roaming
+/// computer, a site. Which ECS field each kind feeds is decided by literal
+/// lists in the script, and how it is written by the helper it calls -- a host
+/// or user name is set only if absent, a network name is appended to a list.
+/// All of it is read from the script rather than transcribed.
+fn try_parallel_dispatch(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::balanced;
+
+    let helpers = helper_targets(script);
+    if helpers.is_empty() {
+        return false;
+    }
+    let Some((variable, kinds_path, body)) = dispatch_loop(script) else {
+        return false;
+    };
+    let Some(values_path) = ctx_path_between_markers(&body, "(ctx, ctx.", "[i]") else {
+        return false;
+    };
+
+    let Some(kinds) = event.get(&kinds_path).and_then(Value::as_array).cloned() else {
+        return false;
+    };
+    let Some(values) = event.get(&values_path).and_then(Value::as_array).cloned() else {
+        return false;
+    };
+
+    // Each rule is a literal list of kinds and the helper they are handled by.
+    let mut rules: Vec<(Vec<String>, String)> = Vec::new();
+    let mut rest = body.as_str();
+    while let Some(at) = rest.find("([") {
+        let after = &rest[at + 1..];
+        let Some((literals, tail)) = balanced(after, '[', ']') else {
+            break;
+        };
+        rest = tail;
+        if !tail.starts_with(&format!(".contains({variable})")) {
+            continue;
+        }
+        let Some((block, _)) = balanced(tail.trim_start_matches(|c| c != '{'), '{', '}') else {
+            break;
+        };
+        // The call inside the block, not the `.contains(` that opened it.
+        let Some(helper) = block
+            .split_once('(')
+            .map(|(head, _)| head.trim().to_string())
+        else {
+            continue;
+        };
+        rules.push((quoted_members(literals), helper));
+    }
+
+    for (index, kind) in kinds.iter().enumerate() {
+        let Some(kind) = kind.as_str() else { continue };
+        let Some(value) = values.get(index) else {
+            continue;
+        };
+        for (members, helper) in &rules {
+            if !members.iter().any(|m| m == kind) {
+                continue;
+            }
+            let Some((path, append)) = helpers.get(helper) else {
+                continue;
+            };
+            if *append {
+                let mut items = match event.get(path) {
+                    Some(Value::Array(existing)) => existing.clone(),
+                    _ => Vec::new(),
+                };
+                if !items.contains(value) {
+                    items.push(value.clone());
+                }
+                let _ = event.set(path, Value::Array(items));
+            } else if !event.has_value(path) {
+                let _ = event.set(path, value.clone());
+            }
+        }
+    }
+    true
+}
+
+/// Each `void <name>(def ctx, def x)` helper: where it writes, and whether it
+/// appends to a list rather than setting a value that is not there yet.
+fn helper_targets(script: &str) -> std::collections::HashMap<String, (String, bool)> {
+    use crate::painless_params::{balanced, ctx_path_before};
+
+    let mut found = std::collections::HashMap::new();
+    for segment in script.split("void ").skip(1) {
+        let Some((name, rest)) = segment.split_once('(') else {
+            continue;
+        };
+        let Some((body, _)) = balanced(rest.trim_start_matches(|c| c != '{'), '{', '}') else {
+            continue;
+        };
+        let target = if body.contains(".add(x)") {
+            ctx_path_before(body, ".add(x)").map(|path| (path, true))
+        } else {
+            ctx_path_before(body, "= x").map(|path| (path, false))
+        };
+        if let Some(target) = target {
+            found.insert(name.trim().to_string(), target);
+        }
+    }
+    found
+}
+
+/// The `for (<var> in ctx.<path>) { ... }` loop: its variable, what it walks,
+/// and its body.
+fn dispatch_loop(script: &str) -> Option<(String, String, String)> {
+    use crate::painless_params::{balanced, clean_path};
+
+    let at = script.rfind("for (")?;
+    let rest = &script[at + "for ".len()..];
+    let (header, tail) = balanced(rest, '(', ')')?;
+    let (variable, walked) = header.split_once(" in ")?;
+    let path = walked.trim().strip_prefix("ctx.")?;
+    let (body, _) = balanced(tail.trim_start(), '{', '}')?;
+    Some((
+        variable.trim().to_string(),
+        clean_path(path),
+        body.to_string(),
+    ))
+}
+
+/// The dotted `ctx.` path written between two markers.
+fn ctx_path_between_markers(text: &str, open: &str, close: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let start = text.find(open)? + open.len();
+    let tail = &text[start..];
+    Some(clean_path(&tail[..tail.find(close)?]))
+}
+
+/// The quoted strings of a literal list.
+fn quoted_members(literals: &str) -> Vec<String> {
+    let mut members = Vec::new();
+    let mut rest = literals;
+    while let Some(open) = rest.find(['"', '\'']) {
+        let quote = rest.as_bytes()[open] as char;
+        let after = &rest[open + 1..];
+        let Some(close) = after.find(quote) else {
+            break;
+        };
+        members.push(after[..close].to_string());
+        rest = &after[close + 1..];
+    }
+    members
+}
+
 /// An `hh:mm:ss` flow duration becomes a span anchored at `@timestamp`.
 ///
 /// Cisco's ASA and FTD carry the duration of a connection in the message rather
@@ -2241,6 +2392,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_flow_duration(event, &normalised);
     }
 
+    // Pattern: two parallel arrays, one naming what the other holds.
+    if normalised.contains("(ctx, ctx.") && normalised.contains("[i])") {
+        return try_parallel_dispatch(event, &normalised);
+    }
+
     // Pattern: build a string out of ctx fields and literals.
     if normalised.contains("?: ''")
         && normalised.contains(".isEmpty()")
@@ -2780,6 +2936,72 @@ mod tests {
         assert_eq!(event.get("event.duration"), Some(&json!(5_000_000_000i64)));
         assert_eq!(event.get("event.start"), None);
         assert_eq!(event.get("event.end"), None);
+    }
+
+    /// Verbatim from `pipelines/cisco_umbrella/default.yml`, cut to two of its
+    /// three helpers and their rules.
+    const IDENTITIES: &str = "void setUser(def ctx, def x) {\n  if (ctx.user == null) {\n    \
+        ctx.user = new HashMap();\n  }\n  if (ctx.user.name == null) {\n    \
+        ctx.user.name = x;\n  }\n}\nvoid addNetwork(def ctx, def x) {\n  \
+        if (ctx.network == null) {\n    ctx.network = new HashMap();\n  }\n  \
+        if (ctx.network?.name == null) {\n    ArrayList al = new ArrayList();\n    \
+        ctx.network.put(\"name\", al);\n  }\n  if (!ctx.network.name.contains(x)) {\n    \
+        ctx.network.name.add(x);\n  }\n}\ndef i = 0;\n\
+        for (cisco_identity_type in ctx.cisco.umbrella.identity_types) {\n  \
+        if ([\"AD Users\"].contains(cisco_identity_type)) {\n    \
+        setUser(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  \
+        if ([\"Sites\", \"Internal Networks\", \"Networks\"].contains(cisco_identity_type)) {\n    \
+        addNetwork(ctx, ctx.cisco.umbrella.identities[i]);\n  }\n  i++;\n}";
+
+    /// Each identity goes where its KIND says, position for position.
+    #[test]
+    fn parallel_identities_go_where_their_kind_says() {
+        let mut event = Event::new(json!({
+            "cisco": { "umbrella": {
+                "identities": ["elasticuser", "Users-Internal", "Default Site"],
+                "identity_types": ["AD Users", "Internal Networks", "Sites"],
+            } },
+        }));
+
+        assert!(try_known_painless(&mut event, IDENTITIES));
+
+        assert_eq!(event.get("user.name"), Some(&json!("elasticuser")));
+        assert_eq!(
+            event.get("network.name"),
+            Some(&json!(["Users-Internal", "Default Site"]))
+        );
+    }
+
+    /// A name already there is kept: the helper only sets what is absent.
+    #[test]
+    fn a_name_already_set_is_not_replaced() {
+        let mut event = Event::new(json!({
+            "user": { "name": "already-here" },
+            "cisco": { "umbrella": {
+                "identities": ["elasticuser"],
+                "identity_types": ["AD Users"],
+            } },
+        }));
+
+        assert!(try_known_painless(&mut event, IDENTITIES));
+
+        assert_eq!(event.get("user.name"), Some(&json!("already-here")));
+    }
+
+    /// A kind no rule names contributes nothing.
+    #[test]
+    fn an_unnamed_identity_kind_is_ignored() {
+        let mut event = Event::new(json!({
+            "cisco": { "umbrella": {
+                "identities": ["something"],
+                "identity_types": ["Some Future Kind"],
+            } },
+        }));
+
+        assert!(try_known_painless(&mut event, IDENTITIES));
+
+        assert_eq!(event.get("user.name"), None);
+        assert_eq!(event.get("network.name"), None);
     }
 
     /// Verbatim from `pipelines/cisco_ftd/default.yml`. FTD writes both
