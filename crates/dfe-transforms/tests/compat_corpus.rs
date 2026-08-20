@@ -33,25 +33,26 @@ fn corpus_root() -> PathBuf {
     )
 }
 
-/// The transform a corpus source directory names.
+/// The transform a capture belongs to.
 ///
-/// The corpus is keyed by our source name, so this is the same set the service
-/// registry exposes; a source in the corpus with no transform here is a gap
+/// The corpus is keyed by Elastic's PACKAGE and data stream, which is not our
+/// source name: the azure package holds four of our modules, and fortinet's
+/// package is `fortinet_fortigate`. A capture with no transform here is a gap
 /// worth failing on rather than skipping.
-fn transform_for(source: &str) -> Option<&'static dyn Transform> {
-    Some(match source {
-        "azure_activitylogs" => &filebeat::azure_activitylogs::default::Default,
-        "azure_auditlogs" => &filebeat::azure_auditlogs::default::Default,
-        "azure_platformlogs" => &filebeat::azure_platformlogs::default::Default,
-        "azure_signinlogs" => &filebeat::azure_signinlogs::default::Default,
-        "cisco_ios" => &filebeat::cisco_ios::default::Default,
-        "cisco_meraki" => &filebeat::cisco_meraki::default::Default,
-        "cisco_nexus" => &filebeat::cisco_nexus::default::Default,
-        "crowdstrike" => &filebeat::crowdstrike::default::Default,
-        "fortinet" => &filebeat::fortinet::default::Default,
-        "o365" => &filebeat::o365::default::Default,
-        "okta" => &filebeat::okta::default::Default,
-        "panw" => &filebeat::panw::default::Default,
+fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transform> {
+    Some(match (package, data_stream) {
+        ("azure", "activitylogs") => &filebeat::azure_activitylogs::default::Default,
+        ("azure", "auditlogs") => &filebeat::azure_auditlogs::default::Default,
+        ("azure", "platformlogs") => &filebeat::azure_platformlogs::default::Default,
+        ("azure", "signinlogs") => &filebeat::azure_signinlogs::default::Default,
+        ("cisco_ios", _) => &filebeat::cisco_ios::default::Default,
+        ("cisco_meraki", _) => &filebeat::cisco_meraki::default::Default,
+        ("cisco_nexus", _) => &filebeat::cisco_nexus::default::Default,
+        ("crowdstrike", _) => &filebeat::crowdstrike::default::Default,
+        ("fortinet_fortigate", _) => &filebeat::fortinet::default::Default,
+        ("o365", _) => &filebeat::o365::default::Default,
+        ("okta", _) => &filebeat::okta::default::Default,
+        ("panw", _) => &filebeat::panw::default::Default,
         _ => return None,
     })
 }
@@ -59,6 +60,7 @@ fn transform_for(source: &str) -> Option<&'static dyn Transform> {
 /// One fixture's confirmed output, and where it came from.
 struct Captured {
     source: String,
+    data_stream: String,
     fixture: String,
     engine: String,
     /// The pipeline `compat.py` installed. Anything not prefixed `compat-`
@@ -109,6 +111,7 @@ fn captured() -> Vec<Captured> {
             continue;
         };
         for stream in streams.flatten().filter(|e| e.path().is_dir()) {
+            let stream_name = stream.file_name().to_string_lossy().into_owned();
             let Ok(fixtures) = std::fs::read_dir(stream.path()) else {
                 continue;
             };
@@ -125,6 +128,7 @@ fn captured() -> Vec<Captured> {
                     .unwrap_or(Value::Null);
                 out.push(Captured {
                     source: source_name.clone(),
+                    data_stream: stream_name.clone(),
                     fixture: fixture.file_name().to_string_lossy().into_owned(),
                     engine: meta
                         .get("elasticsearch_version")
@@ -165,8 +169,8 @@ fn transforms_match_elastics_confirmed_output() {
 
     let mut unmapped = Vec::new();
     for capture in &fixtures {
-        let Some(transform) = transform_for(&capture.source) else {
-            unmapped.push(capture.source.clone());
+        let Some(transform) = transform_for(&capture.source, &capture.data_stream) else {
+            unmapped.push(format!("{}/{}", capture.source, capture.data_stream));
             continue;
         };
 
@@ -204,7 +208,9 @@ fn transforms_match_elastics_confirmed_output() {
                     if diff.is_match() {
                         matched += 1;
                     } else {
-                        eprintln!("  {}[{i}]: {diff}", capture.fixture);
+                        // One stream, so a difference always follows the
+                        // header of the fixture it came from.
+                        println!("  {}[{i}]: {diff}", capture.fixture);
                     }
                 }
             }
@@ -225,15 +231,15 @@ fn transforms_match_elastics_confirmed_output() {
     );
 }
 
-/// The corpus is keyed by our source names, so a name that reaches it must be
-/// one the service can actually run.
+/// Every package and data stream `compat.py` captures must reach a transform.
 #[test]
 fn every_captured_source_is_a_registered_transform() {
     for capture in captured() {
         assert!(
-            transform_for(&capture.source).is_some(),
-            "{} is in the corpus with no transform",
-            capture.source
+            transform_for(&capture.source, &capture.data_stream).is_some(),
+            "{}/{} is in the corpus with no transform",
+            capture.source,
+            capture.data_stream
         );
     }
 }

@@ -905,7 +905,12 @@ def write_corpus(
     (out_dir / "meta.json").write_text(
         json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-    _write_ndjson(out_dir / "input.ndjson", [{"message": e} for e in events])
+    # Record the documents that were sent, not a second wrap of the raw text:
+    # a fixture already in the Beats envelope would otherwise be stored with a
+    # whole document inside `message`.
+    _write_ndjson(
+        out_dir / "input.ndjson", [doc["_source"] for doc in build_docs(events, config)]
+    )
     _write_ndjson(out_dir / "expected.ndjson", outputs)
     if traces:
         trace_dir = TRACE_ROOT / package / data_stream / fixture

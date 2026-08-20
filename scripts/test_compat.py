@@ -66,6 +66,18 @@ class BuildDocs(unittest.TestCase):
         docs = compat.build_docs(["raw"], config)
         self.assertEqual(docs[0]["_source"]["tags"], ["preserve_original_event"])
 
+    def test_the_recorded_input_is_what_was_sent(self) -> None:
+        """input.ndjson holds the document bodies, not a second wrap.
+
+        Storing `{"message": <raw text>}` puts a whole Beats document inside
+        `message` for every already-enveloped fixture, and the comparison side
+        then feeds JSON text to a parser expecting a vendor line.
+        """
+        line = json.dumps({"message": "csv,fields,here", "agent": {"type": "filebeat"}})
+        recorded = [doc["_source"] for doc in compat.build_docs([line], _config())]
+        self.assertEqual(recorded[0]["message"], "csv,fields,here")
+        self.assertEqual(recorded[0]["agent"], {"type": "filebeat"})
+
 
 class ReadExpectation(unittest.TestCase):
     """Lineage comes from the beats marker fields, not the container shape."""
