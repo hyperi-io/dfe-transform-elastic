@@ -32,9 +32,9 @@
           "type": "string"
         },
         "envelope": {
-          "description": "Which transport delivered the payload. The transform is the same for\nall of them; only the unwrapping differs. Validation rejects an\nenvelope the source cannot actually arrive in.",
-          "$ref": "#/$defs/Envelope",
-          "default": "beats"
+          "description": "Which producer wrapped the payload. The transform is the same for all\nof them; only the unwrapping differs.\n\nDefaults to `auto`, which reads it off each batch's first event. Naming\na family instead pins it, and validation then rejects one the source\ncannot actually arrive in.",
+          "$ref": "#/$defs/EnvelopeSetting",
+          "default": "auto"
         },
         "topics": {
           "description": "Topics to consume.",
@@ -69,21 +69,26 @@
         "brokers"
       ]
     },
-    "Envelope": {
-      "description": "How the payload is wrapped on the way in.",
+    "EnvelopeSetting": {
+      "description": "What the operator said about the envelope.\n\n`auto` is the default: the family is read off the first event of each batch,\nso a deployment that changes producer needs no config change. Naming one\npins it, which is the way through for a shape that carries no marker.",
       "oneOf": [
         {
-          "description": "Beats or Elastic Agent: the raw vendor payload is a string in `message`.",
+          "description": "Detect the family from each batch's first event.",
+          "type": "string",
+          "const": "auto"
+        },
+        {
+          "description": "Beats, Elastic Agent, or anything passed through unaltered.",
           "type": "string",
           "const": "beats"
         },
         {
-          "description": "dfe-receiver JSON, from any of its transports. `_source` names which,\nand the unwrap for that transport lifts it to the Elastic-equivalent\nfields. Accepts `syslog` as a name for the era when that was the only\none.",
+          "description": "dfe-receiver, on any of its transports.",
           "type": "string",
           "const": "receiver"
         },
         {
-          "description": "dfe-fetcher JSON: the provider's own payload at the top level, with the\nfetcher's delivery keys alongside it.",
+          "description": "dfe-fetcher.",
           "type": "string",
           "const": "fetcher"
         }

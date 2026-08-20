@@ -22,7 +22,7 @@ mod common;
 use std::time::Duration;
 
 use dfe_transform_elastic::config::{Config, SinkConfig, SourceConfig};
-use dfe_transform_elastic::envelope::Envelope;
+use dfe_transform_elastic::envelope::EnvelopeSetting;
 use dfe_transform_elastic::metrics::TransformMetrics;
 use dfe_transform_elastic::service;
 use scalo::metrics::MetricsManager;
@@ -50,7 +50,7 @@ fn config_sized(
         pipeline_name: "broker-test".into(),
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
-            envelope: Envelope::Beats,
+            envelope: EnvelopeSetting::Auto,
             topics: vec![source_topic.to_string()],
             batch_size,
             group_id: group.to_string(),

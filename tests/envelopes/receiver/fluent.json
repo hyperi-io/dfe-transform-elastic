@@ -1,0 +1,23 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/fluent/convert.rs",
+    "line": "entry_to_json",
+    "producer": "dfe-receiver, Fluent Forward transport",
+    "note": "The msgpack record decodes to the top-level object; the converter then adds tag, timestamp and _source over it. timestamp is a float of epoch seconds, not a string, which is the one place a receiver transport disagrees with syslog on the type."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "fluent"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "fluent"
+  },
+  "event": {
+    "log": "hello from the container",
+    "container_id": "8f2c1e",
+    "tag": "docker.nginx",
+    "timestamp": 1771459200.5,
+    "_source": "fluent"
+  }
+}

@@ -125,7 +125,9 @@ pub async fn run_loop(
 ) -> crate::Result<()> {
     let transform = crate::registry::lookup(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let framing = crate::registry::intake(&config.source.name).and_then(|i| i.framing);
+    let intake = crate::registry::intake(&config.source.name)
+        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+    let framing = intake.framing;
 
     metrics.dfe.pipeline_ready(true);
 
@@ -144,6 +146,9 @@ pub async fn run_loop(
     // per-batch deltas.
     let mut painless_seen = (0_u64, 0_u64);
     let mut geoip_seen = (0_u64, 0_u64);
+    // The shape last reported, so a steady stream logs once rather than per
+    // batch and a producer change is still visible the batch it happens.
+    let mut last_envelope: Option<crate::envelope::Detected> = None;
 
     // 14 of the source pipelines carry a geoip processor, so a deployment
     // that mounted no database gets empty geo fields rather than an error.
@@ -210,8 +215,11 @@ pub async fn run_loop(
             .transport_received_events(TransportKind::Kafka, received);
         metrics.app.records_received.increment(received);
 
+        let resolution = crate::envelope::resolve(config.source.envelope, events.first(), intake);
+        report_envelope(&resolution, &mut last_envelope, metrics);
+
         let (transformed, outcome) =
-            transform_batch_with(transform, config.source.envelope, framing, events);
+            transform_batch_with(transform, resolution.envelope, framing, events);
         metrics
             .batch_duration
             .record(started.elapsed().as_secs_f64());
@@ -496,6 +504,52 @@ fn producer_config(config: &Config) -> KafkaConfig {
     }
 }
 
+/// Log the batch's envelope when it changes, and count what was wrong with it.
+///
+/// The counters fire every batch; the log line only on a change, because the
+/// steady state is thousands of identical batches.
+fn report_envelope(
+    resolution: &crate::envelope::Resolution,
+    last: &mut Option<crate::envelope::Detected>,
+    metrics: &TransformMetrics,
+) {
+    if resolution.contradicted {
+        metrics.envelope_contradicted.increment(1);
+    }
+    if resolution.unaccepted {
+        metrics.envelope_unaccepted.increment(1);
+    }
+
+    let Some(detected) = resolution.detected.as_ref() else {
+        return;
+    };
+    if last.as_ref() == Some(detected) {
+        return;
+    }
+    *last = Some(detected.clone());
+
+    if resolution.contradicted {
+        tracing::warn!(
+            configured = ?resolution.envelope,
+            detected = ?detected.family,
+            variant = %detected.variant,
+            "events do not look like the configured envelope; unwrapping as configured"
+        );
+    } else if resolution.unaccepted {
+        tracing::warn!(
+            detected = ?detected.family,
+            variant = %detected.variant,
+            "this source cannot arrive over the detected envelope; unwrapping as beats"
+        );
+    } else {
+        tracing::info!(
+            envelope = ?resolution.envelope,
+            variant = %detected.variant,
+            "envelope in use"
+        );
+    }
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
@@ -507,7 +561,7 @@ mod tests {
             pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
-                envelope: crate::envelope::Envelope::Beats,
+                envelope: crate::envelope::EnvelopeSetting::Auto,
                 topics: vec!["in".into()],
                 batch_size: 100,
                 group_id: "g".into(),

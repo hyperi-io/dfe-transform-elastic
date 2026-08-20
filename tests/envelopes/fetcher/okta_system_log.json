@@ -1,0 +1,39 @@
+{
+  "provenance": {
+    "file": "dfe-fetcher src/pipeline/mod.rs",
+    "line": "enrich_record, asserted in test_enrich_record and around test line 885 for the source name",
+    "producer": "dfe-fetcher, okta.system_log source",
+    "note": "enrich_record appends the three keys textually before the payload's closing brace, so the provider's own JSON is untouched and sits at the TOP LEVEL -- not wrapped in message, which is where Beats puts the same payload. The timestamps are epoch MILLISECONDS as numbers. The Okta record below is the shape our okta transform already parses."
+  },
+  "shape": {
+    "family": "fetcher",
+    "variant": "okta.system_log"
+  },
+  "detect": {
+    "family": "fetcher",
+    "variant": "okta.system_log"
+  },
+  "event": {
+    "uuid": "9d5c5a1b-0d3e-4a2f-8a11-2f0c1e6b7d90",
+    "published": "2026-02-19T00:00:00.000Z",
+    "eventType": "user.session.start",
+    "outcome": {
+      "result": "SUCCESS"
+    },
+    "actor": {
+      "id": "00u1abcd2efGHIJ3k4l5",
+      "type": "User",
+      "alternateId": "derek@example.com",
+      "displayName": "Derek"
+    },
+    "client": {
+      "ipAddress": "203.0.113.7",
+      "userAgent": {
+        "rawUserAgent": "Mozilla/5.0"
+      }
+    },
+    "_timestamp_fetcher": 1771459200000,
+    "_timestamp_received": 1771459200000,
+    "_source_fetcher": "okta.system_log"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/splunk_hec/convert.rs",
+    "line": "the assertions in test_raw_to_json_no_metadata",
+    "producer": "dfe-receiver, Splunk HEC transport, sender supplied no metadata",
+    "note": "The test asserts the object has exactly one key. A HEC event with no metadata is byte-identical to a bare Elastic document, so no detector can tell them apart and none should pretend to. This fixture exists to hold that limit still: it is the recorded blind spot, not a failing case."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "splunk_hec"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "bare"
+  },
+  "event": {
+    "message": "plain text event"
+  }
+}

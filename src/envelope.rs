@@ -23,10 +23,12 @@
 //! `azure-eventhub` -- because there the ingest pipeline does all the parsing
 //! and fetching the data ourselves loses nothing.
 
+use std::borrow::Cow;
+
 use dfe_runtime::{Event, syslog_pri};
 use serde_json::{Value, json};
 
-use crate::registry::Framing;
+use crate::registry::{Framing, Intake};
 
 /// The receiver's own field names, removed once they have been lifted.
 const RECEIVER_KEYS: &[&str] = &[
@@ -58,6 +60,50 @@ const DEFAULT_FACILITY: u8 = 1;
 
 /// The severity used when the receiver saw no PRI.
 const DEFAULT_SEVERITY: u8 = 5;
+
+/// What the operator said about the envelope.
+///
+/// `auto` is the default: the family is read off the first event of each batch,
+/// so a deployment that changes producer needs no config change. Naming one
+/// pins it, which is the way through for a shape that carries no marker.
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Default,
+    serde::Serialize,
+    serde::Deserialize,
+    schemars::JsonSchema,
+)]
+#[serde(rename_all = "snake_case")]
+pub enum EnvelopeSetting {
+    /// Detect the family from each batch's first event.
+    #[default]
+    Auto,
+    /// Beats, Elastic Agent, or anything passed through unaltered.
+    #[serde(alias = "elastic")]
+    Beats,
+    /// dfe-receiver, on any of its transports.
+    #[serde(alias = "syslog")]
+    Receiver,
+    /// dfe-fetcher.
+    Fetcher,
+}
+
+impl EnvelopeSetting {
+    /// The family the operator pinned, or `None` when they left it to detection.
+    #[must_use]
+    pub const fn pinned(self) -> Option<Envelope> {
+        match self {
+            Self::Auto => None,
+            Self::Beats => Some(Envelope::Beats),
+            Self::Receiver => Some(Envelope::Receiver),
+            Self::Fetcher => Some(Envelope::Fetcher),
+        }
+    }
+}
 
 /// How the payload is wrapped on the way in.
 #[derive(
@@ -110,6 +156,148 @@ impl Envelope {
         }
     }
 }
+
+/// What one event's wrapper turned out to be.
+///
+/// The family selects the unwrap; the variant names which of that producer's
+/// shapes it is, and is carried so the logs and metrics can report it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Detected {
+    /// The producer whose wrapper is around the payload.
+    pub family: Envelope,
+    /// Which of that producer's shapes. Borrowed for the Elastic variants,
+    /// which are a closed set, and owned for the other two, whose variant is
+    /// whatever string the producer wrote.
+    pub variant: Cow<'static, str>,
+}
+
+/// Name the family from the marker keys, most specific first.
+///
+/// Top-level `contains_key` and nothing else -- no path walking, no parse, and
+/// no allocation on the Elastic arms. Called once per batch, since one
+/// partition has one producer.
+///
+/// `_source_fetcher` is tested before `_source` because a fetched payload can
+/// carry a field of that name itself.
+#[must_use]
+pub fn detect(event: &Event) -> Detected {
+    let Some(keys) = event.as_value().as_object() else {
+        return Detected {
+            family: Envelope::Beats,
+            variant: Cow::Borrowed(BARE),
+        };
+    };
+
+    let owned = |family, key: &str| Detected {
+        family,
+        variant: keys
+            .get(key)
+            .and_then(Value::as_str)
+            .map_or(Cow::Borrowed(UNNAMED), |v| Cow::Owned(v.to_string())),
+    };
+
+    if keys.contains_key("_source_fetcher") {
+        return owned(Envelope::Fetcher, "_source_fetcher");
+    }
+    if keys.contains_key("_source") {
+        return owned(Envelope::Receiver, "_source");
+    }
+    // OTLP's generic mode tags `_signal` and the Vector gRPC source tags
+    // metrics and traces `_vector_type`; neither writes `_source`.
+    if keys.contains_key("_signal") {
+        return Detected {
+            family: Envelope::Receiver,
+            variant: Cow::Borrowed("otlp"),
+        };
+    }
+    if keys.contains_key("_vector_type") {
+        return Detected {
+            family: Envelope::Receiver,
+            variant: Cow::Borrowed("grpc"),
+        };
+    }
+    // Splunk HEC writes no marker, so `sourcetype` stands in: the one key in
+    // its metadata no other shape uses. A HEC event whose sender sent no
+    // metadata is indistinguishable from a bare one and falls through.
+    if keys.contains_key("sourcetype") {
+        return Detected {
+            family: Envelope::Receiver,
+            variant: Cow::Borrowed("splunk_hec"),
+        };
+    }
+    if keys.contains_key("data_stream") && keys.contains_key("elastic_agent") {
+        return Detected {
+            family: Envelope::Beats,
+            variant: Cow::Borrowed("agent"),
+        };
+    }
+    if keys.contains_key("fileset") {
+        return Detected {
+            family: Envelope::Beats,
+            variant: Cow::Borrowed("module"),
+        };
+    }
+
+    Detected {
+        family: Envelope::Beats,
+        variant: Cow::Borrowed(BARE),
+    }
+}
+
+/// The Elastic variant with no wrapper at all: `message` and maybe `tags`.
+///
+/// The fallback rather than a detected shape, since it carries no marker.
+pub const BARE: &str = "bare";
+
+/// Which envelope a batch will be unwrapped with, and what was odd about it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Resolution {
+    /// The family to unwrap with.
+    pub envelope: Envelope,
+    /// What the batch's first event looked like, when there was one.
+    pub detected: Option<Detected>,
+    /// The operator pinned a family the events do not look like.
+    pub contradicted: bool,
+    /// The detected family is not one this source can arrive in.
+    pub unaccepted: bool,
+}
+
+/// Decide the envelope for a batch from its first event.
+///
+/// A pinned setting wins over what the events look like, because the whole
+/// point of pinning is to name a shape detection cannot see. A contradiction is
+/// reported rather than fatal: one odd event must not take the pod down, and
+/// the counters make it visible.
+///
+/// Detection that lands on a family the source cannot arrive in falls back to
+/// `Beats`, which every source accepts.
+#[must_use]
+pub fn resolve(setting: EnvelopeSetting, first: Option<&Event>, intake: Intake) -> Resolution {
+    let detected = first.map(detect);
+
+    let Some(pinned) = setting.pinned() else {
+        let family = detected.as_ref().map_or(Envelope::Beats, |d| d.family);
+        let unaccepted = !intake.accepts(family);
+        return Resolution {
+            envelope: if unaccepted { Envelope::Beats } else { family },
+            detected,
+            contradicted: false,
+            unaccepted,
+        };
+    };
+
+    let contradicted = detected.as_ref().is_some_and(|d| d.family != pinned);
+    Resolution {
+        envelope: pinned,
+        detected,
+        contradicted,
+        unaccepted: false,
+    }
+}
+
+/// The variant of a producer that tagged its family but wrote a non-string
+/// where its own name should be.
+const UNNAMED: &str = "unnamed";
 
 /// Move the provider's payload into `message` as the string the transform
 /// expects, and drop the fetcher's delivery keys.
@@ -291,6 +479,38 @@ mod tests {
             "msgid": "ID47",
             "_source": "syslog"
         }))
+    }
+
+    /// A fetched payload can carry a field called `_source` of its own, so the
+    /// fetcher's key has to be tested first or its events read as receiver ones.
+    #[test]
+    fn the_fetcher_marker_wins_over_a_payload_field_of_the_same_name() {
+        let event = Event::new(json!({
+            "_source": "s3://bucket/key",
+            "_source_fetcher": "aws.cloudtrail",
+        }));
+        let detected = detect(&event);
+        assert_eq!(detected.family, Envelope::Fetcher);
+        assert_eq!(detected.variant, "aws.cloudtrail");
+    }
+
+    /// A marker whose value is not a string still names its family, so the
+    /// unwrap is right even though the variant cannot be reported.
+    #[test]
+    fn a_marker_with_a_non_string_value_still_names_its_family() {
+        let event = Event::new(json!({ "_source": 7 }));
+        let detected = detect(&event);
+        assert_eq!(detected.family, Envelope::Receiver);
+        assert_eq!(detected.variant, "unnamed");
+    }
+
+    /// A JSON line that is an array or a scalar has no keys to read, and must
+    /// fall through rather than panic.
+    #[test]
+    fn an_event_that_is_not_an_object_detects_as_bare() {
+        let detected = detect(&Event::new(json!([1, 2, 3])));
+        assert_eq!(detected.family, Envelope::Beats);
+        assert_eq!(detected.variant, BARE);
     }
 
     #[test]

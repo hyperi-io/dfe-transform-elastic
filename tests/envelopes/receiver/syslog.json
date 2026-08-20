@@ -1,0 +1,36 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/syslog/convert.rs",
+    "line": "syslog_to_json, and the assertions in test_rfc5424_with_structured_data",
+    "producer": "dfe-receiver, syslog transport, RFC 5424 input",
+    "note": "Field for field what syslog_to_json inserts: message, facility, severity, timestamp, hostname, appname, procid, msgid, structured_data, _source. The input line is the one the test uses -- <165>1 2026-03-03T10:30:00.123+11:00 web01 nginx 1234 ID47 [exampleSDID@32473 iut=\"3\" eventSource=\"Application\"] This is a test message."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "syslog"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "syslog"
+  },
+  "event": {
+    "message": "This is a test message",
+    "facility": "local4",
+    "severity": "notice",
+    "timestamp": "2026-03-03T10:30:00.123+11:00",
+    "hostname": "web01",
+    "appname": "nginx",
+    "procid": "1234",
+    "msgid": "ID47",
+    "structured_data": [
+      {
+        "id": "exampleSDID@32473",
+        "params": {
+          "iut": "3",
+          "eventSource": "Application"
+        }
+      }
+    ],
+    "_source": "syslog"
+  }
+}

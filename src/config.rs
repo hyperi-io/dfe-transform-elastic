@@ -34,11 +34,14 @@ pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
     pub name: String,
 
-    /// Which transport delivered the payload. The transform is the same for
-    /// all of them; only the unwrapping differs. Validation rejects an
-    /// envelope the source cannot actually arrive in.
+    /// Which producer wrapped the payload. The transform is the same for all
+    /// of them; only the unwrapping differs.
+    ///
+    /// Defaults to `auto`, which reads it off each batch's first event. Naming
+    /// a family instead pins it, and validation then rejects one the source
+    /// cannot actually arrive in.
     #[serde(default)]
-    pub envelope: crate::envelope::Envelope,
+    pub envelope: crate::envelope::EnvelopeSetting,
 
     /// Topics to consume.
     pub topics: Vec<String>,
@@ -161,18 +164,22 @@ impl Config {
 
         // An envelope this source never arrives in would unwrap a shape that
         // is not there and quietly emit nothing useful. Refuse it at startup
-        // rather than at the first batch.
-        if !intake.accepts(self.source.envelope) {
+        // rather than at the first batch. Only a PINNED envelope can be checked
+        // here: under `auto` there is no event yet to detect from, so the same
+        // mismatch is counted per batch instead.
+        if let Some(pinned) = self.source.envelope.pinned()
+            && !intake.accepts(pinned)
+        {
             let name = |e: &crate::envelope::Envelope| format!("{e:?}").to_lowercase();
             let accepts: Vec<String> = intake.envelopes.iter().map(name).collect();
             return Err(crate::Error::Config(format!(
                 "source '{}' cannot arrive over {}; it accepts {}, and the {} \
                  envelope applies to: {}",
                 self.source.name,
-                name(&self.source.envelope),
+                name(&pinned),
                 accepts.join(" and "),
-                name(&self.source.envelope),
-                crate::registry::sources_accepting(self.source.envelope)
+                name(&pinned),
+                crate::registry::sources_accepting(pinned)
                     .collect::<Vec<_>>()
                     .join(", ")
             )));
@@ -192,7 +199,7 @@ mod tests {
             pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
-                envelope: crate::envelope::Envelope::Beats,
+                envelope: crate::envelope::EnvelopeSetting::Beats,
                 topics: vec!["in".into()],
                 batch_size: 100,
                 group_id: "g".into(),
@@ -260,21 +267,59 @@ mod tests {
         assert!(c.validate().is_err());
     }
 
+    /// Detection, not a guess: an unset envelope means read it off the batch,
+    /// so a deployment that changes producer needs no config change.
     #[test]
-    fn defaults_to_the_beats_envelope() {
+    fn defaults_to_detecting_the_envelope() {
         let parsed: Config = serde_yaml_ng::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
         )
         .expect("config parses without an envelope key");
-        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Beats);
+        assert_eq!(
+            parsed.source.envelope,
+            crate::envelope::EnvelopeSetting::Auto
+        );
+        assert_eq!(parsed.source.envelope.pinned(), None);
+    }
+
+    /// `auto` cannot be checked against the intake at startup, so a source that
+    /// refuses a pinned envelope must still validate when nothing is pinned.
+    #[test]
+    fn auto_validates_on_a_source_that_refuses_a_pinned_envelope() {
+        let mut c = valid();
+        c.source.envelope = crate::envelope::EnvelopeSetting::Receiver;
+        assert!(c.validate().is_err(), "okta pinned to receiver is refused");
+
+        c.source.envelope = crate::envelope::EnvelopeSetting::Auto;
+        assert!(c.validate().is_ok());
+    }
+
+    /// A config written before detection existed still loads and still pins.
+    #[test]
+    fn the_old_envelope_names_still_load() {
+        for (written, expected) in [
+            ("beats", crate::envelope::EnvelopeSetting::Beats),
+            ("elastic", crate::envelope::EnvelopeSetting::Beats),
+            ("syslog", crate::envelope::EnvelopeSetting::Receiver),
+            ("receiver", crate::envelope::EnvelopeSetting::Receiver),
+            ("fetcher", crate::envelope::EnvelopeSetting::Fetcher),
+            ("auto", crate::envelope::EnvelopeSetting::Auto),
+        ] {
+            let parsed: Config = serde_yaml_ng::from_str(&format!(
+                "source:\n  name: filebeat.fortinet.default\n  envelope: {written}\n  \
+                 topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n"
+            ))
+            .expect("config parses");
+            assert_eq!(parsed.source.envelope, expected, "envelope: {written}");
+        }
     }
 
     #[test]
     fn accepts_the_receiver_envelope_on_a_pushed_source() {
         let mut c = valid();
         c.source.name = "filebeat.cisco_ios.default".into();
-        c.source.envelope = crate::envelope::Envelope::Receiver;
+        c.source.envelope = crate::envelope::EnvelopeSetting::Receiver;
         assert!(c.validate().is_ok());
     }
 
@@ -283,7 +328,7 @@ mod tests {
     #[test]
     fn rejects_the_receiver_envelope_on_a_fetched_source() {
         let mut c = valid();
-        c.source.envelope = crate::envelope::Envelope::Receiver;
+        c.source.envelope = crate::envelope::EnvelopeSetting::Receiver;
 
         let err = c.validate().expect_err("okta over syslog must be rejected");
         let message = err.to_string();
@@ -299,7 +344,7 @@ mod tests {
     fn rejects_the_fetcher_envelope_on_a_pushed_source() {
         let mut c = valid();
         c.source.name = "filebeat.cisco_ios.default".into();
-        c.source.envelope = crate::envelope::Envelope::Fetcher;
+        c.source.envelope = crate::envelope::EnvelopeSetting::Fetcher;
 
         let message = c
             .validate()
@@ -315,7 +360,7 @@ mod tests {
     #[test]
     fn accepts_the_fetcher_envelope_on_a_pulled_source() {
         let mut c = valid();
-        c.source.envelope = crate::envelope::Envelope::Fetcher;
+        c.source.envelope = crate::envelope::EnvelopeSetting::Fetcher;
         assert!(c.validate().is_ok());
     }
 
@@ -326,7 +371,10 @@ mod tests {
              topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
         )
         .expect("config parses");
-        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Receiver);
+        assert_eq!(
+            parsed.source.envelope,
+            crate::envelope::EnvelopeSetting::Receiver
+        );
         assert!(parsed.validate().is_ok());
     }
 }
