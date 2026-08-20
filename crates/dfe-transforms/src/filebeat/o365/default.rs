@@ -1751,7 +1751,13 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("client._temp")
-                    && !(event.get_str("client._temp").is_none_or(|s| s.is_empty()))
+                    && !(event.get("client._temp").is_none_or(|v| match v {
+                        serde_json::Value::String(s) => s.is_empty(),
+                        serde_json::Value::Array(a) => a.is_empty(),
+                        serde_json::Value::Object(o) => o.is_empty(),
+                        serde_json::Value::Null => true,
+                        _ => false,
+                    }))
             };
             if _cond {
                 if let Some(input) = event.get_string("client._temp") {
@@ -1806,7 +1812,13 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("server._temp")
-                    && !(event.get_str("server._temp").is_none_or(|s| s.is_empty()))
+                    && !(event.get("server._temp").is_none_or(|v| match v {
+                        serde_json::Value::String(s) => s.is_empty(),
+                        serde_json::Value::Array(a) => a.is_empty(),
+                        serde_json::Value::Object(o) => o.is_empty(),
+                        serde_json::Value::Null => true,
+                        _ => false,
+                    }))
             };
             if _cond {
                 // ignore_failure: true

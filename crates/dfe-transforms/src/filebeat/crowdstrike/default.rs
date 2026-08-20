@@ -882,8 +882,14 @@ impl Transform for Default {
                         .get("crowdstrike.event.ThreatgraphIndicators")
                         .is_some_and(|v| v.is_array())
                         && !(event
-                            .get_str("crowdstrike.event.ThreatgraphIndicators")
-                            .is_none_or(|s| s.is_empty()))
+                            .get("crowdstrike.event.ThreatgraphIndicators")
+                            .is_none_or(|v| match v {
+                                serde_json::Value::String(s) => s.is_empty(),
+                                serde_json::Value::Array(a) => a.is_empty(),
+                                serde_json::Value::Object(o) => o.is_empty(),
+                                serde_json::Value::Null => true,
+                                _ => false,
+                            }))
                 };
                 if _cond {
                     // Painless script

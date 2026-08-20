@@ -122,7 +122,13 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("log.syslog")
-                    && event.get_str("log.syslog").is_none_or(|s| s.is_empty())
+                    && event.get("log.syslog").is_none_or(|v| match v {
+                        serde_json::Value::String(s) => s.is_empty(),
+                        serde_json::Value::Array(a) => a.is_empty(),
+                        serde_json::Value::Object(o) => o.is_empty(),
+                        serde_json::Value::Null => true,
+                        _ => false,
+                    })
             };
             if _cond {
                 event.remove("log.syslog");

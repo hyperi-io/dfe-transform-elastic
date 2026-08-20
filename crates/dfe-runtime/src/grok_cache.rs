@@ -475,6 +475,64 @@ mod tests {
         assert_eq!(event.get_i64("log.syslog.priority"), Some(188));
     }
 
+    /// `cisco_ios` wraps its whole syslog preamble in an optional group, so both
+    /// the priority and the hostname are captured from inside one.
+    #[test]
+    fn a_capture_inside_an_optional_group_is_written() {
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{WORD:event.action}$")
+                .extract_into("<190>3132517: blocked", &mut event)
+                .expect("extraction")
+        );
+
+        assert_eq!(event.get_i64("log.syslog.priority"), Some(190));
+        assert_eq!(event.get_str("event.action"), Some("blocked"));
+    }
+
+    /// The same group, not participating. An absent optional capture must
+    /// leave the field unset rather than writing an empty string.
+    #[test]
+    fn an_optional_group_that_does_not_participate_writes_nothing() {
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok("^(?:<%{NONNEGINT:log.syslog.priority:long}>)?%{WORD:event.action}$")
+                .extract_into("blocked", &mut event)
+                .expect("extraction")
+        );
+
+        assert!(!event.has("log.syslog.priority"));
+        assert_eq!(event.get_str("event.action"), Some("blocked"));
+    }
+
+    /// The `cisco_ios` header pattern, exactly as the generator emits it, against a
+    /// line from its own fixtures.
+    #[test]
+    fn the_cisco_ios_header_pattern_captures_its_preamble() {
+        let mut event = crate::Event::new(serde_json::json!({}));
+        let compiled = grok_mapped(
+            r"^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\d{1,4}:\d{2}:\d{2}|(?:(\d+)y)?(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\d{1,2}|[+-]\d{2}:\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$",
+            &[
+                ("log_syslog_hostname", "log.syslog.hostname"),
+                ("cisco_ios_uptime", "cisco.ios.uptime"),
+                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                ("_temp__tz", "_temp_.tz"),
+            ],
+        );
+
+        let matched = compiled
+            .extract_into(
+                "<190>3132517: Jul 13 08:23:43 192.168.100.2 sw01: 3132779: Jul 14 2023 08:23:43.398 UTC: %FOO-6-BAR: Test header format",
+                &mut event,
+            )
+            .expect("extraction");
+
+        assert!(matched, "the header pattern did not match its own fixture");
+        assert_eq!(event.get_i64("log.syslog.priority"), Some(190));
+        assert_eq!(event.get_str("log.syslog.hostname"), Some("sw01"));
+        assert_eq!(event.get_str("cisco.ios.sequence"), Some("3132779"));
+    }
+
     #[test]
     fn a_plain_pattern_is_cached_too() {
         let first = regex(r"\d{6}$");
