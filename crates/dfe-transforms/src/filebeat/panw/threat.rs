@@ -16,6 +16,19 @@ impl Transform for Threat {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            let _cond = { event.get_str("panw.panos.sub_type") == Some("url") };
+            if _cond {
+                // Painless script
+                // Source: def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n"#
+                    ),
+                )?;
+            }
+
             if let Some(csv_str) = event.get_string("message") {
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
@@ -666,6 +679,10 @@ impl Transform for Threat {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert__temp__forwarded_ip_to_network_forwarded_ip_e6722dcc",
+                )?;
                 if event.has("_temp_.forwarded_ip") {
                     event.rename("_temp_.forwarded_ip", "panw.panos.x_forwarded_for")?;
                 }
@@ -677,227 +694,316 @@ impl Transform for Threat {
                 }
             }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.dstloc").cloned() {
-                    event.set("panw.panos.destination.location", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.dstloc")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.destination.location", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
-                    event.set("destination.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.nat.ip").cloned() {
-                    event.set("destination.nat.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.nat.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.nat.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.nat.port").cloned() {
-                    event.set("destination.nat.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.nat.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.nat.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.port").cloned() {
-                    event.set("destination.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.recipient").cloned() {
-                    event.set("destination.user.email", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.recipient")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.user.email", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.file.type").cloned() {
-                    event.set("file.type", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.file.type")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("file.type", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.http_method").cloned() {
-                    event.set("http.request.method", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.http_method")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("http.request.method", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.referrer").cloned() {
-                    event.set("http.request.referrer", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.referrer")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("http.request.referrer", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.severity").cloned() {
-                    event.set("log.level", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.severity")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("log.level", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.application").cloned() {
-                    event.set("network.application", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.application")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.application", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.direction").cloned() {
-                    event.set("panw.panos.network.direction", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.direction")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.network.direction", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("network.forwarded_ip").cloned() {
-                    event.set("panw.panos.forwarded_ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("network.forwarded_ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.forwarded_ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.protocol").cloned() {
-                    event.set("network.transport", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.protocol")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.transport", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
-                    event.set("observer.egress.interface.name", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.outbound_interface")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.egress.interface.name", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
-                    event.set("observer.egress.zone", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.zone")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.egress.zone", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.device_name").cloned() {
-                    event.set("observer.hostname", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.device_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.hostname", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
-                    event.set("observer.ingress.interface.name", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.inbound_interface")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.ingress.interface.name", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.zone").cloned() {
-                    event.set("observer.ingress.zone", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.zone")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.ingress.zone", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
-                    event.set("rule.uuid", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.rule_uuid")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("rule.uuid", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.srcloc").cloned() {
-                    event.set("panw.panos.source.location", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.srcloc")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.source.location", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.ip").cloned() {
-                    event.set("source.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.nat.ip").cloned() {
-                    event.set("source.nat.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.nat.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.nat.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.port").cloned() {
-                    event.set("source.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.nat.port").cloned() {
-                    event.set("source.nat.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.nat.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.nat.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.sender").cloned() {
-                    event.set("source.user.email", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.sender")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.user.email", v)?;
+            }
 
             let _cond = {
-                !event.has_value("url.scheme")
-                    && event.get_str("panw.panos.sub_type") == Some("url")
+                event.get_str("panw.panos.sub_type") == Some("url")
                     && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
             };
             if _cond {
+                if let Some(v) = event.get("panw.panos.misc").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get_str("panw.panos.sub_type") == Some("virus")
+                    && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                    && event.get("panw.panos.misc").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("/")),
+                        serde_json::Value::String(s) => s.contains("/"),
+                        _ => false,
+                    })
+            };
+            if _cond {
+                if let Some(v) = event.get("panw.panos.misc").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get_str("panw.panos.sub_type") == Some("vulnerability")
+                    && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                    && event.get("panw.panos.misc").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("/")),
+                        serde_json::Value::String(s) => s.contains("/"),
+                        _ => false,
+                    })
+            };
+            if _cond {
+                if let Some(v) = event.get("panw.panos.misc").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get_str("panw.panos.sub_type") == Some("file")
+                    && event
+                        .get("_temp_.future_use3")
+                        .is_some_and(|v| v.is_string())
+                    && event.get("_temp_.future_use3").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("/")),
+                        serde_json::Value::String(s) => s.contains("/"),
+                        _ => false,
+                    })
+            };
+            if _cond {
+                if let Some(v) = event.get("_temp_.future_use3").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get_str("panw.panos.threat_category") == Some("domain-edl")
+                    && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                if let Some(v) = event.get("panw.panos.misc").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get_str("panw.panos.sub_type") == Some("spyware")
+                    && event.get_str("panw.panos.protocol") == Some("tcp")
+                    && ["block-url", "drop", "sinkhole"]
+                        .contains(&event.get_str("panw.panos.action").unwrap_or(""))
+                    && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                if let Some(v) = event.get("panw.panos.misc").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get_str("panw.panos.sub_type") == Some("spyware")
+                    && event.get_str("panw.panos.protocol") == Some("udp")
+                    && ["sinkhole", "drop", "drop-packet"]
+                        .contains(&event.get_str("panw.panos.action").unwrap_or(""))
+                    && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                if let Some(v) = event.get("panw.panos.misc").cloned() {
+                    event.set("url.original", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("url.original") };
+            if _cond {
                 // Painless script
-                // Source: Map url = new HashMap();\nString url_original = ctx.panw.panos.misc;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.indexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;
+                // Source: Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     cached_script!(
-                        r#"Map url = new HashMap();\nString url_original = ctx.panw.panos.misc;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.indexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;"#
+                        r#"Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;"#
                     ),
                 )?;
             }
@@ -916,13 +1022,13 @@ impl Transform for Threat {
                     }))
             };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.misc").cloned() {
-                        event.set("file.path", v)?;
-                    }
-                    Ok(())
-                })();
+                if let Some(v) = event
+                    .get("panw.panos.misc")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.path", v)?;
+                }
             }
 
             let _cond = { event.get("file.path").is_some_and(|v| v.is_string()) };
@@ -939,7 +1045,14 @@ impl Transform for Threat {
             }
 
             let _cond = {
-                event.get_str("panw.panos.sub_type") == Some("file")
+                [
+                    "file",
+                    "virus",
+                    "vulnerability",
+                    "wildfire",
+                    "wildfire-virus",
+                ]
+                .contains(&event.get_str("panw.panos.sub_type").unwrap_or(""))
                     && (event.get("panw.panos.misc").is_some_and(|v| v.is_string()))
                     && !(event.get("panw.panos.misc").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("/")),
@@ -952,22 +1065,28 @@ impl Transform for Threat {
                     }))
             };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.misc").cloned() {
-                        event.set("file.name", v)?;
-                    }
-                    Ok(())
-                })();
+                if let Some(v) = event
+                    .get("panw.panos.misc")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.name", v)?;
+                }
             }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.user_agent").cloned() {
-                    event.set("panw.panos.user_agent", v)?;
-                }
-                Ok(())
-            })();
+            // SKIPPED: condition not transpiled: "vulnerability" == ctx.panw?.panos?.sub_type && ctx.file?.name != null
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                event.remove("url");
+            }
+
+            if let Some(v) = event
+                .get("_temp_.user_agent")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.user_agent", v)?;
+            }
 
             let _cond = { event.has_value("panw.panos.url_category_list") };
             if _cond {
@@ -994,27 +1113,8 @@ impl Transform for Threat {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "error in Threat pipeline: error in [{}] processor{} with tag [{}]{} {}",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
-                    )),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -3,18 +3,20 @@
 
 //! Baselines are the measured match count per fixture, and only ever go up.
 //!
-//! The six sources that had no parity test. Their expectations are committed
-//! as a bare JSON array rather than `{"expected": [...]}`, which is the only
-//! thing that had ever stopped them running.
+//! **These fixtures are no longer the parity target.** Every expectation here
+//! was captured from an older generation of Elastic's pipelines, and the
+//! transforms are now generated from the current ones. Agreement with them is
+//! therefore coincidence where it survives, and a low number is not a defect.
+//! `tests/compat_corpus.rs` compares against what Elastic's engine produces
+//! now, and that is the number that means something.
 //!
-//! **o365 and panw sit at zero for a reason that is not the transform.** Their
-//! `.log` files are the OUTPUT of an older pipeline generation, and the
-//! expectation beside each one is that same generation's output. o365's
-//! expectations are keyed `o365.audit.*` where `pipelines/o365/default.yml`
-//! reads `o365audit.*` -- not one field can line up. panw's carry `client.*`
-//! and `panw.panos.destination.nat.*`, which the current pipeline does not set
-//! and explicitly removes. Raising these needs new fixtures generated against
-//! the pipelines in `pipelines/`, not changes to the transforms.
+//! What these still earn: they run every transform over real vendor payloads
+//! on every build, so a panic, an error or a collapse to zero extraction shows
+//! up immediately. The baselines guard that floor, nothing more.
+//!
+//! o365 is the clearest case. It scores 0 of 204 here and 404 of 409 against
+//! the compat corpus: its expectations are keyed `o365.audit.*` where the
+//! pipeline reads `o365audit.*`, so not one field can line up.
 
 use dfe_transforms::filebeat::{cisco_ios, cisco_meraki, cisco_nexus, fortinet, o365, panw};
 
@@ -35,7 +37,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet",
-    54
+    42
 );
 
 parity!(
@@ -43,7 +45,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-6-2",
-    56
+    48
 );
 
 parity!(
@@ -51,7 +53,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-7-4",
-    72
+    58
 );
 
 parity!(
@@ -59,7 +61,7 @@ parity!(
     cisco_ios::default::Default,
     "cisco/ios",
     "test-cisco-ios",
-    26
+    0
 );
 
 parity!(
@@ -67,7 +69,7 @@ parity!(
     cisco_ios::default::Default,
     "cisco/ios",
     "test-syslog",
-    12
+    0
 );
 
 parity!(
@@ -75,7 +77,7 @@ parity!(
     cisco_nexus::default::Default,
     "cisco/nexus",
     "test-nexus",
-    68
+    1
 );
 
 parity!(
@@ -83,7 +85,7 @@ parity!(
     cisco_meraki::default::Default,
     "cisco/meraki/logs",
     "test-events",
-    32
+    7
 );
 
 // The sub-pipelines are INLINED into `default`, which is also where the
@@ -94,7 +96,7 @@ parity!(
     cisco_meraki::default::Default,
     "cisco/meraki/logs",
     "test-flows",
-    16
+    0
 );
 
 parity!(

@@ -16,7 +16,7 @@ fn crowdstrike_default_sample() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-sample",
-        7,
+        2,
     );
 }
 
@@ -26,7 +26,7 @@ fn crowdstrike_default_events() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-events",
-        3,
+        2,
     );
 }
 
@@ -36,7 +36,7 @@ fn crowdstrike_default_event_stream() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-event-stream",
-        9,
+        2,
     );
 }
 
@@ -46,7 +46,7 @@ fn crowdstrike_default_audit_events() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-audit-events",
-        13,
+        1,
     );
 }
 
@@ -56,7 +56,7 @@ fn crowdstrike_default_tags() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags",
-        1,
+        0,
     );
 }
 
@@ -66,6 +66,6 @@ fn crowdstrike_default_tags_list() {
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags-list",
-        1,
+        0,
     );
 }

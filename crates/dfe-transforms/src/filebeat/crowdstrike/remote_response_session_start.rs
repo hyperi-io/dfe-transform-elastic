@@ -25,8 +25,30 @@ impl Transform for RemoteResponseSessionStart {
 
             event.append("event.type", json!("start"))?;
 
-            if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("crowdstrike.event.UserName") {
+                    if let Some(input) = event.get_string("crowdstrike.event.UserName") {
+                        // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                        if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                            .extract_into(&input, event)?
+                        {
+                            // Grok pattern: %{GREEDYDATA:user.name}
+                            if !cached_grok!("%{GREEDYDATA:user.name}")
+                                .extract_into(&input, event)?
+                            {}
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
+            // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserName != null && ctx.crowdstrike.event.UserName.indexOf("@") > 0
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                if let Some(v) = event.get("crowdstrike.event.UserName").cloned() {
+                    event.set("user.email", v)?;
+                }
             }
 
             let _cond = {
@@ -74,6 +96,7 @@ impl Transform for RemoteResponseSessionStart {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

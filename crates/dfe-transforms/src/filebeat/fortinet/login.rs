@@ -233,6 +233,9 @@ impl Transform for Login {
                     && event
                         .get_str("message")
                         .is_some_and(|s| s.starts_with("Administrator"))
+                    && !(event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("logged in")))
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -279,6 +282,55 @@ impl Transform for Login {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "dissect")?;
                     event.set("_ingest.on_failure_processor_tag", "ssh login 2")?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+            }
+
+            let _cond = {
+                event.has_value("message")
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.starts_with("Administrator"))
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("logged in"))
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: %{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)
+                        if !cached_grok!("%{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)").extract_into(&input, event)? {
+                    }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "grok")?;
+                    event.set("_ingest.on_failure_processor_tag", "ssh login 3")?;
                     event.append(
                         "error.message",
                         json!(format!(
@@ -516,13 +568,8 @@ impl Transform for Login {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

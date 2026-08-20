@@ -87,8 +87,6 @@ impl Transform for MobileDetectionSummary {
                 event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
             }
 
-            event.set("threat.framework", json!("MITRE ATT&CK"))?;
-
             let _cond = { event.has_value("crowdstrike.event.Technique") };
             if _cond {
                 event.append(
@@ -145,10 +143,6 @@ impl Transform for MobileDetectionSummary {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
-
             if event.has("crowdstrike.event.SensorId") {
                 event.rename("crowdstrike.event.SensorId", "device.id")?;
             }
@@ -167,6 +161,7 @@ impl Transform for MobileDetectionSummary {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

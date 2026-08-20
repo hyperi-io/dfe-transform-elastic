@@ -35,7 +35,7 @@ impl Transform for FirewallMatch {
 
             let _cond = {
                 event.has_value("crowdstrike.event.RuleAction")
-                    && event.get_str("crowdstrike.event.RuleAction") == Some("2")
+                    && event.get_str("crowdstrike.event.RuleAction") == Some("1")
             };
             if _cond {
                 event.set("_tmp_.action", json!("Allowed"))?;
@@ -154,9 +154,17 @@ impl Transform for FirewallMatch {
                 event.rename("crowdstrike.event.EventType", "event.code")?;
             }
 
-            let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("1") };
+            let _cond = { event.has_value("crowdstrike.event.ConnectionDirection") };
             if _cond {
-                event.set("network.direction", json!("ingress"))?;
+                // Painless script
+                // Source: def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n"#
+                    ),
+                )?;
             }
 
             let _cond = {
@@ -261,11 +269,6 @@ impl Transform for FirewallMatch {
                         event.set("source.port", converted)?;
                     }
                 }
-            }
-
-            let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("2") };
-            if _cond {
-                event.set("network.direction", json!("egress"))?;
             }
 
             let _cond = {
@@ -386,6 +389,7 @@ impl Transform for FirewallMatch {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -16,6 +16,21 @@ impl Transform for Urls {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if let Some(input) = event.get_string("event.original") {
+                    let mut remaining: &str = &input;
+                    if let Some(pos) = remaining.find(" urls ") {
+                        remaining = &remaining[pos..];
+                    }
+                    if let Some(rest) = remaining.strip_prefix(" urls ") {
+                        remaining = rest;
+                    }
+                    event.set("message", remaining)?;
+                }
+                Ok(())
+            })();
+
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" urls ") {

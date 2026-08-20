@@ -379,6 +379,9 @@ impl Transform for PipelineExtractMessage {
                             "DUP_HOSTS",
                             "NF_PARITY_ERROR",
                             "EXCESSIVE_PARITY_ERROR",
+                            "DETECT_MULTIPLE_PEERS",
+                            "TACACS_WARNING",
+                            "SYSLOG_SL_MSG_WARNING",
                         ]
                         .contains(&s.to_uppercase().as_str())
                     })
@@ -403,6 +406,9 @@ impl Transform for PipelineExtractMessage {
                             "DUP_HOSTS",
                             "NF_PARITY_ERROR",
                             "EXCESSIVE_PARITY_ERROR",
+                            "DETECT_MULTIPLE_PEERS",
+                            "TACACS_WARNING",
+                            "SYSLOG_SL_MSG_WARNING",
                         ]
                         .contains(&s.to_uppercase().as_str())
                     })
@@ -411,9 +417,20 @@ impl Transform for PipelineExtractMessage {
                 event.set("event.type", json!(["info"]))?;
             }
 
-            let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
+            let _cond = {
+                ["VSHD_SYSLOG_CONFIG_I", "CFGWRITE_STARTED", "CFGWRITE_DONE"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+            };
             if _cond {
                 event.set("event.category", json!(["configuration"]))?;
+            }
+
+            let _cond = {
+                ["CFGWRITE_STARTED", "CFGWRITE_DONE"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+            };
+            if _cond {
+                event.set("event.type", json!(["info"]))?;
             }
 
             let _cond = {
@@ -447,6 +464,54 @@ impl Transform for PipelineExtractMessage {
                 };
             if _cond {
                 event.set("event.type", json!(["end"]))?;
+            }
+
+            let _cond =
+                { ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or("")) };
+            if _cond {
+                event.set("event.category", json!(["authentication"]))?;
+            }
+
+            let _cond =
+                { ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or("")) };
+            if _cond {
+                event.set("event.type", json!(["end"]))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.has_value("cisco_nexus.log.command")
+            };
+            if _cond {
+                event.set("event.category", json!(["iam", "process"]))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.has_value("cisco_nexus.log.command")
+            };
+            if _cond {
+                event.set("event.type", json!(["start"]))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.category")
+                    && (event.get_str("cisco_nexus.log.facility") == Some("USER")
+                        || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
+            };
+            if _cond {
+                event.set("event.category", json!(["host"]))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.type")
+                    && (event.get_str("cisco_nexus.log.facility") == Some("USER")
+                        || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
+            };
+            if _cond {
+                event.set("event.type", json!(["info"]))?;
             }
 
             let _cond = {
@@ -483,6 +548,376 @@ impl Transform for PipelineExtractMessage {
                 event.set("event.outcome", json!("success"))?;
             }
 
+            let _cond = {
+                event.get_str("event.code") == Some("IF_DOWN_ADMIN_DOWN")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                ["EXCESSIVE_PARITY_ERROR", "NF_PARITY_ERROR"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("INVAL_IP") && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                ["DUPLEX_MISMATCH", "NATIVE_VLAN_MISMATCH"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("L3_VPC_UNEQUAL_WEIGHT")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("DUP_HOSTS")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("TACACS_WARNING")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.get_str("cisco_nexus.log.facility") == Some("KERN")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.outcome")
+                    && event.has_value("message")
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("IF_UP") && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("AAA_ACCOUNTING_MESSAGE")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.has_value("cisco_nexus.log.command")
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("command not allowed"))
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.has_value("cisco_nexus.log.command")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("CFGWRITE_STARTED")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("unknown"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("CFGWRITE_DONE")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("DETECT_MULTIPLE_PEERS")
+                    && !event.has_value("event.outcome")
+            };
+            if _cond {
+                event.set("event.outcome", json!("unknown"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("UPDOWN")
+                    && !event.has_value("event.outcome")
+                    && (event.get_str("cisco_nexus.log.line_protocol_state") == Some("up")
+                        || event.get_str("cisco_nexus.log.state") == Some("up"))
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("UPDOWN")
+                    && !event.has_value("event.outcome")
+                    && (event.get_str("cisco_nexus.log.line_protocol_state") == Some("down")
+                        || event.get_str("cisco_nexus.log.state") == Some("down"))
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("IF_DOWN_ADMIN_DOWN") };
+            if _cond {
+                event.set("event.action", json!("interface-down"))?;
+            }
+
+            let _cond =
+                { ["IF_ADMIN_UP", "IF_UP"].contains(&event.get_str("event.code").unwrap_or("")) };
+            if _cond {
+                event.set("event.action", json!("interface-up"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("SPEED") };
+            if _cond {
+                event.set("event.action", json!("interface-speed-changed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("IF_DUPLEX") };
+            if _cond {
+                event.set("event.action", json!("interface-duplex-changed"))?;
+            }
+
+            let _cond = {
+                ["IF_RX_FLOW_CONTROL", "IF_TX_FLOW_CONTROL"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+            };
+            if _cond {
+                event.set("event.action", json!("interface-flow-control-changed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("IF_XCVR_WARNING") };
+            if _cond {
+                event.set("event.action", json!("transceiver-warning"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("UPDOWN") };
+            if _cond {
+                event.set("event.action", json!("interface-state-changed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("LINEPROTO") };
+            if _cond {
+                event.set("event.action", json!("interface-state-changed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
+            if _cond {
+                event.set("event.action", json!("configuration-changed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("CFGWRITE_STARTED") };
+            if _cond {
+                event.set("event.action", json!("config-write-started"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("CFGWRITE_DONE") };
+            if _cond {
+                event.set("event.action", json!("config-write-completed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("LOGIN_SUCCESS") };
+            if _cond {
+                event.set("event.action", json!("logged-in"))?;
+            }
+
+            let _cond =
+                { ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or("")) };
+            if _cond {
+                event.set("event.action", json!("logged-out"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("DETECT_MULTIPLE_PEERS") };
+            if _cond {
+                event.set("event.action", json!("multiple-peers-detected"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("INVAL_IP") };
+            if _cond {
+                event.set("event.action", json!("invalid-packet-received"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("SYSLOG_SL_MSG_WARNING") };
+            if _cond {
+                event.set("event.action", json!("arp-warning"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("L2FM_MAC_MOVE2") };
+            if _cond {
+                event.set("event.action", json!("mac-address-moved"))?;
+            }
+
+            let _cond = {
+                ["EXCESSIVE_PARITY_ERROR", "NF_PARITY_ERROR"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+            };
+            if _cond {
+                event.set("event.action", json!("hardware-error"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("DUPLEX_MISMATCH") };
+            if _cond {
+                event.set("event.action", json!("duplex-mismatch-detected"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("NATIVE_VLAN_MISMATCH") };
+            if _cond {
+                event.set("event.action", json!("vlan-mismatch-detected"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("L3_VPC_UNEQUAL_WEIGHT") };
+            if _cond {
+                event.set("event.action", json!("vpc-config-mismatch"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("AAA_ACCOUNTING_MESSAGE") };
+            if _cond {
+                event.set("event.action", json!("session-recorded"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("TACACS_WARNING") };
+            if _cond {
+                event.set("event.action", json!("tacacs-lookup-failed"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("DUP_HOSTS") };
+            if _cond {
+                event.set("event.action", json!("duplicate-host-detected"))?;
+            }
+
+            let _cond = { event.get_str("event.code") == Some("THRESHOLD_VIOLATION") };
+            if _cond {
+                event.set("event.action", json!("transceiver-threshold-violated"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.has_value("cisco_nexus.log.command")
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("command not allowed"))
+            };
+            if _cond {
+                event.set("event.action", json!("command-denied"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && event.has_value("cisco_nexus.log.command")
+                    && !event.has_value("event.action")
+            };
+            if _cond {
+                event.set("event.action", json!("command-executed"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.action")
+                    && event.has_value("message")
+                    && (event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("authentication"))
+                        || event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("login failed")))
+            };
+            if _cond {
+                event.set("event.action", json!("authentication-failure"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.action")
+                    && event.has_value("message")
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
+            };
+            if _cond {
+                event.set("event.action", json!("connection-failed"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.action")
+                    && event.get_str("cisco_nexus.log.facility") == Some("KERN")
+            };
+            if _cond {
+                event.set("event.action", json!("hardware-error"))?;
+            }
+
+            let _cond = {
+                event.get_str("event.code") == Some("SYSTEM_MSG")
+                    && !event.has_value("event.action")
+            };
+            if _cond {
+                event.set("event.action", json!("system-message"))?;
+            }
+
             let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
@@ -508,13 +943,8 @@ impl Transform for PipelineExtractMessage {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

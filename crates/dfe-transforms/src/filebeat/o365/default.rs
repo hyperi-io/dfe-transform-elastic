@@ -16,6 +16,17 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            let _cond = {
+                event.get("organization").is_some_and(|v| v.is_string())
+                    && event.get("division").is_some_and(|v| v.is_string())
+                    && event.get("team").is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                event.remove("organization");
+                event.remove("division");
+                event.remove("team");
+            }
+
             let _cond = { !event.has_value("event.original") };
             if _cond {
                 if event.has("message") {
@@ -23,12 +34,32 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { !event.has_value("event.original") };
+            let _cond = { event.has_value("event.original") };
             if _cond {
-                let v = event.get("o365audit").cloned().unwrap_or(Value::Null);
-                if !painless_is_empty_value(&v) {
-                    event.set("event.original", v)?;
-                }
+                event.remove("message");
+            }
+
+            let _cond = {
+                !event.has_value("event.original")
+                    && (event.has_value("tags")
+                        && event.get("tags").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => a
+                                .iter()
+                                .any(|x| x.as_str() == Some("preserve_original_event")),
+                            serde_json::Value::String(s) => s.contains("preserve_original_event"),
+                            _ => false,
+                        }))
+            };
+            if _cond {
+                // Painless script
+                // Source: ctx.event = ctx.event ?: [:];\nctx.event.original = Json.dump(ctx.o365audit)
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"ctx.event = ctx.event ?: [:];\nctx.event.original = Json.dump(ctx.o365audit)"#
+                    ),
+                )?;
             }
 
             event.set("ecs.version", json!("8.11.0"))?;
@@ -39,6 +70,40 @@ impl Transform for Default {
 
             event.append("event.category", json!("web"))?;
 
+            let _cond = { event.has_value("o365audit") };
+            if _cond {
+                // Painless script
+                // Source: for (def field : params.fields) {\n  def value = ctx.o365audit[field];\n  if (value instanceof Number) {\n    ctx.o365audit[field] = ((Number)value).longValue().toString();\n  } else if (value instanceof String && (value.indexOf('e') >= 0 || value.indexOf('E') >= 0)) {\n    ctx.o365audit[field] = new BigDecimal(value).toBigIntegerExact().toString();\n  }\n}
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec_params(
+                    event,
+                    cached_script!(
+                        r#"for (def field : params.fields) {\n  def value = ctx.o365audit[field];\n  if (value instanceof Number) {\n    ctx.o365audit[field] = ((Number)value).longValue().toString();\n  } else if (value instanceof String && (value.indexOf('e') >= 0 || value.indexOf('E') >= 0)) {\n    ctx.o365audit[field] = new BigDecimal(value).toBigIntegerExact().toString();\n  }\n}"#
+                    ),
+                    cached_params!(
+                        "{\"fields\":[\"RecordType\",\"ActorYammerUserId\",\"TargetYammerUserId\",\"YammerNetworkId\",\"Version\",\"InternalLogonType\",\"LogonType\",\"RunningTime\",\"FileSize\"]}"
+                    ),
+                )?;
+            }
+
+            let _cond = { event.get("o365audit.Sender").is_some_and(|v| v.is_object()) };
+            if _cond {
+                if event.has("o365audit.Sender") {
+                    event.rename("o365audit.Sender", "o365audit.SenderEntity")?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("o365audit.Message")
+                    .is_some_and(|v| v.is_object())
+            };
+            if _cond {
+                if event.has("o365audit.Message") {
+                    event.rename("o365audit.Message", "o365audit.MessageObject")?;
+                }
+            }
+
             {
                 use sha2::{Digest, Sha256};
                 let mut hasher = Sha256::new();
@@ -47,6 +112,144 @@ impl Transform for Default {
                 }
                 let hash = format!("{:x}", hasher.finalize());
                 event.set("_id", json!(hash))?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.FileExtension")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("file.extension", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.Sha1")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("file.hash.sha1", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.Sha256")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("file.hash.sha256", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.FilePath")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("file.path", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.TargetFilePath")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                if !event.has("file.path") {
+                    event.set("file.path", v)?;
+                }
+            }
+
+            if let Some(v) = event
+                .get("o365audit.FileSizeBytes")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("file.size", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.FileSize")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                if !event.has("file.size") {
+                    event.set("file.size", v)?;
+                }
+            }
+
+            if let Some(v) = event
+                .get("o365audit.Application")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("process.name", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.OriginatingDomain")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("url.domain", v)?;
+            }
+
+            let _cond = { event.has_value("o365audit.Actions") };
+            if _cond {
+                // Painless script
+                // Source: ctx._tmp = [:];\ndef actions = [];\nctx._tmp.action_strings = [];\nif (!(ctx.o365audit.Actions instanceof List)) {\n  ctx.o365audit.Actions = [ctx.o365audit.Actions];\n}\n\n// Actions contains both a human readable `QueryTime` using AM/PM and an ISO8601 format `QueryTime`\n// We remove the AM/PM containing `QueryTime` to avoid duplicate field errors on flattening.\ndef queryTimePattern = /,\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\"|\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\",/;\nfor (def e: ctx.o365audit.Actions) {\n  if (e instanceof Map) {\n    actions.add(e);\n  } else if (e instanceof String) {\n    ctx._tmp.action_strings.add(queryTimePattern.matcher(e).replaceAll(''));\n  }\n}\nif (actions.length == ctx.o365audit.Actions.length) {\n  ctx._tmp.remove(\"action_strings\");\n  return\n}\nctx.o365audit.Actions = actions;
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"ctx._tmp = [:];\ndef actions = [];\nctx._tmp.action_strings = [];\nif (!(ctx.o365audit.Actions instanceof List)) {\n  ctx.o365audit.Actions = [ctx.o365audit.Actions];\n}\n\n// Actions contains both a human readable `QueryTime` using AM/PM and an ISO8601 format `QueryTime`\n// We remove the AM/PM containing `QueryTime` to avoid duplicate field errors on flattening.\ndef queryTimePattern = /,\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\"|\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\",/;\nfor (def e: ctx.o365audit.Actions) {\n  if (e instanceof Map) {\n    actions.add(e);\n  } else if (e instanceof String) {\n    ctx._tmp.action_strings.add(queryTimePattern.matcher(e).replaceAll(''));\n  }\n}\nif (actions.length == ctx.o365audit.Actions.length) {\n  ctx._tmp.remove(\"action_strings\");\n  return\n}\nctx.o365audit.Actions = actions;"#
+                    ),
+                )?;
+            }
+
+            let _cond = { event.has_value("_tmp.action_strings") };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.action_strings").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(s) = event.get_string("_ingest._value") {
+                                let parsed: Value = serde_json::from_str(&s).map_err(|e| {
+                                    TransformError::ParseError {
+                                        path: "_ingest._value".into(),
+                                        message: format!("failed to parse JSON: {}", e),
+                                    }
+                                })?;
+                                event.set("_ingest._value", parsed)?;
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "json")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
+                        }
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.action_strings", Value::Array(out))?;
+                }
+            }
+
+            let _cond = { event.has_value("_tmp.action_strings") };
+            if _cond {
+                // Painless script
+                // Source: // To reach here, ctx._tmp.action_strings must be non-null\n// and for this to be true, script_select_string_actions\n// must have run, requiring that ctx.o365audit.Actions is\n// non-null, so we do not need to check again.\nctx.o365audit.Actions.addAll(ctx._tmp.action_strings);
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"// To reach here, ctx._tmp.action_strings must be non-null\n// and for this to be true, script_select_string_actions\n// must have run, requiring that ctx.o365audit.Actions is\n// non-null, so we do not need to check again.\nctx.o365audit.Actions.addAll(ctx._tmp.action_strings);"#
+                    ),
+                )?;
             }
 
             let _cond = { event.has_value("o365audit.CreationTime") };
@@ -62,28 +265,105 @@ impl Transform for Default {
                 event.rename("o365audit.Id", "event.id")?;
             }
 
-            let _cond = { event.has_value("o365audit.ListBaseType") };
+            if event.has("o365audit.ClientIPAddress") {
+                event.rename("o365audit.ClientIPAddress", "client._temp")?;
+            }
+
+            let _cond = { !event.has_value("client._temp") };
             if _cond {
-                // on_failure: 1 handler(s)
+                if event.has("o365audit.ClientIP") {
+                    event.rename("o365audit.ClientIP", "client._temp")?;
+                }
+            }
+
+            let _cond = { !event.has_value("client._temp") };
+            if _cond {
+                if event.has("o365audit.ActorIpAddress") {
+                    event.rename("o365audit.ActorIpAddress", "client._temp")?;
+                }
+            }
+
+            if let Some(v) = event
+                .get("o365audit.UserId")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("user.id", v)?;
+            }
+
+            if event.has("o365audit.Workload") {
+                event.rename("o365audit.Workload", "event.provider")?;
+            }
+
+            if event.has("o365audit.Operation") {
+                event.rename("o365audit.Operation", "event.action")?;
+            }
+
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if event.has("o365audit.OrganizationId") {
+                    event.rename("o365audit.OrganizationId", "organization.id")?;
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "rename")?;
+                event.set("_ingest.on_failure_processor_tag", "rename_organization_id")?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_pipeline")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("o365audit.AdditionalInfo")
+                    .is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(val) = event.get("o365audit.ListBaseType") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("o365audit.ListBaseType", converted)?;
+                    if let Some(s) = event.get_string("o365audit.AdditionalInfo") {
+                        let parsed: Value =
+                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
+                                path: "o365audit.AdditionalInfo".into(),
+                                message: format!("failed to parse JSON: {}", e),
+                            })?;
+                        event.set("o365audit.AdditionalInfo", parsed)?;
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set("_ingest.on_failure_processor_type", "json")?;
                     event.set(
                         "_ingest.on_failure_processor_tag",
-                        "convert-listbasetype-to-string",
+                        "json-extract-stringly-AdditionalInfo",
                     )?;
+                    if event.remove("o365audit.AdditionalInfo").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "o365audit.AdditionalInfo".into(),
+                        });
+                    }
                     event.append(
                         "error.message",
                         json!(format!(
@@ -109,49 +389,6 @@ impl Transform for Default {
                         event.remove("_ingest");
                     }
                 }
-            }
-
-            if event.has("o365audit.ClientIPAddress") {
-                event.rename("o365audit.ClientIPAddress", "client._temp")?;
-            }
-
-            let _cond = { !event.has_value("client._temp") };
-            if _cond {
-                if event.has("o365audit.ClientIP") {
-                    event.rename("o365audit.ClientIP", "client._temp")?;
-                }
-            }
-
-            let _cond = { !event.has_value("client._temp") };
-            if _cond {
-                if event.has("o365audit.ActorIpAddress") {
-                    event.rename("o365audit.ActorIpAddress", "client._temp")?;
-                }
-            }
-
-            if event.has("o365audit.UserId") {
-                if let Some(val) = event.get("o365audit.UserId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("user.id", converted)?;
-                }
-            }
-
-            if event.has("o365audit.Workload") {
-                event.rename("o365audit.Workload", "event.provider")?;
-            }
-
-            if event.has("o365audit.Operation") {
-                event.rename("o365audit.Operation", "event.action")?;
-            }
-
-            if event.has("o365audit.OrganizationId") {
-                event.rename("o365audit.OrganizationId", "organization.id")?;
             }
 
             let _cond = {
@@ -284,6 +521,47 @@ impl Transform for Default {
                 event.rename("o365audit.Parameters", "o365audit.Parameters._raw")?;
             }
 
+            let _cond = {
+                !event.has_value("o365audit.NetworkMessageId")
+                    || event
+                        .get_str("o365audit.NetworkMessageId")
+                        .is_none_or(|s| s.is_empty())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("o365audit.Parameters._raw") {
+                        if let Some(input) = event.get_string("o365audit.Parameters._raw") {
+                            // Grok pattern: ^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$
+                            if !cached_grok!(
+                                "^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$"
+                            )
+                            .extract_into(&input, event)?
+                            {}
+                        }
+                    }
+                    Ok(())
+                })();
+            }
+
+            // Painless script
+            // Source: void splitTrimAdd(Set acc, String str) {\n    if (str != null && str != '') {\n        String[] parts = str.splitOnToken(';');\n        for (int i = 0; i < parts.length; i++) {\n            acc.add(parts[i].trim());\n        }\n    }\n}\ndef addressSet = new HashSet(ctx.email?.to?.address ?: []);\nsplitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);\nif (!addressSet.isEmpty()) {\n  ctx.email = ctx.email ?: [:];\n  ctx.email.to = ctx.email.to ?: [:];\n  ctx.email.to.address = addressSet.asList();\n}\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(
+                event,
+                cached_script!(
+                    r#"void splitTrimAdd(Set acc, String str) {\n    if (str != null && str != '') {\n        String[] parts = str.splitOnToken(';');\n        for (int i = 0; i < parts.length; i++) {\n            acc.add(parts[i].trim());\n        }\n    }\n}\ndef addressSet = new HashSet(ctx.email?.to?.address ?: []);\nsplitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);\nif (!addressSet.isEmpty()) {\n  ctx.email = ctx.email ?: [:];\n  ctx.email.to = ctx.email.to ?: [:];\n  ctx.email.to.address = addressSet.asList();\n}\n"#
+                ),
+            )?;
+
+            if let Some(v) = event
+                .get("o365audit.Parameters.From")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("email.from.address", v)?;
+            }
+
             let _cond = { event.has_value("o365audit.Platform") };
             if _cond {
                 // Painless script
@@ -298,6 +576,34 @@ impl Transform for Default {
                         "{\"0\":\"Unknown\",\"1\":\"Windows\",\"2\":\"MacOS\",\"3\":\"iOS\",\"4\":\"Android\",\"5\":\"Web Browser\"}"
                     ),
                 )?;
+            }
+
+            let _cond = { event.has_value("o365audit.Platform") };
+            if _cond {
+                // Painless script
+                // Source: ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString lcPlatform = ctx.o365audit.Platform.toLowerCase();\nif (lcPlatform.contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (lcPlatform.contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (lcPlatform.contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (lcPlatform.contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (lcPlatform.contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (lcPlatform.contains('android')) {\n    ctx.host.os.type = 'android';\n}\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString lcPlatform = ctx.o365audit.Platform.toLowerCase();\nif (lcPlatform.contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (lcPlatform.contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (lcPlatform.contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (lcPlatform.contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (lcPlatform.contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (lcPlatform.contains('android')) {\n    ctx.host.os.type = 'android';\n}\n"#
+                    ),
+                )?;
+            }
+
+            if event.has("host.os.type") {
+                if let Some(s) = event.get_string("host.os.type") {
+                    let lowered = s.to_lowercase();
+                    event.set("host.os.type", lowered)?;
+                }
+            }
+
+            if let Some(v) = event
+                .get("o365audit.Platform")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("host.os.platform", v)?;
             }
 
             let _cond = {
@@ -402,8 +708,43 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("ExchangeAdmin") };
             if _cond {
-                if event.has("o365audit.OrganizationName") {
-                    event.rename("o365audit.OrganizationName", "organization.name")?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("o365audit.OrganizationName") {
+                        event.rename("o365audit.OrganizationName", "organization.name")?;
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "rename")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "rename_organization_name",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -412,6 +753,11 @@ impl Transform for Default {
                 if event.has("o365audit.OriginatingServer") {
                     event.rename("o365audit.OriginatingServer", "server._temp")?;
                 }
+            }
+
+            let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
+            if _cond {
+                event.append("event.category", json!("email"))?;
             }
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
@@ -427,17 +773,12 @@ impl Transform for Default {
                     && event.get_str("event.code") == Some("ExchangeItem")
             };
             if _cond {
-                if event.has("o365audit.LogonUserSid") {
-                    if let Some(val) = event.get("o365audit.LogonUserSid") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("user.id", converted)?;
-                    }
+                if let Some(v) = event
+                    .get("o365audit.LogonUserSid")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("user.id", v)?;
                 }
             }
 
@@ -450,8 +791,43 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
             if _cond {
-                if event.has("o365audit.OrganizationName") {
-                    event.rename("o365audit.OrganizationName", "organization.name")?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("o365audit.OrganizationName") {
+                        event.rename("o365audit.OrganizationName", "organization.name")?;
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "rename")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "rename_organization_name_exchange_item",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -716,8 +1092,8 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.Comments") {
-                    event.rename("o365audit.Comments", "message")?;
+                if let Some(v) = event.get("o365audit.Name").cloned() {
+                    event.set("message", v)?;
                 }
             }
 
@@ -825,17 +1201,12 @@ impl Transform for Default {
                     && event.get_str("rule.ruleset") == Some("User")
             };
             if _cond {
-                if event.has("o365audit.AlertEntityId") {
-                    if let Some(val) = event.get("o365audit.AlertEntityId") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("user.id", converted)?;
-                    }
+                if let Some(v) = event
+                    .get("o365audit.AlertEntityId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("user.id", v)?;
                 }
             }
 
@@ -859,6 +1230,19 @@ impl Transform for Default {
                 if event.has("o365audit.AlertEntityId") {
                     event.rename("o365audit.AlertEntityId", "threat.technique.id")?;
                 }
+            }
+
+            let _cond = { event.get_str("event.code") == Some("ComplianceDLPExchange") };
+            if _cond {
+                // Painless script
+                // Source: def operation = ctx.event?.action ?: ''; def user = ctx.user?.id ?: ''; def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';\nif (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {\n  ctx.message = \"Office365 Alert\";\n} else {\n  ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + user + \" with subject '\" + subject + \"'\";\n}\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"def operation = ctx.event?.action ?: ''; def user = ctx.user?.id ?: ''; def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';\nif (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {\n  ctx.message = \"Office365 Alert\";\n} else {\n  ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + user + \" with subject '\" + subject + \"'\";\n}\n"#
+                    ),
+                )?;
             }
 
             let _cond = {
@@ -972,17 +1356,6 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.ExchangeMetaData.Subject") {
-                    event.rename("o365audit.ExchangeMetaData.Subject", "message")?;
-                }
-            }
-
-            let _cond = {
-                event.has_value("event.code")
-                    && ["ComplianceDLPSharePoint", "ComplianceDLPExchange"]
-                        .contains(&event.get_str("event.code").unwrap_or(""))
-            };
-            if _cond {
                 if event.has("o365audit.PolicyId") {
                     event.rename("o365audit.PolicyId", "rule.id")?;
                 }
@@ -1076,17 +1449,12 @@ impl Transform for Default {
             let _cond =
                 { !event.has_value("user.id") && event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.ActorYammerUserId") {
-                    if let Some(val) = event.get("o365audit.ActorYammerUserId") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
-                        event.set("user.id", converted)?;
-                    }
+                if let Some(v) = event
+                    .get("o365audit.ActorYammerUserId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("user.id", v)?;
                 }
             }
 
@@ -1373,8 +1741,10 @@ impl Transform for Default {
 
             if event.has("client._temp") {
                 if let Some(s) = event.get_string("client._temp") {
-                    let re = cached_regex!("::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)");
-                    let replaced = re.replace_all(&s, "$1").into_owned();
+                    let re = cached_regex!(
+                        "^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](:[0-9]+)?)?$"
+                    );
+                    let replaced = re.replace_all(&s, "$1$2").into_owned();
                     event.set("client._temp", replaced)?;
                 }
             }
@@ -1548,7 +1918,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("user.id")
+                event.get("user.id").is_some_and(|v| v.is_string())
                     && event.get("user.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1568,7 +1938,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("user.target.id")
+                event.get("user.target.id").is_some_and(|v| v.is_string())
                     && event.get("user.target.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1588,7 +1958,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("source.user.id")
+                event.get("source.user.id").is_some_and(|v| v.is_string())
                     && event.get("source.user.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1608,7 +1978,9 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("destination.user.id")
+                event
+                    .get("destination.user.id")
+                    .is_some_and(|v| v.is_string())
                     && event.get("destination.user.id").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
                         serde_json::Value::String(s) => s.contains("@"),
@@ -1628,7 +2000,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("client.ip")
+                event.get("client.ip").is_some_and(|v| v.is_string())
                     && event.get("client.ip").is_some_and(|v| match v {
                         serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(":")),
                         serde_json::Value::String(s) => s.contains(":"),
@@ -1708,34 +2080,57 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("organization.id") {
-                if let Some(s) = event.get_string("organization.id") {
-                    let lowered = s.to_lowercase();
-                    event.set("organization.id", lowered)?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("organization.id") {
+                    if let Some(s) = event.get_string("organization.id") {
+                        let lowered = s.to_lowercase();
+                        event.set("organization.id", lowered)?;
+                    }
                 }
-            }
+                Ok(())
+            })();
 
-            let _cond = { event.has_value("organization.id") };
+            let _cond = {
+                event.get("organization").is_some_and(|v| v.is_object())
+                    && event.has_value("organization.id")
+            };
             if _cond {
                 if let Some(v) = event.get("organization.id").cloned() {
                     event.set("host.id", v)?;
                 }
             }
 
-            let _cond = { event.has_value("organization.id") && event.has_value("_conf.tenants") };
+            let _cond = {
+                event.get("organization").is_some_and(|v| v.is_object())
+                    && event.has_value("organization.id")
+                    && event.has_value("_conf.tenants")
+            };
             if _cond {
                 // Painless script
-                // Source: def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n  ctx.host.name = conftenants[orgid];\n}\n
+                // Source: def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     cached_script!(
-                        r#"def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n  ctx.host.name = conftenants[orgid];\n}\n"#
+                        r#"def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n"#
                     ),
                 )?;
             }
 
-            let _cond = { event.has_value("organization.name") && !event.has_value("host.name") };
+            let _cond =
+                { event.has_value("o365audit.DeviceName") && !event.has_value("host.name") };
+            if _cond {
+                if let Some(v) = event.get("o365audit.DeviceName").cloned() {
+                    event.set("host.name", v)?;
+                }
+            }
+
+            let _cond = {
+                event.get("organization").is_some_and(|v| v.is_object())
+                    && event.has_value("organization.name")
+                    && !event.has_value("host.name")
+            };
             if _cond {
                 if let Some(v) = event.get("organization.name").cloned() {
                     event.set("host.name", v)?;
@@ -1749,170 +2144,360 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("o365audit.AzureActiveDirectoryEventType") {
-                if let Some(val) = event.get("o365audit.AzureActiveDirectoryEventType") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.AzureActiveDirectoryEventType", converted)?;
-                }
-            }
-
-            if event.has("o365audit.RecordType") {
-                if let Some(val) = event.get("o365audit.RecordType") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.RecordType", converted)?;
-                }
-            }
-
-            if event.has("o365audit.UserType") {
-                if let Some(val) = event.get("o365audit.UserType") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.UserType", converted)?;
-                }
-            }
-
-            let _cond = { event.get("o365audit.Actor").is_some_and(|v| v.is_array()) };
+            let _cond = {
+                !event.has_value("event.provider")
+                    && event.has_value("o365audit.UserType")
+                    && event
+                        .get_str("o365audit.UserType")
+                        .is_some_and(|s| !s.is_empty())
+            };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("o365audit.Actor").cloned() {
+                let v = event
+                    .get("o365audit.UserType")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("event.provider", v)?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("o365audit.InternetMessageId")
+                    && event
+                        .get_str("o365audit.InternetMessageId")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.message_id",
+                    event
+                        .get("o365audit.InternetMessageId")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Item.InternetMessageId")
+                    && event
+                        .get_str("o365audit.Item.InternetMessageId")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.message_id",
+                    event
+                        .get("o365audit.Item.InternetMessageId")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.NetworkMessageId")
+                    && event
+                        .get_str("o365audit.NetworkMessageId")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.local_id",
+                    event
+                        .get("o365audit.NetworkMessageId")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.P1Sender")
+                    && event
+                        .get_str("o365audit.P1Sender")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.sender.address",
+                    event
+                        .get("o365audit.P1Sender")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("source.user.email")
+                    && event
+                        .get_str("source.user.email")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.sender.address",
+                    event
+                        .get("source.user.email")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event
+                    .get("o365audit.Recipients")
+                    .is_some_and(|v| v.is_array())
+                    && event
+                        .get_i64("o365audit.Recipients.length")
+                        .is_some_and(|n| n > 0)
+            };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("o365audit.Recipients").cloned() {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.Type") {
-                            if let Some(val) = event.get("_ingest._value.Type") {
-                                let converted = match val {
-                                    Value::String(_) => val.clone(),
-                                    Value::Number(n) => json!(n.to_string()),
-                                    Value::Bool(b) => json!(b.to_string()),
-                                    Value::Null => json!("null"),
-                                    _ => json!(val.to_string()),
-                                };
-                                event.set("_ingest._value.Type", converted)?;
-                            }
-                        }
+                        event.append(
+                            "email.to.address",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
                     event.remove("_ingest");
-                    event.set("o365audit.Actor", Value::Array(out))?;
+                    event.set("o365audit.Recipients", Value::Array(out))?;
                 }
             }
 
-            let _cond = { event.get("o365audit.Target").is_some_and(|v| v.is_array()) };
+            let _cond = {
+                event
+                    .get("destination.user.email")
+                    .is_some_and(|v| v.is_array())
+            };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("o365audit.Target").cloned() {
+                if let Some(Value::Array(items)) = event.get("destination.user.email").cloned() {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.Type") {
-                            if let Some(val) = event.get("_ingest._value.Type") {
-                                let converted = match val {
-                                    Value::String(_) => val.clone(),
-                                    Value::Number(n) => json!(n.to_string()),
-                                    Value::Bool(b) => json!(b.to_string()),
-                                    Value::Null => json!("null"),
-                                    _ => json!(val.to_string()),
-                                };
-                                event.set("_ingest._value.Type", converted)?;
-                            }
-                        }
+                        event.append(
+                            "email.to.address",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
                     event.remove("_ingest");
-                    event.set("o365audit.Target", Value::Array(out))?;
+                    event.set("destination.user.email", Value::Array(out))?;
                 }
             }
 
-            if event.has("o365audit.Version") {
-                if let Some(val) = event.get("o365audit.Version") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.Version", converted)?;
+            let _cond = {
+                event.has_value("o365audit.SenderIp")
+                    && event
+                        .get_str("o365audit.SenderIp")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.ip",
+                    event
+                        .get("o365audit.SenderIp")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.SenderIP")
+                    && event
+                        .get_str("o365audit.SenderIP")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.ip",
+                    event
+                        .get("o365audit.SenderIP")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Subject")
+                    && event
+                        .get_str("o365audit.Subject")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.subject",
+                    event
+                        .get("o365audit.Subject")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Item.Subject")
+                    && event
+                        .get_str("o365audit.Item.Subject")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.subject",
+                    event
+                        .get("o365audit.Item.Subject")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Item.Attachments")
+                    && event
+                        .get_str("o365audit.Item.Attachments")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    // Painless script
+                    // Source: ctx.email = ctx.email ?: [:];\nctx.email.attachments = [];\n\ndef attachmentList = ctx.o365audit.Item.Attachments.splitOnToken(';');\n\nfor (def attachment : attachmentList) {\n  def att = attachment.trim();\n  if (att.isEmpty() || !att.endsWith(')')) continue;\n\n  // Find the size marker at the end: \" (<digits>b)\"\n  int lastSep = att.lastIndexOf(' (');\n  if (lastSep < 0) continue;\n\n  def maybeSize = att.substring(lastSep + 2, att.length() - 1);\n  if (!maybeSize.endsWith('b')) continue;\n\n  def sizeStr = maybeSize.substring(0, maybeSize.length() - 1);\n  long sizeVal;\n  try { sizeVal = Long.parseLong(sizeStr); } catch (Exception e) { continue; }\n\n  def filename = att.substring(0, lastSep).trim();\n  if (filename.isEmpty()) continue;\n\n  int dotIdx = filename.lastIndexOf('.');\n  if (dotIdx < 0) continue;\n\n  def attachmentObj = [:];\n  attachmentObj.file = [:];\n  attachmentObj.file.extension = filename.substring(dotIdx + 1);\n  attachmentObj.file.name = filename;\n  attachmentObj.file.size = sizeVal;\n  ctx.email.attachments.add(attachmentObj);\n}
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec(
+                        event,
+                        cached_script!(
+                            r#"ctx.email = ctx.email ?: [:];\nctx.email.attachments = [];\n\ndef attachmentList = ctx.o365audit.Item.Attachments.splitOnToken(';');\n\nfor (def attachment : attachmentList) {\n  def att = attachment.trim();\n  if (att.isEmpty() || !att.endsWith(')')) continue;\n\n  // Find the size marker at the end: \" (<digits>b)\"\n  int lastSep = att.lastIndexOf(' (');\n  if (lastSep < 0) continue;\n\n  def maybeSize = att.substring(lastSep + 2, att.length() - 1);\n  if (!maybeSize.endsWith('b')) continue;\n\n  def sizeStr = maybeSize.substring(0, maybeSize.length() - 1);\n  long sizeVal;\n  try { sizeVal = Long.parseLong(sizeStr); } catch (Exception e) { continue; }\n\n  def filename = att.substring(0, lastSep).trim();\n  if (filename.isEmpty()) continue;\n\n  int dotIdx = filename.lastIndexOf('.');\n  if (dotIdx < 0) continue;\n\n  def attachmentObj = [:];\n  attachmentObj.file = [:];\n  attachmentObj.file.extension = filename.substring(dotIdx + 1);\n  attachmentObj.file.name = filename;\n  attachmentObj.file.size = sizeVal;\n  ctx.email.attachments.add(attachmentObj);\n}"#
+                        ),
+                    )?;
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "script")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "script_item_attachments",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
-            if event.has("o365audit.InternalLogonType") {
-                if let Some(val) = event.get("o365audit.InternalLogonType") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.InternalLogonType", converted)?;
+            let _cond = { event.has_value("o365audit.EndTimeUtc") };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("o365audit.EndTimeUtc") {
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None)
+                    {
+                        event.set("o365audit.EndTimeUtc", parsed)?;
+                    }
                 }
             }
 
-            if event.has("o365audit.LogonType") {
-                if let Some(val) = event.get("o365audit.LogonType") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.LogonType", converted)?;
+            let _cond = { event.has_value("o365audit.LastUpdateTimeUtc") };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("o365audit.LastUpdateTimeUtc") {
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.LastUpdateTimeUtc", parsed)?;
+                    }
                 }
             }
 
-            if event.has("o365audit.ActorYammerUserId") {
-                if let Some(val) = event.get("o365audit.ActorYammerUserId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.ActorYammerUserId", converted)?;
+            let _cond = { event.has_value("o365audit.StartTimeUtc") };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("o365audit.StartTimeUtc") {
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.StartTimeUtc", parsed)?;
+                    }
                 }
             }
 
-            if event.has("o365audit.YammerNetworkId") {
-                if let Some(val) = event.get("o365audit.YammerNetworkId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
-                    event.set("o365audit.YammerNetworkId", converted)?;
+            let _cond = { event.has_value("o365audit.StartTime") };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("o365audit.StartTime") {
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.StartTime", parsed)?;
+                    }
+                }
+            }
+
+            let _cond = { event.has_value("o365audit.FilteringDate") };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("o365audit.FilteringDate") {
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.FilteringDate", parsed)?;
+                    }
+                }
+            }
+
+            let _cond = { event.has_value("o365audit.RescanResult.Timestamp") };
+            if _cond {
+                if let Some(date_str) = event.get_as_string("o365audit.RescanResult.Timestamp") {
+                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        event.set("o365audit.RescanResult.Timestamp", parsed)?;
+                    }
+                }
+            }
+
+            // SKIPPED: condition not transpiled: ctx.o365audit?.containsKey('Data') == true && ctx.o365audit?.RecordType == '64'
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                if let Some(s) = event.get_string("o365audit.Data") {
+                    let re = cached_regex!(
+                        ",\\\"QueryTime\\\":\\\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\\\"|\\\"QueryTime\\\":\\\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\\\","
+                    );
+                    let replaced = re.replace_all(&s, "").into_owned();
+                    event.set("o365audit.Data", replaced)?;
                 }
             }
 
             // SKIPPED: condition not transpiled: ctx.o365audit?.containsKey('Data') == true
             #[allow(unreachable_code, unused_variables)]
             if false {
-                if let Some(s) = event.get_string("o365audit.Data") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "o365audit.Data".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("o365audit.Data", parsed)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if let Some(s) = event.get_string("o365audit.Data") {
+                        let parsed: Value =
+                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
+                                path: "o365audit.Data".into(),
+                                message: format!("failed to parse JSON: {}", e),
+                            })?;
+                        event.set("o365audit.Data", parsed)?;
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "json")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "json_o365audit_Data_73eae5fb",
+                    )?;
+                    event.remove("o365audit.Data");
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -1927,27 +2512,55 @@ impl Transform for Default {
             };
             if _cond {
                 // Painless script
-                // Source: def knownKeys = ['ad', 'af', 'aii', 'ail', 'alk', 'als', 'an', 'at',\n  'cid', 'cpid', 'dm', 'dpn', 'eid', 'etps', 'etype', 'f3u', 'fvs',\n  'imsgid', 'lon', 'mat', 'md', 'ms', 'od', 'op', 'ot', 'plk', 'pud',\n  'reid', 'rid', 'sev', 'sict', 'sid', 'sip', 'sitmi', 'srt', 'ssic',\n  'suid', 'tdc', 'te', 'thn', 'tht', 'tid', 'tpid', 'tpt', 'trc', 'ts',\n  'tsd', 'ttdt', 'ttr', 'upfc', 'upfv', 'ut', 'von', 'wl', 'zfh', 'zfn',\n  'zmfh', 'zmfn', 'zu'];\nfor (def key : knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n
+                // Source: for (def key : params.knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_params(
                     event,
                     cached_script!(
-                        r#"def knownKeys = ['ad', 'af', 'aii', 'ail', 'alk', 'als', 'an', 'at',\n  'cid', 'cpid', 'dm', 'dpn', 'eid', 'etps', 'etype', 'f3u', 'fvs',\n  'imsgid', 'lon', 'mat', 'md', 'ms', 'od', 'op', 'ot', 'plk', 'pud',\n  'reid', 'rid', 'sev', 'sict', 'sid', 'sip', 'sitmi', 'srt', 'ssic',\n  'suid', 'tdc', 'te', 'thn', 'tht', 'tid', 'tpid', 'tpt', 'trc', 'ts',\n  'tsd', 'ttdt', 'ttr', 'upfc', 'upfv', 'ut', 'von', 'wl', 'zfh', 'zfn',\n  'zmfh', 'zmfn', 'zu'];\nfor (def key : knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n"#
+                        r#"for (def key : params.knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n"#
+                    ),
+                    cached_params!(
+                        "{\"knownKeys\":[\"ad\",\"af\",\"aii\",\"ail\",\"alk\",\"als\",\"an\",\"at\",\"cid\",\"cpid\",\"dm\",\"dpn\",\"eid\",\"etps\",\"etype\",\"f3u\",\"fvs\",\"imsgid\",\"lon\",\"mat\",\"md\",\"ms\",\"od\",\"op\",\"ot\",\"plk\",\"pud\",\"reid\",\"rid\",\"sev\",\"sict\",\"sid\",\"sip\",\"sitmi\",\"srt\",\"ssic\",\"suid\",\"tdc\",\"te\",\"thn\",\"tht\",\"tid\",\"tpid\",\"tpt\",\"trc\",\"ts\",\"tsd\",\"ttdt\",\"ttr\",\"upfc\",\"upfv\",\"ut\",\"von\",\"wl\",\"zfh\",\"zfn\",\"zmfh\",\"zmfn\",\"zu\"]}"
                     ),
                 )?;
             }
 
-            if event.has("o365audit.Data.sip") {
-                if let Some(s) = event.get_string("o365audit.Data.sip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
-                            path: "o365audit.Data.sip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
+            let _cond = {
+                event
+                    .get_str("o365audit.Data.sip")
+                    .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("o365audit.Data.sip") {
+                        if let Some(s) = event.get_string("o365audit.Data.sip") {
+                            // Validate IP format
+                            let s = s.trim();
+                            if s.parse::<std::net::IpAddr>().is_err() {
+                                return Err(TransformError::ParseError {
+                                    path: "o365audit.Data.sip".into(),
+                                    message: format!("cannot convert '{}' to IP", s),
+                                });
+                            }
+                            event.set("o365audit.Data.sip", s)?;
+                        }
                     }
-                    event.set("o365audit.Data.sip", s)?;
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_o365audit_Data_sip_1df0ff2b",
+                    )?;
+                    event.remove("o365audit.Data.sip");
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
@@ -1972,7 +2585,12 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.te") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.te") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                    if let Some(parsed) = parse_date_out(
+                        &date_str,
+                        &["ISO8601", "yyyy-MM-dd HH:mm:ss'Z'"],
+                        None,
+                        None,
+                    ) {
                         event.set("o365audit.Data.te", parsed)?;
                     }
                 }
@@ -1981,7 +2599,12 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.ts") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ts") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                    if let Some(parsed) = parse_date_out(
+                        &date_str,
+                        &["ISO8601", "yyyy-MM-dd HH:mm:ss'Z'"],
+                        None,
+                        None,
+                    ) {
                         event.set("o365audit.Data.ts", parsed)?;
                     }
                 }
@@ -2012,6 +2635,22 @@ impl Transform for Default {
             }
 
             let _cond = {
+                !event.has_value("user.email")
+                    && event
+                        .get_str("o365audit.Data.f3u")
+                        .is_some_and(|s| s.split('@').count() == 2)
+            };
+            if _cond {
+                let v = event
+                    .get("o365audit.Data.f3u")
+                    .cloned()
+                    .unwrap_or(Value::Null);
+                if !painless_is_empty_value(&v) {
+                    event.set("user.email", v)?;
+                }
+            }
+
+            let _cond = {
                 event
                     .get_str("o365audit.Data.suid")
                     .is_some_and(|s| s.split('@').count() == 2)
@@ -2021,6 +2660,22 @@ impl Transform for Default {
                     "related.user",
                     event
                         .get("o365audit.Data.suid")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Data.tsd")
+                    && event
+                        .get_str("o365audit.Data.tsd")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.sender.address",
+                    event
+                        .get("o365audit.Data.tsd")
                         .cloned()
                         .unwrap_or(Value::Null),
                 )?;
@@ -2042,6 +2697,22 @@ impl Transform for Default {
             }
 
             let _cond = {
+                event.has_value("o365audit.Data.trc")
+                    && event
+                        .get_str("o365audit.Data.trc")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.to.address",
+                    event
+                        .get("o365audit.Data.trc")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
                 event
                     .get_str("o365audit.Data.trc")
                     .is_some_and(|s| s.split('@').count() == 2)
@@ -2053,6 +2724,448 @@ impl Transform for Default {
                         .get("o365audit.Data.trc")
                         .cloned()
                         .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Data.aii")
+                    && event
+                        .get_str("o365audit.Data.aii")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.local_id",
+                    event
+                        .get("o365audit.Data.aii")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Data.imsgid")
+                    && event
+                        .get_str("o365audit.Data.imsgid")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.message_id",
+                    event
+                        .get("o365audit.Data.imsgid")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Data.ms")
+                    && event
+                        .get_str("o365audit.Data.ms")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "email.subject",
+                    event
+                        .get("o365audit.Data.ms")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event
+                    .get("o365audit.Data.flattened.Entities")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // Painless script
+                // Source: ctx._tmp = ctx._tmp ?: [:]; ctx._tmp.entities = [:]; for (def entity: ctx.o365audit.Data.flattened.Entities) {\n  if (entity instanceof Map) {\n    for (def key : params.knownEntityKeys) {\n      if (! ctx._tmp.entities.containsKey(key)) {\n        ctx._tmp.entities[key] = [];\n      }\n      if (entity.containsKey(key)) {\n        ctx._tmp.entities[key].add(entity[key]);\n      }\n    }\n  }\n}\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec_params(
+                    event,
+                    cached_script!(
+                        r#"ctx._tmp = ctx._tmp ?: [:]; ctx._tmp.entities = [:]; for (def entity: ctx.o365audit.Data.flattened.Entities) {\n  if (entity instanceof Map) {\n    for (def key : params.knownEntityKeys) {\n      if (! ctx._tmp.entities.containsKey(key)) {\n        ctx._tmp.entities[key] = [];\n      }\n      if (entity.containsKey(key)) {\n        ctx._tmp.entities[key].add(entity[key]);\n      }\n    }\n  }\n}\n"#
+                    ),
+                    cached_params!(
+                        "{\"knownEntityKeys\":[\"InternetMessageId\",\"NetworkMessageId\",\"OriginalDeliveryLocation\",\"P1Sender\",\"P2Sender\",\"PhishConfidenceLevel\",\"Recipient\",\"SenderIP\",\"Subject\",\"ThreatDetectionMethods\",\"Upn\"]}"
+                    ),
+                )?;
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.InternetMessageId")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) =
+                    event.get("_tmp.entities.InternetMessageId").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "email.message_id",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.InternetMessageId", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.NetworkMessageId")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) =
+                    event.get("_tmp.entities.NetworkMessageId").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "email.local_id",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.NetworkMessageId", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.P1Sender")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.entities.P1Sender").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "email.sender.address",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.P1Sender", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.P2Sender")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.entities.P2Sender").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "email.from.address",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.P2Sender", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.Recipient")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.entities.Recipient").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "email.to.address",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.Recipient", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                !event.has_value("user.email")
+                    && event
+                        .get("_tmp.entities.Recipient")
+                        .is_some_and(|v| v.is_array())
+                    && event
+                        .get_i64("_tmp.entities.Recipient.length")
+                        .is_some_and(|n| n > 0)
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("_tmp.entities.Recipient")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("user.email", v)?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.SenderIP")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.entities.SenderIP").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "related.ip",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.SenderIP", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.Subject")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.entities.Subject").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "email.subject",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.Subject", Value::Array(out))?;
+                }
+            }
+
+            let _cond = { event.get("_tmp.entities.Upn").is_some_and(|v| v.is_array()) };
+            if _cond {
+                if let Some(Value::Array(items)) = event.get("_tmp.entities.Upn").cloned() {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "related.user",
+                            event.get("_ingest._value").cloned().unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("_tmp.entities.Upn", Value::Array(out))?;
+                }
+            }
+
+            if event.has("_tmp.entities.OriginalDeliveryLocation") {
+                event.rename(
+                    "_tmp.entities.OriginalDeliveryLocation",
+                    "o365audit.OriginalDeliveryLocation",
+                )?;
+            }
+
+            if event.has("_tmp.entities.PhishConfidenceLevel") {
+                event.rename(
+                    "_tmp.entities.PhishConfidenceLevel",
+                    "o365audit.PhishConfidenceLevel",
+                )?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.AppAccessContext.DeviceId")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("device.id", v)?;
+            }
+
+            let _cond = {
+                event
+                    .get("o365audit.ExtendedProperties.additionalDetails")
+                    .is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if let Some(s) =
+                        event.get_string("o365audit.ExtendedProperties.additionalDetails")
+                    {
+                        let parsed: Value =
+                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
+                                path: "o365audit.ExtendedProperties.additionalDetails".into(),
+                                message: format!("failed to parse JSON: {}", e),
+                            })?;
+                        event.set("o365audit.ExtendedProperties.additionalDetails", parsed)?;
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "json")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "json-extract-stringly-ExtendedProperties-additionalDetails",
+                    )?;
+                    event.remove("o365audit.ExtendedProperties.additionalDetails");
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+            }
+
+            if let Some(v) = event
+                .get("o365audit.ExtendedProperties.additionalDetails.DeviceId")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                if !event.has("device.id") {
+                    event.set("device.id", v)?;
+                }
+            }
+
+            let _cond = { !event.has_value("user_agent") };
+            if _cond {
+                if event.has("o365audit.ExtendedProperties.additionalDetails.User-Agent") {
+                    if let Some(ua_str) = event
+                        .get_string("o365audit.ExtendedProperties.additionalDetails.User-Agent")
+                    {
+                        let ua_str = ua_str.to_string();
+                        // User agent parsing
+                        if let Ok(ua) = parse_user_agent(&ua_str) {
+                            event.set("user_agent.original", json!(ua_str))?;
+                            if let Some(name) = ua.name {
+                                event.set("user_agent.name", json!(name))?;
+                            }
+                            if let Some(version) = ua.version {
+                                event.set("user_agent.version", json!(version))?;
+                            }
+                            if let Some(os_name) = ua.os_name {
+                                event.set("user_agent.os.name", json!(os_name))?;
+                                if let Some(os_version) = ua.os_version {
+                                    event.set("user_agent.os.version", json!(os_version))?;
+                                    event.set(
+                                        "user_agent.os.full",
+                                        json!(format!("{} {}", os_name, os_version)),
+                                    )?;
+                                }
+                            }
+                            if let Some(device) = ua.device {
+                                event.set("user_agent.device.name", json!(device))?;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if let Some(v) = event
+                .get("o365audit.AppAccessContext.AADSessionId")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("session.id", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.AppAccessContext.UniqueTokenId")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("token.id", v)?;
+            }
+
+            if let Some(v) = event
+                .get("o365audit.ApplicationDisplayName")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("application.name", v)?;
+            }
+
+            let _cond = { event.get_str("o365audit.RecordType") == Some("50") };
+            if _cond {
+                event.append("event.type", json!("access"))?;
+            }
+
+            let _cond = { event.get_str("o365audit.RecordType") == Some("50") };
+            if _cond {
+                event.append("event.category", json!("email"))?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Messages")
+                    && event.get_str("o365audit.RecordType") == Some("50")
+            };
+            if _cond {
+                event.rename("o365audit.Messages", "o365audit.ExchangeAggregatedMessages")?;
+            }
+
+            let _cond = {
+                event.has_value("o365audit.Folders")
+                    && event.get_str("o365audit.RecordType") == Some("50")
+            };
+            if _cond {
+                event.rename("o365audit.Folders", "o365audit.ExchangeAggregatedFolders")?;
+            }
+
+            let _cond = {
+                event
+                    .get("_tmp.entities.ThreatDetectionMethods")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // Painless script
+                // Source: def methods = ctx._tmp.entities.ThreatDetectionMethods; def result = []; for (def method: methods){\n  if (method instanceof List) {\n    for (def m: method) {\n      result.add(m);\n    }\n  } else if (method instanceof String) {\n    result.add(method);\n  }\n} ctx.o365audit.ThreatDetectionMethods = result;\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"def methods = ctx._tmp.entities.ThreatDetectionMethods; def result = []; for (def method: methods){\n  if (method instanceof List) {\n    for (def m: method) {\n      result.add(m);\n    }\n  } else if (method instanceof String) {\n    result.add(method);\n  }\n} ctx.o365audit.ThreatDetectionMethods = result;\n"#
+                    ),
                 )?;
             }
 
@@ -2145,24 +3258,180 @@ impl Transform for Default {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            event.remove("_conf");
-
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
+            let _cond = { event.has_value("user.id") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
-                    Ok(())
-                })();
+                event.append(
+                    "related.user",
+                    event.get("user.id").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("user.target.id") };
+            if _cond {
+                event.append(
+                    "related.user",
+                    event.get("user.target.id").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("user.target.email") };
+            if _cond {
+                event.append(
+                    "related.user",
+                    event
+                        .get("user.target.email")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("user.email") };
+            if _cond {
+                event.append(
+                    "related.user",
+                    event.get("user.email").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("host.name") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("host.name").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            // SKIPPED: condition not transpiled: ctx.host?.hostname != null && ctx.host.hostname != ctx.host?.name
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                event.append(
+                    "related.hosts",
+                    event.get("host.hostname").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("user.domain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("user.domain").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            // SKIPPED: condition not transpiled: ctx.user?.target?.domain != null && ctx.user.target.domain != ctx.user?.domain
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("user.target.domain")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("source.domain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("source.domain").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("destination.domain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event
+                        .get("destination.domain")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("url.domain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("url.domain").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("server.domain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("server.domain").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("client.domain") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("client.domain").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("file.hash.md5") };
+            if _cond {
+                event.append(
+                    "related.hash",
+                    event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("file.hash.sha1") };
+            if _cond {
+                event.append(
+                    "related.hash",
+                    event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("file.hash.sha256") };
+            if _cond {
+                event.append(
+                    "related.hash",
+                    event
+                        .get("file.hash.sha256")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("file.hash.sha512") };
+            if _cond {
+                event.append(
+                    "related.hash",
+                    event
+                        .get("file.hash.sha512")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            event.remove("_conf");
+            event.remove("_tmp");
+
+            // Painless script
+            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(
+                event,
+                cached_script!(
+                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
+                ),
+            )?;
+
+            let _cond = { event.has_value("error.message") };
+            if _cond {
+                event.set("event.kind", json!("pipeline_error"))?;
+            }
+
+            let _cond = { event.has_value("error.message") };
+            if _cond {
+                event.append("tags", json!("preserve_original_event"))?;
             }
 
             Ok(TransformResult::Continue)
@@ -2174,12 +3443,27 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(format!(
+                        "Processor '{}' {}with tag '{}' {}failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("#_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("/_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }

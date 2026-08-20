@@ -16,7 +16,7 @@ fn azure_activitylogs_raw() {
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-raw",
-        1,
+        0,
     );
 }
 
@@ -27,7 +27,7 @@ fn azure_activitylogs_identity() {
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-identity",
-        1,
+        0,
     );
 }
 
@@ -38,7 +38,7 @@ fn azure_activitylogs_edgecases() {
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-edgecases",
-        3,
+        0,
     );
 }
 
@@ -49,7 +49,7 @@ fn azure_auditlogs_raw() {
         &azure_auditlogs::default::Default,
         &dir,
         "test-auditlogs-raw",
-        1,
+        0,
     );
 }
 
@@ -60,7 +60,7 @@ fn azure_signinlogs_raw() {
         &azure_signinlogs::default::Default,
         &dir,
         "test-signinlogs-raw",
-        2,
+        0,
     );
 }
 
@@ -71,6 +71,6 @@ fn azure_signinlogs_sample() {
         &azure_signinlogs::default::Default,
         &dir,
         "test-signinlogs-sample",
-        2,
+        0,
     );
 }

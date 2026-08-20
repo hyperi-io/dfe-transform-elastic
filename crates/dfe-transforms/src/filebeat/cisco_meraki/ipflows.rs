@@ -16,6 +16,17 @@ impl Transform for Ipflows {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if let Some(input) = event.get_string("event.original") {
+                    // Grok pattern: (?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}
+                    if !cached_grok!("(?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}")
+                        .extract_into(&input, event)?
+                    {}
+                }
+                Ok(())
+            })();
+
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
                 if let Some(pos) = remaining.find(" ") {
@@ -68,22 +79,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { event.has_value("translated_src_ip") };
-            if _cond {
-                if let Some(s) = event.get_string("translated_src_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
-                            path: "translated_src_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("source.ip", s)?;
-                }
-            }
-
-            let _cond = { !event.has_value("translated_src_ip") && event.has_value("src") };
+            let _cond = { event.has_value("src") };
             if _cond {
                 if let Some(s) = event.get_string("src") {
                     // Validate IP format
@@ -98,43 +94,7 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond =
-                { event.has_value("translated_src_ip") && event.has_value("translated_port") };
-            if _cond {
-                if let Some(val) = event.get("translated_port") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "translated_port".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "translated_port".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
-                        }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "translated_port".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
-                    event.set("source.port", converted)?;
-                }
-            }
-
-            let _cond = { !event.has_value("translated_src_ip") && event.has_value("sport") };
+            let _cond = { event.has_value("sport") };
             if _cond {
                 if let Some(val) = event.get("sport") {
                     let converted = match val {
@@ -169,38 +129,22 @@ impl Transform for Ipflows {
                 }
             }
 
-            let _cond = { event.has_value("translated_dst_ip") };
+            let _cond = { event.has_value("translated_src_ip") };
             if _cond {
-                if let Some(s) = event.get_string("translated_dst_ip") {
+                if let Some(s) = event.get_string("translated_src_ip") {
                     // Validate IP format
                     let s = s.trim();
                     if s.parse::<std::net::IpAddr>().is_err() {
                         return Err(TransformError::ParseError {
-                            path: "translated_dst_ip".into(),
+                            path: "translated_src_ip".into(),
                             message: format!("cannot convert '{}' to IP", s),
                         });
                     }
-                    event.set("destination.ip", s)?;
+                    event.set("source.nat.ip", s)?;
                 }
             }
 
-            let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dst") };
-            if _cond {
-                if let Some(s) = event.get_string("dst") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
-                            path: "dst".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("destination.ip", s)?;
-                }
-            }
-
-            let _cond =
-                { event.has_value("translated_dst_ip") && event.has_value("translated_port") };
+            let _cond = { event.has_value("translated_port") && event.has_value("source.nat.ip") };
             if _cond {
                 if let Some(val) = event.get("translated_port") {
                     let converted = match val {
@@ -231,11 +175,26 @@ impl Transform for Ipflows {
                             });
                         }
                     };
-                    event.set("destination.port", converted)?;
+                    event.set("source.nat.port", converted)?;
                 }
             }
 
-            let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dport") };
+            let _cond = { event.has_value("dst") };
+            if _cond {
+                if let Some(s) = event.get_string("dst") {
+                    // Validate IP format
+                    let s = s.trim();
+                    if s.parse::<std::net::IpAddr>().is_err() {
+                        return Err(TransformError::ParseError {
+                            path: "dst".into(),
+                            message: format!("cannot convert '{}' to IP", s),
+                        });
+                    }
+                    event.set("destination.ip", s)?;
+                }
+            }
+
+            let _cond = { event.has_value("dport") };
             if _cond {
                 if let Some(val) = event.get("dport") {
                     let converted = match val {
@@ -267,6 +226,57 @@ impl Transform for Ipflows {
                         }
                     };
                     event.set("destination.port", converted)?;
+                }
+            }
+
+            let _cond = { event.has_value("translated_dst_ip") };
+            if _cond {
+                if let Some(s) = event.get_string("translated_dst_ip") {
+                    // Validate IP format
+                    let s = s.trim();
+                    if s.parse::<std::net::IpAddr>().is_err() {
+                        return Err(TransformError::ParseError {
+                            path: "translated_dst_ip".into(),
+                            message: format!("cannot convert '{}' to IP", s),
+                        });
+                    }
+                    event.set("destination.nat.ip", s)?;
+                }
+            }
+
+            let _cond =
+                { event.has_value("translated_port") && event.has_value("destination.nat.ip") };
+            if _cond {
+                if let Some(val) = event.get("translated_port") {
+                    let converted = match val {
+                        Value::String(s) => {
+                            let s = s.trim();
+                            if let Some(hex) = s.strip_prefix("0x") {
+                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                    TransformError::ParseError {
+                                        path: "translated_port".into(),
+                                        message: format!("cannot convert '{}' to integer", s),
+                                    }
+                                })?)
+                            } else {
+                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
+                                    path: "translated_port".into(),
+                                    message: format!("cannot convert '{}' to integer", s)
+                                })?)
+                            }
+                        }
+                        Value::Number(n) => {
+                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                        }
+                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                        _ => {
+                            return Err(TransformError::ParseError {
+                                path: "translated_port".into(),
+                                message: "cannot convert to integer".into(),
+                            });
+                        }
+                    };
+                    event.set("destination.nat.port", converted)?;
                 }
             }
 

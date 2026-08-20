@@ -95,6 +95,10 @@ impl Transform for Traffic {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_fortinet_firewall_tranip_to_destination_nat_ip_7b6fb54b",
+                )?;
                 if event.remove("fortinet.firewall.tranip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "fortinet.firewall.tranip".into(),
@@ -190,6 +194,46 @@ impl Transform for Traffic {
                             }
                         };
                         event.set("destination.nat.port", converted)?;
+                    }
+                }
+                Ok(())
+            })();
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("fortinet.firewall.rcvddelta") {
+                    if let Some(val) = event.get("fortinet.firewall.rcvddelta") {
+                        let converted = match val {
+                            Value::String(s) => {
+                                let s = s.trim();
+                                if let Some(hex) = s.strip_prefix("0x") {
+                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                        TransformError::ParseError {
+                                            path: "fortinet.firewall.rcvddelta".into(),
+                                            message: format!("cannot convert '{}' to integer", s),
+                                        }
+                                    })?)
+                                } else {
+                                    json!(s.parse::<i64>().map_err(|_| {
+                                        TransformError::ParseError {
+                                            path: "fortinet.firewall.rcvddelta".into(),
+                                            message: format!("cannot convert '{}' to integer", s),
+                                        }
+                                    })?)
+                                }
+                            }
+                            Value::Number(n) => {
+                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                            }
+                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                            _ => {
+                                return Err(TransformError::ParseError {
+                                    path: "fortinet.firewall.rcvddelta".into(),
+                                    message: "cannot convert to integer".into(),
+                                });
+                            }
+                        };
+                        event.set("fortinet.firewall.rcvddelta", converted)?;
                     }
                 }
                 Ok(())
@@ -297,6 +341,46 @@ impl Transform for Traffic {
             if event.has("fortinet.firewall.group") {
                 event.rename("fortinet.firewall.group", "source.user.group.name")?;
             }
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("fortinet.firewall.sentdelta") {
+                    if let Some(val) = event.get("fortinet.firewall.sentdelta") {
+                        let converted = match val {
+                            Value::String(s) => {
+                                let s = s.trim();
+                                if let Some(hex) = s.strip_prefix("0x") {
+                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                        TransformError::ParseError {
+                                            path: "fortinet.firewall.sentdelta".into(),
+                                            message: format!("cannot convert '{}' to integer", s),
+                                        }
+                                    })?)
+                                } else {
+                                    json!(s.parse::<i64>().map_err(|_| {
+                                        TransformError::ParseError {
+                                            path: "fortinet.firewall.sentdelta".into(),
+                                            message: format!("cannot convert '{}' to integer", s),
+                                        }
+                                    })?)
+                                }
+                            }
+                            Value::Number(n) => {
+                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                            }
+                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                            _ => {
+                                return Err(TransformError::ParseError {
+                                    path: "fortinet.firewall.sentdelta".into(),
+                                    message: "cannot convert to integer".into(),
+                                });
+                            }
+                        };
+                        event.set("fortinet.firewall.sentdelta", converted)?;
+                    }
+                }
+                Ok(())
+            })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
@@ -471,6 +555,10 @@ impl Transform for Traffic {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_fortinet_firewall_transip_to_source_nat_ip_c36fcafa",
+                )?;
                 if event.remove("fortinet.firewall.transip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "fortinet.firewall.transip".into(),
@@ -604,9 +692,55 @@ impl Transform for Traffic {
                 }
             }
 
-            if event.has("fortinet.firewall.url") {
-                event.rename("fortinet.firewall.url", "url.path")?;
+            let _cond = { event.has_value("fortinet.firewall.url") };
+            if _cond {
+                if let Some(uri_str) = event.get_string("fortinet.firewall.url") {
+                    if let Ok(url) = url::Url::parse(&uri_str) {
+                        event.set("url.scheme", url.scheme())?;
+                        if let Some(host) = url.host_str() {
+                            event.set("url.domain", host)?;
+                        }
+                        if let Some(port) = url.port() {
+                            event.set("url.port", json!(port))?;
+                        }
+                        event.set("url.path", url.path())?;
+                        if let Some(query) = url.query() {
+                            event.set("url.query", query)?;
+                        }
+                        if let Some(fragment) = url.fragment() {
+                            event.set("url.fragment", fragment)?;
+                        }
+                        if let Some(userinfo) = url.password() {
+                            event
+                                .set("url.user_info", format!("{}:{}", url.username(), userinfo))?;
+                        } else if !url.username().is_empty() {
+                            event.set("url.user_info", url.username())?;
+                        }
+                    }
+                }
             }
+
+            let _cond = {
+                event
+                    .get("fortinet.firewall.rcvddelta")
+                    .is_some_and(|v| v.is_number())
+                    && event
+                        .get("fortinet.firewall.sentdelta")
+                        .is_some_and(|v| v.is_number())
+            };
+            if _cond {
+                // Painless script
+                // Source: ctx.fortinet.firewall.deltabytes = ctx.fortinet.firewall.rcvddelta + ctx.fortinet.firewall.sentdelta
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"ctx.fortinet.firewall.deltabytes = ctx.fortinet.firewall.rcvddelta + ctx.fortinet.firewall.sentdelta"#
+                    ),
+                )?;
+            }
+
+            event.remove("fortinet.firewall.url");
 
             event.remove("fortinet.firewall.dstport");
             event.remove("fortinet.firewall.tranport");
@@ -626,13 +760,8 @@ impl Transform for Traffic {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

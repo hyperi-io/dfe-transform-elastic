@@ -35,10 +35,6 @@ impl Transform for XdrDetectionSummary {
                 )?;
             }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
-
             if event.has("crowdstrike.event.Name") {
                 event.rename("crowdstrike.event.Name", "rule.name")?;
             }
@@ -516,12 +512,10 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
                     if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("process.end", parsed)?;
+                        event.set("event.end", parsed)?;
                     }
                 }
             }
-
-            event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
             let _cond = { event.has_value("crowdstrike.event.Techniques") };
             if _cond {
@@ -565,6 +559,7 @@ impl Transform for XdrDetectionSummary {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

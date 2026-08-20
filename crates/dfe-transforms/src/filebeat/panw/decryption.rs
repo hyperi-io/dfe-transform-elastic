@@ -534,7 +534,10 @@ impl Transform for Decryption {
                 event.rename("_temp_.config_version", "panw.panos.config_version")?;
             }
 
-            let _cond = { !event.has_value("event.timezone") };
+            let _cond = {
+                !event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_after")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -553,6 +556,7 @@ impl Transform for Decryption {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_after_to_panw_panos_certificate_not_after_02479cef")?;
                     if event.remove("panw.panos.certificate.not_after").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_after".into(),
@@ -574,7 +578,10 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { event.has_value("event.timezone") };
+            let _cond = {
+                event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_after")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -593,6 +600,7 @@ impl Transform for Decryption {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_after_to_panw_panos_certificate_not_after_cfa3d515")?;
                     if event.remove("panw.panos.certificate.not_after").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_after".into(),
@@ -614,7 +622,10 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { !event.has_value("event.timezone") };
+            let _cond = {
+                !event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_before")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -633,6 +644,7 @@ impl Transform for Decryption {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_before_to_panw_panos_certificate_not_before_fe9abb71")?;
                     if event.remove("panw.panos.certificate.not_before").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_before".into(),
@@ -654,7 +666,10 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { event.has_value("event.timezone") };
+            let _cond = {
+                event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_before")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -673,6 +688,7 @@ impl Transform for Decryption {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_before_to_panw_panos_certificate_not_before_a788166b")?;
                     if event.remove("panw.panos.certificate.not_before").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_before".into(),
@@ -1003,7 +1019,8 @@ impl Transform for Decryption {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("error in Decryption pipeline: error in [{}] processor{} with tag [{}]{} {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

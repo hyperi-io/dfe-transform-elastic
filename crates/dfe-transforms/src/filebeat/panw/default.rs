@@ -16,7 +16,7 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            event.set("ecs.version", json!("8.11.0"))?;
+            event.set("ecs.version", json!("8.17.0"))?;
 
             event.set("observer.vendor", json!("Palo Alto Networks"))?;
 
@@ -24,15 +24,12 @@ impl Transform for Default {
 
             event.set("observer.type", json!("firewall"))?;
 
-            let _cond = {
-                event.has_value("_conf.tz_offset")
-                    && event.get_str("_conf.tz_offset") != Some("local")
-            };
-            if _cond {
-                event.set(
-                    "event.timezone",
-                    event.get("_conf.tz_offset").cloned().unwrap_or(Value::Null),
-                )?;
+            // SKIPPED: condition not transpiled: ctx._conf?.tz_offset instanceof String && !ctx._conf.tz_offset.equalsIgnoreCase('local')
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                if let Some(v) = event.get("_conf.tz_offset").cloned() {
+                    event.set("event.timezone", v)?;
+                }
             }
 
             let _cond = { !event.has_value("event.original") };
@@ -45,8 +42,11 @@ impl Transform for Default {
             event.rename("message", "_temp_.message")?;
 
             if let Some(input) = event.get_string("_temp_.message") {
-                // Grok pattern: ^%{DATA},(?P<event_created>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$
-                if !cached_grok_mapped!("^%{DATA},(?P<event_created>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$", [("event_created", "event.created"), ("observer_serial_number", "observer.serial_number"), ("panw_panos_type", "panw.panos.type"), ("panw_panos_sub_type", "panw.panos.sub_type"), ("_temp__config_version", "_temp_.config_version"), ("_temp__generated_time", "_temp_.generated_time")]).extract_into(&input, event)? {
+                // Grok pattern: ^%{DATA},(?P<_temp__received_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$
+                if !cached_grok_mapped!("^%{DATA},(?P<_temp__received_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$", [("_temp__received_time", "_temp_.received_time"), ("observer_serial_number", "observer.serial_number"), ("panw_panos_type", "panw.panos.type"), ("panw_panos_sub_type", "panw.panos.sub_type"), ("_temp__config_version", "_temp_.config_version"), ("_temp__generated_time", "_temp_.generated_time")]).extract_into(&input, event)? {
+                        // Grok pattern: ^(?:<\\d+>)?%{SYSLOGTIMESTAMP:_temp_.syslog_time} %{IPORHOST:observer.hostname} %{NOTSPACE:observer.serial_number},(?P<_temp__generated_time>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})),(?P<panw_panos_type>(?:[^,]*)),%{GREEDYDATA:message}$
+                        if !cached_grok_mapped!("^(?:<\\d+>)?%{SYSLOGTIMESTAMP:_temp_.syslog_time} %{IPORHOST:observer.hostname} %{NOTSPACE:observer.serial_number},(?P<_temp__generated_time>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})),(?P<panw_panos_type>(?:[^,]*)),%{GREEDYDATA:message}$", [("_temp__generated_time", "_temp_.generated_time"), ("panw_panos_type", "panw.panos.type")]).extract_into(&input, event)? {
+                        }
                     }
             }
 
@@ -623,188 +623,202 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
                 }
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.bytes_received").cloned() {
-                        event.set("destination.bytes", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("_temp_.dstloc").cloned() {
-                        event.set("panw.panos.destination.location", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
-                        event.set("destination.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.nat.ip").cloned() {
-                        event.set("destination.nat.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.nat.port").cloned() {
-                        event.set("destination.nat.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.packets_received").cloned() {
-                        event.set("destination.packets", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.port").cloned() {
-                        event.set("destination.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.elapsed_time").cloned() {
-                        event.set("event.duration", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.start_time").cloned() {
-                        event.set("event.start", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.network.application").cloned() {
-                        event.set("network.application", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.network.bytes").cloned() {
-                        event.set("network.bytes", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.network.packets").cloned() {
-                        event.set("network.packets", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.protocol").cloned() {
-                        event.set("network.transport", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
-                        event.set("observer.egress.interface.name", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
-                        event.set("observer.egress.zone", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.device_name").cloned() {
-                        event.set("observer.hostname", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
-                        event.set("observer.ingress.interface.name", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.zone").cloned() {
-                        event.set("observer.ingress.zone", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
-                        event.set("rule.uuid", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.bytes_sent").cloned() {
-                        event.set("source.bytes", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("_temp_.srcloc").cloned() {
-                        event.set("panw.panos.source.location", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.ip").cloned() {
-                        event.set("source.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.nat.ip").cloned() {
-                        event.set("source.nat.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.packets_sent").cloned() {
-                        event.set("source.packets", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.port").cloned() {
-                        event.set("source.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.nat.port").cloned() {
-                        event.set("source.nat.port", v)?;
-                    }
-                    Ok(())
-                })();
+                if let Some(v) = event
+                    .get("panw.panos.bytes_received")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.bytes", v)?;
+                }
+                if let Some(v) = event
+                    .get("_temp_.dstloc")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.destination.location", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.nat.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.nat.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.nat.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.nat.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.packets_received")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.packets", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.elapsed_time")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.duration", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.start_time")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.start", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.network.application")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("network.application", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.network.bytes")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("network.bytes", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.network.packets")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("network.packets", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.protocol")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("network.transport", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.outbound_interface")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.egress.interface.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.zone")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.egress.zone", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.device_name")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.hostname", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.inbound_interface")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.ingress.interface.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.zone")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.ingress.zone", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.rule_uuid")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("rule.uuid", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.bytes_sent")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.bytes", v)?;
+                }
+                if let Some(v) = event
+                    .get("_temp_.srcloc")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.source.location", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.nat.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.nat.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.packets_sent")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.packets", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.nat.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.nat.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("_conf.external_zones")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("_temp_.external_zones", v)?;
+                }
+                if let Some(v) = event
+                    .get("_conf.internal_zones")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("_temp_.internal_zones", v)?;
+                }
                 // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.i ...
                 #[allow(unreachable_code, unused_variables)]
                 if false {
@@ -853,6 +867,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_809881d3")?;
                         event.append(
                             "error.message",
                             event
@@ -891,6 +906,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_65e492d1")?;
                         event.append(
                             "error.message",
                             event
@@ -912,6 +928,18 @@ impl Transform for Default {
             let _cond = { event.get_str("panw.panos.type") == Some("THREAT") };
             if _cond {
                 // Begin nested pipeline: "threat"
+                let _cond = { event.get_str("panw.panos.sub_type") == Some("url") };
+                if _cond {
+                    // Painless script
+                    // Source: def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec(
+                        event,
+                        cached_script!(
+                            r#"def fixHttpHeadersEscaping(String input) {\n  // Find a CSV fragment like `,Some-Header:\"eg1.com, eg2.com\";`\n  //     and correct it to be `,\"Some-Header:\"\"eg1.com, eg2.com\"\";\"`\n  Matcher matcher = /,(([A-Za-z0-9\\-_]+: *\\\"[^\\\"]*\\\"; *)+)/.matcher(input);\n  if (matcher.find()) {\n    String match = matcher.group(0);\n    String value = matcher.group(1);\n    String fixed = ',\"' + value.replace('\"', '\"\"') + '\"';\n    return input.replace(match, fixed);\n  } else {\n    return input;\n  }\n}\nctx.message = fixHttpHeadersEscaping(ctx.message);\n"#
+                        ),
+                    )?;
+                }
                 if let Some(csv_str) = event.get_string("message") {
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
@@ -1553,6 +1581,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert__temp__forwarded_ip_to_network_forwarded_ip_e6722dcc",
+                    )?;
                     if event.has("_temp_.forwarded_ip") {
                         event.rename("_temp_.forwarded_ip", "panw.panos.x_forwarded_for")?;
                     }
@@ -1563,201 +1595,289 @@ impl Transform for Default {
                         event.remove("_ingest");
                     }
                 }
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("_temp_.dstloc").cloned() {
-                        event.set("panw.panos.destination.location", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
-                        event.set("destination.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.nat.ip").cloned() {
-                        event.set("destination.nat.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.nat.port").cloned() {
-                        event.set("destination.nat.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.port").cloned() {
-                        event.set("destination.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.recipient").cloned() {
-                        event.set("destination.user.email", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.file.type").cloned() {
-                        event.set("file.type", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.http_method").cloned() {
-                        event.set("http.request.method", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.referrer").cloned() {
-                        event.set("http.request.referrer", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.severity").cloned() {
-                        event.set("log.level", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.network.application").cloned() {
-                        event.set("network.application", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("_temp_.direction").cloned() {
-                        event.set("panw.panos.network.direction", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("network.forwarded_ip").cloned() {
-                        event.set("panw.panos.forwarded_ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.protocol").cloned() {
-                        event.set("network.transport", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
-                        event.set("observer.egress.interface.name", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
-                        event.set("observer.egress.zone", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.device_name").cloned() {
-                        event.set("observer.hostname", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
-                        event.set("observer.ingress.interface.name", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.zone").cloned() {
-                        event.set("observer.ingress.zone", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
-                        event.set("rule.uuid", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("_temp_.srcloc").cloned() {
-                        event.set("panw.panos.source.location", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.ip").cloned() {
-                        event.set("source.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.nat.ip").cloned() {
-                        event.set("source.nat.ip", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.port").cloned() {
-                        event.set("source.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.source.nat.port").cloned() {
-                        event.set("source.nat.port", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("panw.panos.sender").cloned() {
-                        event.set("source.user.email", v)?;
-                    }
-                    Ok(())
-                })();
+                if let Some(v) = event
+                    .get("_temp_.dstloc")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.destination.location", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.nat.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.nat.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.nat.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.nat.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.recipient")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("destination.user.email", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.file.type")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.type", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.http_method")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("http.request.method", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.referrer")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("http.request.referrer", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.severity")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("log.level", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.network.application")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("network.application", v)?;
+                }
+                if let Some(v) = event
+                    .get("_temp_.direction")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.network.direction", v)?;
+                }
+                if let Some(v) = event
+                    .get("network.forwarded_ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.forwarded_ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.protocol")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("network.transport", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.outbound_interface")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.egress.interface.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.destination.zone")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.egress.zone", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.device_name")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.hostname", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.inbound_interface")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.ingress.interface.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.zone")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("observer.ingress.zone", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.rule_uuid")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("rule.uuid", v)?;
+                }
+                if let Some(v) = event
+                    .get("_temp_.srcloc")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.source.location", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.nat.ip")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.nat.ip", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.source.nat.port")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.nat.port", v)?;
+                }
+                if let Some(v) = event
+                    .get("panw.panos.sender")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("source.user.email", v)?;
+                }
                 let _cond = {
-                    !event.has_value("url.scheme")
-                        && event.get_str("panw.panos.sub_type") == Some("url")
+                    event.get_str("panw.panos.sub_type") == Some("url")
                         && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
                 };
                 if _cond {
+                    if let Some(v) = event.get("panw.panos.misc").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = {
+                    event.get_str("panw.panos.sub_type") == Some("virus")
+                        && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                        && event.get("panw.panos.misc").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some("/"))
+                            }
+                            serde_json::Value::String(s) => s.contains("/"),
+                            _ => false,
+                        })
+                };
+                if _cond {
+                    if let Some(v) = event.get("panw.panos.misc").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = {
+                    event.get_str("panw.panos.sub_type") == Some("vulnerability")
+                        && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                        && event.get("panw.panos.misc").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some("/"))
+                            }
+                            serde_json::Value::String(s) => s.contains("/"),
+                            _ => false,
+                        })
+                };
+                if _cond {
+                    if let Some(v) = event.get("panw.panos.misc").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = {
+                    event.get_str("panw.panos.sub_type") == Some("file")
+                        && event
+                            .get("_temp_.future_use3")
+                            .is_some_and(|v| v.is_string())
+                        && event.get("_temp_.future_use3").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some("/"))
+                            }
+                            serde_json::Value::String(s) => s.contains("/"),
+                            _ => false,
+                        })
+                };
+                if _cond {
+                    if let Some(v) = event.get("_temp_.future_use3").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = {
+                    event.get_str("panw.panos.threat_category") == Some("domain-edl")
+                        && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                };
+                if _cond {
+                    if let Some(v) = event.get("panw.panos.misc").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = {
+                    event.get_str("panw.panos.sub_type") == Some("spyware")
+                        && event.get_str("panw.panos.protocol") == Some("tcp")
+                        && ["block-url", "drop", "sinkhole"]
+                            .contains(&event.get_str("panw.panos.action").unwrap_or(""))
+                        && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                };
+                if _cond {
+                    if let Some(v) = event.get("panw.panos.misc").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = {
+                    event.get_str("panw.panos.sub_type") == Some("spyware")
+                        && event.get_str("panw.panos.protocol") == Some("udp")
+                        && ["sinkhole", "drop", "drop-packet"]
+                            .contains(&event.get_str("panw.panos.action").unwrap_or(""))
+                        && event.get("panw.panos.misc").is_some_and(|v| v.is_string())
+                };
+                if _cond {
+                    if let Some(v) = event.get("panw.panos.misc").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                }
+                let _cond = { event.has_value("url.original") };
+                if _cond {
                     // Painless script
-                    // Source: Map url = new HashMap();\nString url_original = ctx.panw.panos.misc;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.indexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;
+                    // Source: Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;
                     // TODO: Transpile Painless to Rust (2.2.3)
                     painless_exec(
                         event,
                         cached_script!(
-                            r#"Map url = new HashMap();\nString url_original = ctx.panw.panos.misc;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.indexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;"#
+                            r#"Map url = new HashMap();\nString url_original = ctx.url.original;\nString domainPort = url_original;\nurl.original = url_original;\n\nif (url_original.contains(\"/\")) {\n    int idxSlash = url_original.indexOf(\"/\");\n    domainPort = url_original.substring(0, idxSlash);\n    String afterDomain = url_original.substring(idxSlash);\n    int idxQuery = afterDomain.indexOf(\"?\");\n    if (idxQuery == -1) {\n        url.path = afterDomain;\n    }\n    else {\n        url.path = afterDomain.substring(0, idxQuery);\n        url.query = afterDomain.substring(idxQuery + 1);\n    }\n    int idxExtn = url.path.lastIndexOf(\".\");\n    if (idxExtn != -1) {\n        url.extension = url.path.substring(idxExtn+1);\n    }\n}\nelse {\n    int idxQuery = url_original.indexOf(\"?\");\n    if (idxQuery != -1) {\n        domainPort = url_original.substring(0, idxQuery);\n        url.query = url_original.substring(idxQuery + 1);\n    }\n}\n\nif (domainPort.indexOf(\":\") != -1) {\n    url.domain = domainPort.splitOnToken(\":\")[0];\n    try {\n        url.port = Long.parseLong(domainPort.splitOnToken(\":\")[1]);\n    } catch ( NumberFormatException e) {\n    }\n}\nelse {\n    url.domain = domainPort;\n    ctx.destination.domain = domainPort;\n}\n\nctx.url = url;"#
                         ),
                     )?;
                 }
@@ -1779,13 +1899,13 @@ impl Transform for Default {
                         }))
                 };
                 if _cond {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(v) = event.get("panw.panos.misc").cloned() {
-                            event.set("file.path", v)?;
-                        }
-                        Ok(())
-                    })();
+                    if let Some(v) = event
+                        .get("panw.panos.misc")
+                        .filter(|v| !painless_is_empty_value(v))
+                        .cloned()
+                    {
+                        event.set("file.path", v)?;
+                    }
                 }
                 let _cond = { event.get("file.path").is_some_and(|v| v.is_string()) };
                 if _cond {
@@ -1800,7 +1920,14 @@ impl Transform for Default {
                     )?;
                 }
                 let _cond = {
-                    event.get_str("panw.panos.sub_type") == Some("file")
+                    [
+                        "file",
+                        "virus",
+                        "vulnerability",
+                        "wildfire",
+                        "wildfire-virus",
+                    ]
+                    .contains(&event.get_str("panw.panos.sub_type").unwrap_or(""))
                         && (event.get("panw.panos.misc").is_some_and(|v| v.is_string()))
                         && !(event.get("panw.panos.misc").is_some_and(|v| match v {
                             serde_json::Value::Array(a) => {
@@ -1817,21 +1944,26 @@ impl Transform for Default {
                         }))
                 };
                 if _cond {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(v) = event.get("panw.panos.misc").cloned() {
-                            event.set("file.name", v)?;
-                        }
-                        Ok(())
-                    })();
-                }
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("_temp_.user_agent").cloned() {
-                        event.set("panw.panos.user_agent", v)?;
+                    if let Some(v) = event
+                        .get("panw.panos.misc")
+                        .filter(|v| !painless_is_empty_value(v))
+                        .cloned()
+                    {
+                        event.set("file.name", v)?;
                     }
-                    Ok(())
-                })();
+                }
+                // SKIPPED: condition not transpiled: "vulnerability" == ctx.panw?.panos?.sub_type && ctx.file?.name != null
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    event.remove("url");
+                }
+                if let Some(v) = event
+                    .get("_temp_.user_agent")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("panw.panos.user_agent", v)?;
+                }
                 let _cond = { event.has_value("panw.panos.url_category_list") };
                 if _cond {
                     if let Some(s) = event.get_string("panw.panos.url_category_list") {
@@ -2220,13 +2352,6 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(v) = event.get("event.created").cloned() {
-                        event.set("panw.panos.received_time", v)?;
-                    }
-                    Ok(())
-                })();
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
                     if let Some(v) = event.get("panw.panos.device_name").cloned() {
                         event.set("observer.hostname", v)?;
                     }
@@ -2273,6 +2398,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_527c776e")?;
                         event.append(
                             "error.message",
                             event
@@ -2311,6 +2437,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_02fdb26c")?;
                         event.append(
                             "error.message",
                             event
@@ -3663,7 +3790,10 @@ impl Transform for Default {
                 if event.has("_temp_.config_version") {
                     event.rename("_temp_.config_version", "panw.panos.config_version")?;
                 }
-                let _cond = { !event.has_value("event.timezone") };
+                let _cond = {
+                    !event.has_value("event.timezone")
+                        && event.has_value("panw.panos.certificate.not_after")
+                };
                 if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -3683,6 +3813,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_after_to_panw_panos_certificate_not_after_02479cef")?;
                         if event.remove("panw.panos.certificate.not_after").is_none() {
                             return Err(TransformError::FieldNotFound {
                                 path: "panw.panos.certificate.not_after".into(),
@@ -3703,7 +3834,10 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { event.has_value("event.timezone") };
+                let _cond = {
+                    event.has_value("event.timezone")
+                        && event.has_value("panw.panos.certificate.not_after")
+                };
                 if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -3723,6 +3857,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_after_to_panw_panos_certificate_not_after_cfa3d515")?;
                         if event.remove("panw.panos.certificate.not_after").is_none() {
                             return Err(TransformError::FieldNotFound {
                                 path: "panw.panos.certificate.not_after".into(),
@@ -3743,7 +3878,10 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { !event.has_value("event.timezone") };
+                let _cond = {
+                    !event.has_value("event.timezone")
+                        && event.has_value("panw.panos.certificate.not_before")
+                };
                 if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -3763,6 +3901,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_before_to_panw_panos_certificate_not_before_fe9abb71")?;
                         if event.remove("panw.panos.certificate.not_before").is_none() {
                             return Err(TransformError::FieldNotFound {
                                 path: "panw.panos.certificate.not_before".into(),
@@ -3783,7 +3922,10 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { event.has_value("event.timezone") };
+                let _cond = {
+                    event.has_value("event.timezone")
+                        && event.has_value("panw.panos.certificate.not_before")
+                };
                 if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -3803,6 +3945,7 @@ impl Transform for Default {
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
                         event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_before_to_panw_panos_certificate_not_before_a788166b")?;
                         if event.remove("panw.panos.certificate.not_before").is_none() {
                             return Err(TransformError::FieldNotFound {
                                 path: "panw.panos.certificate.not_before".into(),
@@ -4227,7 +4370,10 @@ impl Transform for Default {
                 // End nested pipeline: "system"
             }
 
-            let _cond = { event.get_str("panw.panos.type") == Some("AUTHENTICATION") };
+            let _cond = {
+                event.get_str("panw.panos.type") == Some("AUTHENTICATION")
+                    || event.get_str("panw.panos.type") == Some("AUTH")
+            };
             if _cond {
                 // Begin nested pipeline: "authentication"
                 // ignore_failure: true
@@ -6377,6 +6523,75 @@ impl Transform for Default {
                 // End nested pipeline: "tunnel_inspection"
             }
 
+            let _cond = {
+                event.get_str("panw.panos.type") == Some("AUDIT")
+                    || event.get_str("panw.panos.type") == Some("audit")
+            };
+            if _cond {
+                // Begin nested pipeline: "audit"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(csv_str) = event.get_string("message") {
+                        let mut rdr = csv::ReaderBuilder::new()
+                            .delimiter(b',')
+                            .quote(b'\"')
+                            .has_headers(false)
+                            .from_reader(csv_str.as_bytes());
+                        if let Some(Ok(record)) = rdr.records().next() {
+                            if let Some(val) = record.get(0) {
+                                if !val.is_empty() {
+                                    event.set("panw.panos.config_version", val)?;
+                                }
+                            }
+                            if let Some(val) = record.get(1) {
+                                if !val.is_empty() {
+                                    event.set("panw.panos.cmd_source", val)?;
+                                }
+                            }
+                            if let Some(val) = record.get(2) {
+                                if !val.is_empty() {
+                                    event.set("user.name", val)?;
+                                }
+                            }
+                            if let Some(val) = record.get(3) {
+                                if !val.is_empty() {
+                                    event.set("panw.panos.cmd", val)?;
+                                }
+                            }
+                            if let Some(val) = record.get(4) {
+                                if !val.is_empty() {
+                                    event.set("event.outcome", val)?;
+                                }
+                            }
+                        }
+                    }
+                    Ok(())
+                })();
+                if event.has("panw.panos.type") {
+                    if let Some(s) = event.get_string("panw.panos.type") {
+                        let uppered = s.to_uppercase();
+                        event.set("panw.panos.type", uppered)?;
+                    }
+                }
+                event.set("event.kind", json!("event"))?;
+                event.append("event.category", json!("configuration"))?;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(v) = event.get("panw.panos.device_name").cloned() {
+                        event.set("observer.hostname", v)?;
+                    }
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(v) = event.get("panw.panos.source.ip").cloned() {
+                        event.set("source.ip", v)?;
+                    }
+                    Ok(())
+                })();
+                // End nested pipeline: "audit"
+            }
+
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(v) = event.get("observer.serial_number").cloned() {
@@ -6384,67 +6599,6 @@ impl Transform for Default {
                 }
                 Ok(())
             })();
-
-            let _cond = { event.has_value("_temp_.srcuser") };
-            if _cond {
-                if event.has("_temp_.srcuser") {
-                    if let Some(input) = event.get_string("_temp_.srcuser") {
-                        // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                        // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
-                            if !cached_grok_mapped!("^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$", [("source_user_name", "source.user.name"), ("source_user_domain", "source.user.domain")]).extract_into(&input, event)? {
-                                // Grok pattern: ^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                                if !cached_grok_mapped!("^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
-                    }
-                }
-            }
-
-            let _cond = { event.has_value("_temp_.dstuser") };
-            if _cond {
-                if event.has("_temp_.dstuser") {
-                    if let Some(input) = event.get_string("_temp_.dstuser") {
-                        // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
-                        // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
-                            if !cached_grok_mapped!("^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$", [("destination_user_name", "destination.user.name"), ("destination_user_domain", "destination.user.domain")]).extract_into(&input, event)? {
-                                // Grok pattern: ^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                                if !cached_grok_mapped!("^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
-                    }
-                }
-            }
-
-            let _cond = { event.has_value("source.user.name") };
-            if _cond {
-                if let Some(v) = event.get("source.user.name").cloned() {
-                    event.set("panw.panos.source.user", v)?;
-                }
-            }
-
-            let _cond = { event.has_value("destination.user.name") };
-            if _cond {
-                if let Some(v) = event.get("destination.user.name").cloned() {
-                    event.set("panw.panos.destination.user", v)?;
-                }
-            }
-
-            let _cond = { event.has_value("source.user") };
-            if _cond {
-                if let Some(v) = event.get("source.user").cloned() {
-                    event.set("user", v)?;
-                }
-            }
 
             let _cond = { !event.has_value("event.timezone") };
             if _cond {
@@ -6457,13 +6611,17 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            event.set("panw.panos.generated_time", parsed)?;
                         }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date__temp__generated_time_to_panw_panos_generated_time_7759c4c7",
+                    )?;
                     event.append(
                         "error.message",
                         event
@@ -6491,13 +6649,17 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            event.set("panw.panos.generated_time", parsed)?;
                         }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date__temp__generated_time_to_panw_panos_generated_time_7b45f5a5",
+                    )?;
                     event.append(
                         "error.message",
                         event
@@ -6514,32 +6676,29 @@ impl Transform for Default {
                 }
             }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("@timestamp").cloned() {
-                    event.set("panw.panos.generated_time", v)?;
-                }
-                Ok(())
-            })();
-
-            let _cond = { !event.has_value("event.timezone") && event.has_value("event.created") };
+            let _cond =
+                { !event.has_value("event.timezone") && event.has_value("_temp_.received_time") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("event.created") {
+                    if let Some(date_str) = event.get_as_string("_temp_.received_time") {
                         if let Some(parsed) = parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("event.created", parsed)?;
+                            event.set("panw.panos.received_time", parsed)?;
                         }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date__temp__received_time_to_panw_panos_received_time_b4d2c73b",
+                    )?;
                     event.append(
                         "error.message",
                         event
@@ -6556,24 +6715,29 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("event.timezone") && event.has_value("event.created") };
+            let _cond =
+                { event.has_value("event.timezone") && event.has_value("_temp_.received_time") };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("event.created") {
+                    if let Some(date_str) = event.get_as_string("_temp_.received_time") {
                         if let Some(parsed) = parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("event.created", parsed)?;
+                            event.set("panw.panos.received_time", parsed)?;
                         }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date__temp__received_time_to_panw_panos_received_time_81c983b3",
+                    )?;
                     event.append(
                         "error.message",
                         event
@@ -6589,14 +6753,6 @@ impl Transform for Default {
                     }
                 }
             }
-
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("event.created").cloned() {
-                    event.set("panw.panos.received_time", v)?;
-                }
-                Ok(())
-            })();
 
             let _cond =
                 { !event.has_value("event.timezone") && event.has_value("_temp_.logged_time") };
@@ -6621,6 +6777,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date__temp__logged_time_to_panw_panos_logged_time_6a2e15d6",
+                    )?;
                     if event.remove("_temp_.logged_time").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "_temp_.logged_time".into(),
@@ -6665,6 +6825,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date__temp__logged_time_to_panw_panos_logged_time_31e0a874",
+                    )?;
                     if event.remove("_temp_.logged_time").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "_temp_.logged_time".into(),
@@ -6684,6 +6848,21 @@ impl Transform for Default {
                         event.remove("_ingest");
                     }
                 }
+            }
+
+            let _cond = {
+                event
+                    .get("_temp_.high_res_timestamp")
+                    .is_some_and(|v| v.is_string())
+                    && (event
+                        .get_str("_temp_.high_res_timestamp")
+                        .is_some_and(|s| s.starts_with("1969"))
+                        || event
+                            .get_str("_temp_.high_res_timestamp")
+                            .is_some_and(|s| s.starts_with("1970")))
+            };
+            if _cond {
+                event.remove("_temp_.high_res_timestamp");
             }
 
             let _cond = {
@@ -6710,6 +6889,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date__temp__high_res_timestamp_to_panw_panos_high_resolution_timestamp_1766e392")?;
                     if event.remove("_temp_.high_res_timestamp").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "_temp_.high_res_timestamp".into(),
@@ -6755,6 +6935,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date__temp__high_res_timestamp_to_panw_panos_high_resolution_timestamp_46b86ff8")?;
                     if event.remove("_temp_.high_res_timestamp").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "_temp_.high_res_timestamp".into(),
@@ -6773,6 +6954,24 @@ impl Transform for Default {
                     if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
                         event.remove("_ingest");
                     }
+                }
+            }
+
+            if let Some(v) = event
+                .get("panw.panos.high_resolution_timestamp")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("@timestamp", v)?;
+            }
+
+            let _cond = {
+                !event.has_value("panw.panos.high_resolution_timestamp")
+                    && event.has_value("panw.panos.received_time")
+            };
+            if _cond {
+                if let Some(v) = event.get("panw.panos.received_time").cloned() {
+                    event.set("@timestamp", v)?;
                 }
             }
 
@@ -6798,6 +6997,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date_event_start_to_event_start_1687c744",
+                    )?;
                     if event.remove("event.start").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "event.start".into(),
@@ -6841,6 +7044,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date_event_start_to_event_start_047d728e",
+                    )?;
                     if event.remove("event.start").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "event.start".into(),
@@ -6885,6 +7092,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date_panw_panos_start_time_to_panw_panos_start_time_d03e47cc",
+                    )?;
                     if event.remove("panw.panos.start_time").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.start_time".into(),
@@ -6929,6 +7140,10 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date_panw_panos_start_time_to_panw_panos_start_time_96aa3ce6",
+                    )?;
                     if event.remove("panw.panos.start_time").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.start_time".into(),
@@ -6977,6 +7192,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_7f88322d")?;
                     if event
                         .remove("panw.panos.parent_session.start_time")
                         .is_none()
@@ -7028,6 +7244,7 @@ impl Transform for Default {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_b57b547f")?;
                     if event
                         .remove("panw.panos.parent_session.start_time")
                         .is_none()
@@ -7054,13 +7271,9 @@ impl Transform for Default {
 
             let _cond = { event.has_value("panw.panos.parent_session.start_time") };
             if _cond {
-                event.set(
-                    "session.start_time",
-                    event
-                        .get("panw.panos.parent_session.start_time")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                if let Some(v) = event.get("panw.panos.parent_session.start_time").cloned() {
+                    event.set("session.start_time", v)?;
+                }
             }
 
             let _cond = {
@@ -7116,6 +7329,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_source_ip_66e8d43f",
+                )?;
                 if event.remove("source.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "source.ip".into(),
@@ -7155,6 +7372,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_destination_ip_bc8fdf9f",
+                )?;
                 if event.remove("destination.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "destination.ip".into(),
@@ -7194,6 +7415,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_source_nat_ip_36181efd",
+                )?;
                 if event.remove("source.nat.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "source.nat.ip".into(),
@@ -7233,6 +7458,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_destination_nat_ip_a1755483",
+                )?;
                 if event.remove("destination.nat.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "destination.nat.ip".into(),
@@ -7272,6 +7501,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_host_ip_67e7c965",
+                )?;
                 if event.remove("host.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "host.ip".into(),
@@ -7316,6 +7549,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_network_forwarded_ip_8bdee41f",
+                )?;
                 if event.remove("network.forwarded_ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "network.forwarded_ip".into(),
@@ -7355,6 +7592,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_xff_ip_29a861db",
+                )?;
                 if event.remove("panw.panos.xff.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.xff.ip".into(),
@@ -7394,6 +7635,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_source_ip_ef8be7e7",
+                )?;
                 if event.remove("panw.panos.source.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.source.ip".into(),
@@ -7433,6 +7678,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_source_ipv6_ba18a7b3",
+                )?;
                 if event.remove("panw.panos.source.ipv6").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.source.ipv6".into(),
@@ -7472,6 +7721,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_source_nat_ip_21a2745b",
+                )?;
                 if event.remove("panw.panos.source.nat.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.source.nat.ip".into(),
@@ -7511,6 +7764,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_destination_ip_440f1cb3",
+                )?;
                 if event.remove("panw.panos.destination.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.destination.ip".into(),
@@ -7550,6 +7807,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_destination_nat_ip_c69c8cc5",
+                )?;
                 if event.remove("panw.panos.destination.nat.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.destination.nat.ip".into(),
@@ -7589,6 +7850,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_forwarded_ip_fd1736f5",
+                )?;
                 if event.remove("panw.panos.forwarded_ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.forwarded_ip".into(),
@@ -7628,6 +7893,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_host_ip_079468ff",
+                )?;
                 if event.remove("panw.panos.host.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.host.ip".into(),
@@ -7667,6 +7936,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_public_ip_e622dfb3",
+                )?;
                 if event.remove("panw.panos.public.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.public.ip".into(),
@@ -7706,6 +7979,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_private_ip_70bae4ad",
+                )?;
                 if event.remove("panw.panos.private.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.private.ip".into(),
@@ -7745,6 +8022,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_public_ipv6_a4cf5eef",
+                )?;
                 if event.remove("panw.panos.public.ipv6").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.public.ipv6".into(),
@@ -7784,6 +8065,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_private_ipv6_51ac2039",
+                )?;
                 if event.remove("panw.panos.private.ipv6").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.private.ipv6".into(),
@@ -7823,6 +8108,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_end_ip_address_7b4803b9",
+                )?;
                 if event.remove("panw.panos.end_ip_address").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.end_ip_address".into(),
@@ -7862,6 +8151,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_remote_user_ip_538f2d3f",
+                )?;
                 if event.remove("panw.panos.remote_user.ip").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.remote_user.ip".into(),
@@ -7923,6 +8216,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_source_bytes_895571fa",
+                )?;
                 if event.remove("source.bytes").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "source.bytes".into(),
@@ -7984,6 +8281,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_source_packets_d535b112",
+                )?;
                 if event.remove("source.packets").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "source.packets".into(),
@@ -8045,6 +8346,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_source_port_5c60e782",
+                )?;
                 if event.remove("source.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "source.port".into(),
@@ -8106,6 +8411,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_source_port_036f5c12",
+                )?;
                 if event.remove("panw.panos.source.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.source.port".into(),
@@ -8167,6 +8476,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_source_nat_port_b2b9abd6",
+                )?;
                 if event.remove("panw.panos.source.nat.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.source.nat.port".into(),
@@ -8228,6 +8541,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_destination_bytes_0a242610",
+                )?;
                 if event.remove("destination.bytes").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "destination.bytes".into(),
@@ -8289,6 +8606,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_destination_packets_7d192c10",
+                )?;
                 if event.remove("destination.packets").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "destination.packets".into(),
@@ -8350,6 +8671,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_destination_port_171174d6",
+                )?;
                 if event.remove("destination.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "destination.port".into(),
@@ -8411,6 +8736,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_destination_port_aaa32012",
+                )?;
                 if event.remove("panw.panos.destination.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.destination.port".into(),
@@ -8472,6 +8801,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_destination_nat_port_f49d8810",
+                )?;
                 if event.remove("panw.panos.destination.nat.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.destination.nat.port".into(),
@@ -8533,6 +8866,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_network_bytes_137cfc8c",
+                )?;
                 if event.remove("network.bytes").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "network.bytes".into(),
@@ -8594,6 +8931,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_network_packets_f604bedc",
+                )?;
                 if event.remove("network.packets").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "network.packets".into(),
@@ -8655,6 +8996,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_event_duration_d0a307da",
+                )?;
                 if event.remove("event.duration").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "event.duration".into(),
@@ -8716,6 +9061,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert__temp__labels_e07bf37c",
+                )?;
                 if event.remove("_temp_.labels").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "_temp_.labels".into(),
@@ -8777,6 +9126,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_source_nat_port_89a5f1c4",
+                )?;
                 if event.remove("source.nat.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "source.nat.port".into(),
@@ -8838,6 +9191,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_destination_nat_port_2c88a98a",
+                )?;
                 if event.remove("destination.nat.port").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "destination.nat.port".into(),
@@ -8899,6 +9256,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_repeat_count_2ee4705a",
+                )?;
                 if event.remove("panw.panos.repeat_count").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.repeat_count".into(),
@@ -8960,6 +9321,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_sctp_chunks_fb742a1a",
+                )?;
                 if event.remove("panw.panos.sctp.chunks").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.sctp.chunks".into(),
@@ -9021,6 +9386,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_sctp_chunks_sent_9407c142",
+                )?;
                 if event.remove("panw.panos.sctp.chunks_sent").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.sctp.chunks_sent".into(),
@@ -9082,6 +9451,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_sctp_chunks_received_1072fedc",
+                )?;
                 if event.remove("panw.panos.sctp.chunks_received").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.sctp.chunks_received".into(),
@@ -9143,6 +9516,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_network_bytes_230bf142",
+                )?;
                 if event.remove("panw.panos.network.bytes").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.network.bytes".into(),
@@ -9204,6 +9581,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_network_packets_e69ffcf6",
+                )?;
                 if event.remove("panw.panos.network.packets").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.network.packets".into(),
@@ -9265,6 +9646,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_bytes_sent_0d384bc0",
+                )?;
                 if event.remove("panw.panos.bytes_sent").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.bytes_sent".into(),
@@ -9326,6 +9711,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_packets_sent_35a39ad0",
+                )?;
                 if event.remove("panw.panos.packets_sent").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.packets_sent".into(),
@@ -9387,6 +9776,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_bytes_received_c5631a1e",
+                )?;
                 if event.remove("panw.panos.bytes_received").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.bytes_received".into(),
@@ -9448,6 +9841,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_packets_received_36117ab2",
+                )?;
                 if event.remove("panw.panos.packets_received").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.packets_received".into(),
@@ -9509,6 +9906,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_elapsed_time_4184f01c",
+                )?;
                 if event.remove("panw.panos.elapsed_time").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.elapsed_time".into(),
@@ -9570,6 +9971,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_timeout_ee1fbe26",
+                )?;
                 if event.remove("panw.panos.timeout").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.timeout".into(),
@@ -9631,6 +10036,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_error_code_2df2f9b4",
+                )?;
                 if event.remove("panw.panos.error_code").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.error_code".into(),
@@ -9692,6 +10101,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_factorno_2e801b20",
+                )?;
                 if event.remove("panw.panos.factorno").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.factorno".into(),
@@ -9753,6 +10166,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_certificate_size_62afc8ad",
+                )?;
                 event.rename(
                     "panw.panos.certificate.size",
                     "panw.panos.certificate.raw_size",
@@ -9806,6 +10223,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_tls_client_x509_public_key_size_99d5cab1",
+                )?;
                 if event.remove("tls.client.x509.public_key_size").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "tls.client.x509.public_key_size".into(),
@@ -9860,6 +10281,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_issuer_common_name_length_dff31c66",
+                )?;
                 if event
                     .remove("panw.panos.issuer_common_name.length")
                     .is_none()
@@ -9924,6 +10349,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_root_common_name_length_22db08f2",
+                )?;
                 if event.remove("panw.panos.root_common_name.length").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.root_common_name.length".into(),
@@ -9985,6 +10414,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_subject_common_name_length_d4151838",
+                )?;
                 if event
                     .remove("panw.panos.subject_common_name.length")
                     .is_none()
@@ -10049,6 +10482,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_server_name_indication_length_c2866a8e",
+                )?;
                 if event
                     .remove("panw.panos.server_name_indication.length")
                     .is_none()
@@ -10113,6 +10550,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_link_change_count_af93a36e",
+                )?;
                 if event.remove("panw.panos.link.change_count").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.link.change_count".into(),
@@ -10174,70 +10615,13 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_login_duration_210eba48",
+                )?;
                 if event.remove("panw.panos.login_duration").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.login_duration".into(),
-                    });
-                }
-                event.append(
-                    "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
-                event.remove("_ingest.on_failure_message");
-                event.remove("_ingest.on_failure_processor_type");
-                event.remove("_ingest.on_failure_processor_tag");
-                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                    event.remove("_ingest");
-                }
-            }
-
-            // on_failure: 2 handler(s)
-            if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.link.change_count") {
-                    if let Some(val) = event.get("panw.panos.link.change_count") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "panw.panos.link.change_count".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "panw.panos.link.change_count".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "panw.panos.link.change_count".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
-                        event.set("panw.panos.link.change_count", converted)?;
-                    }
-                }
-                Ok(())
-            })() {
-                event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("_ingest.on_failure_processor_type", "convert")?;
-                if event.remove("panw.panos.link.change_count").is_none() {
-                    return Err(TransformError::FieldNotFound {
-                        path: "panw.panos.link.change_count".into(),
                     });
                 }
                 event.append(
@@ -10296,6 +10680,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_strict_check_02f0ed04",
+                )?;
                 if event.remove("panw.panos.strict_check").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.strict_check".into(),
@@ -10357,6 +10745,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_tunnel_fragment_fdd66972",
+                )?;
                 if event.remove("panw.panos.tunnel_fragment").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.tunnel_fragment".into(),
@@ -10418,6 +10810,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_unknown_protocol_8ce8f526",
+                )?;
                 if event.remove("panw.panos.unknown_protocol").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.unknown_protocol".into(),
@@ -10479,6 +10875,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_sessions_closed_eacc3612",
+                )?;
                 if event.remove("panw.panos.sessions.closed").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.sessions.closed".into(),
@@ -10540,6 +10940,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_sessions_created_90c7e452",
+                )?;
                 if event.remove("panw.panos.sessions.created").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.sessions.created".into(),
@@ -10601,6 +11005,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_max_encapsulation_98d354ea",
+                )?;
                 if event.remove("panw.panos.max_encapsulation").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.max_encapsulation".into(),
@@ -10662,6 +11070,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_application_risk_level_efb5ad08",
+                )?;
                 if event.remove("panw.panos.application.risk_level").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.application.risk_level".into(),
@@ -10723,6 +11135,10 @@ impl Transform for Default {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set(
+                    "_ingest.on_failure_processor_tag",
+                    "convert_panw_panos_response_time_4d887d4a",
+                )?;
                 if event.remove("panw.panos.response_time").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "panw.panos.response_time".into(),
@@ -10864,6 +11280,81 @@ impl Transform for Default {
                 )?;
             }
 
+            // SKIPPED: condition not transpiled: ctx._temp_?.srcuser != null && ctx._temp_?.labels != null && (ctx._temp_.labels & 0x00080000) != 0
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                event.rename("_temp_.srcuser", "panw.panos.x_forwarded_for")?;
+            }
+
+            if event.has("panw.panos.x_forwarded_for") {
+                if let Some(s) = event.get_string("panw.panos.x_forwarded_for") {
+                    let re = cached_regex!("x-fwd-for: ");
+                    let replaced = re.replace_all(&s, "").into_owned();
+                    event.set("panw.panos.x_forwarded_for", replaced)?;
+                }
+            }
+
+            let _cond = { event.has_value("_temp_.srcuser") };
+            if _cond {
+                if event.has("_temp_.srcuser") {
+                    if let Some(input) = event.get_string("_temp_.srcuser") {
+                        // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
+                        if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
+                        // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
+                        if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
+                            // Grok pattern: ^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
+                            if !cached_grok_mapped!("^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$", [("source_user_name", "source.user.name"), ("source_user_domain", "source.user.domain")]).extract_into(&input, event)? {
+                                // Grok pattern: ^%{GREEDYDATA:source.user.name}$
+                                if !cached_grok!("^%{GREEDYDATA:source.user.name}$").extract_into(&input, event)? {
+                                }
+                            }
+                        }
+                    }
+                    }
+                }
+            }
+
+            let _cond = { event.has_value("_temp_.dstuser") };
+            if _cond {
+                if event.has("_temp_.dstuser") {
+                    if let Some(input) = event.get_string("_temp_.dstuser") {
+                        // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
+                        if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
+                        // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
+                        if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
+                            // Grok pattern: ^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
+                            if !cached_grok_mapped!("^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$", [("destination_user_name", "destination.user.name"), ("destination_user_domain", "destination.user.domain")]).extract_into(&input, event)? {
+                                // Grok pattern: ^%{GREEDYDATA:destination.user.name}$
+                                if !cached_grok!("^%{GREEDYDATA:destination.user.name}$").extract_into(&input, event)? {
+                                }
+                            }
+                        }
+                    }
+                    }
+                }
+            }
+
+            let _cond = { event.has_value("source.user.name") };
+            if _cond {
+                if let Some(v) = event.get("source.user.name").cloned() {
+                    event.set("panw.panos.source.user", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("destination.user.name") };
+            if _cond {
+                if let Some(v) = event.get("destination.user.name").cloned() {
+                    event.set("panw.panos.destination.user", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("source.user") };
+            if _cond {
+                if let Some(v) = event.get("source.user").cloned() {
+                    event.set("user", v)?;
+                }
+            }
+
             let _cond = {
                 event.has_value("panw.panos.action")
                     && ["alert", "allow", "continue"]
@@ -10990,6 +11481,13 @@ impl Transform for Default {
             let _cond = { event.get_str("panw.panos.sub_type") == Some("wildfire-virus") };
             if _cond {
                 event.set("event.action", json!("wildfire_virus_detected"))?;
+            }
+
+            if event.has("log.level") {
+                if let Some(s) = event.get_string("log.level") {
+                    let lowered = s.to_lowercase();
+                    event.set("log.level", lowered)?;
+                }
             }
 
             let _cond = { event.get_str("log.level") == Some("critical") };
@@ -11712,11 +12210,11 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("rule.name") };
             if _cond {
-                let v = event
+                if let Some(v) = event
                     .get("panw.panos.ruleset")
+                    .filter(|v| !painless_is_empty_value(v))
                     .cloned()
-                    .unwrap_or(Value::Null);
-                if !painless_is_empty_value(&v) {
+                {
                     event.set("rule.name", v)?;
                 }
             }
@@ -11939,6 +12437,7 @@ impl Transform for Default {
 
             event.remove("_temp_");
             event.remove("_conf");
+            event.remove("message");
 
             let _cond = {
                 !event.has_value("tags")
@@ -11980,7 +12479,6 @@ impl Transform for Default {
                     event.remove("panw.panos.event.status");
                     event.remove("panw.panos.file.type");
                     event.remove("panw.panos.forwarded_ip");
-                    event.remove("panw.panos.generated_time");
                     event.remove("panw.panos.host.id");
                     event.remove("panw.panos.host.ip");
                     event.remove("panw.panos.http_method");
@@ -12005,7 +12503,6 @@ impl Transform for Default {
                     event.remove("panw.panos.protocol");
                     event.remove("panw.panos.public.ip");
                     event.remove("panw.panos.public.ipv6");
-                    event.remove("panw.panos.received_time");
                     event.remove("panw.panos.recipient");
                     event.remove("panw.panos.referrer");
                     event.remove("panw.panos.rule_uuid");
@@ -12035,33 +12532,20 @@ impl Transform for Default {
                 })();
             }
 
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
-                    Ok(())
-                })();
-            }
-
             // Painless script
-            // Source: boolean dropEmptyFields(Object object) { if (object == null || object == '') { return true; } else if (object instanceof Map) { ((Map) object).values().removeIf(value -> dropEmptyFields(value)); return (((Map) object).size() == 0); } else if (object instanceof List) { ((List) object).removeIf(value -> dropEmptyFields(value)); return (((List) object).length == 0); } return false; } dropEmptyFields(ctx);
+            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
             painless_exec(
                 event,
                 cached_script!(
-                    r#"boolean dropEmptyFields(Object object) { if (object == null || object == '') { return true; } else if (object instanceof Map) { ((Map) object).values().removeIf(value -> dropEmptyFields(value)); return (((Map) object).size() == 0); } else if (object instanceof List) { ((List) object).removeIf(value -> dropEmptyFields(value)); return (((List) object).length == 0); } return false; } dropEmptyFields(ctx);"#
+                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
                 ),
             )?;
+
+            let _cond = { event.has_value("error.message") };
+            if _cond {
+                event.append("tags", json!("preserve_original_event"))?;
+            }
 
             Ok(TransformResult::Continue)
         })(event);
@@ -12072,21 +12556,11 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "{} {}",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string)
-                    )),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.remove("_temp_");
                 event.remove("_conf");
                 event.remove("message");
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

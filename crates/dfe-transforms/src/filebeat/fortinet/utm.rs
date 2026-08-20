@@ -628,10 +628,6 @@ impl Transform for Utm {
                 }
             }
 
-            if event.has("fortinet.firewall.hostname") {
-                event.rename("fortinet.firewall.hostname", "url.domain")?;
-            }
-
             if event.has("fortinet.firewall.ipaddr") {
                 event.rename("fortinet.firewall.ipaddr", "dns.resolved_ip")?;
             }
@@ -706,9 +702,135 @@ impl Transform for Utm {
                 }
             }
 
-            if event.has("fortinet.firewall.url") {
-                event.rename("fortinet.firewall.url", "url.path")?;
+            let _cond = { event.has_value("fortinet.firewall.url") };
+            if _cond {
+                if let Some(uri_str) = event.get_string("fortinet.firewall.url") {
+                    if let Ok(url) = url::Url::parse(&uri_str) {
+                        event.set("url.scheme", url.scheme())?;
+                        if let Some(host) = url.host_str() {
+                            event.set("url.domain", host)?;
+                        }
+                        if let Some(port) = url.port() {
+                            event.set("url.port", json!(port))?;
+                        }
+                        event.set("url.path", url.path())?;
+                        if let Some(query) = url.query() {
+                            event.set("url.query", query)?;
+                        }
+                        if let Some(fragment) = url.fragment() {
+                            event.set("url.fragment", fragment)?;
+                        }
+                        if let Some(userinfo) = url.password() {
+                            event
+                                .set("url.user_info", format!("{}:{}", url.username(), userinfo))?;
+                        } else if !url.username().is_empty() {
+                            event.set("url.user_info", url.username())?;
+                        }
+                    }
+                }
             }
+
+            if let Some(v) = event
+                .get("fortinet.firewall.hostname")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("url.domain", v)?;
+            }
+
+            let _cond = {
+                !event.has_value("url.scheme")
+                    && ["http", "https"].contains(&event.get_str("network.protocol").unwrap_or(""))
+                    && (event.has_value("url.domain") || event.has_value("fortinet.firewall.url"))
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("network.protocol")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("url.scheme", v)?;
+                }
+            }
+
+            let _cond = {
+                !event.has_value("url.full")
+                    && event
+                        .get("fortinet.firewall.url")
+                        .is_some_and(|v| v.is_string())
+                    && (event
+                        .get_str("fortinet.firewall.url")
+                        .is_some_and(|s| s.starts_with("http://"))
+                        || event
+                            .get_str("fortinet.firewall.url")
+                            .is_some_and(|s| s.starts_with("https://")))
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("fortinet.firewall.url")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("url.full", v)?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("url.scheme")
+                    && event.has_value("url.domain")
+                    && event.has_value("url.path")
+                    && !event.has_value("url.full")
+                    && event.has_value("url.query")
+            };
+            if _cond {
+                event.set(
+                    "url.full",
+                    json!(format!(
+                        "{}://{}{}?{}",
+                        event
+                            .get("url.scheme")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("url.domain")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("url.path")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("url.query")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("url.scheme")
+                    && event.has_value("url.domain")
+                    && event.has_value("url.path")
+                    && !event.has_value("url.full")
+                    && !event.has_value("url.query")
+            };
+            if _cond {
+                event.set(
+                    "url.full",
+                    json!(format!(
+                        "{}://{}{}",
+                        event
+                            .get("url.scheme")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("url.domain")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("url.path")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
+            }
+
+            event.remove("fortinet.firewall.hostname");
+
+            event.remove("fortinet.firewall.url");
 
             if event.has("fortinet.firewall.xid") {
                 event.rename("fortinet.firewall.xid", "dns.id")?;
@@ -943,12 +1065,12 @@ impl Transform for Utm {
             };
             if _cond {
                 // Painless script
-                // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}
+                // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec(
                     event,
                     cached_script!(
-                        r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}"#
+                        r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}"#
                     ),
                 )?;
             }
@@ -1036,13 +1158,8 @@ impl Transform for Utm {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

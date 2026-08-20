@@ -132,10 +132,6 @@ impl Transform for DetectionSummary {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
-
             if event.has("crowdstrike.event.DetectDescription") {
                 event.rename("crowdstrike.event.DetectDescription", "message")?;
             }
@@ -147,8 +143,12 @@ impl Transform for DetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.FileName") {
-                event.rename("crowdstrike.event.FileName", "process.name")?;
+            if let Some(v) = event
+                .get("crowdstrike.event.FileName")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("process.name", v)?;
             }
 
             if event.has("crowdstrike.event.MachineDomain") {
@@ -229,7 +229,7 @@ impl Transform for DetectionSummary {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
-            let _cond = { event.has_value("cropwdstrike.event.MacAddress") };
+            let _cond = { event.has_value("crowdstrike.event.MacAddress") };
             if _cond {
                 if event.has("crowdstrike.event.MacAddress") {
                     event.rename("crowdstrike.event.MacAddress", "host.mac")?;
@@ -245,8 +245,6 @@ impl Transform for DetectionSummary {
                     }
                 }
             }
-
-            event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
             let _cond = { event.has_value("crowdstrike.event.Technique") };
             if _cond {
@@ -302,6 +300,7 @@ impl Transform for DetectionSummary {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

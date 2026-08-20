@@ -49,6 +49,9 @@ impl Transform for SpringcloudlogsInnerPipeline {
             let _cond = {
                 event.get_str("azure.springcloudlogs.category") != Some("SystemLogs")
                     && event.get_str("azure.springcloudlogs.category") != Some("ApplicationConsole")
+                    && event.get_str("azure.springcloudlogs.category") != Some("IngressLogs")
+                    && event.get_str("azure.springcloudlogs.category") != Some("BuildLogs")
+                    && event.get_str("azure.springcloudlogs.category") != Some("ContainerEventLogs")
             };
             if _cond {
                 return Ok(TransformResult::Drop);
@@ -170,12 +173,28 @@ impl Transform for SpringcloudlogsInnerPipeline {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set(
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
+                event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(format!(
+                        "Processor '{}' {}with tag '{}' {}failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("#_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("/_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }

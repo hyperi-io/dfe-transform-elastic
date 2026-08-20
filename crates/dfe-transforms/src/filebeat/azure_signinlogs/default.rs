@@ -16,11 +16,13 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            event.set("ecs.version", json!("8.0.0"))?;
+            event.set("ecs.version", json!("8.11.0"))?;
 
             if event.has("azure") {
                 event.rename("azure", "azure-eventhub")?;
             }
+
+            event.remove("routing.category");
 
             if let Some(s) = event.get_string("message") {
                 let parsed: Value =
@@ -51,8 +53,29 @@ impl Transform for Default {
                 return Ok(TransformResult::Drop);
             }
 
+            let _cond = { !event.has_value("azure.signinlogs.time") };
+            if _cond {
+                if event.has("azure.signinlogs.created_date_time") {
+                    event.rename(
+                        "azure.signinlogs.created_date_time",
+                        "azure.signinlogs.time",
+                    )?;
+                }
+            }
+
             if let Some(date_str) = event.get_as_string("azure.signinlogs.time") {
-                if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                if let Some(parsed) = parse_date_out(
+                    &date_str,
+                    &[
+                        "ISO8601",
+                        "M/d/yyyy h:mm:ss a XXX",
+                        "M/d/yyyy h:mm:ss a",
+                        "M/d/yyyy H:mm:ss",
+                        "yyyy-MM-dd'T'H:mm:ss.SSS'Z'",
+                    ],
+                    None,
+                    None,
+                ) {
                     event.set("@timestamp", parsed)?;
                 }
             }
@@ -168,9 +191,73 @@ impl Transform for Default {
 
             event.remove("azure.signinlogs.level");
 
-            if event.has("azure.signinlogs.duration_ms") {
-                event.rename("azure.signinlogs.duration_ms", "event.duration")?;
+            let _cond = {
+                event.has_value("azure.signinlogs.duration_ms")
+                    && event
+                        .get("azure.signinlogs.duration_ms")
+                        .is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("azure.signinlogs.duration_ms") {
+                        if let Some(val) = event.get("azure.signinlogs.duration_ms") {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "azure.signinlogs.duration_ms".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "azure.signinlogs.duration_ms".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "azure.signinlogs.duration_ms".into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set("event.duration", converted)?;
+                        }
+                    }
+                    Ok(())
+                })();
             }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.duration_ms")
+                    && !(event
+                        .get("azure.signinlogs.duration_ms")
+                        .is_some_and(|v| v.is_string()))
+            };
+            if _cond {
+                if event.has("azure.signinlogs.duration_ms") {
+                    event.rename("azure.signinlogs.duration_ms", "event.duration")?;
+                }
+            }
+
+            event.remove("azure.signinlogs.duration_ms");
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
@@ -250,7 +337,7 @@ impl Transform for Default {
             if event.has("azure.signinlogs.properties.location.state") {
                 event.rename(
                     "azure.signinlogs.properties.location.state",
-                    "geo.country_name",
+                    "geo.region_name",
                 )?;
             }
 
@@ -320,25 +407,21 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if event.has("azure.signinlogs.properties.user_principal_name") {
-                    if let Some(input) =
-                        event.get_string("azure.signinlogs.properties.user_principal_name")
-                    {
-                        // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
-                        if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
-                            .extract_into(&input, event)?
-                        {
-                            // Grok pattern: %{GREEDYDATA:user.name}
-                            if !cached_grok!("%{GREEDYDATA:user.name}")
-                                .extract_into(&input, event)?
-                            {}
-                        }
-                    }
+            if let Some(v) = event
+                .get("azure.signinlogs.properties.user_principal_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("user.name", v)?;
+            }
+
+            // SKIPPED: condition not transpiled: ctx.user?.email == null && ctx.user?.name != null && ctx.user.name.indexOf("@") > 0
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                if let Some(v) = event.get("user.name").cloned() {
+                    event.set("user.email", v)?;
                 }
-                Ok(())
-            })();
+            }
 
             if event.has("azure.signinlogs.properties.user_display_name") {
                 if let Some(val) = event.get("azure.signinlogs.properties.user_display_name") {
@@ -369,6 +452,42 @@ impl Transform for Default {
                     };
                     event.set("user.id", converted)?;
                 }
+            }
+
+            let _cond = { event.has_value("user.id") };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.append(
+                        "related.user",
+                        event.get("user.id").cloned().unwrap_or(Value::Null),
+                    )?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = { event.has_value("user.name") };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.append(
+                        "related.user",
+                        event.get("user.name").cloned().unwrap_or(Value::Null),
+                    )?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = { event.has_value("user.full_name") };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.append(
+                        "related.user",
+                        event.get("user.full_name").cloned().unwrap_or(Value::Null),
+                    )?;
+                    Ok(())
+                })();
             }
 
             if event.has("source.ip") {
@@ -469,6 +588,110 @@ impl Transform for Default {
                         }
                     }
                 }
+            }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.app_id")
+                    && event
+                        .get_str("azure.signinlogs.properties.app_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.signinlogs.properties.app_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.resource_id")
+                    && event
+                        .get_str("azure.signinlogs.properties.resource_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.signinlogs.properties.resource_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            if let Some(v) = event
+                .get("azure.signinlogs.properties.service_principal_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("service.name", v)?;
+            }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.service_principal_id")
+                    && event
+                        .get_str("azure.signinlogs.properties.service_principal_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.signinlogs.properties.service_principal_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.service_principal_credential_key_id")
+                    && event
+                        .get_str("azure.signinlogs.properties.service_principal_credential_key_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.signinlogs.properties.service_principal_credential_key_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.user_id")
+                    && event
+                        .get_str("azure.signinlogs.properties.user_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.signinlogs.properties.user_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("azure.signinlogs.properties.device_detail.device_id")
+                    && event
+                        .get_str("azure.signinlogs.properties.device_detail.device_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.signinlogs.properties.device_detail.device_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
             }
 
             // Begin nested pipeline: "azure-shared-pipeline"
@@ -595,23 +818,15 @@ impl Transform for Default {
             }
             // End nested pipeline: "azure-shared-pipeline"
 
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
-                    Ok(())
-                })();
-            }
+            // Painless script
+            // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(
+                event,
+                cached_script!(
+                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
+                ),
+            )?;
 
             Ok(TransformResult::Continue)
         })(event);
@@ -621,12 +836,28 @@ impl Transform for Default {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set(
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
+                event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(format!(
+                        "Processor '{}' {}with tag '{}' {}failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("#_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("/_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }

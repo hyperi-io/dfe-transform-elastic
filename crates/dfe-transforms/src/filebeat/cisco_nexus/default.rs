@@ -16,7 +16,7 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            event.set("ecs.version", json!("8.11.0"))?;
+            event.set("ecs.version", json!("8.17.0"))?;
 
             event.set("observer.vendor", json!("Cisco"))?;
 
@@ -45,16 +45,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
                         if !cached_grok!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$").extract_into(&input, event)? {
-                        // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}%{SYSLOGTIMESTAMP:temp.syslog_timestamp}%{SPACE}%{WORD:cisco_nexus.log.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
-                        if !cached_grok!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}%{SYSLOGTIMESTAMP:temp.syslog_timestamp}%{SPACE}%{WORD:cisco_nexus.log.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$").extract_into(&input, event)? {
-                            // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}%{WORD:cisco_nexus.log.timezone})):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
-                            if !cached_grok_mapped!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}%{WORD:cisco_nexus.log.timezone})):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
-                                // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:temp.syslog_timestamp}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}%{WORD:cisco_nexus.log.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
-                                if !cached_grok!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:temp.syslog_timestamp}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}%{WORD:cisco_nexus.log.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$").extract_into(&input, event)? {
-                                    // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}%{WORD:cisco_nexus.log.timezone})):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
-                                    if !cached_grok_mapped!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}%{WORD:cisco_nexus.log.timezone})):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
-                                        // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>:%{SPACE}(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}%{WORD:cisco_nexus.log.timezone})):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
-                                        if !cached_grok_mapped!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>:%{SPACE}(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}%{SPACE}%{WORD:cisco_nexus.log.timezone})):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
+                        // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}%{SPACE}%{WORD:temp.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
+                        if !cached_grok!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}%{NUMBER:cisco_nexus.log.sequence_number:long}:%{SPACE}%{SYSLOGTIMESTAMP:temp.timestamp}%{SPACE}%{WORD:temp.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$").extract_into(&input, event)? {
+                            // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}(?:(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}%{WORD:temp.timezone}):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
+                            if !cached_grok_mapped!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}(?:(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}%{WORD:temp.timezone}):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
+                                // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}%{WORD:temp.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
+                                if !cached_grok!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>%{SYSLOGTIMESTAMP:cisco_nexus.log.syslog_time}%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?::)?%{SPACE}%{WORD:temp.timezone}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$").extract_into(&input, event)? {
+                                    // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}(?:(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}%{WORD:temp.timezone}):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
+                                    if !cached_grok_mapped!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name}):%{SPACE}(?:(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}%{WORD:temp.timezone}):%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
+                                        // Grok pattern: ^<%{NUMBER:cisco_nexus.log.priority_number:long}>:%{SPACE}(?:(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}%{WORD:temp.timezone})%{SPACE}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
+                                        if !cached_grok_mapped!("^<%{NUMBER:cisco_nexus.log.priority_number:long}>:%{SPACE}(?:(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}%{WORD:temp.timezone})%{SPACE}:%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
                                             // Grok pattern: ^(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$
                                             if !cached_grok_mapped!("^(?P<temp_timestamp>(?:%{YEAR}%{SPACE}%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME}))%{SPACE}(%{IP:cisco_nexus.log.ip_address}|%{NOTSPACE:cisco_nexus.log.switch_name})%{SPACE}(?:(?:%%{WORD:cisco_nexus.log.facility}-(?:(%{INT:cisco_nexus.log.slot_number:long}|%{WORD:cisco_nexus.log.standby})-)?%{INT:cisco_nexus.log.severity:long}-%{WORD:cisco_nexus.log.type}:)?%{DATA:cisco_nexus.log.description})$", [("temp_timestamp", "temp.timestamp")]).extract_into(&input, event)? {
                                             }
@@ -97,145 +97,61 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("_conf.tz_offset") };
+            let _cond = {
+                event.has_value("temp.timezone")
+                    && event
+                        .get_str("temp.timezone")
+                        .is_some_and(|s| !s.is_empty())
+                    && event.has_value("_conf.tz_map")
+                    && !event.has_value("event.timezone")
+            };
+            if _cond {
+                // Painless script
+                // Source: for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx.temp.timezone) {\n    ctx.temp.timezone = item.tz_long;\n    break;\n  }\n}
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx.temp.timezone) {\n    ctx.temp.timezone = item.tz_long;\n    break;\n  }\n}"#
+                    ),
+                )?;
+            }
+
+            let _cond = { !event.has_value("temp.timezone") && !event.has_value("event.timezone") };
             if _cond {
                 if event.has("_conf.tz_offset") {
-                    event.rename("_conf.tz_offset", "event.timezone")?;
+                    event.rename("_conf.tz_offset", "temp.timezone")?;
+                }
+            }
+
+            let _cond = { !event.has_value("event.timezone") };
+            if _cond {
+                if event.has("temp.timezone") {
+                    event.rename("temp.timezone", "event.timezone")?;
                 }
             }
 
             let _cond = {
-                event.has_value("cisco_nexus.log.syslog_time")
-                    && event
-                        .get_str("cisco_nexus.log.syslog_time")
-                        .is_some_and(|s| !s.is_empty())
+                event.has_value("cisco_nexus.log.syslog_time") && !event.has_value("temp.timestamp")
             };
             if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("cisco_nexus.log.syslog_time") {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &[
-                                "MMM  d HH:mm:ss",
-                                "MMM dd HH:mm:ss",
-                                "MMM d HH:mm:ss",
-                                "MMM  d HH:mm:ss.SSS",
-                                "MMM dd HH:mm:ss.SSS",
-                                "MMM d HH:mm:ss.SSS",
-                            ],
-                            None,
-                            None,
-                        ) {
-                            event.set("cisco_nexus.log.syslog_time", parsed)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "date")?;
-                    event.set("_ingest.on_failure_processor_tag", "date_set_syslog_time")?;
-                    event.append(
-                        "error.message",
-                        json!(format!(
-                            "Processor {} with tag {} in pipeline {} failed with message: {}",
-                            event
-                                .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
-                        )),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
-                }
-            }
-
-            let _cond = { event.has_value("temp.syslog_timestamp") };
-            if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("temp.syslog_timestamp") {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &[
-                                "MMM  d HH:mm:ss",
-                                "MMM dd HH:mm:ss",
-                                "MMM d HH:mm:ss",
-                                "MMM  d HH:mm:ss.SSS",
-                                "MMM dd HH:mm:ss.SSS",
-                                "MMM d HH:mm:ss.SSS",
-                            ],
-                            None,
-                            Some("yyyy MMM dd HH:mm:ss.SSS"),
-                        ) {
-                            event.set("temp.syslog_timestamp", parsed)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "date")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "date_set_syslog_time_output",
-                    )?;
-                    event.append(
-                        "error.message",
-                        json!(format!(
-                            "Processor {} with tag {} in pipeline {} failed with message: {}",
-                            event
-                                .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
-                        )),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+                let v = json!(true);
+                if !painless_is_empty_value(&v) {
+                    event.set("temp.syslog_timestamp_used", v)?;
                 }
             }
 
             let _cond = {
-                !event.has_value("temp.timestamp")
-                    && event.has_value("temp.syslog_timestamp")
-                    && event.has_value("cisco_nexus.log.timezone")
+                event.has_value("cisco_nexus.log.syslog_time") && !event.has_value("temp.timestamp")
             };
             if _cond {
-                event.set(
-                    "temp.timestamp",
-                    json!(format!(
-                        "{} {}",
-                        event
-                            .get("temp.syslog_timestamp")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("cisco_nexus.log.timezone")
-                            .map_or_else(String::new, painless_to_string)
-                    )),
-                )?;
+                if let Some(v) = event
+                    .get("cisco_nexus.log.syslog_time")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("temp.timestamp", v)?;
+                }
             }
 
             let _cond = {
@@ -243,12 +159,7 @@ impl Transform for Default {
                     && event
                         .get_str("temp.timestamp")
                         .is_some_and(|s| !s.is_empty())
-                    && ((!event.has_value("event.timezone"))
-                        || (event.has_value("event.timezone")
-                            && (event.has_value("cisco_nexus.log.timezone")
-                                && event
-                                    .get_str("cisco_nexus.log.timezone")
-                                    .is_some_and(|s| !s.is_empty()))))
+                    && !event.has_value("event.timezone")
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -320,10 +231,6 @@ impl Transform for Default {
                         .get_str("temp.timestamp")
                         .is_some_and(|s| !s.is_empty())
                     && event.has_value("event.timezone")
-                    && (!event.has_value("cisco_nexus.log.timezone")
-                        || event
-                            .get_str("cisco_nexus.log.timezone")
-                            .is_none_or(|s| s.is_empty()))
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -363,7 +270,7 @@ impl Transform for Default {
                     event.set("_ingest.on_failure_processor_type", "date")?;
                     event.set(
                         "_ingest.on_failure_processor_tag",
-                        "date_set_timestamp_timezone",
+                        "date_set_timestamp_with_timezone",
                     )?;
                     event.append(
                         "error.message",
@@ -393,137 +300,26 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("temp.timestamp")
-                    && event
-                        .get_str("temp.timestamp")
-                        .is_some_and(|s| !s.is_empty())
-                    && ((!event.has_value("event.timezone"))
-                        || (event.has_value("event.timezone")
-                            && (event.has_value("cisco_nexus.log.timezone")
-                                && event
-                                    .get_str("cisco_nexus.log.timezone")
-                                    .is_some_and(|s| !s.is_empty()))))
+                event.has_value("cisco_nexus.log.syslog_time") && event.has_value("event.timezone")
             };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("temp.timestamp") {
+                    if let Some(date_str) = event.get_as_string("cisco_nexus.log.syslog_time") {
                         if let Some(parsed) = parse_date_out(
                             &date_str,
                             &[
-                                "yyyy MMM d HH:mm:ss zzz",
-                                "yyyy MMM dd HH:mm:ss zzz",
-                                "yyyy MMM  d HH:mm:ss zzz",
-                                "yyyy MMM d HH:mm:ss.SSS zzz",
-                                "yyyy MMM dd HH:mm:ss.SSS zzz",
-                                "yyyy MMM  d HH:mm:ss.SSS zzz",
-                                "yyyy MMM d HH:mm:ss",
-                                "yyyy MMM dd HH:mm:ss",
-                                "yyyy MMM  d HH:mm:ss",
-                                "yyyy MMM d HH:mm:ss.SSS",
-                                "yyyy MMM dd HH:mm:ss.SSS",
-                                "yyyy MMM  d HH:mm:ss.SSS",
                                 "MMM  d HH:mm:ss",
                                 "MMM dd HH:mm:ss",
                                 "MMM d HH:mm:ss",
                                 "MMM  d HH:mm:ss.SSS",
                                 "MMM dd HH:mm:ss.SSS",
                                 "MMM d HH:mm:ss.SSS",
-                                "MMM  d HH:mm:ss zzz",
-                                "MMM dd HH:mm:ss zzz",
-                                "MMM d HH:mm:ss zzz",
-                                "MMM  d HH:mm:ss.SSS zzz",
-                                "MMM dd HH:mm:ss.SSS zzz",
-                                "MMM d HH:mm:ss.SSS zzz",
-                            ],
-                            None,
-                            None,
-                        ) {
-                            event.set("cisco_nexus.log.time", parsed)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "date")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "date_set_timestamp_custom",
-                    )?;
-                    event.append(
-                        "error.message",
-                        json!(format!(
-                            "Processor {} with tag {} in pipeline {} failed with message: {}",
-                            event
-                                .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
-                        )),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
-                }
-            }
-
-            let _cond = {
-                event.has_value("temp.timestamp")
-                    && event
-                        .get_str("temp.timestamp")
-                        .is_some_and(|s| !s.is_empty())
-                    && event.has_value("event.timezone")
-                    && (!event.has_value("cisco_nexus.log.timezone")
-                        || event
-                            .get_str("cisco_nexus.log.timezone")
-                            .is_none_or(|s| s.is_empty()))
-            };
-            if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &[
-                                "yyyy MMM d HH:mm:ss zzz",
-                                "yyyy MMM dd HH:mm:ss zzz",
-                                "yyyy MMM  d HH:mm:ss zzz",
-                                "yyyy MMM d HH:mm:ss.SSS zzz",
-                                "yyyy MMM dd HH:mm:ss.SSS zzz",
-                                "yyyy MMM  d HH:mm:ss.SSS zzz",
-                                "yyyy MMM d HH:mm:ss",
-                                "yyyy MMM dd HH:mm:ss",
-                                "yyyy MMM  d HH:mm:ss",
-                                "yyyy MMM d HH:mm:ss.SSS",
-                                "yyyy MMM dd HH:mm:ss.SSS",
-                                "yyyy MMM  d HH:mm:ss.SSS",
-                                "MMM  d HH:mm:ss",
-                                "MMM dd HH:mm:ss",
-                                "MMM d HH:mm:ss",
-                                "MMM  d HH:mm:ss.SSS",
-                                "MMM dd HH:mm:ss.SSS",
-                                "MMM d HH:mm:ss.SSS",
-                                "MMM  d HH:mm:ss zzz",
-                                "MMM dd HH:mm:ss zzz",
-                                "MMM d HH:mm:ss zzz",
-                                "MMM  d HH:mm:ss.SSS zzz",
-                                "MMM dd HH:mm:ss.SSS zzz",
-                                "MMM d HH:mm:ss.SSS zzz",
                             ],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("cisco_nexus.log.time", parsed)?;
+                            event.set("cisco_nexus.log.syslog_time", parsed)?;
                         }
                     }
                     Ok(())
@@ -532,7 +328,7 @@ impl Transform for Default {
                     event.set("_ingest.on_failure_processor_type", "date")?;
                     event.set(
                         "_ingest.on_failure_processor_tag",
-                        "date_set_timestamp_timezone_custom",
+                        "date_set_syslog_time_output_with_timezone",
                     )?;
                     event.append(
                         "error.message",
@@ -558,6 +354,132 @@ impl Transform for Default {
                     if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
                         event.remove("_ingest");
                     }
+                }
+            }
+
+            let _cond = {
+                event.has_value("cisco_nexus.log.syslog_time") && !event.has_value("event.timezone")
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if let Some(date_str) = event.get_as_string("cisco_nexus.log.syslog_time") {
+                        if let Some(parsed) = parse_date_out(
+                            &date_str,
+                            &[
+                                "MMM  d HH:mm:ss",
+                                "MMM dd HH:mm:ss",
+                                "MMM d HH:mm:ss",
+                                "MMM  d HH:mm:ss.SSS",
+                                "MMM dd HH:mm:ss.SSS",
+                                "MMM d HH:mm:ss.SSS",
+                            ],
+                            None,
+                            None,
+                        ) {
+                            event.set("cisco_nexus.log.syslog_time", parsed)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "date_set_syslog_time_output_no_timezone",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+            }
+
+            let _cond = {
+                event.has_value("tags")
+                    && event.get("tags").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a
+                            .iter()
+                            .any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")),
+                        serde_json::Value::String(s) => {
+                            s.contains("preserve_duplicate_custom_fields")
+                        }
+                        _ => false,
+                    })
+                    && event.get_bool("temp.syslog_timestamp_used") == Some(true)
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("cisco_nexus.log.syslog_time")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("cisco_nexus.log.time", v)?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("tags")
+                    && event.get("tags").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a
+                            .iter()
+                            .any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")),
+                        serde_json::Value::String(s) => {
+                            s.contains("preserve_duplicate_custom_fields")
+                        }
+                        _ => false,
+                    })
+                    && !event.has_value("cisco_nexus.log.time")
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("@timestamp")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("cisco_nexus.log.time", v)?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("tags")
+                    && event.get("tags").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a
+                            .iter()
+                            .any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")),
+                        serde_json::Value::String(s) => {
+                            s.contains("preserve_duplicate_custom_fields")
+                        }
+                        _ => false,
+                    })
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("event.timezone")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("cisco_nexus.log.timezone", v)?;
                 }
             }
 
@@ -575,6 +497,22 @@ impl Transform for Default {
                 .cloned()
             {
                 event.set("observer.name", v)?;
+            }
+
+            if let Some(v) = event
+                .get("cisco_nexus.log.switch_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("host.hostname", v)?;
+            }
+
+            let _cond = { event.has_value("host.hostname") };
+            if _cond {
+                event.append(
+                    "related.hosts",
+                    event.get("host.hostname").cloned().unwrap_or(Value::Null),
+                )?;
             }
 
             let _cond = { event.has_value("cisco_nexus.log.ip_address") };
@@ -781,6 +719,7 @@ impl Transform for Default {
                             "EXCESSIVE_PARITY_ERROR",
                             "LINEPROTO",
                             "THRESHOLD_VIOLATION",
+                            "SYSLOG_SL_MSG_WARNING",
                         ]
                         .contains(&s.to_uppercase().as_str())
                     })
@@ -1129,6 +1068,9 @@ impl Transform for Default {
                                 "DUP_HOSTS",
                                 "NF_PARITY_ERROR",
                                 "EXCESSIVE_PARITY_ERROR",
+                                "DETECT_MULTIPLE_PEERS",
+                                "TACACS_WARNING",
+                                "SYSLOG_SL_MSG_WARNING",
                             ]
                             .contains(&s.to_uppercase().as_str())
                         })
@@ -1152,6 +1094,9 @@ impl Transform for Default {
                                 "DUP_HOSTS",
                                 "NF_PARITY_ERROR",
                                 "EXCESSIVE_PARITY_ERROR",
+                                "DETECT_MULTIPLE_PEERS",
+                                "TACACS_WARNING",
+                                "SYSLOG_SL_MSG_WARNING",
                             ]
                             .contains(&s.to_uppercase().as_str())
                         })
@@ -1159,9 +1104,19 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.type", json!(["info"]))?;
                 }
-                let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
+                let _cond = {
+                    ["VSHD_SYSLOG_CONFIG_I", "CFGWRITE_STARTED", "CFGWRITE_DONE"]
+                        .contains(&event.get_str("event.code").unwrap_or(""))
+                };
                 if _cond {
                     event.set("event.category", json!(["configuration"]))?;
+                }
+                let _cond = {
+                    ["CFGWRITE_STARTED", "CFGWRITE_DONE"]
+                        .contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.type", json!(["info"]))?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("LOGIN_SUCCESS")
@@ -1194,6 +1149,50 @@ impl Transform for Default {
                     event.set("event.type", json!(["end"]))?;
                 }
                 let _cond = {
+                    ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.category", json!(["authentication"]))?;
+                }
+                let _cond = {
+                    ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.type", json!(["end"]))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.has_value("cisco_nexus.log.command")
+                };
+                if _cond {
+                    event.set("event.category", json!(["iam", "process"]))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.has_value("cisco_nexus.log.command")
+                };
+                if _cond {
+                    event.set("event.type", json!(["start"]))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.category")
+                        && (event.get_str("cisco_nexus.log.facility") == Some("USER")
+                            || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
+                };
+                if _cond {
+                    event.set("event.category", json!(["host"]))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.type")
+                        && (event.get_str("cisco_nexus.log.facility") == Some("USER")
+                            || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
+                };
+                if _cond {
+                    event.set("event.type", json!(["info"]))?;
+                }
+                let _cond = {
                     event
                         .get_str("message")
                         .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
@@ -1223,6 +1222,329 @@ impl Transform for Default {
                 };
                 if _cond {
                     event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("IF_DOWN_ADMIN_DOWN")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    ["EXCESSIVE_PARITY_ERROR", "NF_PARITY_ERROR"]
+                        .contains(&event.get_str("event.code").unwrap_or(""))
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("INVAL_IP")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    ["DUPLEX_MISMATCH", "NATIVE_VLAN_MISMATCH"]
+                        .contains(&event.get_str("event.code").unwrap_or(""))
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("L3_VPC_UNEQUAL_WEIGHT")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("DUP_HOSTS")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("TACACS_WARNING")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.get_str("cisco_nexus.log.facility") == Some("KERN")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.outcome")
+                        && event.has_value("message")
+                        && event.get_str("message").is_some_and(|s| {
+                            s.to_lowercase().contains("kex_exchange_identification")
+                        })
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("IF_UP")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("AAA_ACCOUNTING_MESSAGE")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.has_value("cisco_nexus.log.command")
+                        && event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("command not allowed"))
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.has_value("cisco_nexus.log.command")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("CFGWRITE_STARTED")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("unknown"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("CFGWRITE_DONE")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("DETECT_MULTIPLE_PEERS")
+                        && !event.has_value("event.outcome")
+                };
+                if _cond {
+                    event.set("event.outcome", json!("unknown"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("UPDOWN")
+                        && !event.has_value("event.outcome")
+                        && (event.get_str("cisco_nexus.log.line_protocol_state") == Some("up")
+                            || event.get_str("cisco_nexus.log.state") == Some("up"))
+                };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("UPDOWN")
+                        && !event.has_value("event.outcome")
+                        && (event.get_str("cisco_nexus.log.line_protocol_state") == Some("down")
+                            || event.get_str("cisco_nexus.log.state") == Some("down"))
+                };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("IF_DOWN_ADMIN_DOWN") };
+                if _cond {
+                    event.set("event.action", json!("interface-down"))?;
+                }
+                let _cond = {
+                    ["IF_ADMIN_UP", "IF_UP"].contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.action", json!("interface-up"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("SPEED") };
+                if _cond {
+                    event.set("event.action", json!("interface-speed-changed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("IF_DUPLEX") };
+                if _cond {
+                    event.set("event.action", json!("interface-duplex-changed"))?;
+                }
+                let _cond = {
+                    ["IF_RX_FLOW_CONTROL", "IF_TX_FLOW_CONTROL"]
+                        .contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.action", json!("interface-flow-control-changed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("IF_XCVR_WARNING") };
+                if _cond {
+                    event.set("event.action", json!("transceiver-warning"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("UPDOWN") };
+                if _cond {
+                    event.set("event.action", json!("interface-state-changed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("LINEPROTO") };
+                if _cond {
+                    event.set("event.action", json!("interface-state-changed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("VSHD_SYSLOG_CONFIG_I") };
+                if _cond {
+                    event.set("event.action", json!("configuration-changed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("CFGWRITE_STARTED") };
+                if _cond {
+                    event.set("event.action", json!("config-write-started"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("CFGWRITE_DONE") };
+                if _cond {
+                    event.set("event.action", json!("config-write-completed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("LOGIN_SUCCESS") };
+                if _cond {
+                    event.set("event.action", json!("logged-in"))?;
+                }
+                let _cond = {
+                    ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.action", json!("logged-out"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("DETECT_MULTIPLE_PEERS") };
+                if _cond {
+                    event.set("event.action", json!("multiple-peers-detected"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("INVAL_IP") };
+                if _cond {
+                    event.set("event.action", json!("invalid-packet-received"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("SYSLOG_SL_MSG_WARNING") };
+                if _cond {
+                    event.set("event.action", json!("arp-warning"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("L2FM_MAC_MOVE2") };
+                if _cond {
+                    event.set("event.action", json!("mac-address-moved"))?;
+                }
+                let _cond = {
+                    ["EXCESSIVE_PARITY_ERROR", "NF_PARITY_ERROR"]
+                        .contains(&event.get_str("event.code").unwrap_or(""))
+                };
+                if _cond {
+                    event.set("event.action", json!("hardware-error"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("DUPLEX_MISMATCH") };
+                if _cond {
+                    event.set("event.action", json!("duplex-mismatch-detected"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("NATIVE_VLAN_MISMATCH") };
+                if _cond {
+                    event.set("event.action", json!("vlan-mismatch-detected"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("L3_VPC_UNEQUAL_WEIGHT") };
+                if _cond {
+                    event.set("event.action", json!("vpc-config-mismatch"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("AAA_ACCOUNTING_MESSAGE") };
+                if _cond {
+                    event.set("event.action", json!("session-recorded"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("TACACS_WARNING") };
+                if _cond {
+                    event.set("event.action", json!("tacacs-lookup-failed"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("DUP_HOSTS") };
+                if _cond {
+                    event.set("event.action", json!("duplicate-host-detected"))?;
+                }
+                let _cond = { event.get_str("event.code") == Some("THRESHOLD_VIOLATION") };
+                if _cond {
+                    event.set("event.action", json!("transceiver-threshold-violated"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.has_value("cisco_nexus.log.command")
+                        && event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("command not allowed"))
+                };
+                if _cond {
+                    event.set("event.action", json!("command-denied"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && event.has_value("cisco_nexus.log.command")
+                        && !event.has_value("event.action")
+                };
+                if _cond {
+                    event.set("event.action", json!("command-executed"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.action")
+                        && event.has_value("message")
+                        && (event
+                            .get_str("message")
+                            .is_some_and(|s| s.to_lowercase().contains("authentication"))
+                            || event
+                                .get_str("message")
+                                .is_some_and(|s| s.to_lowercase().contains("login failed")))
+                };
+                if _cond {
+                    event.set("event.action", json!("authentication-failure"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.action")
+                        && event.has_value("message")
+                        && event.get_str("message").is_some_and(|s| {
+                            s.to_lowercase().contains("kex_exchange_identification")
+                        })
+                };
+                if _cond {
+                    event.set("event.action", json!("connection-failed"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.action")
+                        && event.get_str("cisco_nexus.log.facility") == Some("KERN")
+                };
+                if _cond {
+                    event.set("event.action", json!("hardware-error"))?;
+                }
+                let _cond = {
+                    event.get_str("event.code") == Some("SYSTEM_MSG")
+                        && !event.has_value("event.action")
+                };
+                if _cond {
+                    event.set("event.action", json!("system-message"))?;
                 }
                 let _cond = { event.has_value("source.ip") };
                 if _cond {
@@ -1277,20 +1599,6 @@ impl Transform for Default {
                 event.remove("cisco_nexus.log.sequence_number");
             }
 
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
-            if _cond {
-                event.remove("event.original");
-            }
-
             // Painless script
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
@@ -1306,6 +1614,11 @@ impl Transform for Default {
                 event.set("event.kind", json!("pipeline_error"))?;
             }
 
+            let _cond = { event.has_value("error.message") };
+            if _cond {
+                event.append("tags", json!("preserve_original_event"))?;
+            }
+
             Ok(TransformResult::Continue)
         })(event);
 
@@ -1314,25 +1627,9 @@ impl Transform for Default {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "Processor {} with tag {} in pipeline {} failed with message: {}",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.pipeline")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
-                    )),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

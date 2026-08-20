@@ -592,213 +592,229 @@ impl Transform for Traffic {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.bytes_received").cloned() {
-                    event.set("destination.bytes", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.bytes_received")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.bytes", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.dstloc").cloned() {
-                    event.set("panw.panos.destination.location", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.dstloc")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.destination.location", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
-                    event.set("destination.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.nat.ip").cloned() {
-                    event.set("destination.nat.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.nat.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.nat.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.nat.port").cloned() {
-                    event.set("destination.nat.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.nat.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.nat.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.packets_received").cloned() {
-                    event.set("destination.packets", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.packets_received")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.packets", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.port").cloned() {
-                    event.set("destination.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.elapsed_time").cloned() {
-                    event.set("event.duration", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.elapsed_time")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.duration", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.start_time").cloned() {
-                    event.set("event.start", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.start_time")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.start", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.application").cloned() {
-                    event.set("network.application", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.application")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.application", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.bytes").cloned() {
-                    event.set("network.bytes", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.bytes")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.bytes", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.packets").cloned() {
-                    event.set("network.packets", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.packets")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.packets", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.protocol").cloned() {
-                    event.set("network.transport", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.protocol")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.transport", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
-                    event.set("observer.egress.interface.name", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.outbound_interface")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.egress.interface.name", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
-                    event.set("observer.egress.zone", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.zone")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.egress.zone", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.device_name").cloned() {
-                    event.set("observer.hostname", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.device_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.hostname", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
-                    event.set("observer.ingress.interface.name", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.inbound_interface")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.ingress.interface.name", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.zone").cloned() {
-                    event.set("observer.ingress.zone", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.zone")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.ingress.zone", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
-                    event.set("rule.uuid", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.rule_uuid")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("rule.uuid", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.bytes_sent").cloned() {
-                    event.set("source.bytes", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.bytes_sent")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.bytes", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.srcloc").cloned() {
-                    event.set("panw.panos.source.location", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.srcloc")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.source.location", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.ip").cloned() {
-                    event.set("source.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.nat.ip").cloned() {
-                    event.set("source.nat.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.nat.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.nat.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.packets_sent").cloned() {
-                    event.set("source.packets", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.packets_sent")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.packets", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.port").cloned() {
-                    event.set("source.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.nat.port").cloned() {
-                    event.set("source.nat.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.nat.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.nat.port", v)?;
+            }
+
+            if let Some(v) = event
+                .get("_conf.external_zones")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("_temp_.external_zones", v)?;
+            }
+
+            if let Some(v) = event
+                .get("_conf.internal_zones")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("_temp_.internal_zones", v)?;
+            }
 
             // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.i ...
             #[allow(unreachable_code, unused_variables)]
@@ -853,6 +869,7 @@ impl Transform for Traffic {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_809881d3")?;
                     event.append(
                         "error.message",
                         event
@@ -892,6 +909,7 @@ impl Transform for Traffic {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_65e492d1")?;
                     event.append(
                         "error.message",
                         event
@@ -917,27 +935,8 @@ impl Transform for Traffic {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "error in Traffic pipeline: error in [{}] processor{} with tag [{}]{} {}",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
-                    )),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

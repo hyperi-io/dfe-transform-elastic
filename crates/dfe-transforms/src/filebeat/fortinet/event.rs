@@ -494,10 +494,6 @@ impl Transform for Event {
                 event.rename("fortinet.firewall.error_num", "error.code")?;
             }
 
-            if event.has("fortinet.firewall.hostname") {
-                event.rename("fortinet.firewall.hostname", "url.domain")?;
-            }
-
             if event.has("fortinet.firewall.logdesc") {
                 event.rename("fortinet.firewall.logdesc", "rule.description")?;
             }
@@ -524,6 +520,10 @@ impl Transform for Event {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_fortinet_firewall_addr_e65b2bfc",
+                    )?;
                     event.rename("fortinet.firewall.addr", "fortinet.firewall.addrgrp")?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -534,9 +534,45 @@ impl Transform for Event {
                 }
             }
 
-            if event.has("fortinet.firewall.url") {
-                event.rename("fortinet.firewall.url", "url.path")?;
+            let _cond = { event.has_value("fortinet.firewall.url") };
+            if _cond {
+                if let Some(uri_str) = event.get_string("fortinet.firewall.url") {
+                    if let Ok(url) = url::Url::parse(&uri_str) {
+                        event.set("url.scheme", url.scheme())?;
+                        if let Some(host) = url.host_str() {
+                            event.set("url.domain", host)?;
+                        }
+                        if let Some(port) = url.port() {
+                            event.set("url.port", json!(port))?;
+                        }
+                        event.set("url.path", url.path())?;
+                        if let Some(query) = url.query() {
+                            event.set("url.query", query)?;
+                        }
+                        if let Some(fragment) = url.fragment() {
+                            event.set("url.fragment", fragment)?;
+                        }
+                        if let Some(userinfo) = url.password() {
+                            event
+                                .set("url.user_info", format!("{}:{}", url.username(), userinfo))?;
+                        } else if !url.username().is_empty() {
+                            event.set("url.user_info", url.username())?;
+                        }
+                    }
+                }
             }
+
+            if let Some(v) = event
+                .get("fortinet.firewall.hostname")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("url.domain", v)?;
+            }
+
+            event.remove("fortinet.firewall.hostname");
+
+            event.remove("fortinet.firewall.url");
 
             let _cond = { !event.has_value("event.duration") };
             if _cond {
@@ -671,6 +707,26 @@ impl Transform for Event {
                 }
             }
 
+            let _cond = {
+                event.get_str("fortinet.firewall.subtype") == Some("vpn")
+                    && event.has_value("fortinet.firewall.xauthuser")
+            };
+            if _cond {
+                if let Some(v) = event.get("fortinet.firewall.xauthuser").cloned() {
+                    event.set("source.user.name", v)?;
+                }
+            }
+
+            // Painless script
+            // Source: if (ctx.fortinet?.firewall?.advpnsc != null) {\n  ctx.fortinet.firewall.advpnsc = ctx.fortinet.firewall.advpnsc != '0';\n}\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(
+                event,
+                cached_script!(
+                    r#"if (ctx.fortinet?.firewall?.advpnsc != null) {\n  ctx.fortinet.firewall.advpnsc = ctx.fortinet.firewall.advpnsc != '0';\n}\n"#
+                ),
+            )?;
+
             event.remove("fortinet.firewall.dstport");
             event.remove("fortinet.firewall.remport");
             event.remove("fortinet.firewall.rcvdbyte");
@@ -679,6 +735,19 @@ impl Transform for Event {
             event.remove("fortinet.firewall.locport");
             event.remove("fortinet.firewall.filesize");
             event.remove("fortinet.firewall.sess_duration");
+
+            let _cond = { event.get_str("fortinet.firewall.subtype") == Some("vpn") };
+            if _cond {
+                // Painless script
+                // Source: def tmp = ctx.source;\nctx.source = ctx.destination;\nif (ctx.source == null) { ctx.source = [:]; }\nif ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    tmp.remove(\"user\");\n}\nctx.destination = tmp;\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"def tmp = ctx.source;\nctx.source = ctx.destination;\nif (ctx.source == null) { ctx.source = [:]; }\nif ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    tmp.remove(\"user\");\n}\nctx.destination = tmp;\n"#
+                    ),
+                )?;
+            }
 
             Ok(TransformResult::Continue)
         })(event);
@@ -689,13 +758,8 @@ impl Transform for Event {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

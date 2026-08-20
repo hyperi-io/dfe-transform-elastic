@@ -147,6 +147,15 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "flows"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        // Grok pattern: (?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall) %{GREEDYDATA:message}
+                        if !cached_grok!("(?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall) %{GREEDYDATA:message}").extract_into(&input, event)? {
+                }
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?
                     if !cached_grok!("(?:flows|firewall|vpn_firewall|cellular_firewall|bridge_anyconnect_client_vpn_firewall)( %{NOTSPACE:cisco_meraki.flows.op})? src=%{IP:source.ip:ip} dst=%{IP:destination.ip:ip}( mac=%{MAC:source.mac})? protocol=%{NOTSPACE:network.protocol}( type=%{NOTSPACE})?( sport=%{NONNEGINT:source.port:long})?( dport=%{NONNEGINT:destination.port:long})?( pattern: %{GREEDYDATA:cisco_meraki.firewall.pattern})?").extract_into(&input, event)? {
@@ -208,6 +217,16 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "ipflows"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        // Grok pattern: (?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}
+                        if !cached_grok!("(?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}")
+                            .extract_into(&input, event)?
+                        {}
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
                     if let Some(pos) = remaining.find(" ") {
@@ -258,21 +277,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                let _cond = { event.has_value("translated_src_ip") };
-                if _cond {
-                    if let Some(s) = event.get_string("translated_src_ip") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
-                                path: "translated_src_ip".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("source.ip", s)?;
-                    }
-                }
-                let _cond = { !event.has_value("translated_src_ip") && event.has_value("src") };
+                let _cond = { event.has_value("src") };
                 if _cond {
                     if let Some(s) = event.get_string("src") {
                         // Validate IP format
@@ -286,44 +291,7 @@ impl Transform for Default {
                         event.set("source.ip", s)?;
                     }
                 }
-                let _cond =
-                    { event.has_value("translated_src_ip") && event.has_value("translated_port") };
-                if _cond {
-                    if let Some(val) = event.get("translated_port") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "translated_port".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "translated_port".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "translated_port".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
-                        event.set("source.port", converted)?;
-                    }
-                }
-                let _cond = { !event.has_value("translated_src_ip") && event.has_value("sport") };
+                let _cond = { event.has_value("sport") };
                 if _cond {
                     if let Some(val) = event.get("sport") {
                         let converted = match val {
@@ -359,36 +327,22 @@ impl Transform for Default {
                         event.set("source.port", converted)?;
                     }
                 }
-                let _cond = { event.has_value("translated_dst_ip") };
+                let _cond = { event.has_value("translated_src_ip") };
                 if _cond {
-                    if let Some(s) = event.get_string("translated_dst_ip") {
+                    if let Some(s) = event.get_string("translated_src_ip") {
                         // Validate IP format
                         let s = s.trim();
                         if s.parse::<std::net::IpAddr>().is_err() {
                             return Err(TransformError::ParseError {
-                                path: "translated_dst_ip".into(),
+                                path: "translated_src_ip".into(),
                                 message: format!("cannot convert '{}' to IP", s),
                             });
                         }
-                        event.set("destination.ip", s)?;
-                    }
-                }
-                let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dst") };
-                if _cond {
-                    if let Some(s) = event.get_string("dst") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
-                                path: "dst".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("destination.ip", s)?;
+                        event.set("source.nat.ip", s)?;
                     }
                 }
                 let _cond =
-                    { event.has_value("translated_dst_ip") && event.has_value("translated_port") };
+                    { event.has_value("translated_port") && event.has_value("source.nat.ip") };
                 if _cond {
                     if let Some(val) = event.get("translated_port") {
                         let converted = match val {
@@ -421,10 +375,24 @@ impl Transform for Default {
                                 });
                             }
                         };
-                        event.set("destination.port", converted)?;
+                        event.set("source.nat.port", converted)?;
                     }
                 }
-                let _cond = { !event.has_value("translated_dst_ip") && event.has_value("dport") };
+                let _cond = { event.has_value("dst") };
+                if _cond {
+                    if let Some(s) = event.get_string("dst") {
+                        // Validate IP format
+                        let s = s.trim();
+                        if s.parse::<std::net::IpAddr>().is_err() {
+                            return Err(TransformError::ParseError {
+                                path: "dst".into(),
+                                message: format!("cannot convert '{}' to IP", s),
+                            });
+                        }
+                        event.set("destination.ip", s)?;
+                    }
+                }
+                let _cond = { event.has_value("dport") };
                 if _cond {
                     if let Some(val) = event.get("dport") {
                         let converted = match val {
@@ -460,6 +428,57 @@ impl Transform for Default {
                         event.set("destination.port", converted)?;
                     }
                 }
+                let _cond = { event.has_value("translated_dst_ip") };
+                if _cond {
+                    if let Some(s) = event.get_string("translated_dst_ip") {
+                        // Validate IP format
+                        let s = s.trim();
+                        if s.parse::<std::net::IpAddr>().is_err() {
+                            return Err(TransformError::ParseError {
+                                path: "translated_dst_ip".into(),
+                                message: format!("cannot convert '{}' to IP", s),
+                            });
+                        }
+                        event.set("destination.nat.ip", s)?;
+                    }
+                }
+                let _cond =
+                    { event.has_value("translated_port") && event.has_value("destination.nat.ip") };
+                if _cond {
+                    if let Some(val) = event.get("translated_port") {
+                        let converted = match val {
+                            Value::String(s) => {
+                                let s = s.trim();
+                                if let Some(hex) = s.strip_prefix("0x") {
+                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                        TransformError::ParseError {
+                                            path: "translated_port".into(),
+                                            message: format!("cannot convert '{}' to integer", s),
+                                        }
+                                    })?)
+                                } else {
+                                    json!(s.parse::<i64>().map_err(|_| {
+                                        TransformError::ParseError {
+                                            path: "translated_port".into(),
+                                            message: format!("cannot convert '{}' to integer", s),
+                                        }
+                                    })?)
+                                }
+                            }
+                            Value::Number(n) => {
+                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                            }
+                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                            _ => {
+                                return Err(TransformError::ParseError {
+                                    path: "translated_port".into(),
+                                    message: "cannot convert to integer".into(),
+                                });
+                            }
+                        };
+                        event.set("destination.nat.port", converted)?;
+                    }
+                }
                 event.rename("protocol", "network.protocol")?;
                 // End nested pipeline: "ipflows"
             }
@@ -467,6 +486,20 @@ impl Transform for Default {
             let _cond = { event.get_str("cisco_meraki.event_type") == Some("airmarshal_events") };
             if _cond {
                 // Begin nested pipeline: "airmarshal"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        let mut remaining: &str = &input;
+                        if let Some(pos) = remaining.find(" airmarshal_events ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" airmarshal_events ") {
+                            remaining = rest;
+                        }
+                        event.set("message", remaining)?;
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
                     if let Some(pos) = remaining.find(" airmarshal_events ") {
@@ -596,6 +629,20 @@ impl Transform for Default {
             let _cond = { event.get_str("cisco_meraki.event_type") == Some("security_event") };
             if _cond {
                 // Begin nested pipeline: "security"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        let mut remaining: &str = &input;
+                        if let Some(pos) = remaining.find(" security_event ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" security_event ") {
+                            remaining = rest;
+                        }
+                        event.set("message", remaining)?;
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
                     if let Some(pos) = remaining.find(" security_event ") {
@@ -900,6 +947,20 @@ impl Transform for Default {
             let _cond = { event.get_str("cisco_meraki.event_type") == Some("ids-alerts") };
             if _cond {
                 // Begin nested pipeline: "idsalerts"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        let mut remaining: &str = &input;
+                        if let Some(pos) = remaining.find(" ids-alerts ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ids-alerts ") {
+                            remaining = rest;
+                        }
+                        event.set("message", remaining)?;
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
                     if let Some(pos) = remaining.find(" ids-alerts ") {
@@ -1074,6 +1135,20 @@ impl Transform for Default {
             let _cond = { event.get_str("cisco_meraki.event_type") == Some("events") };
             if _cond {
                 // Begin nested pipeline: "events"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        let mut remaining: &str = &input;
+                        if let Some(pos) = remaining.find(" events ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" events ") {
+                            remaining = rest;
+                        }
+                        event.set("message", remaining)?;
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
                     if let Some(pos) = remaining.find(" events ") {
@@ -1137,6 +1212,44 @@ impl Transform for Default {
                 };
                 if _cond {
                     event.set("cisco_meraki.event_subtype", json!("carrier_change"))?;
+                }
+                let _cond = {
+                    event
+                        .get_str("msgtype")
+                        .is_some_and(|s| s.to_lowercase() == "anyconnect_vpn_connect")
+                };
+                if _cond {
+                    event.set(
+                        "cisco_meraki.event_subtype",
+                        json!("anyconnect_vpn_connect"),
+                    )?;
+                }
+                let _cond = {
+                    event
+                        .get_str("msgtype")
+                        .is_some_and(|s| s.to_lowercase() == "anyconnect_vpn_disconnect")
+                };
+                if _cond {
+                    event.set(
+                        "cisco_meraki.event_subtype",
+                        json!("anyconnect_vpn_disconnect"),
+                    )?;
+                }
+                let _cond = {
+                    event
+                        .get_str("msgtype")
+                        .is_some_and(|s| s.to_lowercase() == "splash_auth")
+                };
+                if _cond {
+                    event.set("cisco_meraki.event_subtype", json!("splash_auth"))?;
+                }
+                let _cond = {
+                    event
+                        .get_str("msgtype")
+                        .is_some_and(|s| s.to_lowercase() == "martian_vlan")
+                };
+                if _cond {
+                    event.set("cisco_meraki.event_subtype", json!("martian_vlan"))?;
                 }
                 let _cond = {
                     event
@@ -1262,22 +1375,10 @@ impl Transform for Default {
                 };
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
-                        let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" events dhcp no offers for mac ") {
-                            remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) =
-                            remaining.strip_prefix(" events dhcp no offers for mac ")
-                        {
-                            remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("client.mac", &remaining[..pos])?;
-                            remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
-                            remaining = rest;
-                        }
+                        // Grok pattern: events dhcp no offers for mac %{MAC:client.mac}
+                        if !cached_grok!("events dhcp no offers for mac %{MAC:client.mac}")
+                            .extract_into(&input, event)?
+                        {}
                     }
                 }
                 let _cond = {
@@ -1339,6 +1440,12 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$
                         if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$", [("_temp_blocked_arp", "_temp.blocked_arp")]).extract_into(&input, event)? {
+                // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_ra>(?:Blocked RA Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$
+                if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_ra>(?:Blocked RA Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$", [("_temp_blocked_ra", "_temp.blocked_ra")]).extract_into(&input, event)? {
+                // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_dhcp>(?:Blocked DHCP Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$
+                if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_dhcp>(?:Blocked DHCP Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$", [("_temp_blocked_dhcp", "_temp.blocked_dhcp")]).extract_into(&input, event)? {
+                }
+                }
                 }
                     }
                 }
@@ -1359,11 +1466,55 @@ impl Transform for Default {
                 if _cond {
                     event.set("cisco_meraki.event_subtype", json!("arp_blocked"))?;
                 }
+                let _cond = { event.has_value("_temp.blocked_ra") };
+                if _cond {
+                    event.set("cisco_meraki.event_subtype", json!("ra_blocked"))?;
+                }
+                let _cond = { event.has_value("_temp.blocked_dhcp") };
+                if _cond {
+                    event.set("cisco_meraki.event_subtype", json!("dhcp_blocked"))?;
+                }
+                let _cond = { event.has_value("_temp.blocked_dhcp") };
+                if _cond {
+                    event.set("network.protocol", json!("dhcp"))?;
+                }
+                let _cond = { event.has_value("event.original") };
+                if _cond {
+                    event.set(
+                        "_temp.event_original_lower",
+                        event.get("event.original").cloned().unwrap_or(Value::Null),
+                    )?;
+                }
+                if event.has("_temp.event_original_lower") {
+                    if let Some(s) = event.get_string("_temp.event_original_lower") {
+                        let lowered = s.to_lowercase();
+                        event.set("_temp.event_original_lower", lowered)?;
+                    }
+                }
                 let _cond = {
                     event
                         .get_str("event.original")
                         .is_some_and(|s| s.starts_with("<"))
                         && event.get_str("cisco_meraki.event_subtype") == Some("port")
+                        && event.has_value("_temp.event_original_lower")
+                        && (event
+                            .get("_temp.event_original_lower")
+                            .is_some_and(|v| match v {
+                                serde_json::Value::Array(a) => {
+                                    a.iter().any(|x| x.as_str() == Some("status changed"))
+                                }
+                                serde_json::Value::String(s) => s.contains("status changed"),
+                                _ => false,
+                            })
+                            || event
+                                .get("_temp.event_original_lower")
+                                .is_some_and(|v| match v {
+                                    serde_json::Value::Array(a) => {
+                                        a.iter().any(|x| x.as_str() == Some("changed stp role"))
+                                    }
+                                    serde_json::Value::String(s) => s.contains("changed stp role"),
+                                    _ => false,
+                                }))
                 };
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
@@ -1434,6 +1585,7 @@ impl Transform for Default {
                             "8021x_eap_failure",
                             "8021x_auth",
                             "8021x_deauth",
+                            "8021x_client_deauth",
                             "8021x_eap_success",
                             "splash_auth",
                             "device_packet_flood",
@@ -1460,6 +1612,7 @@ impl Transform for Default {
                             "8021x_eap_failure",
                             "8021x_auth",
                             "8021x_deauth",
+                            "8021x_client_deauth",
                             "8021x_eap_success",
                             "splash_auth",
                             "device_packet_flood",
@@ -1553,6 +1706,109 @@ impl Transform for Default {
                 };
                 if _cond {
                     event.set("network.protocol", json!("dhcp"))?;
+                }
+                let _cond = {
+                    event.has_value("cisco_meraki.event_subtype")
+                        && [
+                            "dfs_event",
+                            "association",
+                            "disassociation",
+                            "aps_association_reject",
+                            "multiple_dhcp_servers_detected",
+                            "wpa_deauth",
+                            "wpa_auth",
+                            "8021x_eap_failure",
+                            "8021x_auth",
+                            "8021x_deauth",
+                            "8021x_client_deauth",
+                            "8021x_eap_success",
+                            "device_packet_flood",
+                        ]
+                        .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
+                };
+                if _cond {
+                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac") {
+                        event.rename(
+                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac",
+                            "client.mac",
+                        )?;
+                    }
+                }
+                let _cond = {
+                    event.has_value("cisco_meraki.event_subtype")
+                        && [
+                            "dfs_event",
+                            "association",
+                            "disassociation",
+                            "aps_association_reject",
+                            "multiple_dhcp_servers_detected",
+                            "wpa_deauth",
+                            "wpa_auth",
+                            "8021x_eap_failure",
+                            "8021x_auth",
+                            "8021x_deauth",
+                            "8021x_client_deauth",
+                            "8021x_eap_success",
+                            "splash_auth",
+                            "device_packet_flood",
+                        ]
+                        .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
+                };
+                if _cond {
+                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.ip_src") {
+                        event.rename(
+                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.ip_src",
+                            "source.ip",
+                        )?;
+                    }
+                }
+                let _cond = {
+                    event.has_value("cisco_meraki.event_subtype")
+                        && [
+                            "dfs_event",
+                            "association",
+                            "disassociation",
+                            "aps_association_reject",
+                            "multiple_dhcp_servers_detected",
+                            "wpa_deauth",
+                            "wpa_auth",
+                            "8021x_eap_failure",
+                            "8021x_auth",
+                            "8021x_deauth",
+                            "8021x_client_deauth",
+                            "8021x_eap_success",
+                            "splash_auth",
+                            "device_packet_flood",
+                        ]
+                        .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
+                };
+                if _cond {
+                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_ip") {
+                        event.rename(
+                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_ip",
+                            "_temp.client_ip",
+                        )?;
+                    }
+                }
+                let _cond = {
+                    [
+                        "association",
+                        "disassociation",
+                        "8021x_eap_failure",
+                        "8021x_auth",
+                        "8021x_deauth",
+                        "8021x_client_deauth",
+                        "8021x_eap_success",
+                    ]
+                    .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
+                };
+                if _cond {
+                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.identity") {
+                        event.rename(
+                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.identity",
+                            "user.name",
+                        )?;
+                    }
                 }
                 let _cond = {
                     event.get_str("cisco_meraki.event_subtype")
@@ -1682,20 +1938,161 @@ impl Transform for Default {
                             .unwrap_or(Value::Null),
                     )?;
                 }
-                let _cond = { event.get_str("cisco_meraki.event_subtype") == Some("wpa_deauth") };
+                let _cond =
+                    { event.get_str("cisco_meraki.event_subtype") == Some("client_vpn_connect") };
                 if _cond {
-                    event.rename("cisco_meraki.wpa_deauth.client_mac", "client.mac")?;
+                    if let Some(input) = event.get_string("event.original") {
+                        // Grok pattern: ^%{DATA} events client_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$
+                        if !cached_grok!("^%{DATA} events client_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$").extract_into(&input, event)? {
+                // Grok pattern: ^%{GREEDYDATA}$
+                if !cached_grok!("^%{GREEDYDATA}$").extract_into(&input, event)? {
+                }
+                }
+                    }
                 }
                 let _cond =
                     { event.get_str("cisco_meraki.event_subtype") == Some("client_vpn_connect") };
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
+                        // Grok pattern: events client_vpn_connect %{GREEDYDATA:message}$
+                        if !cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
+                            .extract_into(&input, event)?
+                        {}
+                    }
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.event_subtype")
+                        == Some("anyconnect_vpn_session_manager")
+                };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(input) = event.get_string("message") {
+                            // Grok pattern: msg= ?'(?P<_temp_left>(?:[^:]*)): %{DATA:_temp.right}(?: Reason: %{DATA:cisco_meraki.anyconnect_vpn_session_manager.reason})? ?'
+                            if !cached_grok_mapped!("msg= ?'(?P<_temp_left>(?:[^:]*)): %{DATA:_temp.right}(?: Reason: %{DATA:cisco_meraki.anyconnect_vpn_session_manager.reason})? ?'", [("_temp_left", "_temp.left")]).extract_into(&input, event)? {
+                }
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = { event.has_value("_temp.left") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(input) = event.get_string("_temp.left") {
+                            // Grok pattern: (?:Sess-ID\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_session_id>(?:[^\\]]*))\\])
+                            if !cached_grok_mapped!("(?:Sess-ID\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_session_id>(?:[^\\]]*))\\])", [("cisco_meraki_anyconnect_vpn_session_manager_session_id", "cisco_meraki.anyconnect_vpn_session_manager.session_id")]).extract_into(&input, event)? {
+                }
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = { event.has_value("_temp.left") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(input) = event.get_string("_temp.left") {
+                            // Grok pattern: (?:User\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_user_name>(?:[^\\]]*))\\])
+                            if !cached_grok_mapped!("(?:User\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_user_name>(?:[^\\]]*))\\])", [("cisco_meraki_anyconnect_vpn_session_manager_user_name", "cisco_meraki.anyconnect_vpn_session_manager.user_name")]).extract_into(&input, event)? {
+                }
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = { event.has_value("_temp.left") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(input) = event.get_string("_temp.left") {
+                            // Grok pattern: Peer IP=%{IP:cisco_meraki.anyconnect_vpn_session_manager.peer_ip}
+                            if !cached_grok!(
+                                "Peer IP=%{IP:cisco_meraki.anyconnect_vpn_session_manager.peer_ip}"
+                            )
+                            .extract_into(&input, event)?
+                            {}
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = { event.has_value("_temp.right") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(input) = event.get_string("_temp.right") {
+                            // Grok pattern: ^(?:(?:(?:conn_id\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_conn_id>(?:[^\\]]*))\\]) (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Added)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) to DB)|(?:(?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Deleted)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) from DB\\.)|(?:Applied VPN (?:filter\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_filter>(?:[^\\]]*))\\]) for assigned IP %{IP:cisco_meraki.anyconnect_vpn_session_manager.ip})|(?:Session (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:disconnected))\\. Session Type: %{WORD:cisco_meraki.anyconnect_vpn_session_manager.session_type}, Duration: %{NOTSPACE:cisco_meraki.anyconnect_vpn_session_manager.duration}, Bytes xmt: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_out}, Bytes rcv: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_in},?))$
+                            if !cached_grok_mapped!("^(?:(?:(?:conn_id\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_conn_id>(?:[^\\]]*))\\]) (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Added)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) to DB)|(?:(?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Deleted)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) from DB\\.)|(?:Applied VPN (?:filter\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_filter>(?:[^\\]]*))\\]) for assigned IP %{IP:cisco_meraki.anyconnect_vpn_session_manager.ip})|(?:Session (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:disconnected))\\. Session Type: %{WORD:cisco_meraki.anyconnect_vpn_session_manager.session_type}, Duration: %{NOTSPACE:cisco_meraki.anyconnect_vpn_session_manager.duration}, Bytes xmt: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_out}, Bytes rcv: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_in},?))$", [("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_conn_id", "cisco_meraki.anyconnect_vpn_session_manager.conn_id"), ("cisco_meraki_anyconnect_vpn_session_manager_tunnel_id", "cisco_meraki.anyconnect_vpn_session_manager.tunnel_id"), ("cisco_meraki_anyconnect_vpn_session_manager_tunnel_id", "cisco_meraki.anyconnect_vpn_session_manager.tunnel_id"), ("cisco_meraki_anyconnect_vpn_session_manager_filter", "cisco_meraki.anyconnect_vpn_session_manager.filter")]).extract_into(&input, event)? {
+                }
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.anyconnect_vpn_session_manager.action")
+                        == Some("Added")
+                };
+                if _cond {
+                    event.set(
+                        "cisco_meraki.anyconnect_vpn_session_manager.action",
+                        json!("added tunnel"),
+                    )?;
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.anyconnect_vpn_session_manager.action")
+                        == Some("Deleted")
+                };
+                if _cond {
+                    event.set(
+                        "cisco_meraki.anyconnect_vpn_session_manager.action",
+                        json!("deleted tunnel"),
+                    )?;
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.anyconnect_vpn_session_manager.action")
+                        == Some("disconnected")
+                };
+                if _cond {
+                    event.set(
+                        "cisco_meraki.anyconnect_vpn_session_manager.action",
+                        json!("session disconnected"),
+                    )?;
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.event_subtype") == Some("anyconnect_vpn_connect")
+                };
+                if _cond {
+                    if let Some(input) = event.get_string("event.original") {
+                        // Grok pattern: ^%{DATA} events anyconnect_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$
+                        if !cached_grok!("^%{DATA} events anyconnect_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$").extract_into(&input, event)? {
+                // Grok pattern: ^%{GREEDYDATA}$
+                if !cached_grok!("^%{GREEDYDATA}$").extract_into(&input, event)? {
+                }
+                }
+                    }
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.event_subtype") == Some("anyconnect_vpn_connect")
+                };
+                if _cond {
+                    if let Some(input) = event.get_string("event.original") {
+                        // Grok pattern: events anyconnect_vpn_connect %{GREEDYDATA:message}$
+                        if !cached_grok!("events anyconnect_vpn_connect %{GREEDYDATA:message}$")
+                            .extract_into(&input, event)?
+                        {}
+                    }
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.event_subtype") == Some("anyconnect_vpn_disconnect")
+                };
+                if _cond {
+                    if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" events client_vpn_connect user id '") {
+                        if let Some(pos) =
+                            remaining.find(" events anyconnect_vpn_disconnect user id '")
+                        {
                             remaining = &remaining[pos..];
                         }
                         if let Some(rest) =
-                            remaining.strip_prefix(" events client_vpn_connect user id '")
+                            remaining.strip_prefix(" events anyconnect_vpn_disconnect user id '")
                         {
                             remaining = rest;
                         }
@@ -1716,14 +2113,73 @@ impl Transform for Default {
                         event.set("_temp.client_ip", remaining)?;
                     }
                 }
-                let _cond =
-                    { event.get_str("cisco_meraki.event_subtype") == Some("client_vpn_connect") };
+                let _cond = {
+                    event.get_str("cisco_meraki.event_subtype") == Some("anyconnect_vpn_disconnect")
+                };
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
-                        // Grok pattern: events client_vpn_connect %{GREEDYDATA:message}$
-                        if !cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
+                        // Grok pattern: events anyconnect_vpn_disconnect %{GREEDYDATA:message}$
+                        if !cached_grok!("events anyconnect_vpn_disconnect %{GREEDYDATA:message}$")
                             .extract_into(&input, event)?
                         {}
+                    }
+                }
+                let _cond = {
+                    event.get_str("cisco_meraki.event_subtype") == Some("splash_auth")
+                        && event.has_value("cisco_meraki.splash_auth.mac")
+                };
+                if _cond {
+                    if let Some(v) = event.get("cisco_meraki.splash_auth.mac").cloned() {
+                        event.set("client.mac", v)?;
+                    }
+                }
+                let _cond = { event.get_str("cisco_meraki.event_subtype") == Some("martian_vlan") };
+                if _cond {
+                    if let Some(input) = event.get_string("message") {
+                        let mut remaining: &str = &input;
+                        if let Some(pos) = remaining.find("martian_vlan ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("martian_vlan ") {
+                            remaining = rest;
+                        }
+                        event.set("_temp.martian_vlan", remaining)?;
+                    }
+                }
+                let _cond = { event.has_value("_temp.martian_vlan") };
+                if _cond {
+                    if let Some(kv_str) = event.get_string("_temp.martian_vlan") {
+                        for pair in kv_str.split("' ") {
+                            if pair.trim().is_empty() {
+                                continue;
+                            }
+                            let Some((key, value)) = pair.split_once("='") else {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp.martian_vlan".into(),
+                                    message: format!("does not contain value_split: {pair}"),
+                                });
+                            };
+                            {
+                                if !key.is_empty() {
+                                    event.set(
+                                        &format!("cisco_meraki.martian_vlan.{}", key),
+                                        value,
+                                    )?;
+                                }
+                            }
+                        }
+                    }
+                }
+                let _cond = { event.has_value("cisco_meraki.martian_vlan.Client") };
+                if _cond {
+                    if let Some(v) = event.get("cisco_meraki.martian_vlan.Client").cloned() {
+                        event.set("_temp.client_ip", v)?;
+                    }
+                }
+                let _cond = { event.has_value("cisco_meraki.martian_vlan.MAC") };
+                if _cond {
+                    if let Some(v) = event.get("cisco_meraki.martian_vlan.MAC").cloned() {
+                        event.set("client.mac", v)?;
                     }
                 }
                 let _cond = { event.has_value("_temp.client_ip") };
@@ -1788,12 +2244,118 @@ impl Transform for Default {
                         event.set("server.mac", uppered)?;
                     }
                 }
+                if event.has("user.name") {
+                    if let Some(s) = event.get_string("user.name") {
+                        let lowered = s.to_lowercase();
+                        event.set("user.name", lowered)?;
+                    }
+                }
+                // SKIPPED: condition not transpiled: ctx.user?.name != null && ctx.user.name.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    event.rename("user.name", "user.email")?;
+                }
+                let _cond = { !event.has_value("user.name") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if event.has("user.email") {
+                            if let Some(input) = event.get_string("user.email") {
+                                let mut remaining: &str = &input;
+                                if let Some(pos) = remaining.find("@") {
+                                    event.set("user.name", &remaining[..pos])?;
+                                    remaining = &remaining[pos..];
+                                }
+                                if let Some(rest) = remaining.strip_prefix("@") {
+                                    remaining = rest;
+                                }
+                                event.set("user.domain", remaining)?;
+                            }
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = {
+                    event.has_value("user.name")
+                        && event.get("user.name").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some("\\"))
+                            }
+                            serde_json::Value::String(s) => s.contains("\\"),
+                            _ => false,
+                        })
+                };
+                if _cond {
+                    if event.has("user.name") {
+                        if let Some(input) = event.get_string("user.name") {
+                            let mut remaining: &str = &input;
+                            if let Some(pos) = remaining.find("\\") {
+                                event.set("user.domain", &remaining[..pos])?;
+                                remaining = &remaining[pos..];
+                            }
+                            if let Some(rest) = remaining.strip_prefix("\\") {
+                                remaining = rest;
+                            }
+                            event.set("user.name", remaining)?;
+                        }
+                    }
+                }
+                let _cond = { event.has_value("user.name") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        event.append(
+                            "related.user",
+                            event.get("user.name").cloned().unwrap_or(Value::Null),
+                        )?;
+                        Ok(())
+                    })();
+                }
+                let _cond = { event.has_value("user.email") };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        event.append(
+                            "related.user",
+                            event.get("user.email").cloned().unwrap_or(Value::Null),
+                        )?;
+                        Ok(())
+                    })();
+                }
+                let _cond = { event.has_value("source.ip") };
+                if _cond {
+                    event.append(
+                        "related.ip",
+                        event.get("source.ip").cloned().unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = { event.has_value("client.ip") };
+                if _cond {
+                    event.append(
+                        "related.ip",
+                        event.get("client.ip").cloned().unwrap_or(Value::Null),
+                    )?;
+                }
                 // End nested pipeline: "events"
             }
 
             let _cond = { event.get_str("cisco_meraki.event_type") == Some("urls") };
             if _cond {
                 // Begin nested pipeline: "urls"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("event.original") {
+                        let mut remaining: &str = &input;
+                        if let Some(pos) = remaining.find(" urls ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" urls ") {
+                            remaining = rest;
+                        }
+                        event.set("message", remaining)?;
+                    }
+                    Ok(())
+                })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
                     if let Some(pos) = remaining.find(" urls ") {
@@ -2132,7 +2694,7 @@ impl Transform for Default {
                         r#"def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(ctx.cisco_meraki.event_subtype);\nif (eventData == null) {\n  ctx.event.action = ctx.cisco_meraki.event_subtype;\n  return;\n}\ndef eventCategory = eventData.get('category');\ndef eventType = eventData.get('type');\ndef eventAction = eventData.get('action');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\nif (eventAction != null) {\n  ctx.event.action = eventAction;\n}"#
                     ),
                     cached_params!(
-                        "{\"eventmap\":{\"8021x_deauth\":{\"action\":\"wifi-8021x-failed-auth-or-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]},\"8021x_eap_failure\":{\"action\":\"wifi-8021x-failed-authentication-attempt\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]},\"8021x_eap_success\":{\"action\":\"wifi-8021x-auth\",\"category\":[\"authentication\"],\"type\":[\"start\"]},\"Site-to-Site VPN\":{\"action\":\"site-to-site-vpn\",\"type\":[\"access\"]},\"aps_association_reject\":{\"action\":\"association-rejected-for-load-balancing\"},\"association\":{\"action\":\"wifi-association-request\",\"type\":[\"access\",\"connection\"]},\"client_vpn_connect\":{\"action\":\"site-to-site-vpn\",\"category\":[\"session\"],\"type\":[\"access\",\"allowed\",\"start\"]},\"device_packet_flood\":{\"action\":\"wireless-packet-flood-detected\"},\"dfs_event\":{\"action\":\"dynamic-frequency-selection-detected\"},\"dhcp_no_offer\":{\"action\":\"dhcp-no-offer\",\"type\":[\"access\",\"denied\"]},\"dhcp_offer\":{\"action\":\"dhcp-offer\",\"type\":[\"access\",\"allowed\"]},\"disassociation\":{\"action\":\"wifi-disassociation-request\",\"category\":[\"session\"],\"type\":[\"access\",\"end\"]},\"flow_allowed\":{\"action\":\"layer3-firewall-allowed-flow\",\"type\":[\"connection\",\"start\"]},\"flow_denied\":{\"action\":\"layer3-firewall-denied-flow\",\"type\":[\"access\",\"denied\"]},\"http_access\":{\"action\":\"http-access\",\"category\":[\"web\"],\"type\":[\"access\"]},\"http_access_error\":{\"action\":\"http-access-error\",\"category\":[\"web\"],\"type\":[\"error\"]},\"ids_alerted\":{\"action\":\"ids-signature-matched\",\"category\":[\"intrusion_detection\"]},\"ip_session_initiated\":{\"action\":\"ip-session-initiated\",\"type\":[\"access\",\"start\"]},\"multiple_dhcp_servers_detected\":{\"action\":[\"multiple_dhcp_servers_detected\"],\"type\":[\"protocol\"]},\"rogue_ssid_detected\":{\"action\":\"rogue-ssid-detected\"},\"security_filtering_disposition_change\":{\"action\":\"issued-retrospective-malicious-disposition\",\"category\":[\"file\",\"malware\"]},\"security_filtering_file_scanned\":{\"action\":\"malicious-file-actioned\",\"category\":[\"file\",\"malware\"]},\"splash_auth\":{\"action\":\"splash-authentication\",\"category\":[\"authentication\"],\"type\":[\"start\"]},\"ssid_spoofing_detected\":{\"action\":\"ssid-spoofing-detected\"},\"vpn_connectivity_change\":{\"action\":\"vpn-connectivity-change\",\"category\":[\"session\"],\"type\":[\"connection\"]},\"wpa_auth\":{\"action\":\"wifi-wpa-authentication\",\"category\":[\"authentication\"],\"type\":[\"start\",\"access\"]},\"wpa_deauth\":{\"action\":\"wifi-wpa-failed-auth-or-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]}}}"
+                        "{\"eventmap\":{\"8021x_client_deauth\":{\"action\":\"wifi-8021x-client-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\"]},\"8021x_deauth\":{\"action\":\"wifi-8021x-failed-auth-or-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]},\"8021x_eap_failure\":{\"action\":\"wifi-8021x-failed-authentication-attempt\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]},\"8021x_eap_success\":{\"action\":\"wifi-8021x-auth\",\"category\":[\"authentication\"],\"type\":[\"start\"]},\"Site-to-Site VPN\":{\"action\":\"site-to-site-vpn\",\"type\":[\"access\"]},\"anyconnect_vpn_connect\":{\"action\":\"anyconnect_vpn_connect\",\"category\":[\"session\"],\"type\":[\"access\",\"allowed\",\"start\"]},\"aps_association_reject\":{\"action\":\"association-rejected-for-load-balancing\"},\"arp_blocked\":{\"action\":\"arp_blocked\",\"type\":[\"denied\"]},\"association\":{\"action\":\"wifi-association-request\",\"type\":[\"access\",\"connection\"]},\"client_vpn_connect\":{\"action\":\"site-to-site-vpn\",\"category\":[\"session\"],\"type\":[\"access\",\"allowed\",\"start\"]},\"device_packet_flood\":{\"action\":\"wireless-packet-flood-detected\"},\"dfs_event\":{\"action\":\"dynamic-frequency-selection-detected\"},\"dhcp_blocked\":{\"action\":\"dhcp_blocked\",\"type\":[\"denied\"]},\"dhcp_no_offer\":{\"action\":\"dhcp-no-offer\",\"type\":[\"access\",\"denied\"]},\"dhcp_offer\":{\"action\":\"dhcp-offer\",\"type\":[\"access\",\"allowed\"]},\"disassociation\":{\"action\":\"wifi-disassociation-request\",\"category\":[\"session\"],\"type\":[\"access\",\"end\"]},\"flow_allowed\":{\"action\":\"layer3-firewall-allowed-flow\",\"type\":[\"connection\",\"start\"]},\"flow_denied\":{\"action\":\"layer3-firewall-denied-flow\",\"type\":[\"access\",\"denied\"]},\"http_access\":{\"action\":\"http-access\",\"category\":[\"web\"],\"type\":[\"access\"]},\"http_access_error\":{\"action\":\"http-access-error\",\"category\":[\"web\"],\"type\":[\"error\"]},\"ids_alerted\":{\"action\":\"ids-signature-matched\",\"category\":[\"intrusion_detection\"]},\"ip_session_initiated\":{\"action\":\"ip-session-initiated\",\"type\":[\"access\",\"start\"]},\"multiple_dhcp_servers_detected\":{\"action\":[\"multiple_dhcp_servers_detected\"],\"type\":[\"protocol\"]},\"ra_blocked\":{\"action\":\"ra_blocked\",\"type\":[\"denied\"]},\"rogue_ssid_detected\":{\"action\":\"rogue-ssid-detected\"},\"security_filtering_disposition_change\":{\"action\":\"issued-retrospective-malicious-disposition\",\"category\":[\"file\",\"malware\"]},\"security_filtering_file_scanned\":{\"action\":\"malicious-file-actioned\",\"category\":[\"file\",\"malware\"]},\"splash_auth\":{\"action\":\"splash-authentication\",\"category\":[\"authentication\"],\"type\":[\"start\"]},\"ssid_spoofing_detected\":{\"action\":\"ssid-spoofing-detected\"},\"vpn_connectivity_change\":{\"action\":\"vpn-connectivity-change\",\"category\":[\"session\"],\"type\":[\"connection\"]},\"wpa_auth\":{\"action\":\"wifi-wpa-authentication\",\"category\":[\"authentication\"],\"type\":[\"start\",\"access\"]},\"wpa_deauth\":{\"action\":\"wifi-wpa-failed-auth-or-deauth\",\"category\":[\"authentication\"],\"type\":[\"end\",\"denied\"]}}}"
                     ),
                 )?;
             }
@@ -2357,24 +2919,6 @@ impl Transform for Default {
                 ),
             )?;
 
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
-                    Ok(())
-                })();
-            }
-
             Ok(TransformResult::Continue)
         })(event);
 
@@ -2384,6 +2928,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.append(
                     "error.message",
                     event

@@ -16,7 +16,7 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            event.set("ecs.version", json!("8.11.0"))?;
+            event.set("ecs.version", json!("8.17.0"))?;
 
             event.set("event.category", json!(["network"]))?;
 
@@ -25,8 +25,6 @@ impl Transform for Default {
             event.set("observer.vendor", json!("Cisco"))?;
 
             event.set("observer.product", json!("IOS"))?;
-
-            event.set("observer.type", json!("firewall"))?;
 
             event.set("event.type", json!(["info"]))?;
 
@@ -39,12 +37,39 @@ impl Transform for Default {
             event.remove("message");
 
             if let Some(input) = event.get_string("event.original") {
-                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?P<log_syslog_hostname>(?:[a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?)): (?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:[0-9a-zA-Z]+))|(?:[*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: (?P<_temp__tz>(?:[a-zA-Z]{1,4})))?)): %{GREEDYDATA:_temp_.message}$
-                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?P<log_syslog_hostname>(?:[a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?)): (?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:[0-9a-zA-Z]+))|(?:[*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: (?P<_temp__tz>(?:[a-zA-Z]{1,4})))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                        // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:[0-9a-zA-Z]+))|(?:[*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: (?P<_temp__tz>(?:[a-zA-Z]{1,4})))?)): %{GREEDYDATA:_temp_.message}$
-                        if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:[0-9a-zA-Z]+))|(?:[*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: (?P<_temp__tz>(?:[a-zA-Z]{1,4})))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:(?P<log_syslog_hostname>(?:[a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?))|%{IP})[:]? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:[0-9a-zA-Z]+))|(?:[*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: (?P<_temp__tz>(?:[a-zA-Z]{1,4})))?)): %{GREEDYDATA:_temp_.message}$
-                            if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:(?P<log_syslog_hostname>(?:[a-zA-Z][0-9a-zA-Z_-]{0,61}[0-9a-zA-Z]?))|%{IP})[:]? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:[0-9a-zA-Z]+))|(?:[*]?%{CISCOTIMESTAMP:_temp_.cisco_timestamp}(?: (?P<_temp__tz>(?:[a-zA-Z]{1,4})))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                // Grok pattern: ^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$
+                if !cached_grok!("^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$").extract_into(&input, event)? {
+                        // Grok pattern: ^%{GREEDYDATA:_temp_.message}$
+                        if !cached_grok!("^%{GREEDYDATA:_temp_.message}$").extract_into(&input, event)? {
+                        }
+                    }
+            }
+
+            if let Some(input) = event.get_string("_temp_.message") {
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__cisco_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)) (?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)) %{GREEDYDATA:_temp_.message}$
+                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__cisco_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)) (?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)) %{GREEDYDATA:_temp_.message}$", [("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("log_syslog_hostname", "log.syslog.hostname"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                        // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
+                        if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                            // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
+                            if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
+                                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$", [("_temp__timestamp", "_temp_.timestamp"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                                    // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{SYSLOGTIMESTAMP} )?(%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{DATA}:(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)%{GREEDYDATA}%%{GREEDYDATA:message}$
+                                    if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{SYSLOGTIMESTAMP} )?(%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{DATA}:(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)%{GREEDYDATA}%%{GREEDYDATA:message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                                        // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \\*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$
+                                        if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \\*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__timestamp", "_temp_.timestamp"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                                            // Grok pattern: ^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$
+                                            if !cached_grok_mapped!("^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$", [("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                                                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$
+                                                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname")]).extract_into(&input, event)? {
+                                                    // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$
+                                                    if !cached_grok!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$").extract_into(&input, event)? {
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -53,11 +78,54 @@ impl Transform for Default {
             if let Some(input) = event.get_string("_temp_.message") {
                 // Grok pattern: ^%%{GREEDYDATA:message}$
                 if !cached_grok!("^%%{GREEDYDATA:message}$").extract_into(&input, event)? {
-                    // Grok pattern: ^%{GREEDYDATA:_temp_.generic_message}$
-                    if !cached_grok!("^%{GREEDYDATA:_temp_.generic_message}$")
+                    // Grok pattern: ^%{GREEDYDATA}%%{GREEDYDATA:message}$
+                    if !cached_grok!("^%{GREEDYDATA}%%{GREEDYDATA:message}$")
                         .extract_into(&input, event)?
-                    {}
+                    {
+                        // Grok pattern: ^%{GREEDYDATA:_temp_.generic_message}$
+                        if !cached_grok!("^%{GREEDYDATA:_temp_.generic_message}$")
+                            .extract_into(&input, event)?
+                        {}
+                    }
                 }
+            }
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has("log.syslog.hostname") {
+                    if let Some(input) = event.get_string("log.syslog.hostname") {
+                        // Grok pattern: ^%{NUMBER:_temp_.sequence}$
+                        if !cached_grok!("^%{NUMBER:_temp_.sequence}$")
+                            .extract_into(&input, event)?
+                        {}
+                    }
+                }
+                Ok(())
+            })();
+
+            let _cond = { event.has_value("_temp_.sequence") };
+            if _cond {
+                if let Some(v) = event.get("_temp_.sequence").cloned() {
+                    event.set("cisco.ios.sequence", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("_temp_.sequence") };
+            if _cond {
+                event.remove("log.syslog.hostname");
+            }
+
+            let _cond = { event.has_value("_temp_.sequence") };
+            if _cond {
+                event.remove("_temp_.sequence");
+            }
+
+            let _cond = {
+                event.has_value("log.syslog")
+                    && event.get_str("log.syslog").is_none_or(|s| s.is_empty())
+            };
+            if _cond {
+                event.remove("log.syslog");
             }
 
             let _cond = { event.has_value("cisco.ios.sequence") };
@@ -113,21 +181,24 @@ impl Transform for Default {
 
             if event.has("_temp_.cisco_timestamp") {
                 if let Some(s) = event.get_string("_temp_.cisco_timestamp") {
-                    let re = cached_regex!(" {2,}");
+                    let re = cached_regex!("\\s+");
                     let replaced = re.replace_all(&s, " ").into_owned();
                     event.set("_temp_.cisco_timestamp", replaced)?;
                 }
             }
 
-            // Painless script
-            // Source: if (ctx._temp_?.tz != null && ctx._conf?.tz_map != null) {\n  for (def item : ctx._conf.tz_map) {\n    if (item.tz_short == ctx._temp_.tz) {\n      ctx.event.timezone = item.tz_long;\n      return;\n    }\n  }\n}\nif (ctx._conf?.tz_offset != null) {\n  ctx.event.timezone = ctx._conf.tz_offset;\n}\nif (ctx.event?.timezone == null) {\n  ctx.event.timezone = 'UTC';\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
-                event,
-                cached_script!(
-                    r#"if (ctx._temp_?.tz != null && ctx._conf?.tz_map != null) {\n  for (def item : ctx._conf.tz_map) {\n    if (item.tz_short == ctx._temp_.tz) {\n      ctx.event.timezone = item.tz_long;\n      return;\n    }\n  }\n}\nif (ctx._conf?.tz_offset != null) {\n  ctx.event.timezone = ctx._conf.tz_offset;\n}\nif (ctx.event?.timezone == null) {\n  ctx.event.timezone = 'UTC';\n}"#
-                ),
-            )?;
+            let _cond = { event.has_value("_temp_.cisco_timestamp") };
+            if _cond {
+                // Painless script
+                // Source: String get_timezone(def ctx) {\n  if (ctx._temp_?.tz != null) {\n    if (ctx._conf?.tz_map != null) {\n      for (def item : ctx._conf.tz_map) {\n        if (item.tz_short == ctx._temp_.tz) {\n          return item.tz_long;\n        }\n      }\n    }\n    if (ctx._temp_.tz == 'Z') {\n      return '+00:00';\n    }\n    if (ctx._temp_.tz.length() <= 4) {\n      // all time zone abbreviations need to be uppercase\n      return ctx._temp_.tz.toUpperCase();\n    }\n\n    return ctx._temp_.tz;\n  }\n\n  if (ctx._conf?.tz_offset != null) {\n      ctx.event.timezone = ctx._conf.tz_offset;\n      return ctx._conf.tz_offset;\n  }\n\n  ctx.event.timezone = 'UTC';\n  return 'UTC';\n}\n\ndef event_timezone = get_timezone(ctx);\nif (!event_timezone.contains('+') && !event_timezone.contains('-') && !(event_timezone.length() > 4)) {\n  // timezone abbreviation e.g. CEST need to be put inside the timestamp\n  SimpleDateFormat sdf = new SimpleDateFormat(\"z\");\n  sdf.parse(event_timezone);\n  ctx._temp_.date_timezone = ZoneId.of(sdf.getTimeZone().getID(), ZoneId.SHORT_IDS).getId();\n  ctx?._temp_.cisco_timestamp = ctx?._temp_.cisco_timestamp + \" \" + event_timezone;\n} else {\n  // timezone is either abbreviation+-offset e.g. UTC+1 or long representation\n  // e.g. Europe/Athens needs to be put as a ZoneId and *not* inside the timestamp\n  ctx._temp_.date_timezone = event_timezone;\n}
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"String get_timezone(def ctx) {\n  if (ctx._temp_?.tz != null) {\n    if (ctx._conf?.tz_map != null) {\n      for (def item : ctx._conf.tz_map) {\n        if (item.tz_short == ctx._temp_.tz) {\n          return item.tz_long;\n        }\n      }\n    }\n    if (ctx._temp_.tz == 'Z') {\n      return '+00:00';\n    }\n    if (ctx._temp_.tz.length() <= 4) {\n      // all time zone abbreviations need to be uppercase\n      return ctx._temp_.tz.toUpperCase();\n    }\n\n    return ctx._temp_.tz;\n  }\n\n  if (ctx._conf?.tz_offset != null) {\n      ctx.event.timezone = ctx._conf.tz_offset;\n      return ctx._conf.tz_offset;\n  }\n\n  ctx.event.timezone = 'UTC';\n  return 'UTC';\n}\n\ndef event_timezone = get_timezone(ctx);\nif (!event_timezone.contains('+') && !event_timezone.contains('-') && !(event_timezone.length() > 4)) {\n  // timezone abbreviation e.g. CEST need to be put inside the timestamp\n  SimpleDateFormat sdf = new SimpleDateFormat(\"z\");\n  sdf.parse(event_timezone);\n  ctx._temp_.date_timezone = ZoneId.of(sdf.getTimeZone().getID(), ZoneId.SHORT_IDS).getId();\n  ctx?._temp_.cisco_timestamp = ctx?._temp_.cisco_timestamp + \" \" + event_timezone;\n} else {\n  // timezone is either abbreviation+-offset e.g. UTC+1 or long representation\n  // e.g. Europe/Athens needs to be put as a ZoneId and *not* inside the timestamp\n  ctx._temp_.date_timezone = event_timezone;\n}"#
+                    ),
+                )?;
+            }
 
             let _cond = { event.has_value("_temp_.cisco_timestamp") };
             if _cond {
@@ -135,6 +206,7 @@ impl Transform for Default {
                     if let Some(parsed) = parse_date_out(
                         &date_str,
                         &[
+                            "ISO8601",
                             "MMM d yyyy HH:mm:ss.SSS z",
                             "MMM d yyyy HH:mm:ss.SSS",
                             "MMM d yyyy HH:mm:ss z",
@@ -143,8 +215,12 @@ impl Transform for Default {
                             "MMM d HH:mm:ss.SSS",
                             "MMM d HH:mm:ss z",
                             "MMM d HH:mm:ss",
+                            "yyyy MMM d HH:mm:ss.SSS z",
+                            "yyyy MMM d HH:mm:ss.SSS",
+                            "yyyy MMM d HH:mm:ss z",
+                            "yyyy MMM d HH:mm:ss",
                         ],
-                        event.get_str("event.timezone"),
+                        event.get_str("_temp_.date_timezone"),
                         None,
                     ) {
                         event.set("@timestamp", parsed)?;
@@ -156,15 +232,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
                     if !cached_grok!("%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)? {
+                        // Grok pattern: %{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
+                        if !cached_grok_mapped!("%{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}", [("cisco_ios_mnemonic", "cisco.ios.mnemonic")]).extract_into(&input, event)? {
+                        }
                     }
                 }
             }
 
-            let _cond = {
-                event.get_str("cisco.ios.facility") == Some("IOSXE")
-                    && event.get_str("event.code") == Some("PLATFORM")
-            };
-            if _cond {
+            // SKIPPED: condition not transpiled: ctx.cisco?.ios?.facility == 'IOSXE' && ctx.event?.code == 'PLATFORM' && ctx.message.indexOf('%') != -1
+            #[allow(unreachable_code, unused_variables)]
+            if false {
                 if event.has("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
@@ -275,78 +352,169 @@ impl Transform for Default {
                 }
             }
 
+            if event.has("event.code") {
+                if let Some(s) = event.get_string("event.code") {
+                    let trimmed = s.trim().to_string();
+                    event.set("event.code", trimmed)?;
+                }
+            }
+
             let _cond = {
-                ["IPACCESSLOGP", "ACCESSLOGP"].contains(&event.get_str("event.code").unwrap_or(""))
+                ["IPACCESSLOGP", "ACCESSLOGP", "IPV6ACCESSLOGP"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if let Some(input) = event.get_string("message") {
-                    let mut remaining: &str = &input;
-                    if let Some(rest) = remaining.strip_prefix("list ") {
-                        remaining = rest;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        let mut remaining: &str = &input;
+                        if let Some(rest) = remaining.strip_prefix("list ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            event.set("cisco.ios.access_list", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            event.set("_temp_.event.action", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            event.set("network.transport", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find("(") {
+                            event.set("source.address", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("(") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(") ") {
+                            event.set("source.port", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(") ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find("(") {
+                            event.set("destination.address", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("(") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find("), ") {
+                            event.set("destination.port", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("), ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" packet") {
+                            event.set("source.packets", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" packet") {
+                            remaining = rest;
+                        }
                     }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("cisco.ios.access_list", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                ["IPACCESSLOGP", "ACCESSLOGP", "IPV6ACCESSLOGP"]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        let mut remaining: &str = &input;
+                        if let Some(rest) = remaining.strip_prefix("access-list ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            event.set("cisco.ios.access_list", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            event.set("_temp_.event.action", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            event.set("network.transport", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find("(") {
+                            event.set("source.address", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("(") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(") ") {
+                            event.set("source.port", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(") ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" ") {
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find("(") {
+                            event.set("destination.address", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("(") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find("), ") {
+                            event.set("destination.port", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix("), ") {
+                            remaining = rest;
+                        }
+                        if let Some(pos) = remaining.find(" packet") {
+                            event.set("source.packets", &remaining[..pos])?;
+                            remaining = &remaining[pos..];
+                        }
+                        if let Some(rest) = remaining.strip_prefix(" packet") {
+                            remaining = rest;
+                        }
                     }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("_temp_.event.action", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("network.transport", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("(") {
-                        event.set("source.address", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("(") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(") ") {
-                        event.set("source.port", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(") ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("(") {
-                        event.set("destination.address", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("(") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("), ") {
-                        event.set("destination.port", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("), ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" packet") {
-                        event.set("source.packets", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" packet") {
-                        remaining = rest;
-                    }
-                }
+                    Ok(())
+                })();
             }
 
             let _cond = {
@@ -669,41 +837,8 @@ impl Transform for Default {
             let _cond = { event.get_str("event.code") == Some("LOGIN_SUCCESS") };
             if _cond {
                 if let Some(input) = event.get_string("message") {
-                    let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("cisco.ios.action", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" [user: ") {
-                        event.set("_temp_.event.action", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" [user: ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("] [Source: ") {
-                        event.set("source.user.name", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("] [Source: ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("] [localport: ") {
-                        event.set("source.address", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("] [localport: ") {
-                        remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("] at ") {
-                        event.set("destination.port", &remaining[..pos])?;
-                        remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("] at ") {
-                        remaining = rest;
+                    // Grok pattern: %{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]
+                    if !cached_grok!("%{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]").extract_into(&input, event)? {
                     }
                 }
             }
@@ -753,6 +888,34 @@ impl Transform for Default {
                 }
             }
 
+            let _cond = { event.get_str("event.code") == Some("INVALID_REPLAY_CTR") };
+            if _cond {
+                if let Some(input) = event.get_string("message") {
+                    let mut remaining: &str = &input;
+                    if let Some(pos) = remaining.find(" Invalid replay counter from client ") {
+                        remaining = &remaining[pos..];
+                    }
+                    if let Some(rest) =
+                        remaining.strip_prefix(" Invalid replay counter from client ")
+                    {
+                        remaining = rest;
+                    }
+                    if let Some(pos) = remaining.find(" - got ") {
+                        event.set("source.mac", &remaining[..pos])?;
+                        remaining = &remaining[pos..];
+                    }
+                    if let Some(rest) = remaining.strip_prefix(" - got ") {
+                        remaining = rest;
+                    }
+                    if let Some(pos) = remaining.find(", expected ") {
+                        remaining = &remaining[pos..];
+                    }
+                    if let Some(rest) = remaining.strip_prefix(", expected ") {
+                        remaining = rest;
+                    }
+                }
+            }
+
             let _cond = { event.get_str("event.code") == Some("BADAUTH") };
             if _cond {
                 if event.has("message") {
@@ -762,6 +925,49 @@ impl Transform for Default {
                     }
                     }
                 }
+            }
+
+            let _cond = {
+                !event.has_value("observer.type")
+                    && (["SEC", "FW", "IPV6", "IPV6_ACL"]
+                        .contains(&event.get_str("cisco.ios.facility").unwrap_or(""))
+                        || [
+                            "IPACCESSLOGP",
+                            "IPACCESSLOGDP",
+                            "IPACCESSLOGNP",
+                            "IPACCESSLOGSP",
+                            "IPACCESSLOGRP",
+                            "ACCESSLOGP",
+                            "ACCESSLOGDP",
+                            "ACCESSLOGNP",
+                            "ACCESSLOGSP",
+                            "IPV6ACCESSLOGP",
+                        ]
+                        .contains(&event.get_str("event.code").unwrap_or("")))
+            };
+            if _cond {
+                event.set("observer.type", json!("firewall"))?;
+            }
+
+            let _cond = {
+                !event.has_value("observer.type")
+                    && [
+                        "LINK",
+                        "SPANTREE",
+                        "STP",
+                        "PORTSECURITY",
+                        "VTP",
+                        "LINEPROTO",
+                    ]
+                    .contains(&event.get_str("cisco.ios.facility").unwrap_or(""))
+            };
+            if _cond {
+                event.set("observer.type", json!("switch"))?;
+            }
+
+            let _cond = { !event.has_value("observer.type") };
+            if _cond {
+                event.set("observer.type", json!("router"))?;
             }
 
             let _cond = { event.get_str("event.code") == Some("INVALID_RP_JOIN") };
@@ -1182,6 +1388,21 @@ impl Transform for Default {
                 )?;
             }
 
+            if event.has("source.mac") {
+                if let Some(s) = event.get_string("source.mac") {
+                    let re = cached_regex!(":");
+                    let replaced = re.replace_all(&s, "-").into_owned();
+                    event.set("source.mac", replaced)?;
+                }
+            }
+
+            if event.has("source.mac") {
+                if let Some(s) = event.get_string("source.mac") {
+                    let uppered = s.to_uppercase();
+                    event.set("source.mac", uppered)?;
+                }
+            }
+
             let _cond = { event.has_value("source.ip") };
             if _cond {
                 event.append(
@@ -1269,22 +1490,9 @@ impl Transform for Default {
             event.remove("_temp_");
             event.remove("_conf");
 
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
+            let _cond = { event.has_value("error.message") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
-                    Ok(())
-                })();
+                event.append("tags", json!("preserve_original_event"))?;
             }
 
             Ok(TransformResult::Continue)
@@ -1297,8 +1505,9 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.remove("_temp_");
                 event.remove("_conf");
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

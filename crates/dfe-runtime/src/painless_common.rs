@@ -429,13 +429,21 @@ fn try_split_unquoted_kv(event: &mut Event, script: &str) -> bool {
     use crate::painless_params::clean_path;
 
     let calls: Vec<&str> = script.split("splitUnquoted(").skip(1).collect();
-    // The definition, the field split, then the pair split.
-    let [_, fields, pairs, ..] = calls.as_slice() else {
+    // The definition, then the call that splits the whole payload into tokens.
+    let [_, fields, ..] = calls.as_slice() else {
         return false;
     };
     let Some(source) = fields
         .strip_prefix("ctx.")
         .and_then(|rest| rest.split(',').next())
+    else {
+        return false;
+    };
+    // The per-token split is whichever helper takes the loop variable. Newer
+    // pipelines call `splitOnceByToken`, older ones `splitUnquoted` again.
+    let Some(pairs) = ["splitOnceByToken(", "splitUnquoted("]
+        .iter()
+        .find_map(|helper| script.split(helper).find(|s| s.starts_with("arr[")))
     else {
         return false;
     };

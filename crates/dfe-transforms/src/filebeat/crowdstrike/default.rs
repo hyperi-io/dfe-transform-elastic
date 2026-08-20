@@ -16,7 +16,18 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            event.set("ecs.version", json!("8.11.0"))?;
+            let _cond = {
+                event.get("organization").is_some_and(|v| v.is_string())
+                    && event.get("division").is_some_and(|v| v.is_string())
+                    && event.get("team").is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                event.remove("organization");
+                event.remove("division");
+                event.remove("team");
+            }
+
+            event.set("ecs.version", json!("8.17.0"))?;
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
@@ -25,13 +36,58 @@ impl Transform for Default {
                 }
             }
 
-            if let Some(s) = event.get_string("event.original") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("crowdstrike", parsed)?;
+            let _cond = { event.has_value("event.original") };
+            if _cond {
+                event.remove("message");
+            }
+
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if let Some(s) = event.get_string("event.original") {
+                    let parsed: Value =
+                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: format!("failed to parse JSON: {}", e),
+                        })?;
+                    event.set("crowdstrike", parsed)?;
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "json")?;
+                event.set("_ingest.on_failure_processor_tag", "json_event_original")?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_pipeline")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+
+            let _cond = {
+                event.has_value("crowdstrike")
+                    && !(event.get("crowdstrike").is_some_and(|v| v.is_object()))
+            };
+            if _cond {
+                return Ok(TransformResult::Drop);
             }
 
             event.remove("host.name");
@@ -66,7 +122,11 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("crowdstrike.event") };
+            let _cond = {
+                event
+                    .get("crowdstrike.event")
+                    .is_some_and(|v| v.is_object())
+            };
             if _cond {
                 // Painless script
                 // Source: def convertToUnix(def longValue) {\n    if (longValue > 0x0100000000000000L) {\n        return (longValue / 10000) - 11644473600000L;\n    }\n    return longValue;\n}\n\nfor (def field : params.values) {\n    def fieldValue = ctx.crowdstrike.event[field];\n    if (fieldValue != null) {\n        if (fieldValue instanceof long) {\n             ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n        } else if (fieldValue instanceof String) {\n            if (!fieldValue.contains('.')) {\n               def timestamp = Long.parseLong(fieldValue);\n                ctx.crowdstrike.event[field] = convertToUnix(timestamp);\n            }\n        }\n    } \n}\n
@@ -167,7 +227,28 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("crowdstrike.event") };
+            let _cond = {
+                event
+                    .get("crowdstrike.event.SeverityName")
+                    .is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                // Painless script
+                // Source: ctx.event = ctx.event ?: [:];\nString name = ctx.crowdstrike.event.SeverityName;\nif (name.equalsIgnoreCase(\"low\") || name.equalsIgnoreCase(\"info\") || name.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (name.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (name.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (name.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec(
+                    event,
+                    cached_script!(
+                        r#"ctx.event = ctx.event ?: [:];\nString name = ctx.crowdstrike.event.SeverityName;\nif (name.equalsIgnoreCase(\"low\") || name.equalsIgnoreCase(\"info\") || name.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (name.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (name.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (name.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
+                    ),
+                )?;
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event")
+                    .is_some_and(|v| v.is_object())
+            };
             if _cond {
                 // Painless script
                 // Source: ctx.crowdstrike.event.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n
@@ -181,7 +262,11 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has_value("crowdstrike.metadata") };
+            let _cond = {
+                event
+                    .get("crowdstrike.metadata")
+                    .is_some_and(|v| v.is_object())
+            };
             if _cond {
                 // Painless script
                 // Source: ctx.crowdstrike.metadata.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n
@@ -219,6 +304,1885 @@ impl Transform for Default {
                         r#"def parentCommandLine = ctx.crowdstrike?.event?.ParentCommandLine;\nparentCommandLine = parentCommandLine.trim();\n\nif (parentCommandLine != \"\") {\n  def args = new ArrayList(Arrays.asList(/ /.split(parentCommandLine)));\n  args.removeIf(arg -> arg == \"\");\n  if (ctx.process == null) {\n    ctx.process = new HashMap();\n  }\n  ctx.process.parent = [\n    'command_line': parentCommandLine,\n    'args': args,\n    'executable': args.get(0)\n  ]\n}\n"#
                     ),
                 )?;
+            }
+
+            let _cond = {
+                event.get_str("crowdstrike.metadata.eventType") == Some("AutomatedLeadSummaryEvent")
+            };
+            if _cond {
+                // Begin nested pipeline: "automated_lead_summary"
+                event.set("event.kind", json!("alert"))?;
+                event.append("event.category", json!("threat"))?;
+                event.append("event.type", json!("indicator"))?;
+                if let Some(v) = event
+                    .get("crowdstrike.event.Name")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("message", v)?;
+                }
+                let _cond = {
+                    !event.has_value("message")
+                        || event.get_str("message").is_none_or(|s| s.is_empty())
+                };
+                if _cond {
+                    if let Some(v) = event
+                        .get("crowdstrike.event.Description")
+                        .filter(|v| !painless_is_empty_value(v))
+                        .cloned()
+                    {
+                        event.set("message", v)?;
+                    }
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.SignalStartTimestamp")
+                        && event.get_i64("crowdstrike.event.SignalStartTimestamp") != Some(0)
+                };
+                if _cond {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.SignalStartTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
+                            {
+                                event.set("crowdstrike.event.SignalStartTimestamp", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "date_signal_start_timestamp",
+                        )?;
+                        event.remove("crowdstrike.event.SignalStartTimestamp");
+                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.SignalStartTimestamp")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.start", v)?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.SignalEndTimestamp")
+                        && event.get_i64("crowdstrike.event.SignalEndTimestamp") != Some(0)
+                };
+                if _cond {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.SignalEndTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
+                            {
+                                event.set("crowdstrike.event.SignalEndTimestamp", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "date_signal_end_timestamp",
+                        )?;
+                        event.remove("crowdstrike.event.SignalEndTimestamp");
+                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.SignalEndTimestamp")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.end", v)?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.SignalUpdatedTimestamp")
+                        && event.get_i64("crowdstrike.event.SignalUpdatedTimestamp") != Some(0)
+                };
+                if _cond {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.SignalUpdatedTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
+                            {
+                                event.set("crowdstrike.event.SignalUpdatedTimestamp", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "date_signal_updated_timestamp",
+                        )?;
+                        event.remove("crowdstrike.event.SignalUpdatedTimestamp");
+                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.SignalAssociationTimestamp")
+                                {
+                                    if let Some(parsed) =
+                                        parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
+                                    {
+                                        event.set(
+                                            "_ingest._value.SignalAssociationTimestamp",
+                                            parsed,
+                                        )?;
+                                    }
+                                }
+                                Ok(())
+                            })() {
+                                event.set("_ingest.on_failure_message", err.to_string())?;
+                                event.set("_ingest.on_failure_processor_type", "date")?;
+                                event.set(
+                                    "_ingest.on_failure_processor_tag",
+                                    "date_threatgraph_indicators_signal_association_timestamp",
+                                )?;
+                                event.remove("_ingest._value.SignalAssociationTimestamp");
+                                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                                event.remove("_ingest.on_failure_message");
+                                event.remove("_ingest.on_failure_processor_type");
+                                event.remove("_ingest.on_failure_processor_tag");
+                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.Score") {
+                        if let Some(val) = event.get("crowdstrike.event.Score") {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.Score".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.Score".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.Score".into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.Score", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set("_ingest.on_failure_processor_tag", "convert_score_to_long")?;
+                    event.remove("crowdstrike.event.Score");
+                    event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.Score instanceof long
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    // Painless script
+                    // Source: long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec(
+                        event,
+                        cached_script!(
+                            r#"long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}"#
+                        ),
+                    )?;
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            if event.has("_ingest._value.PatternId") {
+                                if let Some(val) = event.get("_ingest._value.PatternId") {
+                                    let converted = match val {
+                                        Value::String(_) => val.clone(),
+                                        Value::Number(n) => json!(n.to_string()),
+                                        Value::Bool(b) => json!(b.to_string()),
+                                        Value::Null => json!("null"),
+                                        _ => json!(val.to_string()),
+                                    };
+                                    event.set("_ingest._value.PatternId", converted)?;
+                                }
+                            }
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            if event.has("_ingest._value.TemplateInstanceId") {
+                                if let Some(val) = event.get("_ingest._value.TemplateInstanceId") {
+                                    let converted = match val {
+                                        Value::String(_) => val.clone(),
+                                        Value::Number(n) => json!(n.to_string()),
+                                        Value::Bool(b) => json!(b.to_string()),
+                                        Value::Null => json!("null"),
+                                        _ => json!(val.to_string()),
+                                    };
+                                    event.set("_ingest._value.TemplateInstanceId", converted)?;
+                                }
+                            }
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                                if event.has("_ingest._value.Severity") {
+                                    if let Some(val) = event.get("_ingest._value.Severity") {
+                                        let converted = match val {
+                                            Value::String(s) => {
+                                                let s = s.trim();
+                                                if let Some(hex) = s.strip_prefix("0x") {
+                                                    json!(i64::from_str_radix(hex, 16).map_err(
+                                                        |_| TransformError::ParseError {
+                                                            path: "_ingest._value.Severity".into(),
+                                                            message: format!(
+                                                                "cannot convert '{}' to integer",
+                                                                s
+                                                            )
+                                                        }
+                                                    )?)
+                                                } else {
+                                                    json!(s.parse::<i64>().map_err(|_| {
+                                                        TransformError::ParseError {
+                                                            path: "_ingest._value.Severity".into(),
+                                                            message: format!(
+                                                                "cannot convert '{}' to integer",
+                                                                s
+                                                            ),
+                                                        }
+                                                    })?)
+                                                }
+                                            }
+                                            Value::Number(n) => json!(
+                                                n.as_i64()
+                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
+                                            ),
+                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                            _ => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Severity".into(),
+                                                    message: "cannot convert to integer".into(),
+                                                });
+                                            }
+                                        };
+                                        event.set("_ingest._value.Severity", converted)?;
+                                    }
+                                }
+                                Ok(())
+                            })() {
+                                event.set("_ingest.on_failure_message", err.to_string())?;
+                                event.set("_ingest.on_failure_processor_type", "convert")?;
+                                event.set(
+                                    "_ingest.on_failure_processor_tag",
+                                    "convert_threatgraph_indicators_severity_to_long",
+                                )?;
+                                event.remove("_ingest._value.Severity");
+                                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                                event.remove("_ingest.on_failure_message");
+                                event.remove("_ingest.on_failure_processor_type");
+                                event.remove("_ingest.on_failure_processor_tag");
+                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                                if event.has("_ingest._value.PatternDisposition") {
+                                    if let Some(val) =
+                                        event.get("_ingest._value.PatternDisposition")
+                                    {
+                                        let converted = match val {
+                                            Value::String(s) => {
+                                                let s = s.trim();
+                                                if let Some(hex) = s.strip_prefix("0x") {
+                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.PatternDisposition".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                                                } else {
+                                                    json!(s.parse::<i64>().map_err(|_| {
+                                                        TransformError::ParseError {
+                                                            path:
+                                                                "_ingest._value.PatternDisposition"
+                                                                    .into(),
+                                                            message: format!(
+                                                                "cannot convert '{}' to integer",
+                                                                s
+                                                            ),
+                                                        }
+                                                    })?)
+                                                }
+                                            }
+                                            Value::Number(n) => json!(
+                                                n.as_i64()
+                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
+                                            ),
+                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                            _ => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.PatternDisposition"
+                                                        .into(),
+                                                    message: "cannot convert to integer".into(),
+                                                });
+                                            }
+                                        };
+                                        event
+                                            .set("_ingest._value.PatternDisposition", converted)?;
+                                    }
+                                }
+                                Ok(())
+                            })() {
+                                event.set("_ingest.on_failure_message", err.to_string())?;
+                                event.set("_ingest.on_failure_processor_type", "convert")?;
+                                event.set(
+                                    "_ingest.on_failure_processor_tag",
+                                    "convert_threatgraph_indicators_pattern_disposition_to_long",
+                                )?;
+                                event.remove("_ingest._value.PatternDisposition");
+                                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                                event.remove("_ingest.on_failure_message");
+                                event.remove("_ingest.on_failure_processor_type");
+                                event.remove("_ingest.on_failure_processor_tag");
+                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                if event.has("crowdstrike.event.CompositeId") {
+                    event.rename("crowdstrike.event.CompositeId", "event.id")?;
+                }
+                if event.has("crowdstrike.event.FalconHostLink") {
+                    event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            event.append(
+                                "threat.indicator.id",
+                                event
+                                    .get("_ingest._value.IndicatorId")
+                                    .cloned()
+                                    .unwrap_or(Value::Null),
+                            )?;
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            event.append(
+                                "threat.indicator.name",
+                                event
+                                    .get("_ingest._value.DisplayName")
+                                    .cloned()
+                                    .unwrap_or(Value::Null),
+                            )?;
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            event.append(
+                                "threat.indicator.description",
+                                event
+                                    .get("_ingest._value.Description")
+                                    .cloned()
+                                    .unwrap_or(Value::Null),
+                            )?;
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                        && !(event
+                            .get_str("crowdstrike.event.ThreatgraphIndicators")
+                            .is_none_or(|s| s.is_empty()))
+                };
+                if _cond {
+                    // Painless script
+                    // Source: def indicator = ctx.crowdstrike.event.ThreatgraphIndicators[0];\nif (indicator.HostId != null && indicator.HostId != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.HostId;\n}\nif (indicator.Hostname != null && indicator.Hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.Hostname;\n}\nif (indicator.ProcessId != null && indicator.ProcessId != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.ProcessId;\n}
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec(
+                        event,
+                        cached_script!(
+                            r#"def indicator = ctx.crowdstrike.event.ThreatgraphIndicators[0];\nif (indicator.HostId != null && indicator.HostId != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.HostId;\n}\nif (indicator.Hostname != null && indicator.Hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.Hostname;\n}\nif (indicator.ProcessId != null && indicator.ProcessId != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.ProcessId;\n}"#
+                        ),
+                    )?;
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    if let Some(Value::Array(items)) = event
+                        .get("crowdstrike.event.ThreatgraphIndicators")
+                        .cloned()
+                    {
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            event.append(
+                                "related.hosts",
+                                event
+                                    .get("_ingest._value.Hostname")
+                                    .cloned()
+                                    .unwrap_or(Value::Null),
+                            )?;
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        event.remove("_ingest");
+                        event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                    }
+                }
+                // End nested pipeline: "automated_lead_summary"
+            }
+
+            let _cond =
+                { event.get_str("crowdstrike.metadata.eventType") == Some("CustomerIOCEvent") };
+            if _cond {
+                // Begin nested pipeline: "customer_ioc_event"
+                event.set("event.kind", json!("enrichment"))?;
+                event.append("event.category", json!("threat"))?;
+                event.append("event.type", json!("indicator"))?;
+                if let Some(v) = event
+                    .get("crowdstrike.event.ComputerName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("host.hostname", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.ComputerName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("host.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.DeviceId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("host.id", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.FileName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.FilePath")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.path", v)?;
+                }
+                let _cond = {
+                    event
+                        .get_str("crowdstrike.event.IPv4")
+                        .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has("crowdstrike.event.IPv4") {
+                            if let Some(s) = event.get_string("crowdstrike.event.IPv4") {
+                                // Validate IP format
+                                let s = s.trim();
+                                if s.parse::<std::net::IpAddr>().is_err() {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.IPv4".into(),
+                                        message: format!("cannot convert '{}' to IP", s),
+                                    });
+                                }
+                                event.set("threat.indicator.ip", s)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set("_ingest.on_failure_processor_tag", "convert_IPv4_to_ip")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                let _cond = {
+                    event
+                        .get_str("crowdstrike.event.IPv6")
+                        .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has("crowdstrike.event.IPv6") {
+                            if let Some(s) = event.get_string("crowdstrike.event.IPv6") {
+                                // Validate IP format
+                                let s = s.trim();
+                                if s.parse::<std::net::IpAddr>().is_err() {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.IPv6".into(),
+                                        message: format!("cannot convert '{}' to IP", s),
+                                    });
+                                }
+                                event.set("threat.indicator.ip", s)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set("_ingest.on_failure_processor_tag", "convert_IPv6_to_ip")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                if event.has("threat.indicator.ip") {
+                    if let Some(ip_str) = event.get_string("threat.indicator.ip") {
+                        let ip_str = ip_str.to_string();
+                        // GeoIP enrichment (GeoLite2-City.mmdb)
+                        if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
+                            if let Some(v) = geo.get("country_iso_code") {
+                                event.set("threat.indicator.geo.country_iso_code", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("country_name") {
+                                event.set("threat.indicator.geo.country_name", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("continent_name") {
+                                event.set("threat.indicator.geo.continent_name", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("region_iso_code") {
+                                event.set("threat.indicator.geo.region_iso_code", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("region_name") {
+                                event.set("threat.indicator.geo.region_name", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("city_name") {
+                                event.set("threat.indicator.geo.city_name", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("timezone") {
+                                event.set("threat.indicator.geo.timezone", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("location") {
+                                event.set("threat.indicator.geo.location", v.clone())?;
+                            }
+                        }
+                    }
+                }
+                if event.has("threat.indicator.ip") {
+                    if let Some(ip_str) = event.get_string("threat.indicator.ip") {
+                        let ip_str = ip_str.to_string();
+                        // GeoIP enrichment (GeoLite2-ASN.mmdb)
+                        if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
+                            if let Some(v) = geo.get("asn") {
+                                event.set("threat.indicator.as.asn", v.clone())?;
+                            }
+                            if let Some(v) = geo.get("organization_name") {
+                                event.set("threat.indicator.as.organization_name", v.clone())?;
+                            }
+                        }
+                    }
+                }
+                if event.has("threat.indicator.as.asn") {
+                    event.rename("threat.indicator.as.asn", "threat.indicator.as.number")?;
+                }
+                if event.has("threat.indicator.as.organization_name") {
+                    event.rename(
+                        "threat.indicator.as.organization_name",
+                        "threat.indicator.as.organization.name",
+                    )?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.ParentProcessId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("process.parent.entity_id", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.ProcessId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("process.entity_id", v)?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.ProcessStartTime")
+                        && event
+                            .get_str("crowdstrike.event.ProcessStartTime")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.ProcessStartTime")
+                        {
+                            if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
+                                event.set("process.start", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_ProcessStartTime")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.SHA256String")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("threat.indicator.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.MD5String")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("threat.indicator.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.DomainName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("threat.indicator.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.IPv4")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("threat.indicator.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.IPv6")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("threat.indicator.name", v)?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.IPv4") };
+                if _cond {
+                    event.set("threat.indicator.type", json!("ipv4-addr"))?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.IPv6") };
+                if _cond {
+                    event.set("threat.indicator.type", json!("ipv6-addr"))?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.DomainName") };
+                if _cond {
+                    event.set("threat.indicator.type", json!("domain-name"))?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.SHA256String")
+                        || event.has_value("crowdstrike.event.MD5String")
+                };
+                if _cond {
+                    event.set("threat.indicator.type", json!("file"))?;
+                }
+                let _cond = {
+                    event.has_value("threat.indicator.ip")
+                        && event
+                            .get_str("threat.indicator.ip")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.ip",
+                        event
+                            .get("threat.indicator.ip")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.SHA256String")
+                        && event
+                            .get_str("crowdstrike.event.SHA256String")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.hash",
+                        event
+                            .get("crowdstrike.event.SHA256String")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.MD5String")
+                        && event
+                            .get_str("crowdstrike.event.MD5String")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.hash",
+                        event
+                            .get("crowdstrike.event.MD5String")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.DomainName")
+                        && event
+                            .get_str("crowdstrike.event.DomainName")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.hosts",
+                        event
+                            .get("crowdstrike.event.DomainName")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                event.remove("crowdstrike.event.ComputerName");
+                event.remove("crowdstrike.event.DeviceId");
+                event.remove("crowdstrike.event.FileName");
+                event.remove("crowdstrike.event.FilePath");
+                event.remove("crowdstrike.event.ParentProcessId");
+                event.remove("crowdstrike.event.ProcessId");
+                event.remove("crowdstrike.event.ProcessStartTime");
+                let _cond = { event.has_value("error.message") };
+                if _cond {
+                    event.set("event.kind", json!("pipeline_error"))?;
+                }
+                let _cond = { event.has_value("error.message") };
+                if _cond {
+                    event.append("tags", json!("preserve_original_event"))?;
+                }
+                // End nested pipeline: "customer_ioc_event"
+            }
+
+            let _cond = {
+                event.get_str("crowdstrike.metadata.eventType")
+                    == Some("DataProtectionDetectionSummaryEvent")
+            };
+            if _cond {
+                // Begin nested pipeline: "data_protection_detection_summary"
+                event.set("event.kind", json!("alert"))?;
+                event.append("event.category", json!("malware"))?;
+                event.append("event.type", json!("info"))?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.DataVolume") {
+                        if let Some(val) = event.get("crowdstrike.event.DataVolume") {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.DataVolume".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.DataVolume".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.DataVolume".into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.DataVolume", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_DataVolume_to_long",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.ContentPatterns.ConfidenceLevel") {
+                        if let Some(val) =
+                            event.get("crowdstrike.event.ContentPatterns.ConfidenceLevel")
+                        {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ContentPatterns.ConfidenceLevel".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ContentPatterns.ConfidenceLevel".into(), message: format!("cannot convert '{}' to integer", s) })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.ContentPatterns.ConfidenceLevel"
+                                            .into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set(
+                                "crowdstrike.event.ContentPatterns.ConfidenceLevel",
+                                converted,
+                            )?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_ContentPatterns_ConfidenceLevel_to_long",
+                    )?;
+                    if event
+                        .remove("crowdstrike.event.ContentPatterns.ConfidenceLevel")
+                        .is_none()
+                    {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.ContentPatterns.ConfidenceLevel".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.ContentPatterns.MatchCount") {
+                        if let Some(val) = event.get("crowdstrike.event.ContentPatterns.MatchCount")
+                        {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                            TransformError::ParseError {
+                                                path:
+                                                    "crowdstrike.event.ContentPatterns.MatchCount"
+                                                        .into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| {
+                                            TransformError::ParseError {
+                                                path:
+                                                    "crowdstrike.event.ContentPatterns.MatchCount"
+                                                        .into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.ContentPatterns.MatchCount".into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.ContentPatterns.MatchCount", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_ContentPatterns_MatchCount_to_long",
+                    )?;
+                    if event
+                        .remove("crowdstrike.event.ContentPatterns.MatchCount")
+                        .is_none()
+                    {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.ContentPatterns.MatchCount".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.FilesEgressedCount") {
+                        if let Some(val) = event.get("crowdstrike.event.FilesEgressedCount") {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.FilesEgressedCount".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.FilesEgressedCount".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.FilesEgressedCount".into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.FilesEgressedCount", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_FilesEgressedCount_to_long",
+                    )?;
+                    if event
+                        .remove("crowdstrike.event.FilesEgressedCount")
+                        .is_none()
+                    {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.FilesEgressedCount".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserNotified") {
+                        if let Some(val) = event.get("crowdstrike.event.UserNotified") {
+                            let converted = match val {
+                                Value::Bool(_) => val.clone(),
+                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
+                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
+                                other => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.UserNotified".into(),
+                                        message: format!("cannot convert '{}' to boolean", other),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.UserNotified", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_UserNotified_to_boolean",
+                    )?;
+                    if event.remove("crowdstrike.event.UserNotified").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.UserNotified".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserMapped") {
+                        if let Some(val) = event.get("crowdstrike.event.UserMapped") {
+                            let converted = match val {
+                                Value::Bool(_) => val.clone(),
+                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
+                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
+                                other => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.UserMapped".into(),
+                                        message: format!("cannot convert '{}' to boolean", other),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.UserMapped", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_UserMapped_to_boolean",
+                    )?;
+                    if event.remove("crowdstrike.event.UserMapped").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.UserMapped".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.IsClipboard") {
+                        if let Some(val) = event.get("crowdstrike.event.IsClipboard") {
+                            let converted = match val {
+                                Value::Bool(_) => val.clone(),
+                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
+                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
+                                other => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.IsClipboard".into(),
+                                        message: format!("cannot convert '{}' to boolean", other),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.IsClipboard", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_IsClipboard_to_boolean",
+                    )?;
+                    if event.remove("crowdstrike.event.IsClipboard").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.IsClipboard".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                let _cond = { event.has_value("crowdstrike.event.EventTimestamp") };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.EventTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                            {
+                                event.set("crowdstrike.event.EventTimestamp", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set("_ingest.on_failure_processor_tag", "date_EventTimestamp")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                let _cond = { event.has_value("crowdstrike.event.SessionStartTimestamp") };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.SessionStartTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                            {
+                                event.set("event.start", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "date_SessionStartTimestamp",
+                        )?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                let _cond = { event.has_value("crowdstrike.event.SessionEndTimestamp") };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("crowdstrike.event.SessionEndTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                            {
+                                event.set("event.end", parsed)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "date_SessionEndTimestamp",
+                        )?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                let _cond = { event.has_value("event.start") && event.has_value("event.end") };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        // Painless script
+                        // Source: Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n
+                        // TODO: Transpile Painless to Rust (2.2.3)
+                        painless_exec(
+                            event,
+                            cached_script!(
+                                r#"Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n"#
+                            ),
+                        )?;
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "script")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "script_to_set_event_duration",
+                        )?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.Description")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("message", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.EgressEventId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.id", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.Name")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.action", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.FalconHostLink")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.reference", v)?;
+                }
+                let _cond =
+                    { event.get_str("crowdstrike.event.ResponseAction") == Some("allowed") };
+                if _cond {
+                    event.set("event.outcome", json!("success"))?;
+                }
+                let _cond =
+                    { event.get_str("crowdstrike.event.ResponseAction") == Some("blocked") };
+                if _cond {
+                    event.set("event.outcome", json!("failure"))?;
+                }
+                if !event.has("event.outcome") {
+                    event.set("event.outcome", json!("unknown"))?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.ContentSha")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.hash.sha256", v)?;
+                }
+                let _cond = { event.has_value("file.hash.sha256") };
+                if _cond {
+                    event.append(
+                        "related.hash",
+                        event
+                            .get("file.hash.sha256")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.Filename")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.name", v)?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.Filename") };
+                if _cond {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        // Painless script
+                        // Source: def idx = ctx.crowdstrike.event.Filename.lastIndexOf('.');\nif (idx != -1) {\n  ctx.file = ctx.file ?: [:];\n  ctx.file.extension = ctx.crowdstrike.event.Filename.substring(idx + 1).toLowerCase();\n}
+                        // TODO: Transpile Painless to Rust (2.2.3)
+                        painless_exec(
+                            event,
+                            cached_script!(
+                                r#"def idx = ctx.crowdstrike.event.Filename.lastIndexOf('.');\nif (idx != -1) {\n  ctx.file = ctx.file ?: [:];\n  ctx.file.extension = ctx.crowdstrike.event.Filename.substring(idx + 1).toLowerCase();\n}"#
+                            ),
+                        )?;
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "script")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "extract_file_extension_from_filename",
+                        )?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.DataVolume")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("file.size", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.Hostname")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("host.name", v)?;
+                }
+                if event.has("crowdstrike.event.Platform") {
+                    if let Some(s) = event.get_string("crowdstrike.event.Platform") {
+                        let lowered = s.to_lowercase();
+                        event.set("host.os.platform", lowered)?;
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.Policy.ID")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("rule.id", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.Policy.Name")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("rule.name", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.UserSid")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("user.id", v)?;
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.UserName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("user.name", v)?;
+                }
+                event.remove("crowdstrike.event.ContentSha");
+                event.remove("crowdstrike.event.DataVolume");
+                event.remove("crowdstrike.event.Description");
+                event.remove("crowdstrike.event.EgressEventId");
+                event.remove("crowdstrike.event.FalconHostLink");
+                event.remove("crowdstrike.event.Filename");
+                event.remove("crowdstrike.event.Hostname");
+                event.remove("crowdstrike.event.Name");
+                event.remove("crowdstrike.event.Platform");
+                event.remove("crowdstrike.event.Policy");
+                event.remove("crowdstrike.event.SessionStartTimestamp");
+                event.remove("crowdstrike.event.SessionEndTimestamp");
+                event.remove("crowdstrike.event.UserSid");
+                let _cond = { event.has_value("error.message") };
+                if _cond {
+                    event.set("event.kind", json!("pipeline_error"))?;
+                }
+                let _cond = { event.has_value("error.message") };
+                if _cond {
+                    event.append("tags", json!("preserve_original_event"))?;
+                }
+                // End nested pipeline: "data_protection_detection_summary"
             }
 
             let _cond = {
@@ -339,9 +2303,6 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.Severity") {
-                    event.rename("crowdstrike.event.Severity", "event.severity")?;
-                }
                 if event.has("crowdstrike.event.DetectDescription") {
                     event.rename("crowdstrike.event.DetectDescription", "message")?;
                 }
@@ -351,8 +2312,12 @@ impl Transform for Default {
                         event.set("rule.description", v)?;
                     }
                 }
-                if event.has("crowdstrike.event.FileName") {
-                    event.rename("crowdstrike.event.FileName", "process.name")?;
+                if let Some(v) = event
+                    .get("crowdstrike.event.FileName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("process.name", v)?;
                 }
                 if event.has("crowdstrike.event.MachineDomain") {
                     event.rename("crowdstrike.event.MachineDomain", "host.domain")?;
@@ -420,7 +2385,7 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
-                let _cond = { event.has_value("cropwdstrike.event.MacAddress") };
+                let _cond = { event.has_value("crowdstrike.event.MacAddress") };
                 if _cond {
                     if event.has("crowdstrike.event.MacAddress") {
                         event.rename("crowdstrike.event.MacAddress", "host.mac")?;
@@ -435,7 +2400,6 @@ impl Transform for Default {
                         }
                     }
                 }
-                event.set("threat.framework", json!("MITRE ATT&CK"))?;
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
                 if _cond {
                     event.append(
@@ -477,6 +2441,495 @@ impl Transform for Default {
                     )?;
                 }
                 // End nested pipeline: "detection_summary"
+            }
+
+            let _cond = {
+                event.get_str("crowdstrike.metadata.eventType") == Some("EppDetectionSummaryEvent")
+            };
+            if _cond {
+                // Begin nested pipeline: "epp_detection_summary"
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename(
+                        "crowdstrike.event.GrandParentCommandLine",
+                        "crowdstrike.event.GrandparentCommandLine",
+                    )?;
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename(
+                        "crowdstrike.event.GrandParentImageFileName",
+                        "crowdstrike.event.GrandparentImageFileName",
+                    )?;
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename(
+                        "crowdstrike.event.GrandParentImageFilePath",
+                        "crowdstrike.event.GrandparentImageFilePath",
+                    )?;
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename(
+                        "crowdstrike.event.Hostname",
+                        "crowdstrike.event.ComputerName",
+                    )?;
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename(
+                        "crowdstrike.event.LogonDomain",
+                        "crowdstrike.event.MachineDomain",
+                    )?;
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename("crowdstrike.event.AgentId", "crowdstrike.event.SensorId")?;
+                    Ok(())
+                })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    event.rename("crowdstrike.event.Name", "crowdstrike.event.DetectName")?;
+                    Ok(())
+                })();
+                let _cond = {
+                    event.has_value("crowdstrike.event.LocalIPv6")
+                        && event
+                            .get_str("crowdstrike.event.LocalIPv6")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(s) = event.get_string("crowdstrike.event.LocalIPv6") {
+                            // Validate IP format
+                            let s = s.trim();
+                            if s.parse::<std::net::IpAddr>().is_err() {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.LocalIPv6".into(),
+                                    message: format!("cannot convert '{}' to IP", s),
+                                });
+                            }
+                            event.set("crowdstrike.event.LocalIPv6", s)?;
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_crowdstrike_LocalIPv6_ip",
+                        )?;
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.remove("crowdstrike.event.LocalIPv6").is_none() {
+                                return Err(TransformError::FieldNotFound {
+                                    path: "crowdstrike.event.LocalIPv6".into(),
+                                });
+                            }
+                            Ok(())
+                        })();
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.FilesAccessed")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(Value::Array(items)) =
+                            event.get("crowdstrike.event.FilesAccessed").cloned()
+                        {
+                            let mut out = Vec::with_capacity(items.len());
+                            for item in items {
+                                event.set("_ingest._value", item)?;
+                                // on_failure: 2 handler(s)
+                                if let Err(err) = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Timestamp")
+                                    {
+                                        if let Some(parsed) =
+                                            parse_date_out(&date_str, &["UNIX"], None, None)
+                                        {
+                                            event.set("_ingest._value.Timestamp", parsed)?;
+                                        }
+                                    }
+                                    Ok(())
+                                })() {
+                                    event.set("_ingest.on_failure_message", err.to_string())?;
+                                    event.set("_ingest.on_failure_processor_type", "date")?;
+                                    event.set(
+                                        "_ingest.on_failure_processor_tag",
+                                        "convert_crowdstrike_filesaccessed_timestamp",
+                                    )?;
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        if event.remove("_ingest._value.Timestamp").is_none() {
+                                            return Err(TransformError::FieldNotFound {
+                                                path: "_ingest._value.Timestamp".into(),
+                                            });
+                                        }
+                                        Ok(())
+                                    })();
+                                    event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                                    event.remove("_ingest.on_failure_message");
+                                    event.remove("_ingest.on_failure_processor_type");
+                                    event.remove("_ingest.on_failure_processor_tag");
+                                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                        event.remove("_ingest");
+                                    }
+                                }
+                                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            }
+                            event.remove("_ingest");
+                            event.set("crowdstrike.event.FilesAccessed", Value::Array(out))?;
+                        }
+                        Ok(())
+                    })();
+                }
+                let _cond = {
+                    event
+                        .get("crowdstrike.event.FilesWritten")
+                        .is_some_and(|v| v.is_array())
+                };
+                if _cond {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(Value::Array(items)) =
+                            event.get("crowdstrike.event.FilesWritten").cloned()
+                        {
+                            let mut out = Vec::with_capacity(items.len());
+                            for item in items {
+                                event.set("_ingest._value", item)?;
+                                // on_failure: 2 handler(s)
+                                if let Err(err) = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Timestamp")
+                                    {
+                                        if let Some(parsed) =
+                                            parse_date_out(&date_str, &["UNIX"], None, None)
+                                        {
+                                            event.set("_ingest._value.Timestamp", parsed)?;
+                                        }
+                                    }
+                                    Ok(())
+                                })() {
+                                    event.set("_ingest.on_failure_message", err.to_string())?;
+                                    event.set("_ingest.on_failure_processor_type", "date")?;
+                                    event.set(
+                                        "_ingest.on_failure_processor_tag",
+                                        "convert_crowdstrike_fileswritten_timestamp",
+                                    )?;
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        if event.remove("_ingest._value.Timestamp").is_none() {
+                                            return Err(TransformError::FieldNotFound {
+                                                path: "_ingest._value.Timestamp".into(),
+                                            });
+                                        }
+                                        Ok(())
+                                    })();
+                                    event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                                    event.remove("_ingest.on_failure_message");
+                                    event.remove("_ingest.on_failure_processor_type");
+                                    event.remove("_ingest.on_failure_processor_tag");
+                                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                        event.remove("_ingest");
+                                    }
+                                }
+                                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            }
+                            event.remove("_ingest");
+                            event.set("crowdstrike.event.FilesWritten", Value::Array(out))?;
+                        }
+                        Ok(())
+                    })();
+                }
+                // Begin nested pipeline: "detection_summary"
+                event.set("event.kind", json!("alert"))?;
+                event.append("event.category", json!("malware"))?;
+                event.append("event.type", json!("info"))?;
+                if event.has("crowdstrike.event.UserName") {
+                    event.rename("crowdstrike.event.UserName", "user.name")?;
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.ProcessStartTime")
+                        && event
+                            .get_as_string("crowdstrike.event.ProcessStartTime")
+                            .is_some_and(|s| s.len() >= 12)
+                };
+                if _cond {
+                    if let Some(date_str) =
+                        event.get_as_string("crowdstrike.event.ProcessStartTime")
+                    {
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("process.start", parsed)?;
+                        }
+                    }
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.ProcessStartTime")
+                        && event
+                            .get_as_string("crowdstrike.event.ProcessStartTime")
+                            .is_some_and(|s| s.len() <= 11)
+                };
+                if _cond {
+                    if let Some(date_str) =
+                        event.get_as_string("crowdstrike.event.ProcessStartTime")
+                    {
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("process.start", parsed)?;
+                        }
+                    }
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.ProcessEndTime")
+                        && event
+                            .get_as_string("crowdstrike.event.ProcessEndTime")
+                            .is_some_and(|s| s.len() >= 12)
+                };
+                if _cond {
+                    if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime")
+                    {
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
+                        {
+                            event.set("process.end", parsed)?;
+                        }
+                    }
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.ProcessEndTime")
+                        && event
+                            .get_as_string("crowdstrike.event.ProcessEndTime")
+                            .is_some_and(|s| s.len() <= 11)
+                };
+                if _cond {
+                    if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime")
+                    {
+                        if let Some(parsed) =
+                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
+                        {
+                            event.set("process.end", parsed)?;
+                        }
+                    }
+                }
+                let _cond = {
+                    event.has_value("crowdstrike.event.LocalIP")
+                        && event
+                            .get_str("crowdstrike.event.LocalIP")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    if event.has("crowdstrike.event.LocalIP") {
+                        event.rename("crowdstrike.event.LocalIP", "source.ip")?;
+                    }
+                }
+                if event.has("crowdstrike.event.ProcessId") {
+                    event.rename("crowdstrike.event.ProcessId", "process.pid")?;
+                }
+                if event.has("crowdstrike.event.HostGroups") {
+                    if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
+                        let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                        event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
+                    }
+                }
+                if event.has("crowdstrike.event.ParentProcessId") {
+                    event.rename("crowdstrike.event.ParentProcessId", "process.parent.pid")?;
+                }
+                let _cond = { !event.has_value("process.parent.executable") };
+                if _cond {
+                    if event.has("crowdstrike.event.ParentImageFileName") {
+                        event.rename(
+                            "crowdstrike.event.ParentImageFileName",
+                            "process.parent.executable",
+                        )?;
+                    }
+                }
+                if event.has("crowdstrike.event.PatternDispositionDescription") {
+                    event.rename(
+                        "crowdstrike.event.PatternDispositionDescription",
+                        "event.action",
+                    )?;
+                }
+                if event.has("crowdstrike.event.FalconHostLink") {
+                    event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+                }
+                if event.has("crowdstrike.event.DetectDescription") {
+                    event.rename("crowdstrike.event.DetectDescription", "message")?;
+                }
+                let _cond = { event.has_value("message") };
+                if _cond {
+                    if let Some(v) = event.get("message").cloned() {
+                        event.set("rule.description", v)?;
+                    }
+                }
+                if let Some(v) = event
+                    .get("crowdstrike.event.FileName")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("process.name", v)?;
+                }
+                if event.has("crowdstrike.event.MachineDomain") {
+                    event.rename("crowdstrike.event.MachineDomain", "host.domain")?;
+                }
+                if event.has("crowdstrike.event.ComputerName") {
+                    event.rename("crowdstrike.event.ComputerName", "host.name")?;
+                }
+                if event.has("crowdstrike.event.SHA256String") {
+                    event.rename("crowdstrike.event.SHA256String", "file.hash.sha256")?;
+                }
+                if event.has("crowdstrike.event.MD5String") {
+                    event.rename("crowdstrike.event.MD5String", "file.hash.md5")?;
+                }
+                if event.has("crowdstrike.event.SHA1String") {
+                    event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
+                }
+                let _cond = {
+                    event.has_value("file.hash.sha1")
+                        && event
+                            .get_str("file.hash.sha1")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.hash",
+                        event.get("file.hash.sha1").cloned().unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = {
+                    event.has_value("file.hash.sha256")
+                        && event
+                            .get_str("file.hash.sha256")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.hash",
+                        event
+                            .get("file.hash.sha256")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = {
+                    event.has_value("file.hash.md5")
+                        && event
+                            .get_str("file.hash.md5")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "related.hash",
+                        event.get("file.hash.md5").cloned().unwrap_or(Value::Null),
+                    )?;
+                }
+                if event.has("crowdstrike.event.FileName") {
+                    event.rename("crowdstrike.event.FileName", "file.name")?;
+                }
+                if event.has("crowdstrike.event.FilePath") {
+                    event.rename("crowdstrike.event.FilePath", "file.path")?;
+                }
+                if event.has("crowdstrike.event.DetectName") {
+                    event.rename("crowdstrike.event.DetectName", "rule.name")?;
+                }
+                if event.has("crowdstrike.event.DetectId") {
+                    event.rename("crowdstrike.event.DetectId", "rule.id")?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.MacAddress") };
+                if _cond {
+                    if event.has("crowdstrike.event.MacAddress") {
+                        event.rename("crowdstrike.event.MacAddress", "host.mac")?;
+                    }
+                }
+                let _cond = { event.has_value("host.mac") };
+                if _cond {
+                    if event.has("host.mac") {
+                        if let Some(s) = event.get_string("host.mac") {
+                            let uppered = s.to_uppercase();
+                            event.set("host.mac", uppered)?;
+                        }
+                    }
+                }
+                let _cond = { event.has_value("crowdstrike.event.Technique") };
+                if _cond {
+                    event.append(
+                        "threat.technique.name",
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.TechniqueId") };
+                if _cond {
+                    event.append(
+                        "threat.technique.id",
+                        event
+                            .get("crowdstrike.event.TechniqueId")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.Tactic") };
+                if _cond {
+                    event.append(
+                        "threat.tactic.name",
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.TacticId") };
+                if _cond {
+                    event.append(
+                        "threat.tactic.id",
+                        event
+                            .get("crowdstrike.event.TacticId")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                // End nested pipeline: "detection_summary"
+                // End nested pipeline: "epp_detection_summary"
             }
 
             let _cond = {
@@ -551,7 +3004,6 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.DetectDescription") {
                     event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
                 }
-                event.set("threat.framework", json!("MITRE ATT&CK"))?;
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
                 if _cond {
                     event.append(
@@ -601,9 +3053,6 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.Severity") {
-                    event.rename("crowdstrike.event.Severity", "event.severity")?;
-                }
                 if event.has("crowdstrike.event.SensorId") {
                     event.rename("crowdstrike.event.SensorId", "device.id")?;
                 }
@@ -611,6 +3060,104 @@ impl Transform for Default {
                     event.rename("crowdstrike.event.ProcessId", "process.pid")?;
                 }
                 // End nested pipeline: "mobile_detection_summary"
+            }
+
+            let _cond = {
+                event.get_str("crowdstrike.metadata.eventType")
+                    == Some("OverwatchGenericDetectionSummaryEvent")
+            };
+            if _cond {
+                // Begin nested pipeline: "overwatch_generic_detection_summary"
+                event.set("event.kind", json!("alert"))?;
+                event.append("event.category", json!("malware"))?;
+                event.append("event.type", json!("info"))?;
+                if event.has("crowdstrike.event.CompositeId") {
+                    event.rename("crowdstrike.event.CompositeId", "event.id")?;
+                }
+                if event.has("crowdstrike.event.FalconHostLink") {
+                    event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
+                }
+                if event.has("crowdstrike.event.Description") {
+                    event.rename("crowdstrike.event.Description", "message")?;
+                }
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.Severity") {
+                        if let Some(val) = event.get("crowdstrike.event.Severity") {
+                            let converted = match val {
+                                Value::String(s) => {
+                                    let s = s.trim();
+                                    if let Some(hex) = s.strip_prefix("0x") {
+                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.Severity".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    } else {
+                                        json!(s.parse::<i64>().map_err(|_| {
+                                            TransformError::ParseError {
+                                                path: "crowdstrike.event.Severity".into(),
+                                                message: format!(
+                                                    "cannot convert '{}' to integer",
+                                                    s
+                                                ),
+                                            }
+                                        })?)
+                                    }
+                                }
+                                Value::Number(n) => {
+                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
+                                }
+                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
+                                _ => {
+                                    return Err(TransformError::ParseError {
+                                        path: "crowdstrike.event.Severity".into(),
+                                        message: "cannot convert to integer".into(),
+                                    });
+                                }
+                            };
+                            event.set("crowdstrike.event.Severity", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_severity_to_long",
+                    )?;
+                    event.remove("crowdstrike.event.Severity");
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+                // End nested pipeline: "overwatch_generic_detection_summary"
             }
 
             let _cond =
@@ -621,8 +3168,29 @@ impl Transform for Default {
                 event.append("event.category", json!("malware"))?;
                 event.append("event.type", json!("info"))?;
                 event.append("event.action", json!("incident"))?;
-                if event.has("crowdstrike.event.UserId") {
-                    event.rename("crowdstrike.event.UserId", "user.name")?;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserId") {
+                        if let Some(input) = event.get_string("crowdstrike.event.UserId") {
+                            // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                            if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                                .extract_into(&input, event)?
+                            {
+                                // Grok pattern: %{GREEDYDATA:user.name}
+                                if !cached_grok!("%{GREEDYDATA:user.name}")
+                                    .extract_into(&input, event)?
+                                {}
+                            }
+                        }
+                    }
+                    Ok(())
+                })();
+                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
+                        event.set("user.email", v)?;
+                    }
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.IncidentStartTime")
@@ -732,9 +3300,6 @@ impl Transform for Default {
                             .cloned()
                             .unwrap_or(Value::Null),
                     )?;
-                }
-                if event.has("crowdstrike.event.Severity") {
-                    event.rename("crowdstrike.event.Severity", "event.severity")?;
                 }
                 if event.has("crowdstrike.event.Name") {
                     event.rename("crowdstrike.event.Name", "rule.name")?;
@@ -1192,11 +3757,10 @@ impl Transform for Default {
                         if let Some(parsed) =
                             parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
                         {
-                            event.set("process.end", parsed)?;
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
-                event.set("threat.framework", json!("MITRE ATT&CK"))?;
                 let _cond = { event.has_value("crowdstrike.event.Techniques") };
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.Techniques") {
@@ -1266,9 +3830,6 @@ impl Transform for Default {
                         event.set("rule.uuid", converted)?;
                     }
                 }
-                if event.has("crowdstrike.event.Severity") {
-                    event.rename("crowdstrike.event.Severity", "event.severity")?;
-                }
                 if event.has("crowdstrike.event.SourceAccountDomain") {
                     event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
                 }
@@ -1281,8 +3842,31 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.SourceEndpointHostName") {
                     event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
                 }
-                if event.has("crowdstrike.event.SourceEndpointIpAddress") {
-                    event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
+                let _cond = {
+                    event.has_value("crowdstrike.event.SourceEndpointIpAddress")
+                        && event
+                            .get_str("crowdstrike.event.SourceEndpointIpAddress")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "host.ip",
+                        event
+                            .get("crowdstrike.event.SourceEndpointIpAddress")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.SourceEndpointIpAddress") };
+                if _cond {
+                    if event
+                        .remove("crowdstrike.event.SourceEndpointIpAddress")
+                        .is_none()
+                    {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.SourceEndpointIpAddress".into(),
+                        });
+                    }
                 }
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
                 if _cond {
@@ -1677,7 +4261,7 @@ impl Transform for Default {
                         json!(format!(
                             "recon-notification-{}",
                             event
-                                .get("ctx.crowdstrike.event.ItemType")
+                                .get("crowdstrike.event.ItemType")
                                 .map_or_else(String::new, painless_to_string)
                         )),
                     )?;
@@ -1691,8 +4275,12 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.RuleName") {
                     event.rename("crowdstrike.event.RuleName", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.RuleTopic") {
-                    event.rename("crowdstrike.event.RuleTopic", "rule.ruleset")?;
+                if let Some(v) = event
+                    .get("crowdstrike.event.RuleTopic")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("rule.ruleset", v)?;
                 }
                 if event.has("crowdstrike.event.RuleTopic") {
                     event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
@@ -1782,9 +4370,6 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.IncidentDescription") {
                     event.rename("crowdstrike.event.IncidentDescription", "message")?;
                 }
-                if event.has("crowdstrike.event.Severity") {
-                    event.rename("crowdstrike.event.Severity", "event.severity")?;
-                }
                 if event.has("crowdstrike.event.IdentityProtectionIncidentId") {
                     event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
                 }
@@ -1820,8 +4405,28 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.EndpointName") {
                     event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
                 }
-                if event.has("crowdstrike.event.EndpointIp") {
-                    event.rename("crowdstrike.event.EndpointIp", "host.ip")?;
+                let _cond = {
+                    event.has_value("crowdstrike.event.EndpointIp")
+                        && event
+                            .get_str("crowdstrike.event.EndpointIp")
+                            .is_some_and(|s| !s.is_empty())
+                };
+                if _cond {
+                    event.append(
+                        "host.ip",
+                        event
+                            .get("crowdstrike.event.EndpointIp")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    )?;
+                }
+                let _cond = { event.has_value("crowdstrike.event.EndpointIp") };
+                if _cond {
+                    if event.remove("crowdstrike.event.EndpointIp").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "crowdstrike.event.EndpointIp".into(),
+                        });
+                    }
                 }
                 let _cond = { event.has_value("crowdstrike.event.StartTime") };
                 if _cond {
@@ -1920,7 +4525,7 @@ impl Transform for Default {
                         if let Some(parsed) =
                             parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
                         {
-                            event.set("event.start", parsed)?;
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -1935,7 +4540,7 @@ impl Transform for Default {
                         if let Some(parsed) =
                             parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
                         {
-                            event.set("event.start", parsed)?;
+                            event.set("event.end", parsed)?;
                         }
                     }
                 }
@@ -1988,9 +4593,6 @@ impl Transform for Default {
                 }
                 if event.has("crowdstrike.event.EventSource") {
                     event.rename("crowdstrike.event.EventSource", "event.provider")?;
-                }
-                if event.has("crowdstrike.event.Severity") {
-                    event.rename("crowdstrike.event.Severity", "event.severity")?;
                 }
                 let _cond = { !event.has_value("cloud.account.id") };
                 if _cond {
@@ -2173,8 +4775,29 @@ impl Transform for Default {
                 event.append("event.category", json!("iam"))?;
                 event.append("event.type", json!("change"))?;
                 event.set("event.action", json!("user_activity_audit_event"))?;
-                if event.has("crowdstrike.event.UserId") {
-                    event.rename("crowdstrike.event.UserId", "user.name")?;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserId") {
+                        if let Some(input) = event.get_string("crowdstrike.event.UserId") {
+                            // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                            if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                                .extract_into(&input, event)?
+                            {
+                                // Grok pattern: %{GREEDYDATA:user.name}
+                                if !cached_grok!("%{GREEDYDATA:user.name}")
+                                    .extract_into(&input, event)?
+                                {}
+                            }
+                        }
+                    }
+                    Ok(())
+                })();
+                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
+                        event.set("user.email", v)?;
+                    }
                 }
                 if event.has("crowdstrike.event.OperationName") {
                     event.rename("crowdstrike.event.OperationName", "message")?;
@@ -2281,8 +4904,29 @@ impl Transform for Default {
                 if _cond {
                     event.append("event.type", json!("deletion"))?;
                 }
-                if event.has("crowdstrike.event.UserId") {
-                    event.rename("crowdstrike.event.UserId", "user.name")?;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserId") {
+                        if let Some(input) = event.get_string("crowdstrike.event.UserId") {
+                            // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                            if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                                .extract_into(&input, event)?
+                            {
+                                // Grok pattern: %{GREEDYDATA:user.name}
+                                if !cached_grok!("%{GREEDYDATA:user.name}")
+                                    .extract_into(&input, event)?
+                                {}
+                            }
+                        }
+                    }
+                    Ok(())
+                })();
+                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserId != null && ctx.crowdstrike.event.UserId.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
+                        event.set("user.email", v)?;
+                    }
                 }
                 let _cond = { event.has_value("crowdstrike.event.OperationName") };
                 if _cond {
@@ -2337,7 +4981,7 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.RuleAction")
-                        && event.get_str("crowdstrike.event.RuleAction") == Some("2")
+                        && event.get_str("crowdstrike.event.RuleAction") == Some("1")
                 };
                 if _cond {
                     event.set("_tmp_.action", json!("Allowed"))?;
@@ -2442,9 +5086,17 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.EventType") {
                     event.rename("crowdstrike.event.EventType", "event.code")?;
                 }
-                let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("1") };
+                let _cond = { event.has_value("crowdstrike.event.ConnectionDirection") };
                 if _cond {
-                    event.set("network.direction", json!("ingress"))?;
+                    // Painless script
+                    // Source: def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec(
+                        event,
+                        cached_script!(
+                            r#"def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n"#
+                        ),
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.RemoteAddress")
@@ -2557,10 +5209,6 @@ impl Transform for Default {
                             event.set("source.port", converted)?;
                         }
                     }
-                }
-                let _cond = { event.get_str("crowdstrike.event.ConnectionDirection") == Some("2") };
-                if _cond {
-                    event.set("network.direction", json!("egress"))?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.RemoteAddress")
@@ -2691,8 +5339,29 @@ impl Transform for Default {
                 event.append("event.category", json!("session"))?;
                 event.append("event.action", json!("remote_response_session_start_event"))?;
                 event.append("event.type", json!("start"))?;
-                if event.has("crowdstrike.event.UserName") {
-                    event.rename("crowdstrike.event.UserName", "user.name")?;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserName") {
+                        if let Some(input) = event.get_string("crowdstrike.event.UserName") {
+                            // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                            if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                                .extract_into(&input, event)?
+                            {
+                                // Grok pattern: %{GREEDYDATA:user.name}
+                                if !cached_grok!("%{GREEDYDATA:user.name}")
+                                    .extract_into(&input, event)?
+                                {}
+                            }
+                        }
+                    }
+                    Ok(())
+                })();
+                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserName != null && ctx.crowdstrike.event.UserName.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    if let Some(v) = event.get("crowdstrike.event.UserName").cloned() {
+                        event.set("user.email", v)?;
+                    }
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.StartTimestamp")
@@ -2744,8 +5413,29 @@ impl Transform for Default {
                 event.append("event.category", json!("session"))?;
                 event.append("event.action", json!("remote_response_session_end_event"))?;
                 event.append("event.type", json!("end"))?;
-                if event.has("crowdstrike.event.UserName") {
-                    event.rename("crowdstrike.event.UserName", "user.name")?;
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if event.has("crowdstrike.event.UserName") {
+                        if let Some(input) = event.get_string("crowdstrike.event.UserName") {
+                            // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                            if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                                .extract_into(&input, event)?
+                            {
+                                // Grok pattern: %{GREEDYDATA:user.name}
+                                if !cached_grok!("%{GREEDYDATA:user.name}")
+                                    .extract_into(&input, event)?
+                                {}
+                            }
+                        }
+                    }
+                    Ok(())
+                })();
+                // SKIPPED: condition not transpiled: ctx.crowdstrike?.event?.UserName != null && ctx.crowdstrike.event.UserName.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    if let Some(v) = event.get("crowdstrike.event.UserName").cloned() {
+                        event.set("user.email", v)?;
+                    }
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.EndTimestamp")
@@ -2937,6 +5627,13 @@ impl Transform for Default {
                         event.set("user.domain", remaining)?;
                     }
                 }
+                // SKIPPED: condition not transpiled: ctx.user?.id != null && ctx.user.id.indexOf("@") > 0
+                #[allow(unreachable_code, unused_variables)]
+                if false {
+                    if let Some(v) = event.get("user.id").cloned() {
+                        event.set("user.email", v)?;
+                    }
+                }
                 if event.has("crowdstrike.event.Status") {
                     if let Some(val) = event.get("crowdstrike.event.Status") {
                         let converted = match val {
@@ -2952,15 +5649,22 @@ impl Transform for Default {
                 // End nested pipeline: "scheduled_report_notification_event"
             }
 
-            let _cond = {
-                event.has_value("user.name")
-                    && event.get("user.name").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
-                        serde_json::Value::String(s) => s.contains("@"),
-                        _ => false,
-                    })
-            };
-            if _cond {
+            let v = event.get("process.pid").cloned().unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("process.entity_id", v)?;
+            }
+
+            let v = event
+                .get("process.parent.pid")
+                .cloned()
+                .unwrap_or(Value::Null);
+            if !painless_is_empty_value(&v) {
+                event.set("process.parent.entity_id", v)?;
+            }
+
+            // SKIPPED: condition not transpiled: ctx.user?.email == null && ctx.user?.name != null && ctx.user.name.indexOf("@") > 0
+            #[allow(unreachable_code, unused_variables)]
+            if false {
                 if let Some(v) = event.get("user.name").cloned() {
                     event.set("user.email", v)?;
                 }
@@ -2974,6 +5678,14 @@ impl Transform for Default {
                 event.append(
                     "related.user",
                     event.get("user.name").cloned().unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("user.email") };
+            if _cond {
+                event.append(
+                    "related.user",
+                    event.get("user.email").cloned().unwrap_or(Value::Null),
                 )?;
             }
 
@@ -3024,10 +5736,19 @@ impl Transform for Default {
                 if let Some(v) = event.get("crowdstrike.event.DetectId") {
                     hasher.update(v.to_string().as_bytes());
                 }
+                if let Some(v) = event.get("crowdstrike.event.PID") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                if let Some(v) = event.get("crowdstrike.event.RuleId") {
+                    hasher.update(v.to_string().as_bytes());
+                }
                 if let Some(v) = event.get("crowdstrike.metadata.eventType") {
                     hasher.update(v.to_string().as_bytes());
                 }
                 if let Some(v) = event.get("crowdstrike.metadata.customerIDString") {
+                    hasher.update(v.to_string().as_bytes());
+                }
+                if let Some(v) = event.get("crowdstrike.metadata.offset") {
                     hasher.update(v.to_string().as_bytes());
                 }
                 let hash = format!("{:x}", hasher.finalize());
@@ -3096,28 +5817,28 @@ impl Transform for Default {
                     // GeoIP enrichment (GeoLite2-City.mmdb)
                     if let Ok(geo) = geoip_lookup("geoip_city", &ip_str) {
                         if let Some(v) = geo.get("country_iso_code") {
-                            event.set("source.geo.country_iso_code", v.clone())?;
+                            event.set("destination.geo.country_iso_code", v.clone())?;
                         }
                         if let Some(v) = geo.get("country_name") {
-                            event.set("source.geo.country_name", v.clone())?;
+                            event.set("destination.geo.country_name", v.clone())?;
                         }
                         if let Some(v) = geo.get("continent_name") {
-                            event.set("source.geo.continent_name", v.clone())?;
+                            event.set("destination.geo.continent_name", v.clone())?;
                         }
                         if let Some(v) = geo.get("region_iso_code") {
-                            event.set("source.geo.region_iso_code", v.clone())?;
+                            event.set("destination.geo.region_iso_code", v.clone())?;
                         }
                         if let Some(v) = geo.get("region_name") {
-                            event.set("source.geo.region_name", v.clone())?;
+                            event.set("destination.geo.region_name", v.clone())?;
                         }
                         if let Some(v) = geo.get("city_name") {
-                            event.set("source.geo.city_name", v.clone())?;
+                            event.set("destination.geo.city_name", v.clone())?;
                         }
                         if let Some(v) = geo.get("timezone") {
-                            event.set("source.geo.timezone", v.clone())?;
+                            event.set("destination.geo.timezone", v.clone())?;
                         }
                         if let Some(v) = geo.get("location") {
-                            event.set("source.geo.location", v.clone())?;
+                            event.set("destination.geo.location", v.clone())?;
                         }
                     }
                 }
@@ -3129,10 +5850,10 @@ impl Transform for Default {
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
                     if let Ok(geo) = geoip_lookup("geoip_asn", &ip_str) {
                         if let Some(v) = geo.get("asn") {
-                            event.set("source.as.asn", v.clone())?;
+                            event.set("destination.as.asn", v.clone())?;
                         }
                         if let Some(v) = geo.get("organization_name") {
-                            event.set("source.as.organization_name", v.clone())?;
+                            event.set("destination.as.organization_name", v.clone())?;
                         }
                     }
                 }
@@ -3149,22 +5870,224 @@ impl Transform for Default {
                 )?;
             }
 
+            let _cond = { !event.has_value("device.id") };
+            if _cond {
+                if let Some(v) = event
+                    .get("crowdstrike.event.DeviceId")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("device.id", v)?;
+                }
+            }
+
             let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
+                event
+                    .get("crowdstrike.event.MitreAttack")
+                    .is_some_and(|v| v.is_array())
             };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
+                if let Some(Value::Array(items)) =
+                    event.get("crowdstrike.event.MitreAttack").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "threat.tactic.name",
+                            event
+                                .get("_ingest._value.Tactic")
+                                .cloned()
+                                .unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("crowdstrike.event.MitreAttack", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event.MitreAttack")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) =
+                    event.get("crowdstrike.event.MitreAttack").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "threat.tactic.id",
+                            event
+                                .get("_ingest._value.TacticID")
+                                .cloned()
+                                .unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("crowdstrike.event.MitreAttack", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event.MitreAttack")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) =
+                    event.get("crowdstrike.event.MitreAttack").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "threat.technique.name",
+                            event
+                                .get("_ingest._value.Technique")
+                                .cloned()
+                                .unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("crowdstrike.event.MitreAttack", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event.MitreAttack")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) =
+                    event.get("crowdstrike.event.MitreAttack").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        event.append(
+                            "threat.technique.id",
+                            event
+                                .get("_ingest._value.TechniqueID")
+                                .cloned()
+                                .unwrap_or(Value::Null),
+                        )?;
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("crowdstrike.event.MitreAttack", Value::Array(out))?;
+                }
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event.MitreAttack")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                if let Some(Value::Array(items)) =
+                    event.get("crowdstrike.event.MitreAttack").cloned()
+                {
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 2 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has("_ingest._value.PatternID") {
+                                if let Some(val) = event.get("_ingest._value.PatternID") {
+                                    let converted = match val {
+                                        Value::String(_) => val.clone(),
+                                        Value::Number(n) => json!(n.to_string()),
+                                        Value::Bool(b) => json!(b.to_string()),
+                                        Value::Null => json!("null"),
+                                        _ => json!(val.to_string()),
+                                    };
+                                    event.set("_ingest._value.PatternID", converted)?;
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "convert_mitre_attack_pattern_id_to_string",
+                            )?;
+                            if event.remove("_ingest._value.PatternID").is_none() {
+                                return Err(TransformError::FieldNotFound {
+                                    path: "_ingest._value.PatternID".into(),
+                                });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
+                        }
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    event.remove("_ingest");
+                    event.set("crowdstrike.event.MitreAttack", Value::Array(out))?;
+                }
+            }
+
+            let _cond = { event.has_value("threat") };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    // Painless script
+                    // Source: def tid = ctx.threat.tactic?.id;\ndef nid = ctx.threat.technique?.id;\ndef tname = ctx.threat.tactic?.name;\nif ((tid == null || tid.isEmpty()) && (nid == null || nid.isEmpty()) && (tname == null || tname.isEmpty())) {\n  return;\n}\nSet frameworks = new HashSet();\n// Handling tactics prefixed with \"CS\" or \"TA\".\nif (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n// Handling techniques prefixed with \"CS\".\nif (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n// Handling falcon specific tactics.\nif (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n\nif (frameworks.isEmpty()) {\n  return;\n}\nif (frameworks.size() == 1) {\n  ctx.threat.framework = frameworks.iterator().next();\n  return;\n}\n\nfor (def preferred : params.framework_preference) {\n  if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    return;\n  }\n}\n\n// fallback when new frameworks are added and not yet in preference list\nctx.threat.framework = frameworks.iterator().next();\n
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec_params(
+                        event,
+                        cached_script!(
+                            r#"def tid = ctx.threat.tactic?.id;\ndef nid = ctx.threat.technique?.id;\ndef tname = ctx.threat.tactic?.name;\nif ((tid == null || tid.isEmpty()) && (nid == null || nid.isEmpty()) && (tname == null || tname.isEmpty())) {\n  return;\n}\nSet frameworks = new HashSet();\n// Handling tactics prefixed with \"CS\" or \"TA\".\nif (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n// Handling techniques prefixed with \"CS\".\nif (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n// Handling falcon specific tactics.\nif (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n\nif (frameworks.isEmpty()) {\n  return;\n}\nif (frameworks.size() == 1) {\n  ctx.threat.framework = frameworks.iterator().next();\n  return;\n}\n\nfor (def preferred : params.framework_preference) {\n  if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    return;\n  }\n}\n\n// fallback when new frameworks are added and not yet in preference list\nctx.threat.framework = frameworks.iterator().next();\n"#
+                        ),
+                        cached_params!(
+                            "{\"falcon_tactic_names\":[\"malware\",\"exploit\",\"post-exploit\",\"machine learning\",\"custom intelligence\",\"falcon overwatch\",\"falcon intel\",\"ai powered ioa\",\"insecure security posture\"],\"framework_cs\":\"CrowdStrike Falcon Detections Framework\",\"framework_ma\":\"MITRE ATT&CK\",\"framework_preference\":[\"MITRE ATT&CK\",\"CrowdStrike Falcon Detections Framework\"]}"
+                        ),
+                    )?;
                     Ok(())
-                })();
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "script")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "script_threat_framework",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, painless_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, painless_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             event.remove("_tmp_");
@@ -3212,6 +6135,18 @@ impl Transform for Default {
             event.remove("crowdstrike.event.Disposition");
             event.remove("crowdstrike.event.MatchedTimestamp");
             event.remove("crowdstrike.event.Tags");
+            event.remove("crowdstrike.event.UserId");
+            event.remove("crowdstrike.event.UserName");
+
+            // Painless script
+            // Source: void handleMap(Map map) {\n    map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nvoid handleList(List list) {\n    list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nhandleMap(ctx);
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec(
+                event,
+                cached_script!(
+                    r#"void handleMap(Map map) {\n    map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nvoid handleList(List list) {\n    list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nhandleMap(ctx);"#
+                ),
+            )?;
 
             Ok(TransformResult::Continue)
         })(event);
@@ -3223,6 +6158,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

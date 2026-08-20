@@ -58,10 +58,6 @@ impl Transform for IpdDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
-
             if event.has("crowdstrike.event.SourceAccountDomain") {
                 event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
             }
@@ -78,8 +74,32 @@ impl Transform for IpdDetectionSummary {
                 event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
             }
 
-            if event.has("crowdstrike.event.SourceEndpointIpAddress") {
-                event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
+            let _cond = {
+                event.has_value("crowdstrike.event.SourceEndpointIpAddress")
+                    && event
+                        .get_str("crowdstrike.event.SourceEndpointIpAddress")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "host.ip",
+                    event
+                        .get("crowdstrike.event.SourceEndpointIpAddress")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.SourceEndpointIpAddress") };
+            if _cond {
+                if event
+                    .remove("crowdstrike.event.SourceEndpointIpAddress")
+                    .is_none()
+                {
+                    return Err(TransformError::FieldNotFound {
+                        path: "crowdstrike.event.SourceEndpointIpAddress".into(),
+                    });
+                }
             }
 
             let _cond = { event.has_value("crowdstrike.event.Technique") };
@@ -477,6 +497,7 @@ impl Transform for IpdDetectionSummary {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

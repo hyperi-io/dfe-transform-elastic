@@ -184,14 +184,6 @@ impl Transform for Userid {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("event.created").cloned() {
-                    event.set("panw.panos.received_time", v)?;
-                }
-                Ok(())
-            })();
-
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
                 if let Some(v) = event.get("panw.panos.device_name").cloned() {
                     event.set("observer.hostname", v)?;
                 }
@@ -240,6 +232,7 @@ impl Transform for Userid {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_527c776e")?;
                     event.append(
                         "error.message",
                         event
@@ -277,6 +270,7 @@ impl Transform for Userid {
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_02fdb26c")?;
                     event.append(
                         "error.message",
                         event
@@ -302,27 +296,8 @@ impl Transform for Userid {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "error in User ID pipeline: error in [{}] processor{} with tag [{}]{} {}",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
-                    )),
-                )?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

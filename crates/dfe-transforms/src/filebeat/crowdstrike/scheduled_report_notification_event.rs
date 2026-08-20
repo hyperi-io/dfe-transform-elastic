@@ -176,6 +176,14 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
+            // SKIPPED: condition not transpiled: ctx.user?.id != null && ctx.user.id.indexOf("@") > 0
+            #[allow(unreachable_code, unused_variables)]
+            if false {
+                if let Some(v) = event.get("user.id").cloned() {
+                    event.set("user.email", v)?;
+                }
+            }
+
             if event.has("crowdstrike.event.Status") {
                 if let Some(val) = event.get("crowdstrike.event.Status") {
                     let converted = match val {
@@ -199,6 +207,7 @@ impl Transform for ScheduledReportNotificationEvent {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

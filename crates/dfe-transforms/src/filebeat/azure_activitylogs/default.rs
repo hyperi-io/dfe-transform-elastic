@@ -16,11 +16,13 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            event.set("ecs.version", json!("8.0.0"))?;
+            event.set("ecs.version", json!("8.11.0"))?;
 
             if event.has("azure") {
                 event.rename("azure", "azure-eventhub")?;
             }
+
+            event.remove("routing.category");
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
@@ -61,7 +63,18 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("azure.activitylogs.time") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
+                    if let Some(parsed) = parse_date_out(
+                        &date_str,
+                        &[
+                            "ISO8601",
+                            "M/d/yyyy h:mm:ss a XXX",
+                            "M/d/yyyy h:mm:ss a",
+                            "M/d/yyyy H:mm:ss",
+                            "yyyy-MM-dd'T'H:mm:ss.SSS'Z'",
+                        ],
+                        None,
+                        None,
+                    ) {
                         event.set("@timestamp", parsed)?;
                     }
                 }
@@ -202,6 +215,47 @@ impl Transform for Default {
                                 message: format!("failed to parse JSON: {}", e),
                             })?;
                         event.set("azure.activitylogs.properties", parsed)?;
+                    }
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("azure.activitylogs.properties.responseBody")
+                    .is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(s) = event.get_string("azure.activitylogs.properties.responseBody")
+                    {
+                        let parsed: Value =
+                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
+                                path: "azure.activitylogs.properties.responseBody".into(),
+                                message: format!("failed to parse JSON: {}", e),
+                            })?;
+                        event.set("azure.activitylogs.properties.responseBody", parsed)?;
+                    }
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("azure.activitylogs.properties.requestBody")
+                    .is_some_and(|v| v.is_string())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    if let Some(s) = event.get_string("azure.activitylogs.properties.requestBody") {
+                        let parsed: Value =
+                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
+                                path: "azure.activitylogs.properties.requestBody".into(),
+                                message: format!("failed to parse JSON: {}", e),
+                            })?;
+                        event.set("azure.activitylogs.properties.requestBody", parsed)?;
                     }
                     Ok(())
                 })();
@@ -628,6 +682,38 @@ impl Transform for Default {
 
             event.set("event.kind", json!("event"))?;
 
+            let _cond = {
+                event.has_value("azure.resource_id")
+                    && event
+                        .get_str("azure.resource_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.resource_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("azure.activitylogs.identity.authorization.evidence.principal_id")
+                    && event
+                        .get_str("azure.activitylogs.identity.authorization.evidence.principal_id")
+                        .is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
+                event.append(
+                    "related.entity",
+                    event
+                        .get("azure.activitylogs.identity.authorization.evidence.principal_id")
+                        .cloned()
+                        .unwrap_or(Value::Null),
+                )?;
+            }
+
             // Begin nested pipeline: "azure-shared-pipeline"
             event.set("cloud.provider", json!("azure"))?;
             // ignore_failure: true
@@ -752,24 +838,6 @@ impl Transform for Default {
             }
             // End nested pipeline: "azure-shared-pipeline"
 
-            let _cond = {
-                !event.has_value("tags")
-                    || !(event.get("tags").is_some_and(|v| match v {
-                        serde_json::Value::Array(a) => a
-                            .iter()
-                            .any(|x| x.as_str() == Some("preserve_original_event")),
-                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
-                        _ => false,
-                    }))
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.remove("event.original");
-                    Ok(())
-                })();
-            }
-
             Ok(TransformResult::Continue)
         })(event);
 
@@ -778,7 +846,29 @@ impl Transform for Default {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append("tags", json!("preserve_original_event"))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor '{}' {}with tag '{}' {}failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("#_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("/_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, painless_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, painless_to_string)
+                    )),
+                )?;
                 event.remove("_ingest.on_failure_message");
             }
         }
