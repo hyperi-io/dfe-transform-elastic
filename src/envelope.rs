@@ -4,9 +4,9 @@
 //! How the vendor payload is wrapped on the way in.
 //!
 //! The transform pipeline is the same whichever way an event arrives. Only the
-//! wrapper differs, and this module unwraps it, so a source that a device can
-//! emit over syslog can be fed from dfe-receiver instead of from Beats without
-//! a second pipeline.
+//! wrapper differs, and this module unwraps it, so the parsers are reused
+//! across every transport that can carry the same vendor payload rather than
+//! being tied to the one Elastic happens to ship.
 //!
 //! [`Envelope::Beats`] is the shape the transforms expect: the
 //! raw vendor payload as a string in `message`.
@@ -15,6 +15,12 @@
 //! `message`, with the header already parsed into siblings. Unwrapping it means
 //! putting a syslog-shaped line back in `message`, because that is what the
 //! transforms grok.
+//!
+//! [`Envelope::Fetcher`] is what dfe-fetcher produces: the provider's own JSON
+//! at the top level with three keys of its own added. It applies wherever
+//! Elastic's agent input is a pure transport -- `httpjson`, `cel`, `aws-s3`,
+//! `azure-eventhub` -- because there the ingest pipeline does all the parsing
+//! and fetching the data ourselves loses nothing.
 
 use dfe_runtime::{Event, syslog_pri};
 use serde_json::{Value, json};
@@ -33,6 +39,16 @@ const RECEIVER_KEYS: &[&str] = &[
     "msgid",
     "timestamp",
     "structured_data",
+];
+
+/// The fetcher's own field names, added to every record it delivers.
+///
+/// Stripped before the payload is handed to the transform, the same way the
+/// receiver's are: they describe the delivery, not the event.
+const FETCHER_KEYS: &[&str] = &[
+    "_timestamp_fetcher",
+    "_timestamp_received",
+    "_source_fetcher",
 ];
 
 /// The facility used when the receiver saw no PRI. 1 (user) is what a syslogd
@@ -62,6 +78,9 @@ pub enum Envelope {
     /// dfe-receiver syslog JSON: header parsed into siblings, body in
     /// `message`.
     Syslog,
+    /// dfe-fetcher JSON: the provider's own payload at the top level, with the
+    /// fetcher's delivery keys alongside it.
+    Fetcher,
 }
 
 impl Envelope {
@@ -80,8 +99,36 @@ impl Envelope {
         match self {
             Self::Beats => Ok(()),
             Self::Syslog => unwrap_syslog(event, framing.unwrap_or(Framing::Line)),
+            Self::Fetcher => {
+                unwrap_fetcher(event);
+                Ok(())
+            }
         }
     }
+}
+
+/// Move the provider's payload into `message` as the string the transform
+/// expects, and drop the fetcher's delivery keys.
+///
+/// Beats hands an API source its payload as a SERIALISED string in `message`,
+/// which is what every one of these pipelines parses first. dfe-fetcher
+/// delivers the same payload as a real object at the top level, so the
+/// conversion is a re-serialise rather than a reshape.
+fn unwrap_fetcher(event: &mut Event) {
+    for key in FETCHER_KEYS {
+        event.remove(key);
+    }
+
+    // Already in the Beats shape: a fetcher whose provider hands back a bare
+    // line rather than an object leaves `message` where it is.
+    if event.get_string("message").is_some()
+        && event.as_value().as_object().is_some_and(|o| o.len() == 1)
+    {
+        return;
+    }
+
+    let payload = serde_json::to_string(event.as_value()).unwrap_or_default();
+    *event.as_value_mut() = json!({ "message": payload });
 }
 
 /// Leave `message` holding what the pipeline groks, and lift the parsed header
@@ -230,6 +277,72 @@ mod tests {
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
         assert_eq!(event.get_str("message"), Some("raw payload"));
+    }
+
+    /// Beats hands an API source its payload SERIALISED in `message`, so a
+    /// fetcher record -- the same payload as a real object -- is re-serialised
+    /// into the shape the transform parses.
+    #[test]
+    fn fetcher_serialises_the_payload_into_message() {
+        let mut event = Event::new(json!({
+            "actor": { "id": "00u1", "type": "User" },
+            "eventType": "user.session.start",
+            "_timestamp_fetcher": 1_700_000_000_000_u64,
+            "_timestamp_received": 1_700_000_000_000_u64,
+            "_source_fetcher": "okta",
+        }));
+
+        Envelope::Fetcher
+            .unwrap_into_beats(&mut event, None)
+            .unwrap();
+
+        let message = event.get_str("message").expect("payload in message");
+        let payload: Value = serde_json::from_str(message).expect("message is the payload");
+        assert_eq!(
+            payload.pointer("/actor/id").and_then(Value::as_str),
+            Some("00u1")
+        );
+        assert_eq!(
+            payload.get("eventType").and_then(Value::as_str),
+            Some("user.session.start")
+        );
+    }
+
+    /// The fetcher's own keys describe the delivery, not the event, so none of
+    /// them may reach the transform.
+    #[test]
+    fn fetcher_keys_never_reach_the_payload() {
+        let mut event = Event::new(json!({
+            "eventType": "x",
+            "_timestamp_fetcher": 1_u64,
+            "_timestamp_received": 2_u64,
+            "_source_fetcher": "okta",
+        }));
+
+        Envelope::Fetcher
+            .unwrap_into_beats(&mut event, None)
+            .unwrap();
+
+        let message = event.get_str("message").expect("payload in message");
+        for key in FETCHER_KEYS {
+            assert!(!message.contains(key), "{key} survived into {message}");
+            assert!(!event.has(key), "{key} survived on the event");
+        }
+    }
+
+    /// A provider that hands back a bare line is already in the Beats shape,
+    /// so re-serialising it would wrap the string in a second layer of JSON.
+    #[test]
+    fn fetcher_leaves_an_already_wrapped_line_alone() {
+        let mut event = Event::new(json!({
+            "message": "<134>1 raw syslog line",
+            "_source_fetcher": "somewhere",
+        }));
+
+        Envelope::Fetcher
+            .unwrap_into_beats(&mut event, None)
+            .unwrap();
+        assert_eq!(event.get_str("message"), Some("<134>1 raw syslog line"));
     }
 
     #[test]

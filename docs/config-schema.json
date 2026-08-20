@@ -32,7 +32,7 @@
           "type": "string"
         },
         "envelope": {
-          "description": "How the payload is wrapped on the way in. The transform is the same\neither way; only the unwrapping differs.",
+          "description": "Which transport delivered the payload. The transform is the same for\nall of them; only the unwrapping differs. Validation rejects an\nenvelope the source cannot actually arrive in.",
           "$ref": "#/$defs/Envelope",
           "default": "beats"
         },
@@ -81,6 +81,11 @@
           "description": "dfe-receiver syslog JSON: header parsed into siblings, body in\n`message`.",
           "type": "string",
           "const": "syslog"
+        },
+        {
+          "description": "dfe-fetcher JSON: the provider's own payload at the top level, with the\nfetcher's delivery keys alongside it.",
+          "type": "string",
+          "const": "fetcher"
         }
       ]
     },

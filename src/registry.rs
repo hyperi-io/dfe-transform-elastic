@@ -9,6 +9,8 @@
 use dfe_runtime::Transform;
 use dfe_transforms::filebeat;
 
+use crate::envelope::Envelope;
+
 /// What a syslog-origin pipeline expects to find in `message`.
 ///
 /// The two families disagree, and getting it wrong is silent: a header handed
@@ -24,32 +26,48 @@ pub enum Framing {
     Body,
 }
 
-/// Where a source's events can come from.
+/// Every way a source's payload can reach this service.
 ///
-/// This decides whether the syslog envelope may be used: a device that emits
-/// over syslog can be fed from dfe-receiver, and an API-only source cannot.
+/// The transform is the same whichever it is -- only the wrapper differs, and
+/// `envelope` unwraps it -- so this says which wrappers are ACTUALLY available
+/// for a given source rather than assuming Elastic's.
+///
+/// `Beats` is always available: every source here has an Elastic integration.
+/// `Syslog` is available when a device pushes the data, which the integration
+/// declares by shipping tcp/udp agent streams. `Fetcher` is available when
+/// Elastic's agent input is a pure transport -- `httpjson`, `cel`, `aws-s3`,
+/// `azure-eventhub`, `streaming` -- because then the ingest pipeline does all
+/// the parsing and dfe-fetcher can obtain the same bytes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Origin {
-    /// Pulled from a vendor API. Only the Beats envelope applies.
-    Api,
-    /// A device can emit this over syslog, so either envelope applies.
-    Syslog(Framing),
+pub struct Intake {
+    /// The wrappers this source accepts, `Beats` always among them.
+    pub envelopes: &'static [Envelope],
+    /// What a syslog delivery must leave in `message`. `None` unless the
+    /// source accepts [`Envelope::Syslog`].
+    pub framing: Option<Framing>,
 }
 
-impl Origin {
-    /// Whether the syslog envelope applies to this source.
+impl Intake {
+    /// Whether `envelope` is a way this source can be delivered.
     #[must_use]
-    pub const fn is_syslog(self) -> bool {
-        matches!(self, Self::Syslog(_))
+    pub fn accepts(&self, envelope: Envelope) -> bool {
+        self.envelopes.contains(&envelope)
     }
+}
 
-    /// What this pipeline expects in `message`, if it takes syslog at all.
-    #[must_use]
-    pub const fn framing(self) -> Option<Framing> {
-        match self {
-            Self::Syslog(framing) => Some(framing),
-            Self::Api => None,
-        }
+/// Beats plus a device pushing over syslog.
+const fn syslog(framing: Framing) -> Intake {
+    Intake {
+        envelopes: &[Envelope::Beats, Envelope::Syslog],
+        framing: Some(framing),
+    }
+}
+
+/// Beats plus us fetching the same bytes the agent would.
+const fn fetched() -> Intake {
+    Intake {
+        envelopes: &[Envelope::Beats, Envelope::Fetcher],
+        framing: None,
     }
 }
 
@@ -58,76 +76,76 @@ impl Origin {
 /// Sorted so the `sources()` listing is stable. The entries are hand-wired
 /// because each names a Rust type, and `sources.yaml` is asserted against them
 /// so a source declared there and never wired here fails the build.
-static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
+static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
     (
         "filebeat.azure_activitylogs.default",
         &filebeat::azure_activitylogs::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.azure_auditlogs.default",
         &filebeat::azure_auditlogs::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.azure_platformlogs.default",
         &filebeat::azure_platformlogs::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.azure_signinlogs.default",
         &filebeat::azure_signinlogs::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.cisco_asa.default",
         &filebeat::cisco_asa::default::Default,
-        Origin::Syslog(Framing::Line),
+        syslog(Framing::Line),
     ),
     (
         "filebeat.cisco_ftd.default",
         &filebeat::cisco_ftd::default::Default,
-        Origin::Syslog(Framing::Line),
+        syslog(Framing::Line),
     ),
     (
         "filebeat.cisco_ios.default",
         &filebeat::cisco_ios::default::Default,
-        Origin::Syslog(Framing::Line),
+        syslog(Framing::Line),
     ),
     (
         "filebeat.cisco_meraki.default",
         &filebeat::cisco_meraki::default::Default,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.cisco_nexus.default",
         &filebeat::cisco_nexus::default::Default,
-        Origin::Syslog(Framing::Line),
+        syslog(Framing::Line),
     ),
     (
         "filebeat.cisco_umbrella.default",
         &filebeat::cisco_umbrella::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.crowdstrike.default",
         &filebeat::crowdstrike::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.fortinet.default",
         &filebeat::fortinet::default::Default,
-        Origin::Syslog(Framing::Line),
+        syslog(Framing::Line),
     ),
     (
         "filebeat.o365.default",
         &filebeat::o365::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     (
         "filebeat.okta.default",
         &filebeat::okta::default::Default,
-        Origin::Api,
+        fetched(),
     ),
     // `panw.default` routes on log type and holds the CSV parse and converts
     // the per-type entries depend on. The per-type entries suit a feed already
@@ -135,67 +153,67 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
     (
         "filebeat.panw.authentication",
         &filebeat::panw::authentication::Authentication,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.correlated_event",
         &filebeat::panw::correlated_event::CorrelatedEvent,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.decryption",
         &filebeat::panw::decryption::Decryption,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.default",
         &filebeat::panw::default::Default,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.globalprotect",
         &filebeat::panw::globalprotect::Globalprotect,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.gtp",
         &filebeat::panw::gtp::Gtp,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.hipmatch",
         &filebeat::panw::hipmatch::Hipmatch,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.ip_tag",
         &filebeat::panw::ip_tag::IpTag,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.sctp",
         &filebeat::panw::sctp::Sctp,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.system",
         &filebeat::panw::system::System,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.traffic",
         &filebeat::panw::traffic::Traffic,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.tunnel_inspection",
         &filebeat::panw::tunnel_inspection::TunnelInspection,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
     (
         "filebeat.panw.userid",
         &filebeat::panw::userid::Userid,
-        Origin::Syslog(Framing::Body),
+        syslog(Framing::Body),
     ),
 ];
 
@@ -207,12 +225,12 @@ pub fn lookup(name: &str) -> Option<&'static (dyn Transform + Sync)> {
         .map(|(_, t, _)| *t)
 }
 
-/// Where a source's events can come from.
-pub fn origin(name: &str) -> Option<Origin> {
+/// Every way a source's payload can reach this service.
+pub fn intake(name: &str) -> Option<Intake> {
     TRANSFORMS
         .iter()
         .find(|(key, _, _)| *key == name)
-        .map(|(_, _, origin)| *origin)
+        .map(|(_, _, intake)| *intake)
 }
 
 /// Every source name this service accepts.
@@ -220,11 +238,11 @@ pub fn sources() -> impl Iterator<Item = &'static str> {
     TRANSFORMS.iter().map(|(key, _, _)| *key)
 }
 
-/// Every source a device can emit over syslog.
-pub fn syslog_sources() -> impl Iterator<Item = &'static str> {
+/// Every source that can be delivered in `envelope`.
+pub fn sources_accepting(envelope: Envelope) -> impl Iterator<Item = &'static str> {
     TRANSFORMS
         .iter()
-        .filter(|(_, _, origin)| origin.is_syslog())
+        .filter(move |(_, _, intake)| intake.accepts(envelope))
         .map(|(key, _, _)| *key)
 }
 
@@ -238,17 +256,36 @@ mod tests {
         assert!(lookup("filebeat.okta.default").is_some());
     }
 
-    /// Which source is API-origin and what framing a syslog one wants are
-    /// declared in `sources.yaml` and checked below; all this adds is that an
-    /// unknown name classifies as nothing at all.
+    /// Which intakes each source has are declared in `sources.yaml` and checked
+    /// below. All this adds is the two invariants the declaration cannot state:
+    /// Beats always works, and an unknown name has no intake at all.
     #[test]
-    fn every_source_has_exactly_one_origin() {
-        let api = TRANSFORMS
-            .iter()
-            .filter(|(_, _, o)| *o == Origin::Api)
-            .count();
-        assert_eq!(syslog_sources().count() + api, sources().count());
-        assert_eq!(origin("filebeat.nosuchthing"), None);
+    fn every_source_accepts_beats_and_one_other() {
+        assert_eq!(
+            sources_accepting(Envelope::Beats).count(),
+            sources().count(),
+            "every source has an Elastic integration, so Beats always applies"
+        );
+        assert_eq!(
+            sources_accepting(Envelope::Syslog).count()
+                + sources_accepting(Envelope::Fetcher).count(),
+            sources().count(),
+            "a source is either pushed by a device or fetchable, never neither"
+        );
+        assert_eq!(intake("filebeat.nosuchthing"), None);
+    }
+
+    /// Framing describes a syslog delivery, so it exists exactly when one is
+    /// possible. A fetched source carrying one would be read as a device.
+    #[test]
+    fn framing_is_present_exactly_when_syslog_is() {
+        for (name, _, intake) in TRANSFORMS {
+            assert_eq!(
+                intake.accepts(Envelope::Syslog),
+                intake.framing.is_some(),
+                "{name} disagrees with itself about syslog"
+            );
+        }
     }
 
     #[test]
@@ -278,7 +315,7 @@ mod tests {
 
         #[derive(serde::Deserialize)]
         struct Declared {
-            origin: String,
+            intakes: Vec<String>,
             framing: Option<String>,
             transforms: Vec<String>,
         }
@@ -287,29 +324,50 @@ mod tests {
         let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
         let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
 
-        let mut expected: Vec<(String, Origin)> = Vec::new();
+        // Compared as text: the declaration is the readable form, and a
+        // mismatch has to name what it saw rather than a struct's Debug.
+        let mut expected: Vec<(String, String)> = Vec::new();
         for (source, declared) in &declaration.sources {
-            let origin = match (declared.origin.as_str(), declared.framing.as_deref()) {
-                ("api", None) => Origin::Api,
-                ("syslog", Some("line")) => Origin::Syslog(Framing::Line),
-                ("syslog", Some("body")) => Origin::Syslog(Framing::Body),
-                other => panic!("{source} declares {other:?}, which is not an origin"),
-            };
+            for name in &declared.intakes {
+                assert!(
+                    ["beats", "syslog", "fetcher"].contains(&name.as_str()),
+                    "{source} declares intake {name:?}, which is not one"
+                );
+            }
+            let described = describe(&declared.intakes, declared.framing.as_deref());
             for transform in &declared.transforms {
-                expected.push((format!("filebeat.{source}.{transform}"), origin));
+                expected.push((format!("filebeat.{source}.{transform}"), described.clone()));
             }
         }
         expected.sort_by(|a, b| a.0.cmp(&b.0));
 
-        let wired: Vec<(String, Origin)> = TRANSFORMS
+        let wired: Vec<(String, String)> = TRANSFORMS
             .iter()
-            .map(|(name, _, origin)| ((*name).to_owned(), *origin))
+            .map(|(name, _, intake)| {
+                let names: Vec<String> = intake
+                    .envelopes
+                    .iter()
+                    .map(|e| format!("{e:?}").to_lowercase())
+                    .collect();
+                let framing = intake.framing.map(|f| format!("{f:?}").to_lowercase());
+                ((*name).to_owned(), describe(&names, framing.as_deref()))
+            })
             .collect();
 
         assert_eq!(
             wired, expected,
-            "src/registry.rs and sources.yaml disagree on the sources or their origins"
+            "src/registry.rs and sources.yaml disagree on the sources or their intakes"
         );
+    }
+
+    /// One string per source, so a mismatch reads as what was declared.
+    fn describe(intakes: &[String], framing: Option<&str>) -> String {
+        let mut names: Vec<&str> = intakes.iter().map(String::as_str).collect();
+        names.sort_unstable();
+        match framing {
+            Some(f) => format!("{}/{f}", names.join("+")),
+            None => names.join("+"),
+        }
     }
 
     #[test]

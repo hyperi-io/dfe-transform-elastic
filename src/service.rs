@@ -125,8 +125,7 @@ pub async fn run_loop(
 ) -> crate::Result<()> {
     let transform = crate::registry::lookup(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let framing =
-        crate::registry::origin(&config.source.name).and_then(crate::registry::Origin::framing);
+    let framing = crate::registry::intake(&config.source.name).and_then(|i| i.framing);
 
     metrics.dfe.pipeline_ready(true);
 

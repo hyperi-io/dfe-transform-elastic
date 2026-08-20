@@ -9,9 +9,12 @@
 # `source.topics`, `source.brokers` and `sink.topic` are the ones that
 # always change.
 #
-# `source.envelope` selects how the payload is wrapped on the way in:
-# `beats` (default) or `syslog` for dfe-receiver's output. The syslog
-# envelope applies only to sources a device can emit; see the README.
+# `source.envelope` selects which transport delivered the payload:
+# `beats` (default), `syslog` for dfe-receiver's output, or `fetcher` for
+# dfe-fetcher's. The transform is the same for all three; only the unwrapping
+# differs. Which envelopes a source accepts is listed per source in the
+# capability catalogue, and an envelope it cannot arrive in is refused at
+# startup rather than at the first batch.
 
 pipeline_name: dfe-transform-elastic
 source:

@@ -62,8 +62,9 @@ pub fn contract() -> DeploymentContract {
             "pipeline_name": "dfe-transform-elastic",
             "source": {
                 "name": "filebeat.okta.default",
-                // `syslog` reads dfe-receiver's output instead, for the
-                // sources a device can emit over syslog.
+                // `syslog` reads dfe-receiver's output and `fetcher`
+                // dfe-fetcher's. Which a source accepts is in the capability
+                // catalogue, and a wrong one is refused at startup.
                 "envelope": "beats",
                 "topics": ["raw_events"],
                 // Batch-first default: amortises commit, allocation and SIMD setup.
@@ -141,9 +142,12 @@ pub fn default_config_yaml() -> String {
 # `source.topics`, `source.brokers` and `sink.topic` are the ones that
 # always change.
 #
-# `source.envelope` selects how the payload is wrapped on the way in:
-# `beats` (default) or `syslog` for dfe-receiver's output. The syslog
-# envelope applies only to sources a device can emit; see the README.
+# `source.envelope` selects which transport delivered the payload:
+# `beats` (default), `syslog` for dfe-receiver's output, or `fetcher` for
+# dfe-fetcher's. The transform is the same for all three; only the unwrapping
+# differs. Which envelopes a source accepts is listed per source in the
+# capability catalogue, and an envelope it cannot arrive in is refused at
+# startup rather than at the first batch.
 ";
 
     let body = contract()
@@ -209,14 +213,20 @@ pub fn retarget_keda_trigger(chart_dir: &str) -> crate::Result<()> {
 /// adds it here.
 fn capabilities() -> Vec<Capability> {
     let sources = crate::registry::sources().map(|name| {
-        let description =
-            if crate::registry::origin(name).is_some_and(crate::registry::Origin::is_syslog) {
-                "Compiled transform. The device can emit over syslog, so either envelope applies."
-            } else {
-                "Compiled transform. Pulled from a vendor API; the beats envelope only."
-            };
+        // The intakes are the operator-facing fact: which transports can carry
+        // this source to us, not just the one Elastic ships.
+        let envelopes = crate::registry::intake(name).map_or_else(String::new, |intake| {
+            intake
+                .envelopes
+                .iter()
+                .map(|e| format!("{e:?}").to_lowercase())
+                .collect::<Vec<_>>()
+                .join(", ")
+        });
         Capability::service(name)
-            .description(description)
+            .description(format!(
+                "Compiled transform. Accepts the envelopes: {envelopes}."
+            ))
             .maturity("beta")
     });
 

@@ -23,6 +23,9 @@ except ImportError:  # pragma: no cover - environment probe
 
 DECLARATION = Path(__file__).resolve().parent.parent / "sources.yaml"
 
+# Every wrapper `src/envelope.rs` can unwrap.
+KNOWN_INTAKES = {"beats", "syslog", "fetcher"}
+
 
 @dataclass(frozen=True, slots=True)
 class Source:
@@ -34,8 +37,8 @@ class Source:
         data_stream: Data stream directory name within the package.
         pipelines: Directory under -dev/pipelines/ holding the vendored copy.
         fixture_dir: Fixture directory, relative to ``tests/fixtures``.
-        origin: ``api`` or ``syslog``.
-        framing: ``line`` or ``body`` for a syslog source, else None.
+        intakes: Every way this source's payload can reach the service.
+        framing: ``line`` or ``body`` for a syslog intake, else None.
         transforms: Generated transforms wired into the registry.
         beats_module: Beats module holding the same source, if any.
         beats_fileset: Beats fileset within that module.
@@ -46,11 +49,21 @@ class Source:
     data_stream: str
     pipelines: str
     fixture_dir: str
-    origin: str
+    intakes: tuple[str, ...]
     framing: str | None
     transforms: tuple[str, ...]
     beats_module: str | None = None
     beats_fileset: str | None = None
+
+    @property
+    def takes_syslog(self) -> bool:
+        """Whether a device can push this over syslog, via dfe-receiver."""
+        return "syslog" in self.intakes
+
+    @property
+    def takes_fetcher(self) -> bool:
+        """Whether dfe-fetcher can obtain the same bytes Elastic's agent does."""
+        return "fetcher" in self.intakes
 
     @property
     def registry_names(self) -> tuple[str, ...]:
@@ -60,21 +73,24 @@ class Source:
 
 def _source(name: str, entry: dict[str, object]) -> Source:
     """Build one source, rejecting a declaration that cannot be acted on."""
-    missing = {"package", "data_stream", "pipelines", "fixtures", "origin"} - set(entry)
+    missing = {"package", "data_stream", "pipelines", "fixtures", "intakes"} - set(entry)
     if missing:
         raise SystemExit(f"{DECLARATION}: {name} is missing {sorted(missing)}")
 
-    origin = entry["origin"]
-    if origin not in ("api", "syslog"):
-        raise SystemExit(f"{DECLARATION}: {name} has origin {origin!r}, not api/syslog")
+    intakes = tuple(entry["intakes"] or ())
+    unknown = set(intakes) - KNOWN_INTAKES
+    if unknown:
+        raise SystemExit(f"{DECLARATION}: {name} declares intakes {sorted(unknown)}")
+    if "beats" not in intakes:
+        raise SystemExit(f"{DECLARATION}: {name} must accept beats -- it has an integration")
 
     framing = entry.get("framing")
     # Framing decides what goes in `message`, and getting it wrong is silent:
     # a header handed to a body pipeline corrupts its first field.
-    if origin == "syslog" and framing not in ("line", "body"):
+    if "syslog" in intakes and framing not in ("line", "body"):
         raise SystemExit(f"{DECLARATION}: syslog source {name} needs framing line/body")
-    if origin == "api" and framing is not None:
-        raise SystemExit(f"{DECLARATION}: {name} is api-origin and cannot have framing")
+    if "syslog" not in intakes and framing is not None:
+        raise SystemExit(f"{DECLARATION}: {name} takes no syslog and cannot have framing")
 
     beats = entry.get("beats") or {}
     return Source(
@@ -83,7 +99,7 @@ def _source(name: str, entry: dict[str, object]) -> Source:
         data_stream=str(entry["data_stream"]),
         pipelines=str(entry["pipelines"]),
         fixture_dir=str(entry["fixtures"]),
-        origin=str(origin),
+        intakes=intakes,
         framing=None if framing is None else str(framing),
         transforms=tuple(entry.get("transforms") or ("default",)),
         beats_module=beats.get("module"),
@@ -123,7 +139,7 @@ def main() -> int:
         (
             name,
             f"{s.package}/{s.data_stream}",
-            s.origin + (f"/{s.framing}" if s.framing else ""),
+            "+".join(sorted(s.intakes)) + (f"/{s.framing}" if s.framing else ""),
             f"{len(s.transforms)} transform(s)",
         )
         for name, s in SOURCES.items()

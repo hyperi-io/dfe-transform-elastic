@@ -26,8 +26,9 @@ $defs:
         type: string
       envelope:
         description: |-
-          How the payload is wrapped on the way in. The transform is the same
-          either way; only the unwrapping differs.
+          Which transport delivered the payload. The transform is the same for
+          all of them; only the unwrapping differs. Validation rejects an
+          envelope the source cannot actually arrive in.
         $ref: '#/$defs/Envelope'
         default: beats
       topics:
@@ -65,6 +66,11 @@ $defs:
         `message`.
       type: string
       const: syslog
+    - description: |-
+        dfe-fetcher JSON: the provider's own payload at the top level, with the
+        fetcher's delivery keys alongside it.
+      type: string
+      const: fetcher
   SinkConfig:
     description: Outbound configuration.
     type: object

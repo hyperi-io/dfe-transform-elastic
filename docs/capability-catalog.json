@@ -26,163 +26,163 @@
       {
         "kind": "service",
         "name": "filebeat.azure_activitylogs.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.azure_auditlogs.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.azure_platformlogs.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.azure_signinlogs.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_asa.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_ftd.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_ios.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_meraki.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_nexus.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_umbrella.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.crowdstrike.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.fortinet.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.o365.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.okta.default",
-        "description": "Compiled transform. Pulled from a vendor API; the beats envelope only.",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.authentication",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.correlated_event",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.decryption",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.default",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.globalprotect",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.gtp",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.hipmatch",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.ip_tag",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.sctp",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.system",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.traffic",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.tunnel_inspection",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.userid",
-        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
         "maturity": "beta"
       }
     ]

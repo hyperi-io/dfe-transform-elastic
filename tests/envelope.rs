@@ -16,14 +16,14 @@
 
 use dfe_transform_elastic::envelope::Envelope;
 use dfe_transform_elastic::pipeline::transform_batch_with;
-use dfe_transform_elastic::registry::{self, Origin};
+use dfe_transform_elastic::registry;
 use serde_json::{Value, json};
 
 /// Run one event through `source` under `envelope`, with the framing the
 /// registry declares for that source, returning the output.
 fn run(source: &str, envelope: Envelope, event: Value) -> Option<Value> {
     let transform = registry::lookup(source).expect("source is registered");
-    let framing = registry::origin(source).and_then(Origin::framing);
+    let framing = registry::intake(source).and_then(|i| i.framing);
     let events = vec![dfe_runtime::Event::new(event)];
     let (out, outcome) = transform_batch_with(transform, envelope, framing, events);
     assert_eq!(outcome.total(), 1, "{source}: event vanished");
@@ -132,7 +132,7 @@ fn a_line_framed_source_is_handed_a_pri_prefixed_line() {
     let body = "date=2026-03-03 time=10:30:00 devname=\"fg01\" type=\"traffic\"";
     let mut event = dfe_runtime::Event::new(receiver_syslog(body));
 
-    let framing = registry::origin("filebeat.fortinet.default").and_then(Origin::framing);
+    let framing = registry::intake("filebeat.fortinet.default").and_then(|i| i.framing);
     assert_eq!(framing, Some(registry::Framing::Line));
     Envelope::Syslog
         .unwrap_into_beats(&mut event, framing)
@@ -154,7 +154,7 @@ fn raw_reaches_a_line_framed_source_untouched() {
     source["_raw"] = json!(raw);
     let mut event = dfe_runtime::Event::new(source);
 
-    let framing = registry::origin("filebeat.cisco_ios.default").and_then(Origin::framing);
+    let framing = registry::intake("filebeat.cisco_ios.default").and_then(|i| i.framing);
     Envelope::Syslog
         .unwrap_into_beats(&mut event, framing)
         .expect("unwraps");
@@ -171,7 +171,7 @@ fn cisco_ios_emits_under_either_envelope() {
     for envelope in [Envelope::Beats, Envelope::Syslog] {
         let mut source = receiver_syslog("%SYS-5-CONFIG_I: Configured from console");
         source["_raw"] = json!(line);
-        let framing = registry::origin("filebeat.cisco_ios.default").and_then(Origin::framing);
+        let framing = registry::intake("filebeat.cisco_ios.default").and_then(|i| i.framing);
         let (out, outcome) = transform_batch_with(
             transform,
             envelope,
@@ -198,9 +198,9 @@ fn no_syslog_source_panics_on_the_syslog_envelope() {
         "%ASA-6-302013: Built connection",
     ];
 
-    for source in registry::syslog_sources() {
+    for source in registry::sources_accepting(Envelope::Syslog) {
         assert!(
-            registry::origin(source).is_some_and(Origin::is_syslog),
+            registry::intake(source).is_some_and(|i| i.accepts(Envelope::Syslog)),
             "{source} is listed as syslog but classified otherwise"
         );
 

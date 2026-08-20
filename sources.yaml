@@ -18,12 +18,25 @@
 #   pipelines    Directory under -dev/pipelines/ holding the vendored copy.
 #   fixtures     Directory under tests/fixtures/.
 #   beats        Beats module and fileset carrying the same source, if any.
-#   origin       `api` (pulled over HTTP) or `syslog` (a device can emit it).
-#   framing      Syslog sources only. `line` if the pipeline groks the syslog
+#   intakes      Every way this source's payload can reach the service. The
+#                transform is the same for all of them; only the wrapper
+#                differs, and `src/envelope.rs` unwraps it.
+#   framing      Syslog intakes only. `line` if the pipeline groks the syslog
 #                header out of `message`, `body` if a prefixed header would
 #                corrupt its first field.
 #   transforms   Generated transforms wired into the registry, as
 #                `filebeat.<source>.<transform>`.
+#
+# The three intakes, and what earns each:
+#
+#   beats    Beats or Elastic Agent. Always, since every source here has an
+#            Elastic integration.
+#   syslog   A device pushes the data, so dfe-receiver can take it. The
+#            integration says so by shipping tcp/udp agent streams.
+#   fetcher  Elastic's agent input is a PURE TRANSPORT -- httpjson, cel,
+#            aws-s3, azure-eventhub, streaming -- so the ingest pipeline does
+#            all the parsing and dfe-fetcher can obtain the same bytes. These
+#            are the sources where the agent adds nothing we would lose.
 
 sources:
   azure_activitylogs:
@@ -32,7 +45,7 @@ sources:
     pipelines: azure/activitylogs
     fixtures: azure/activitylogs
     beats: {module: azure, fileset: activitylogs}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   azure_auditlogs:
@@ -41,7 +54,7 @@ sources:
     pipelines: azure/auditlogs
     fixtures: azure/auditlogs
     beats: {module: azure, fileset: auditlogs}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   azure_platformlogs:
@@ -50,7 +63,7 @@ sources:
     pipelines: azure/platformlogs
     fixtures: azure/platformlogs
     beats: {module: azure, fileset: platformlogs}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   azure_signinlogs:
@@ -59,7 +72,7 @@ sources:
     pipelines: azure/signinlogs
     fixtures: azure/signinlogs
     beats: {module: azure, fileset: signinlogs}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   cisco_asa:
@@ -67,7 +80,7 @@ sources:
     data_stream: log
     pipelines: cisco/asa
     fixtures: cisco/asa
-    origin: syslog
+    intakes: [beats, syslog]
     framing: line
     transforms: [default]
 
@@ -76,7 +89,7 @@ sources:
     data_stream: log
     pipelines: cisco/ftd
     fixtures: cisco/ftd
-    origin: syslog
+    intakes: [beats, syslog]
     framing: line
     transforms: [default]
 
@@ -85,7 +98,7 @@ sources:
     data_stream: log
     pipelines: cisco/ios
     fixtures: cisco/ios
-    origin: syslog
+    intakes: [beats, syslog]
     framing: line
     transforms: [default]
 
@@ -94,7 +107,7 @@ sources:
     data_stream: log
     pipelines: cisco/meraki
     fixtures: cisco/meraki/logs
-    origin: syslog
+    intakes: [beats, syslog]
     framing: body
     transforms: [default]
 
@@ -103,7 +116,7 @@ sources:
     data_stream: log
     pipelines: cisco/nexus
     fixtures: cisco/nexus
-    origin: syslog
+    intakes: [beats, syslog]
     framing: line
     transforms: [default]
 
@@ -113,7 +126,7 @@ sources:
     data_stream: log
     pipelines: cisco/umbrella
     fixtures: cisco/umbrella
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   crowdstrike:
@@ -122,7 +135,7 @@ sources:
     pipelines: crowdstrike
     fixtures: crowdstrike/falcon
     beats: {module: crowdstrike, fileset: falcon}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   fortinet:
@@ -130,7 +143,7 @@ sources:
     data_stream: log
     pipelines: fortinet
     fixtures: fortinet/fortigate
-    origin: syslog
+    intakes: [beats, syslog]
     framing: line
     transforms: [default]
 
@@ -140,7 +153,7 @@ sources:
     pipelines: o365
     fixtures: o365/audit
     beats: {module: o365, fileset: audit}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   okta:
@@ -149,7 +162,7 @@ sources:
     pipelines: okta
     fixtures: okta/system
     beats: {module: okta, fileset: system}
-    origin: api
+    intakes: [beats, fetcher]
     transforms: [default]
 
   # `panw.default` routes on log type and holds the CSV parse and the converts
@@ -161,7 +174,7 @@ sources:
     pipelines: panw
     fixtures: panw/panos
     beats: {module: panw, fileset: panos}
-    origin: syslog
+    intakes: [beats, syslog]
     framing: body
     transforms:
       - authentication

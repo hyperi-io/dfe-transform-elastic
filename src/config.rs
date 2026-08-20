@@ -34,8 +34,9 @@ pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
     pub name: String,
 
-    /// How the payload is wrapped on the way in. The transform is the same
-    /// either way; only the unwrapping differs.
+    /// Which transport delivered the payload. The transform is the same for
+    /// all of them; only the unwrapping differs. Validation rejects an
+    /// envelope the source cannot actually arrive in.
     #[serde(default)]
     pub envelope: crate::envelope::Envelope,
 
@@ -155,18 +156,23 @@ impl Config {
                 self.sink.max_message_bytes
             )));
         }
-        let origin = crate::registry::origin(&self.source.name)
+        let intake = crate::registry::intake(&self.source.name)
             .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))?;
 
-        // An API-only source over the syslog envelope would unwrap a header
-        // that is never there, and quietly emit nothing useful. Refuse it at
-        // startup rather than at the first batch.
-        if self.source.envelope == crate::envelope::Envelope::Syslog && !origin.is_syslog() {
+        // An envelope this source never arrives in would unwrap a shape that
+        // is not there and quietly emit nothing useful. Refuse it at startup
+        // rather than at the first batch.
+        if !intake.accepts(self.source.envelope) {
+            let name = |e: &crate::envelope::Envelope| format!("{e:?}").to_lowercase();
+            let accepts: Vec<String> = intake.envelopes.iter().map(name).collect();
             return Err(crate::Error::Config(format!(
-                "source '{}' is pulled from an API and cannot arrive over syslog; \
-                 the syslog envelope applies to: {}",
+                "source '{}' cannot arrive over {}; it accepts {}, and the {} \
+                 envelope applies to: {}",
                 self.source.name,
-                crate::registry::syslog_sources()
+                name(&self.source.envelope),
+                accepts.join(" and "),
+                name(&self.source.envelope),
+                crate::registry::sources_accepting(self.source.envelope)
                     .collect::<Vec<_>>()
                     .join(", ")
             )));
@@ -282,8 +288,35 @@ mod tests {
         let err = c.validate().expect_err("okta over syslog must be rejected");
         let message = err.to_string();
         assert!(message.contains("cannot arrive over syslog"), "{message}");
-        // The error must name what WOULD work.
+        // The error must name both what this source DOES take and what would.
+        assert!(message.contains("beats and fetcher"), "{message}");
         assert!(message.contains("filebeat.cisco_ios.default"), "{message}");
+    }
+
+    /// The other direction: a device pushes `cisco_ios`, so there is nothing for
+    /// dfe-fetcher to pull and the fetcher envelope is refused.
+    #[test]
+    fn rejects_the_fetcher_envelope_on_a_pushed_source() {
+        let mut c = valid();
+        c.source.name = "filebeat.cisco_ios.default".into();
+        c.source.envelope = crate::envelope::Envelope::Fetcher;
+
+        let message = c
+            .validate()
+            .expect_err("cisco_ios over fetcher must be rejected")
+            .to_string();
+        assert!(message.contains("cannot arrive over fetcher"), "{message}");
+        assert!(message.contains("beats and syslog"), "{message}");
+        assert!(message.contains("filebeat.okta.default"), "{message}");
+    }
+
+    /// dfe-fetcher can obtain what Elastic's `httpjson` input obtains, so okta
+    /// accepts it and the config is valid.
+    #[test]
+    fn accepts_the_fetcher_envelope_on_a_pulled_source() {
+        let mut c = valid();
+        c.source.envelope = crate::envelope::Envelope::Fetcher;
+        assert!(c.validate().is_ok());
     }
 
     #[test]
