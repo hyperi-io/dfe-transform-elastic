@@ -708,7 +708,7 @@ fn run_guarded_literals(event: &mut Event, body: &str) {
 }
 
 /// Split `text` at the region opened by `open` and closed by its match.
-fn balanced(text: &str, open: char, close: char) -> Option<(&str, &str)> {
+pub(crate) fn balanced(text: &str, open: char, close: char) -> Option<(&str, &str)> {
     let mut chars = text.char_indices();
     let (_, first) = chars.next()?;
     if first != open {
@@ -731,8 +731,22 @@ fn balanced(text: &str, open: char, close: char) -> Option<(&str, &str)> {
     None
 }
 
+/// Rewrite Painless's map syntax into the dotted form paths are read in.
+///
+/// Only where it is subscripting with a literal: `ctx['@timestamp']` is a path
+/// and `params[net.transport]` is a lookup, and the difference is the quotes.
+fn subject_path(term: &str) -> String {
+    // Null-safe navigation goes too: `ctx?.event` is `ctx.event`, and leaving
+    // the `?` on defeats the `ctx.` prefix every reader below strips.
+    term.replace("?.", ".")
+        .replace("['", ".")
+        .replace("[\"", ".")
+        .replace("']", "")
+        .replace("\"]", "")
+}
+
 /// Evaluate one `if` test: `||` of `&&` of comparisons against literals.
-fn guard_holds(event: &Event, test: &str) -> bool {
+pub(crate) fn guard_holds(event: &Event, test: &str) -> bool {
     test.split("||").any(|conjunction| {
         conjunction
             .split("&&")
@@ -746,6 +760,8 @@ fn term_holds(event: &Event, term: &str) -> bool {
         // `!x.contains(y)` -- a bare `!ctx.field` is not a shape these use.
         return !term_holds(event, inner.trim());
     }
+    // `ctx['@timestamp']` and `ctx.event.action` name the same kind of thing.
+    let term = &subject_path(term);
     if let Some((subject, literal)) = term.split_once(".contains(") {
         let Some(wanted) = quoted_after(literal, "") else {
             return false;
@@ -1087,7 +1103,7 @@ fn local_bound_to(script: &str, marker: &str) -> Option<String> {
 ///
 /// The path is normalised out of Painless's map syntax, so `ctx.network
 /// ['iana_number']` and `ctx.network.iana_number` come back the same.
-fn ctx_writes(script: &str) -> Vec<(String, String)> {
+pub(crate) fn ctx_writes(script: &str) -> Vec<(String, String)> {
     let mut writes = Vec::new();
     for statement in script.split(';') {
         let Some((lhs, rhs)) = split_assignment(statement) else {

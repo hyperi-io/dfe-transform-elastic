@@ -10363,7 +10363,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    uri_parts(event, "url.original", "url.original", true, false)?;
+                    uri_parts(event, "url.original", "url", true, false)?;
                     Ok(())
                 })();
             }

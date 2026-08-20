@@ -363,6 +363,139 @@ fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
     true
 }
 
+/// An `hh:mm:ss` flow duration becomes a span anchored at `@timestamp`.
+///
+/// Cisco's ASA and FTD carry the duration of a connection in the message rather
+/// than both of its ends, so the pipeline computes the missing one. Which end
+/// `@timestamp` is depends on the message: a teardown is timestamped at the
+/// end and the start is counted back, a start-of-flow the other way about.
+/// FTD writes both readings as two branches of one script, so the branch is
+/// chosen by evaluating its condition rather than by assuming a direction.
+///
+/// The colon form is positional, not labelled: `1:07` is a minute and seven
+/// seconds, and each colon multiplies everything to its left by sixty.
+fn try_flow_duration(event: &mut Event, script: &str) -> bool {
+    // The field parsed is the one whose reading is scaled to nanoseconds --
+    // found from the scaling, not from the first `ctx.` in the script, which
+    // in FTD's version belongs to a null check several lines earlier.
+    let Some(source) = script
+        .find("1000000000")
+        .and_then(|at| script[..at].rfind("(ctx."))
+        .and_then(|at| script[at + "(ctx.".len()..].split(')').next())
+    else {
+        return false;
+    };
+    let Some(text) = event.get_as_string(source) else {
+        return false;
+    };
+    let nanos = colon_seconds(&text).saturating_mul(1_000_000_000);
+    let anchor = event.get_str("@timestamp").map(str::to_string);
+
+    let taken = resolve_branches(event, script);
+    for (path, rhs) in crate::painless_params::ctx_writes(&taken) {
+        if rhs == "nanos" {
+            let _ = event.set(&path, json!(nanos));
+            continue;
+        }
+        let Some(anchor) = anchor.as_deref() else {
+            continue;
+        };
+        // Elasticsearch renders a computed instant to milliseconds, so an end
+        // derived from a whole-second duration always carries `.000`.
+        let shifted = |signed: i64| {
+            chrono::DateTime::parse_from_rfc3339(anchor)
+                .ok()
+                .map(|at| at.to_utc() + chrono::TimeDelta::nanoseconds(signed))
+                .map(|at| json!(at.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string()))
+        };
+        let value = if rhs.contains("plusNanos(") {
+            shifted(nanos)
+        } else if rhs.contains("minusNanos(") {
+            shifted(-nanos)
+        } else if bound_to_timestamp(&taken, &rhs) {
+            Some(json!(anchor))
+        } else {
+            None
+        };
+        if let Some(value) = value {
+            let _ = event.set(&path, value);
+        }
+    }
+    true
+}
+
+/// Seconds from a positional `[[hh:]mm:]ss` duration.
+fn colon_seconds(text: &str) -> i64 {
+    let mut total: i64 = 0;
+    let mut current: i64 = 0;
+    for c in text.chars() {
+        if let Some(digit) = c.to_digit(10) {
+            current = current.saturating_mul(10).saturating_add(i64::from(digit));
+        } else if c == ':' {
+            total = total.saturating_add(current).saturating_mul(60);
+            current = 0;
+        }
+    }
+    total.saturating_add(current)
+}
+
+/// Is `local` a `def`/`String` bound to the event's own timestamp?
+fn bound_to_timestamp(script: &str, local: &str) -> bool {
+    script
+        .split(';')
+        .filter_map(|statement| statement.split_once('='))
+        .any(|(lhs, rhs)| {
+            lhs.split_whitespace().next_back() == Some(local) && rhs.contains("@timestamp")
+        })
+}
+
+/// Drop the branches whose conditions do not hold, keeping the rest verbatim.
+///
+/// Only conditions the evaluator understands are resolved; anything else is
+/// kept, because dropping a branch we could not read would silently lose the
+/// writes inside it.
+fn resolve_branches(event: &Event, script: &str) -> String {
+    use crate::painless_params::{balanced, guard_holds};
+
+    let mut out = String::with_capacity(script.len());
+    let mut rest = script;
+    while let Some(at) = rest.find("if") {
+        let after = &rest[at + "if".len()..];
+        let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
+            out.push_str(&rest[..=at]);
+            rest = &rest[at + 1..];
+            continue;
+        };
+        let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
+            out.push_str(&rest[..=at]);
+            rest = &rest[at + 1..];
+            continue;
+        };
+        out.push_str(&rest[..at]);
+
+        let otherwise = after
+            .trim_start()
+            .strip_prefix("else")
+            .and_then(|tail| balanced(tail.trim_start(), '{', '}'));
+        let holds = guard_holds(event, test);
+        if let Some((alternative, tail)) = otherwise {
+            let taken = if holds { block } else { alternative };
+            out.push_str(&resolve_branches(event, taken));
+            rest = tail;
+        } else {
+            if holds {
+                out.push_str(&resolve_branches(event, block));
+            }
+            // The block's own last statement has no terminator of its own once
+            // the braces are gone, so one is added.
+            out.push(';');
+            rest = after;
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
 /// One arm of an equality ladder: the literal tested, and what it assigns.
 struct LadderArm<'a> {
     literal: &'a str,
@@ -2103,6 +2236,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_duration_to_nanos(event, &normalised);
     }
 
+    // Pattern: an `hh:mm:ss` flow duration becomes a span ending at @timestamp.
+    if normalised.contains("minusNanos(") && normalised.contains(".toCharArray()") {
+        return try_flow_duration(event, &normalised);
+    }
+
     // Pattern: build a string out of ctx fields and literals.
     if normalised.contains("?: ''")
         && normalised.contains(".isEmpty()")
@@ -2595,6 +2733,111 @@ mod tests {
 
     /// The scripts below are the verbatim text the transform modules pass
     /// to `painless_exec`, so a change upstream shows up here as a miss.
+    /// Verbatim from `pipelines/cisco_asa/default.yml`, tagged
+    /// `script_process_flow_duration`. `cisco_ftd` ships it too.
+    const FLOW_DURATION: &str = "long parse_hms(String s) {\n    long cur = 0, total = 0;\n    \
+        for (char c: s.toCharArray()) {\n        if (c >= (char)'0' && c <= (char)'9') {\n    \
+        cur = (cur*10) + (long)c - (char)'0';\n        } else if (c == (char)':') {\n    \
+        total = (total + cur) * 60;\n            cur = 0;\n        }\n    }\n    \
+        return total + cur;\n}\nif (ctx?.event == null) {\n    ctx['event'] = new HashMap();\n}\n\
+        long nanos = parse_hms(ctx._temp_.duration_hms) * 1000000000L;\n\
+        ctx.event['duration'] = nanos;\nif (ctx['@timestamp'] != null) {\n    \
+        String end = ctx['@timestamp'];\n    ctx.event['end'] = end;\n    try {\n        \
+        ctx.event['start'] = ZonedDateTime.ofInstant(\n            \
+        Instant.parse(end).minusNanos(nanos),\n            ZoneOffset.UTC);\n    } \
+        catch (Exception e) {\n    }\n}\n";
+
+    /// The colon form is positional: `0:01:07` is 67 seconds, and the start is
+    /// that far before the event's own timestamp.
+    #[test]
+    fn a_flow_duration_becomes_a_span_ending_at_the_timestamp() {
+        let mut event = Event::new(json!({
+            "@timestamp": "2018-10-10T12:34:56.000Z",
+            "_temp_": { "duration_hms": "0:01:07" },
+        }));
+
+        assert!(try_known_painless(&mut event, FLOW_DURATION));
+
+        assert_eq!(event.get("event.duration"), Some(&json!(67_000_000_000i64)));
+        assert_eq!(
+            event.get("event.end"),
+            Some(&json!("2018-10-10T12:34:56.000Z"))
+        );
+        assert_eq!(
+            event.get("event.start"),
+            Some(&json!("2018-10-10T12:33:49.000Z"))
+        );
+    }
+
+    /// With no timestamp there is nothing to count back from, so the duration
+    /// is written and the span is not.
+    #[test]
+    fn a_flow_duration_without_a_timestamp_sets_only_the_duration() {
+        let mut event = Event::new(json!({ "_temp_": { "duration_hms": "0:00:05" } }));
+
+        assert!(try_known_painless(&mut event, FLOW_DURATION));
+
+        assert_eq!(event.get("event.duration"), Some(&json!(5_000_000_000i64)));
+        assert_eq!(event.get("event.start"), None);
+        assert_eq!(event.get("event.end"), None);
+    }
+
+    /// Verbatim from `pipelines/cisco_ftd/default.yml`. FTD writes both
+    /// readings as two branches: for 430003 the timestamp is the START.
+    const FLOW_BOTH_WAYS: &str = "long parse_hms(String s) {\n    long cur = 0, total = 0;\n    \
+        for (char c: s.toCharArray()) {\n        cur = cur;\n    }\n    return total + cur;\n} \
+        if (ctx.event == null) {\n    ctx['event'] = new HashMap();\n} \
+        if (ctx?._temp_.cisco?.message_id == '430003') {\n  String start = ctx['@timestamp'];\n  \
+        ctx.event['start'] = start;\n  long nanos = parse_hms(ctx._temp_.duration_hms) * \
+        1000000000L;\n  ctx.event['duration'] = nanos;\n  ctx.event['end'] = \
+        ZonedDateTime.ofInstant(\n      Instant.parse(start).plusNanos(nanos),\n      \
+        ZoneOffset.UTC);\n} else {\n  String end = ctx['@timestamp'];\n  \
+        ctx.event['end'] = end;\n  long nanos = parse_hms(ctx._temp_.duration_hms) * \
+        1000000000L;\n  ctx.event['duration'] = nanos;\n  ctx.event['start'] = \
+        ZonedDateTime.ofInstant(\n      Instant.parse(end).minusNanos(nanos),\n      \
+        ZoneOffset.UTC);\n}\n";
+
+    /// 430003 is timestamped at the start, so the end is counted FORWARD.
+    #[test]
+    fn a_start_anchored_flow_counts_the_end_forward() {
+        let mut event = Event::new(json!({
+            "@timestamp": "2018-10-10T12:33:49.000Z",
+            "_temp_": { "cisco": { "message_id": "430003" }, "duration_hms": "0:01:07" },
+        }));
+
+        assert!(try_known_painless(&mut event, FLOW_BOTH_WAYS));
+
+        assert_eq!(
+            event.get("event.start"),
+            Some(&json!("2018-10-10T12:33:49.000Z"))
+        );
+        assert_eq!(
+            event.get("event.end"),
+            Some(&json!("2018-10-10T12:34:56.000Z"))
+        );
+        assert_eq!(event.get("event.duration"), Some(&json!(67_000_000_000i64)));
+    }
+
+    /// Every other id is timestamped at the end, so the start is counted BACK.
+    #[test]
+    fn an_end_anchored_flow_counts_the_start_back() {
+        let mut event = Event::new(json!({
+            "@timestamp": "2018-10-10T12:34:56.000Z",
+            "_temp_": { "cisco": { "message_id": "430002" }, "duration_hms": "0:01:07" },
+        }));
+
+        assert!(try_known_painless(&mut event, FLOW_BOTH_WAYS));
+
+        assert_eq!(
+            event.get("event.start"),
+            Some(&json!("2018-10-10T12:33:49.000Z"))
+        );
+        assert_eq!(
+            event.get("event.end"),
+            Some(&json!("2018-10-10T12:34:56.000Z"))
+        );
+    }
+
     const SUM_BYTES: &str = "ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes";
     const SUM_PACKETS: &str = "ctx.network.packets = ctx.source.packets + ctx.destination.packets";
     const DURATION_NANOS: &str =

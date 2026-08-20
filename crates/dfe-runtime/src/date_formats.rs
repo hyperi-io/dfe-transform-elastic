@@ -96,8 +96,69 @@ fn parse_iso8601(input: &str) -> Option<DateTime<FixedOffset>> {
         })
 }
 
-/// Parse against a Java pattern, first as a zoned instant, then as a local one.
+/// Parse against a Java pattern, expanding its optional sections first.
+///
+/// `[EEE ]MMM [ ]d[ yyyy] HH:mm:ss` is one pattern to Java and sixteen to
+/// chrono, which has no optional syntax -- so the brackets used to reach the
+/// format string as literal characters and the pattern matched nothing at all.
+/// A yearless Cisco date fell back to whatever `@timestamp` already held,
+/// which the comparison skips, so only `event.start` and `event.end` showed it.
 fn parse_java(input: &str, java: &str, timezone: Option<&str>) -> Option<DateTime<FixedOffset>> {
+    expand_optional(java)
+        .iter()
+        .find_map(|candidate| parse_java_exact(input, candidate, timezone))
+}
+
+/// Every reading of a pattern's optional sections, the fullest one first.
+///
+/// Java takes an optional section when it can, so the order matters: `[ yyyy]`
+/// present must be tried before `[ yyyy]` absent, or a date carrying a year
+/// parses without it and the year is silently replaced by this one.
+fn expand_optional(java: &str) -> Vec<Cow<'_, str>> {
+    let Some(open) = java.find('[') else {
+        return vec![Cow::Borrowed(java)];
+    };
+    let mut depth = 1usize;
+    let mut close = None;
+    for (index, c) in java[open + 1..].char_indices() {
+        match c {
+            '[' => depth += 1,
+            ']' => {
+                depth -= 1;
+                if depth == 0 {
+                    close = Some(open + 1 + index);
+                    break;
+                }
+            }
+            _ => {}
+        }
+    }
+    let Some(close) = close else {
+        return vec![Cow::Borrowed(java)];
+    };
+
+    let (head, inner, tail) = (&java[..open], &java[open + 1..close], &java[close + 1..]);
+    let mut out = Vec::new();
+    for present in [true, false] {
+        let body = if present { inner } else { "" };
+        for rest in expand_optional(tail) {
+            out.push(Cow::Owned(format!("{head}{body}{rest}")));
+            // A pattern of many optional sections would otherwise expand
+            // exponentially; the vendor ones have at most a handful.
+            if out.len() >= 64 {
+                return out;
+            }
+        }
+    }
+    out
+}
+
+/// Parse against one fully-resolved pattern, zoned first, then local.
+fn parse_java_exact(
+    input: &str,
+    java: &str,
+    timezone: Option<&str>,
+) -> Option<DateTime<FixedOffset>> {
     let mut chrono = java_to_chrono(java);
 
     // A BSD syslog date carries no year. Java fills in the ingesting node's
@@ -308,6 +369,36 @@ mod tests {
             "%Y-%m-%dT%H:%M:%S.%3f%:z"
         );
         assert_eq!(java_to_chrono("MMM  d HH:mm:ss"), "%b  %-d %H:%M:%S");
+    }
+
+    /// The fullest reading comes first, so a date carrying a year is never
+    /// parsed by the yearless variant and quietly given this year instead.
+    #[test]
+    fn optional_sections_expand_fullest_first() {
+        let expanded = expand_optional("[EEE ]MMM [ ]d[ yyyy] HH:mm:ss");
+        assert_eq!(expanded.first().unwrap(), "EEE MMM  d yyyy HH:mm:ss");
+        assert_eq!(expanded.last().unwrap(), "MMM d HH:mm:ss");
+        assert_eq!(expanded.len(), 8);
+    }
+
+    /// Verbatim from `pipelines/cisco_asa/default.yml`. Cisco pads a
+    /// single-digit day to two columns, which is what the `[ ]` is for.
+    #[test]
+    fn a_padded_cisco_day_parses_through_the_optional_space() {
+        const FORMATS: [&str; 2] = ["ISO8601", "[EEE ]MMM [ ]d[ yyyy] HH:mm:ss[.SSS][ z]"];
+
+        let padded = parse_date_out("May  5 17:51:17", &FORMATS, Some("UTC"), None).unwrap();
+        assert!(
+            padded.contains("-05-05T17:51:17.000"),
+            "the day and time must survive the padding: {padded}"
+        );
+
+        // The year, where the text carries one, must be the text's own.
+        let dated = parse_date_out("Oct 10 2018 12:34:56", &FORMATS, Some("UTC"), None).unwrap();
+        assert!(
+            dated.starts_with("2018-10-10T12:34:56.000"),
+            "the year in the text must win: {dated}"
+        );
     }
 
     /// Verbatim from `pipelines/cisco/nexus/default.yml`.

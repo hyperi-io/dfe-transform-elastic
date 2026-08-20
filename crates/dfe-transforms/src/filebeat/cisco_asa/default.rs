@@ -9783,7 +9783,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("url.original") };
             if _cond {
-                uri_parts(event, "url.original", "url.original", true, false)?;
+                uri_parts(event, "url.original", "url", true, false)?;
             }
 
             let _cond = { event.has_value("_temp_.url_domain") };
