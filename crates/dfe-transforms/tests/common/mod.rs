@@ -157,6 +157,16 @@ fn wrap_event(raw: RawEvent, config_fields: &Map<String, Value>) -> Event {
     Event::new(Value::Object(event_obj))
 }
 
+/// Load a fixture's events, wrapped exactly as [`run_fixture`] would.
+///
+/// For the checks that assert individual fields rather than a whole event.
+pub fn load_fixture_events(fixture_dir: &str, log_name: &str) -> Vec<Event> {
+    let dir = Path::new(fixture_dir);
+    let (log_path, _) = find_fixture_pair(dir, log_name);
+    let config_fields = load_config_fields(dir, log_name);
+    load_and_wrap_events(&log_path, &config_fields)
+}
+
 /// Run a fixture test: input file + {"expected": [...]} output.
 ///
 /// Uses Semantic mode (skips @timestamp, event.created, @metadata).
@@ -197,8 +207,7 @@ pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str,
             }
             Ok(_) => {
                 if let Some(expected_val) = expected.get(i) {
-                    let diff =
-                        JsonDiff::compare(expected_val, event.as_value(), MatchMode::Semantic);
+                    let diff = compare_expected(expected_val, event.as_value());
                     if diff.is_match() {
                         passed += 1;
                     } else {
@@ -220,6 +229,56 @@ pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str,
         "{} regressed on {log_name}: {passed}/{total} matched, baseline is {baseline}",
         transform.name(),
     );
+}
+
+/// Fields a Filebeat module capture strips before writing the golden file.
+///
+/// The PIPELINE leaves all five -- `message` still holds whatever the CSV or
+/// grok did not consume. Reporting them as EXTRA compares our output against
+/// a filter that ran after Elastic's, not against Elastic.
+const CAPTURE_STRIPPED: &[&str] = &[
+    "@metadata",
+    "agent",
+    "ecs.version",
+    "log.file.path",
+    "message",
+];
+
+/// Compare one expectation, in whichever of the two shapes it was committed.
+///
+/// Some fixtures store the expectation FLAT -- `"event.action": "..."` rather
+/// than a nested object. Compared as nested, every one of those keys reads as
+/// MISSING and the whole fixture scores zero however good the transform is.
+/// That shape is also the marker for a module capture, so the capture's own
+/// field filter is applied alongside it.
+fn compare_expected(expected: &Value, actual: &Value) -> JsonDiff {
+    match expected.as_object() {
+        Some(map) if map.keys().any(|k| k.contains('.')) => {
+            let mut actual = actual.clone();
+            for field in CAPTURE_STRIPPED {
+                remove_path(&mut actual, field);
+            }
+            JsonDiff::compare_flat_expected(map, &actual, MatchMode::Semantic)
+        }
+        _ => JsonDiff::compare(expected, actual, MatchMode::Semantic),
+    }
+}
+
+/// Remove a dotted path from a JSON document, and its parent if that empties it.
+fn remove_path(value: &mut Value, path: &str) {
+    let Some(map) = value.as_object_mut() else {
+        return;
+    };
+    let Some((head, rest)) = path.split_once('.') else {
+        map.remove(path);
+        return;
+    };
+    if let Some(child) = map.get_mut(head) {
+        remove_path(child, rest);
+        if child.as_object().is_some_and(serde_json::Map::is_empty) {
+            map.remove(head);
+        }
+    }
 }
 
 /// Find the input + expected file pair for a fixture name.

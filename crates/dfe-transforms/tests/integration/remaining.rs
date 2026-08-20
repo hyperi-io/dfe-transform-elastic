@@ -6,6 +6,15 @@
 //! The six sources that had no parity test. Their expectations are committed
 //! as a bare JSON array rather than `{"expected": [...]}`, which is the only
 //! thing that had ever stopped them running.
+//!
+//! **o365 and panw sit at zero for a reason that is not the transform.** Their
+//! `.log` files are the OUTPUT of an older pipeline generation, and the
+//! expectation beside each one is that same generation's output. o365's
+//! expectations are keyed `o365.audit.*` where `pipelines/o365/default.yml`
+//! reads `o365audit.*` -- not one field can line up. panw's carry `client.*`
+//! and `panw.panos.destination.nat.*`, which the current pipeline does not set
+//! and explicitly removes. Raising these needs new fixtures generated against
+//! the pipelines in `pipelines/`, not changes to the transforms.
 
 use dfe_transforms::filebeat::{cisco_ios, cisco_meraki, cisco_nexus, fortinet, o365, panw};
 
@@ -120,9 +129,12 @@ parity!(
     0
 );
 
+// `panw/default` is the router AND where the shared work lives -- the CSV
+// parse, every `convert`, and the `_temp_` removal. A sub-pipeline driven on
+// its own sees none of it.
 parity!(
     panw_traffic,
-    panw::traffic::Traffic,
+    panw::default::Default,
     "panw/panos",
     "traffic",
     0
@@ -130,10 +142,50 @@ parity!(
 
 parity!(
     panw_threat,
-    panw::traffic::Traffic,
+    panw::default::Default,
     "panw/panos",
     "threat",
     0
 );
 
-parity!(panw_userid, panw::userid::Userid, "panw/panos", "userid", 0);
+parity!(
+    panw_userid,
+    panw::default::Default,
+    "panw/panos",
+    "userid",
+    0
+);
+
+/// panw scores zero against a fixture from an older pipeline generation, so
+/// this asserts the fields that generation agrees on -- the router picked the
+/// sub-pipeline, and the CSV landed in the right columns.
+#[test]
+fn panw_routes_and_parses_its_csv() {
+    use dfe_runtime::transform::Transform;
+
+    let dir = format!("{FIXTURE_BASE}/panw/panos");
+    let mut events = super::common::load_fixture_events(&dir, "traffic");
+    let event = events.first_mut().expect("the fixture has events");
+
+    panw::default::Default
+        .transform(event)
+        .expect("panw transforms without error");
+
+    assert_eq!(event.get_str("panw.panos.type"), Some("TRAFFIC"));
+    assert_eq!(event.get_str("source.ip"), Some("192.168.15.207"));
+    assert_eq!(event.get_str("destination.ip"), Some("184.51.253.152"));
+    assert_eq!(event.get_str("rule.name"), Some("new_outbound_from_trust"));
+    assert_eq!(event.get_i64("event.duration"), Some(586_000_000_000));
+
+    // The columns that used to land one field to the left, putting an
+    // interface name on `destination.port`.
+    assert_eq!(
+        event.get_str("observer.egress.interface.name"),
+        Some("ethernet1/1")
+    );
+    assert_eq!(
+        event.get_str("observer.ingress.interface.name"),
+        Some("ethernet1/2")
+    );
+    assert_eq!(event.get_i64("destination.port"), Some(443));
+}

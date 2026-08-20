@@ -220,6 +220,21 @@ fn should_skip(key: &str, skip_fields: &BTreeSet<&str>) -> bool {
 
 fn values_equal(a: &Value, b: &Value) -> bool {
     match (a, b) {
+        // An ECS array is a SET -- `event.type`, `related.ip`, `tags` carry no
+        // ordering. The committed expectations are sorted where our insertion
+        // order is not, so comparing positionally reports a difference that
+        // does not exist: 398 of 398 multi-element arrays in the panw
+        // expectation are in sorted order.
+        (Value::Array(xs), Value::Array(ys)) if xs.len() == ys.len() => {
+            let mut remaining: Vec<&Value> = ys.iter().collect();
+            xs.iter().all(|x| {
+                remaining
+                    .iter()
+                    .position(|y| values_equal(x, y))
+                    .map(|at| remaining.swap_remove(at))
+                    .is_some()
+            })
+        }
         (Value::Number(na), Value::Number(nb)) => {
             // Handle integer vs float comparison (1 == 1.0)
             if let (Some(fa), Some(fb)) = (na.as_f64(), nb.as_f64()) {

@@ -109,6 +109,12 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.panw.default",
+        "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.panw.globalprotect",
         "description": "Compiled transform. The device can emit over syslog, so either envelope applies.",
         "maturity": "beta"

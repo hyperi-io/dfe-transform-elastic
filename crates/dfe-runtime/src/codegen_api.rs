@@ -273,7 +273,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // A path segment. `PROVIDER` on the catch-all `.+?` matched lazily,
         // so `/providers/Microsoft.aadiam` yielded "M".
         "GROUPID" | "PROVIDERNAME" | "PROVIDER" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
-        "MONTHDAY" => r"\d{1,2}",
+        "MONTHDAY" | "MONTHNUM" => r"\d{1,2}",
         "YEAR" => r"\d{4}",
         "HOUR" | "MINUTE" | "SECOND" => r"\d{2}",
         // Whitespace, not "anything". The catch-all below made every pattern

@@ -112,7 +112,9 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
         &filebeat::okta::default::Default,
         Origin::Api,
     ),
-    // panw has no `default` -- the upstream pipeline dispatches per log type.
+    // `panw.default` routes on log type and holds the CSV parse and converts
+    // the per-type entries depend on. The per-type entries suit a feed already
+    // narrowed to one log type.
     (
         "filebeat.panw.authentication",
         &filebeat::panw::authentication::Authentication,
@@ -126,6 +128,11 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
     (
         "filebeat.panw.decryption",
         &filebeat::panw::decryption::Decryption,
+        Origin::Syslog(Framing::Body),
+    ),
+    (
+        "filebeat.panw.default",
+        &filebeat::panw::default::Default,
         Origin::Syslog(Framing::Body),
     ),
     (
@@ -268,7 +275,7 @@ mod tests {
             .filter(|(_, _, o)| *o == Origin::Api)
             .count();
         assert_eq!(syslog + api, total);
-        assert_eq!(syslog, 16);
+        assert_eq!(syslog, 17);
         assert_eq!(api, 7);
     }
 

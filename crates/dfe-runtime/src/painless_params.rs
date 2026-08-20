@@ -338,7 +338,10 @@ fn try_indexed_lookup(event: &mut Event, script: &str, params: &Map<String, Valu
 
 /// `ctx.<field> = ctx.<field> * params.<name>`
 fn try_scale(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some(path) = ctx_path_before(script, "* params.") else {
+    let Some((head, _)) = script.split_once("* params.") else {
+        return false;
+    };
+    let Some(path) = crate::painless_common::painless_path(head) else {
         return false;
     };
     let Some(factor) = params_ref(script, params, "* params.").and_then(Value::as_f64) else {
@@ -356,7 +359,57 @@ fn try_scale(event: &mut Event, script: &str, params: &Map<String, Value>) -> bo
     } else {
         let _ = event.set(&path, scaled);
     }
+
+    // The same script often derives an end instant from the scaled duration.
+    #[allow(clippy::cast_possible_truncation)]
+    if script.contains(".plusNanos(") {
+        add_nanos(event, script, scaled as i64);
+    }
     true
+}
+
+/// `ctx.<target> = ZonedDateTime.parse(<start>).plusNanos(nanos)`
+///
+/// The start instant is a ctx field bound to a local earlier in the script.
+fn add_nanos(event: &mut Event, script: &str, nanos: i64) {
+    use crate::painless_common::painless_path;
+
+    use crate::painless_common::ctx_path_bound_to;
+
+    let Some((head, _)) = script.split_once(".plusNanos(") else {
+        return;
+    };
+    // `parse(<local>)`, where the local was bound to a ctx path earlier.
+    let Some(source) = head
+        .rsplit_once("parse(")
+        .map(|(_, name)| name.trim_end_matches(')').trim())
+        .and_then(|name| ctx_path_bound_to(script, name).or_else(|| painless_path(name)))
+    else {
+        return;
+    };
+    // The assignment target is whatever sits left of the `=` on this line.
+    let Some(target) = head
+        .rsplit_once('=')
+        .and_then(|(lhs, _)| painless_path(lhs))
+    else {
+        return;
+    };
+    let Some(start) = event.get_as_string(&source) else {
+        return;
+    };
+    let Ok(start) = chrono::DateTime::parse_from_rfc3339(&start) else {
+        return;
+    };
+
+    let end = start + chrono::TimeDelta::nanoseconds(nanos);
+    let _ = event.set(
+        &target,
+        Value::String(
+            end.with_timezone(&chrono::Utc)
+                .format("%Y-%m-%dT%H:%M:%S%.3f%:z")
+                .to_string(),
+        ),
+    );
 }
 
 /// `ctx.<field> = ctx.<field>.replace(params.<name>, '<replacement>')`

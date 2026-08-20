@@ -317,7 +317,7 @@ fn parse_ladder(script: &str) -> Option<Ladder<'_>> {
 }
 
 /// The ctx path a `def name = ctx.a.b;` binding reads, if there is one.
-fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
+pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     use crate::painless_params::clean_path;
 
     for form in ["def ", "String ", "int ", "long "] {
@@ -944,8 +944,13 @@ fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
 /// Painless writes a key that is not an identifier as `['a.b/c']`, and those
 /// subscripts are path SEGMENTS -- a dot inside one is part of the key, not a
 /// separator, so the segment is joined whole.
-fn painless_path(fragment: &str) -> Option<String> {
-    let start = fragment.rfind("ctx.")? + "ctx.".len();
+pub(crate) fn painless_path(fragment: &str) -> Option<String> {
+    // The root is written either `ctx.a` or `ctx['a']`, sometimes in the same
+    // script, so the search is for `ctx` followed by either.
+    let start = fragment
+        .rfind("ctx.")
+        .map(|at| at + "ctx.".len())
+        .or_else(|| fragment.rfind("ctx[").map(|at| at + "ctx".len()))?;
     let mut path = String::new();
     let mut chars = fragment[start..].chars().peekable();
 
@@ -1103,6 +1108,18 @@ fn read_u16(event: &Event, field: &str) -> Option<u16> {
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = normalise(script);
 
+    // Pattern: drop null and empty values recursively. Matched on the SHAPE,
+    // not the helper's name -- panw spells it `dropEmptyFields`, and keying
+    // on `drop(ctx)` left every emptied object behind.
+    if normalised.contains("removeIf")
+        && normalised.contains("instanceof Map")
+        && normalised.contains("instanceof List")
+        && normalised.contains("(ctx)")
+    {
+        drop_empty_recursive(event);
+        return true;
+    }
+
     // Pattern: network.bytes / network.packets as the sum of both directions.
     if let Some(total) = sum_of_directions(&normalised) {
         return try_sum_directions(event, total);
@@ -1172,12 +1189,6 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && (normalised.contains(".splitOnToken(") || normalised.contains("instanceof Map"))
     {
         return try_append_each(event, &normalised);
-    }
-
-    // Pattern: drop null/empty values recursively
-    if normalised.contains("drop(ctx)") && normalised.contains("removeIf") {
-        drop_empty_recursive(event);
-        return true;
     }
 
     // Pattern: keys_to_snake_case
