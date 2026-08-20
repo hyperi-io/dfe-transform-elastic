@@ -12,10 +12,12 @@
 //! A missing corpus is reported and skipped -- unlike the committed fixtures,
 //! where absence is a failure.
 
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 use dfe_runtime::event::Event;
-use dfe_runtime::testutil::diff::{JsonDiff, MatchMode};
+use dfe_runtime::testutil::diff::{DiffKind, JsonDiff, MatchMode};
+use dfe_runtime::testutil::{flatten_value, policy};
 use dfe_runtime::transform::Transform;
 use dfe_transforms::filebeat;
 use serde_json::Value;
@@ -150,6 +152,124 @@ fn captured() -> Vec<Captured> {
     out
 }
 
+/// A running count of events and of the fields inside them.
+///
+/// An event score alone cannot separate a transform that is one field short on
+/// every event from one that is unrecognisably wrong, and the two need
+/// completely different work. 20% of events at 96% of fields is nearly done;
+/// 20% at 40% is not started.
+#[derive(Default, Clone, Copy)]
+struct Score {
+    events: usize,
+    events_matched: usize,
+    events_errored: usize,
+    fields: usize,
+    fields_wrong: usize,
+    fields_extra: usize,
+}
+
+impl Score {
+    fn add(&mut self, other: Self) {
+        self.events += other.events;
+        self.events_matched += other.events_matched;
+        self.events_errored += other.events_errored;
+        self.fields += other.fields;
+        self.fields_wrong += other.fields_wrong;
+        self.fields_extra += other.fields_extra;
+    }
+
+    fn line(&self) -> String {
+        let pct = |n: usize, d: usize| {
+            if d == 0 {
+                100.0
+            } else {
+                100.0 * n as f64 / d as f64
+            }
+        };
+        format!(
+            "events {}/{} ({:.0}%), fields {}/{} ({:.1}%), {} extra, {} errors",
+            self.events_matched,
+            self.events,
+            pct(self.events_matched, self.events),
+            self.fields - self.fields_wrong,
+            self.fields,
+            pct(self.fields - self.fields_wrong, self.fields),
+            self.fields_extra,
+            self.events_errored,
+        )
+    }
+}
+
+/// How many of an expected document's fields are actually compared.
+///
+/// The policy's skipped paths are not measured -- counting them would inflate
+/// every field score by the same fixed amount and hide movement.
+fn compared_field_count(expected: &Value) -> usize {
+    flatten_value(expected)
+        .keys()
+        .filter(|path| !policy().skips(path))
+        .count()
+}
+
+/// One entry in the events-unlocked ranking.
+struct Blocker {
+    path: String,
+    /// Failing events this path is wrong in.
+    appears: usize,
+    /// Events that would pass once this path AND everything above it is fixed.
+    unlocks: usize,
+}
+
+/// The fields whose repair would unlock the most events.
+///
+/// Greedy set cover over the failing events: take the path wrong in the most
+/// of them, count the events it finishes off, strip it, and repeat. Ranking by
+/// raw frequency instead conflates "appears often" with "worth fixing" -- a
+/// path wrong in 400 events that are ALSO wrong in four other places unlocks
+/// nothing on its own, and `unlocks` is what says so.
+fn events_unlocked(failures: &[BTreeSet<String>], top: usize) -> Vec<Blocker> {
+    let mut events: Vec<BTreeSet<String>> = failures.to_vec();
+    let mut ranked = Vec::new();
+
+    while ranked.len() < top {
+        events.retain(|event| !event.is_empty());
+        if events.is_empty() {
+            break;
+        }
+
+        let mut counts: BTreeMap<&str, usize> = BTreeMap::new();
+        for event in &events {
+            for path in event {
+                *counts.entry(path.as_str()).or_default() += 1;
+            }
+        }
+
+        // Ties break on the lexicographically first path, so the ranking is the
+        // same on every run and a diff of two reports means something.
+        let Some((path, appears)) = counts
+            .iter()
+            .max_by_key(|(path, count)| (**count, std::cmp::Reverse(*path)))
+            .map(|(path, count)| ((*path).to_owned(), *count))
+        else {
+            break;
+        };
+
+        let unlocks = events
+            .iter()
+            .filter(|event| event.len() == 1 && event.contains(path.as_str()))
+            .count();
+        for event in &mut events {
+            event.remove(path.as_str());
+        }
+        ranked.push(Blocker {
+            path,
+            appears,
+            unlocks,
+        });
+    }
+    ranked
+}
+
 /// Report how each transform compares against Elastic's confirmed output.
 ///
 /// Reporting, not ratcheting: the corpus is regenerated against whichever
@@ -168,6 +288,10 @@ fn transforms_match_elastics_confirmed_output() {
     }
 
     let mut unmapped = Vec::new();
+    let mut by_source: BTreeMap<String, Score> = BTreeMap::new();
+    let mut failures: BTreeMap<String, Vec<BTreeSet<String>>> = BTreeMap::new();
+    let mut total = Score::default();
+
     for capture in &fixtures {
         let Some(transform) = transform_for(&capture.source, &capture.data_stream) else {
             unmapped.push(format!("{}/{}", capture.source, capture.data_stream));
@@ -194,36 +318,65 @@ fn transforms_match_elastics_confirmed_output() {
             continue;
         }
 
-        let mut matched = 0;
-        let mut errors = 0;
+        let mut score = Score::default();
         for (i, raw) in capture.input.iter().enumerate() {
+            let Some(expected) = capture.expected.get(i) else {
+                continue;
+            };
+            score.events += 1;
+            score.fields += compared_field_count(expected);
+
             let mut event = Event::new(raw.clone());
-            match transform.transform(&mut event) {
-                Err(_) => errors += 1,
-                Ok(_) => {
-                    let Some(expected) = capture.expected.get(i) else {
-                        continue;
-                    };
-                    let diff = JsonDiff::compare(expected, event.as_value(), MatchMode::Semantic);
-                    if diff.is_match() {
-                        matched += 1;
-                    } else {
-                        // One stream, so a difference always follows the
-                        // header of the fixture it came from.
-                        println!("  {}[{i}]: {diff}", capture.fixture);
-                    }
-                }
+            if transform.transform(&mut event).is_err() {
+                score.events_errored += 1;
+                continue;
             }
+
+            let diff = JsonDiff::compare(expected, event.as_value(), MatchMode::Semantic);
+            if diff.is_match() {
+                score.events_matched += 1;
+                continue;
+            }
+
+            let mut paths = BTreeSet::new();
+            for field in &diff.diffs {
+                match field.kind {
+                    DiffKind::Extra { .. } => score.fields_extra += 1,
+                    DiffKind::Missing { .. } | DiffKind::Mismatch { .. } => score.fields_wrong += 1,
+                }
+                paths.insert(field.path.clone());
+            }
+            failures
+                .entry(capture.source.clone())
+                .or_default()
+                .push(paths);
         }
 
         println!(
-            "[{}/{}] {matched}/{} matched, {errors} errors (es {})",
+            "[{}/{}] {} (es {})",
             capture.source,
             capture.fixture,
-            capture.input.len(),
+            score.line(),
             capture.engine,
         );
+        by_source
+            .entry(capture.source.clone())
+            .or_default()
+            .add(score);
+        total.add(score);
     }
+
+    println!("\n=== per source ===");
+    for (source, score) in &by_source {
+        println!("{source:<20} {}", score.line());
+        for blocker in events_unlocked(failures.get(source).map_or(&[], Vec::as_slice), 6) {
+            println!(
+                "      wrong in {:>5}, unlocks {:>5}   {}",
+                blocker.appears, blocker.unlocks, blocker.path
+            );
+        }
+    }
+    println!("\n{:<20} {}", "TOTAL", total.line());
 
     assert!(
         unmapped.is_empty(),
