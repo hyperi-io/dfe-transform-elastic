@@ -97,6 +97,9 @@ unordered:
   - threat.tactic.name
   - threat.technique.name
   - okta.debug_context.debug_data.risk_behaviors
+  # o365 collects the forwarding addresses into a Java HashSet and lists it,
+  # so Elastic's order is the hash-bucket walk and carries no meaning.
+  - email.to.address
 
 # Per-fixture declarations Elastic already ships are honoured in addition to the
 # above, read from each `*-config.yml`:

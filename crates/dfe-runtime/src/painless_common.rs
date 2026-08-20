@@ -22,12 +22,43 @@ use crate::painless_helpers::{SnakeRule, to_snake_case};
 /// when there is nothing to resolve is what makes [`crate::cached_script`]
 /// worth having: the macro resolves the escapes once per call site, so every
 /// event after the first takes the borrow and allocates nothing.
+///
+/// ONE pass, not a chain of replaces. Two sequential `replace` calls got `\\"`
+/// wrong -- azure's `replace("'", "\"")` came out as `replace("'", "\\"")`,
+/// because the `\\` standing for a real backslash was never resolved and the
+/// `\"` after it was. A script quoting a backslash is rare and the one that
+/// does is unreadable to every matcher.
+///
+/// An escape that is not one of JSON's is passed through WHOLE: Painless
+/// spells a regex literal `/\d+/`, and resolving that to `/d+/` would be a
+/// different script.
 pub fn normalise(script: &str) -> Cow<'_, str> {
-    if script.contains("\\n") || script.contains("\\\"") {
-        Cow::Owned(script.replace("\\n", "\n").replace("\\\"", "\""))
-    } else {
-        Cow::Borrowed(script)
+    if !script.contains('\\') {
+        return Cow::Borrowed(script);
     }
+
+    let mut out = String::with_capacity(script.len());
+    let mut chars = script.chars();
+    while let Some(c) = chars.next() {
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        match chars.next() {
+            Some('n') => out.push('\n'),
+            Some('r') => out.push('\r'),
+            Some('t') => out.push('\t'),
+            Some('"') => out.push('"'),
+            // A trailing backslash is not an escape at all, so it stands for
+            // itself the same way `\\` does.
+            Some('\\') | None => out.push('\\'),
+            Some(other) => {
+                out.push('\\');
+                out.push(other);
+            }
+        }
+    }
+    Cow::Owned(out)
 }
 
 /// A Painless script with its escapes resolved once per CALL SITE.
@@ -412,6 +443,233 @@ fn try_version_split(event: &mut Event, script: &str) -> bool {
     let _ = event.set(&protocol_path, subject[..digit].to_string());
     let _ = event.set(&version_path, version);
     true
+}
+
+/// A helper that splits, trims and collects several optional fields into one
+/// deduplicated list.
+///
+/// ```painless
+/// void splitTrimAdd(Set acc, String str) {
+///     if (str != null && str != '') {
+///         String[] parts = str.splitOnToken(';');
+///         for (int i = 0; i < parts.length; i++) { acc.add(parts[i].trim()); }
+///     }
+/// }
+/// def addressSet = new HashSet(ctx.email?.to?.address ?: []);
+/// splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo);
+/// splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo);
+/// splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);
+/// if (!addressSet.isEmpty()) { ctx.email.to.address = addressSet.asList(); }
+/// ```
+///
+/// o365's forwarding rules are nearly the whole of what the runtime was still
+/// skipping -- 1,483 of 1,487 scripts, this one shape.
+///
+/// The list keeps INSERTION order where Elastic's `HashSet` iterates by hash
+/// bucket. That order carries no meaning, so `tests/compare-policy.yaml`
+/// records the field as a set rather than a sequence; reproducing Java's table
+/// layout would be precision nothing can check.
+fn try_split_trim_collect(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let Some(separator) = script
+        .split_once(".splitOnToken('")
+        .and_then(|(_, rest)| rest.split_once('\'').map(|(sep, _)| sep))
+    else {
+        return false;
+    };
+
+    // `def <acc> = new HashSet(ctx.<seed> ?: []);`
+    let Some((before, after)) = script.split_once(" = new HashSet(ctx.") else {
+        return false;
+    };
+    let Some(accumulator) = before.split_whitespace().next_back() else {
+        return false;
+    };
+    let seed = clean_path(after.split([' ', ')', ';']).next().unwrap_or_default());
+    let Some((target, _)) = ctx_target_assigned_from(script, ".asList()") else {
+        return false;
+    };
+
+    // The set is seeded from whatever the target already holds, so the script
+    // adds to a list an earlier processor built rather than replacing it.
+    let mut collected: Vec<String> = match event.get(&seed) {
+        Some(Value::Array(items)) => items
+            .iter()
+            .filter_map(Value::as_str)
+            .map(str::to_owned)
+            .collect(),
+        Some(Value::String(one)) => vec![one.clone()],
+        _ => Vec::new(),
+    };
+
+    let call = format!("({accumulator}, ctx.");
+    for (at, _) in script.match_indices(&call) {
+        let rest = &script[at + call.len()..];
+        let Some(end) = rest.find(')') else { continue };
+        let Some(text) = event.get_str(&clean_path(&rest[..end])).map(str::to_owned) else {
+            continue;
+        };
+        // `if (str != null && str != '')` guards the WHOLE string, never the
+        // parts, so `a;;b` really does collect an empty one.
+        if text.is_empty() {
+            continue;
+        }
+        for part in text.split(separator) {
+            let part = part.trim();
+            if !collected.iter().any(|held| held == part) {
+                collected.push(part.to_string());
+            }
+        }
+    }
+
+    if !collected.is_empty() {
+        let _ = event.set(
+            &target,
+            Value::Array(collected.into_iter().map(Value::String).collect()),
+        );
+    }
+    true
+}
+
+/// One nested key collected out of every entry of a map, deduplicated.
+///
+/// ```painless
+/// ctx.related.entity = ctx.related.entity ?: [];
+/// if (ctx.azure.auditlogs.properties?.target_resources != null) {
+///     for (String k : ctx.azure.auditlogs.properties.target_resources.keySet()) {
+///         def resource = ctx.azure.auditlogs.properties.target_resources[k];
+///         if (resource?.id != null && resource.id != '' && !ctx.related.entity.contains(resource.id)) {
+///             ctx.related.entity.add(resource.id);
+///         }
+///     }
+/// }
+/// ```
+///
+/// The array is seeded unconditionally, so an event with no target resources
+/// still gets an empty one -- that is the script's first two lines, not an
+/// oversight, and a later drop-empty pass is what removes it.
+fn try_collect_map_values(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let Some((head, argument)) = script.split_once(".add(") else {
+        return false;
+    };
+    let Some(target_at) = head.rfind("ctx.") else {
+        return false;
+    };
+    let target = clean_path(&head[target_at + "ctx.".len()..]);
+
+    // `<binding>.id` -- the leaf is whatever is read off each entry.
+    let Some(leaf) = argument
+        .split(')')
+        .next()
+        .and_then(|arg| arg.split_once('.'))
+        .map(|(_, leaf)| clean_path(leaf))
+    else {
+        return false;
+    };
+
+    let Some(map_path) = script
+        .split_once(" : ctx.")
+        .and_then(|(_, rest)| rest.split_once(".keySet()"))
+        .map(|(path, _)| clean_path(path))
+    else {
+        return false;
+    };
+
+    let mut collected: Vec<Value> = match event.get(&target) {
+        Some(Value::Array(items)) => items.clone(),
+        _ => Vec::new(),
+    };
+    if let Some(Value::Object(entries)) = event.get(&map_path) {
+        for entry in entries.values() {
+            let Some(value) = entry.get(&leaf).and_then(Value::as_str) else {
+                continue;
+            };
+            if value.is_empty() || collected.iter().any(|held| held.as_str() == Some(value)) {
+                continue;
+            }
+            collected.push(Value::String(value.to_string()));
+        }
+    }
+    let _ = event.set(&target, Value::Array(collected));
+    true
+}
+
+/// `ctx.<path> = ctx.<path>.replace(<from>, <to>)`, guarded on the field.
+///
+/// azure's platform logs carry `properties` as a stringified object in
+/// Python's repr -- single quotes -- so the pipeline rewrites the quotes before
+/// handing it to a `json` processor. Painless's
+/// `replace(CharSequence, CharSequence)` is a LITERAL replace of every
+/// occurrence, not a regex.
+fn try_guarded_replace(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let Some((head, arguments)) = script.split_once(".replace(") else {
+        return false;
+    };
+    // The last bare `=` is the assignment: the guard above it is `!= null`.
+    let Some(assign) = head.rfind('=').filter(|at| {
+        !matches!(
+            head[..*at].chars().next_back(),
+            Some('!' | '=' | '<' | '>' | '+')
+        )
+    }) else {
+        return false;
+    };
+    let (Some(target_at), Some(source_at)) =
+        (head[..assign].rfind("ctx."), head[assign..].rfind("ctx."))
+    else {
+        return false;
+    };
+    let target = clean_path(head[target_at + "ctx.".len()..assign].trim());
+    let source = clean_path(head[assign + source_at + "ctx.".len()..].trim());
+    let Some((from, to)) = two_string_literals(arguments) else {
+        return false;
+    };
+
+    if let Some(text) = event.get_str(&source) {
+        let replaced = text.replace(&from, &to);
+        let _ = event.set(&target, replaced);
+    }
+    true
+}
+
+/// The first two quoted literals in `text`, with their escapes resolved.
+///
+/// Painless takes either quote character and escapes with a backslash, so the
+/// pair in `replace("'", "\"")` is a single quote and a double one.
+fn two_string_literals(text: &str) -> Option<(String, String)> {
+    let mut found: Vec<String> = Vec::with_capacity(2);
+    let mut chars = text.chars();
+
+    while let Some(opening) = chars.next() {
+        if opening != '"' && opening != '\'' {
+            continue;
+        }
+        let mut literal = String::new();
+        loop {
+            match chars.next()? {
+                '\\' => match chars.next()? {
+                    'n' => literal.push('\n'),
+                    'r' => literal.push('\r'),
+                    't' => literal.push('\t'),
+                    other => literal.push(other),
+                },
+                c if c == opening => break,
+                c => literal.push(c),
+            }
+        }
+        found.push(literal);
+        if found.len() == 2 {
+            let second = found.pop()?;
+            let first = found.pop()?;
+            return Some((first, second));
+        }
+    }
+    None
 }
 
 /// The ctx path assigned from `<local><marker>`, with that local's name.
@@ -1774,6 +2032,13 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: split, trim and collect several optional fields into one list.
+    // Checked early: the script also spells `.add(` and `.splitOnToken(`, which
+    // a later matcher reads as a different shape entirely.
+    if normalised.contains("new HashSet(") && normalised.contains(".asList()") {
+        return try_split_trim_collect(event, &normalised);
+    }
+
     // Pattern: network.bytes / network.packets as the sum of both directions.
     if let Some(total) = sum_of_directions(&normalised) {
         return try_sum_directions(event, total);
@@ -1906,6 +2171,16 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    try_named_painless(event, &normalised)
+}
+
+/// The matchers keyed on a vendor's FIELD NAMES rather than on a Painless
+/// construct, plus the two catch-alls.
+///
+/// Split out of [`try_known_painless`] because they are a different kind of
+/// match: a shape matcher recognises what the script DOES and works for any
+/// source that writes it, where these recognise whose script it is.
+fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
     // Pattern: CommandLine → process fields
     if normalised.contains("CommandLine") && normalised.contains("process") {
         if normalised.contains("ParentCommandLine") {
@@ -1929,7 +2204,7 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     // Pattern: email split — splitOnToken("@") → user.email, user.domain, user.name
     // Used in Okta, O365, Azure, and many other sources
     if normalised.contains("splitOnToken") && normalised.contains('@') {
-        return try_email_split(event, &normalised);
+        return try_email_split(event, normalised);
     }
 
     // Pattern: okta risk_behaviors extraction from flattened.behaviors
@@ -1948,13 +2223,13 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 
     // Pattern: Azure event_category assignment, in whichever module's subtree.
     if normalised.contains("event_category") && normalised.contains("eventCategory") {
-        return try_azure_event_category(event, &normalised);
+        return try_azure_event_category(event, normalised);
     }
 
     // Pattern: replace dots in map keys (Azure identity claims)
     // Matches: ctx.temp_claims[key.replace('.', '_')] = ...
     if normalised.contains("replace('.'") && normalised.contains("keySet()") {
-        return try_replace_dots_in_keys(event, &normalised);
+        return try_replace_dots_in_keys(event, normalised);
     }
 
     // Pattern: okta.target array key renames + user/group extraction
@@ -1967,17 +2242,27 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_okta_target_rename(event);
     }
 
+    // Pattern: collect one nested key out of every entry of a map.
+    if normalised.contains(".keySet()") && normalised.contains(".add(") {
+        return try_collect_map_values(event, normalised);
+    }
+
+    // Pattern: rewrite one substring of a field in place.
+    if normalised.contains(".replace(") {
+        return try_guarded_replace(event, normalised);
+    }
+
     // The two catch-alls below are shapes a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
     // Pattern: scale a number in place by a literal.
     if normalised.contains(" * ") && !normalised.contains("params") {
-        return try_scale_by_literal(event, &normalised);
+        return try_scale_by_literal(event, normalised);
     }
 
     // Pattern: copy one field to another when the source is set.
     if normalised.contains("!= null") && !normalised.contains("for (") {
-        return try_guarded_copy(event, &normalised);
+        return try_guarded_copy(event, normalised);
     }
 
     false
@@ -2285,6 +2570,18 @@ mod tests {
                             if ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    \
                             tmp.remove(\"user\");\n}\nctx.destination = tmp;";
 
+    /// Verbatim from `pipelines/o365/audit.yml`, which collects a mail rule's
+    /// forwarding addresses out of three optional parameters.
+    const SPLIT_TRIM_ADD: &str = "void splitTrimAdd(Set acc, String str) {\n    \
+        if (str != null && str != '') {\n        String[] parts = str.splitOnToken(';');\n        \
+        for (int i = 0; i < parts.length; i++) {\n            acc.add(parts[i].trim());\n        \
+        }\n    }\n}\ndef addressSet = new HashSet(ctx.email?.to?.address ?: []);\n\
+        splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo); \
+        splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo); \
+        splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);\n\
+        if (!addressSet.isEmpty()) {\n  ctx.email = ctx.email ?: [:];\n  \
+        ctx.email.to = ctx.email.to ?: [:];\n  ctx.email.to.address = addressSet.asList();\n}\n";
+
     /// Verbatim from `pipelines/fortinet/utm.yml`, which splits `tlsver` into
     /// the two ECS `tls` fields at the version's first digit.
     const TLS_VERSION: &str = "def pat = /\\d+/; def tlsver = \
@@ -2355,6 +2652,54 @@ mod tests {
         assert!(try_known_painless(&mut event, TLS_VERSION));
         assert_eq!(event.get_str("tls.version_protocol"), Some("tls"));
         assert_eq!(event.get_str("tls.version"), Some("1.3"));
+    }
+
+    /// The o365 fixture's own line: three addresses in one semicolon-delimited
+    /// `ForwardTo`.
+    #[test]
+    fn split_trim_collect_gathers_every_forwarding_address() {
+        let mut event = Event::new(json!({
+            "o365audit": { "Parameters": {
+                "ForwardTo": "external1@example.com;external2@example.com;external3@example.com",
+                "RedirectTo": " spaced@example.com ",
+            } },
+        }));
+
+        assert!(try_known_painless(&mut event, SPLIT_TRIM_ADD));
+        assert_eq!(
+            event.get("email.to.address"),
+            Some(&json!([
+                "external1@example.com",
+                "external2@example.com",
+                "external3@example.com",
+                "spaced@example.com",
+            ]))
+        );
+    }
+
+    /// The set is SEEDED from what the target already holds, and a duplicate
+    /// coming in over the top of it is dropped.
+    #[test]
+    fn split_trim_collect_seeds_from_the_target_and_dedups() {
+        let mut event = Event::new(json!({
+            "email": { "to": { "address": ["already@example.com"] } },
+            "o365audit": { "Parameters": { "ForwardTo": "already@example.com;new@example.com" } },
+        }));
+
+        assert!(try_known_painless(&mut event, SPLIT_TRIM_ADD));
+        assert_eq!(
+            event.get("email.to.address"),
+            Some(&json!(["already@example.com", "new@example.com"]))
+        );
+    }
+
+    /// `if (!addressSet.isEmpty())` -- no parameters, no field.
+    #[test]
+    fn split_trim_collect_writes_nothing_when_it_gathers_nothing() {
+        let mut event = Event::new(json!({ "o365audit": { "Parameters": {} } }));
+
+        assert!(try_known_painless(&mut event, SPLIT_TRIM_ADD));
+        assert!(!event.has("email.to.address"));
     }
 
     /// A version with no dot gets `.0`, which is the script's last three lines
