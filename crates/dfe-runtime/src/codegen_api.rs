@@ -289,7 +289,10 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "SYSLOGTIMESTAMP" => SYSLOG_TIMESTAMP,
         "CISCOTIMESTAMP" => CISCO_TIMESTAMP,
         "CISCOMAC" => r"(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}",
-        "QS" | "QUOTEDSTRING" => r#""(?:[^"\\]|\\.)*""#,
+        // Elastic quotes with any of the three, and reading only the double
+        // form left cisco_meraki's `ssid=''` unmatched -- which took the whole
+        // key-value line with it, on every airmarshal event.
+        "QS" | "QUOTEDSTRING" => r#"(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)"#,
         "LOGLEVEL" => r"(?i:emerg|alert|crit|err|warn|notice|info|debug|trace)\w*",
         "TIMESTAMP_ISO8601" => {
             r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?"

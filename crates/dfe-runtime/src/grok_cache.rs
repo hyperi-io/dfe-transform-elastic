@@ -533,6 +533,28 @@ mod tests {
         assert_eq!(event.get_str("cisco.ios.sequence"), Some("3132779"));
     }
 
+    /// Elastic's `QUOTEDSTRING` takes any of the three quote characters.
+    /// Reading only the double form left `cisco_meraki`'s `ssid=''` unmatched,
+    /// and the grok that failed carried the whole key-value line with it.
+    #[test]
+    fn a_quoted_string_takes_any_of_the_three_quotes() {
+        for (input, expected) in [
+            (r#"ssid="home""#, r#""home""#),
+            ("ssid='home'", "'home'"),
+            ("ssid=`home`", "`home`"),
+            ("ssid=''", "''"),
+        ] {
+            let mut event = crate::Event::new(serde_json::json!({}));
+            assert!(
+                grok("^ssid=%{QS:network.name}$")
+                    .extract_into(input, &mut event)
+                    .expect("extraction"),
+                "{input} did not match"
+            );
+            assert_eq!(event.get_str("network.name"), Some(expected), "{input}");
+        }
+    }
+
     #[test]
     fn a_plain_pattern_is_cached_too() {
         let first = regex(r"\d{6}$");
