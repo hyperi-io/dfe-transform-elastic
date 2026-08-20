@@ -171,6 +171,9 @@ struct Score {
     events: usize,
     events_matched: usize,
     events_errored: usize,
+    /// Events Elastic's own pipeline failed on, so the capture holds only its
+    /// failure and no expectation of correct output.
+    events_unanswered: usize,
     fields: usize,
     fields_wrong: usize,
     fields_extra: usize,
@@ -181,6 +184,7 @@ impl Score {
         self.events += other.events;
         self.events_matched += other.events_matched;
         self.events_errored += other.events_errored;
+        self.events_unanswered += other.events_unanswered;
         self.fields += other.fields;
         self.fields_wrong += other.fields_wrong;
         self.fields_extra += other.fields_extra;
@@ -194,8 +198,13 @@ impl Score {
                 100.0 * n as f64 / d as f64
             }
         };
+        let unanswered = if self.events_unanswered == 0 {
+            String::new()
+        } else {
+            format!(", {} elastic-errored", self.events_unanswered)
+        };
         format!(
-            "events {}/{} ({:.0}%), fields {}/{} ({:.1}%), {} extra, {} errors",
+            "events {}/{} ({:.0}%), fields {}/{} ({:.1}%), {} extra, {} errors{unanswered}",
             self.events_matched,
             self.events,
             pct(self.events_matched, self.events),
@@ -335,6 +344,14 @@ fn transforms_match_elastics_confirmed_output() {
             let Some(expected) = capture.expected.get(i) else {
                 continue;
             };
+            // Elastic's own pipeline failed on this one, so the capture holds
+            // its failure and no expectation of correct output. Scoring
+            // against it counts our CORRECT output as a miss.
+            if expected.pointer("/event/kind").and_then(Value::as_str) == Some("pipeline_error") {
+                score.events_unanswered += 1;
+                continue;
+            }
+
             score.events += 1;
             score.fields += compared_field_count(expected);
 
