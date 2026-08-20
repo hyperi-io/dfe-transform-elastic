@@ -63,6 +63,12 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_bit_flags(event, &normalised, params);
     }
 
+    // Pattern: several fields each normalised through their own value map.
+    // Ahead of the reversible lookup, whose trigger this shape also matches.
+    if normalised.contains(".map?.getOrDefault(") || normalised.contains("param.map.") {
+        return try_value_maps(event, &normalised, params);
+    }
+
     // Pattern: params IS the table, and one row's columns are written straight
     // onto ctx, then refined by the event's outcome.
     if normalised.contains("params.get(ctx.") && normalised.contains(").get('") {
@@ -467,34 +473,90 @@ fn try_filetime_field_list(event: &mut Event, script: &str, params: &Map<String,
     true
 }
 
-/// `params.get(<key>)` then `forEach((k, v) -> ctx.<target>[k] = v)`
+/// `params.get(<key>)[.get(<key>)...]` then `forEach((k, v) -> ctx.<t>[k] = v)`
 ///
-/// The table is the params block itself, keyed by a field's value. A chained
-/// second `.get(` means a two-level table, which this does not model, so it is
-/// left to fall through and be counted as unhandled.
+/// The table is the params block itself, keyed by one field's value per level.
+/// `cisco_asa` uses one level for a message id and two for a message id and its
+/// outcome, and both end the same way -- the row that survives the chain is
+/// merged into `ctx.event`.
+///
+/// Following only the first level fanned the SECOND level's keys out as if
+/// they were fields, which is how `event.denied.action` and its two siblings
+/// appeared in place of one `event.action`.
 fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    if script.contains(").get(") {
-        return false;
-    }
     let Some(target) = ctx_path_between(script, "forEach((k, v) -> ctx.", "[k] = v") else {
         return false;
     };
-    let Some(key_expr) = last_call_argument(script, "params.get(") else {
+    let keys = get_chain(script);
+    if keys.is_empty() {
         return false;
-    };
-    let Some(key) = resolve_key(event, script, &key_expr) else {
-        // The keyed field is absent, and every one of these scripts opens by
-        // returning when that is so.
-        return true;
-    };
-    let Some(Value::Object(row)) = params.get(&key) else {
-        return true;
-    };
+    }
 
+    let mut node = Some(&Value::Null);
+    for (level, expr) in keys.iter().enumerate() {
+        let Some(key) = resolve_key(event, script, expr) else {
+            // The keyed field is absent, and every one of these scripts opens
+            // by returning when that is so.
+            return true;
+        };
+        node = if level == 0 {
+            params.get(&key)
+        } else {
+            node.and_then(Value::as_object)
+                .and_then(|map| map.get(&key))
+        };
+        if node.is_none() {
+            return true;
+        }
+    }
+
+    let Some(Value::Object(row)) = node else {
+        return true;
+    };
     for (k, v) in row.clone() {
         let _ = event.set(&format!("{target}.{k}"), v);
     }
     true
+}
+
+/// The arguments of a `params.get(a)[?].get(b)...` chain, outermost first.
+///
+/// Read from the LAST `params.get(`, because these scripts commonly look the
+/// row up once to null-check it and again to use it, and only calls chained
+/// directly onto the previous one are levels of the same table.
+fn get_chain(script: &str) -> Vec<String> {
+    let head = script.split("forEach").next().unwrap_or(script);
+    let Some(start) = head.rfind("params.get(") else {
+        return Vec::new();
+    };
+    let mut rest = &head[start + "params".len()..];
+    let mut keys = Vec::new();
+    loop {
+        let Some(after) = rest
+            .strip_prefix(".get(")
+            .or_else(|| rest.strip_prefix("?.get("))
+        else {
+            return keys;
+        };
+        let mut depth = 1usize;
+        let mut end = None;
+        for (index, c) in after.char_indices() {
+            match c {
+                '(' => depth += 1,
+                ')' => {
+                    depth -= 1;
+                    if depth == 0 {
+                        end = Some(index);
+                        break;
+                    }
+                }
+                _ => {}
+            }
+        }
+        let Some(end) = end else { return keys };
+        keys.push(after[..end].trim().to_string());
+        rest = &after[end + 1..];
+    }
 }
 
 /// `def row = params.get('<table>').get(ctx.<subject>);` then a column each:
@@ -622,6 +684,51 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
 
     let value = params.get(&key).cloned().unwrap_or(Value::String(key));
     let _ = event.set(&target, value);
+    true
+}
+
+/// Normalise several fields, each through a value map of its own.
+///
+/// The params are keyed by SOURCE PATH, and each entry carries the map and,
+/// optionally, a different destination. Cisco's FTD uses it to turn the DNS
+/// record type the device spells out -- "a host address" -- into the mnemonic
+/// ECS wants, and the response code likewise.
+///
+/// A key is looked up folded to lower case, because that is what the script
+/// does; a path that names no field is skipped, which is how the entry keyed
+/// `ctx._temp_.cisco.message_id` behaves upstream as well. Its `ctx.` prefix
+/// makes the script look for a field of that name, and there is none.
+fn try_value_maps(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let folded = script.contains(".toLowerCase()");
+    for (source, entry) in params {
+        let Some(entry) = entry.as_object() else {
+            continue;
+        };
+        let Some(table) = entry.get("map").and_then(Value::as_object) else {
+            continue;
+        };
+        // A list contributes its first member, as the script reads it.
+        let current = match event.get(source) {
+            Some(Value::Array(items)) => items.first().and_then(scalar_text),
+            Some(value) => scalar_text(value),
+            None => None,
+        };
+        let Some(current) = current else {
+            continue;
+        };
+        let key = if folded {
+            current.to_lowercase()
+        } else {
+            current
+        };
+        if let Some(replacement) = table.get(&key) {
+            let target = entry
+                .get("target")
+                .and_then(Value::as_str)
+                .unwrap_or(source.as_str());
+            let _ = event.set(target, replacement.clone());
+        }
+    }
     true
 }
 
@@ -1435,6 +1542,137 @@ mod tests {
                               ctx.event.category = addUnique(ctx.event.category, p.category);\n\
                               ctx.tags = addUnique(ctx.tags, p.tags);";
 
+    /// Verbatim from `pipelines/cisco_asa/default.yml`, tagged
+    /// `script_ecs_outcome_categorization`: a message id, then its outcome.
+    const TWO_LEVEL: &str =
+        "params.get(ctx.event.code)?.get(ctx._temp_.outcome)?.forEach((k, v) -> ctx.event[k] = v);";
+
+    fn two_level_params() -> Value {
+        json!({
+            "106100": {
+                "denied": { "type": ["connection", "denied"], "outcome": "failure", "action": "firewall-rule" },
+                "permitted": { "type": ["connection", "allowed"], "outcome": "success", "action": "firewall-rule" },
+            },
+        })
+    }
+
+    /// Only the row the outcome selects is merged. Following one level fanned
+    /// the second level's keys out as fields of their own.
+    #[test]
+    fn a_two_level_table_merges_the_row_the_outcome_selects() {
+        let mut event = Event::new(json!({
+            "event": { "code": "106100" },
+            "_temp_": { "outcome": "permitted" },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            TWO_LEVEL,
+            &two_level_params()
+        ));
+
+        assert_eq!(event.get("event.outcome"), Some(&json!("success")));
+        assert_eq!(event.get("event.action"), Some(&json!("firewall-rule")));
+        assert_eq!(
+            event.get("event.type"),
+            Some(&json!(["connection", "allowed"]))
+        );
+        assert_eq!(event.get("event.denied"), None);
+    }
+
+    /// An outcome the table has no row for leaves the event alone.
+    #[test]
+    fn a_two_level_table_with_no_row_for_the_outcome_writes_nothing() {
+        let mut event = Event::new(json!({
+            "event": { "code": "106100" },
+            "_temp_": { "outcome": "est-allowed" },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            TWO_LEVEL,
+            &two_level_params()
+        ));
+
+        assert_eq!(event.get("event.action"), None);
+    }
+
+    /// Verbatim from `pipelines/cisco_ftd/default.yml`, tagged
+    /// `script_a14307b2`, cut to its loop.
+    const VALUE_MAPS: &str = "def getField(Map src, String[] path) {\n return null;\n}\n\
+        def setField(Map dest, String[] path, def value) {\n return null;\n}\n\
+        for (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  \
+        def param = entry.getValue();\n  \
+        def rawVal = getField(ctx, srcField.splitOnToken('.'));\n  \
+        if (rawVal == null) continue;\n  String oldVal;\n  \
+        if (rawVal instanceof AbstractList) {\n    if (rawVal.size() == 0) continue;\n    \
+        oldVal = rawVal[0].toString();\n  } else {\n    oldVal = rawVal.toString();\n  }\n  \
+        def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  \
+        if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    \
+        setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n";
+
+    fn value_map_params() -> Value {
+        json!({
+            "dns.question.type": { "map": { "a host address": "A", "ip6 address": "AAAA" } },
+            "dns.response_code": { "map": { "no error": "NOERROR" } },
+            "ctx._temp_.cisco.message_id": {
+                "target": "event.action",
+                "map": { "430002": "connection-started" },
+            },
+        })
+    }
+
+    /// The device spells the record type out; ECS wants the mnemonic. The key
+    /// is folded to lower case, because the script folds it.
+    #[test]
+    fn each_field_is_normalised_through_its_own_map() {
+        let mut event = Event::new(json!({
+            "dns": { "question": { "type": "a host address" }, "response_code": "No error" },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            VALUE_MAPS,
+            &value_map_params()
+        ));
+
+        assert_eq!(event.get("dns.question.type"), Some(&json!("A")));
+        assert_eq!(event.get("dns.response_code"), Some(&json!("NOERROR")));
+    }
+
+    /// A params key written with a `ctx.` prefix names no field, so it matches
+    /// nothing -- which is what it does upstream too, and it is the reason
+    /// FTD's `message_id` never reaches `event.action` through this script.
+    #[test]
+    fn a_source_path_that_names_no_field_writes_nothing() {
+        let mut event = Event::new(json!({ "_temp_": { "cisco": { "message_id": "430002" } } }));
+
+        assert!(try_params_painless(
+            &mut event,
+            VALUE_MAPS,
+            &value_map_params()
+        ));
+
+        assert_eq!(event.get("event.action"), None);
+    }
+
+    /// A value the map has no row for is left exactly as it was.
+    #[test]
+    fn a_value_absent_from_the_map_is_left_alone() {
+        let mut event = Event::new(json!({ "dns": { "question": { "type": "mail exchange" } } }));
+
+        assert!(try_params_painless(
+            &mut event,
+            VALUE_MAPS,
+            &value_map_params()
+        ));
+
+        assert_eq!(
+            event.get("dns.question.type"),
+            Some(&json!("mail exchange"))
+        );
+    }
+
     /// Verbatim from `pipelines/cisco_ftd/default.yml`, tagged
     /// `script_categorize_event`, cut to two of its outcome branches.
     const CATEGORISE: &str = "if (ctx.event?.action == null || \
@@ -2051,19 +2289,21 @@ mod tests {
         assert_eq!(event.get("labels"), None);
     }
 
-    /// Cisco ASA's table is two levels deep, which this does not model -- it
-    /// must fall through rather than merge the wrong row.
+    /// A level whose key names no field stops the descent, and nothing of the
+    /// row above it is merged -- the second level's keys are not fields.
     #[test]
-    fn a_two_level_table_falls_through() {
+    fn a_two_level_table_stops_where_the_key_is_absent() {
         let script = "params.get(ctx.event.code).get(ctx._temp_.outcome)\
                       .forEach((k, v) -> ctx.event[k] = v);";
         let mut event = Event::new(json!({ "event": { "code": "750002" } }));
 
-        assert!(!try_params_painless(
+        assert!(try_params_painless(
             &mut event,
             script,
             &json!({ "750002": { "success": { "action": "started" } } }),
         ));
+        assert_eq!(event.get("event.action"), None);
+        assert_eq!(event.get("event.success"), None);
     }
 
     /// Verbatim from `pipelines/cisco/nexus/default.yml`.
