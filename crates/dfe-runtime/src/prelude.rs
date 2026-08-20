@@ -22,7 +22,7 @@ pub use crate::date_formats::{parse_date, parse_date_out};
 pub use crate::codegen_api::{
     RegisteredDomainResult, community_id_v1, geoip_lookup, grok_to_regex, grok_to_regex_with_map,
     is_internal_ip, painless_exec, painless_exec_params, parse_user_agent,
-    registered_domain_lookup, uri_parts,
+    registered_domain_lookup, resolve_path, uri_parts,
 };
 
 pub use crate::painless_helpers::{

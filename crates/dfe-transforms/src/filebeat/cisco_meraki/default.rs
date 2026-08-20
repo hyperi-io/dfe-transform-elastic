@@ -1707,11 +1707,13 @@ impl Transform for Default {
                         .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
                 };
                 if _cond {
-                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac") {
-                        event.rename(
-                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac",
-                            "client.mac",
-                        )?;
+                    if let Some(from) = resolve_path(
+                        event,
+                        "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac",
+                    ) && let Some(to) = resolve_path(event, "client.mac")
+                        && event.has(&from)
+                    {
+                        event.rename(&from, &to)?;
                     }
                 }
                 let _cond = {
@@ -1735,11 +1737,13 @@ impl Transform for Default {
                         .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
                 };
                 if _cond {
-                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.ip_src") {
-                        event.rename(
-                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.ip_src",
-                            "source.ip",
-                        )?;
+                    if let Some(from) = resolve_path(
+                        event,
+                        "cisco_meraki.{{{cisco_meraki.event_subtype}}}.ip_src",
+                    ) && let Some(to) = resolve_path(event, "source.ip")
+                        && event.has(&from)
+                    {
+                        event.rename(&from, &to)?;
                     }
                 }
                 let _cond = {
@@ -1763,11 +1767,13 @@ impl Transform for Default {
                         .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
                 };
                 if _cond {
-                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_ip") {
-                        event.rename(
-                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_ip",
-                            "_temp.client_ip",
-                        )?;
+                    if let Some(from) = resolve_path(
+                        event,
+                        "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_ip",
+                    ) && let Some(to) = resolve_path(event, "_temp.client_ip")
+                        && event.has(&from)
+                    {
+                        event.rename(&from, &to)?;
                     }
                 }
                 let _cond = {
@@ -1783,11 +1789,13 @@ impl Transform for Default {
                     .contains(&event.get_str("cisco_meraki.event_subtype").unwrap_or(""))
                 };
                 if _cond {
-                    if event.has("cisco_meraki.{{{cisco_meraki.event_subtype}}}.identity") {
-                        event.rename(
-                            "cisco_meraki.{{{cisco_meraki.event_subtype}}}.identity",
-                            "user.name",
-                        )?;
+                    if let Some(from) = resolve_path(
+                        event,
+                        "cisco_meraki.{{{cisco_meraki.event_subtype}}}.identity",
+                    ) && let Some(to) = resolve_path(event, "user.name")
+                        && event.has(&from)
+                    {
+                        event.rename(&from, &to)?;
                     }
                 }
                 let _cond = {

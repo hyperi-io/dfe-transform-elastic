@@ -331,6 +331,44 @@ pub fn is_internal_ip(ip: &str) -> bool {
     }
 }
 
+/// Resolve a field PATH that carries mustache references, against the event.
+///
+/// A processor's `field` may name itself from the document -- `cisco_meraki`
+/// renames `cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac`, so the
+/// subtree it reads is whatever the event's subtype says. Emitting the template
+/// verbatim gave a path nothing ever matched.
+///
+/// Returns `None` when a reference resolves to nothing, because the name it
+/// would build has an empty segment and matches no field either.
+#[must_use]
+pub fn resolve_path(event: &Event, template: &str) -> Option<String> {
+    if !template.contains("{{") {
+        return Some(template.to_string());
+    }
+
+    let mut resolved = String::with_capacity(template.len());
+    let mut rest = template;
+    while let Some(open) = rest.find("{{") {
+        resolved.push_str(&rest[..open]);
+
+        // Mustache spells an unescaped reference with three braces and an
+        // escaped one with two; a field path wants the value either way.
+        let after = &rest[open..];
+        let inner = after.trim_start_matches('{');
+        let close = "}".repeat(after.len() - inner.len());
+        let (name, tail) = inner.split_once(&close)?;
+
+        let value = event.get_as_string(name.trim())?;
+        if value.is_empty() {
+            return None;
+        }
+        resolved.push_str(&value);
+        rest = tail;
+    }
+    resolved.push_str(rest);
+    Some(resolved)
+}
+
 /// The pieces of a URI reference, borrowed from the string they came from.
 struct UriRef<'a> {
     scheme: Option<&'a str>,
@@ -508,6 +546,68 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- resolve_path ---
+
+    /// Verbatim from `pipelines/cisco/meraki/events.yml`, where the subtree a
+    /// rename reads is named by the event's own subtype.
+    #[test]
+    fn resolve_path_names_a_field_from_the_document() {
+        let event = Event::new(json!({
+            "cisco_meraki": { "event_subtype": "disassociation" },
+        }));
+
+        assert_eq!(
+            resolve_path(
+                &event,
+                "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac"
+            )
+            .as_deref(),
+            Some("cisco_meraki.disassociation.client_mac")
+        );
+    }
+
+    /// A reference that resolves to nothing would build a path with an empty
+    /// segment, which matches no field -- so it is no path at all.
+    #[test]
+    fn resolve_path_refuses_an_unresolvable_reference() {
+        let event = Event::new(json!({ "cisco_meraki": { "event_subtype": "" } }));
+        assert_eq!(
+            resolve_path(
+                &event,
+                "cisco_meraki.{{{cisco_meraki.event_subtype}}}.client_mac"
+            ),
+            None
+        );
+
+        let empty = Event::new(json!({}));
+        assert_eq!(resolve_path(&empty, "a.{{{missing}}}.b"), None);
+    }
+
+    /// A path with no reference in it is itself, and costs nothing to ask for.
+    #[test]
+    fn resolve_path_passes_a_plain_path_through() {
+        let event = Event::new(json!({}));
+        assert_eq!(
+            resolve_path(&event, "client.mac").as_deref(),
+            Some("client.mac")
+        );
+    }
+
+    /// Mustache spells an escaped reference with two braces and an unescaped
+    /// one with three; a field path wants the value either way.
+    #[test]
+    fn resolve_path_reads_both_brace_forms() {
+        let event = Event::new(json!({ "kind": "assoc" }));
+        assert_eq!(
+            resolve_path(&event, "a.{{kind}}.b").as_deref(),
+            Some("a.assoc.b")
+        );
+        assert_eq!(
+            resolve_path(&event, "a.{{{kind}}}.b").as_deref(),
+            Some("a.assoc.b")
+        );
+    }
 
     // --- uri_parts ---
 
