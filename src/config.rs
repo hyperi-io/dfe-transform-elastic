@@ -271,23 +271,23 @@ mod tests {
     }
 
     #[test]
-    fn accepts_the_syslog_envelope_on_a_device_source() {
+    fn accepts_the_receiver_envelope_on_a_pushed_source() {
         let mut c = valid();
         c.source.name = "filebeat.cisco_ios.default".into();
-        c.source.envelope = crate::envelope::Envelope::Syslog;
+        c.source.envelope = crate::envelope::Envelope::Receiver;
         assert!(c.validate().is_ok());
     }
 
     /// okta is pulled from an API. Asking for it over syslog is a config
     /// error, not a silent no-op at the first batch.
     #[test]
-    fn rejects_the_syslog_envelope_on_an_api_source() {
+    fn rejects_the_receiver_envelope_on_a_fetched_source() {
         let mut c = valid();
-        c.source.envelope = crate::envelope::Envelope::Syslog;
+        c.source.envelope = crate::envelope::Envelope::Receiver;
 
         let err = c.validate().expect_err("okta over syslog must be rejected");
         let message = err.to_string();
-        assert!(message.contains("cannot arrive over syslog"), "{message}");
+        assert!(message.contains("cannot arrive over receiver"), "{message}");
         // The error must name both what this source DOES take and what would.
         assert!(message.contains("beats and fetcher"), "{message}");
         assert!(message.contains("filebeat.cisco_ios.default"), "{message}");
@@ -306,7 +306,7 @@ mod tests {
             .expect_err("cisco_ios over fetcher must be rejected")
             .to_string();
         assert!(message.contains("cannot arrive over fetcher"), "{message}");
-        assert!(message.contains("beats and syslog"), "{message}");
+        assert!(message.contains("beats and receiver"), "{message}");
         assert!(message.contains("filebeat.okta.default"), "{message}");
     }
 
@@ -326,7 +326,7 @@ mod tests {
              topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
         )
         .expect("config parses");
-        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Syslog);
+        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Receiver);
         assert!(parsed.validate().is_ok());
     }
 }

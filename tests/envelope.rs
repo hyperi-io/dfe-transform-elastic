@@ -61,7 +61,7 @@ fn panw_produces_the_same_output_from_either_envelope() {
 
     let via_syslog = run(
         "filebeat.panw.traffic",
-        Envelope::Syslog,
+        Envelope::Receiver,
         receiver_syslog(PANW_BODY),
     )
     .expect("syslog path emitted");
@@ -83,7 +83,7 @@ fn panw_produces_the_same_output_from_either_envelope() {
 fn the_syslog_path_keeps_the_parsed_header() {
     let out = run(
         "filebeat.panw.traffic",
-        Envelope::Syslog,
+        Envelope::Receiver,
         receiver_syslog(PANW_BODY),
     )
     .expect("emitted");
@@ -105,7 +105,7 @@ fn the_syslog_path_keeps_the_parsed_header() {
 fn receiver_field_names_never_reach_the_output() {
     let out = run(
         "filebeat.panw.traffic",
-        Envelope::Syslog,
+        Envelope::Receiver,
         receiver_syslog(PANW_BODY),
     )
     .expect("emitted");
@@ -134,7 +134,7 @@ fn a_line_framed_source_is_handed_a_pri_prefixed_line() {
 
     let framing = registry::intake("filebeat.fortinet.default").and_then(|i| i.framing);
     assert_eq!(framing, Some(registry::Framing::Line));
-    Envelope::Syslog
+    Envelope::Receiver
         .unwrap_into_beats(&mut event, framing)
         .expect("unwraps");
 
@@ -155,7 +155,7 @@ fn raw_reaches_a_line_framed_source_untouched() {
     let mut event = dfe_runtime::Event::new(source);
 
     let framing = registry::intake("filebeat.cisco_ios.default").and_then(|i| i.framing);
-    Envelope::Syslog
+    Envelope::Receiver
         .unwrap_into_beats(&mut event, framing)
         .expect("unwraps");
 
@@ -168,7 +168,7 @@ fn cisco_ios_emits_under_either_envelope() {
     let transform = registry::lookup("filebeat.cisco_ios.default").expect("registered");
     let line = "<189>29: foo: Mar  3 10:30:00: %SYS-5-CONFIG_I: Configured from console";
 
-    for envelope in [Envelope::Beats, Envelope::Syslog] {
+    for envelope in [Envelope::Beats, Envelope::Receiver] {
         let mut source = receiver_syslog("%SYS-5-CONFIG_I: Configured from console");
         source["_raw"] = json!(line);
         let framing = registry::intake("filebeat.cisco_ios.default").and_then(|i| i.framing);
@@ -198,18 +198,18 @@ fn no_syslog_source_panics_on_the_syslog_envelope() {
         "%ASA-6-302013: Built connection",
     ];
 
-    for source in registry::sources_accepting(Envelope::Syslog) {
+    for source in registry::sources_accepting(Envelope::Receiver) {
         assert!(
-            registry::intake(source).is_some_and(|i| i.accepts(Envelope::Syslog)),
+            registry::intake(source).is_some_and(|i| i.accepts(Envelope::Receiver)),
             "{source} is listed as syslog but classified otherwise"
         );
 
         for body in bodies {
-            let _ = run(source, Envelope::Syslog, receiver_syslog(body));
+            let _ = run(source, Envelope::Receiver, receiver_syslog(body));
             // With _raw as well, which takes the other branch.
             let mut with_raw = receiver_syslog(body);
             with_raw["_raw"] = json!(format!("<134>Mar  3 10:30:00 fw01 app: {body}"));
-            let _ = run(source, Envelope::Syslog, with_raw);
+            let _ = run(source, Envelope::Receiver, with_raw);
         }
     }
 }
@@ -220,7 +220,7 @@ fn no_syslog_source_panics_on_the_syslog_envelope() {
 fn the_envelope_is_safe_even_on_a_source_config_would_reject() {
     let _ = run(
         "filebeat.okta.default",
-        Envelope::Syslog,
+        Envelope::Receiver,
         receiver_syslog("{\"eventType\":\"user.session.start\"}"),
     );
 }

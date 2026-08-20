@@ -11,10 +11,11 @@
 //! [`Envelope::Beats`] is the shape the transforms expect: the
 //! raw vendor payload as a string in `message`.
 //!
-//! [`Envelope::Syslog`] is what dfe-receiver produces: the syslog MSG body in
-//! `message`, with the header already parsed into siblings. Unwrapping it means
-//! putting a syslog-shaped line back in `message`, because that is what the
-//! transforms grok.
+//! [`Envelope::Receiver`] is what dfe-receiver produces, on any of its
+//! transports -- syslog, gelf, fluent, splunk-hec, otlp, prometheus, netflow.
+//! Every converter tags its output with `_source`, which is what selects the
+//! unwrap. The syslog arm puts a syslog-shaped line back in `message`, because
+//! that is what the transforms grok.
 //!
 //! [`Envelope::Fetcher`] is what dfe-fetcher produces: the provider's own JSON
 //! at the top level with three keys of its own added. It applies wherever
@@ -75,9 +76,12 @@ pub enum Envelope {
     /// Beats or Elastic Agent: the raw vendor payload is a string in `message`.
     #[default]
     Beats,
-    /// dfe-receiver syslog JSON: header parsed into siblings, body in
-    /// `message`.
-    Syslog,
+    /// dfe-receiver JSON, from any of its transports. `_source` names which,
+    /// and the unwrap for that transport lifts it to the Elastic-equivalent
+    /// fields. Accepts `syslog` as a name for the era when that was the only
+    /// one.
+    #[serde(alias = "syslog")]
+    Receiver,
     /// dfe-fetcher JSON: the provider's own payload at the top level, with the
     /// fetcher's delivery keys alongside it.
     Fetcher,
@@ -98,7 +102,7 @@ impl Envelope {
     ) -> crate::Result<()> {
         match self {
             Self::Beats => Ok(()),
-            Self::Syslog => unwrap_syslog(event, framing.unwrap_or(Framing::Line)),
+            Self::Receiver => unwrap_receiver(event, framing.unwrap_or(Framing::Line)),
             Self::Fetcher => {
                 unwrap_fetcher(event);
                 Ok(())
@@ -129,6 +133,25 @@ fn unwrap_fetcher(event: &mut Event) {
 
     let payload = serde_json::to_string(event.as_value()).unwrap_or_default();
     *event.as_value_mut() = json!({ "message": payload });
+}
+
+/// Dispatch on the transport the receiver took it from.
+///
+/// Every converter tags its output with `_source` -- `syslog`, `gelf`,
+/// `fluent`, `prometheus` and the rest -- so that is what selects the unwrap.
+/// A transport with no arm of its own keeps its payload and loses only the
+/// receiver's own keys, which is the conservative reading: the transform's
+/// grok gets what arrived rather than a shape invented for it.
+fn unwrap_receiver(event: &mut Event, framing: Framing) -> crate::Result<()> {
+    match event.get_str("_source") {
+        Some("syslog") | None => unwrap_syslog(event, framing),
+        Some(_) => {
+            for key in RECEIVER_KEYS {
+                event.remove(key);
+            }
+            Ok(())
+        }
+    }
 }
 
 /// Leave `message` holding what the pipeline groks, and lift the parsed header
@@ -279,6 +302,43 @@ mod tests {
         assert_eq!(event.get_str("message"), Some("raw payload"));
     }
 
+    /// A receiver transport with no arm of its own must not be run through the
+    /// syslog reconstruction, which would build a line out of fields it never
+    /// set. The payload survives and only the receiver's own keys go.
+    #[test]
+    fn a_receiver_transport_without_an_arm_keeps_its_payload() {
+        let mut event = Event::new(json!({
+            "_source": "gelf",
+            "message": "short message",
+            "host": "web01",
+            "level": 6,
+        }));
+
+        Envelope::Receiver
+            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap();
+
+        assert_eq!(event.get_str("message"), Some("short message"));
+        assert_eq!(event.get_str("host"), Some("web01"));
+        assert!(!event.has("_source"));
+    }
+
+    /// The syslog arm is selected by `_source`, not by being the only one.
+    #[test]
+    fn the_syslog_arm_is_selected_by_its_transport_name() {
+        let mut event = receiver_event();
+        assert_eq!(event.get_str("_source"), Some("syslog"));
+
+        Envelope::Receiver
+            .unwrap_into_beats(&mut event, Some(Framing::Line))
+            .unwrap();
+
+        assert_eq!(
+            event.get_str("message"),
+            Some("<165>Mar  3 10:30:00 web01 nginx[1234]: the body")
+        );
+    }
+
     /// Beats hands an API source its payload SERIALISED in `message`, so a
     /// fetcher record -- the same payload as a real object -- is re-serialised
     /// into the shape the transform parses.
@@ -348,7 +408,7 @@ mod tests {
     #[test]
     fn syslog_reconstructs_a_line_into_message() {
         let mut event = receiver_event();
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
 
@@ -365,7 +425,7 @@ mod tests {
     #[test]
     fn body_framing_leaves_message_alone() {
         let mut event = receiver_event();
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Body))
             .unwrap();
 
@@ -380,7 +440,7 @@ mod tests {
         let mut event = receiver_event();
         event.set("_raw", json!("<165>a full line")).unwrap();
 
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Body))
             .unwrap();
         assert_eq!(event.get_str("message"), Some("the body"));
@@ -394,7 +454,7 @@ mod tests {
             .set("_raw", json!("<165>original spelling from the device"))
             .unwrap();
 
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
         assert_eq!(
@@ -409,7 +469,7 @@ mod tests {
         let mut event = receiver_event();
         event.set("_raw", json!("   ")).unwrap();
 
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
         assert!(event.get_str("message").unwrap().contains("the body"));
@@ -418,7 +478,7 @@ mod tests {
     #[test]
     fn parsed_header_survives_on_ecs_fields() {
         let mut event = receiver_event();
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
 
@@ -440,7 +500,7 @@ mod tests {
     #[test]
     fn receiver_fields_are_removed() {
         let mut event = receiver_event();
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
 
@@ -454,7 +514,7 @@ mod tests {
     #[test]
     fn a_missing_pri_defaults_rather_than_being_omitted() {
         let mut event = Event::new(json!({ "message": "plain line", "_source": "syslog" }));
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
 
@@ -473,7 +533,7 @@ mod tests {
                     "facility": fname,
                     "severity": sname,
                 }));
-                Envelope::Syslog
+                Envelope::Receiver
                     .unwrap_into_beats(&mut event, Some(Framing::Line))
                     .unwrap();
 
@@ -492,7 +552,7 @@ mod tests {
     #[test]
     fn a_bare_body_still_produces_a_line() {
         let mut event = Event::new(json!({ "message": "" }));
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
         assert_eq!(event.get_str("message"), Some("<13>"));
@@ -502,7 +562,7 @@ mod tests {
     fn a_malformed_timestamp_is_dropped_rather_than_emitted_raw() {
         let mut event = receiver_event();
         event.set("timestamp", json!("not a timestamp")).unwrap();
-        Envelope::Syslog
+        Envelope::Receiver
             .unwrap_into_beats(&mut event, Some(Framing::Line))
             .unwrap();
 

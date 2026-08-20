@@ -62,10 +62,12 @@ $defs:
       type: string
       const: beats
     - description: |-
-        dfe-receiver syslog JSON: header parsed into siblings, body in
-        `message`.
+        dfe-receiver JSON, from any of its transports. `_source` names which,
+        and the unwrap for that transport lifts it to the Elastic-equivalent
+        fields. Accepts `syslog` as a name for the era when that was the only
+        one.
       type: string
-      const: syslog
+      const: receiver
     - description: |-
         dfe-fetcher JSON: the provider's own payload at the top level, with the
         fetcher's delivery keys alongside it.

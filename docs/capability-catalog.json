@@ -50,31 +50,31 @@
       {
         "kind": "service",
         "name": "filebeat.cisco_asa.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_ftd.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_ios.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_meraki.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.cisco_nexus.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
@@ -92,7 +92,7 @@
       {
         "kind": "service",
         "name": "filebeat.fortinet.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
@@ -110,79 +110,79 @@
       {
         "kind": "service",
         "name": "filebeat.panw.authentication",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.correlated_event",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.decryption",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.default",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.globalprotect",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.gtp",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.hipmatch",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.ip_tag",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.sctp",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.system",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.traffic",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.tunnel_inspection",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
         "kind": "service",
         "name": "filebeat.panw.userid",
-        "description": "Compiled transform. Accepts the envelopes: beats, syslog.",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       }
     ]

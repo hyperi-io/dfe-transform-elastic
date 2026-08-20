@@ -33,17 +33,17 @@ pub enum Framing {
 /// for a given source rather than assuming Elastic's.
 ///
 /// `Beats` is always available: every source here has an Elastic integration.
-/// `Syslog` is available when a device pushes the data, which the integration
-/// declares by shipping tcp/udp agent streams. `Fetcher` is available when
-/// Elastic's agent input is a pure transport -- `httpjson`, `cel`, `aws-s3`,
-/// `azure-eventhub`, `streaming` -- because then the ingest pipeline does all
-/// the parsing and dfe-fetcher can obtain the same bytes.
+/// `Receiver` is available when a device pushes the data, which the
+/// integration declares by shipping tcp/udp agent streams. `Fetcher` is
+/// available when Elastic's agent input is a pure transport -- `httpjson`,
+/// `cel`, `aws-s3`, `azure-eventhub`, `streaming` -- because then the ingest
+/// pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Intake {
     /// The wrappers this source accepts, `Beats` always among them.
     pub envelopes: &'static [Envelope],
     /// What a syslog delivery must leave in `message`. `None` unless the
-    /// source accepts [`Envelope::Syslog`].
+    /// source accepts [`Envelope::Receiver`].
     pub framing: Option<Framing>,
 }
 
@@ -55,10 +55,10 @@ impl Intake {
     }
 }
 
-/// Beats plus a device pushing over syslog.
-const fn syslog(framing: Framing) -> Intake {
+/// Beats plus a device pushing into dfe-receiver.
+const fn pushed(framing: Framing) -> Intake {
     Intake {
-        envelopes: &[Envelope::Beats, Envelope::Syslog],
+        envelopes: &[Envelope::Beats, Envelope::Receiver],
         framing: Some(framing),
     }
 }
@@ -100,27 +100,27 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
     (
         "filebeat.cisco_asa.default",
         &filebeat::cisco_asa::default::Default,
-        syslog(Framing::Line),
+        pushed(Framing::Line),
     ),
     (
         "filebeat.cisco_ftd.default",
         &filebeat::cisco_ftd::default::Default,
-        syslog(Framing::Line),
+        pushed(Framing::Line),
     ),
     (
         "filebeat.cisco_ios.default",
         &filebeat::cisco_ios::default::Default,
-        syslog(Framing::Line),
+        pushed(Framing::Line),
     ),
     (
         "filebeat.cisco_meraki.default",
         &filebeat::cisco_meraki::default::Default,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.cisco_nexus.default",
         &filebeat::cisco_nexus::default::Default,
-        syslog(Framing::Line),
+        pushed(Framing::Line),
     ),
     (
         "filebeat.cisco_umbrella.default",
@@ -135,7 +135,7 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
     (
         "filebeat.fortinet.default",
         &filebeat::fortinet::default::Default,
-        syslog(Framing::Line),
+        pushed(Framing::Line),
     ),
     (
         "filebeat.o365.default",
@@ -153,67 +153,67 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake)] = &[
     (
         "filebeat.panw.authentication",
         &filebeat::panw::authentication::Authentication,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.correlated_event",
         &filebeat::panw::correlated_event::CorrelatedEvent,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.decryption",
         &filebeat::panw::decryption::Decryption,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.default",
         &filebeat::panw::default::Default,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.globalprotect",
         &filebeat::panw::globalprotect::Globalprotect,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.gtp",
         &filebeat::panw::gtp::Gtp,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.hipmatch",
         &filebeat::panw::hipmatch::Hipmatch,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.ip_tag",
         &filebeat::panw::ip_tag::IpTag,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.sctp",
         &filebeat::panw::sctp::Sctp,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.system",
         &filebeat::panw::system::System,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.traffic",
         &filebeat::panw::traffic::Traffic,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.tunnel_inspection",
         &filebeat::panw::tunnel_inspection::TunnelInspection,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
     (
         "filebeat.panw.userid",
         &filebeat::panw::userid::Userid,
-        syslog(Framing::Body),
+        pushed(Framing::Body),
     ),
 ];
 
@@ -267,7 +267,7 @@ mod tests {
             "every source has an Elastic integration, so Beats always applies"
         );
         assert_eq!(
-            sources_accepting(Envelope::Syslog).count()
+            sources_accepting(Envelope::Receiver).count()
                 + sources_accepting(Envelope::Fetcher).count(),
             sources().count(),
             "a source is either pushed by a device or fetchable, never neither"
@@ -278,12 +278,12 @@ mod tests {
     /// Framing describes a syslog delivery, so it exists exactly when one is
     /// possible. A fetched source carrying one would be read as a device.
     #[test]
-    fn framing_is_present_exactly_when_syslog_is() {
+    fn framing_is_present_exactly_when_the_receiver_is() {
         for (name, _, intake) in TRANSFORMS {
             assert_eq!(
-                intake.accepts(Envelope::Syslog),
+                intake.accepts(Envelope::Receiver),
                 intake.framing.is_some(),
-                "{name} disagrees with itself about syslog"
+                "{name} disagrees with itself about the receiver"
             );
         }
     }
@@ -330,7 +330,7 @@ mod tests {
         for (source, declared) in &declaration.sources {
             for name in &declared.intakes {
                 assert!(
-                    ["beats", "syslog", "fetcher"].contains(&name.as_str()),
+                    ["beats", "receiver", "fetcher"].contains(&name.as_str()),
                     "{source} declares intake {name:?}, which is not one"
                 );
             }

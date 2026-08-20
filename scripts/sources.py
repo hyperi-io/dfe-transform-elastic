@@ -24,7 +24,7 @@ except ImportError:  # pragma: no cover - environment probe
 DECLARATION = Path(__file__).resolve().parent.parent / "sources.yaml"
 
 # Every wrapper `src/envelope.rs` can unwrap.
-KNOWN_INTAKES = {"beats", "syslog", "fetcher"}
+KNOWN_INTAKES = {"beats", "receiver", "fetcher"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,9 +56,9 @@ class Source:
     beats_fileset: str | None = None
 
     @property
-    def takes_syslog(self) -> bool:
-        """Whether a device can push this over syslog, via dfe-receiver."""
-        return "syslog" in self.intakes
+    def takes_receiver(self) -> bool:
+        """Whether a device can push this into dfe-receiver."""
+        return "receiver" in self.intakes
 
     @property
     def takes_fetcher(self) -> bool:
@@ -87,10 +87,10 @@ def _source(name: str, entry: dict[str, object]) -> Source:
     framing = entry.get("framing")
     # Framing decides what goes in `message`, and getting it wrong is silent:
     # a header handed to a body pipeline corrupts its first field.
-    if "syslog" in intakes and framing not in ("line", "body"):
-        raise SystemExit(f"{DECLARATION}: syslog source {name} needs framing line/body")
-    if "syslog" not in intakes and framing is not None:
-        raise SystemExit(f"{DECLARATION}: {name} takes no syslog and cannot have framing")
+    if "receiver" in intakes and framing not in ("line", "body"):
+        raise SystemExit(f"{DECLARATION}: receiver source {name} needs framing line/body")
+    if "receiver" not in intakes and framing is not None:
+        raise SystemExit(f"{DECLARATION}: {name} takes no receiver and cannot have framing")
 
     beats = entry.get("beats") or {}
     return Source(
