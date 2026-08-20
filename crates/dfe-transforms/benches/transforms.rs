@@ -178,7 +178,13 @@ fn native_vs_regex(c: &mut Criterion) {
 
     group.bench_function("ipv4/regex", |b| {
         let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:source.ip}$");
-        b.iter(|| black_box(compiled.regex.captures(black_box(ADDRESS))));
+        // The fast engine specifically: both of these shapes compile on it, and
+        // measuring a dispatch would not answer the question this bench asks.
+        let re = compiled
+            .regex
+            .fast()
+            .expect("an address needs no lookaround");
+        b.iter(|| black_box(re.captures(black_box(ADDRESS))));
     });
 
     group.bench_function("ipv4/native", |b| {
@@ -187,7 +193,8 @@ fn native_vs_regex(c: &mut Criterion) {
 
     group.bench_function("ip_port/regex", |b| {
         let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$");
-        b.iter(|| black_box(compiled.regex.captures(black_box(PAIR))));
+        let re = compiled.regex.fast().expect("a pair needs no lookaround");
+        b.iter(|| black_box(re.captures(black_box(PAIR))));
     });
 
     group.bench_function("ip_port/native", |b| {

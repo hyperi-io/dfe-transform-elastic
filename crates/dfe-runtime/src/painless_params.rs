@@ -63,6 +63,23 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_bit_flags(event, &normalised, params);
     }
 
+    // Pattern: params IS the table, and one row's columns are written straight
+    // onto ctx, then refined by the event's outcome.
+    if normalised.contains("params.get(ctx.") && normalised.contains(").get('") {
+        return try_row_columns(event, &normalised, params);
+    }
+
+    // Pattern: fan a parsed key/value message out through a params table.
+    if normalised.contains("appendOrCreate(") && normalised.contains("params.get(entry.getKey())") {
+        return try_keyed_message_table(event, &normalised, params);
+    }
+
+    // Pattern: map a field through a params table in whichever direction it
+    // was written -- name to number, or a number already there back to a name.
+    if normalised.contains("params.entrySet()") && normalised.contains("entry.getKey()") {
+        return try_reversible_lookup(event, &normalised, params);
+    }
+
     // Pattern: look a field up in a static table and merge the row into ctx.
     if normalised.contains("params.get(") && normalised.contains("forEach((k, v) ->") {
         return try_lookup_merge(event, &normalised, params);
@@ -608,6 +625,517 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
     true
 }
 
+/// Write one params row's columns onto ctx, then refine them by outcome.
+///
+/// This is Elastic's ECS categorisation shape: the vendor action selects a row
+/// giving `event.kind`, `event.category` and `event.type`, and a tail of
+/// guarded statements then adds `allowed` or `denied` and rewrites the outcome
+/// into an ECS one. It is `cisco_ftd`'s remaining 398 corpus events, and the
+/// same shape appears wherever a package maps an action onto categorisation.
+fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some(key_path) = ctx_path_between(script, "params.get(ctx.", ")") else {
+        return false;
+    };
+    let Some(key) = event.get_as_string(&key_path) else {
+        return true;
+    };
+    let Some(row) = params.get(&key).and_then(Value::as_object).cloned() else {
+        // Every one of these scripts returns early on a key it has no row for.
+        return true;
+    };
+
+    let mut wrote = false;
+    for (path, rhs) in ctx_writes(script) {
+        if !rhs.contains("params.get(") {
+            continue;
+        }
+        let Some(column) = rhs
+            .rsplit_once(".get('")
+            .and_then(|(_, s)| s.split_once('\''))
+        else {
+            continue;
+        };
+        if let Some(value) = row.get(column.0) {
+            let _ = event.set(&path, value.clone());
+            wrote = true;
+        }
+    }
+    if !wrote {
+        return false;
+    }
+
+    // Everything after the last table read is the refinement tail.
+    if let Some(cut) = script.rfind("params.get(") {
+        let tail = &script[cut..];
+        if let Some((_, rest)) = tail.split_once(';') {
+            run_guarded_literals(event, rest);
+        }
+    }
+    true
+}
+
+/// Run a tail of `if (<test>) { ... }` blocks over literal appends and writes.
+///
+/// The grammar is deliberately tiny, because that is all these tails do once
+/// the row is on the event: compare a field to a literal, and append or assign
+/// another literal. Anything outside it is left alone rather than guessed at.
+fn run_guarded_literals(event: &mut Event, body: &str) {
+    let mut rest = body;
+    while let Some(offset) = rest.find(|c: char| !c.is_whitespace()) {
+        rest = &rest[offset..];
+        if let Some(after) = rest.strip_prefix("return") {
+            let _ = after;
+            return;
+        }
+        if let Some(after) = rest.strip_prefix("if") {
+            let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
+                return;
+            };
+            let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
+                return;
+            };
+            if guard_holds(event, test) {
+                run_guarded_literals(event, block);
+            }
+            rest = after;
+            continue;
+        }
+        // A plain statement, up to its terminator.
+        let end = rest.find(';').unwrap_or(rest.len());
+        run_literal_statement(event, &rest[..end]);
+        rest = &rest[(end + 1).min(rest.len())..];
+    }
+}
+
+/// Split `text` at the region opened by `open` and closed by its match.
+fn balanced(text: &str, open: char, close: char) -> Option<(&str, &str)> {
+    let mut chars = text.char_indices();
+    let (_, first) = chars.next()?;
+    if first != open {
+        return None;
+    }
+    let mut depth = 1usize;
+    for (index, c) in chars {
+        if c == open {
+            depth += 1;
+        } else if c == close {
+            depth -= 1;
+            if depth == 0 {
+                return Some((
+                    &text[open.len_utf8()..index],
+                    &text[index + close.len_utf8()..],
+                ));
+            }
+        }
+    }
+    None
+}
+
+/// Evaluate one `if` test: `||` of `&&` of comparisons against literals.
+fn guard_holds(event: &Event, test: &str) -> bool {
+    test.split("||").any(|conjunction| {
+        conjunction
+            .split("&&")
+            .all(|term| term_holds(event, term.trim()))
+    })
+}
+
+/// One comparison, with `!` handled by inverting what it wraps.
+fn term_holds(event: &Event, term: &str) -> bool {
+    if let Some(inner) = term.strip_prefix('!') {
+        // `!x.contains(y)` -- a bare `!ctx.field` is not a shape these use.
+        return !term_holds(event, inner.trim());
+    }
+    if let Some((subject, literal)) = term.split_once(".contains(") {
+        let Some(wanted) = quoted_after(literal, "") else {
+            return false;
+        };
+        let Some(path) = subject.trim().strip_prefix("ctx.") else {
+            return false;
+        };
+        return match event.get(&clean_path(path)) {
+            Some(Value::Array(items)) => items.iter().any(|i| i.as_str() == Some(&wanted)),
+            Some(Value::String(text)) => text.contains(&wanted),
+            _ => false,
+        };
+    }
+    for (operator, negated) in [("==", false), ("!=", true)] {
+        let Some((subject, wanted)) = term.split_once(operator) else {
+            continue;
+        };
+        let Some(path) = subject.trim().strip_prefix("ctx.") else {
+            return false;
+        };
+        let held = event.get(&clean_path(path));
+        let wanted = wanted.trim();
+        let matched = if wanted == "null" {
+            held.is_none_or(Value::is_null)
+        } else {
+            quoted_after(wanted, "")
+                .is_some_and(|literal| held.and_then(Value::as_str) == Some(literal.as_str()))
+        };
+        return matched != negated;
+    }
+    false
+}
+
+/// `ctx.<path>.add('<literal>')` or `ctx.<path> = '<literal>'`.
+fn run_literal_statement(event: &mut Event, statement: &str) {
+    if let Some((subject, argument)) = statement.split_once(".add(") {
+        let (Some(path), Some(literal)) = (
+            subject.trim().strip_prefix("ctx."),
+            quoted_after(argument, ""),
+        ) else {
+            return;
+        };
+        append_or_create(event, &clean_path(path), Value::String(literal));
+        return;
+    }
+    let Some((subject, value)) = split_assignment(statement) else {
+        return;
+    };
+    let (Some(path), Some(literal)) =
+        (subject.trim().strip_prefix("ctx."), quoted_after(value, ""))
+    else {
+        return;
+    };
+    let _ = event.set(&clean_path(path), Value::String(literal));
+}
+
+/// Fan an already-parsed key/value message out through a params table.
+///
+/// Cisco's FTD security events arrive as `Key: value, Key: value` pairs that an
+/// earlier processor lifts into a map. Each vendor key has a row in params
+/// naming the vendor field it becomes, the ECS fields it also feeds, and the
+/// message ids it is evidence for -- and when the header carried no id, the id
+/// with the most evidence is the message's. Nothing about which keys exist is
+/// written here: it is all read from the params the pipeline ships.
+///
+/// This one script is the whole security-event family -- connection, file,
+/// malware, intrusion and DNS -- 398 of `cisco_ftd`'s 432 corpus events.
+fn try_keyed_message_table(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let script = expand_locals(script);
+    let Some(source) = ctx_path_before(&script, ".entrySet()") else {
+        return false;
+    };
+    let Some(message) = event.get(&source).and_then(Value::as_object).cloned() else {
+        // The processor's `if` guards the map being absent, so nothing to read
+        // means the path came out wrong rather than the event being quiet.
+        return false;
+    };
+
+    // Which of the two maps a row lands in is decided by a list written into
+    // the script, and each map's destination by the local it was assigned to.
+    let writes = ctx_writes(&script);
+    let Some(list_local) = identifier_before(&script, ".contains(param.target)") else {
+        return false;
+    };
+    let listed = script_string_list(&script, &list_local);
+    let Some(listed_local) = local_indexed_by(&script, "contains(param.target)){") else {
+        return false;
+    };
+    let Some(other_local) = local_indexed_by(&script, "else{") else {
+        return false;
+    };
+    let destination = |local: &str| {
+        writes
+            .iter()
+            .find(|(_, rhs)| rhs == local)
+            .map(|(path, _)| path.clone())
+    };
+    let (Some(listed_path), Some(other_path)) =
+        (destination(&listed_local), destination(&other_local))
+    else {
+        return false;
+    };
+
+    let mut listed_map = Map::new();
+    let mut other_map = Map::new();
+    let mut counters: Vec<(String, usize)> = Vec::new();
+
+    for (key, value) in &message {
+        let Some(row) = params.get(key).and_then(Value::as_object) else {
+            continue;
+        };
+        // Counted even for an empty value: the key's presence is the evidence.
+        for id in row
+            .get("id")
+            .and_then(Value::as_array)
+            .unwrap_or(&Vec::new())
+        {
+            let Some(id) = id.as_str() else { continue };
+            match counters.iter_mut().find(|(name, _)| name == id) {
+                Some((_, count)) => *count += 1,
+                None => counters.push((id.to_string(), 1)),
+            }
+        }
+        if is_painless_empty(value) {
+            continue;
+        }
+        for field in row
+            .get("ecs")
+            .and_then(Value::as_array)
+            .unwrap_or(&Vec::new())
+        {
+            if let Some(field) = field.as_str() {
+                append_or_create(event, field, value.clone());
+            }
+        }
+        let Some(target) = row.get("target").and_then(Value::as_str) else {
+            continue;
+        };
+        if listed.iter().any(|name| name == target) {
+            listed_map.insert(target.to_string(), value.clone());
+        } else {
+            other_map.insert(target.to_string(), value.clone());
+        }
+    }
+
+    let _ = event.set(&listed_path, Value::Object(listed_map));
+    let _ = event.set(&other_path, Value::Object(other_map));
+
+    // The header's own id wins where there was one; the vote is the fallback.
+    let Some((decided, _)) = writes.iter().find(|(_, rhs)| rhs.ends_with("getKey()")) else {
+        return true;
+    };
+    if event
+        .get_as_string(decided)
+        .is_some_and(|current| !current.is_empty())
+    {
+        return true;
+    }
+    if let Some((best, _)) = counters.iter().max_by_key(|(_, count)| *count) {
+        let _ = event.set(decided, best.clone());
+    }
+    true
+}
+
+/// Painless `isEmpty`: no members, or no characters.
+fn is_painless_empty(value: &Value) -> bool {
+    match value {
+        Value::Array(items) => items.is_empty(),
+        Value::String(text) => text.is_empty(),
+        Value::Null => true,
+        _ => false,
+    }
+}
+
+/// Write `value` at `path`, growing a list where one is already there.
+fn append_or_create(event: &mut Event, path: &str, value: Value) {
+    let grown = match event.get(path) {
+        None => value,
+        Some(Value::Array(existing)) => {
+            let mut items = existing.clone();
+            items.push(value);
+            Value::Array(items)
+        }
+        Some(existing) => Value::Array(vec![existing.clone(), value]),
+    };
+    let _ = event.set(path, grown);
+}
+
+/// The quoted strings of the `new ArrayList([...])` bound to `local`.
+///
+/// Named rather than positional: the helper the vendor defines above the loop
+/// builds its own `new ArrayList([existing, value])`, and taking the first
+/// literal in the script finds that one and reads an empty list out of it.
+fn script_string_list(script: &str, local: &str) -> Vec<String> {
+    let binding = format!("def {local} = new ArrayList([");
+    let Some(start) = script.find(&binding) else {
+        return Vec::new();
+    };
+    let tail = &script[start + binding.len()..];
+    let end = tail.find("])").unwrap_or(tail.len());
+    tail[..end]
+        .split(',')
+        .filter_map(|item| {
+            let item = item.trim();
+            item.strip_prefix('\'')
+                .and_then(|item| item.strip_suffix('\''))
+                .map(str::to_string)
+        })
+        .collect()
+}
+
+/// The identifier immediately preceding `marker`.
+fn identifier_before(script: &str, marker: &str) -> Option<String> {
+    let head = &script[..script.find(marker)?];
+    let name: String = head
+        .chars()
+        .rev()
+        .take_while(|c| c.is_alphanumeric() || *c == '_')
+        .collect();
+    (!name.is_empty()).then(|| name.chars().rev().collect())
+}
+
+/// The local a `<local>[param.target]` write names, just after `marker`.
+fn local_indexed_by(script: &str, marker: &str) -> Option<String> {
+    let tail = &script[script.find(marker)? + marker.len()..];
+    let name = tail[..tail.find("[param.target]")?].trim();
+    (!name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+        .then(|| name.to_string())
+}
+
+/// A table read in either direction, depending on which side the field holds.
+///
+/// Cisco's ASA and FTD pipelines map `network.transport` to its IANA protocol
+/// number, and if the device wrote the NUMBER there instead, put the number in
+/// `network.iana_number` and the name back in `network.transport`. It is worth
+/// its own matcher because it is the difference between a connection event
+/// having a protocol and not: it was wrong in 414 of 512 ASA events.
+///
+/// Everything is read out of the script -- which field, which two destinations,
+/// and the table itself -- so the vendor renaming or extending any of them is
+/// picked up by regenerating rather than by editing this.
+fn try_reversible_lookup(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let script = expand_locals(script);
+    let Some(source) = ctx_path_between(&script, "params[ctx.", "]") else {
+        return false;
+    };
+    let Some(forward_local) = local_bound_to(&script, "params[") else {
+        return false;
+    };
+    let writes = ctx_writes(&script);
+
+    let Some(forward_target) = writes
+        .iter()
+        .find(|(_, rhs)| *rhs == forward_local)
+        .map(|(path, _)| path.clone())
+    else {
+        return false;
+    };
+
+    let Some(key) = event.get_as_string(&source) else {
+        // The processor's own `if` guards the field being absent, so reaching
+        // here with nothing to read means the path came out wrong.
+        return false;
+    };
+
+    if let Some(value) = params.get(&key) {
+        let _ = event.set(&forward_target, value.clone());
+        return true;
+    }
+
+    // The reverse table is built by value, so the field already holds a number
+    // and the name has to be put back. Both destinations come from the script:
+    // the one assigned the field itself, and the one assigned the lookup.
+    let Some(name) = params
+        .iter()
+        .find(|(_, value)| scalar_text(value).as_deref() == Some(key.as_str()))
+        .map(|(name, _)| name.clone())
+    else {
+        return true;
+    };
+    let echo = format!("ctx.{source}");
+    for (path, rhs) in &writes {
+        if *rhs == echo {
+            // What the field already held, moved across untouched.
+            let _ = event.set(path, key.clone());
+        } else if *rhs != forward_local
+            && !rhs.is_empty()
+            && rhs.chars().all(|c| c.is_alphanumeric() || c == '_')
+        {
+            // The only other local in play is the reverse lookup's result.
+            let _ = event.set(path, name.clone());
+        }
+    }
+    true
+}
+
+/// Rewrite `def x = ctx.a.b;` bindings back into the paths they alias.
+///
+/// The vendor binds a subtree to a local and then writes through it, so every
+/// destination in the script reads `net['iana_number']` rather than a `ctx.`
+/// path. Substituting the binding puts them all back in one form.
+fn expand_locals(script: &str) -> String {
+    let mut out = script.to_string();
+    for statement in script.split(';') {
+        // A statement carries the previous block's closing brace, so the
+        // binding is found from the LAST `def ` in it, not the start.
+        let Some(start) = statement.rfind("def ") else {
+            continue;
+        };
+        let Some((name, bound)) = statement[start + "def ".len()..].split_once('=') else {
+            continue;
+        };
+        let (name, bound) = (name.trim(), bound.trim());
+        if !bound.starts_with("ctx.")
+            || bound.contains('(')
+            || bound.contains('[')
+            || name.contains(|c: char| !c.is_alphanumeric() && c != '_')
+        {
+            continue;
+        }
+        out = out
+            .replace(&format!("{name}."), &format!("{bound}."))
+            .replace(&format!("{name}["), &format!("{bound}["));
+    }
+    out
+}
+
+/// The local a `def x = <marker>...` statement binds.
+fn local_bound_to(script: &str, marker: &str) -> Option<String> {
+    let head = &script[..script.find(marker)?];
+    let statement = head.rsplit(';').next()?;
+    let rest = statement.trim().strip_prefix("def ")?;
+    let name = rest.split('=').next()?.trim();
+    (!name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+        .then(|| name.to_string())
+}
+
+/// Every `ctx.<path> = <expression>` in the script, as `(path, expression)`.
+///
+/// The path is normalised out of Painless's map syntax, so `ctx.network
+/// ['iana_number']` and `ctx.network.iana_number` come back the same.
+fn ctx_writes(script: &str) -> Vec<(String, String)> {
+    let mut writes = Vec::new();
+    for statement in script.split(';') {
+        let Some((lhs, rhs)) = split_assignment(statement) else {
+            continue;
+        };
+        let Some(start) = lhs.rfind("ctx.") else {
+            continue;
+        };
+        let path = lhs[start + "ctx.".len()..]
+            .replace("['", ".")
+            .replace("[\"", ".")
+            .replace("']", "")
+            .replace("\"]", "");
+        writes.push((clean_path(&path), rhs.trim().to_string()));
+    }
+    writes
+}
+
+/// Split a statement at its assignment, ignoring every comparison.
+///
+/// A guarded write reads `if (x != null) { ctx.a.b = c`, so the first `=` in
+/// the text belongs to the comparison and splitting there loses the write.
+fn split_assignment(statement: &str) -> Option<(&str, &str)> {
+    let bytes = statement.as_bytes();
+    for (i, byte) in bytes.iter().enumerate() {
+        if *byte != b'=' {
+            continue;
+        }
+        let before = if i == 0 { b' ' } else { bytes[i - 1] };
+        let after = *bytes.get(i + 1).unwrap_or(&b' ');
+        if matches!(before, b'=' | b'!' | b'<' | b'>') || after == b'=' {
+            continue;
+        }
+        return Some((&statement[..i], &statement[i + 1..]));
+    }
+    None
+}
+
+/// A scalar's text, the way Painless would stringify it for a map key.
+fn scalar_text(value: &Value) -> Option<String> {
+    match value {
+        Value::String(s) => Some(s.clone()),
+        Value::Number(n) => Some(n.to_string()),
+        Value::Bool(b) => Some(b.to_string()),
+        _ => None,
+    }
+}
+
 /// `ctx.<target>.put('<key>', params['<name>'][<numeric field>])`
 ///
 /// The bounds check the vendor writes around it is the array's own length, so
@@ -890,6 +1418,233 @@ mod tests {
                               ctx.event.type = addUnique(ctx.event.type, p.type);\n\
                               ctx.event.category = addUnique(ctx.event.category, p.category);\n\
                               ctx.tags = addUnique(ctx.tags, p.tags);";
+
+    /// Verbatim from `pipelines/cisco_ftd/default.yml`, tagged
+    /// `script_categorize_event`, cut to two of its outcome branches.
+    const CATEGORISE: &str = "if (ctx.event?.action == null || \
+        !params.containsKey(ctx.event.action)) {\n  return;\n}\n\
+        ctx.event.kind = params.get(ctx.event.action).get('kind');\n\
+        ctx.event.category = params.get(ctx.event.action).get('category').clone();\n\
+        ctx.event.type = params.get(ctx.event.action).get('type').clone();\n\
+        if (ctx.event?.outcome == null) {\n  return;\n}\n\
+        if (ctx.event.category.contains('network') || \
+        ctx.event.category.contains('intrusion_detection')) {\n  \
+        if (ctx.event.outcome == 'success') {\n    ctx.event.type.add('allowed');\n  }\n  \
+        if (ctx.event.outcome == 'block') {\n    ctx.event.outcome = 'success';\n    \
+        ctx.event.type.add('denied');\n  }\n}\n";
+
+    fn categorise_params() -> Value {
+        json!({
+            "flow-expiration": {
+                "kind": "event",
+                "category": ["network"],
+                "type": ["connection", "end"],
+            },
+            "intrusion-detected": {
+                "kind": "alert",
+                "category": ["intrusion_detection"],
+                "type": ["info"],
+            },
+        })
+    }
+
+    /// The row's three columns land as they are when there is no outcome to
+    /// refine them by.
+    #[test]
+    fn an_action_row_sets_the_ecs_categorisation() {
+        let mut event = Event::new(json!({ "event": { "action": "flow-expiration" } }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CATEGORISE,
+            &categorise_params()
+        ));
+
+        assert_eq!(event.get("event.kind"), Some(&json!("event")));
+        assert_eq!(event.get("event.category"), Some(&json!(["network"])));
+        assert_eq!(event.get("event.type"), Some(&json!(["connection", "end"])));
+    }
+
+    /// A vendor outcome is rewritten to the ECS one AND adds its own type.
+    #[test]
+    fn a_vendor_outcome_is_translated_and_adds_its_type() {
+        let mut event = Event::new(json!({
+            "event": { "action": "flow-expiration", "outcome": "block" },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CATEGORISE,
+            &categorise_params()
+        ));
+
+        assert_eq!(event.get("event.outcome"), Some(&json!("success")));
+        assert_eq!(
+            event.get("event.type"),
+            Some(&json!(["connection", "end", "denied"]))
+        );
+    }
+
+    /// An action with no row leaves the event exactly as it was.
+    #[test]
+    fn an_action_with_no_row_writes_nothing() {
+        let mut event = Event::new(json!({ "event": { "action": "not-in-the-table" } }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CATEGORISE,
+            &categorise_params()
+        ));
+
+        assert_eq!(event.get("event.kind"), None);
+        assert_eq!(event.get("event.category"), None);
+    }
+
+    /// Verbatim from `pipelines/cisco_ftd/default.yml`, trimmed to the two
+    /// helper definitions and the loop -- the 79-name list is replaced by two
+    /// of its members, since the matcher reads the list rather than knowing it.
+    const KEYED: &str = "boolean isEmpty(def value) {\n  return (value instanceof \
+        AbstractList ? value.size() : value.length()) == 0;\n}\n\
+        def appendOrCreate(Map dest, String[] path, def value) {\n return null;\n}\n\
+        def msg = ctx._temp_.orig_security;\ndef counters = new HashMap();\n\
+        def dest = new HashMap();\ndef dest_event = new HashMap();\n\
+        def security_event_list = new ArrayList(['dst_ip', 'src_ip']);\n\
+        ctx._temp_.cisco['security'] = dest;\n\
+        ctx._temp_.cisco['security_event'] = dest_event;\n\
+        for (entry in msg.entrySet()) {\n def param = params.get(entry.getKey());\n \
+        if (param == null) {\n   continue;\n }\n \
+        param.getOrDefault('id', []).forEach( id -> counters[id] = 1 + \
+        counters.getOrDefault(id, 0) );\n if (!isEmpty(entry.getValue())) {\n  \
+        param.getOrDefault('ecs', []).forEach( field -> appendOrCreate(ctx, \
+        field.splitOnToken('.'), entry.getValue()) );\n  \
+        if (security_event_list.contains(param.target)){\n    \
+        dest_event[param.target] = entry.getValue();\n  }\n  else{\n    \
+        dest[param.target] = entry.getValue();\n  }\n }\n}\n\
+        if (ctx._temp_.cisco.message_id != \"\") return;\ndef best;\n\
+        for (entry in counters.entrySet()) {\n if (best == null || \
+        best.getValue() < entry.getValue()) best = entry;\n}\n\
+        if (best != null) ctx._temp_.cisco.message_id = best.getKey();\n";
+
+    fn keyed_params() -> Value {
+        json!({
+            "DstIP": { "target": "dst_ip", "id": ["430002"], "ecs": ["destination.address"] },
+            "SrcIP": { "target": "src_ip", "id": ["430002"], "ecs": ["source.address"] },
+            "AC_RuleName": { "target": "access_control_rule_name", "id": ["430002"] },
+            "Protocol": { "target": "protocol", "ecs": ["network.transport"] },
+        })
+    }
+
+    /// Each key lands in the map its target's membership decides, and feeds
+    /// every ECS field its row names.
+    #[test]
+    fn a_keyed_message_fans_out_through_its_table() {
+        let mut event = Event::new(json!({
+            "_temp_": {
+                "cisco": { "message_id": "430002" },
+                "orig_security": {
+                    "DstIP": "10.0.1.20",
+                    "SrcIP": "10.0.100.30",
+                    "AC_RuleName": "Rule-1",
+                    "Protocol": "icmp",
+                },
+            },
+        }));
+
+        assert!(try_params_painless(&mut event, KEYED, &keyed_params()));
+
+        assert_eq!(event.get("destination.address"), Some(&json!("10.0.1.20")));
+        assert_eq!(event.get("source.address"), Some(&json!("10.0.100.30")));
+        assert_eq!(event.get("network.transport"), Some(&json!("icmp")));
+        assert_eq!(
+            event.get("_temp_.cisco.security_event.dst_ip"),
+            Some(&json!("10.0.1.20"))
+        );
+        // `access_control_rule_name` is not in this cut-down list, so it goes
+        // to the other map -- which is the whole point of reading the list.
+        assert_eq!(
+            event.get("_temp_.cisco.security.access_control_rule_name"),
+            Some(&json!("Rule-1"))
+        );
+    }
+
+    /// With no id in the header, the id the most keys vote for becomes it.
+    #[test]
+    fn an_absent_message_id_is_decided_by_the_keys_present() {
+        let mut event = Event::new(json!({
+            "_temp_": {
+                "cisco": { "message_id": "" },
+                "orig_security": { "DstIP": "10.0.1.20", "Protocol": "icmp" },
+            },
+        }));
+
+        assert!(try_params_painless(&mut event, KEYED, &keyed_params()));
+
+        assert_eq!(event.get("_temp_.cisco.message_id"), Some(&json!("430002")));
+    }
+
+    /// An id the header already carried is never overwritten by the vote.
+    #[test]
+    fn a_message_id_already_set_survives_the_vote() {
+        let mut event = Event::new(json!({
+            "_temp_": {
+                "cisco": { "message_id": "430003" },
+                "orig_security": { "DstIP": "10.0.1.20" },
+            },
+        }));
+
+        assert!(try_params_painless(&mut event, KEYED, &keyed_params()));
+
+        assert_eq!(event.get("_temp_.cisco.message_id"), Some(&json!("430003")));
+    }
+
+    /// Verbatim from `pipelines/cisco_asa/default.yml`, where it is tagged
+    /// `script_process_iana_number`. `cisco_ftd` ships the same script.
+    const IANA: &str = "def net = ctx.network; def iana = params[net.transport]; \
+                        if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} \
+                        def reverse = new HashMap(); def[] arr = new def[] { null }; \
+                        for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  \
+                        reverse.put(String.format(\"%d\", arr), entry.getKey());\n} \
+                        def trans = reverse[net.transport]; if (trans != null) {\n  \
+                        net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n";
+
+    fn iana_params() -> Value {
+        json!({ "icmp": 1, "tcp": 6, "udp": 17, "gre": 47 })
+    }
+
+    /// The ordinary direction: a transport NAME gets its protocol number.
+    #[test]
+    fn a_transport_name_gets_its_iana_number() {
+        let mut event = Event::new(json!({ "network": { "transport": "tcp" } }));
+
+        assert!(try_params_painless(&mut event, IANA, &iana_params()));
+
+        assert_eq!(event.get("network.iana_number"), Some(&json!(6)));
+        assert_eq!(event.get("network.transport"), Some(&json!("tcp")));
+    }
+
+    /// The device wrote the NUMBER into `transport`. Elastic moves it across
+    /// and puts the name back, rather than leaving a number in a name field.
+    #[test]
+    fn a_transport_number_is_moved_and_the_name_restored() {
+        let mut event = Event::new(json!({ "network": { "transport": "17" } }));
+
+        assert!(try_params_painless(&mut event, IANA, &iana_params()));
+
+        assert_eq!(event.get("network.iana_number"), Some(&json!("17")));
+        assert_eq!(event.get("network.transport"), Some(&json!("udp")));
+    }
+
+    /// A transport the table does not carry is left exactly as it was --
+    /// guessing a number for it would be worse than having none.
+    #[test]
+    fn an_unknown_transport_is_left_alone() {
+        let mut event = Event::new(json!({ "network": { "transport": "sctp" } }));
+
+        assert!(try_params_painless(&mut event, IANA, &iana_params()));
+
+        assert_eq!(event.get("network.iana_number"), None);
+        assert_eq!(event.get("network.transport"), Some(&json!("sctp")));
+    }
 
     fn add_unique_params() -> Value {
         json!({

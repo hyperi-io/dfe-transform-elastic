@@ -149,12 +149,31 @@ pub fn grok_to_regex_typed(
     std::collections::HashMap<String, String>,
     std::collections::HashMap<String, bool>,
 ) {
+    use std::fmt::Write as _;
+
     let mut result = String::with_capacity(pattern.len());
     let mut field_map = std::collections::HashMap::new();
     let mut numeric = std::collections::HashMap::new();
+    // Every group name emitted so far. One ledger for both kinds of capture,
+    // because a `%{DATA:process.name}` and a literal `(?P<process_name>)` in
+    // the same pattern collide just as surely as two of either.
+    let mut used: std::collections::HashSet<String> = std::collections::HashSet::new();
     let mut chars = pattern.chars().peekable();
 
     while let Some(c) = chars.next() {
+        if c == '(' && starts_named_group(&chars) {
+            // A named group written out in full, either by the vendor or by
+            // the generator inlining a pattern definition. Java's engine takes
+            // the same name in several alternation branches; Rust's rejects
+            // the pattern outright, so each repeat is renamed and pointed at
+            // the same destination -- only the branch that matched writes.
+            let prefix: String = chars.by_ref().take_while(|c| *c != '<').collect();
+            let name: String = chars.by_ref().take_while(|c| *c != '>').collect();
+            let safe = unique_group_name(&sanitise_group_name(&name), &mut used);
+            field_map.insert(safe.clone(), name);
+            let _ = write!(result, "({prefix}<{safe}>");
+            continue;
+        }
         if c == '%' && chars.peek() == Some(&'{') {
             chars.next(); // consume '{'
             let mut name = String::new();
@@ -176,10 +195,10 @@ pub fn grok_to_regex_typed(
             let sub_pattern = grok_pattern_regex(&name);
 
             if field.is_empty() {
-                use std::fmt::Write as _;
                 // A few builtins carry their own destination, as Elastic's own
                 // registry defines them -- used bare, they still capture.
                 if let Some((safe, path, inner)) = grok_implicit_capture(&name) {
+                    used.insert(safe.to_string());
                     field_map.insert(safe.to_string(), path.to_string());
                     numeric.insert(safe.to_string(), true);
                     let _ = write!(result, "{inner}");
@@ -187,21 +206,15 @@ pub fn grok_to_regex_typed(
                     let _ = write!(result, "({sub_pattern})");
                 }
             } else {
-                use std::fmt::Write as _;
                 // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
                 let mut parts = field.splitn(2, ':');
                 let field_name = parts.next().unwrap_or(&field);
-                let mut safe_field = field_name.replace('.', "_");
-
                 // Java allows one field name in several alternation branches
                 // and Rust's engine rejects a duplicate group name outright, so
                 // the whole pattern fails to compile and matches nothing. Each
                 // repeat gets a group of its own pointing at the same field;
                 // only the branch that matched writes.
-                let repeats = field_map.values().filter(|p| *p == field_name).count();
-                if repeats > 0 {
-                    safe_field = format!("{safe_field}__{}", repeats + 1);
-                }
+                let safe_field = unique_group_name(&sanitise_group_name(field_name), &mut used);
 
                 if matches!(parts.next(), Some("long" | "int" | "float" | "double")) {
                     numeric.insert(safe_field.clone(), true);
@@ -209,12 +222,130 @@ pub fn grok_to_regex_typed(
                 field_map.insert(safe_field.clone(), field_name.to_string());
                 let _ = write!(result, "(?P<{safe_field}>{sub_pattern})");
             }
+        } else if c == '\\' {
+            // Copy an escape whole, so the char it protects is never read as
+            // syntax on the next turn of the loop.
+            result.push(c);
+            if let Some(escaped) = chars.next() {
+                result.push(escaped);
+            }
+        } else if c == '{' && !opens_repetition(&chars) {
+            // Elasticsearch groks with Oniguruma, which reads a brace that is
+            // not a valid repetition as ordinary text. Rust's engine reads it
+            // as a repetition with nothing to repeat and rejects the pattern.
+            // Elastic's own SYSLOG_HEADER carries `(?:{DATA})?` -- a `%` short
+            // of a pattern reference, and so a harmless optional literal there
+            // and a dead grok here.
+            result.push_str(r"\{");
         } else {
             result.push(c);
         }
     }
 
+    resolve_capture_paths(&mut field_map, &mut numeric);
     (result, field_map, numeric)
+}
+
+/// Does an opening paren begin a named capture, rather than a look-behind?
+///
+/// `(?P<x>` and `(?<x>` are captures; `(?<=` and `(?<!` are assertions, and
+/// renaming inside one would corrupt the pattern.
+fn starts_named_group(chars: &std::iter::Peekable<std::str::Chars<'_>>) -> bool {
+    let mut ahead = chars.clone();
+    if ahead.next() != Some('?') {
+        return false;
+    }
+    match ahead.next() {
+        Some('P') => ahead.next() == Some('<'),
+        Some('<') => !matches!(ahead.next(), Some('=' | '!') | None),
+        _ => false,
+    }
+}
+
+/// Does a brace begin a repetition -- `{2}`, `{2,}`, `{2,5}` -- or is it text?
+fn opens_repetition(chars: &std::iter::Peekable<std::str::Chars<'_>>) -> bool {
+    let inner: String = chars.clone().take(16).take_while(|c| *c != '}').collect();
+    if inner.is_empty() || inner.len() == 16 {
+        return false;
+    }
+    let (low, high) = inner.split_once(',').unwrap_or((inner.as_str(), ""));
+    !low.is_empty()
+        && low.bytes().all(|b| b.is_ascii_digit())
+        && high.bytes().all(|b| b.is_ascii_digit())
+}
+
+/// Reduce a capture name to what a regex group name may hold.
+///
+/// Elastic's grok reads the name as `[pattern:]field[:type]` and the vendor
+/// pipelines write dotted paths straight into it, so a name arrives carrying
+/// dots and colons that Rust's engine will not accept. The real destination is
+/// recovered from the name by [`resolve_capture_paths`]; this only has to
+/// produce something the engine can compile.
+fn sanitise_group_name(name: &str) -> String {
+    let mut safe: String = name
+        .chars()
+        .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
+        .collect();
+    if safe.starts_with(|c: char| c.is_ascii_digit()) {
+        safe.insert(0, 'g');
+    }
+    if safe.is_empty() {
+        safe.push('g');
+    }
+    safe
+}
+
+/// Return `base`, or the first `base__N` nobody has taken.
+fn unique_group_name(base: &str, used: &mut std::collections::HashSet<String>) -> String {
+    if used.insert(base.to_string()) {
+        return base.to_string();
+    }
+    for n in 2.. {
+        let candidate = format!("{base}__{n}");
+        if used.insert(candidate.clone()) {
+            return candidate;
+        }
+    }
+    unreachable!("the counter is unbounded")
+}
+
+/// Numeric type suffixes Elastic's grok understands.
+const NUMERIC_TYPES: [&str; 4] = ["int", "long", "float", "double"];
+
+/// Read a grok capture name as Elastic does: `[pattern:]field[:type]`.
+///
+/// The vendor pipelines write the internal form by hand -- `cisco_asa`'s repeat
+/// counter is `(?<INT:_temp_.cisco.message_repeats:int>\d+)` -- so the field is
+/// the middle part and the type the last, not the whole string.
+///
+/// Returns the destination path and whether Elastic types it as a number.
+#[must_use]
+pub fn read_capture_name(name: &str) -> (&str, bool) {
+    let parts: Vec<&str> = name.split(':').collect();
+    match parts.as_slice() {
+        [_, field, ty] if NUMERIC_TYPES.contains(ty) => (field, true),
+        [_, field, _] => (field, false),
+        [field, ty] if NUMERIC_TYPES.contains(ty) => (field, true),
+        _ => (name, false),
+    }
+}
+
+/// Rewrite every destination in `field_map` to the path Elastic would write,
+/// marking the numeric ones. Idempotent, so it can run again once a caller's
+/// own mapping has been substituted in.
+pub fn resolve_capture_paths<S: std::hash::BuildHasher>(
+    field_map: &mut std::collections::HashMap<String, String, S>,
+    numeric: &mut std::collections::HashMap<String, bool, S>,
+) {
+    for (capture, path) in field_map.iter_mut() {
+        let (field, is_numeric) = read_capture_name(path);
+        if is_numeric {
+            numeric.insert(capture.clone(), true);
+        }
+        if field.len() != path.len() {
+            *path = field.to_string();
+        }
+    }
 }
 
 /// Builtins whose Elastic definition captures a field of its own.

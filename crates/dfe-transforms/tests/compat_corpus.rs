@@ -521,9 +521,16 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
         }
     }
 
-    for source in measured.keys() {
+    // A source scored and never written down is measured by nobody: it may
+    // rot to zero without failing anything. Capturing one is not finished
+    // until its score is a floor, so this is a failure with the line to paste.
+    for (source, score) in measured {
         if !baseline.sources.contains_key(source) {
-            println!("  {source}: scored and not in the baseline");
+            failures.push(format!(
+                "{source}: scored and not in the baseline -- add \
+                 {{ \"events\": {}, \"events_total\": {}, \"fields_wrong\": {} }}",
+                score.events_matched, score.events, score.fields_wrong
+            ));
         }
     }
 

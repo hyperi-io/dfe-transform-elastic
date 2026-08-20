@@ -4,9 +4,12 @@
   "elasticsearch_version": "9.2.2",
   "sources": {
     "azure": { "events": 25, "events_total": 26, "fields_wrong": 1 },
+    "cisco_asa": { "events": 311, "events_total": 512, "fields_wrong": 522 },
+    "cisco_ftd": { "events": 280, "events_total": 432, "fields_wrong": 522 },
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
     "cisco_meraki": { "events": 245, "events_total": 245, "fields_wrong": 0 },
     "cisco_nexus": { "events": 45, "events_total": 45, "fields_wrong": 0 },
+    "cisco_umbrella": { "events": 2, "events_total": 39, "fields_wrong": 187 },
     "crowdstrike": { "events": 49, "events_total": 49, "fields_wrong": 0 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },

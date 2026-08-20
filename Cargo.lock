@@ -864,6 +864,7 @@ dependencies = [
  "dfe-parse",
  "dfe-runtime",
  "dotenvy",
+ "fancy-regex",
  "regex",
  "serde",
  "serde_json",

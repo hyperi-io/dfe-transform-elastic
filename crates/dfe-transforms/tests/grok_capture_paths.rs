@@ -118,7 +118,12 @@ fn an_inlined_group_reaches_its_dotted_path_through_the_supplied_map() {
 fn the_field_map_is_what_a_grok_block_must_set() {
     let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$");
 
-    let capture_names: Vec<&str> = compiled.regex.capture_names().flatten().collect();
+    let capture_names: Vec<&str> = compiled
+        .regex
+        .capture_names()
+        .into_iter()
+        .flatten()
+        .collect();
     assert!(
         capture_names.contains(&"_temp_src_ip"),
         "the dotted path is captured underscored: {capture_names:?}",

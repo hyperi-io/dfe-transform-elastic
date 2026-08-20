@@ -37,6 +37,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -906,18 +907,35 @@ def list_fixtures(source: Source) -> list[Path]:
     A fixture with no expectation cannot answer the vintage question, so it is
     not returned.
 
+    The glob is ONE level deep, matching how upstream lays every package out.
+    A fixture in a subdirectory would be skipped in silence, and a source whose
+    logs are all nested would capture nothing at all while still reporting
+    success -- which is how cisco_umbrella shipped unmeasured. Nesting is
+    therefore an error, not a shrug.
+
     Args:
         source: The source to look under.
 
     Returns:
         Fixture log paths, in name order.
+
+    Raises:
+        SystemExit: If any fixture with an expectation sits below the top level.
     """
     directory = REPO_ROOT / "tests" / "fixtures" / source.fixture_dir
-    return [
-        path
-        for path in sorted(directory.glob("*.log"))
-        if path.with_name(path.name + "-expected.json").is_file()
-    ]
+
+    def paired(paths: Iterable[Path]) -> list[Path]:
+        return sorted(p for p in paths if p.with_name(p.name + "-expected.json").is_file())
+
+    nested = paired(p for p in directory.rglob("*.log") if p.parent != directory)
+    if nested:
+        listing = "\n  ".join(str(p.relative_to(directory)) for p in nested)
+        raise SystemExit(
+            f"{source.name}: {len(nested)} fixture(s) sit below "
+            f"{directory}, where the capture cannot see them. "
+            f"Flatten them into that directory:\n  {listing}"
+        )
+    return paired(directory.glob("*.log"))
 
 
 def config_for(log_path: Path) -> Path | None:

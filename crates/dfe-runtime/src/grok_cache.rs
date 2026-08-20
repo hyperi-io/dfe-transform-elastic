@@ -94,7 +94,7 @@ enum Native {
 pub struct CompiledGrok {
     /// The expanded regex. Always present, and always correct -- the native
     /// path below is an optimisation over it, never a replacement.
-    pub regex: Regex,
+    pub regex: Pattern,
     /// Capture name to original dotted field path. Regex capture names cannot
     /// contain dots, so `user.name` is captured as `user_name` and restored
     /// through this map.
@@ -143,24 +143,24 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         return hit;
     }
 
-    let (expanded, mut field_map, numeric) = crate::codegen_api::grok_to_regex_typed(pattern);
+    let (expanded, mut field_map, mut numeric) = crate::codegen_api::grok_to_regex_typed(pattern);
+    // The generator's mapping is keyed by the capture name AS WRITTEN, which a
+    // rename has since replaced. Substituting by destination rather than by
+    // key keeps every renamed twin pointed at the same field.
+    let supplied: std::collections::HashMap<&str, &str> = extra.iter().copied().collect();
     for (capture, path) in extra {
         field_map.insert((*capture).to_string(), (*path).to_string());
     }
+    for path in field_map.values_mut() {
+        if let Some(real) = supplied.get(path.as_str()) {
+            *path = (*real).to_string();
+        }
+    }
+    crate::codegen_api::resolve_capture_paths(&mut field_map, &mut numeric);
     let expanded = tolerate_trailing_terminator(&expanded);
-    let regex = Regex::new(&expanded).unwrap_or_else(|e| {
-        tracing::error!(
-            grok = pattern,
-            expanded = %expanded,
-            error = %e,
-            "grok pattern does not compile; this processor will match nothing"
-        );
-        #[allow(clippy::expect_used)]
-        Regex::new(NEVER_MATCHES).expect("the never-matching pattern is valid")
-    });
 
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
-        regex,
+        regex: Pattern::compile(&expanded, pattern),
         field_map,
         numeric,
         native: native_form(pattern),
@@ -245,19 +245,46 @@ impl CompiledGrok {
             return Self::extract_native(native, input, event);
         }
 
-        let Some(caps) = self.regex.captures(input) else {
-            return Ok(false);
-        };
-        for name in self.regex.capture_names().flatten() {
-            if let Some(m) = caps.name(name) {
-                let path = self.field_map.get(name).map_or(name, String::as_str);
-                match m.as_str().parse::<i64>() {
-                    Ok(n) if self.numeric.contains_key(name) => event.set(path, n)?,
-                    _ => event.set(path, m.as_str())?,
+        match &self.regex {
+            Pattern::Fast(re) => {
+                let Some(caps) = re.captures(input) else {
+                    return Ok(false);
+                };
+                for name in re.capture_names().flatten() {
+                    if let Some(m) = caps.name(name) {
+                        self.write_capture(name, m.as_str(), event)?;
+                    }
+                }
+            }
+            Pattern::Backtracking(re) => {
+                // A backtracking match can fail outright -- a step limit, say.
+                // That is the same answer for the caller as no match.
+                let Ok(Some(caps)) = re.captures(input) else {
+                    return Ok(false);
+                };
+                for name in re.capture_names().flatten() {
+                    if let Some(m) = caps.name(name) {
+                        self.write_capture(name, m.as_str(), event)?;
+                    }
                 }
             }
         }
         Ok(true)
+    }
+
+    /// Write one capture to the field it names, typed as Elastic types it.
+    fn write_capture(
+        &self,
+        name: &str,
+        value: &str,
+        event: &mut crate::Event,
+    ) -> crate::Result<()> {
+        let path = self.field_map.get(name).map_or(name, String::as_str);
+        match value.parse::<i64>() {
+            Ok(n) if self.numeric.contains_key(name) => event.set(path, n)?,
+            _ => event.set(path, value)?,
+        }
+        Ok(())
     }
 
     fn extract_native(
@@ -328,6 +355,7 @@ fn tolerate_trailing_terminator(expanded: &str) -> Cow<'_, str> {
 /// `((?!AUTHORIZATIONRULES).)*`. Those used to compile to nothing and match
 /// nothing, silently. `fancy_regex` is the fallback ONLY: it is reached when
 /// `regex` rejects the pattern, so nothing on the hot path changes.
+#[derive(Clone)]
 pub enum Pattern {
     /// The linear-time engine, which is every pattern that compiles on it.
     Fast(Regex),
@@ -336,6 +364,54 @@ pub enum Pattern {
 }
 
 impl Pattern {
+    /// Compile on the fast engine, falling back to the backtracking one.
+    ///
+    /// `source` is what the author wrote -- the grok, or the pattern itself --
+    /// and only reaches the log line, so a reader is told which call site to
+    /// go and look at rather than the expansion they never typed.
+    #[must_use]
+    pub fn compile(expanded: &str, source: &str) -> Self {
+        match Regex::new(expanded) {
+            Ok(re) => Self::Fast(re),
+            Err(fast_err) => match fancy_regex::Regex::new(expanded) {
+                Ok(re) => Self::Backtracking(re),
+                Err(slow_err) => {
+                    tracing::error!(
+                        source = source,
+                        expanded = expanded,
+                        error = %fast_err,
+                        backtracking_error = %slow_err,
+                        "pattern does not compile on either engine; this processor will match nothing"
+                    );
+                    #[allow(clippy::expect_used)]
+                    Self::Fast(
+                        Regex::new(NEVER_MATCHES).expect("the never-matching pattern is valid"),
+                    )
+                }
+            },
+        }
+    }
+
+    /// The fast engine's regex, when the pattern compiled on it.
+    ///
+    /// For benchmarks that must measure one engine and not a dispatch.
+    #[must_use]
+    pub fn fast(&self) -> Option<&Regex> {
+        match self {
+            Self::Fast(re) => Some(re),
+            Self::Backtracking(_) => None,
+        }
+    }
+
+    /// Every capture group's name, in group order, `None` for the unnamed.
+    #[must_use]
+    pub fn capture_names(&self) -> Vec<Option<&str>> {
+        match self {
+            Self::Fast(re) => re.capture_names().collect(),
+            Self::Backtracking(re) => re.capture_names().collect(),
+        }
+    }
+
     /// Replace every match, leaving the input untouched when there are none.
     #[must_use]
     pub fn replace_all<'t>(&self, text: &'t str, replacement: &str) -> std::borrow::Cow<'t, str> {
@@ -401,25 +477,7 @@ pub fn regex(pattern: &str) -> &'static Pattern {
         return hit;
     }
 
-    let compiled = match Regex::new(pattern) {
-        Ok(re) => Pattern::Fast(re),
-        Err(fast_err) => match fancy_regex::Regex::new(pattern) {
-            Ok(re) => Pattern::Backtracking(re),
-            Err(slow_err) => {
-                tracing::error!(
-                    pattern = pattern,
-                    error = %fast_err,
-                    backtracking_error = %slow_err,
-                    "regex does not compile on either engine; this processor will match nothing"
-                );
-                #[allow(clippy::expect_used)]
-                Pattern::Fast(
-                    Regex::new(NEVER_MATCHES).expect("the never-matching pattern is valid"),
-                )
-            }
-        },
-    };
-    let compiled: &'static Pattern = Box::leak(Box::new(compiled));
+    let compiled: &'static Pattern = Box::leak(Box::new(Pattern::compile(pattern, pattern)));
 
     if let Ok(mut guard) = PLAIN.write() {
         return guard
