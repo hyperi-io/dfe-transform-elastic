@@ -10,6 +10,7 @@
 pub mod diff;
 pub mod flatten;
 pub mod harness;
+pub mod policy;
 
 pub use diff::{JsonDiff, MatchMode};
 pub use flatten::{flatten_value, unflatten_value};
@@ -17,3 +18,4 @@ pub use harness::{
     load_expected_outputs, load_integration_events, load_integration_expected, load_test_events,
     run_integration_test, run_transform_test,
 };
+pub use policy::{Policy, policy};

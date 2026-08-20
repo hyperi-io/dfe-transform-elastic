@@ -32,6 +32,22 @@ Confirm all of it before starting a container:
 scripts/compat.py check
 ```
 
+### What still needs the clones
+
+Only two things, and both are periodic:
+
+- **Generating the corpus.** The pipelines are read from `elastic/integrations`
+  at a named commit, which is the point -- an independent reading of what
+  Elastic does now, rather than what our vendored copy in `-dev/pipelines/`
+  says. That distinction has already earned itself: the corpus shows the
+  current okta pipeline setting `user.name` with a `copy_from`, where our
+  vendored copy still groks `%{USER:user.name}` and drops the domain.
+- **Refreshing `-dev/pipelines/`** when a vendored copy has fallen behind.
+
+Everything else runs without them. `-dev` references the clones nowhere at all,
+sample inputs live in `tests/fixtures/unencumbered/`, and once a corpus exists
+on a machine the Rust comparison reads only files.
+
 ## Commands
 
 | Command | What it does |

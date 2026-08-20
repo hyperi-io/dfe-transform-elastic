@@ -74,6 +74,14 @@ known_different:
     why: DB-IP Lite against MaxMind GeoLite2 ASN.
   - prefix: user_agent
     why: Our parser against Elastic's ua-parser, differing on edge cases.
+  - prefix: event.original
+    why: Present or absent by the preserve_original_event tag, which is deployment config.
+  - prefix: okta.debug_context.debug_data.flattened.risk_object
+    why: A raw string rendering of a parsed object, so formatting rather than content.
+  - prefix: cisco_nexus.log.time
+    why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
+  - prefix: cisco_nexus.log.syslog_time
+    why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
 
 # ECS fields whose values are sets. Same members in a different sequence is
 # equality, not a difference.
@@ -88,6 +96,7 @@ unordered:
   - related.entity
   - threat.tactic.name
   - threat.technique.name
+  - okta.debug_context.debug_data.risk_behaviors
 
 # Per-fixture declarations Elastic already ships are honoured in addition to the
 # above, read from each `*-config.yml`:

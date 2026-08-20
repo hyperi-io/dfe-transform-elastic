@@ -1,0 +1,16 @@
+(Secondary) Switching to ACTIVE - Service card in other unit has failed
+ASA-2-106001: Inbound TCP connection denied from 192.168.2.2/43803 to 10.10.10.10/14322 flags SYN on interface out111
+ASA-2-106006: Deny inbound UDP from 192.168.2.2/65020 to 10.10.10.10/65021 on interface fw111
+ASA-3-106014: Deny inbound icmp src fw111:10.10.10.10 dst fw111:10.10.10.11(type 8, code 0)
+Deny TCP (no connection) from 192.168.150.65/2278 to 64.101.128.83/80 flags RST on interface eth0
+ASA-4-106021: Deny TCP reverse path check from 192.168.2.2 to 10.10.10.10 on interface fw111
+access-list inside permitted tcp inside/10.10.123.45(51763) -> outside/192.168.67.89(80) hit-cnt 1 first hit [0x62c4905, 0x0]
+access-list outside-entry permitted tcp outside/10.11.12.13(54726) -> inside/192.168.17.18(80) hit-cnt 1 300-second interval [0x32b3835, 0x0]
+10.20.30.40(DOMAIN\login) Accessed URL 10.11.12.13:http://example.org/
+ASA-6-110002: Failed to locate egress interface for TCP from sourceInterfaceName:91.240.17.178/7777 to 192.168.2.2/123412
+ASA-6-302013: Built outbound TCP connection 11757 for outside:100.66.205.104/80 (100.66.205.104/80)(some.user) to inside:172.31.98.44/1772 (172.31.98.44/1772)
+302020: Built inbound ICMP connection for faddr 10.137.200.251/18425 gaddr 10.137.10.1/0 laddr 10.137.10.10/0
+6|Nov 28 2014 12:59:03|302021: Teardown ICMP connection for faddr 10.137.200.251/18425 gaddr 10.137.10.1/0 laddr 10.137.10.10/0
+Built dynamic TCP translation from inside:172.31.98.44/1772 to outside:100.66.98.44/8256
+ASA-3-313001: Denied ICMP type=3, code=3 from 10.2.3.5 on interface Outside
+<191>Jan 24 11:28:30.407: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to down

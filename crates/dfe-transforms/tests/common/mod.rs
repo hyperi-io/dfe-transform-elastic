@@ -231,33 +231,22 @@ pub fn run_fixture(transform: &dyn Transform, fixture_dir: &str, log_name: &str,
     );
 }
 
-/// Fields a Filebeat module capture strips before writing the golden file.
-///
-/// The PIPELINE leaves all five -- `message` still holds whatever the CSV or
-/// grok did not consume. Reporting them as EXTRA compares our output against
-/// a filter that ran after Elastic's, not against Elastic.
-const CAPTURE_STRIPPED: &[&str] = &[
-    "@metadata",
-    "agent",
-    "ecs.version",
-    "log.file.path",
-    "message",
-];
-
 /// Compare one expectation, in whichever of the two shapes it was committed.
 ///
 /// Some fixtures store the expectation FLAT -- `"event.action": "..."` rather
 /// than a nested object. Compared as nested, every one of those keys reads as
 /// MISSING and the whole fixture scores zero however good the transform is.
-/// That shape is also the marker for a module capture, so the capture's own
-/// field filter is applied alongside it.
+///
+/// That shape is also the marker for a Filebeat module capture, which strips
+/// `message` before writing the golden file. The pipeline leaves it holding
+/// whatever the CSV or grok did not consume, so comparing it measures the
+/// capture's filter rather than Elastic. Everything else the capture strips is
+/// already named in `tests/compare-policy.yaml`.
 fn compare_expected(expected: &Value, actual: &Value) -> JsonDiff {
     match expected.as_object() {
         Some(map) if map.keys().any(|k| k.contains('.')) => {
             let mut actual = actual.clone();
-            for field in CAPTURE_STRIPPED {
-                remove_path(&mut actual, field);
-            }
+            remove_path(&mut actual, "message");
             JsonDiff::compare_flat_expected(map, &actual, MatchMode::Semantic)
         }
         _ => JsonDiff::compare(expected, actual, MatchMode::Semantic),
