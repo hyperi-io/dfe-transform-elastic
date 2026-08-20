@@ -1374,9 +1374,29 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: (ctx.cisco?.umbrella?.identity instanceof String) && ctx.cisco.umbrella.identity.contains(',') && (ctx.cisco?.umbrella?.identities instanceof String) && ctx.cisco.umbrella.identities.startsWith(ctx.ci ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                (event
+                    .get("cisco.umbrella.identity")
+                    .is_some_and(|v| v.is_string()))
+                    && event
+                        .get("cisco.umbrella.identity")
+                        .is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some(","))
+                            }
+                            serde_json::Value::String(s) => s.contains(","),
+                            _ => false,
+                        })
+                    && (event
+                        .get("cisco.umbrella.identities")
+                        .is_some_and(|v| v.is_string()))
+                    && event.get_str("cisco.umbrella.identity").is_some_and(|p| {
+                        event
+                            .get_str("cisco.umbrella.identities")
+                            .is_some_and(|s| s.starts_with(p))
+                    })
+            };
+            if _cond {
                 // Painless script
                 // Source: String identities_tail = ctx.cisco.umbrella.identities.substring(ctx.cisco.umbrella.identity.length());\nif (identities_tail.startsWith(',')) {\n  identities_tail = identities_tail.substring(1);\n}\nif (ctx.cisco.umbrella._tmp == null) {\n  ctx.cisco.umbrella._tmp = new HashMap();\n}\nctx.cisco.umbrella._tmp.identities_tail = identities_tail;
                 // TODO: Transpile Painless to Rust (2.2.3)
