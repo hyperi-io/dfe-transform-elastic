@@ -10,7 +10,7 @@
     "crowdstrike": { "events": 33, "events_total": 49, "fields_wrong": 45 },
     "fortinet_fortigate": { "events": 166, "events_total": 185, "fields_wrong": 69 },
     "o365": { "events": 404, "events_total": 409, "fields_wrong": 5 },
-    "okta": { "events": 15, "events_total": 24, "fields_wrong": 17 },
+    "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "panw": { "events": 534, "events_total": 538, "fields_wrong": 8 }
   }
 }

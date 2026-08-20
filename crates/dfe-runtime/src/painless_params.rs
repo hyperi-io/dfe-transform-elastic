@@ -95,7 +95,96 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_replace(event, &normalised, params);
     }
 
+    // Pattern: union a table row's list columns into the ECS arrays.
+    if normalised.contains("addUnique(") && normalised.contains("params[ctx.") {
+        return try_add_unique_row(event, &normalised, params);
+    }
+
     false
+}
+
+/// `def p = params[ctx.<subject>];` then, per column,
+/// `ctx.<target> = addUnique(ctx.<target>, p.<column>);`
+///
+/// Elastic's `gen` emits this as an `ecs_category_type` sub-pipeline for every
+/// package that maps a vendor event name onto ECS categorisation, so the table
+/// is the params block and a vendor adding an event type is picked up by
+/// regenerating rather than by editing Rust.
+///
+/// `addUnique` is a set union, and the ECS arrays it writes are compared as
+/// sets -- `tests/compare-policy.yaml` names both -- so the Java `HashSet`
+/// iteration order it comes out in is not reproduced.
+///
+/// A subject with no row throws in Painless, and the sub-pipeline's `on_failure`
+/// turns that into `event.kind: pipeline_error`. Nothing here models the throw,
+/// so an unknown event type leaves the event as it was.
+fn try_add_unique_row(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+    let Some(subject) = ctx_path_between(script, "params[ctx.", "]") else {
+        return false;
+    };
+    let bindings = add_unique_bindings(script);
+    if bindings.is_empty() {
+        return false;
+    }
+
+    let Some(key) = event.get_as_string(&subject) else {
+        return true;
+    };
+    let Some(Value::Object(row)) = params.get(&key) else {
+        return true;
+    };
+    let row = row.clone();
+
+    for (target, column) in bindings {
+        let Some(Value::Array(additions)) = row.get(&column) else {
+            continue;
+        };
+        let mut merged = match event.get(&target) {
+            Some(Value::Array(existing)) => existing.clone(),
+            Some(other) => vec![other.clone()],
+            None => Vec::new(),
+        };
+        for addition in additions {
+            if !merged.contains(addition) {
+                merged.push(addition.clone());
+            }
+        }
+        let _ = event.set(&target, Value::Array(merged));
+    }
+    true
+}
+
+/// Every `ctx.<target> = addUnique(ctx.<target>, p.<column>)` in the script, as
+/// the pair it names.
+fn add_unique_bindings(script: &str) -> Vec<(String, String)> {
+    const CALL: &str = "= addUnique(";
+
+    let mut pairs = Vec::new();
+    let mut at = 0;
+    while let Some(found) = script[at..].find(CALL) {
+        let call = at + found;
+        let head = &script[..call];
+        at = call + CALL.len();
+
+        // The last `ctx.` before the call is the assignment's left-hand side;
+        // the one inside the call is the same path read back.
+        let Some(start) = head.rfind("ctx.") else {
+            continue;
+        };
+        let target = clean_path(&head[start + "ctx.".len()..]);
+
+        let Some((_, column)) = script[at..].split_once(',') else {
+            continue;
+        };
+        let Some((_, column)) = column.trim_start().split_once('.') else {
+            continue;
+        };
+        let end = column
+            .find(|c: char| !c.is_alphanumeric() && c != '_')
+            .unwrap_or(column.len());
+        pairs.push((target, column[..end].to_string()));
+    }
+    pairs
 }
 
 /// `long value = ctx.<source>;` then, per params entry,
@@ -634,6 +723,105 @@ mod tests {
     /// shows up here as a miss.
     const SENTINEL: &str = "ctx.crowdstrike.event.entrySet().removeIf(entry -> \
                             params.values.contains(entry.getValue()));";
+
+    /// Verbatim from `pipelines/okta/ecs_category_type.yml`. Elastic's `gen`
+    /// emits this same script for every package that maps a vendor event name
+    /// onto ECS categorisation.
+    const ADD_UNIQUE: &str = "def addUnique(List dst, List src) {\n  src = src ?: [];\n  \
+                              if (src.length == 0) {\n    return dst ?: [];\n  }\n  \
+                              HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  \
+                              return new ArrayList(s);\n}\n\
+                              def p = params[ctx.okta.event_type];\n\
+                              ctx.event.type = addUnique(ctx.event.type, p.type);\n\
+                              ctx.event.category = addUnique(ctx.event.category, p.category);\n\
+                              ctx.tags = addUnique(ctx.tags, p.tags);";
+
+    fn add_unique_params() -> Value {
+        json!({
+            "user.session.start": {
+                "category": ["authentication"],
+                "type": ["start"],
+                "tags": ["identity"],
+            },
+        })
+    }
+
+    /// The row's columns must be UNIONED into what the pipeline already put
+    /// there -- the append processors ahead of this one have usually written
+    /// `event.type` already, and replacing it drops their work.
+    #[test]
+    fn add_unique_unions_the_row_into_the_existing_arrays() {
+        let mut event = Event::new(json!({
+            "okta": { "event_type": "user.session.start" },
+            "event": { "type": ["info"], "category": ["session"] },
+            "tags": ["forwarded"],
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            ADD_UNIQUE,
+            &add_unique_params()
+        ));
+
+        assert_eq!(event.get("event.type"), Some(&json!(["info", "start"])));
+        assert_eq!(
+            event.get("event.category"),
+            Some(&json!(["session", "authentication"]))
+        );
+        assert_eq!(event.get("tags"), Some(&json!(["forwarded", "identity"])));
+    }
+
+    /// A member the row repeats must not appear twice -- the script is a set
+    /// union, not an append.
+    #[test]
+    fn add_unique_does_not_duplicate_what_is_already_there() {
+        let mut event = Event::new(json!({
+            "okta": { "event_type": "user.session.start" },
+            "event": { "type": ["start"] },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            ADD_UNIQUE,
+            &add_unique_params()
+        ));
+        assert_eq!(event.get("event.type"), Some(&json!(["start"])));
+    }
+
+    /// An arrays-absent event still gets the row, since `addUnique` treats a
+    /// null destination as empty.
+    #[test]
+    fn add_unique_creates_the_arrays_it_finds_missing() {
+        let mut event = Event::new(json!({ "okta": { "event_type": "user.session.start" } }));
+
+        assert!(try_params_painless(
+            &mut event,
+            ADD_UNIQUE,
+            &add_unique_params()
+        ));
+        assert_eq!(
+            event.get("event.category"),
+            Some(&json!(["authentication"]))
+        );
+    }
+
+    /// An event type the table does not carry throws in Painless and the
+    /// sub-pipeline's `on_failure` catches it. Nothing here models the throw,
+    /// so the event must at least come through untouched rather than mangled.
+    #[test]
+    fn add_unique_leaves_an_unknown_event_type_alone() {
+        let mut event = Event::new(json!({
+            "okta": { "event_type": "user.session.nosuchthing" },
+            "event": { "type": ["info"] },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            ADD_UNIQUE,
+            &add_unique_params()
+        ));
+        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+    }
 
     fn sentinel_params() -> Value {
         json!({ "values": [null, "", "-", "N/A", "NA", 0] })

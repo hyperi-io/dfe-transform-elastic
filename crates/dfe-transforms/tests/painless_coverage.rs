@@ -33,7 +33,7 @@ use serde_json::{Map, Value, json};
 ///
 /// Running is not the same as running CORRECTLY -- `tests/compat_corpus.rs`
 /// is what measures that. This one only says no script is silently skipped.
-const COVERAGE_FLOOR: f64 = 0.64;
+const COVERAGE_FLOOR: f64 = 0.647;
 
 /// Every fixture directory with a transform to drive it.
 ///
