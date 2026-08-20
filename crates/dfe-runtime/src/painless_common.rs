@@ -217,6 +217,46 @@ fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
     true
 }
 
+/// `ctx.<target> = ctx.<left> + ctx.<right>`, whatever the three are called.
+///
+/// The directional-bytes matcher above only knows `source`/`destination` into
+/// `network`, and fortinet sums `rcvddelta` and `sentdelta` into `deltabytes`.
+/// Reading all three names out of the script covers both and whatever comes
+/// next.
+///
+/// Skips when either side is absent or non-numeric: Elastic's script would
+/// throw, and its `if` gates on both being a Number. The addition saturates,
+/// since both operands came off the wire.
+fn try_sum_of_fields(event: &mut Event, script: &str) -> bool {
+    use crate::painless_params::clean_path;
+
+    let Some((lhs, rhs)) = script.split_once(" = ") else {
+        return false;
+    };
+    let Some(target) = lhs.trim().rsplit("ctx.").next() else {
+        return false;
+    };
+    let end = rhs.find([';', '\n']).unwrap_or(rhs.len());
+    let Some((left, right)) = rhs[..end].split_once(" + ") else {
+        return false;
+    };
+    let (Some(left), Some(right)) = (
+        left.trim().strip_prefix("ctx."),
+        right.trim().strip_prefix("ctx."),
+    ) else {
+        return false;
+    };
+
+    let (Some(a), Some(b)) = (
+        event.get_i64(&clean_path(left)),
+        event.get_i64(&clean_path(right)),
+    ) else {
+        return true;
+    };
+    let _ = event.set(&clean_path(target), json!(a.saturating_add(b)));
+    true
+}
+
 /// `event.duration = <field> * 1_000_000_000`, seconds to nanoseconds.
 ///
 /// Returns false when the field name cannot be read out of the SCRIPT: that is
@@ -1655,6 +1695,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_sum_directions(event, total);
     }
 
+    // Pattern: one ctx field as the sum of two others.
+    if normalised.contains(" + ctx.") && try_sum_of_fields(event, &normalised) {
+        return true;
+    }
+
     // Pattern: seconds to nanoseconds for event.duration.
     if normalised.contains("ctx.event.duration")
         && normalised.contains("Long.parseLong")
@@ -2171,6 +2216,35 @@ mod tests {
         if (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\n\
         if (result.size() == 1) {\n  ctx.network.direction = result[0];\n}\n\
         else if (result.size() > 1) {\n  ctx.network.direction = result;\n}";
+
+    /// Verbatim from `pipelines/fortinet/traffic.yml`. The directional matcher
+    /// only knows source-plus-destination-into-network, and this is three
+    /// different names.
+    #[test]
+    fn a_sum_reads_all_three_names_out_of_the_script() {
+        let script = "ctx.fortinet.firewall.deltabytes = ctx.fortinet.firewall.rcvddelta \
+                      + ctx.fortinet.firewall.sentdelta";
+        let mut event = Event::new(json!({
+            "fortinet": { "firewall": { "rcvddelta": 1000, "sentdelta": 304 } },
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("fortinet.firewall.deltabytes"),
+            Some(&json!(1304))
+        );
+    }
+
+    /// Elastic gates the script on both sides being a Number and would throw
+    /// otherwise, so an absent side writes nothing.
+    #[test]
+    fn a_sum_with_a_side_missing_writes_nothing() {
+        let script = "ctx.a.total = ctx.a.left + ctx.a.right";
+        let mut event = Event::new(json!({ "a": { "left": 5 } }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert!(!event.has("a.total"));
+    }
 
     /// One match writes a scalar.
     #[test]
