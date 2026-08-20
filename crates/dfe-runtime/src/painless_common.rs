@@ -790,18 +790,21 @@ fn try_row_lookup_with_fallback(event: &mut Event, script: &str) -> bool {
     let Some(subject) = subject.trim().strip_prefix("ctx.").map(clean_path) else {
         return false;
     };
+    // A hit either assigns the column or, since the vendor wrapped this in a
+    // function, RETURNS it. Reading only the assignment form left cisco_ios's
+    // timezone chain unmatched from the first character.
     let Some(value_col) = script
         .split_once(&format!("= {item}."))
+        .or_else(|| script.split_once(&format!("return {item}.")))
         .map(|(_, rest)| rest.trim_end_matches(';'))
         .and_then(|rest| rest.split([';', '\n']).next())
     else {
         return false;
     };
-    let Some(target) = ctx_assignment_target_before(script, &format!("= {item}.")) else {
-        return false;
-    };
+    // The return form assigns nothing on a hit, so there is no target to find
+    // ahead of it; the fallback arms below name their own.
+    let target = ctx_assignment_target_before(script, &format!("= {item}."));
 
-    // The row lookup wins outright; the vendor script returns on a hit.
     let wanted = event.get_as_string(&subject);
     if let (Some(wanted), Some(Value::Array(rows))) = (&wanted, event.get(&table)) {
         let hit = rows.iter().find_map(|row| {
@@ -810,12 +813,17 @@ fn try_row_lookup_with_fallback(event: &mut Event, script: &str) -> bool {
                 .flatten()
         });
         if let Some(value) = hit {
-            let _ = event.set(&target, value);
+            if let Some(target) = &target {
+                let _ = event.set(target, value);
+            }
             return true;
         }
     }
 
-    apply_fallbacks(event, script, &target);
+    let arm_target = apply_fallbacks(event, script, target.as_deref());
+    if let Some(target) = arm_target.or(target) {
+        apply_tail_default(event, script, &target);
+    }
     true
 }
 
@@ -843,17 +851,36 @@ fn ctx_assignment_target_before(script: &str, marker: &str) -> Option<String> {
 /// Each arm assigns either another ctx field or a literal, and is guarded on
 /// that field being present or on the target still being unset. Running them
 /// in order is what makes `UTC` the last resort rather than the first.
-fn apply_fallbacks(event: &mut Event, script: &str, target: &str) {
+fn apply_fallbacks(event: &mut Event, script: &str, target: Option<&str>) -> Option<String> {
     use crate::painless_params::clean_path;
 
+    let mut named = None;
     for segment in script.split("if (").skip(1) {
         let Some((cond, body)) = segment.split_once(')') else {
             continue;
         };
-        let Some((_, assigned)) = body.split_once('=') else {
+        let Some((lhs, assigned)) = body.split_once('=') else {
             continue;
         };
-        let assigned = assigned.trim().trim_start_matches(['{', ' ', '\n']);
+        // The arm names its own destination. The lookup's target is only the
+        // default, for the older form that wrote it before the loop.
+        let Some(arm_target) = lhs
+            .rsplit_once("ctx.")
+            .map(|(_, path)| clean_path(path.trim()))
+            .or_else(|| target.map(str::to_owned))
+        else {
+            continue;
+        };
+        named = Some(arm_target.clone());
+        // Bounded to its own statement: the segment runs to the end of the
+        // script, so an unbounded read finds the LAST literal in it rather
+        // than this arm's.
+        let assigned = assigned
+            .split(';')
+            .next()
+            .unwrap_or(assigned)
+            .trim()
+            .trim_start_matches(['{', ' ', '\n']);
 
         let guard_holds = if let Some(path) = cond.trim().strip_prefix("ctx.") {
             match path.split_once("!=") {
@@ -871,13 +898,50 @@ fn apply_fallbacks(event: &mut Event, script: &str, target: &str) {
         }
 
         if let Some(literal) = quoted_first(assigned) {
-            let _ = event.set(target, Value::String(literal));
+            let _ = event.set(&arm_target, Value::String(literal));
         } else if let Some(path) = assigned.strip_prefix("ctx.") {
             let source = clean_path(path.split([';', '\n', ' ']).next().unwrap_or(path));
             if let Some(value) = event.get(&source).cloned() {
-                let _ = event.set(target, value);
+                let _ = event.set(&arm_target, value);
             }
         }
+    }
+    named
+}
+
+/// The unguarded `ctx.<target> = '<literal>';` a lookup chain ends on.
+///
+/// It sits outside every `if`, so the guarded arms above never reach it, and
+/// `cisco_ios`'s `event.timezone` was left unset on 45 corpus events. It applies
+/// only when no `!= null` guard in the script holds, which is what the early
+/// returns above it mean: a timezone parsed off the line takes the first
+/// branch and returns before the default is ever reached.
+fn apply_tail_default(event: &mut Event, script: &str, target: &str) {
+    use crate::painless_params::clean_path;
+
+    if event.has_value(target) {
+        return;
+    }
+
+    let any_guard_holds = script
+        .split("if (")
+        .skip(1)
+        .filter_map(|segment| segment.split_once(')'))
+        .any(|(cond, _)| {
+            cond.trim()
+                .strip_prefix("ctx.")
+                .and_then(|path| path.split_once("!="))
+                .is_some_and(|(path, _)| event.has_value(&clean_path(path)))
+        });
+    if any_guard_holds {
+        return;
+    }
+
+    let marker = format!("ctx.{target} = ");
+    if let Some(at) = script.rfind(&marker)
+        && let Some(literal) = quoted_first(&script[at + marker.len()..])
+    {
+        let _ = event.set(target, Value::String(literal));
     }
 }
 
@@ -1914,6 +1978,61 @@ ctx.url = url;
 
         assert!(try_known_painless(&mut event, SCHEMELESS_URL));
         assert!(!event.has("destination"));
+    }
+
+    /// The `cisco_ios` timezone chain, as the current pipeline writes it: a lookup
+    /// wrapped in a function, whose branches RETURN rather than assign, and
+    /// whose last resort sits outside every `if`.
+    const TZ_CHAIN: &str = r"String get_timezone(def ctx) {
+  if (ctx._temp_?.tz != null) {
+    if (ctx._conf?.tz_map != null) {
+      for (def item : ctx._conf.tz_map) {
+        if (item.tz_short == ctx._temp_.tz) {
+          return item.tz_long;
+        }
+      }
+    }
+    if (ctx._temp_.tz.length() <= 4) {
+      return ctx._temp_.tz.toUpperCase();
+    }
+    return ctx._temp_.tz;
+  }
+  if (ctx._conf?.tz_offset != null) {
+      ctx.event.timezone = ctx._conf.tz_offset;
+      return ctx._conf.tz_offset;
+  }
+  ctx.event.timezone = 'UTC';
+  return 'UTC';
+}
+def event_timezone = get_timezone(ctx);
+";
+
+    /// With no timezone on the line and none configured, the last resort runs.
+    #[test]
+    fn a_lookup_chain_falls_through_to_its_unguarded_default() {
+        let mut event = Event::new(json!({ "_temp_": { "cisco_timestamp": "Jul 14 2023" } }));
+
+        assert!(try_known_painless(&mut event, TZ_CHAIN));
+        assert_eq!(event.get("event.timezone"), Some(&json!("UTC")));
+    }
+
+    /// A timezone parsed off the line takes the first branch and RETURNS, so
+    /// the default must not fire behind it.
+    #[test]
+    fn a_guard_that_holds_suppresses_the_default() {
+        let mut event = Event::new(json!({ "_temp_": { "tz": "CEST" } }));
+
+        assert!(try_known_painless(&mut event, TZ_CHAIN));
+        assert!(!event.has("event.timezone"));
+    }
+
+    /// The configured offset is a fallback ARM, and it beats the default.
+    #[test]
+    fn a_configured_offset_wins_over_the_default() {
+        let mut event = Event::new(json!({ "_conf": { "tz_offset": "+10:00" } }));
+
+        assert!(try_known_painless(&mut event, TZ_CHAIN));
+        assert_eq!(event.get("event.timezone"), Some(&json!("+10:00")));
     }
 
     #[test]
