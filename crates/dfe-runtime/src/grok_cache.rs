@@ -18,6 +18,7 @@
 //! that matches nothing, rather than panicking. A malformed pattern is a
 //! defect in one processor; taking the pod down over it stalls a partition.
 
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::sync::RwLock;
 
@@ -146,10 +147,11 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
     for (capture, path) in extra {
         field_map.insert((*capture).to_string(), (*path).to_string());
     }
+    let expanded = tolerate_trailing_terminator(&expanded);
     let regex = Regex::new(&expanded).unwrap_or_else(|e| {
         tracing::error!(
             grok = pattern,
-            expanded = expanded,
+            expanded = %expanded,
             error = %e,
             "grok pattern does not compile; this processor will match nothing"
         );
@@ -305,6 +307,20 @@ impl CompiledGrok {
     }
 }
 
+/// Let a trailing `$` match before a final line terminator, as Java's does.
+///
+/// Rust's `$` is the end of the haystack and Java's is the end but for one
+/// terminator, so a vendor line delivered with its newline still attached fails
+/// every anchored pattern. One `cisco_nexus` event arrives that way.
+fn tolerate_trailing_terminator(expanded: &str) -> Cow<'_, str> {
+    let anchored = expanded.ends_with('$') && !expanded.ends_with("\\$");
+    if !anchored {
+        return Cow::Borrowed(expanded);
+    }
+    let head = &expanded[..expanded.len() - 1];
+    Cow::Owned(format!("{head}(?:\\r\\n|\\n|\\r)?$"))
+}
+
 /// A compiled pattern, on whichever engine can express it.
 ///
 /// `regex` refuses lookaround by design, and the vendor pipelines use it --
@@ -418,6 +434,41 @@ pub fn regex(pattern: &str) -> &'static Pattern {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// Java's `$` matches before a final line terminator and Rust's does not,
+    /// so a vendor line still carrying its newline failed every anchored
+    /// pattern. One cisco_nexus event arrives that way.
+    #[test]
+    fn an_anchored_pattern_tolerates_a_trailing_newline() {
+        let compiled = grok("^<%{NUMBER:pri:long}>%{GREEDYDATA:body}$");
+
+        for input in [
+            "<186>switchname: a duplicate host",
+            "<186>switchname: a duplicate host\n",
+            "<186>switchname: a duplicate host\r\n",
+        ] {
+            let mut event = crate::Event::new(serde_json::json!({}));
+            assert!(
+                compiled
+                    .extract_into(input, &mut event)
+                    .expect("extraction"),
+                "{input:?}"
+            );
+            assert_eq!(event.get_i64("pri"), Some(186), "{input:?}");
+        }
+    }
+
+    /// The terminator is optional, not required, and an escaped `$` is a
+    /// literal dollar rather than an anchor.
+    #[test]
+    fn tolerating_a_terminator_leaves_other_patterns_alone() {
+        assert_eq!(
+            tolerate_trailing_terminator("^a$"),
+            "^a(?:\\r\\n|\\n|\\r)?$"
+        );
+        assert_eq!(tolerate_trailing_terminator("^a\\$"), "^a\\$");
+        assert_eq!(tolerate_trailing_terminator("^a"), "^a");
+    }
 
     #[test]
     fn the_same_pattern_returns_the_same_instance() {
