@@ -61,8 +61,30 @@ struct Captured {
     source: String,
     fixture: String,
     engine: String,
+    /// The pipeline `compat.py` installed. Anything not prefixed `compat-`
+    /// was written by an earlier tool and the capture is stale.
+    entry_pipeline: String,
     input: Vec<Value>,
     expected: Vec<Value>,
+}
+
+impl Captured {
+    /// Whether Elastic's own run failed on every event.
+    ///
+    /// A uniform `pipeline_error` almost always means the input shape rather
+    /// than the pipeline -- a fixture already in the Beats envelope wrapped a
+    /// second time. Comparing against it reads as a broken transform.
+    fn capture_failed(&self) -> bool {
+        !self.expected.is_empty()
+            && self
+                .expected
+                .iter()
+                .all(|e| e.pointer("/event/kind").and_then(Value::as_str) == Some("pipeline_error"))
+    }
+
+    fn is_stale(&self) -> bool {
+        !self.entry_pipeline.starts_with("compat-")
+    }
 }
 
 fn read_ndjson(path: &Path) -> Vec<Value> {
@@ -109,6 +131,11 @@ fn captured() -> Vec<Captured> {
                         .and_then(Value::as_str)
                         .unwrap_or("unknown")
                         .to_string(),
+                    entry_pipeline: meta
+                        .get("entry_pipeline")
+                        .and_then(Value::as_str)
+                        .unwrap_or_default()
+                        .to_string(),
                     input,
                     expected,
                 });
@@ -142,6 +169,26 @@ fn transforms_match_elastics_confirmed_output() {
             unmapped.push(capture.source.clone());
             continue;
         };
+
+        // Say why a capture is not worth comparing BEFORE printing a score
+        // against it, or a zero reads as a broken transform.
+        if capture.is_stale() {
+            println!(
+                "[{}/{}] SKIPPED: written by an earlier tool ({}), regenerate it",
+                capture.source, capture.fixture, capture.entry_pipeline,
+            );
+            continue;
+        }
+        if capture.capture_failed() {
+            println!(
+                "[{}/{}] SKIPPED: Elastic errored on all {} events, so the capture \
+                 carries no expectation -- check the input shape",
+                capture.source,
+                capture.fixture,
+                capture.expected.len(),
+            );
+            continue;
+        }
 
         let mut matched = 0;
         let mut errors = 0;
