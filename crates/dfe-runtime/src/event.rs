@@ -337,29 +337,77 @@ fn prefix_of(path: &str, depth: usize) -> String {
 /// Walk a dotted path to find an immutable reference to the target value.
 fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
     let mut current = value;
-    for segment in path.split('.') {
-        match current {
-            Value::Object(map) => {
-                current = map.get(segment)?;
+    let mut rest = path;
+    loop {
+        let Value::Object(map) = current else {
+            return None;
+        };
+        let Some((segment, tail)) = rest.split_once('.') else {
+            return map.get(rest);
+        };
+        let Some(next) = map.get(segment) else {
+            // The segment is not a field, so the dot may sit INSIDE a key --
+            // see flat_key.
+            if let Some(found) = map.get(rest) {
+                return Some(found);
             }
-            _ => return None,
-        }
+            let key = flat_key(map, rest)?;
+            rest = &rest[key.len() + 1..];
+            current = map.get(key)?;
+            continue;
+        };
+        current = next;
+        rest = tail;
     }
-    Some(current)
 }
 
 /// Walk a dotted path to find a mutable reference to the target value.
+///
+/// Must resolve exactly what [`resolve_path`] does, flat keys included:
+/// [`Event::append`] looks the path up with `get` and then unwraps this.
 fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Value> {
     let mut current = value;
-    for segment in path.split('.') {
-        match current {
-            Value::Object(map) => {
-                current = map.get_mut(segment)?;
-            }
-            _ => return None,
-        }
+    let mut rest = path;
+    loop {
+        let Value::Object(map) = current else {
+            return None;
+        };
+        let Some((segment, tail)) = rest.split_once('.') else {
+            return map.get_mut(rest);
+        };
+        // The borrow checker will not let the miss branch look in `map` again
+        // after `get_mut`, so the decision is made before anything is taken.
+        let key: String = if map.contains_key(segment) {
+            rest = tail;
+            segment.to_string()
+        } else if map.contains_key(rest) {
+            return map.get_mut(rest);
+        } else {
+            let key = flat_key(map, rest)?.to_string();
+            rest = &rest[key.len() + 1..];
+            key
+        };
+        current = map.get_mut(&key)?;
     }
-    Some(current)
+}
+
+/// The longest key in `map` that spells the head of `rest`, for a key holding
+/// dots of its own.
+///
+/// A dotted path cannot say whether a dot separates two fields or sits inside
+/// one name, and Azure's SAML claims are keyed by URI -- the whole of
+/// `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` is ONE key,
+/// with four dots in it, so splitting on them found nothing. Nested wins where
+/// both readings exist, which is what Painless does: this runs only after the
+/// plain segment lookup has already missed, so an ordinary path never pays for
+/// it.
+fn flat_key<'m>(map: &'m serde_json::Map<String, Value>, rest: &str) -> Option<&'m str> {
+    map.keys()
+        .filter(|k| {
+            k.len() < rest.len() && rest.as_bytes()[k.len()] == b'.' && rest.starts_with(k.as_str())
+        })
+        .max_by_key(|k| k.len())
+        .map(String::as_str)
 }
 
 /// Return a human-readable type name for a JSON value.
@@ -434,6 +482,64 @@ mod tests {
         let original = json!({"x": 1});
         let event = Event::new(original.clone());
         assert_eq!(event.into_value(), original);
+    }
+
+    // -- Flat-key tests --------------------------------------------------
+
+    /// Verbatim from `testdata/compat/azure/activitylogs/supporttickets_write`.
+    /// The SAML claim is keyed by URI, so the whole thing is ONE key with four
+    /// dots in it and splitting on them reached nothing.
+    #[test]
+    fn a_key_holding_dots_resolves_whole() {
+        let event = Event::new(json!({
+            "azure": { "activitylogs": { "identity": { "claims": {
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname": "Smith",
+                "ver": "1.0",
+            } } } },
+        }));
+
+        assert_eq!(
+            event.get_str(
+                "azure.activitylogs.identity.claims.http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"
+            ),
+            Some("Smith")
+        );
+        assert_eq!(
+            event.get_str("azure.activitylogs.identity.claims.ver"),
+            Some("1.0")
+        );
+    }
+
+    /// Nested wins where a document spells the same path both ways, which is
+    /// what Painless does -- the flat key is only consulted after the segment
+    /// lookup has missed.
+    #[test]
+    fn a_nested_path_beats_a_flat_key_of_the_same_name() {
+        let event = Event::new(json!({ "a": { "b": "nested" }, "a.b": "flat" }));
+        assert_eq!(event.get_str("a.b"), Some("nested"));
+
+        let only_flat = Event::new(json!({ "a.b": "flat" }));
+        assert_eq!(only_flat.get_str("a.b"), Some("flat"));
+    }
+
+    /// `append` looks the path up with `get` and then unwraps the mutable
+    /// walk, so the two must agree about a flat key or it panics.
+    #[test]
+    fn append_reaches_an_array_under_a_flat_key() {
+        let mut event = Event::new(json!({ "a.b": { "list": ["one"] } }));
+        event.append("a.b.list", "two").unwrap();
+
+        assert_eq!(event.get("a.b.list"), Some(&json!(["one", "two"])));
+    }
+
+    /// A path that genuinely is not there still resolves to nothing, however
+    /// many of its segments exist.
+    #[test]
+    fn a_missing_path_stays_missing() {
+        let event = Event::new(json!({ "a": { "b": "value" }, "c.d": "flat" }));
+        assert!(event.get("a.z").is_none());
+        assert!(event.get("c.z").is_none());
+        assert!(event.get("c.d.e").is_none());
     }
 
     // -- Getter tests ----------------------------------------------------

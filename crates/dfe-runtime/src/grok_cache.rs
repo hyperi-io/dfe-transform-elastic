@@ -437,7 +437,7 @@ mod tests {
 
     /// Java's `$` matches before a final line terminator and Rust's does not,
     /// so a vendor line still carrying its newline failed every anchored
-    /// pattern. One cisco_nexus event arrives that way.
+    /// pattern. One `cisco_nexus` event arrives that way.
     #[test]
     fn an_anchored_pattern_tolerates_a_trailing_newline() {
         let compiled = grok("^<%{NUMBER:pri:long}>%{GREEDYDATA:body}$");
@@ -582,6 +582,65 @@ mod tests {
         assert_eq!(event.get_i64("log.syslog.priority"), Some(190));
         assert_eq!(event.get_str("log.syslog.hostname"), Some("sw01"));
         assert_eq!(event.get_str("cisco.ios.sequence"), Some("3132779"));
+    }
+
+    /// `%{IP}` is `(?:%{IPV6}|%{IPV4})` in Elastic and was v4-only here, so
+    /// every pattern reading an address matched half of them.
+    #[test]
+    fn ip_matches_v6_as_well_as_v4() {
+        for address in [
+            "2a02:cf40::",
+            "::1",
+            "fe80::16a2:a0ff:fe09:f6a8",
+            "2001:db8:0:0:1:0:0:1",
+            "81.2.69.192",
+        ] {
+            let mut event = crate::Event::new(serde_json::json!({}));
+            assert!(
+                grok("^%{IP:source.ip}$")
+                    .extract_into(address, &mut event)
+                    .expect("extraction"),
+                "{address} did not match %{{IP}}"
+            );
+            assert_eq!(event.get_str("source.ip"), Some(address));
+        }
+    }
+
+    /// The header pattern that reads the hostname slot with `%{IP}`, against
+    /// the fixture line where that hostname IS a v6 address. Without the v6
+    /// branch the whole pattern failed, the sequence after the address went
+    /// with it, and `event.sequence` silently fell back to the message count.
+    #[test]
+    fn a_v6_hostname_does_not_swallow_the_sequence_after_it() {
+        let mut event = crate::Event::new(serde_json::json!({}));
+        let compiled = grok_mapped(
+            r"^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\d{1,4}:\d{2}:\d{2}|(?:(\d+)y)?(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\d{1,2}|[+-]\d{2}:\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$",
+            &[
+                ("log_syslog_hostname", "log.syslog.hostname"),
+                ("cisco_ios_uptime", "cisco.ios.uptime"),
+                ("_temp__timestamp", "_temp_.timestamp"),
+                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                ("_temp__tz", "_temp_.tz"),
+            ],
+        );
+
+        let matched = compiled
+            .extract_into(
+                "<190>3132783: 2a02:cf40::: 3132779: Jul 14 2023 08:23:43.398 UTC: %FOO-6-BAR: Test header format",
+                &mut event,
+            )
+            .expect("extraction");
+
+        assert!(matched, "the header pattern did not match its own fixture");
+        // Untyped in the pattern, so it lands as a string here; the pipeline's
+        // own `convert` makes it a long further down.
+        assert_eq!(event.get_str("cisco.ios.message_count"), Some("3132783"));
+        assert_eq!(event.get_str("cisco.ios.sequence"), Some("3132779"));
+        assert!(!event.has("cisco.ios.uptime"));
+        assert_eq!(
+            event.get_str("_temp_.cisco_timestamp"),
+            Some("Jul 14 2023 08:23:43.398")
+        );
     }
 
     /// Elastic's `QUOTEDSTRING` takes any of the three quote characters.

@@ -9,6 +9,7 @@
 //! databases, a Painless interpreter).
 
 use std::collections::HashMap;
+use std::sync::LazyLock;
 
 use serde_json::Value;
 use tracing::debug;
@@ -260,12 +261,35 @@ const CISCO_TIMESTAMP: &str = concat!(
     r" +\d{1,2}(?: \d{4})? \d{2}:\d{2}:\d{2}(?:\.\d+)?(?: \d{4})?",
 );
 
+/// Elastic's own `IPV6`, verbatim from logstash-patterns-core's ecs-v1 set.
+///
+/// The `[0-9a-fA-F:]+` this replaces matched any run of hex and colons -- a
+/// bare `2a02` included -- and `IP` carried no v6 branch at all, so a grok
+/// reading a v6 address failed outright and took every capture in the pattern
+/// with it. `cisco_ios`'s syslog header is exactly that shape.
+const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?";
+
+/// The simplified `IPV4`. Elastic's own carries `(?<![0-9])` look-around,
+/// which the regex crate rejects -- and a grok that will not compile matches
+/// nothing at all, which is worse than accepting `999.999.999.999`.
+const IPV4: &str = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
+
+/// A hostname as Elastic defines it, for the composites below.
+const HOSTNAME: &str = r"[a-zA-Z0-9._-]+";
+
+/// `%{IP}` is `(?:%{IPV6}|%{IPV4})` and `%{IPORHOST}` is `(?:%{IP}|%{HOSTNAME})`,
+/// v6 first, exactly as Elastic orders them. Built once because `concat!` will
+/// not expand a const, and this runs when a pattern compiles, never per event.
+static IP: LazyLock<String> = LazyLock::new(|| format!("(?:{IPV6}|{IPV4})"));
+static IPORHOST: LazyLock<String> = LazyLock::new(|| format!("(?:{IPV6}|{IPV4}|{HOSTNAME})"));
+
 /// Map well-known grok pattern names to their regex equivalents.
 fn grok_pattern_regex(name: &str) -> &'static str {
     match name {
-        "USER" | "USERNAME" | "HOSTNAME" => r"[a-zA-Z0-9._-]+",
-        "IP" | "IPV4" => r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",
-        "IPV6" => r"[0-9a-fA-F:]+",
+        "USER" | "USERNAME" | "HOSTNAME" => HOSTNAME,
+        "IP" => IP.as_str(),
+        "IPV4" => IPV4,
+        "IPV6" => IPV6,
         "POSINT" | "PORT" | "NONNEGINT" => r"\d+",
         "INT" => r"[+-]?\d+",
         "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
@@ -291,7 +315,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // containing %{SPACE} match arbitrary text -- 152 sites' worth.
         "SPACE" => r"\s*",
         "TIME" => TIME,
-        "IPORHOST" | "SYSLOGHOST" => r"(?:\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[a-zA-Z0-9._-]+)",
+        "IPORHOST" | "SYSLOGHOST" => IPORHOST.as_str(),
         // Elastic accepts the abbreviation or the full name, either case.
         "DAY" => {
             r"(?i:Mon(?:day)?|Tue(?:sday)?|Wed(?:nesday)?|Thu(?:rsday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)"
@@ -540,6 +564,15 @@ pub fn uri_parts(
         parts.insert("original".into(), Value::String(original.clone()));
     }
 
+    // Elastic replaces the target wholesale with the parsed object, so a
+    // scalar sitting there is gone before the parts land. Writing leaf by leaf
+    // into a string instead fails on the FIRST leaf and loses every part with
+    // it -- which is what happened to `url` on cisco_meraki's security events,
+    // where the processor reads and writes the same field.
+    if event.get(target).is_some_and(|v| !v.is_object()) {
+        event.remove(target);
+    }
+
     // Set leaf by leaf rather than replacing the target: the fortinet pipeline
     // writes `url.domain` from another field before and after this runs, and a
     // wholesale replace would discard it.
@@ -756,6 +789,25 @@ mod tests {
 
         assert_eq!(event.get_str("url.domain"), Some("elastic.co"));
         assert_eq!(event.get_str("url.path"), Some("/config/"));
+    }
+
+    /// `cisco_meraki`'s security events parse `url` INTO `url`. A string sitting
+    /// on the target has to go first -- writing `url.scheme` into a string
+    /// fails on that first leaf and every other part is lost with it, which is
+    /// how the event ended up with a scalar `url` and no parts at all.
+    #[test]
+    fn uri_parts_replaces_a_scalar_sitting_on_the_target() {
+        let mut event = Event::new(json!({ "url": "http://www.eicar.org/download/eicar.com.txt" }));
+        assert!(uri_parts(&mut event, "url", "url", true, false).unwrap());
+
+        assert_eq!(
+            event.get_str("url.original"),
+            Some("http://www.eicar.org/download/eicar.com.txt")
+        );
+        assert_eq!(event.get_str("url.scheme"), Some("http"));
+        assert_eq!(event.get_str("url.domain"), Some("www.eicar.org"));
+        assert_eq!(event.get_str("url.path"), Some("/download/eicar.com.txt"));
+        assert_eq!(event.get_str("url.extension"), Some("txt"));
     }
 
     // --- is_internal_ip ---

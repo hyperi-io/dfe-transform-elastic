@@ -356,6 +356,90 @@ fn parse_ladder(script: &str) -> Option<Ladder<'_>> {
     (arms.len() >= 2).then_some(Ladder { subject, arms })
 }
 
+/// A version string split at its first digit -- `tls1.3` into the protocol
+/// `tls` and the version `1.3`.
+///
+/// ```painless
+/// def pat = /\d+/;
+/// def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase();
+/// def matcher = pat.matcher(tlsver);
+/// if (!matcher.find()) { return; }
+/// ctx.tls.version_protocol = tlsver.substring(0, matcher.start());
+/// ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length());
+/// if (!ctx.tls.version.contains(".")) { ctx.tls.version += ".0"; }
+/// ```
+///
+/// Both targets are read off the `substring` assignments rather than named, so
+/// the same shape over another vendor's version field lands the same way.
+fn try_version_split(event: &mut Event, script: &str) -> bool {
+    const HEAD: &str = ".substring(0, matcher.start())";
+    const TAIL: &str = ".substring(matcher.start(),";
+
+    let (Some((protocol_path, local)), Some((version_path, _))) = (
+        ctx_target_assigned_from(script, HEAD),
+        ctx_target_assigned_from(script, TAIL),
+    ) else {
+        return false;
+    };
+    let Some(source) = ctx_path_bound_to(script, &local) else {
+        return false;
+    };
+
+    // The processor's own guard is `tlsver instanceof String`, so a field that
+    // is absent or not a string is a no-op rather than a failure.
+    let Some(raw) = event
+        .get_str(strip_trailing_call(&source))
+        .map(str::to_owned)
+    else {
+        return true;
+    };
+    let subject = if script.contains(".toLowerCase()") {
+        raw.to_lowercase()
+    } else {
+        raw
+    };
+
+    // `if (!matcher.find()) { return; }` -- no digit, nothing to split, and
+    // the script leaves both fields alone.
+    let Some(digit) = subject.find(|c: char| c.is_ascii_digit()) else {
+        return true;
+    };
+    let mut version = subject[digit..].to_string();
+    if !version.contains('.') && script.contains(r#"+= ".0""#) {
+        version.push_str(".0");
+    }
+
+    let _ = event.set(&protocol_path, subject[..digit].to_string());
+    let _ = event.set(&version_path, version);
+    true
+}
+
+/// The ctx path assigned from `<local><marker>`, with that local's name.
+fn ctx_target_assigned_from(script: &str, marker: &str) -> Option<(String, String)> {
+    use crate::painless_params::clean_path;
+
+    let head = &script[..script.find(marker)?];
+    let local_at = head
+        .rfind(|c: char| !c.is_alphanumeric() && c != '_')
+        .map_or(0, |at| at + 1);
+    let local = &head[local_at..];
+    if local.is_empty() {
+        return None;
+    }
+    let assigned = head[..local_at].trim_end().strip_suffix('=')?;
+    let target_at = assigned.rfind("ctx.")? + "ctx.".len();
+    Some((clean_path(assigned[target_at..].trim()), local.to_string()))
+}
+
+/// `a.b.toLowerCase()` as `a.b` -- a binding keeps the call it read through,
+/// and the event knows nothing about a path with one on the end.
+fn strip_trailing_call(path: &str) -> &str {
+    match path.rfind('.') {
+        Some(at) if path.ends_with("()") => &path[..at],
+        _ => path,
+    }
+}
+
 /// The ctx path a `def name = ctx.a.b;` binding reads, if there is one.
 pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     use crate::painless_params::clean_path;
@@ -1763,6 +1847,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_schemeless_url(event);
     }
 
+    // Pattern: split a version string at its first digit.
+    if normalised.contains("matcher.start()") && try_version_split(event, &normalised) {
+        return true;
+    }
+
     // Pattern: decompose a syslog PRI into ECS facility and severity.
     if normalised.contains("log.syslog") && normalised.contains("priority") {
         return try_syslog_priority(event, &normalised);
@@ -2196,6 +2285,16 @@ mod tests {
                             if ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    \
                             tmp.remove(\"user\");\n}\nctx.destination = tmp;";
 
+    /// Verbatim from `pipelines/fortinet/utm.yml`, which splits `tlsver` into
+    /// the two ECS `tls` fields at the version's first digit.
+    const TLS_VERSION: &str = "def pat = /\\d+/; def tlsver = \
+        ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); \
+        if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    \
+        ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, \
+        matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), \
+        tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    \
+        ctx.tls.version += \".0\";\n}";
+
     /// Verbatim from `pipelines/o365/default.yml`, which builds `message` for
     /// a DLP-Exchange alert out of three fields that may each be absent.
     const DLP_MESSAGE: &str = "def operation = ctx.event?.action ?: '';\n\
@@ -2244,6 +2343,43 @@ mod tests {
 
         assert!(try_known_painless(&mut event, script));
         assert!(!event.has("a.total"));
+    }
+
+    /// The fixture line fortinet 7.4 logs: `tlsver="tls1.3"`.
+    #[test]
+    fn a_version_splits_at_its_first_digit() {
+        let mut event = Event::new(json!({
+            "fortinet": { "firewall": { "tlsver": "TLS1.3" } },
+        }));
+
+        assert!(try_known_painless(&mut event, TLS_VERSION));
+        assert_eq!(event.get_str("tls.version_protocol"), Some("tls"));
+        assert_eq!(event.get_str("tls.version"), Some("1.3"));
+    }
+
+    /// A version with no dot gets `.0`, which is the script's last three lines
+    /// and the reason `tls1` and `tls1.0` end up the same.
+    #[test]
+    fn a_version_without_a_dot_gains_one() {
+        let mut event = Event::new(json!({
+            "fortinet": { "firewall": { "tlsver": "tls1" } },
+        }));
+
+        assert!(try_known_painless(&mut event, TLS_VERSION));
+        assert_eq!(event.get_str("tls.version"), Some("1.0"));
+    }
+
+    /// `if (!matcher.find()) { return; }` -- no digit, so nothing is written
+    /// and the script is still counted as run.
+    #[test]
+    fn a_version_with_no_digit_writes_nothing() {
+        let mut event = Event::new(json!({
+            "fortinet": { "firewall": { "tlsver": "unknown" } },
+        }));
+
+        assert!(try_known_painless(&mut event, TLS_VERSION));
+        assert!(!event.has("tls.version"));
+        assert!(!event.has("tls.version_protocol"));
     }
 
     /// One match writes a scalar.

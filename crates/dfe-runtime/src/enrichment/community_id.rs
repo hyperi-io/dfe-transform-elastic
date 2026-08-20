@@ -96,6 +96,20 @@ pub fn community_id_v1(
     let proto =
         protocol_number(transport).ok_or_else(|| format!("unknown transport: {transport}"))?;
 
+    // Elastic's processor demands a real port pair on the transport protocols
+    // -- `if (flow.sourcePort < 1 || flow.sourcePort > 65535) throw` -- and an
+    // absent port parses to 0 and hits the same check. So a udp flow logged
+    // with `(0)` for both ports gets NO id, where hashing the zeroes would
+    // have invented one. A `u16` cannot exceed 65535, so 0 is the whole test.
+    if matches!(proto, PROTO_TCP | PROTO_UDP | PROTO_SCTP) {
+        if src_port == 0 {
+            return Err("invalid source port [0]".to_string());
+        }
+        if dst_port == 0 {
+            return Err("invalid destination port [0]".to_string());
+        }
+    }
+
     // Only five protocols carry a port pair; for the rest the spec omits the
     // four port bytes rather than hashing zeroes. ICMP substitutes the
     // message type and code, pairing a type with its counterpart so a reply
@@ -293,6 +307,26 @@ mod tests {
     fn a_protocol_without_ports_omits_the_port_bytes() {
         let cid = community_id_v1("192.168.100.197", "224.0.0.22", 0, 0, "igmp", 0).unwrap();
         assert_eq!(cid, "1:NCx7UOZoQUvxIB+uzqMmGnZTSzI=");
+    }
+
+    /// Verbatim from `testdata/compat/cisco_ios/log/test-asr920`: an ACL deny
+    /// logging `81.2.69.192(0) -> 224.0.0.252(0)` over udp. Elasticsearch
+    /// throws on the zero port and the pipeline's `ignore_failure` swallows
+    /// it, so the event carries no community id at all.
+    #[test]
+    fn a_transport_flow_with_a_zero_port_gets_no_id() {
+        let err = community_id_v1("81.2.69.192", "224.0.0.252", 0, 0, "udp", 0)
+            .expect_err("a udp flow with no ports must not hash");
+        assert!(err.contains("source port"), "{err}");
+    }
+
+    /// Its neighbour in the same fixture is VRRP, which is not a transport
+    /// protocol, so it needs no ports and still hashes. The id is the one
+    /// Elasticsearch 9.2.2 produced for that event.
+    #[test]
+    fn a_portless_protocol_still_hashes() {
+        let cid = community_id_v1("89.160.20.112", "224.0.0.18", 0, 0, "112", 0).unwrap();
+        assert_eq!(cid, "1:yTOnBBP4TTf0EyFmw0nUNwq2Tgo=");
     }
 
     #[test]
