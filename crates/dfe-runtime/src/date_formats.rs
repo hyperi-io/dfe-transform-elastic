@@ -55,7 +55,6 @@ pub fn parse_date_out(
 
 fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTime<FixedOffset>> {
     match format {
-        "ISO8601" => parse_iso8601(input),
         "UNIX" => {
             let seconds = input.parse::<f64>().ok().filter(|s| *s > 0.0)?;
             #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
@@ -70,6 +69,17 @@ fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTi
         // TAI64N labels are hex, and the leap-second table they need to become
         // UTC is not carried here. Falling through is honest; guessing is not.
         "TAI64N" => None,
+        // Elasticsearch's own named formats, not Java patterns; every one of
+        // them is ISO 8601 with a different optionality, and nanosecond
+        // precision renders back at Elastic's milliseconds.
+        "ISO8601"
+        | "strict_date_optional_time_nanos"
+        | "strict_date_optional_time"
+        | "date_optional_time"
+        | "date_time"
+        | "date_time_no_millis"
+        | "strict_date_time"
+        | "strict_date_time_no_millis" => parse_iso8601(input),
         java => parse_java(input, java, timezone),
     }
 }
@@ -332,6 +342,38 @@ mod tests {
             Some("+1000"),
         );
         assert_eq!(out.unwrap(), "2023-05-02T02:55:19.000+00:00");
+    }
+
+    /// Elasticsearch's own named formats, not Java patterns. They were read as
+    /// literal patterns and failed, and panw names
+    /// `strict_date_optional_time_nanos` twenty times.
+    #[test]
+    fn elasticsearch_named_formats_parse_as_iso8601() {
+        for format in [
+            "strict_date_optional_time_nanos",
+            "strict_date_optional_time",
+            "date_optional_time",
+            "date_time",
+            "date_time_no_millis",
+            "strict_date_time",
+            "strict_date_time_no_millis",
+        ] {
+            let out = parse_date("2021-05-26T16:26:47.123456789Z", &[format], None);
+            assert_eq!(
+                out.as_deref(),
+                Some("2021-05-26T16:26:47.123+00:00"),
+                "{format}"
+            );
+        }
+    }
+
+    /// The panw case exactly: a nanosecond instant rendered back at the
+    /// millisecond precision Elastic emits.
+    #[test]
+    fn a_nanosecond_instant_renders_at_millisecond_precision() {
+        let formats = ["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"];
+        let out = parse_date("2021-05-26T16:26:47.000000000Z", &formats, None);
+        assert_eq!(out.as_deref(), Some("2021-05-26T16:26:47.000+00:00"));
     }
 
     #[test]
