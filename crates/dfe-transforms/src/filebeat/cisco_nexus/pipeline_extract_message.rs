@@ -224,7 +224,13 @@ impl Transform for PipelineExtractMessage {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // SKIPPED: pattern unsupported by the regex engine: (..)(?!$)
+                if event.has("source.mac") {
+                    if let Some(s) = event.get_string("source.mac") {
+                        let re = cached_regex!("(..)(?!$)");
+                        let replaced = re.replace_all(&s, "$1-").into_owned();
+                        event.set("source.mac", replaced)?;
+                    }
+                }
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
