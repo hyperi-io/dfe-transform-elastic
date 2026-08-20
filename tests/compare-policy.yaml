@@ -1,0 +1,95 @@
+# What matters when comparing DFE output against Elastic's.
+#
+# Byte equality is not the goal. DFE deliberately does not emit Elastic's
+# plumbing, and resolves some enrichment against different databases. This file
+# is the single definition of which differences are defects, read by
+# scripts/compat.py and by the Rust comparison harness.
+#
+# Adding an entry hides a difference, so every entry carries a reason and every
+# run reports how many fields each rule excluded.
+
+version: 1
+
+# Carry no information and vary run to run. Removed at capture, not compared.
+nondeterministic:
+  - path: _ingest.timestamp
+    why: Written by the simulate API on every call.
+  - path: event.ingested
+    why: Write time, not event time.
+  - path: event.created
+    why: Agent read time, not event time.
+  - path: "@timestamp"
+    why: Pipelines that fall back to now() when the payload carries no time.
+
+# Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
+# the dotted path, list indices removed first.
+not_emitted:
+  - prefix: tags
+    why: Beats and test-harness tagging, plus _tag_on_failure. Not vendor data.
+  - prefix: _ingest
+    why: Ingest-pipeline scratch.
+  - prefix: "@metadata"
+    why: Beats internal.
+  - prefix: _id
+    why: Elasticsearch document identity.
+  - prefix: ecs.version
+    why: DFE declares its own schema version, not the pipeline's.
+  - prefix: fileset
+    why: Beats fileset naming, superseded by event.dataset in ECS 7.
+  - prefix: log.offset
+    why: Byte offset into the source file.
+  - prefix: log.file
+    why: Path on the collecting host.
+  - prefix: input.type
+    why: Beats input that collected the event.
+  - prefix: host.id
+    why: Identity of the collecting host, not the observed one.
+  - prefix: host.name
+    why: Identity of the collecting host, not the observed one.
+  - prefix: event.module
+    why: Beats module naming, superseded by event.dataset in ECS 7.
+  - prefix: service.type
+    why: Set by the Beats harness from module configuration.
+  - prefix: agent
+    why: Collecting agent identity.
+  - prefix: data_stream
+    why: Destination routing, decided downstream of the transform.
+
+# Produced by both sides, differently. Debt, not plumbing: each entry should
+# eventually go away, and the count is expected to fall rather than grow.
+known_different:
+  - prefix: source.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: destination.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: client.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: server.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: geo
+    why: Azure writes activity-log locations to a bare geo object.
+  - prefix: source.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: destination.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: user_agent
+    why: Our parser against Elastic's ua-parser, differing on edge cases.
+
+# ECS fields whose values are sets. Same members in a different sequence is
+# equality, not a difference.
+unordered:
+  - event.category
+  - event.type
+  - event.kind
+  - related.user
+  - related.hosts
+  - related.ip
+  - related.hash
+  - related.entity
+  - threat.tactic.name
+  - threat.technique.name
+
+# Per-fixture declarations Elastic already ships are honoured in addition to the
+# above, read from each `*-config.yml`:
+#   dynamic_fields          value need only match a regex
+#   numeric_keyword_fields  compare the number as a string

@@ -1,0 +1,151 @@
+# compat -- confirmed output from the real Elastic engine
+
+`scripts/compat.py` runs raw source data through Elastic's own ingest pipelines
+in a throwaway Elasticsearch container and writes the resulting documents to
+disk. Those documents are ground truth: what upstream actually produces, rather
+than what we believe it produces.
+
+Run it occasionally, when you need new ground truth. Everything downstream
+reads the files it writes and needs no Docker.
+
+```mermaid
+flowchart LR
+    L[".log fixture"] --> B["message envelope<br/>+ config fields"]
+    P["package or beats<br/>pipeline YAML"] --> I["install into ES"]
+    B --> S["_simulate"]
+    I --> S
+    S --> C["expected.ndjson<br/>meta.json"]
+    S -.->|"--trace"| T["per-processor trace"]
+```
+
+## Prerequisites
+
+- Docker, and roughly 2 GB free for the Elasticsearch container.
+- Clones of `elastic/integrations` and `elastic/beats` in one directory.
+  Point at them with `DFE_ELASTIC_SOURCES` or `--sources`; the default is
+  `/projects/elastic-stuff`.
+- Python 3.12+ with PyYAML. No virtualenv, no project dependency.
+
+Confirm all of it before starting a container:
+
+```bash
+scripts/compat.py check
+```
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `check` | Verify clones, fixtures and pipelines. Starts nothing. |
+| `up` / `down` | Start or remove the container. `generate` and `audit` start it themselves. |
+| `generate --source okta` | Write confirmed output for a source into the corpus. |
+| `audit` | Compare every committed `-expected.json` against what the current pipelines produce. |
+
+Options that apply to any command:
+
+| Option | Effect |
+|---|---|
+| `--sources` | Where the clones live. Also `DFE_ELASTIC_SOURCES`. |
+| `--corpus` | Where confirmed output is written. Also `DFE_COMPAT_CORPUS`. |
+| `--es-version` | Which engine to run, default 9.2.2. Each version gets its own container. |
+| `--ref` | Read pipelines at a git ref, e.g. `v7.17.9`. The clone is never modified. |
+| `--geoip` | Resolve geo against our own DB-IP databases rather than none. |
+| `--trace` | Capture the document after every processor. |
+
+Traces run about 800 KB an event, so they are written outside the corpus and
+are a debugging aid, not an artefact.
+
+## What matters, and what does not
+
+Byte equality is not the goal. `tests/compare-policy.yaml` is the single
+definition of which differences are defects, read by this tool and by the Rust
+comparison harness. Every rule carries a reason, and every run reports what it
+excluded:
+
+```text
+excluded 156 field differences by 5 rules:
+      93x  source.geo    DB-IP Lite against MaxMind GeoLite2.
+      24x  tags          Beats and test-harness tagging. Not vendor data.
+```
+
+Differences are sorted into four columns:
+
+- **real** -- the only one that means something is wrong.
+- **order** -- same members, different sequence, for fields the policy declares
+  to be sets. An undeclared array in a different order is still real.
+- **meta** -- Elastic and Beats plumbing DFE does not emit.
+- **enrich** -- GeoIP and user agent, which we knowingly resolve differently.
+
+Each fixture's own `dynamic_fields` and `numeric_keyword_fields` are honoured
+on top of the policy. A source reports `CURRENT` when `real` is zero, and the
+`clean` count is the events with no real difference.
+
+## Older stacks
+
+Every committed expectation declares ECS 1.12.0, which is the Beats 7 era,
+while the current pipelines emit ECS 8.x. To compare a source against the
+engine and pipelines of its own vintage, pin both:
+
+```bash
+scripts/compat.py --es-version 7.17.9 --ref v7.17.9 audit --source panw
+```
+
+Pipelines are read with `git show`, so a shared clone is never checked out from
+under anyone. The integrations repository publishes no tags, so use a commit or
+a date-resolved ref there.
+
+## Two lineages
+
+The fixture corpus carries expectations from two different engines, and the
+audit routes each file to the one that produced it:
+
+- **integrations** -- okta, crowdstrike, fortinet, cisco_ios, cisco_meraki,
+  cisco_nexus. The whole transformation lives in the ingest pipeline, so compat
+  gives complete ground truth.
+- **beats** -- azure (four data streams), o365, panw. Detected by the presence
+  of `fileset.name`, `log.offset`, `event.module` or `input.type`.
+
+Three azure fixture directories hold a mixture of both.
+
+## Known limits
+
+- **o365 and panw are incomplete.** Part of their transformation runs inside
+  Filebeat before Elasticsearch sees the event: o365 has a Javascript processor
+  chain in `config/pipeline.js`, and panw applies `decode_csv_fields` to
+  `message`. The simulate API cannot reach either, so for those two the
+  confirmed output covers only the Elasticsearch half.
+- **GeoIP needs a patched database.** Elasticsearch matches the mmdb metadata
+  `database_type` against an allowlist and rejects DB-IP. `--geoip` rewrites
+  that one string into a patched copy under `testdata/geoip-patched/`, leaving
+  the data section untouched. The originals are not modified.
+- **No source is at zero real differences except azure_platformlogs.** The
+  audit measures the gap; it does not close it.
+
+## Using it on a source
+
+Reach for compat when you need to know what upstream actually produces, rather
+than what a committed expectation says it produced at some unrecorded point.
+
+1. `check`, then `audit --source <name>` to see where the source stands. The
+   `real` column is the work; everything else is already explained.
+2. Read the top real differences. A field failing on every event is usually one
+   processor, not many.
+3. `generate --source <name> --trace` when you need to see which processor
+   first diverges. The trace carries the document after every step.
+4. Fix the transform, re-run `audit`. The corpus needs no container to compare
+   against once generated.
+
+Working on a source with no committed expectation, or on raw data nobody has a
+fixture for, is the case compat exists for: feed it in, and the confirmed
+output becomes the expectation.
+
+## Licence
+
+The corpus derives from Elastic-Licensed pipelines, so it defaults into the
+ignored `testdata/` tree and is not committed. See
+`/projects/elastic-stuff/MANIFEST.md` for the provenance of the upstream
+material. Whether any of it may be redistributed is not an engineering
+decision.
+
+The Elasticsearch image is likewise a development dependency only and must
+never become part of the shipped service.
