@@ -53,14 +53,30 @@ impl Transform for IdentityProtectionIncident {
             if _cond {
                 if let Some(input) = event.get_string("user.name") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find("\\") {
-                        event.set("user.domain", &remaining[..pos])?;
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find("\\") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("user.domain", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("\\") {
+                        let Some(rest) = remaining.strip_prefix("\\") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        captured.push(("user.name", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "user.name".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
-                    event.set("user.name", remaining)?;
                 }
             }
 

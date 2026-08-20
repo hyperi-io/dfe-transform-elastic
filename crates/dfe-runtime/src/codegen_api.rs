@@ -190,7 +190,18 @@ pub fn grok_to_regex_typed(
                 // Strip Elastic type suffix (e.g., "source.ip:ip" → "source.ip")
                 let mut parts = field.splitn(2, ':');
                 let field_name = parts.next().unwrap_or(&field);
-                let safe_field = field_name.replace('.', "_");
+                let mut safe_field = field_name.replace('.', "_");
+
+                // Java allows one field name in several alternation branches
+                // and Rust's engine rejects a duplicate group name outright, so
+                // the whole pattern fails to compile and matches nothing. Each
+                // repeat gets a group of its own pointing at the same field;
+                // only the branch that matched writes.
+                let repeats = field_map.values().filter(|p| *p == field_name).count();
+                if repeats > 0 {
+                    safe_field = format!("{safe_field}__{}", repeats + 1);
+                }
+
                 if matches!(parts.next(), Some("long" | "int" | "float" | "double")) {
                     numeric.insert(safe_field.clone(), true);
                 }
@@ -548,6 +559,35 @@ mod tests {
     use serde_json::json;
 
     // --- resolve_path ---
+
+    // --- duplicate grok capture names ---
+
+    /// Verbatim from `pipelines/cisco/ios/default.yml`. Java takes one field
+    /// name in several alternation branches; Rust's engine rejects a duplicate
+    /// group name outright, so the whole pattern failed to compile and the
+    /// `BADAUTH` grok matched nothing on eighteen events.
+    #[test]
+    fn a_field_named_twice_compiles_and_both_branches_write_it() {
+        let pattern = r"from %{DATA:source.address}(\(%{INT:source.port}\)|\:%{INT:source.port})";
+        let (expanded, field_map, _) = grok_to_regex_typed(pattern);
+
+        let re = regex::Regex::new(&expanded).expect("a repeated field name still compiles");
+        assert_eq!(
+            field_map.values().filter(|p| *p == "source.port").count(),
+            2,
+            "both groups must point at the same field"
+        );
+
+        for input in ["from 192.168.0.1(64999)", "from 192.168.0.1:64999"] {
+            let caps = re.captures(input).unwrap_or_else(|| panic!("{input}"));
+            let port = field_map
+                .iter()
+                .filter(|(_, path)| *path == "source.port")
+                .find_map(|(group, _)| caps.name(group))
+                .unwrap_or_else(|| panic!("{input}"));
+            assert_eq!(port.as_str(), "64999", "{input}");
+        }
+    }
 
     /// Verbatim from `pipelines/cisco/meraki/events.yml`, where the subtree a
     /// rename reads is named by the event's own subtype.

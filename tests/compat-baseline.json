@@ -4,7 +4,7 @@
   "elasticsearch_version": "9.2.2",
   "sources": {
     "azure": { "events": 18, "events_total": 26, "fields_wrong": 16 },
-    "cisco_ios": { "events": 70, "events_total": 89, "fields_wrong": 159 },
+    "cisco_ios": { "events": 87, "events_total": 89, "fields_wrong": 2 },
     "cisco_meraki": { "events": 241, "events_total": 245, "fields_wrong": 31 },
     "cisco_nexus": { "events": 41, "events_total": 45, "fields_wrong": 25 },
     "crowdstrike": { "events": 46, "events_total": 49, "fields_wrong": 18 },

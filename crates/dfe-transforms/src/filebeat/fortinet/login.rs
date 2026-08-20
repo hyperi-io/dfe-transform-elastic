@@ -71,15 +71,27 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("fortinet.firewall.userfrom") {
                         let mut remaining: &str = &input;
-                        if let Some(rest) = remaining.strip_prefix("JSON(") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(rest) = remaining.strip_prefix("JSON(") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(")") {
-                            event.set("source.ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(")") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("source.ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(")") {
+                            let Some(rest) = remaining.strip_prefix(")") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
                     }
                     Ok(())
@@ -125,10 +137,20 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("fortinet.firewall.desc") {
                         let mut remaining: &str = &input;
-                        if let Some(rest) = remaining.strip_prefix("User login/logout ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(rest) = remaining.strip_prefix("User login/logout ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("event.outcome", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("event.outcome", remaining)?;
                     }
                     Ok(())
                 })() {
@@ -173,31 +195,47 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
-                        if let Some(rest) = remaining.strip_prefix("Login from ssh: ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(rest) = remaining.strip_prefix("Login from ssh: ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" for ") {
-                            event.set("event.outcome", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" for ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("event.outcome", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" for ") {
+                            let Some(rest) = remaining.strip_prefix(" for ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" from ") {
-                            event.set("user.name", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" from ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("user.name", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" from ") {
+                            let Some(rest) = remaining.strip_prefix(" from ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" port ") {
-                            event.set("source.ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" port ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("source.ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" port ") {
+                            let Some(rest) = remaining.strip_prefix(" port ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("source.port", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("source.port", remaining)?;
                     }
                     Ok(())
                 })() {
@@ -245,39 +283,58 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("_tmp.user.roles", &remaining[..pos])?;
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("_tmp.user.roles", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            let Some(rest) = remaining.strip_prefix(" ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" login ") {
-                            event.set("user.name", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" login ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("user.name", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" login ") {
+                            let Some(rest) = remaining.strip_prefix(" login ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" from ") {
-                            event.set("event.outcome", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" from ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("event.outcome", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" from ") {
+                            let Some(rest) = remaining.strip_prefix(" from ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find("(") {
+                            let Some(pos) = remaining.find("(") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix("(") {
+                            let Some(rest) = remaining.strip_prefix("(") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(") ") {
-                            event.set("source.ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(") ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("source.ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(") ") {
+                            let Some(rest) = remaining.strip_prefix(") ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
                     }
                     Ok(())

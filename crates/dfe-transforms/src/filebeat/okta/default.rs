@@ -659,18 +659,30 @@ impl Transform for Default {
                             event.get_string("okta.debug_context.debug_data.flattened.behaviors")
                         {
                             let mut remaining: &str = &input;
-                            if let Some(rest) = remaining.strip_prefix("{") {
+                            let mut captured: Vec<(&str, &str)> = Vec::new();
+                            let matched = 'dissect: {
+                                let Some(rest) = remaining.strip_prefix("{") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
-                            }
-                            if let Some(pos) = remaining.find("}") {
-                                event.set(
+                                let Some(pos) = remaining.find("}") else {
+                                    break 'dissect false;
+                                };
+                                captured.push((
                                     "okta.debug_context.debug_data.flattened.behaviors",
                                     &remaining[..pos],
-                                )?;
+                                ));
                                 remaining = &remaining[pos..];
-                            }
-                            if let Some(rest) = remaining.strip_prefix("}") {
+                                let Some(rest) = remaining.strip_prefix("}") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
+                                true
+                            };
+                            if matched {
+                                for (path, value) in captured {
+                                    event.set(path, value)?;
+                                }
                             }
                         }
                     }
@@ -738,18 +750,30 @@ impl Transform for Default {
                             event.get_string("okta.debug_context.debug_data.flattened.risk")
                         {
                             let mut remaining: &str = &input;
-                            if let Some(rest) = remaining.strip_prefix("{") {
+                            let mut captured: Vec<(&str, &str)> = Vec::new();
+                            let matched = 'dissect: {
+                                let Some(rest) = remaining.strip_prefix("{") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
-                            }
-                            if let Some(pos) = remaining.find("}") {
-                                event.set(
+                                let Some(pos) = remaining.find("}") else {
+                                    break 'dissect false;
+                                };
+                                captured.push((
                                     "okta.debug_context.debug_data.flattened.risk",
                                     &remaining[..pos],
-                                )?;
+                                ));
                                 remaining = &remaining[pos..];
-                            }
-                            if let Some(rest) = remaining.strip_prefix("}") {
+                                let Some(rest) = remaining.strip_prefix("}") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
+                                true
+                            };
+                            if matched {
+                                for (path, value) in captured {
+                                    event.set(path, value)?;
+                                }
                             }
                         }
                     }
@@ -1145,18 +1169,30 @@ impl Transform for Default {
                             event.get_string("okta.debug_context.debug_data.behaviors")
                         {
                             let mut remaining: &str = &input;
-                            if let Some(rest) = remaining.strip_prefix("{") {
+                            let mut captured: Vec<(&str, &str)> = Vec::new();
+                            let matched = 'dissect: {
+                                let Some(rest) = remaining.strip_prefix("{") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
-                            }
-                            if let Some(pos) = remaining.find("}") {
-                                event.set(
+                                let Some(pos) = remaining.find("}") else {
+                                    break 'dissect false;
+                                };
+                                captured.push((
                                     "okta.debug_context.debug_data.behaviors",
                                     &remaining[..pos],
-                                )?;
+                                ));
                                 remaining = &remaining[pos..];
-                            }
-                            if let Some(rest) = remaining.strip_prefix("}") {
+                                let Some(rest) = remaining.strip_prefix("}") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
+                                true
+                            };
+                            if matched {
+                                for (path, value) in captured {
+                                    event.set(path, value)?;
+                                }
                             }
                         }
                     }
@@ -1218,16 +1254,30 @@ impl Transform for Default {
                         if let Some(input) = event.get_string("okta.debug_context.debug_data.risk")
                         {
                             let mut remaining: &str = &input;
-                            if let Some(rest) = remaining.strip_prefix("{") {
+                            let mut captured: Vec<(&str, &str)> = Vec::new();
+                            let matched = 'dissect: {
+                                let Some(rest) = remaining.strip_prefix("{") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
-                            }
-                            if let Some(pos) = remaining.find("}") {
-                                event
-                                    .set("okta.debug_context.debug_data.risk", &remaining[..pos])?;
+                                let Some(pos) = remaining.find("}") else {
+                                    break 'dissect false;
+                                };
+                                captured.push((
+                                    "okta.debug_context.debug_data.risk",
+                                    &remaining[..pos],
+                                ));
                                 remaining = &remaining[pos..];
-                            }
-                            if let Some(rest) = remaining.strip_prefix("}") {
+                                let Some(rest) = remaining.strip_prefix("}") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
+                                true
+                            };
+                            if matched {
+                                for (path, value) in captured {
+                                    event.set(path, value)?;
+                                }
                             }
                         }
                     }

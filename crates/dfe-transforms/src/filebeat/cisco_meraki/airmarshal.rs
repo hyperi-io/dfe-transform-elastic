@@ -20,38 +20,69 @@ impl Transform for Airmarshal {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" airmarshal_events ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" airmarshal_events ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" airmarshal_events ") {
+                        let Some(rest) = remaining.strip_prefix(" airmarshal_events ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        captured.push(("message", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
                     }
-                    event.set("message", remaining)?;
                 }
                 Ok(())
             })();
 
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
-                if let Some(pos) = remaining.find(" airmarshal_events ") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(pos) = remaining.find(" airmarshal_events ") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" airmarshal_events ") {
+                    let Some(rest) = remaining.strip_prefix(" airmarshal_events ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("type", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("type", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("type", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("type", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
             }
 
@@ -68,15 +99,32 @@ impl Transform for Airmarshal {
 
             if let Some(input) = event.get_string("_temp.ssid") {
                 let mut remaining: &str = &input;
-                if let Some(rest) = remaining.strip_prefix("'") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(rest) = remaining.strip_prefix("'") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("'") {
-                    event.set("_temp.kv.ssid", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("'") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("_temp.kv.ssid", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("'") {
+                    let Some(rest) = remaining.strip_prefix("'") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "_temp.ssid".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
             }
 

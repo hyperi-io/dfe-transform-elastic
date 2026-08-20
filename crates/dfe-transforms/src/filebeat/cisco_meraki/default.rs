@@ -27,32 +27,54 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
-                if let Some(pos) = remaining.find(" ") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("_temp.ts_nano", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("_temp.ts_nano", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("observer.hostname", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("observer.hostname", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("cisco_meraki.event_type", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("cisco_meraki.event_type", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
             }
 
@@ -229,32 +251,54 @@ impl Transform for Default {
                 })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("_temp.event_type", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("_temp.event_type", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        captured.push(("_temp.event", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
-                    event.set("_temp.event", remaining)?;
                 }
                 let _cond = { event.has_value("_temp.event") };
                 if _cond {
@@ -490,37 +534,68 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" airmarshal_events ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" airmarshal_events ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" airmarshal_events ") {
+                            let Some(rest) = remaining.strip_prefix(" airmarshal_events ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("message", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("message", remaining)?;
                     }
                     Ok(())
                 })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" airmarshal_events ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" airmarshal_events ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" airmarshal_events ") {
+                        let Some(rest) = remaining.strip_prefix(" airmarshal_events ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("type", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("type", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("type", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("type", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
                 }
                 event.rename("type", "cisco_meraki.event_subtype")?;
@@ -534,15 +609,32 @@ impl Transform for Default {
                 }
                 if let Some(input) = event.get_string("_temp.ssid") {
                     let mut remaining: &str = &input;
-                    if let Some(rest) = remaining.strip_prefix("'") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(rest) = remaining.strip_prefix("'") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("'") {
-                        event.set("_temp.kv.ssid", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("'") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("_temp.kv.ssid", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("'") {
+                        let Some(rest) = remaining.strip_prefix("'") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "_temp.ssid".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
                 }
                 if let Some(kv_str) = event.get_string("_temp.kvline") {
@@ -634,30 +726,59 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" security_event ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" security_event ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" security_event ") {
+                            let Some(rest) = remaining.strip_prefix(" security_event ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("message", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("message", remaining)?;
                     }
                     Ok(())
                 })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" security_event ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" security_event ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" security_event ") {
+                        let Some(rest) = remaining.strip_prefix(" security_event ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("type", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("type", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
                 }
                 event.rename("type", "cisco_meraki.event_subtype")?;
@@ -927,102 +1048,151 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" ids-alerts ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" ids-alerts ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ids-alerts ") {
+                            let Some(rest) = remaining.strip_prefix(" ids-alerts ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("message", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("message", remaining)?;
                     }
                     Ok(())
                 })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" ids-alerts ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" ids-alerts ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ids-alerts ") {
+                        let Some(rest) = remaining.strip_prefix(" ids-alerts ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("sig", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("sig", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("sig", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("sig", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("pri", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("pri", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("pri", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("pri", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("ts", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("ts", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("ts", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("ts", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("dir", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("dir", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("dir", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("dir", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("prot", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("prot", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("prot", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("prot", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("src", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("src", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        captured.push(("src", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
-                    event.set("src", remaining)?;
                 }
                 event.set("cisco_meraki.event_subtype", json!("ids_alerted"))?;
                 event.rename("priority", "cisco_meraki.security.priority")?;
@@ -1115,30 +1285,59 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" events ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" events ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" events ") {
+                            let Some(rest) = remaining.strip_prefix(" events ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("message", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("message", remaining)?;
                     }
                     Ok(())
                 })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" events ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" events ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" events ") {
+                        let Some(rest) = remaining.strip_prefix(" events ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("msgtype", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("msgtype", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
                 }
                 let _cond = {
@@ -1235,18 +1434,36 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" events type=") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" events type=") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" events type=") {
+                            let Some(rest) = remaining.strip_prefix(" events type=") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("type", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("type", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            let Some(rest) = remaining.strip_prefix(" ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "event.original".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
                     }
                 }
@@ -1262,25 +1479,45 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" events dhcp ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" events dhcp ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" events dhcp ") {
+                            let Some(rest) = remaining.strip_prefix(" events dhcp ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("_temp.dhcp_op", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("_temp.dhcp_op", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            let Some(rest) = remaining.strip_prefix(" ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("_temp.dhcp_op2", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("_temp.dhcp_op2", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            let Some(rest) = remaining.strip_prefix(" ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "event.original".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
                     }
                 }
@@ -1303,38 +1540,63 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" events dhcp lease of ip ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" events dhcp lease of ip ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" events dhcp lease of ip ") {
+                            let Some(rest) = remaining.strip_prefix(" events dhcp lease of ip ")
+                            else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" from ") {
-                            event.set("_temp.client_ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" from ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("_temp.client_ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" from ") {
+                            let Some(rest) = remaining.strip_prefix(" from ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" mac ") {
+                            let Some(pos) = remaining.find(" mac ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" mac ") {
+                            let Some(rest) = remaining.strip_prefix(" mac ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" for client mac ") {
-                            event.set("server.mac", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" for client mac ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("server.mac", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" for client mac ") {
+                            let Some(rest) = remaining.strip_prefix(" for client mac ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("client.mac", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("client.mac", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            let Some(rest) = remaining.strip_prefix(" ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "event.original".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
                     }
                 }
@@ -2079,31 +2341,51 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) =
-                            remaining.find(" events anyconnect_vpn_disconnect user id '")
-                        {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) =
+                                remaining.find(" events anyconnect_vpn_disconnect user id '")
+                            else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) =
-                            remaining.strip_prefix(" events anyconnect_vpn_disconnect user id '")
-                        {
+                            let Some(rest) = remaining
+                                .strip_prefix(" events anyconnect_vpn_disconnect user id '")
+                            else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find("' local ip ") {
-                            event.set("user.name", &remaining[..pos])?;
+                            let Some(pos) = remaining.find("' local ip ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("user.name", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix("' local ip ") {
+                            let Some(rest) = remaining.strip_prefix("' local ip ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" connected from ") {
-                            event.set("network.forwarded_ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" connected from ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("network.forwarded_ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" connected from ") {
+                            let Some(rest) = remaining.strip_prefix(" connected from ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("_temp.client_ip", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "event.original".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
-                        event.set("_temp.client_ip", remaining)?;
                     }
                 }
                 let _cond = {
@@ -2130,13 +2412,29 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find("martian_vlan ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find("martian_vlan ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix("martian_vlan ") {
+                            let Some(rest) = remaining.strip_prefix("martian_vlan ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("_temp.martian_vlan", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "message".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
-                        event.set("_temp.martian_vlan", remaining)?;
                     }
                 }
                 let _cond = { event.has_value("_temp.martian_vlan") };
@@ -2260,14 +2558,25 @@ impl Transform for Default {
                         if event.has("user.email") {
                             if let Some(input) = event.get_string("user.email") {
                                 let mut remaining: &str = &input;
-                                if let Some(pos) = remaining.find("@") {
-                                    event.set("user.name", &remaining[..pos])?;
+                                let mut captured: Vec<(&str, &str)> = Vec::new();
+                                let matched = 'dissect: {
+                                    let Some(pos) = remaining.find("@") else {
+                                        break 'dissect false;
+                                    };
+                                    captured.push(("user.name", &remaining[..pos]));
                                     remaining = &remaining[pos..];
-                                }
-                                if let Some(rest) = remaining.strip_prefix("@") {
+                                    let Some(rest) = remaining.strip_prefix("@") else {
+                                        break 'dissect false;
+                                    };
                                     remaining = rest;
+                                    captured.push(("user.domain", remaining));
+                                    true
+                                };
+                                if matched {
+                                    for (path, value) in captured {
+                                        event.set(path, value)?;
+                                    }
                                 }
-                                event.set("user.domain", remaining)?;
                             }
                         }
                         Ok(())
@@ -2287,14 +2596,30 @@ impl Transform for Default {
                     if event.has("user.name") {
                         if let Some(input) = event.get_string("user.name") {
                             let mut remaining: &str = &input;
-                            if let Some(pos) = remaining.find("\\") {
-                                event.set("user.domain", &remaining[..pos])?;
+                            let mut captured: Vec<(&str, &str)> = Vec::new();
+                            let matched = 'dissect: {
+                                let Some(pos) = remaining.find("\\") else {
+                                    break 'dissect false;
+                                };
+                                captured.push(("user.domain", &remaining[..pos]));
                                 remaining = &remaining[pos..];
-                            }
-                            if let Some(rest) = remaining.strip_prefix("\\") {
+                                let Some(rest) = remaining.strip_prefix("\\") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
+                                captured.push(("user.name", remaining));
+                                true
+                            };
+                            if matched {
+                                for (path, value) in captured {
+                                    event.set(path, value)?;
+                                }
+                            } else {
+                                return Err(TransformError::ParseError {
+                                    path: "user.name".into(),
+                                    message: "dissect pattern did not match".into(),
+                                });
                             }
-                            event.set("user.name", remaining)?;
                         }
                     }
                 }
@@ -2360,88 +2685,140 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" urls ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" urls ") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" urls ") {
+                            let Some(rest) = remaining.strip_prefix(" urls ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("message", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("message", remaining)?;
                     }
                     Ok(())
                 })();
                 if let Some(input) = event.get_string("event.original") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find(" urls ") {
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" urls ") else {
+                            break 'dissect false;
+                        };
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" urls ") {
+                        let Some(rest) = remaining.strip_prefix(" urls ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("src", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("src", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("src", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("src", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("dst", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("dst", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("dst", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("dst", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find("=") {
-                        event.set("mac", &remaining[..pos])?;
+                        let Some(pos) = remaining.find("=") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("mac", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("=") {
+                        let Some(rest) = remaining.strip_prefix("=") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" request: ") {
-                        event.set("mac", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" request: ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("mac", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" request: ") {
+                        let Some(rest) = remaining.strip_prefix(" request: ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
-                    }
-                    if let Some(pos) = remaining.find(" ") {
-                        event.set("http.request.method", &remaining[..pos])?;
+                        let Some(pos) = remaining.find(" ") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("http.request.method", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix(" ") {
+                        let Some(rest) = remaining.strip_prefix(" ") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        captured.push(("url.original", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "event.original".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
-                    event.set("url.original", remaining)?;
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if event.has("mac") {
                         if let Some(input) = event.get_string("mac") {
                             let mut remaining: &str = &input;
-                            if let Some(pos) = remaining.find(" agent=") {
-                                event.set("mac", &remaining[..pos])?;
+                            let mut captured: Vec<(&str, &str)> = Vec::new();
+                            let matched = 'dissect: {
+                                let Some(pos) = remaining.find(" agent=") else {
+                                    break 'dissect false;
+                                };
+                                captured.push(("mac", &remaining[..pos]));
                                 remaining = &remaining[pos..];
-                            }
-                            if let Some(rest) = remaining.strip_prefix(" agent=") {
+                                let Some(rest) = remaining.strip_prefix(" agent=") else {
+                                    break 'dissect false;
+                                };
                                 remaining = rest;
+                                captured.push(("user_agent.original", remaining));
+                                true
+                            };
+                            if matched {
+                                for (path, value) in captured {
+                                    event.set(path, value)?;
+                                }
                             }
-                            event.set("user_agent.original", remaining)?;
                         }
                     }
                     Ok(())
