@@ -24,9 +24,13 @@ impl Transform for Default {
 
             event.set("observer.type", json!("firewall"))?;
 
-            // SKIPPED: condition not transpiled: ctx._conf?.tz_offset instanceof String && !ctx._conf.tz_offset.equalsIgnoreCase('local')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("_conf.tz_offset").is_some_and(|v| v.is_string())
+                    && !(event
+                        .get_str("_conf.tz_offset")
+                        .is_some_and(|s| s.eq_ignore_ascii_case("local")))
+            };
+            if _cond {
                 if let Some(v) = event.get("_conf.tz_offset").cloned() {
                     event.set("event.timezone", v)?;
                 }
@@ -11528,9 +11532,14 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.srcuser != null && ctx._temp_?.labels != null && (ctx._temp_.labels & 0x00080000) != 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.srcuser")
+                    && event.has_value("_temp_.labels")
+                    && event
+                        .get_i64("_temp_.labels")
+                        .is_some_and(|n| (n & 524288) != 0)
+            };
+            if _cond {
                 event.rename("_temp_.srcuser", "panw.panos.x_forwarded_for")?;
             }
 

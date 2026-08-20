@@ -10205,9 +10205,10 @@ impl Transform for Default {
                 ),
             )?;
 
-            // SKIPPED: condition not transpiled: ctx.cisco?.asa instanceof Map && ctx.cisco.asa.size() == 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("cisco.asa").is_some_and(|v| v.is_object()) && event.get("cisco.asa").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 0)
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if event.remove("cisco.asa").is_none() {
@@ -10219,9 +10220,10 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.cisco instanceof Map && ctx.cisco.size() == 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("cisco").is_some_and(|v| v.is_object()) && event.get("cisco").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 0)
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if event.remove("cisco").is_none() {

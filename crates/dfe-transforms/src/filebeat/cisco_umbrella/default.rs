@@ -1554,9 +1554,15 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.user?.name != null && ctx.user?.name.contains('@') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("user.name")
+                    && event.get("user.name").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("@")),
+                        serde_json::Value::String(s) => s.contains("@"),
+                        _ => false,
+                    })
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("user.name") {
@@ -1610,9 +1616,10 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.user instanceof Map && ctx.user.size() == 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("user").is_some_and(|v| v.is_object()) && event.get("user").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 0)
+            };
+            if _cond {
                 event.remove("user");
             }
 

@@ -2278,12 +2278,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event
-                    .get("o365audit.Recipients")
-                    .is_some_and(|v| v.is_array())
-                    && event
-                        .get_i64("o365audit.Recipients.length")
-                        .is_some_and(|n| n > 0)
+                event.get("o365audit.Recipients").is_some_and(|v| v.is_array()) && event.get("o365audit.Recipients").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("o365audit.Recipients").cloned() {
@@ -2983,13 +2978,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                !event.has_value("user.email")
-                    && event
-                        .get("_tmp.entities.Recipient")
-                        .is_some_and(|v| v.is_array())
-                    && event
-                        .get_i64("_tmp.entities.Recipient.length")
-                        .is_some_and(|n| n > 0)
+                !event.has_value("user.email") && event.get("_tmp.entities.Recipient").is_some_and(|v| v.is_array()) && event.get("_tmp.entities.Recipient").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
                 if let Some(v) = event

@@ -4,7 +4,7 @@
   "elasticsearch_version": "9.2.2",
   "sources": {
     "azure": { "events": 25, "events_total": 26, "fields_wrong": 1 },
-    "cisco_asa": { "events": 438, "events_total": 512, "fields_wrong": 109 },
+    "cisco_asa": { "events": 480, "events_total": 512, "fields_wrong": 109 },
     "cisco_ftd": { "events": 405, "events_total": 432, "fields_wrong": 33 },
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
     "cisco_meraki": { "events": 245, "events_total": 245, "fields_wrong": 0 },

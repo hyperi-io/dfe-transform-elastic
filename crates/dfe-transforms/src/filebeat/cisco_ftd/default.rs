@@ -10329,9 +10329,19 @@ impl Transform for Default {
                 event.set("network.direction", json!("unknown"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.tags?.contains('private_is_internal') == true && ctx.source?.ip != null && ctx.destination?.ip != null && (ctx._temp_?.external_zones == null || ctx._temp_?.internal_zones == null)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("tags").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => {
+                        a.iter().any(|x| x.as_str() == Some("private_is_internal"))
+                    }
+                    serde_json::Value::String(s) => s.contains("private_is_internal"),
+                    _ => false,
+                }) && event.has_value("source.ip")
+                    && event.has_value("destination.ip")
+                    && (!event.has_value("_temp_.external_zones")
+                        || !event.has_value("_temp_.internal_zones"))
+            };
+            if _cond {
                 // Painless script
                 // Source: boolean isPrivateCIDR(def ip) {\n  CIDR class_a_network = new CIDR('10.0.0.0/8');\n  CIDR class_b_network = new CIDR('172.16.0.0/12');\n  CIDR class_c_network = new CIDR('192.168.0.0/16');\n\n  try {\n    return class_a_network.contains(ip) || class_b_network.contains(ip) || class_c_network.contains(ip);\n  } catch (IllegalArgumentException e) {\n    return false;\n  }\n}\ntry {\n  if (ctx.network == null) {\n    Map map = new HashMap();\n    ctx.put('network', map);\n  }\n\n  if (!isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'inbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'outbound';\n  } else if (isPrivateCIDR(ctx.source.ip) && isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'internal';\n  } else if (!isPrivateCIDR(ctx.source.ip) && !isPrivateCIDR(ctx.destination.ip)) {\n    ctx.network.direction = 'external';\n  } else {\n    ctx.network.direction = 'unknown';\n  }\n}\ncatch (Exception e) {\n  ctx.network.direction = null;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -10622,9 +10632,15 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.user?.name?.contains('\\') == true && ["430001", "430002", "430003", "430004", "430005", ""].contains(ctx.event?.code)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("user.name").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("\\")),
+                    serde_json::Value::String(s) => s.contains("\\"),
+                    _ => false,
+                }) && ["430001", "430002", "430003", "430004", "430005", ""]
+                    .contains(&event.get_str("event.code").unwrap_or(""))
+            };
+            if _cond {
                 if let Some(input) = event.get_string("user.name") {
                     // Grok pattern: (?:%{DATA}\\\\)?%{GREEDYDATA:user.name}
                     if !cached_grok!("(?:%{DATA}\\\\)?%{GREEDYDATA:user.name}")
@@ -10645,9 +10661,10 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.user instanceof Map && ctx.user.size() == 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("user").is_some_and(|v| v.is_object()) && event.get("user").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 0)
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if event.remove("user").is_none() {
