@@ -331,6 +331,109 @@ pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     None
 }
 
+/// Swap two ctx subtrees, keeping named keys on the side they belong to.
+///
+/// ```painless
+/// def tmp = ctx.source;
+/// ctx.source = ctx.destination;
+/// if (ctx.source == null) { ctx.source = [:]; }
+/// if (tmp?.user != null) { ctx.source.user = tmp.user; tmp.remove("user"); }
+/// ctx.destination = tmp;
+/// ```
+///
+/// fortinet's VPN logs are back to front by ECS's reckoning -- `remip` is the
+/// client and `locip` the firewall, so the pipeline renames them the obvious way
+/// and then swaps the whole objects. `user` stays with the source, because it
+/// describes the person rather than the address.
+///
+/// A side that ends up with nothing is REMOVED rather than written as null:
+/// that is what the captured Elasticsearch output shows for a VPN event
+/// carrying only `remip`.
+fn try_swap_subtrees(event: &mut Event, script: &str) -> bool {
+    let Some((local, first)) = binding_of(script) else {
+        return false;
+    };
+    let Some(second) = assigned_from_ctx(script, &first) else {
+        return false;
+    };
+    // The third leg is what makes it a swap rather than a copy.
+    if !script.contains(&format!("ctx.{second} = {local};")) {
+        return false;
+    }
+
+    let was_first = event.get(&first).cloned();
+    let was_second = event.get(&second).cloned();
+
+    let mut new_first = was_second.unwrap_or_else(|| Value::Object(serde_json::Map::new()));
+    let mut new_second = was_first.unwrap_or(Value::Null);
+
+    for key in kept_keys(script, &local) {
+        let Some(moved) = new_second.get(&key).cloned() else {
+            continue;
+        };
+        if let Some(map) = new_first.as_object_mut() {
+            map.insert(key.clone(), moved);
+        }
+        if let Some(map) = new_second.as_object_mut() {
+            map.remove(&key);
+        }
+    }
+
+    write_or_remove(event, &first, new_first);
+    write_or_remove(event, &second, new_second);
+    true
+}
+
+/// Write `value`, or remove the path when there is nothing left to write.
+fn write_or_remove(event: &mut Event, path: &str, value: Value) {
+    let empty = match &value {
+        Value::Null => true,
+        Value::Object(map) => map.is_empty(),
+        _ => false,
+    };
+    if empty {
+        event.remove(path);
+    } else {
+        let _ = event.set(path, value);
+    }
+}
+
+/// The `def <local> = ctx.<path>;` a script opens with.
+fn binding_of(script: &str) -> Option<(String, String)> {
+    use crate::painless_params::clean_path;
+
+    let start = script.find("def ")? + "def ".len();
+    let (name, rest) = script[start..].split_once(" = ctx.")?;
+    let end = rest.find([';', '\n'])?;
+    Some((name.trim().to_string(), clean_path(&rest[..end])))
+}
+
+/// The `ctx.<from> = ctx.<to>;` assignment, as `<to>`.
+fn assigned_from_ctx(script: &str, from: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let needle = format!("ctx.{from} = ctx.");
+    let start = script.find(&needle)? + needle.len();
+    let rest = &script[start..];
+    let end = rest.find([';', '\n'])?;
+    Some(clean_path(&rest[..end]))
+}
+
+/// Every key the script moves off the local and onto the other side, from its
+/// `tmp.remove("<key>")` calls.
+fn kept_keys(script: &str, local: &str) -> Vec<String> {
+    let needle = format!("{local}.remove(");
+    let mut keys = Vec::new();
+    let mut at = 0;
+    while let Some(found) = script[at..].find(&needle) {
+        at += found + needle.len();
+        if let Some(key) = quoted_first(&script[at..]) {
+            keys.push(key);
+        }
+    }
+    keys
+}
+
 /// `if (x.equalsIgnoreCase('low') || x.equalsIgnoreCase('info')) { ctx.t = 21 }`
 /// `else if (x.equalsIgnoreCase('medium')) { ctx.t = 47 } ...`
 ///
@@ -1352,6 +1455,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_duration_to_nanos(event, &normalised);
     }
 
+    // Pattern: swap two ctx subtrees, keeping named keys on one side.
+    if normalised.contains("def tmp = ctx.") && try_swap_subtrees(event, &normalised) {
+        return true;
+    }
+
     // Pattern: a case-insensitive ladder mapping one field onto a literal.
     // Tried before the `==` ladder, which cannot read either the multi-literal
     // arms or the numeric right-hand sides.
@@ -1790,6 +1898,53 @@ mod tests {
     const APPEND_DNS: &str = "def dnsIPs = ctx.dns?.resolved_ip;\nif (dnsIPs != null) {\n  \
                               for (ip in dnsIPs) {\n    if (!ctx.related.ip.contains(ip)) \
                               {\n ctx.related.ip.add(ip);\n }\n  }\n}";
+    /// Verbatim from `pipelines/fortinet/event.yml`. fortinet's VPN logs are
+    /// back to front by ECS's reckoning: `remip` is the client and `locip` the
+    /// firewall, so the pipeline renames them the obvious way and then swaps.
+    const VPN_SWAP: &str = "def tmp = ctx.source;\nctx.source = ctx.destination;\n\
+                            if (ctx.source == null) { ctx.source = [:]; }\n\
+                            if ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    \
+                            tmp.remove(\"user\");\n}\nctx.destination = tmp;";
+
+    #[test]
+    fn vpn_swap_exchanges_source_and_destination() {
+        let mut event = Event::new(json!({
+            "source": { "ip": "10.0.0.1", "port": 500 },
+            "destination": { "ip": "203.0.113.7", "port": 500 },
+        }));
+
+        assert!(try_known_painless(&mut event, VPN_SWAP));
+        assert_eq!(event.get_str("source.ip"), Some("203.0.113.7"));
+        assert_eq!(event.get_str("destination.ip"), Some("10.0.0.1"));
+    }
+
+    /// `user` describes the person, not the address, so it stays with the
+    /// source rather than riding the swap across.
+    #[test]
+    fn vpn_swap_keeps_the_user_on_the_source() {
+        let mut event = Event::new(json!({
+            "source": { "ip": "10.0.0.1", "user": { "name": "derek" } },
+            "destination": { "ip": "203.0.113.7" },
+        }));
+
+        assert!(try_known_painless(&mut event, VPN_SWAP));
+        assert_eq!(event.get_str("source.ip"), Some("203.0.113.7"));
+        assert_eq!(event.get_str("source.user.name"), Some("derek"));
+        assert!(!event.has("destination.user"));
+        assert_eq!(event.get_str("destination.ip"), Some("10.0.0.1"));
+    }
+
+    /// A VPN event carrying only `remip` leaves one side with nothing, and the
+    /// captured Elasticsearch output has no `destination` key at all -- not a
+    /// null one.
+    #[test]
+    fn vpn_swap_removes_a_side_left_with_nothing() {
+        let mut event = Event::new(json!({ "destination": { "ip": "203.0.113.7" } }));
+
+        assert!(try_known_painless(&mut event, VPN_SWAP));
+        assert_eq!(event.get_str("source.ip"), Some("203.0.113.7"));
+        assert!(!event.has("destination"), "destination survived as null");
+    }
 
     /// Verbatim from `pipelines/crowdstrike/default.yml`.
     const APPEND_TAGS: &str = "if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in \

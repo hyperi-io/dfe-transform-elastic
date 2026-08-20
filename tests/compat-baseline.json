@@ -8,7 +8,7 @@
     "cisco_meraki": { "events": 228, "events_total": 245, "fields_wrong": 62 },
     "cisco_nexus": { "events": 41, "events_total": 45, "fields_wrong": 25 },
     "crowdstrike": { "events": 46, "events_total": 49, "fields_wrong": 18 },
-    "fortinet_fortigate": { "events": 173, "events_total": 185, "fields_wrong": 17 },
+    "fortinet_fortigate": { "events": 179, "events_total": 185, "fields_wrong": 7 },
     "o365": { "events": 404, "events_total": 409, "fields_wrong": 5 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "panw": { "events": 534, "events_total": 538, "fields_wrong": 8 }

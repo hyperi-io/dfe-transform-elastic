@@ -17,6 +17,14 @@
 //! o365 is the clearest case. It scores 0 of 204 here and 404 of 409 against
 //! the compat corpus: its expectations are keyed `o365.audit.*` where the
 //! pipeline reads `o365audit.*`, so not one field can line up.
+//!
+//! **A baseline here going DOWN while the corpus goes up is the expected
+//! direction, not a regression.** The two fortinet numbers dropped twice on
+//! 2026-08-20 for that reason: these fixtures put the whole query string inside
+//! `url.path` with no `url.query`, expect fortinet's login sub-pipeline never to
+//! run, and expect VPN source and destination unswapped. Real Elasticsearch
+//! 9.2.2 disagrees on all three, and the corpus gained 38 events across the same
+//! changes.
 
 use dfe_transforms::filebeat::{cisco_ios, cisco_meraki, cisco_nexus, fortinet, o365, panw};
 
@@ -40,17 +48,12 @@ parity!(
     42
 );
 
-// Both dropped by one on 2026-08-20, and both for the same two reasons -- the
-// fixtures contradict real Elasticsearch 9.2.2 and the corpus went UP on the
-// same change. They expect the whole query string inside `url.path` with no
-// `url.query`, and they expect fortinet's login sub-pipeline never to run, so
-// `event.action` and `user.name` are absent where the corpus has them.
 parity!(
     fortinet_6_2,
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-6-2",
-    47
+    46
 );
 
 parity!(
@@ -58,7 +61,7 @@ parity!(
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-7-4",
-    57
+    56
 );
 
 parity!(
