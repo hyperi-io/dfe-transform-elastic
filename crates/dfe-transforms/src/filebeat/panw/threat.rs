@@ -30,6 +30,7 @@ impl Transform for Threat {
             }
 
             if let Some(csv_str) = event.get_string("message") {
+                let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')

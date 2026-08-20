@@ -41,6 +41,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -165,6 +166,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -236,6 +238,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -453,6 +456,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -793,6 +797,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -989,6 +994,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -1150,6 +1156,7 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("event.original") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')

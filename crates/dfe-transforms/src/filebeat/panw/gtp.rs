@@ -19,6 +19,7 @@ impl Transform for Gtp {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(csv_str) = event.get_string("message") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')

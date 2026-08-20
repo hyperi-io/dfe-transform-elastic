@@ -17,6 +17,7 @@ impl Transform for Config {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             if let Some(csv_str) = event.get_string("message") {
+                let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -113,6 +114,7 @@ impl Transform for Config {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("message") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -256,6 +258,7 @@ impl Transform for Config {
             };
             if _cond {
                 if let Some(csv_str) = event.get_string("message") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')

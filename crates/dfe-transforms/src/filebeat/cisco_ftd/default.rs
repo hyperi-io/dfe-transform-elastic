@@ -10504,6 +10504,7 @@ impl Transform for Default {
             let _cond = { event.has_value("_temp_.host.type") };
             if _cond {
                 if let Some(csv_str) = event.get_string("_temp_.host.type") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ':', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b':')
                         .quote(b'\"')

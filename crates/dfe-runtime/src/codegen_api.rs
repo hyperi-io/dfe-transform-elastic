@@ -114,6 +114,56 @@ pub fn painless_exec_params(
     Ok(())
 }
 
+/// Close the gap between a delimiter and an opening quote, and nothing else.
+///
+/// Elasticsearch's CSV processor treats `, "a,b"` as a quoted field; a strict
+/// reader treats the space as content, so the field is unquoted and its
+/// embedded commas shift every column after it. Trimming the whole field would
+/// fix that and also strip whitespace the vendor keeps -- panw's descriptions
+/// carry it -- so only the run between a delimiter and a quote is removed.
+///
+/// Borrows unless there is something to remove.
+#[must_use]
+pub fn csv_close_quote_gap(line: &str, delimiter: char, quote: char) -> std::borrow::Cow<'_, str> {
+    let mut out: Option<String> = None;
+    let mut inside = false;
+    let mut at_field_start = true;
+    let mut chars = line.char_indices().peekable();
+
+    while let Some((index, c)) = chars.next() {
+        if c == quote {
+            inside = !inside;
+            at_field_start = false;
+        } else if c == delimiter && !inside {
+            at_field_start = true;
+        } else if at_field_start && c.is_whitespace() && !inside {
+            // Whitespace opening a field: drop it only if a quote follows the
+            // whole run, which is what makes the field a quoted one.
+            let run: String = std::iter::once(c)
+                .chain(std::iter::from_fn(|| {
+                    chars.next_if(|(_, n)| n.is_whitespace()).map(|(_, n)| n)
+                }))
+                .collect();
+            if chars.peek().is_some_and(|(_, n)| *n == quote) {
+                out.get_or_insert_with(|| line[..index].to_string());
+                continue;
+            }
+            if let Some(kept) = out.as_mut() {
+                kept.push_str(&run);
+            }
+            at_field_start = false;
+            continue;
+        } else {
+            at_field_start = false;
+        }
+        if let Some(kept) = out.as_mut() {
+            kept.push(c);
+        }
+    }
+
+    out.map_or(std::borrow::Cow::Borrowed(line), std::borrow::Cow::Owned)
+}
+
 /// Convert a grok pattern string to a regex pattern string.
 ///
 /// Expands `%{NAME:field}` to named capture groups with type-appropriate
@@ -721,6 +771,47 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `tests/fixtures/cisco/umbrella`: a space before the quote
+    /// of a field that itself holds commas.
+    #[test]
+    fn a_gap_before_a_quote_closes_so_the_field_reads_as_quoted() {
+        let line = r#""2015-01-16 17:48:41","AD", "AD,ADSite,Network", "10.10.1.100""#;
+        let closed = csv_close_quote_gap(line, ',', '"');
+        assert_eq!(
+            closed,
+            r#""2015-01-16 17:48:41","AD","AD,ADSite,Network","10.10.1.100""#
+        );
+    }
+
+    /// Whitespace that is part of a value is content, not a gap.
+    #[test]
+    fn whitespace_inside_a_field_is_left_alone() {
+        for line in [
+            r#""a"," spaced value ","b""#,
+            "a, spaced value ,b",
+            r#""a", b c,"d""#,
+        ] {
+            assert_eq!(csv_close_quote_gap(line, ',', '"'), line, "{line}");
+        }
+    }
+
+    /// A line with nothing to close is returned borrowed.
+    #[test]
+    fn a_line_with_no_gap_is_not_reallocated() {
+        let line = r#""a","b","c""#;
+        assert!(matches!(
+            csv_close_quote_gap(line, ',', '"'),
+            std::borrow::Cow::Borrowed(_)
+        ));
+    }
+
+    /// A delimiter inside a quoted field does not open a new one.
+    #[test]
+    fn a_quoted_delimiter_does_not_start_a_field() {
+        let line = r#""a,  b", "c""#;
+        assert_eq!(csv_close_quote_gap(line, ',', '"'), r#""a,  b","c""#);
+    }
 
     // --- resolve_path ---
 
