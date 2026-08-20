@@ -1035,6 +1035,80 @@ fn try_append_unique(event: &mut Event, from: &str, into: &str) -> bool {
     true
 }
 
+/// Split a URL that has no scheme into its ECS components.
+///
+/// panw's threat pipeline carries this as a hand-written script and says why in
+/// its own comment: `uri_parts` does not cope when the scheme is absent, which
+/// it always is in a PAN-OS `misc` field. The script REPLACES `ctx.url`
+/// wholesale, so anything already under it is dropped rather than merged.
+///
+/// Splitting is on the FIRST `/` and the first `?`, which is what the script
+/// does -- not a URL parser's idea of either. `url.extension` comes off the
+/// last `.` in the path, so a dotted directory name feeds it, deliberately.
+fn try_schemeless_url(event: &mut Event) -> bool {
+    let Some(original) = event.get_string("url.original") else {
+        return false;
+    };
+
+    let mut url = serde_json::Map::new();
+    url.insert("original".into(), Value::String(original.clone()));
+
+    let mut domain_port = original.as_str();
+    if let Some(slash) = original.find('/') {
+        domain_port = &original[..slash];
+        let after = &original[slash..];
+
+        let path = match after.find('?') {
+            Some(query) => {
+                url.insert("query".into(), Value::String(after[query + 1..].to_owned()));
+                &after[..query]
+            }
+            None => after,
+        };
+        url.insert("path".into(), Value::String(path.to_owned()));
+
+        if let Some(dot) = path.rfind('.') {
+            url.insert(
+                "extension".into(),
+                Value::String(path[dot + 1..].to_owned()),
+            );
+        }
+    } else if let Some(query) = original.find('?') {
+        url.insert(
+            "query".into(),
+            Value::String(original[query + 1..].to_owned()),
+        );
+        domain_port = &original[..query];
+    }
+
+    if let Some((domain, port)) = domain_port.split_once(':') {
+        url.insert("domain".into(), Value::String(domain.to_owned()));
+        // The script swallows a `NumberFormatException` here, so a non-numeric
+        // port leaves `url.port` unset rather than failing.
+        if let Ok(port) = port.parse::<i64>() {
+            url.insert("port".into(), Value::Number(port.into()));
+        }
+    } else {
+        url.insert("domain".into(), Value::String(domain_port.to_owned()));
+        // Painless would throw on an absent `ctx.destination`, so writing one
+        // here would invent an object Elastic never produced.
+        if event.has("destination")
+            && event
+                .set("destination.domain", json_str(domain_port))
+                .is_err()
+        {
+            return false;
+        }
+    }
+
+    event.set("url", Value::Object(url)).is_ok()
+}
+
+/// A `&str` as a JSON string value.
+fn json_str(value: &str) -> Value {
+    Value::String(value.to_owned())
+}
+
 /// Decompose a syslog PRI into ECS `log.syslog.{facility,severity}.{code,name}`.
 ///
 /// The PRI is read from wherever the script found it: `log.syslog.priority`
@@ -1159,6 +1233,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && try_row_lookup_with_fallback(event, &normalised)
     {
         return true;
+    }
+
+    // Pattern: split a schemeless URL into its ECS components.
+    if normalised.contains("domainPort") && normalised.contains("url.original") {
+        return try_schemeless_url(event);
     }
 
     // Pattern: decompose a syslog PRI into ECS facility and severity.
@@ -1753,6 +1832,88 @@ mod tests {
         let mut event = Event::new(json!({ "network": { "iana_number": "254" } }));
         assert!(try_known_painless(&mut event, IANA_LADDER));
         assert!(!event.has("network.transport"));
+    }
+
+    /// panw's own "crude `uri_parts`", as the generator emits it.
+    const SCHEMELESS_URL: &str = r#"Map url = new HashMap();
+String url_original = ctx.url.original;
+String domainPort = url_original;
+url.original = url_original;
+if (url_original.contains("/")) {
+    int idxSlash = url_original.indexOf("/");
+    domainPort = url_original.substring(0, idxSlash);
+}
+if (domainPort.indexOf(":") != -1) {
+    url.domain = domainPort.splitOnToken(":")[0];
+}
+ctx.url = url;
+"#;
+
+    #[test]
+    fn a_schemeless_url_splits_into_domain_path_and_extension() {
+        let mut event = Event::new(json!({
+            "url": { "original": "lorexx.cn/loader.exe" },
+            "destination": {},
+        }));
+
+        assert!(try_known_painless(&mut event, SCHEMELESS_URL));
+        assert_eq!(event.get("url.domain"), Some(&json!("lorexx.cn")));
+        assert_eq!(event.get("url.path"), Some(&json!("/loader.exe")));
+        assert_eq!(event.get("url.extension"), Some(&json!("exe")));
+        assert_eq!(event.get("destination.domain"), Some(&json!("lorexx.cn")));
+    }
+
+    #[test]
+    fn a_query_string_is_split_off_the_path() {
+        let mut event = Event::new(json!({
+            "url": { "original": "lsiu.info/evo/count.php?id=7&v=2" },
+        }));
+
+        assert!(try_known_painless(&mut event, SCHEMELESS_URL));
+        assert_eq!(event.get("url.path"), Some(&json!("/evo/count.php")));
+        assert_eq!(event.get("url.query"), Some(&json!("id=7&v=2")));
+        assert_eq!(event.get("url.extension"), Some(&json!("php")));
+    }
+
+    #[test]
+    fn a_port_is_taken_off_the_domain() {
+        let mut event = Event::new(json!({ "url": { "original": "example.com:8080/a" } }));
+
+        assert!(try_known_painless(&mut event, SCHEMELESS_URL));
+        assert_eq!(event.get("url.domain"), Some(&json!("example.com")));
+        assert_eq!(event.get("url.port"), Some(&json!(8080)));
+    }
+
+    /// The script swallows the parse failure, so a non-numeric port must leave
+    /// `url.port` unset rather than failing the event or storing the text.
+    #[test]
+    fn a_non_numeric_port_leaves_the_port_unset() {
+        let mut event = Event::new(json!({ "url": { "original": "example.com:abc/a" } }));
+
+        assert!(try_known_painless(&mut event, SCHEMELESS_URL));
+        assert_eq!(event.get("url.domain"), Some(&json!("example.com")));
+        assert!(!event.has("url.port"));
+    }
+
+    /// `ctx.url = url` REPLACES the object, so a field already under it goes.
+    #[test]
+    fn the_url_object_is_replaced_not_merged() {
+        let mut event = Event::new(json!({
+            "url": { "original": "example.com/a", "stale": "left over" },
+        }));
+
+        assert!(try_known_painless(&mut event, SCHEMELESS_URL));
+        assert!(!event.has("url.stale"));
+    }
+
+    /// Painless would throw writing through an absent `ctx.destination`, so
+    /// inventing one here would produce an object Elastic never emitted.
+    #[test]
+    fn an_absent_destination_is_not_created() {
+        let mut event = Event::new(json!({ "url": { "original": "example.com/a" } }));
+
+        assert!(try_known_painless(&mut event, SCHEMELESS_URL));
+        assert!(!event.has("destination"));
     }
 
     #[test]

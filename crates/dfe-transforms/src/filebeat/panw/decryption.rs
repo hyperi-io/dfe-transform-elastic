@@ -853,7 +853,12 @@ impl Transform for Decryption {
             if _cond {
                 event.set(
                     "tls.client.x509.subject.common_name",
-                    json!(["{{{tls.client.x509.subject.common_name}}}"]),
+                    Value::Array(vec![
+                        event
+                            .get("tls.client.x509.subject.common_name")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    ]),
                 )?;
             }
 
@@ -873,7 +878,12 @@ impl Transform for Decryption {
             if _cond {
                 event.set(
                     "tls.client.x509.issuer.common_name",
-                    json!(["{{{tls.client.x509.issuer.common_name}}}"]),
+                    Value::Array(vec![
+                        event
+                            .get("tls.client.x509.issuer.common_name")
+                            .cloned()
+                            .unwrap_or(Value::Null),
+                    ]),
                 )?;
             }
 

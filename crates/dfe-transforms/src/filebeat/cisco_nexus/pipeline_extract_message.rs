@@ -390,7 +390,7 @@ impl Transform for PipelineExtractMessage {
                         .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
             };
             if _cond {
-                event.set("event.category", json!(["network"]))?;
+                event.set("event.category", Value::Array(vec![json!("network")]))?;
             }
 
             let _cond = {
@@ -414,7 +414,7 @@ impl Transform for PipelineExtractMessage {
                     })
             };
             if _cond {
-                event.set("event.type", json!(["info"]))?;
+                event.set("event.type", Value::Array(vec![json!("info")]))?;
             }
 
             let _cond = {
@@ -422,7 +422,7 @@ impl Transform for PipelineExtractMessage {
                     .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                event.set("event.category", json!(["configuration"]))?;
+                event.set("event.category", Value::Array(vec![json!("configuration")]))?;
             }
 
             let _cond = {
@@ -430,7 +430,7 @@ impl Transform for PipelineExtractMessage {
                     .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                event.set("event.type", json!(["info"]))?;
+                event.set("event.type", Value::Array(vec![json!("info")]))?;
             }
 
             let _cond = {
@@ -447,7 +447,10 @@ impl Transform for PipelineExtractMessage {
                                 .is_some_and(|s| s.to_lowercase().contains("login"))))
             };
             if _cond {
-                event.set("event.category", json!(["authentication"]))?;
+                event.set(
+                    "event.category",
+                    Value::Array(vec![json!("authentication")]),
+                )?;
             }
 
             let _cond =
@@ -463,19 +466,22 @@ impl Transform for PipelineExtractMessage {
                                 .is_some_and(|s| s.to_lowercase().contains("login failed"))))
                 };
             if _cond {
-                event.set("event.type", json!(["end"]))?;
+                event.set("event.type", Value::Array(vec![json!("end")]))?;
             }
 
             let _cond =
                 { ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or("")) };
             if _cond {
-                event.set("event.category", json!(["authentication"]))?;
+                event.set(
+                    "event.category",
+                    Value::Array(vec![json!("authentication")]),
+                )?;
             }
 
             let _cond =
                 { ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or("")) };
             if _cond {
-                event.set("event.type", json!(["end"]))?;
+                event.set("event.type", Value::Array(vec![json!("end")]))?;
             }
 
             let _cond = {
@@ -483,7 +489,10 @@ impl Transform for PipelineExtractMessage {
                     && event.has_value("cisco_nexus.log.command")
             };
             if _cond {
-                event.set("event.category", json!(["iam", "process"]))?;
+                event.set(
+                    "event.category",
+                    Value::Array(vec![json!("iam"), json!("process")]),
+                )?;
             }
 
             let _cond = {
@@ -491,7 +500,7 @@ impl Transform for PipelineExtractMessage {
                     && event.has_value("cisco_nexus.log.command")
             };
             if _cond {
-                event.set("event.type", json!(["start"]))?;
+                event.set("event.type", Value::Array(vec![json!("start")]))?;
             }
 
             let _cond = {
@@ -501,7 +510,7 @@ impl Transform for PipelineExtractMessage {
                         || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
             };
             if _cond {
-                event.set("event.category", json!(["host"]))?;
+                event.set("event.category", Value::Array(vec![json!("host")]))?;
             }
 
             let _cond = {
@@ -511,7 +520,7 @@ impl Transform for PipelineExtractMessage {
                         || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
             };
             if _cond {
-                event.set("event.type", json!(["info"]))?;
+                event.set("event.type", Value::Array(vec![json!("info")]))?;
             }
 
             let _cond = {
@@ -520,7 +529,7 @@ impl Transform for PipelineExtractMessage {
                     .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
             };
             if _cond {
-                event.set("event.type", json!(["connection"]))?;
+                event.set("event.type", Value::Array(vec![json!("connection")]))?;
             }
 
             let _cond = {

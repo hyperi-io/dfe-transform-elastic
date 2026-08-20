@@ -4226,7 +4226,12 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "tls.client.x509.subject.common_name",
-                        json!(["{{{tls.client.x509.subject.common_name}}}"]),
+                        Value::Array(vec![
+                            event
+                                .get("tls.client.x509.subject.common_name")
+                                .cloned()
+                                .unwrap_or(Value::Null),
+                        ]),
                     )?;
                 }
                 // ignore_failure: true
@@ -4244,7 +4249,12 @@ impl Transform for Default {
                 if _cond {
                     event.set(
                         "tls.client.x509.issuer.common_name",
-                        json!(["{{{tls.client.x509.issuer.common_name}}}"]),
+                        Value::Array(vec![
+                            event
+                                .get("tls.client.x509.issuer.common_name")
+                                .cloned()
+                                .unwrap_or(Value::Null),
+                        ]),
                     )?;
                 }
                 // ignore_failure: true
@@ -7662,7 +7672,10 @@ impl Transform for Default {
 
             let _cond = { event.get("host.ip").is_some_and(|v| v.is_string()) };
             if _cond {
-                event.set("host.ip", json!(["{{{host.ip}}}"]))?;
+                event.set(
+                    "host.ip",
+                    Value::Array(vec![event.get("host.ip").cloned().unwrap_or(Value::Null)]),
+                )?;
             }
 
             // on_failure: 2 handler(s)

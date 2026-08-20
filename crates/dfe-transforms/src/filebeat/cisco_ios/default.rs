@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.17.0"))?;
 
-            event.set("event.category", json!(["network"]))?;
+            event.set("event.category", Value::Array(vec![json!("network")]))?;
 
             event.set("event.provider", json!("firewall"))?;
 
@@ -26,7 +26,7 @@ impl Transform for Default {
 
             event.set("observer.product", json!("IOS"))?;
 
-            event.set("event.type", json!(["info"]))?;
+            event.set("event.type", Value::Array(vec![json!("info")]))?;
 
             if let Some(v) = event.get("message").cloned() {
                 if !event.has("event.original") {

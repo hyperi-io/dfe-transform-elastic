@@ -1079,7 +1079,7 @@ impl Transform for Default {
                         })
                 };
                 if _cond {
-                    event.set("event.category", json!(["network"]))?;
+                    event.set("event.category", Value::Array(vec![json!("network")]))?;
                 }
                 let _cond = {
                     event.has_value("cisco_nexus.log.interface.name")
@@ -1102,21 +1102,21 @@ impl Transform for Default {
                         })
                 };
                 if _cond {
-                    event.set("event.type", json!(["info"]))?;
+                    event.set("event.type", Value::Array(vec![json!("info")]))?;
                 }
                 let _cond = {
                     ["VSHD_SYSLOG_CONFIG_I", "CFGWRITE_STARTED", "CFGWRITE_DONE"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
                 };
                 if _cond {
-                    event.set("event.category", json!(["configuration"]))?;
+                    event.set("event.category", Value::Array(vec![json!("configuration")]))?;
                 }
                 let _cond = {
                     ["CFGWRITE_STARTED", "CFGWRITE_DONE"]
                         .contains(&event.get_str("event.code").unwrap_or(""))
                 };
                 if _cond {
-                    event.set("event.type", json!(["info"]))?;
+                    event.set("event.type", Value::Array(vec![json!("info")]))?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("LOGIN_SUCCESS")
@@ -1132,7 +1132,10 @@ impl Transform for Default {
                                     .is_some_and(|s| s.to_lowercase().contains("login"))))
                 };
                 if _cond {
-                    event.set("event.category", json!(["authentication"]))?;
+                    event.set(
+                        "event.category",
+                        Value::Array(vec![json!("authentication")]),
+                    )?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("LOGIN_SUCCESS")
@@ -1146,33 +1149,39 @@ impl Transform for Default {
                                 .is_some_and(|s| s.to_lowercase().contains("login failed"))))
                 };
                 if _cond {
-                    event.set("event.type", json!(["end"]))?;
+                    event.set("event.type", Value::Array(vec![json!("end")]))?;
                 }
                 let _cond = {
                     ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
                 };
                 if _cond {
-                    event.set("event.category", json!(["authentication"]))?;
+                    event.set(
+                        "event.category",
+                        Value::Array(vec![json!("authentication")]),
+                    )?;
                 }
                 let _cond = {
                     ["LOGOUT", "LOGOUT_C6K"].contains(&event.get_str("event.code").unwrap_or(""))
                 };
                 if _cond {
-                    event.set("event.type", json!(["end"]))?;
+                    event.set("event.type", Value::Array(vec![json!("end")]))?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("SYSTEM_MSG")
                         && event.has_value("cisco_nexus.log.command")
                 };
                 if _cond {
-                    event.set("event.category", json!(["iam", "process"]))?;
+                    event.set(
+                        "event.category",
+                        Value::Array(vec![json!("iam"), json!("process")]),
+                    )?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("SYSTEM_MSG")
                         && event.has_value("cisco_nexus.log.command")
                 };
                 if _cond {
-                    event.set("event.type", json!(["start"]))?;
+                    event.set("event.type", Value::Array(vec![json!("start")]))?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("SYSTEM_MSG")
@@ -1181,7 +1190,7 @@ impl Transform for Default {
                             || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
                 };
                 if _cond {
-                    event.set("event.category", json!(["host"]))?;
+                    event.set("event.category", Value::Array(vec![json!("host")]))?;
                 }
                 let _cond = {
                     event.get_str("event.code") == Some("SYSTEM_MSG")
@@ -1190,7 +1199,7 @@ impl Transform for Default {
                             || event.get_str("cisco_nexus.log.facility") == Some("KERN"))
                 };
                 if _cond {
-                    event.set("event.type", json!(["info"]))?;
+                    event.set("event.type", Value::Array(vec![json!("info")]))?;
                 }
                 let _cond = {
                     event
@@ -1198,7 +1207,7 @@ impl Transform for Default {
                         .is_some_and(|s| s.to_lowercase().contains("kex_exchange_identification"))
                 };
                 if _cond {
-                    event.set("event.type", json!(["connection"]))?;
+                    event.set("event.type", Value::Array(vec![json!("connection")]))?;
                 }
                 let _cond = {
                     event

@@ -377,9 +377,12 @@ impl Transform for Default {
 
             event.set("event.kind", json!("event"))?;
 
-            event.set("event.category", json!(["authentication"]))?;
+            event.set(
+                "event.category",
+                Value::Array(vec![json!("authentication")]),
+            )?;
 
-            event.set("event.type", json!(["info"]))?;
+            event.set("event.type", Value::Array(vec![json!("info")]))?;
 
             let _cond = {
                 !event.has_value("azure.signinlogs.properties.status.error_code")
