@@ -1,0 +1,16 @@
+{
+  "_why": "Per-source scores against the compat corpus, asserted by crates/dfe-transforms/tests/compat_corpus.rs. It is a RATCHET: a source may only improve. The scores are only meaningful against the pipelines and engine named below, so the assertion is skipped when the corpus on disk was captured against anything else. Raise the numbers when they improve; lowering one needs a stated reason, the way a fixture baseline does.",
+  "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
+  "elasticsearch_version": "9.2.2",
+  "sources": {
+    "azure": { "events": 18, "events_total": 26, "fields_wrong": 16 },
+    "cisco_ios": { "events": 43, "events_total": 89, "fields_wrong": 204 },
+    "cisco_meraki": { "events": 52, "events_total": 245, "fields_wrong": 2028 },
+    "cisco_nexus": { "events": 41, "events_total": 72, "fields_wrong": 79 },
+    "crowdstrike": { "events": 33, "events_total": 49, "fields_wrong": 45 },
+    "fortinet_fortigate": { "events": 141, "events_total": 185, "fields_wrong": 116 },
+    "o365": { "events": 404, "events_total": 409, "fields_wrong": 5 },
+    "okta": { "events": 15, "events_total": 24, "fields_wrong": 17 },
+    "panw": { "events": 534, "events_total": 538, "fields_wrong": 8 }
+  }
+}

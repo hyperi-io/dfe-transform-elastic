@@ -65,6 +65,9 @@ struct Captured {
     data_stream: String,
     fixture: String,
     engine: String,
+    /// The integrations commit the pipelines were taken from. A score is only
+    /// comparable to another measured against the same one.
+    integrations_sha: String,
     /// The pipeline `compat.py` installed. Anything not prefixed `compat-`
     /// was written by an earlier tool and the capture is stale.
     entry_pipeline: String,
@@ -134,6 +137,11 @@ fn captured() -> Vec<Captured> {
                     fixture: fixture.file_name().to_string_lossy().into_owned(),
                     engine: meta
                         .get("elasticsearch_version")
+                        .and_then(Value::as_str)
+                        .unwrap_or("unknown")
+                        .to_string(),
+                    integrations_sha: meta
+                        .get("integrations_sha")
                         .and_then(Value::as_str)
                         .unwrap_or("unknown")
                         .to_string(),
@@ -389,6 +397,127 @@ fn transforms_match_elastics_confirmed_output() {
     assert!(
         unmapped.is_empty(),
         "the corpus holds sources with no transform mapped in this test: {unmapped:?}"
+    );
+
+    check_baseline(&by_source, &provenance(&fixtures));
+}
+
+/// The integrations commit and engine version the whole corpus was taken at.
+///
+/// `None` when the captures disagree, which means the corpus was regenerated
+/// piecemeal and no single baseline describes it.
+fn provenance(fixtures: &[Captured]) -> Option<(String, String)> {
+    let mut seen: Option<(String, String)> = None;
+    for capture in fixtures {
+        let here = (capture.integrations_sha.clone(), capture.engine.clone());
+        match &seen {
+            None => seen = Some(here),
+            Some(first) if *first == here => {}
+            Some(_) => return None,
+        }
+    }
+    seen
+}
+
+/// Per-source scores this corpus is expected to reach.
+#[derive(serde::Deserialize)]
+struct Baseline {
+    integrations_sha: String,
+    elasticsearch_version: String,
+    sources: BTreeMap<String, Expected>,
+}
+
+#[derive(serde::Deserialize)]
+struct Expected {
+    events: usize,
+    events_total: usize,
+    fields_wrong: usize,
+}
+
+/// Fail if a source scores below what it scored when the baseline was written.
+///
+/// Only asserted when the corpus on disk was captured at the same integrations
+/// commit and engine version the baseline names. Anything else is reported --
+/// a score against different pipelines is a different measurement, and
+/// ratcheting one against the other would fail for the wrong reason.
+fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(String, String)>) {
+    const PATH: &str = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../tests/compat-baseline.json"
+    );
+    let Ok(text) = std::fs::read_to_string(PATH) else {
+        println!("\nno baseline at {PATH}");
+        return;
+    };
+    let baseline: Baseline = serde_json::from_str(&text).expect("parse compat-baseline.json");
+
+    let Some((sha, engine)) = provenance else {
+        println!("\nbaseline NOT asserted: the corpus mixes provenances, so regenerate it whole");
+        return;
+    };
+    if *sha != baseline.integrations_sha || *engine != baseline.elasticsearch_version {
+        println!(
+            "\nbaseline NOT asserted: corpus is {}/{engine}, baseline is {}/{}",
+            &sha[..12.min(sha.len())],
+            &baseline.integrations_sha[..12.min(baseline.integrations_sha.len())],
+            baseline.elasticsearch_version,
+        );
+        return;
+    }
+
+    let mut failures = Vec::new();
+    let mut improved = Vec::new();
+    for (source, expected) in &baseline.sources {
+        let Some(score) = measured.get(source) else {
+            failures.push(format!(
+                "{source}: in the baseline and absent from the corpus"
+            ));
+            continue;
+        };
+        if score.events != expected.events_total {
+            println!(
+                "  {source}: {} events in the corpus, baseline was written against {} -- not asserted",
+                score.events, expected.events_total
+            );
+            continue;
+        }
+        if score.events_matched < expected.events {
+            failures.push(format!(
+                "{source}: {}/{} events, baseline {}",
+                score.events_matched, score.events, expected.events
+            ));
+        }
+        if score.fields_wrong > expected.fields_wrong {
+            failures.push(format!(
+                "{source}: {} fields wrong, baseline {}",
+                score.fields_wrong, expected.fields_wrong
+            ));
+        }
+        if score.events_matched > expected.events || score.fields_wrong < expected.fields_wrong {
+            improved.push(format!(
+                "  \"{source}\": {{ \"events\": {}, \"events_total\": {}, \"fields_wrong\": {} }},",
+                score.events_matched, score.events, score.fields_wrong
+            ));
+        }
+    }
+
+    for source in measured.keys() {
+        if !baseline.sources.contains_key(source) {
+            println!("  {source}: scored and not in the baseline");
+        }
+    }
+
+    if !improved.is_empty() {
+        println!("\nbaseline can be raised -- paste into tests/compat-baseline.json:");
+        for line in &improved {
+            println!("{line}");
+        }
+    }
+
+    assert!(
+        failures.is_empty(),
+        "the corpus regressed against tests/compat-baseline.json:\n  {}",
+        failures.join("\n  ")
     );
 }
 
