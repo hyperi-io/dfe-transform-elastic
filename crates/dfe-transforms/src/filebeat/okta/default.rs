@@ -2224,32 +2224,7 @@ impl Transform for Default {
             })();
 
             if event.has("okta_url") {
-                if let Some(uri_str) = event.get_string("okta_url") {
-                    if let Ok(url) = url::Url::parse(&uri_str) {
-                        event.set("okta_url.scheme", url.scheme())?;
-                        if let Some(host) = url.host_str() {
-                            event.set("okta_url.domain", host)?;
-                        }
-                        if let Some(port) = url.port() {
-                            event.set("okta_url.port", json!(port))?;
-                        }
-                        event.set("okta_url.path", url.path())?;
-                        if let Some(query) = url.query() {
-                            event.set("okta_url.query", query)?;
-                        }
-                        if let Some(fragment) = url.fragment() {
-                            event.set("okta_url.fragment", fragment)?;
-                        }
-                        if let Some(userinfo) = url.password() {
-                            event.set(
-                                "okta_url.user_info",
-                                format!("{}:{}", url.username(), userinfo),
-                            )?;
-                        } else if !url.username().is_empty() {
-                            event.set("okta_url.user_info", url.username())?;
-                        }
-                    }
-                }
+                uri_parts(event, "okta_url", "okta_url", false, false)?;
             }
 
             // on_failure: 1 handler(s)

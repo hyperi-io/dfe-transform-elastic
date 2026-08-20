@@ -331,10 +331,292 @@ pub fn is_internal_ip(ip: &str) -> bool {
     }
 }
 
+/// The pieces of a URI reference, borrowed from the string they came from.
+struct UriRef<'a> {
+    scheme: Option<&'a str>,
+    user_info: Option<&'a str>,
+    host: Option<&'a str>,
+    port: Option<&'a str>,
+    path: &'a str,
+    query: Option<&'a str>,
+    fragment: Option<&'a str>,
+}
+
+/// Split a URI reference into its parts, per RFC 3986's generic syntax.
+///
+/// A relative reference is the case that matters and the one a URL crate will
+/// not take: fortinet's `url` field is a bare path far more often than a whole
+/// URL, and rejecting those loses `url.path` on every one of them.
+fn split_uri(uri: &str) -> UriRef<'_> {
+    let (rest, fragment) = match uri.split_once('#') {
+        Some((before, after)) => (before, Some(after)),
+        None => (uri, None),
+    };
+    let (rest, query) = match rest.split_once('?') {
+        Some((before, after)) => (before, Some(after)),
+        None => (rest, None),
+    };
+
+    // A scheme runs to the first `:`, but only when nothing before it could
+    // make that colon part of a path or an authority instead.
+    let (rest, scheme) = match rest.find(':') {
+        Some(colon) if is_scheme(&rest[..colon]) => (&rest[colon + 1..], Some(&rest[..colon])),
+        _ => (rest, None),
+    };
+
+    let Some(after_slashes) = rest.strip_prefix("//") else {
+        return UriRef {
+            scheme,
+            user_info: None,
+            host: None,
+            port: None,
+            path: rest,
+            query,
+            fragment,
+        };
+    };
+
+    let end = after_slashes.find('/').unwrap_or(after_slashes.len());
+    let (authority, path) = after_slashes.split_at(end);
+
+    let (user_info, host_port) = match authority.rsplit_once('@') {
+        Some((user, host)) => (Some(user), host),
+        None => (None, authority),
+    };
+
+    // Only a colon after the closing bracket separates an IPv6 host from its
+    // port -- the address is full of them.
+    let colon = match host_port.rfind(']') {
+        Some(bracket) => host_port[bracket..].find(':').map(|at| bracket + at),
+        None => host_port.rfind(':'),
+    };
+    let (host, port) = match colon {
+        Some(at) => (&host_port[..at], Some(&host_port[at + 1..])),
+        None => (host_port, None),
+    };
+
+    UriRef {
+        scheme,
+        user_info,
+        host: Some(host),
+        port,
+        path,
+        query,
+        fragment,
+    }
+}
+
+/// Whether `candidate` is a scheme: `ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )`.
+fn is_scheme(candidate: &str) -> bool {
+    let mut chars = candidate.chars();
+    chars.next().is_some_and(char::is_alphabetic)
+        && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'))
+}
+
+/// The extension of a path, or `None` when its last segment has no dot.
+///
+/// Read off the corpus rather than assumed: Elasticsearch 9.2.2 gives
+/// `/api/v2/cmdb/log.fortianalyzer/setting` NO extension, so the dot has to be
+/// in the LAST segment -- a dotted directory earlier in the path does not
+/// count. `/virus/eicar.com` gives `com` and `/config/` gives none.
+fn path_extension(path: &str) -> Option<&str> {
+    let segment = path.rsplit('/').next()?;
+    let dot = segment.rfind('.')?;
+    let extension = &segment[dot + 1..];
+    (!extension.is_empty()).then_some(extension)
+}
+
+/// Split `field` into ECS `url.*` components under `target`.
+///
+/// Elastic's `uri_parts` processor. Returns whether anything was written, so
+/// the caller can run its `on_failure` block: a value that is not a string, or
+/// an empty one, writes nothing.
+///
+/// # Errors
+///
+/// Returns [`crate::TransformError`] if a component cannot be set.
+pub fn uri_parts(
+    event: &mut Event,
+    field: &str,
+    target: &str,
+    keep_original: bool,
+    remove_if_successful: bool,
+) -> Result<bool> {
+    let Some(original) = event.get_string(field) else {
+        return Ok(false);
+    };
+    if original.is_empty() {
+        return Ok(false);
+    }
+
+    let uri = split_uri(&original);
+    let mut parts = serde_json::Map::new();
+
+    if let Some(scheme) = uri.scheme {
+        parts.insert("scheme".into(), Value::String(scheme.to_owned()));
+    }
+    if let Some(user_info) = uri.user_info {
+        parts.insert("user_info".into(), Value::String(user_info.to_owned()));
+        match user_info.split_once(':') {
+            Some((username, password)) => {
+                parts.insert("username".into(), Value::String(username.to_owned()));
+                parts.insert("password".into(), Value::String(password.to_owned()));
+            }
+            None => {
+                parts.insert("username".into(), Value::String(user_info.to_owned()));
+            }
+        }
+    }
+    if let Some(host) = uri.host.filter(|h| !h.is_empty()) {
+        parts.insert("domain".into(), Value::String(host.to_owned()));
+    }
+    // A port that is not a number is left out rather than stored as text: the
+    // ECS field is numeric and Elastic's processor drops it the same way.
+    if let Some(port) = uri.port.and_then(|p| p.parse::<u32>().ok()) {
+        parts.insert("port".into(), Value::Number(port.into()));
+    }
+    if !uri.path.is_empty() {
+        parts.insert("path".into(), Value::String(uri.path.to_owned()));
+        if let Some(extension) = path_extension(uri.path) {
+            parts.insert("extension".into(), Value::String(extension.to_owned()));
+        }
+    }
+    if let Some(query) = uri.query {
+        parts.insert("query".into(), Value::String(query.to_owned()));
+    }
+    if let Some(fragment) = uri.fragment {
+        parts.insert("fragment".into(), Value::String(fragment.to_owned()));
+    }
+    if keep_original {
+        parts.insert("original".into(), Value::String(original.clone()));
+    }
+
+    // Set leaf by leaf rather than replacing the target: the fortinet pipeline
+    // writes `url.domain` from another field before and after this runs, and a
+    // wholesale replace would discard it.
+    for (key, value) in parts {
+        event.set(&format!("{target}.{key}"), value)?;
+    }
+
+    if remove_if_successful && field != target {
+        event.remove(field);
+    }
+    Ok(true)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- uri_parts ---
+
+    /// Every one of these is a real fortinet input paired with what
+    /// Elasticsearch 9.2.2 produced for it, taken from `testdata/compat`.
+    #[test]
+    fn uri_parts_matches_the_captured_elasticsearch_output() {
+        let cases: &[(&str, Value)] = &[
+            ("/config/", json!({ "path": "/config/" })),
+            ("/", json!({ "path": "/" })),
+            (
+                "http://172.16.200.55/virus/eicar.com",
+                json!({
+                    "scheme": "http",
+                    "domain": "172.16.200.55",
+                    "path": "/virus/eicar.com",
+                    "extension": "com",
+                }),
+            ),
+            (
+                "/ips/sig1.pdf",
+                json!({ "path": "/ips/sig1.pdf", "extension": "pdf" }),
+            ),
+            (
+                "/api/v2/monitor/system/usb-log?vdom=root",
+                json!({ "path": "/api/v2/monitor/system/usb-log", "query": "vdom=root" }),
+            ),
+            // The dotted DIRECTORY must not become an extension.
+            (
+                "/api/v2/cmdb/log.fortianalyzer/setting?vdom=root",
+                json!({ "path": "/api/v2/cmdb/log.fortianalyzer/setting", "query": "vdom=root" }),
+            ),
+            (
+                "https://172.16.200.88/dlp/files/fortiauto.pdf",
+                json!({
+                    "scheme": "https",
+                    "domain": "172.16.200.88",
+                    "path": "/dlp/files/fortiauto.pdf",
+                    "extension": "pdf",
+                }),
+            ),
+        ];
+
+        for (input, expected) in cases {
+            let mut event = Event::new(json!({ "src": input }));
+            assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+            assert_eq!(event.get("url"), Some(expected), "input: {input}");
+        }
+    }
+
+    #[test]
+    fn uri_parts_splits_an_authority_with_credentials_and_a_port() {
+        let mut event =
+            Event::new(json!({ "src": "https://bob:hunter2@example.com:8443/a?b=1#c" }));
+        assert!(uri_parts(&mut event, "src", "url", true, false).unwrap());
+
+        assert_eq!(event.get_str("url.scheme"), Some("https"));
+        assert_eq!(event.get_str("url.domain"), Some("example.com"));
+        assert_eq!(event.get("url.port"), Some(&json!(8443)));
+        assert_eq!(event.get_str("url.user_info"), Some("bob:hunter2"));
+        assert_eq!(event.get_str("url.username"), Some("bob"));
+        assert_eq!(event.get_str("url.password"), Some("hunter2"));
+        assert_eq!(event.get_str("url.path"), Some("/a"));
+        assert_eq!(event.get_str("url.query"), Some("b=1"));
+        assert_eq!(event.get_str("url.fragment"), Some("c"));
+        assert_eq!(
+            event.get_str("url.original"),
+            Some("https://bob:hunter2@example.com:8443/a?b=1#c")
+        );
+    }
+
+    /// An IPv6 authority is full of colons, so only the one after the closing
+    /// bracket separates the port.
+    #[test]
+    fn uri_parts_keeps_an_ipv6_host_whole() {
+        let mut event = Event::new(json!({ "src": "http://[2001:db8::1]:8080/x" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+
+        assert_eq!(event.get_str("url.domain"), Some("[2001:db8::1]"));
+        assert_eq!(event.get("url.port"), Some(&json!(8080)));
+
+        let mut event = Event::new(json!({ "src": "http://[2001:db8::1]/x" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get_str("url.domain"), Some("[2001:db8::1]"));
+        assert_eq!(event.get("url.port"), None);
+    }
+
+    /// The caller runs its `on_failure` on a false return, so a value that is
+    /// not a usable string must say so rather than writing an empty subtree.
+    #[test]
+    fn uri_parts_reports_what_it_could_not_use() {
+        let mut event = Event::new(json!({ "src": "", "num": 7 }));
+        assert!(!uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert!(!uri_parts(&mut event, "num", "url", false, false).unwrap());
+        assert!(!uri_parts(&mut event, "absent", "url", false, false).unwrap());
+        assert!(!event.has("url"));
+    }
+
+    /// The fortinet pipeline writes `url.domain` from the hostname field and
+    /// then parses a path-only `url` over the top, so the parse must add to the
+    /// subtree rather than replace it.
+    #[test]
+    fn uri_parts_adds_to_the_target_rather_than_replacing_it() {
+        let mut event = Event::new(json!({ "src": "/config/", "url": { "domain": "elastic.co" } }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+
+        assert_eq!(event.get_str("url.domain"), Some("elastic.co"));
+        assert_eq!(event.get_str("url.path"), Some("/config/"));
+    }
 
     // --- is_internal_ip ---
 
