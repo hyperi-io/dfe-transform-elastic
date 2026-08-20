@@ -46,6 +46,10 @@ try:
 except ImportError:  # pragma: no cover - environment probe
     sys.exit("PyYAML is required: apt install python3-yaml, or pip install pyyaml")
 
+# Importable whether this runs as a script or is imported from elsewhere.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sources
+
 ES_REPOSITORY = "docker.elastic.co/elasticsearch/elasticsearch"
 ES_VERSION_ENV = "DFE_COMPAT_ES_VERSION"
 DEFAULT_ES_VERSION = "9.2.2"
@@ -95,52 +99,10 @@ MMDB_METADATA_MARKER = b"\xab\xcd\xefMaxMind.com"
 BEATS_PIPELINE_REF = re.compile(r'\{<\s*IngestPipeline\s+"([^"]+)"\s*>\}')
 
 
-@dataclass(frozen=True, slots=True)
-class Source:
-    """A transform module and where its upstream pipeline and fixtures live.
-
-    Attributes:
-        package: Integration package directory name.
-        data_stream: Data stream directory name within the package.
-        fixture_dir: Fixture directory, relative to ``tests/fixtures``.
-        beats_module: Beats module holding the same source, if any.
-        beats_fileset: Beats fileset within that module.
-    """
-
-    package: str
-    data_stream: str
-    fixture_dir: str
-    beats_module: str | None = None
-    beats_fileset: str | None = None
-
-
-# Neither half of the mapping is derivable: fortinet's data stream is `log`
-# while its fixtures sit under `fortigate`, and the azure package holds four of
-# our modules as separate data streams.
-SOURCES: dict[str, Source] = {
-    "okta": Source("okta", "system", "okta/system", "okta", "system"),
-    "azure_activitylogs": Source(
-        "azure", "activitylogs", "azure/activitylogs", "azure", "activitylogs"
-    ),
-    "azure_auditlogs": Source(
-        "azure", "auditlogs", "azure/auditlogs", "azure", "auditlogs"
-    ),
-    "azure_signinlogs": Source(
-        "azure", "signinlogs", "azure/signinlogs", "azure", "signinlogs"
-    ),
-    "azure_platformlogs": Source(
-        "azure", "platformlogs", "azure/platformlogs", "azure", "platformlogs"
-    ),
-    "crowdstrike": Source(
-        "crowdstrike", "falcon", "crowdstrike/falcon", "crowdstrike", "falcon"
-    ),
-    "fortinet": Source("fortinet_fortigate", "log", "fortinet/fortigate"),
-    "o365": Source("o365", "audit", "o365/audit", "o365", "audit"),
-    "panw": Source("panw", "panos", "panw/panos", "panw", "panos"),
-    "cisco_ios": Source("cisco_ios", "log", "cisco/ios"),
-    "cisco_meraki": Source("cisco_meraki", "log", "cisco/meraki/logs"),
-    "cisco_nexus": Source("cisco_nexus", "log", "cisco/nexus"),
-}
+# One declaration per source, shared with the vendoring and regeneration
+# drivers in -dev and asserted against the service registry.
+SOURCES = sources.SOURCES
+Source = sources.Source
 
 # Build-time template the package build expands to the real pipeline name. We
 # expand it to a flat name of our own so the set can be PUT without Fleet.

@@ -1,0 +1,152 @@
+# SPDX-License-Identifier: BUSL-1.1
+# Copyright (c) 2026 HYPERI PTY LIMITED
+#
+# Every source this service transforms, and everything about it that its name
+# does not tell you. Four places used to carry their own copy of this and drift
+# apart: the compat capture, the pipeline vendoring, the regeneration driver and
+# the service registry. They all read this file now.
+#
+# Nothing here is derivable. Fortinet's package is `fortinet_fortigate` while
+# its fixtures sit under `fortigate`; one azure package is four of our modules;
+# cisco_meraki's pipelines are at `cisco/meraki` and its fixtures at
+# `cisco/meraki/logs`.
+#
+# Keys, per source:
+#
+#   package      Integration package directory in elastic/integrations.
+#   data_stream  Data stream directory within that package.
+#   pipelines    Directory under -dev/pipelines/ holding the vendored copy.
+#   fixtures     Directory under tests/fixtures/.
+#   beats        Beats module and fileset carrying the same source, if any.
+#   origin       `api` (pulled over HTTP) or `syslog` (a device can emit it).
+#   framing      Syslog sources only. `line` if the pipeline groks the syslog
+#                header out of `message`, `body` if a prefixed header would
+#                corrupt its first field.
+#   transforms   Generated transforms wired into the registry, as
+#                `filebeat.<source>.<transform>`.
+
+sources:
+  azure_activitylogs:
+    package: azure
+    data_stream: activitylogs
+    pipelines: azure/activitylogs
+    fixtures: azure/activitylogs
+    beats: {module: azure, fileset: activitylogs}
+    origin: api
+    transforms: [default]
+
+  azure_auditlogs:
+    package: azure
+    data_stream: auditlogs
+    pipelines: azure/auditlogs
+    fixtures: azure/auditlogs
+    beats: {module: azure, fileset: auditlogs}
+    origin: api
+    transforms: [default]
+
+  azure_platformlogs:
+    package: azure
+    data_stream: platformlogs
+    pipelines: azure/platformlogs
+    fixtures: azure/platformlogs
+    beats: {module: azure, fileset: platformlogs}
+    origin: api
+    transforms: [default]
+
+  azure_signinlogs:
+    package: azure
+    data_stream: signinlogs
+    pipelines: azure/signinlogs
+    fixtures: azure/signinlogs
+    beats: {module: azure, fileset: signinlogs}
+    origin: api
+    transforms: [default]
+
+  cisco_ios:
+    package: cisco_ios
+    data_stream: log
+    pipelines: cisco/ios
+    fixtures: cisco/ios
+    origin: syslog
+    framing: line
+    transforms: [default]
+
+  cisco_meraki:
+    package: cisco_meraki
+    data_stream: log
+    pipelines: cisco/meraki
+    fixtures: cisco/meraki/logs
+    origin: syslog
+    framing: body
+    transforms: [default]
+
+  cisco_nexus:
+    package: cisco_nexus
+    data_stream: log
+    pipelines: cisco/nexus
+    fixtures: cisco/nexus
+    origin: syslog
+    framing: line
+    transforms: [default]
+
+  crowdstrike:
+    package: crowdstrike
+    data_stream: falcon
+    pipelines: crowdstrike
+    fixtures: crowdstrike/falcon
+    beats: {module: crowdstrike, fileset: falcon}
+    origin: api
+    transforms: [default]
+
+  fortinet:
+    package: fortinet_fortigate
+    data_stream: log
+    pipelines: fortinet
+    fixtures: fortinet/fortigate
+    origin: syslog
+    framing: line
+    transforms: [default]
+
+  o365:
+    package: o365
+    data_stream: audit
+    pipelines: o365
+    fixtures: o365/audit
+    beats: {module: o365, fileset: audit}
+    origin: api
+    transforms: [default]
+
+  okta:
+    package: okta
+    data_stream: system
+    pipelines: okta
+    fixtures: okta/system
+    beats: {module: okta, fileset: system}
+    origin: api
+    transforms: [default]
+
+  # `panw.default` routes on log type and holds the CSV parse and the converts
+  # the per-type entries depend on. The per-type entries suit a feed already
+  # narrowed to one log type.
+  panw:
+    package: panw
+    data_stream: panos
+    pipelines: panw
+    fixtures: panw/panos
+    beats: {module: panw, fileset: panos}
+    origin: syslog
+    framing: body
+    transforms:
+      - authentication
+      - correlated_event
+      - decryption
+      - default
+      - globalprotect
+      - gtp
+      - hipmatch
+      - ip_tag
+      - sctp
+      - system
+      - traffic
+      - tunnel_inspection
+      - userid

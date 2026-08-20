@@ -243,3 +243,33 @@ fn every_captured_source_is_a_registered_transform() {
         );
     }
 }
+
+/// The same check with no corpus on disk. The corpus is gitignored, so the
+/// test above is vacuous on a fresh clone and a newly declared source would be
+/// silently skipped rather than scored.
+#[test]
+fn every_declared_source_reaches_a_transform() {
+    #[derive(serde::Deserialize)]
+    struct Declaration {
+        sources: std::collections::BTreeMap<String, Declared>,
+    }
+
+    #[derive(serde::Deserialize)]
+    struct Declared {
+        package: String,
+        data_stream: String,
+    }
+
+    const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../sources.yaml");
+    let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
+    let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
+
+    for (name, declared) in &declaration.sources {
+        assert!(
+            transform_for(&declared.package, &declared.data_stream).is_some(),
+            "{name} is declared as {}/{} and `transform_for` does not map it",
+            declared.package,
+            declared.data_stream
+        );
+    }
+}

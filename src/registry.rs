@@ -55,7 +55,9 @@ impl Origin {
 
 /// Every transform this service can run, keyed by source name.
 ///
-/// Sorted so the `sources()` listing is stable.
+/// Sorted so the `sources()` listing is stable. The entries are hand-wired
+/// because each names a Rust type, and `sources.yaml` is asserted against them
+/// so a source declared there and never wired here fails the build.
 static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Origin)] = &[
     (
         "filebeat.azure_activitylogs.default",
@@ -221,62 +223,17 @@ mod tests {
         assert!(lookup("filebeat.okta.default").is_some());
     }
 
-    /// The API sources are the ones pulled over HTTP; everything else is a
-    /// device that can be pointed at a syslog collector.
-    #[test]
-    fn origins_are_classified() {
-        assert_eq!(origin("filebeat.okta.default"), Some(Origin::Api));
-        assert_eq!(origin("filebeat.crowdstrike.default"), Some(Origin::Api));
-        assert_eq!(
-            origin("filebeat.azure_signinlogs.default"),
-            Some(Origin::Api)
-        );
-        assert_eq!(origin("filebeat.nosuchthing"), None);
-        assert!(origin("filebeat.cisco_ios.default").unwrap().is_syslog());
-        assert!(origin("filebeat.panw.traffic").unwrap().is_syslog());
-    }
-
-    /// The framing split is the one that fails silently when wrong: a header
-    /// prefixed onto panw's CSV corrupts its first field, and a body handed to
-    /// fortinet fails its `<PRI>` grok.
-    #[test]
-    fn framing_matches_what_each_pipeline_groks() {
-        for line_source in [
-            "filebeat.cisco_ios.default",
-            "filebeat.cisco_nexus.default",
-            "filebeat.fortinet.default",
-        ] {
-            assert_eq!(
-                origin(line_source).and_then(Origin::framing),
-                Some(Framing::Line),
-                "{line_source} groks the syslog header out of `message`"
-            );
-        }
-
-        for body_source in [
-            "filebeat.cisco_meraki.default",
-            "filebeat.panw.traffic",
-            "filebeat.panw.userid",
-        ] {
-            assert_eq!(
-                origin(body_source).and_then(Origin::framing),
-                Some(Framing::Body),
-                "{body_source} reads `message` as a body and a header would corrupt it"
-            );
-        }
-    }
-
+    /// Which source is API-origin and what framing a syslog one wants are
+    /// declared in `sources.yaml` and checked below; all this adds is that an
+    /// unknown name classifies as nothing at all.
     #[test]
     fn every_source_has_exactly_one_origin() {
-        let total = sources().count();
-        let syslog = syslog_sources().count();
         let api = TRANSFORMS
             .iter()
             .filter(|(_, _, o)| *o == Origin::Api)
             .count();
-        assert_eq!(syslog + api, total);
-        assert_eq!(syslog, 17);
-        assert_eq!(api, 7);
+        assert_eq!(syslog_sources().count() + api, sources().count());
+        assert_eq!(origin("filebeat.nosuchthing"), None);
     }
 
     #[test]
@@ -289,6 +246,55 @@ mod tests {
         for name in sources() {
             assert!(lookup(name).is_some(), "{name} did not resolve");
         }
+    }
+
+    /// `sources.yaml` is the one declaration per source; the four tools that
+    /// used to carry their own copy all read it. This registry cannot, because
+    /// every entry names a Rust type, so it is checked against it instead --
+    /// a source declared and never wired here fails, and so does the reverse.
+    #[test]
+    fn the_registry_matches_the_source_declaration() {
+        use std::collections::BTreeMap;
+
+        #[derive(serde::Deserialize)]
+        struct Declaration {
+            sources: BTreeMap<String, Declared>,
+        }
+
+        #[derive(serde::Deserialize)]
+        struct Declared {
+            origin: String,
+            framing: Option<String>,
+            transforms: Vec<String>,
+        }
+
+        const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/sources.yaml");
+        let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
+        let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
+
+        let mut expected: Vec<(String, Origin)> = Vec::new();
+        for (source, declared) in &declaration.sources {
+            let origin = match (declared.origin.as_str(), declared.framing.as_deref()) {
+                ("api", None) => Origin::Api,
+                ("syslog", Some("line")) => Origin::Syslog(Framing::Line),
+                ("syslog", Some("body")) => Origin::Syslog(Framing::Body),
+                other => panic!("{source} declares {other:?}, which is not an origin"),
+            };
+            for transform in &declared.transforms {
+                expected.push((format!("filebeat.{source}.{transform}"), origin));
+            }
+        }
+        expected.sort_by(|a, b| a.0.cmp(&b.0));
+
+        let wired: Vec<(String, Origin)> = TRANSFORMS
+            .iter()
+            .map(|(name, _, origin)| ((*name).to_owned(), *origin))
+            .collect();
+
+        assert_eq!(
+            wired, expected,
+            "src/registry.rs and sources.yaml disagree on the sources or their origins"
+        );
     }
 
     #[test]
