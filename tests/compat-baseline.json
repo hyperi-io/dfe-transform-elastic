@@ -3,7 +3,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "aws": { "events": 154, "events_total": 538, "fields_wrong": 3763 },
+    "aws": { "events": 154, "events_total": 538, "fields_wrong": 3762 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "checkpoint": { "events": 64, "events_total": 111, "fields_wrong": 176 },
     "cisco_asa": { "events": 507, "events_total": 512, "fields_wrong": 20 },
@@ -16,16 +16,16 @@
     "entityanalytics_entra_id": { "events": 6, "events_total": 7, "fields_wrong": 3 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
     "gcp": { "events": 324, "events_total": 382, "fields_wrong": 184 },
-    "m365_defender": { "events": 5, "events_total": 108, "fields_wrong": 431 },
+    "m365_defender": { "events": 40, "events_total": 108, "fields_wrong": 369 },
     "microsoft_defender_endpoint": { "events": 14, "events_total": 23, "fields_wrong": 262 },
-    "mimecast": { "events": 68, "events_total": 262, "fields_wrong": 237 },
+    "mimecast": { "events": 92, "events_total": 262, "fields_wrong": 237 },
     "microsoft_dnsserver": { "events": 2, "events_total": 14, "fields_wrong": 69 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "proofpoint_on_demand": { "events": 11, "events_total": 55, "fields_wrong": 102 },
     "sentinel_one": { "events": 46, "events_total": 68, "fields_wrong": 167 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
-    "windows": { "events": 374, "events_total": 596, "fields_wrong": 1094 },
+    "windows": { "events": 380, "events_total": 596, "fields_wrong": 1089 },
     "zscaler_zia": { "events": 31, "events_total": 93, "fields_wrong": 341 }
   }
 }

@@ -44,37 +44,37 @@ impl Transform for V1Pipeline {
             }
 
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("mimecast.MsgId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.aCode") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.datetime") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.Sender") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.Rcpt") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.Attempt") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.log_type") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.sha256") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.url") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("_id", json!(hash))?;
+                if !values.is_empty() {
+                    event.set("_id", json!(fingerprint_default(&values)))?;
+                }
             }
 
             if event.has("mimecast.aCode") {

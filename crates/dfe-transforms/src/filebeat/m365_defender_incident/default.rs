@@ -83,28 +83,28 @@ impl Transform for Default {
             }
 
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("json.id") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.lastUpdateDateTime") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.incidentWebUrl") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.createdDateTime") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.alerts.id") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.alerts.lastUpdateDateTime") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("_id", json!(hash))?;
+                if !values.is_empty() {
+                    event.set("_id", json!(fingerprint_default(&values)))?;
+                }
             }
 
             event.set("event.kind", json!("alert"))?;
@@ -6736,13 +6736,13 @@ impl Transform for Default {
                     for item in items {
                         event.set("_ingest._value", item)?;
                         {
-                            use sha2::{Digest, Sha256};
-                            let mut hasher = Sha256::new();
+                            let mut values = Vec::new();
                             if let Some(v) = event.get("_ingest._value") {
-                                hasher.update(v.to_string().as_bytes());
+                                values.push(v.clone());
                             }
-                            let hash = format!("{:x}", hasher.finalize());
-                            event.set("_ingest._value", json!(hash))?;
+                            if !values.is_empty() {
+                                event.set("_ingest._value", json!(fingerprint_default(&values)))?;
+                            }
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
@@ -6758,13 +6758,13 @@ impl Transform for Default {
                     for item in items {
                         event.set("_ingest._value", item)?;
                         {
-                            use sha2::{Digest, Sha256};
-                            let mut hasher = Sha256::new();
+                            let mut values = Vec::new();
                             if let Some(v) = event.get("_ingest._value") {
-                                hasher.update(v.to_string().as_bytes());
+                                values.push(v.clone());
                             }
-                            let hash = format!("{:x}", hasher.finalize());
-                            event.set("_ingest._value", json!(hash))?;
+                            if !values.is_empty() {
+                                event.set("_ingest._value", json!(fingerprint_default(&values)))?;
+                            }
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }

@@ -187,13 +187,13 @@ impl Transform for Default {
             }
 
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("rule.reference") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("rule.uuid", json!(hash))?;
+                if !values.is_empty() {
+                    event.set("rule.uuid", json!(fingerprint_default(&values)))?;
+                }
             }
 
             if event.has("json.ConfigRuleInfo.ConfigRuleId") {

@@ -72,19 +72,19 @@ impl Transform for Default {
             }
 
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("json.guid") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.ts") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.msg.header.message-id") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("_id", json!(hash))?;
+                if !values.is_empty() {
+                    event.set("_id", json!(fingerprint_default(&values)))?;
+                }
             }
 
             event.set("event.kind", json!("event"))?;

@@ -5830,34 +5830,34 @@ impl Transform for Default {
             }
 
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("@timestamp") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.event.SessionId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.event.DetectId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.event.PID") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.event.RuleId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.metadata.eventType") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.metadata.customerIDString") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.metadata.offset") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("_id", json!(hash))?;
+                if !values.is_empty() {
+                    event.set("_id", json!(fingerprint_default(&values)))?;
+                }
             }
 
             if event.has_value("source.ip") {

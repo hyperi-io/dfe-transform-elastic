@@ -543,7 +543,7 @@ sources exercise it.
 | `community_id` | Done | Panw, Fortinet | `enrichment::community_id::enrich(event)?` |
 | `registered_domain` | Done | Panw | Split heuristic (full public suffix list deferred) |
 | `network_direction` | Done | Fortinet, Panw | CIDR-based internal/external classification |
-| `fingerprint` | Done | O365 | SHA-256/SHA-1/MD5/MurmurHash3 |
+| `fingerprint` | Done | O365, M365 | `fingerprint_default`: SHA-1, base64, NUL before each value. `salt` and `method` are refused, so the default is the only path. |
 | `pipeline` (nested) | Partial | CrowdStrike, Fortinet | Direct call into the target module |
 
 Not implemented (not used by any vendored pipeline): bytes, cef, date_index_name,

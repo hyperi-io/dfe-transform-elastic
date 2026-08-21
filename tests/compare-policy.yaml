@@ -74,6 +74,12 @@ known_different:
     why: DB-IP Lite against MaxMind GeoLite2 ASN.
   - prefix: destination.as
     why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: client.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: server.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: host.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
   - prefix: user_agent
     why: Our parser against Elastic's ua-parser, differing on edge cases.
   - prefix: event.original

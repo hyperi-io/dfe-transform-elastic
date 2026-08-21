@@ -17,13 +17,16 @@ impl Transform for Default {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("gcp.labels") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("gcp.labels_fingerprint", json!(hash))?;
+                if !values.is_empty() {
+                    event.set(
+                        "gcp.labels_fingerprint",
+                        json!(fingerprint_default(&values)),
+                    )?;
+                }
             }
 
             if event.has("gcp.metrics.api.request.count") {

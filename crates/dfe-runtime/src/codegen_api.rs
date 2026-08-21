@@ -172,6 +172,29 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
     Ok(())
 }
 
+/// The digest Elastic's `fingerprint` processor writes at its defaults.
+///
+/// Method `SHA-1`, no salt, and the result base64-encoded. Each value is
+/// preceded by a single NUL, which is the processor's own delimiter; a field
+/// NAME is not included for a scalar. Recovered from the corpus rather than
+/// guessed -- `m365_defender`'s `process.entity_id` carries the answer next to
+/// its inputs.
+///
+/// A value is rendered the way the document holds it: a string is its own
+/// text, not its JSON with quotes around it.
+#[must_use]
+pub fn fingerprint_default(values: &[Value]) -> String {
+    use base64::Engine as _;
+    use sha1::{Digest, Sha1};
+
+    let mut hasher = Sha1::new();
+    for value in values {
+        hasher.update([0u8]);
+        hasher.update(crate::painless_helpers::painless_to_string(value).as_bytes());
+    }
+    base64::engine::general_purpose::STANDARD.encode(hasher.finalize())
+}
+
 /// Sort an array's elements, the way Elastic's `sort` processor does.
 ///
 /// Elastic sorts by the elements' natural ordering, so the array has to be
@@ -960,6 +983,28 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from the compat corpus: `m365_defender/event/test-device`
+    /// carries both the fingerprint's input and the digest Elasticsearch
+    /// wrote, so this pins the encoding rather than describing it.
+    #[test]
+    fn the_default_fingerprint_is_base64_sha1_over_nul_delimited_values() {
+        let value = json!("4248|2022-11-07T17:07:41.698Z|de6509d550e605faf3bbeac0905ab9590fe12345");
+        assert_eq!(
+            fingerprint_default(std::slice::from_ref(&value)),
+            "utLjuzbrOqM8u+fh65n5nL10vuE="
+        );
+    }
+
+    /// A string is hashed as its own text. Hashing its JSON would fold the
+    /// quotes into the digest and nothing would ever match.
+    #[test]
+    fn a_string_is_fingerprinted_without_its_quotes() {
+        assert_eq!(
+            fingerprint_default(&[json!("4248")]),
+            fingerprint_default(&[json!(4248)]),
+        );
+    }
 
     /// Verbatim from `tests/fixtures/cisco/umbrella`: a space before the quote
     /// of a field that itself holds commas.

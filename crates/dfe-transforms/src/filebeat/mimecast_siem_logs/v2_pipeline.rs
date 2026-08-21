@@ -70,34 +70,34 @@ impl Transform for V2Pipeline {
             }
 
             {
-                use sha2::{Digest, Sha256};
-                let mut hasher = Sha256::new();
+                let mut values = Vec::new();
                 if let Some(v) = event.get("mimecast.messageId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.processingId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.aggregateId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.accountId") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.timestamp") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.action") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.log_type") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.subtype") {
-                    hasher.update(v.to_string().as_bytes());
+                    values.push(v.clone());
                 }
-                let hash = format!("{:x}", hasher.finalize());
-                event.set("_id", json!(hash))?;
+                if !values.is_empty() {
+                    event.set("_id", json!(fingerprint_default(&values)))?;
+                }
             }
 
             let _cond = {

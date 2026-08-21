@@ -561,13 +561,13 @@ impl Transform for PowershellOperational {
             }
 
                 {
-                    use sha2::{Sha256, Digest};
-                    let mut hasher = Sha256::new();
+                    let mut values = Vec::new();
                     if let Some(v) = event.get("_temp.script_block_no_space") {
-                        hasher.update(v.to_string().as_bytes());
+                        values.push(v.clone());
                     }
-                    let hash = format!("{:x}", hasher.finalize());
-                    event.set("powershell.file.script_block_hash", json!(hash))?;
+                    if !values.is_empty() {
+                        event.set("powershell.file.script_block_hash", json!(fingerprint_default(&values)))?;
+                    }
                 }
 
             if event.has_value("powershell.file.script_block_text") {
