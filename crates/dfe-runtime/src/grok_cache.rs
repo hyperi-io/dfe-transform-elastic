@@ -135,10 +135,16 @@ pub fn grok(pattern: &str) -> &'static CompiledGrok {
 /// Does not panic -- see [`grok`].
 #[must_use]
 pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGrok {
+    // Keyed by the pattern AND its mapping. Two sources can write the same
+    // pattern text and want different destinations -- `%{SYSLOG5424PRI}` goes
+    // to `syslog5424_pri` or to `log.syslog.priority` depending on the
+    // processor's `ecs_compatibility` -- and keying on the text alone hands the
+    // second caller whatever the first compiled.
+    let key = cache_key(pattern, extra);
     if let Some(hit) = GROK
         .read()
         .ok()
-        .and_then(|g| g.as_ref().and_then(|map| map.get(pattern)).copied())
+        .and_then(|g| g.as_ref().and_then(|map| map.get(&key)).copied())
     {
         return hit;
     }
@@ -172,10 +178,26 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         // that is a bounded, one-off cost per pattern.
         return guard
             .get_or_insert_with(HashMap::new)
-            .entry(pattern.to_string())
+            .entry(key)
             .or_insert(compiled);
     }
     compiled
+}
+
+/// The pattern and its mapping, as one cache key.
+///
+/// A NUL separates the parts because no grok pattern or field path holds one,
+/// so no two different inputs can collide on the same key.
+fn cache_key(pattern: &str, extra: &[(&str, &str)]) -> String {
+    let mut key = String::with_capacity(pattern.len() + extra.len() * 32);
+    key.push_str(pattern);
+    for (capture, path) in extra {
+        key.push('\0');
+        key.push_str(capture);
+        key.push('\0');
+        key.push_str(path);
+    }
+    key
 }
 
 /// Recognise the whole-pattern shapes a native parser covers.
@@ -571,7 +593,10 @@ mod tests {
     }
 
     /// `%{SYSLOG5424PRI}` is written without a field name because Elastic's
-    /// own definition carries the destination.
+    /// own definition carries the destination -- `syslog5424_pri` in the
+    /// legacy registry, which is the one that applies unless the processor
+    /// asks for `ecs_compatibility: v1`. The generator supplies the ECS
+    /// destination as an explicit mapping where it does.
     #[test]
     fn a_bare_pri_still_captures_its_priority() {
         let mut event = crate::Event::new(serde_json::json!({}));
@@ -581,7 +606,19 @@ mod tests {
                 .expect("extraction")
         );
 
-        assert_eq!(event.get_i64("log.syslog.priority"), Some(188));
+        assert_eq!(event.get_i64("syslog5424_pri"), Some(188));
+
+        let mut ecs = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok_mapped(
+                "%{SYSLOG5424PRI}%{GREEDYDATA:rest}$",
+                &[("syslog5424_pri", "log.syslog.priority")],
+            )
+            .extract_into("<188>date=2020-04-23", &mut ecs)
+            .expect("extraction")
+        );
+
+        assert_eq!(ecs.get_i64("log.syslog.priority"), Some(188));
     }
 
     /// `cisco_ios` wraps its whole syslog preamble in an optional group, so both

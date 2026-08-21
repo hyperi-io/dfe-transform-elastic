@@ -119,6 +119,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "azure.signinlogs",
     ),
     (
+        "filebeat.checkpoint.default",
+        &filebeat::checkpoint::default::Default,
+        pushed(Framing::Line),
+        "checkpoint.firewall",
+    ),
+    (
         "filebeat.cisco_asa.default",
         &filebeat::cisco_asa::default::Default,
         pushed(Framing::Line),

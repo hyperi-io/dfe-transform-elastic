@@ -148,6 +148,18 @@ sources:
     framing: line
     transforms: [default]
 
+  # The pipeline groks a whole RFC 5424 line out of `message`, so a syslog
+  # delivery must leave the header on.
+  checkpoint:
+    package: checkpoint
+    data_stream: firewall
+    pipelines: checkpoint/firewall
+    fixtures: checkpoint/firewall
+    beats: {module: checkpoint, fileset: firewall}
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
   # `entity-analytics` is a pure transport -- it pages the Graph API and hands
   # the JSON straight to the pipeline -- so dfe-fetcher can obtain the same
   # bytes. `device` and `user` carry no pipeline of their own; the entity

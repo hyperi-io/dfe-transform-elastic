@@ -65,6 +65,7 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("entityanalytics_entra_id", "entity") => {
             &filebeat::entityanalytics_entra_id::default::Default
         }
+        ("checkpoint", "firewall") => &filebeat::checkpoint::default::Default,
         _ => return None,
     })
 }

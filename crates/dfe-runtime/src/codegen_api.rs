@@ -401,14 +401,18 @@ pub fn resolve_capture_paths<S: std::hash::BuildHasher>(
 /// Builtins whose Elastic definition captures a field of its own.
 ///
 /// `%{SYSLOG5424PRI}` is written without a field name throughout the vendor
-/// pipelines because the destination is part of the pattern. Returns
-/// `(safe capture name, dotted path, the regex to emit)`.
+/// pipelines because the destination is part of the pattern. Elastic's registry
+/// defines it as `<%{NONNEGINT:syslog5424_pri}>`, and the pipelines that use it
+/// then remove that field by name -- writing it to `log.syslog.priority`
+/// instead left a field Elastic does not emit on every event.
+///
+/// Returns `(safe capture name, dotted path, the regex to emit)`.
 fn grok_implicit_capture(name: &str) -> Option<(&'static str, &'static str, &'static str)> {
     match name {
         "SYSLOG5424PRI" => Some((
-            "log_syslog_priority",
-            "log.syslog.priority",
-            r"<(?P<log_syslog_priority>\d{1,5})>",
+            "syslog5424_pri",
+            "syslog5424_pri",
+            r"<(?P<syslog5424_pri>\d{1,5})>",
         )),
         _ => None,
     }

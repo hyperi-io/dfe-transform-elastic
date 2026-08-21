@@ -7,6 +7,7 @@ pub mod azure_activitylogs;
 pub mod azure_auditlogs;
 pub mod azure_platformlogs;
 pub mod azure_signinlogs;
+pub mod checkpoint;
 pub mod cisco_asa;
 pub mod cisco_ftd;
 pub mod cisco_ios;

@@ -4,6 +4,7 @@
   "elasticsearch_version": "9.2.2",
   "sources": {
     "azure": { "events": 25, "events_total": 26, "fields_wrong": 1 },
+    "checkpoint": { "events": 63, "events_total": 111, "fields_wrong": 181 },
     "cisco_asa": { "events": 507, "events_total": 512, "fields_wrong": 21 },
     "cisco_ftd": { "events": 428, "events_total": 432, "fields_wrong": 3 },
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },

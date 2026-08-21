@@ -49,6 +49,12 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.checkpoint.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.cisco_asa.default",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
