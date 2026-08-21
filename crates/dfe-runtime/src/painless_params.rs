@@ -587,6 +587,13 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
         return false;
     }
 
+    // The literal writes the script makes on its own account. A script that
+    // sets `event.kind`, `event.type` and an outcome before looking the row up
+    // -- aws's cloudtrail categorisation is the shape -- was claimed here and
+    // only its merge ran, so those three came out missing. The walk skips
+    // anything it cannot read, so the lookup and the `forEach` pass it by.
+    run_guarded_literals(event, script);
+
     let mut node = Some(&Value::Null);
     for (level, expr) in keys.iter().enumerate() {
         let Some(key) = resolve_key(event, script, expr) else {
@@ -1039,8 +1046,21 @@ fn run_guarded_literals(event: &mut Event, body: &str) {
             let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
                 return;
             };
+            // An `else` arm when there is one. `else if` has no braces of its
+            // own, so the whole tail becomes the alternative and the recursion
+            // reads it as another `if`.
+            let (alternative, after) = match after.trim_start().strip_prefix("else") {
+                Some(tail) => match balanced(tail.trim_start(), '{', '}') {
+                    Some((body, rest)) => (Some(body), rest),
+                    None => (Some(tail), ""),
+                },
+                None => (None, after),
+            };
+
             if guard_holds(event, test) {
                 run_guarded_literals(event, block);
+            } else if let Some(body) = alternative {
+                run_guarded_literals(event, body);
             }
             rest = after;
             continue;
@@ -1155,12 +1175,34 @@ fn run_literal_statement(event: &mut Event, statement: &str) {
     let Some((subject, value)) = split_assignment(statement) else {
         return;
     };
-    let (Some(path), Some(literal)) =
-        (subject.trim().strip_prefix("ctx."), quoted_after(value, ""))
-    else {
+    let Some(path) = subject.trim().strip_prefix("ctx.") else {
         return;
     };
-    let _ = event.set(&clean_path(path), Value::String(literal));
+    let Some(literal) = literal_value(value) else {
+        return;
+    };
+    let _ = event.set(&clean_path(path), literal);
+}
+
+/// A quoted string, or a bracketed list of them.
+///
+/// `ctx.event.type = ['info']` is as common as the scalar form and was read as
+/// the bare string `info`, so the field came out a string where Elastic writes
+/// a one-element array.
+fn literal_value(text: &str) -> Option<Value> {
+    let text = text.trim();
+    let Some(inner) = text
+        .strip_prefix('[')
+        .and_then(|rest| rest.strip_suffix(']'))
+    else {
+        return quoted_after(text, "").map(Value::String);
+    };
+    let members: Vec<Value> = inner
+        .split(',')
+        .filter_map(|member| quoted_after(member, ""))
+        .map(Value::String)
+        .collect();
+    (!members.is_empty()).then_some(Value::Array(members))
 }
 
 /// Fan an already-parsed key/value message out through a params table.
@@ -1772,6 +1814,57 @@ mod tests {
     /// shows up here as a miss.
     const SENTINEL: &str = "ctx.crowdstrike.event.entrySet().removeIf(entry -> \
                             params.values.contains(entry.getValue()));";
+
+    /// Verbatim from `pipelines/aws/cloudtrail/default.yml`. The table read is
+    /// the LAST thing it does; three writes come first, and a matcher that
+    /// took only the merge dropped all three.
+    const CLOUDTRAIL_CATEGORY: &str = "ctx.event.kind = 'event';\n\
+        ctx.event.type = ['info'];\n\
+        if (ctx.aws?.cloudtrail?.error_code != null) {\n  \
+        ctx.event.outcome = 'failure'\n} else {\n  \
+        ctx.event.outcome = 'success'\n}\n\
+        if (params.get(ctx.event.action) == null) {\n  return;\n}\n\
+        def hm = new HashMap(params.get(ctx.event.action));\n\
+        hm.forEach((k, v) -> ctx.event[k] = v);";
+
+    #[test]
+    fn a_lookup_merge_runs_what_comes_before_the_table_read() {
+        let params = json!({"CreateUser": {"category": ["iam"], "type": ["creation"]}});
+        let mut event = Event::new(json!({"event": {"action": "CreateUser"}}));
+
+        assert!(try_params_painless(
+            &mut event,
+            CLOUDTRAIL_CATEGORY,
+            &params
+        ));
+        assert_eq!(event.get_str("event.kind"), Some("event"));
+        assert_eq!(event.get("event.type"), Some(&json!(["creation"])));
+        assert_eq!(event.get_str("event.outcome"), Some("success"));
+        assert_eq!(event.get("event.category"), Some(&json!(["iam"])));
+    }
+
+    /// The `else` arm is taken when the guard does not hold, and a list
+    /// literal reaches the field as a list.
+    #[test]
+    fn an_else_arm_and_a_list_literal_both_land() {
+        let params = json!({});
+        let mut event = Event::new(json!({
+            "event": {"action": "Unlisted"},
+            "aws": {"cloudtrail": {"error_code": "AccessDenied"}},
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CLOUDTRAIL_CATEGORY,
+            &params
+        ));
+        assert_eq!(event.get_str("event.outcome"), Some("failure"));
+        assert_eq!(
+            event.get("event.type"),
+            Some(&json!(["info"])),
+            "the table has no row, so the preamble's own list stands"
+        );
+    }
 
     /// Verbatim from `pipelines/okta/ecs_category_type.yml`. Elastic's `gen`
     /// emits this same script for every package that maps a vendor event name
