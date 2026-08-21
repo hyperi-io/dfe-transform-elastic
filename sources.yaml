@@ -148,6 +148,18 @@ sources:
     framing: line
     transforms: [default]
 
+  # `entity-analytics` is a pure transport -- it pages the Graph API and hands
+  # the JSON straight to the pipeline -- so dfe-fetcher can obtain the same
+  # bytes. `device` and `user` carry no pipeline of their own; the entity
+  # stream's sub-pipelines route into them.
+  entityanalytics_entra_id:
+    package: entityanalytics_entra_id
+    data_stream: entity
+    pipelines: entityanalytics_entra_id/entity
+    fixtures: entityanalytics_entra_id/entity
+    intakes: [beats, fetcher]
+    transforms: [default, device, user]
+
   # Two data streams from two different Windows subsystems: `analytical` is the
   # per-query ETW trace, `audit` the change log from the Windows event log.
   # Neither agent input is a pure transport and neither is pushed by a device,

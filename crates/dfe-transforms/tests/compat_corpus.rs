@@ -62,6 +62,9 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("o365", _) => &filebeat::o365::default::Default,
         ("okta", _) => &filebeat::okta::default::Default,
         ("panw", _) => &filebeat::panw::default::Default,
+        ("entityanalytics_entra_id", "entity") => {
+            &filebeat::entityanalytics_entra_id::default::Default
+        }
         _ => return None,
     })
 }

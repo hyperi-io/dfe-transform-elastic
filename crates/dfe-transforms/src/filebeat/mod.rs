@@ -14,6 +14,7 @@ pub mod cisco_meraki;
 pub mod cisco_nexus;
 pub mod cisco_umbrella;
 pub mod crowdstrike;
+pub mod entityanalytics_entra_id;
 pub mod fortinet;
 pub mod microsoft_dnsserver_analytical;
 pub mod microsoft_dnsserver_audit;

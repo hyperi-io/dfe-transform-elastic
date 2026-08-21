@@ -161,6 +161,24 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "crowdstrike.falcon",
     ),
     (
+        "filebeat.entityanalytics_entra_id.default",
+        &filebeat::entityanalytics_entra_id::default::Default,
+        fetched(),
+        "entityanalytics_entra_id.entity",
+    ),
+    (
+        "filebeat.entityanalytics_entra_id.device",
+        &filebeat::entityanalytics_entra_id::device::Device,
+        fetched(),
+        "entityanalytics_entra_id.entity",
+    ),
+    (
+        "filebeat.entityanalytics_entra_id.user",
+        &filebeat::entityanalytics_entra_id::user::User,
+        fetched(),
+        "entityanalytics_entra_id.entity",
+    ),
+    (
         "filebeat.fortinet.default",
         &filebeat::fortinet::default::Default,
         pushed(Framing::Line),
