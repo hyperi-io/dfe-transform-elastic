@@ -127,7 +127,33 @@ pub fn painless_to_string(v: &Value) -> String {
         Value::Null => "null".to_string(),
         Value::Bool(b) => b.to_string(),
         Value::Number(n) => n.to_string(),
-        Value::Array(_) | Value::Object(_) => v.to_string(),
+        // Painless is Java, so a map renders `{k=v, k=v}` and a list
+        // `[a, b]` -- not their JSON. aws's cloudtrail keeps a rendered copy
+        // of `requestParameters` in exactly that shape.
+        Value::Array(_) | Value::Object(_) => java_to_string(v),
+    }
+}
+
+/// A value as Java's own `toString`, which is not JSON.
+///
+/// `AbstractMap` writes `{key=value, key=value}` with no quotes anywhere, and
+/// `AbstractCollection` writes `[a, b]`. Insertion order is kept, which is
+/// what `serde_json`'s preserve-order map gives.
+#[must_use]
+pub fn java_to_string(v: &Value) -> String {
+    match v {
+        Value::Object(map) => {
+            let members: Vec<String> = map
+                .iter()
+                .map(|(key, value)| format!("{key}={}", painless_to_string(value)))
+                .collect();
+            format!("{{{}}}", members.join(", "))
+        }
+        Value::Array(items) => {
+            let members: Vec<String> = items.iter().map(painless_to_string).collect();
+            format!("[{}]", members.join(", "))
+        }
+        other => painless_to_string(other),
     }
 }
 

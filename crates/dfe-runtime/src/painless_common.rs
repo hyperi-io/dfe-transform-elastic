@@ -489,6 +489,63 @@ fn try_related_from_dns_answers(event: &mut Event) -> bool {
     true
 }
 
+/// Keep a rendered copy of a nested object beside the object itself.
+///
+/// aws's cloudtrail writes `requestParameters`, `responseElements` and
+/// `additionalEventData` twice: once as Java's `toString` under
+/// `aws.cloudtrail.<name>`, and once whole under `aws.cloudtrail.flattened
+/// .<name>` when the deployment asked to keep the duplicate.
+///
+/// Two scripts run back to back and both come through here. The first only
+/// decides the flag, which is a plain read of `_conf.retain`; the second does
+/// the copying, and the pairs it copies are read off its own text.
+fn try_flattened_duplicates(event: &mut Event, script: &str) -> bool {
+    // `ctx._conf.keep_flattened_duplicates = ctx._conf.retain == null || ...`
+    if script.contains("keep_flattened_duplicates = ") {
+        let retain = event.get_str("_conf.retain").map(str::to_string);
+        let keep = retain.is_none_or(|value| {
+            ["all", "flattened", "minimal"]
+                .iter()
+                .any(|wanted| value.contains(wanted))
+        });
+        let _ = event.set("_conf.keep_flattened_duplicates", keep);
+        return true;
+    }
+
+    let keep = event.get("_conf.keep_flattened_duplicates") == Some(&Value::Bool(true));
+    // `ctx.aws.cloudtrail.request_parameters = ctx.json.requestParameters.toString();`
+    // Only the chunks a `.toString();` FOLLOWS are assignments; `split` hands
+    // back a final chunk with no separator after it, and reading that one as
+    // an assignment wrote the rendered copy over the flattened one.
+    let chunks: Vec<&str> = script.split(".toString();").collect();
+    for statement in chunks.iter().rev().skip(1).rev() {
+        let Some((assignment, source_expression)) = statement.rsplit_once(" = ") else {
+            continue;
+        };
+        let (Some(target), Some(source)) =
+            (painless_path(assignment), painless_path(source_expression))
+        else {
+            continue;
+        };
+        let Some(value) = event.get(&source).cloned() else {
+            continue;
+        };
+
+        let rendered = crate::painless_helpers::java_to_string(&value);
+        // Elasticsearch's keyword ceiling. Over it the rendered copy is kept
+        // and the flattened one is not.
+        let short_enough = rendered.len() < 32766;
+        let _ = event.set(&target, rendered);
+        if keep && short_enough {
+            let Some((prefix, name)) = target.rsplit_once('.') else {
+                continue;
+            };
+            let _ = event.set(&format!("{prefix}.flattened.{name}"), value);
+        }
+    }
+    true
+}
+
 /// Collect every value a script names into one sorted, unique list.
 ///
 /// gcp's audit pipeline gathers principals, resource names and role bindings
@@ -2892,6 +2949,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: keep a rendered copy of a nested object beside the object.
+    if normalised.contains("keep_flattened_duplicates") {
+        return try_flattened_duplicates(event, &normalised);
+    }
+
     // Pattern: collect every non-empty value the script names into one sorted,
     // unique list.
     if normalised.contains("void addValue(") && normalised.contains("new TreeSet(") {
@@ -4549,6 +4611,60 @@ def event_timezone = get_timezone(ctx);
         let mut event = Event::new(json!({"a": {"b": "Solaris"}}));
         try_known_painless(&mut event, script);
         assert_eq!(event.get("host.os.type"), None);
+    }
+
+    /// Cut from `pipelines/aws/cloudtrail/default.yml`, both scripts.
+    const FLATTENED: &str = "ctx._conf.keep_flattened_duplicates = ctx._conf.retain == null ||\n\
+        ctx._conf.retain.contains('all');";
+    const DUPLICATE: &str = "if (ctx.json?.requestParameters != null) {\n\
+        ctx.aws.cloudtrail.request_parameters = ctx.json.requestParameters.toString();\n\
+        if (ctx._conf.keep_flattened_duplicates) {\n\
+        ctx.aws.cloudtrail.flattened.request_parameters = ctx.json.requestParameters;\n\
+        }\n\
+        }";
+
+    /// A Painless map renders as Java's `{k=v, k=v}`, not as JSON.
+    #[test]
+    fn a_rendered_object_is_kept_beside_the_object() {
+        let mut event = Event::new(json!({"json": {"requestParameters": {
+            "principal": "sns.amazonaws.com",
+            "functionName": "cloudtrail-events-test",
+        }}}));
+
+        assert!(try_known_painless(&mut event, FLATTENED));
+        assert_eq!(
+            event.get("_conf.keep_flattened_duplicates"),
+            Some(&json!(true)),
+            "no `retain` means keep"
+        );
+
+        assert!(try_known_painless(&mut event, DUPLICATE));
+        assert_eq!(
+            event.get_str("aws.cloudtrail.request_parameters"),
+            Some("{principal=sns.amazonaws.com, functionName=cloudtrail-events-test}")
+        );
+        assert_eq!(
+            event.get_str("aws.cloudtrail.flattened.request_parameters.principal"),
+            Some("sns.amazonaws.com")
+        );
+    }
+
+    /// A `retain` the flag does not recognise means no flattened copy, and
+    /// the rendered one is written either way.
+    #[test]
+    fn an_unrecognised_retain_keeps_no_duplicate() {
+        let mut event = Event::new(json!({
+            "_conf": {"retain": "keyword"},
+            "json": {"requestParameters": {"principal": "sns.amazonaws.com"}},
+        }));
+
+        assert!(try_known_painless(&mut event, FLATTENED));
+        assert!(try_known_painless(&mut event, DUPLICATE));
+        assert_eq!(
+            event.get_str("aws.cloudtrail.request_parameters"),
+            Some("{principal=sns.amazonaws.com}")
+        );
+        assert_eq!(event.get("aws.cloudtrail.flattened"), None);
     }
 
     /// Cut from `pipelines/gcp/audit/default.yml` to the three argument
