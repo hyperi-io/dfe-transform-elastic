@@ -15,6 +15,7 @@ use serde_json::{Map, Value, json};
 use crate::error::Result;
 use crate::event::Event;
 use crate::painless_helpers::{SnakeRule, to_snake_case};
+use crate::painless_params::clean_path;
 
 /// A script's text with its JSON escapes resolved.
 ///
@@ -256,6 +257,127 @@ pub fn camel_map_to_snake(value: &Value) -> Value {
         Value::Array(items) => Value::Array(items.iter().map(camel_map_to_snake).collect()),
         other => other.clone(),
     }
+}
+
+/// Write the basename of one or more path fields.
+///
+/// The shape is a helper that finds the last separator and returns what
+/// follows it, then one paragraph per field:
+///
+/// ```text
+/// def getProcessName(def path) {
+///   def idx = path.lastIndexOf("\");
+///   if (idx > -1) { return path.substring(idx+1); }
+///   return "";
+/// }
+/// def cmd = ctx.process?.executable;
+/// if (cmd != null && cmd != "" && ctx.process?.name == null) {
+///   def name = getProcessName(cmd);
+///   if (name != "") { ctx.process.name = name; }
+/// }
+/// ```
+///
+/// The separator, the source and the target are all read off the script. The
+/// helper's own name is not: the call is found by its ARGUMENT being a local
+/// bound to a `ctx.` path, so a pipeline spelling it `basename` matches too.
+///
+/// Returns false when nothing parses, which lets a script that merely spells
+/// `lastIndexOf` fall through to the matchers below.
+fn try_basename_after_separator(event: &mut Event, script: &str) -> bool {
+    let Some(separator) = last_index_of_separator(script) else {
+        return false;
+    };
+
+    // `def cmd = ctx.process?.executable;` -- the locals the helper is called
+    // with, and the field each one reads.
+    let mut locals: Vec<(String, String)> = Vec::new();
+    for line in script.lines() {
+        let line = line.trim().trim_end_matches(';');
+        let Some(rest) = line.strip_prefix("def ") else {
+            continue;
+        };
+        let Some((name, value)) = rest.split_once(" = ") else {
+            continue;
+        };
+        let value = value.trim();
+        if let Some(path) = value.strip_prefix("ctx.") {
+            locals.push((name.trim().to_string(), clean_path(path)));
+        }
+    }
+
+    let mut wrote = false;
+    // The call is `(<local>)` with nothing else in the parentheses. The
+    // helper's DEFINITION takes `def path`, which is not one of the locals,
+    // so it is skipped for free -- and so is `(cmd != null && ...)`, which
+    // names the local but is not a call.
+    for (local, source) in &locals {
+        let Some(at) = script.find(&format!("({local})")) else {
+            continue;
+        };
+        let Some(target) = script[at..]
+            .split("ctx.")
+            .nth(1)
+            .and_then(|after| after.split_once(" = "))
+            .map(|(path, _)| clean_path(path))
+        else {
+            continue;
+        };
+
+        if let Some(text) = event.get_str(source) {
+            // Elastic writes nothing when the path holds no separator, and
+            // nothing when the basename is empty -- a trailing separator.
+            if let Some((_, base)) = text.rsplit_once(separator)
+                && !base.is_empty()
+            {
+                let base = base.to_string();
+                let _ = event.set(&target, base);
+            }
+        }
+        wrote = true;
+    }
+
+    wrote
+}
+
+/// The separator a `lastIndexOf` in this script looks for.
+fn last_index_of_separator(script: &str) -> Option<char> {
+    let after = script.split("lastIndexOf(\"").nth(1)?;
+    after.chars().next().filter(|c| *c != '"')
+}
+
+/// Append one DNS answer per resolved address, typed by its family.
+///
+/// sysmon's `QueryResults` lists the CNAME chain and the addresses separately,
+/// so the addresses reach `dns.resolved_ip` with no record type on them. The
+/// pipeline synthesises one: a colon in the address means `AAAA`, anything
+/// else `A`. By the time this runs the `::ffff:` wrapping has already been
+/// stripped by a `gsub`, so a v4-mapped address is correctly an `A`.
+///
+/// A null entry is dropped from `dns.resolved_ip` rather than typed -- the
+/// `convert` to an ip upstream leaves one behind for an address it rejected.
+fn try_answers_from_resolved_ip(event: &mut Event) -> bool {
+    let Some(Value::Array(resolved)) = event.get("dns.resolved_ip").cloned() else {
+        return false;
+    };
+
+    let mut kept = Vec::with_capacity(resolved.len());
+    let mut answers = match event.get("dns.answers") {
+        Some(Value::Array(existing)) => existing.clone(),
+        _ => Vec::new(),
+    };
+
+    for ip in resolved {
+        let Some(text) = ip.as_str() else {
+            continue;
+        };
+        let kind = if text.contains(':') { "AAAA" } else { "A" };
+        answers.push(serde_json::json!({"type": kind, "data": text}));
+        kept.push(ip);
+    }
+
+    let _ = event.set("dns.resolved_ip", Value::Array(kept));
+    let _ = event.set("dns.answers", Value::Array(answers));
+    true
 }
 
 /// The `ctx.<target> = <fn>(ctx.<source>)` line the converter is applied by.
@@ -2457,6 +2579,22 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     {
         drop_empty_recursive(event, &DropPolicy::read(&normalised));
         return true;
+    }
+
+    // Pattern: the basename of one or more path fields -- everything after
+    // the last separator. Guarded by the parse rather than by the trigger,
+    // so a script that only looks similar falls through.
+    if normalised.contains("lastIndexOf(")
+        && normalised.contains(".substring(")
+        && try_basename_after_separator(event, &normalised)
+    {
+        return true;
+    }
+
+    // Pattern: one synthesised DNS answer per resolved address, typed by
+    // whether the address holds a colon.
+    if normalised.contains("ctx.dns.answers.add(") && normalised.contains("ip.indexOf(\":\")") {
+        return try_answers_from_resolved_ip(event);
     }
 
     // Pattern: the integrations' own recursive camelCase-to-snake_case pair,

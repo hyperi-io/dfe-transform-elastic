@@ -339,6 +339,19 @@ fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
     let mut current = value;
     let mut rest = path;
     loop {
+        // A numeric segment on an array is an index, the way Elastic's
+        // mustache reads `{{_temp.user_parts.0}}`.
+        if let Value::Array(items) = current {
+            let (segment, tail) = rest.split_once('.').unwrap_or((rest, ""));
+            let index: usize = segment.parse().ok()?;
+            let next = items.get(index)?;
+            if tail.is_empty() {
+                return Some(next);
+            }
+            current = next;
+            rest = tail;
+            continue;
+        }
         let Value::Object(map) = current else {
             return None;
         };
@@ -369,6 +382,17 @@ fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Valu
     let mut current = value;
     let mut rest = path;
     loop {
+        if current.is_array() {
+            let (segment, tail) = rest.split_once('.').unwrap_or((rest, ""));
+            let index: usize = segment.parse().ok()?;
+            let next = current.as_array_mut()?.get_mut(index)?;
+            if tail.is_empty() {
+                return Some(next);
+            }
+            current = next;
+            rest = tail;
+            continue;
+        }
         let Value::Object(map) = current else {
             return None;
         };
@@ -468,6 +492,37 @@ mod tests {
     #[test]
     fn from_json_invalid() {
         assert!(Event::from_json("not json").is_err());
+    }
+
+    /// A numeric segment indexes an array, which is what a `set` template
+    /// spelled `{{_temp.user_parts.0}}` asks for.
+    #[test]
+    fn a_numeric_segment_indexes_an_array() {
+        let event = Event::new(json!({
+            "_temp": {"user_parts": ["VAGRANT", "vagrant"]},
+            "rows": [{"name": "first"}, {"name": "second"}],
+        }));
+
+        assert_eq!(event.get_str("_temp.user_parts.0"), Some("VAGRANT"));
+        assert_eq!(event.get_str("_temp.user_parts.1"), Some("vagrant"));
+        assert_eq!(event.get("_temp.user_parts.2"), None);
+        assert_eq!(event.get_str("rows.1.name"), Some("second"));
+    }
+
+    /// Reading through an index is not writing through one: `set` builds the
+    /// path it is given and an array element is not a name it can create.
+    #[test]
+    fn writing_through_an_index_is_still_refused() {
+        let mut event = Event::new(json!({"rows": [{"name": "first"}]}));
+        assert!(event.set("rows.0.name", "renamed").is_err());
+    }
+
+    /// A non-numeric segment on an array is still nothing, rather than the
+    /// first element or a panic.
+    #[test]
+    fn a_named_segment_on_an_array_finds_nothing() {
+        let event = Event::new(json!({"tags": ["a", "b"]}));
+        assert_eq!(event.get("tags.name"), None);
     }
 
     #[test]

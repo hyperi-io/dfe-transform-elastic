@@ -48,6 +48,13 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
     };
     let normalised = crate::painless_common::normalise(script);
 
+    // Pattern: sysmon's semicolon-separated DNS QueryResults, where params is
+    // the RR-number-to-name table. Checked first: the script also spells
+    // `.put(` and `params`, which a later matcher reads as an indexed lookup.
+    if normalised.contains("QueryResults") && normalised.contains("startsWith(\"type:\")") {
+        return try_sysmon_query_results(event, &normalised, params);
+    }
+
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return try_sentinel_removal(event, &normalised, params);
@@ -138,7 +145,79 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_framework_preference(event, &normalised, params);
     }
 
+    // Pattern: the same normalise-through-a-table written with the bracket
+    // form. LAST, so nothing that reads the brackets for its own shape --
+    // `addUnique` over a row, for one -- is claimed by the general case.
+    if normalised.contains("params[ctx.") {
+        return try_lookup_normalise(event, &normalised, params);
+    }
+
     false
+}
+
+/// Split sysmon's `QueryResults` into `dns.answers`, `dns.resolved_ip` and
+/// `related.hosts`.
+///
+/// Event 22 packs the whole DNS response into one semicolon-separated string:
+///
+/// ```text
+/// type:  5 f2.taboola.map.fastly.net;::ffff:151.101.66.2;::ffff:151.101.2.2;
+/// ```
+///
+/// An entry opening `type:` is a record whose middle token is the IANA RR
+/// NUMBER -- `params` is the number-to-name table and is read rather than
+/// transcribed, so the vendor adding a type is picked up by regenerating.
+/// Anything else is a resolved address. A `type:` entry with a third token
+/// names a host, which is where the CNAME chain in `related.hosts` comes
+/// from; without one only the type is recorded.
+///
+/// The `::ffff:` unwrapping and the `convert` to an ip are separate processors
+/// downstream, so this leaves the addresses exactly as the vendor wrote them.
+fn try_sysmon_query_results(event: &mut Event, _script: &str, params: &Map<String, Value>) -> bool {
+    let Some(results) = event.get_str("winlog.event_data.QueryResults") else {
+        return false;
+    };
+
+    let mut answers: Vec<Value> = Vec::new();
+    let mut ips: Vec<Value> = Vec::new();
+    let mut hosts: Vec<Value> = Vec::new();
+
+    for answer in results.split(';') {
+        if answer.is_empty() {
+            continue;
+        }
+        if !answer.starts_with("type:") {
+            ips.push(Value::String(answer.to_string()));
+            continue;
+        }
+
+        let parts: Vec<&str> = answer.split_whitespace().collect();
+        if parts.len() < 2 {
+            // The script throws here, and a throw runs the processor's
+            // on_failure rather than writing a half-parsed answer.
+            return false;
+        }
+        // An unknown number reads as null in Painless, and the null reaches
+        // the document, so it does here too.
+        let kind = params.get(parts[1]).cloned().unwrap_or(Value::Null);
+        if parts.len() == 3 {
+            answers.push(serde_json::json!({"type": kind, "data": parts[2]}));
+            hosts.push(Value::String(parts[2].to_string()));
+        } else {
+            answers.push(serde_json::json!({"type": kind}));
+        }
+    }
+
+    if !answers.is_empty() {
+        let _ = event.set("dns.answers", Value::Array(answers));
+    }
+    if !ips.is_empty() {
+        let _ = event.set("dns.resolved_ip", Value::Array(ips));
+    }
+    if !hosts.is_empty() {
+        let _ = event.set("related.hosts", Value::Array(hosts));
+    }
+    true
 }
 
 /// Collect a set of framework names from several ID lists, then pick one by a
@@ -681,7 +760,12 @@ fn fallback_target(script: &str) -> Option<String> {
 /// table misses still comes out lower-cased -- and the pipeline's own
 /// allow-list check downstream then sees the same string Elastic would.
 fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some(key_expr) = last_call_argument(script, "params.get(") else {
+    // `params[key]` and `params.get(key)` are the same operation in Painless
+    // and the integrations use both -- sysmon's DNS status table is written
+    // with the brackets.
+    let Some(key_expr) = last_call_argument(script, "params.get(")
+        .or_else(|| last_bracket_subscript(script, "params["))
+    else {
         return false;
     };
     // The field assigned from the lookup, falling back to the last assignment
@@ -689,7 +773,7 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
     let writes = ctx_writes(script);
     let target = writes
         .iter()
-        .find(|(_, rhs)| rhs.contains("params.get("))
+        .find(|(_, rhs)| rhs.contains("params.get(") || rhs.contains("params["))
         .map(|(path, _)| path.clone())
         .or_else(|| writes.last().map(|(path, _)| path.clone()));
     let Some(target) = target else {
@@ -1617,6 +1701,29 @@ fn last_call_argument(script: &str, name: &str) -> Option<String> {
         match c {
             '(' => depth += 1,
             ')' => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(script[start..start + i].to_string());
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+/// The last `name[...]` subscript's contents, brackets balanced.
+///
+/// The bracket twin of [`last_call_argument`]: a Painless map reads the same
+/// whether it is subscripted or `.get()`, and both spellings appear across the
+/// integrations for the same job.
+fn last_bracket_subscript(script: &str, name: &str) -> Option<String> {
+    let start = script.rfind(name)? + name.len();
+    let mut depth = 1usize;
+    for (i, c) in script[start..].char_indices() {
+        match c {
+            '[' => depth += 1,
+            ']' => {
                 depth -= 1;
                 if depth == 0 {
                     return Some(script[start..start + i].to_string());

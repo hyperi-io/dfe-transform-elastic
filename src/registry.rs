@@ -577,6 +577,60 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         fetched(),
         "sentinel_one.unified_alert",
     ),
+    (
+        "filebeat.windows_applocker_exe_and_dll.default",
+        &filebeat::windows_applocker_exe_and_dll::default::Default,
+        agent_only(),
+        "windows.applocker_exe_and_dll",
+    ),
+    (
+        "filebeat.windows_applocker_msi_and_script.default",
+        &filebeat::windows_applocker_msi_and_script::default::Default,
+        agent_only(),
+        "windows.applocker_msi_and_script",
+    ),
+    (
+        "filebeat.windows_applocker_packaged_app_deployment.default",
+        &filebeat::windows_applocker_packaged_app_deployment::default::Default,
+        agent_only(),
+        "windows.applocker_packaged_app_deployment",
+    ),
+    (
+        "filebeat.windows_applocker_packaged_app_execution.default",
+        &filebeat::windows_applocker_packaged_app_execution::default::Default,
+        agent_only(),
+        "windows.applocker_packaged_app_execution",
+    ),
+    (
+        "filebeat.windows_forwarded.default",
+        &filebeat::windows_forwarded::default::Default,
+        agent_only(),
+        "windows.forwarded",
+    ),
+    (
+        "filebeat.windows_powershell.default",
+        &filebeat::windows_powershell::default::Default,
+        agent_only(),
+        "windows.powershell",
+    ),
+    (
+        "filebeat.windows_powershell_operational.default",
+        &filebeat::windows_powershell_operational::default::Default,
+        agent_only(),
+        "windows.powershell_operational",
+    ),
+    (
+        "filebeat.windows_sysmon_operational.default",
+        &filebeat::windows_sysmon_operational::default::Default,
+        agent_only(),
+        "windows.sysmon_operational",
+    ),
+    (
+        "filebeat.windows_windows_defender.default",
+        &filebeat::windows_windows_defender::default::Default,
+        agent_only(),
+        "windows.windows_defender",
+    ),
 ];
 
 /// Resolve a source name to its transform.

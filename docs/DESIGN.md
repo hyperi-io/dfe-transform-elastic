@@ -527,7 +527,7 @@ sources exercise it.
 | `json` | Done | All | `simd_json::from_str` / `serde_json::from_str` |
 | `kv` | Done | Okta | Key-value split, configurable delimiters |
 | `csv` | Done | Fortinet | Separator/quote config |
-| `foreach` | Broken (`_ingest._value` unsupported) | Okta, O365 | `for item in event.get_array(path)` |
+| `foreach` | Done | Okta, O365, sysmon | Each element bound to `_ingest._value`, the inner processor run, the list rebuilt |
 | `date` | Done | All | `chrono` against the formats a source emits |
 | `gsub` | Done | O365 | `regex::Regex::replace_all` |
 

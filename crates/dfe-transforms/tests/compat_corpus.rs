@@ -137,6 +137,27 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
             &filebeat::sentinel_one_unified_alert::default::Default
         }
         ("sentinel_one", "threat") => &filebeat::sentinel_one_threat::default::Default,
+        ("windows", "applocker_exe_and_dll") => {
+            &filebeat::windows_applocker_exe_and_dll::default::Default
+        }
+        ("windows", "applocker_msi_and_script") => {
+            &filebeat::windows_applocker_msi_and_script::default::Default
+        }
+        ("windows", "applocker_packaged_app_deployment") => {
+            &filebeat::windows_applocker_packaged_app_deployment::default::Default
+        }
+        ("windows", "applocker_packaged_app_execution") => {
+            &filebeat::windows_applocker_packaged_app_execution::default::Default
+        }
+        ("windows", "forwarded") => &filebeat::windows_forwarded::default::Default,
+        ("windows", "powershell") => &filebeat::windows_powershell::default::Default,
+        ("windows", "powershell_operational") => {
+            &filebeat::windows_powershell_operational::default::Default
+        }
+        ("windows", "sysmon_operational") => {
+            &filebeat::windows_sysmon_operational::default::Default
+        }
+        ("windows", "windows_defender") => &filebeat::windows_windows_defender::default::Default,
         _ => return None,
     })
 }

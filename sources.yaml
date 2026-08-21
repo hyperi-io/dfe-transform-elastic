@@ -608,3 +608,79 @@ sources:
     fixtures: sentinel_one/unified_alert
     intakes: [beats, fetcher]
     transforms: [default]
+
+  # Every windows stream with a pipeline is a `winlog` input, so winlogbeat
+  # delivers an already-structured document rather than a line in `message`,
+  # and `beats` is the only intake. `perfmon` and `service` are
+  # `windows/metrics` and ship no pipeline at all, so they are not declared.
+  windows_applocker_exe_and_dll:
+    package: windows
+    data_stream: applocker_exe_and_dll
+    pipelines: windows/applocker_exe_and_dll
+    fixtures: windows/applocker_exe_and_dll
+    intakes: [beats]
+    transforms: [default]
+
+  windows_applocker_msi_and_script:
+    package: windows
+    data_stream: applocker_msi_and_script
+    pipelines: windows/applocker_msi_and_script
+    fixtures: windows/applocker_msi_and_script
+    intakes: [beats]
+    transforms: [default]
+
+  windows_applocker_packaged_app_deployment:
+    package: windows
+    data_stream: applocker_packaged_app_deployment
+    pipelines: windows/applocker_packaged_app_deployment
+    fixtures: windows/applocker_packaged_app_deployment
+    intakes: [beats]
+    transforms: [default]
+
+  windows_applocker_packaged_app_execution:
+    package: windows
+    data_stream: applocker_packaged_app_execution
+    pipelines: windows/applocker_packaged_app_execution
+    fixtures: windows/applocker_packaged_app_execution
+    intakes: [beats]
+    transforms: [default]
+
+  windows_forwarded:
+    package: windows
+    data_stream: forwarded
+    pipelines: windows/forwarded
+    fixtures: windows/forwarded
+    intakes: [beats]
+    transforms: [default]
+
+  windows_powershell:
+    package: windows
+    data_stream: powershell
+    pipelines: windows/powershell
+    fixtures: windows/powershell
+    intakes: [beats]
+    transforms: [default]
+
+  windows_powershell_operational:
+    package: windows
+    data_stream: powershell_operational
+    pipelines: windows/powershell_operational
+    fixtures: windows/powershell_operational
+    intakes: [beats]
+    transforms: [default]
+
+  windows_sysmon_operational:
+    package: windows
+    data_stream: sysmon_operational
+    pipelines: windows/sysmon_operational
+    fixtures: windows/sysmon_operational
+    intakes: [beats]
+    transforms: [default]
+
+  windows_windows_defender:
+    package: windows
+    data_stream: windows_defender
+    pipelines: windows/windows_defender
+    fixtures: windows/windows_defender
+    intakes: [beats]
+    transforms: [default]

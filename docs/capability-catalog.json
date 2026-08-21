@@ -502,6 +502,60 @@
         "name": "filebeat.sentinel_one_unified_alert.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_applocker_exe_and_dll.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_applocker_msi_and_script.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_applocker_packaged_app_deployment.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_applocker_packaged_app_execution.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_forwarded.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_powershell.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_powershell_operational.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_sysmon_operational.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.windows_windows_defender.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
       }
     ]
   },
