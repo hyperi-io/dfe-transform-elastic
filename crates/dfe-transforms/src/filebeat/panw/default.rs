@@ -12393,8 +12393,8 @@ impl Transform for Default {
                     event.get_string("source.ip"),
                     event.get_string("destination.ip"),
                     event
-                        .get_string("network.transport")
-                        .or_else(|| event.get_string("network.iana_number")),
+                        .get_as_string("network.iana_number")
+                        .or_else(|| event.get_as_string("network.transport")),
                 ) {
                     let icmp = matches!(
                         protocol.to_ascii_lowercase().as_str(),
@@ -12433,8 +12433,8 @@ impl Transform for Default {
                     event.get_string("source.nat.ip"),
                     event.get_string("destination.nat.ip"),
                     event
-                        .get_string("network.transport")
-                        .or_else(|| event.get_string("network.iana_number")),
+                        .get_as_string("network.iana_number")
+                        .or_else(|| event.get_as_string("network.transport")),
                 ) {
                     let icmp = matches!(
                         protocol.to_ascii_lowercase().as_str(),

@@ -39,8 +39,8 @@ impl Transform for Default {
                 event.get_string("json.jsonPayload.connection.src_ip"),
                 event.get_string("json.jsonPayload.connection.dest_ip"),
                 event
-                    .get_string("network.transport")
-                    .or_else(|| event.get_string("json.jsonPayload.connection.protocol")),
+                    .get_as_string("json.jsonPayload.connection.protocol")
+                    .or_else(|| event.get_as_string("network.transport")),
             ) {
                 let icmp = matches!(
                     protocol.to_ascii_lowercase().as_str(),
