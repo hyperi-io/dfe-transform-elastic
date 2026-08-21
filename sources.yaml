@@ -232,6 +232,153 @@ sources:
     intakes: [beats, fetcher]
     transforms: [default, device, user]
 
+  # Every stream arrives on gcp-pubsub, a pure transport, so dfe-fetcher can
+  # obtain the same bytes the agent would.
+  gcp_audit:
+    package: gcp
+    data_stream: audit
+    pipelines: gcp/audit
+    fixtures: gcp/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_billing:
+    package: gcp
+    data_stream: billing
+    pipelines: gcp/billing
+    fixtures: gcp/billing
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_cloudrun_metrics:
+    package: gcp
+    data_stream: cloudrun_metrics
+    pipelines: gcp/cloudrun_metrics
+    fixtures: gcp/cloudrun_metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_cloudsql_mysql:
+    package: gcp
+    data_stream: cloudsql_mysql
+    pipelines: gcp/cloudsql_mysql
+    fixtures: gcp/cloudsql_mysql
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_cloudsql_postgresql:
+    package: gcp
+    data_stream: cloudsql_postgresql
+    pipelines: gcp/cloudsql_postgresql
+    fixtures: gcp/cloudsql_postgresql
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_cloudsql_sqlserver:
+    package: gcp
+    data_stream: cloudsql_sqlserver
+    pipelines: gcp/cloudsql_sqlserver
+    fixtures: gcp/cloudsql_sqlserver
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_compute:
+    package: gcp
+    data_stream: compute
+    pipelines: gcp/compute
+    fixtures: gcp/compute
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_dataproc:
+    package: gcp
+    data_stream: dataproc
+    pipelines: gcp/dataproc
+    fixtures: gcp/dataproc
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_dns:
+    package: gcp
+    data_stream: dns
+    pipelines: gcp/dns
+    fixtures: gcp/dns
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_firestore:
+    package: gcp
+    data_stream: firestore
+    pipelines: gcp/firestore
+    fixtures: gcp/firestore
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_firewall:
+    package: gcp
+    data_stream: firewall
+    pipelines: gcp/firewall
+    fixtures: gcp/firewall
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_gke:
+    package: gcp
+    data_stream: gke
+    pipelines: gcp/gke
+    fixtures: gcp/gke
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_loadbalancing_logs:
+    package: gcp
+    data_stream: loadbalancing_logs
+    pipelines: gcp/loadbalancing_logs
+    fixtures: gcp/loadbalancing_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_loadbalancing_metrics:
+    package: gcp
+    data_stream: loadbalancing_metrics
+    pipelines: gcp/loadbalancing_metrics
+    fixtures: gcp/loadbalancing_metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_pubsub:
+    package: gcp
+    data_stream: pubsub
+    pipelines: gcp/pubsub
+    fixtures: gcp/pubsub
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_redis:
+    package: gcp
+    data_stream: redis
+    pipelines: gcp/redis
+    fixtures: gcp/redis
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_storage:
+    package: gcp
+    data_stream: storage
+    pipelines: gcp/storage
+    fixtures: gcp/storage
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  gcp_vpcflow:
+    package: gcp
+    data_stream: vpcflow
+    pipelines: gcp/vpcflow
+    fixtures: gcp/vpcflow
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+
   # Every stream is on cel or httpjson -- pure transports, so dfe-fetcher can
   # obtain the same bytes the agent would.
   mimecast_archive_search_logs:

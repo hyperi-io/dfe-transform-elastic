@@ -950,6 +950,11 @@ def list_fixtures(source: Source) -> list[Path]:
         SystemExit: If any fixture with an expectation sits below the top level.
     """
     directory = REPO_ROOT / "tests" / "fixtures" / source.fixture_dir
+    if not directory.is_dir():
+        # Upstream ships no pipeline fixtures for this stream. The transform is
+        # still generated and wired; it simply has nothing to be scored against.
+        log.warning("%s: no fixtures at %s, so nothing to capture", source.name, directory)
+        return []
 
     def paired(paths: Iterable[Path]) -> list[Path]:
         return sorted(

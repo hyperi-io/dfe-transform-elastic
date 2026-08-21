@@ -121,6 +121,114 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.gcp_audit.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_billing.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_cloudrun_metrics.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_cloudsql_mysql.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_cloudsql_postgresql.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_cloudsql_sqlserver.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_compute.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_dataproc.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_dns.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_firestore.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_firewall.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_gke.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_loadbalancing_logs.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_loadbalancing_metrics.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_pubsub.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_redis.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_storage.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.gcp_vpcflow.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.microsoft_defender_endpoint_log.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
