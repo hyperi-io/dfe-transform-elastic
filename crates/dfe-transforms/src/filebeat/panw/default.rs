@@ -3030,7 +3030,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("_temp_.check_field") {
+                    if event.has_value("_temp_.check_field") {
                         if let Some(val) = event.get("_temp_.check_field") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -6735,7 +6735,7 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                if event.has("panw.panos.type") {
+                if event.has_value("panw.panos.type") {
                     if let Some(s) = event.get_string("panw.panos.type") {
                         let uppered = s.to_uppercase();
                         event.set("panw.panos.type", uppered)?;
@@ -7494,7 +7494,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.ip") {
+                if event.has_value("source.ip") {
                     if let Some(s) = event.get_string("source.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7538,7 +7538,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.ip") {
+                if event.has_value("destination.ip") {
                     if let Some(s) = event.get_string("destination.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7582,7 +7582,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.nat.ip") {
+                if event.has_value("source.nat.ip") {
                     if let Some(s) = event.get_string("source.nat.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7626,7 +7626,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.nat.ip") {
+                if event.has_value("destination.nat.ip") {
                     if let Some(s) = event.get_string("destination.nat.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7670,7 +7670,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("host.ip") {
+                if event.has_value("host.ip") {
                     if let Some(s) = event.get_string("host.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7726,7 +7726,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("network.forwarded_ip") {
+                if event.has_value("network.forwarded_ip") {
                     if let Some(s) = event.get_string("network.forwarded_ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7770,7 +7770,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.xff.ip") {
+                if event.has_value("panw.panos.xff.ip") {
                     if let Some(s) = event.get_string("panw.panos.xff.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7814,7 +7814,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.source.ip") {
+                if event.has_value("panw.panos.source.ip") {
                     if let Some(s) = event.get_string("panw.panos.source.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7858,7 +7858,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.source.ipv6") {
+                if event.has_value("panw.panos.source.ipv6") {
                     if let Some(s) = event.get_string("panw.panos.source.ipv6") {
                         // Validate IP format
                         let s = s.trim();
@@ -7902,7 +7902,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.source.nat.ip") {
+                if event.has_value("panw.panos.source.nat.ip") {
                     if let Some(s) = event.get_string("panw.panos.source.nat.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7946,7 +7946,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.destination.ip") {
+                if event.has_value("panw.panos.destination.ip") {
                     if let Some(s) = event.get_string("panw.panos.destination.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -7990,7 +7990,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.destination.nat.ip") {
+                if event.has_value("panw.panos.destination.nat.ip") {
                     if let Some(s) = event.get_string("panw.panos.destination.nat.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -8034,7 +8034,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.forwarded_ip") {
+                if event.has_value("panw.panos.forwarded_ip") {
                     if let Some(s) = event.get_string("panw.panos.forwarded_ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -8078,7 +8078,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.host.ip") {
+                if event.has_value("panw.panos.host.ip") {
                     if let Some(s) = event.get_string("panw.panos.host.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -8122,7 +8122,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.public.ip") {
+                if event.has_value("panw.panos.public.ip") {
                     if let Some(s) = event.get_string("panw.panos.public.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -8166,7 +8166,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.private.ip") {
+                if event.has_value("panw.panos.private.ip") {
                     if let Some(s) = event.get_string("panw.panos.private.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -8210,7 +8210,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.public.ipv6") {
+                if event.has_value("panw.panos.public.ipv6") {
                     if let Some(s) = event.get_string("panw.panos.public.ipv6") {
                         // Validate IP format
                         let s = s.trim();
@@ -8254,7 +8254,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.private.ipv6") {
+                if event.has_value("panw.panos.private.ipv6") {
                     if let Some(s) = event.get_string("panw.panos.private.ipv6") {
                         // Validate IP format
                         let s = s.trim();
@@ -8298,7 +8298,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.end_ip_address") {
+                if event.has_value("panw.panos.end_ip_address") {
                     if let Some(s) = event.get_string("panw.panos.end_ip_address") {
                         // Validate IP format
                         let s = s.trim();
@@ -8342,7 +8342,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.remote_user.ip") {
+                if event.has_value("panw.panos.remote_user.ip") {
                     if let Some(s) = event.get_string("panw.panos.remote_user.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -8386,7 +8386,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.bytes") {
+                if event.has_value("source.bytes") {
                     if let Some(val) = event.get("source.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8452,7 +8452,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.packets") {
+                if event.has_value("source.packets") {
                     if let Some(val) = event.get("source.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8518,7 +8518,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.port") {
+                if event.has_value("source.port") {
                     if let Some(val) = event.get("source.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8584,7 +8584,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.source.port") {
+                if event.has_value("panw.panos.source.port") {
                     if let Some(val) = event.get("panw.panos.source.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8650,7 +8650,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.source.nat.port") {
+                if event.has_value("panw.panos.source.nat.port") {
                     if let Some(val) = event.get("panw.panos.source.nat.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8716,7 +8716,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.bytes") {
+                if event.has_value("destination.bytes") {
                     if let Some(val) = event.get("destination.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8782,7 +8782,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.packets") {
+                if event.has_value("destination.packets") {
                     if let Some(val) = event.get("destination.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8848,7 +8848,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.port") {
+                if event.has_value("destination.port") {
                     if let Some(val) = event.get("destination.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8914,7 +8914,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.destination.port") {
+                if event.has_value("panw.panos.destination.port") {
                     if let Some(val) = event.get("panw.panos.destination.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -8980,7 +8980,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.destination.nat.port") {
+                if event.has_value("panw.panos.destination.nat.port") {
                     if let Some(val) = event.get("panw.panos.destination.nat.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9046,7 +9046,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("network.bytes") {
+                if event.has_value("network.bytes") {
                     if let Some(val) = event.get("network.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9112,7 +9112,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("network.packets") {
+                if event.has_value("network.packets") {
                     if let Some(val) = event.get("network.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9178,7 +9178,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("event.duration") {
+                if event.has_value("event.duration") {
                     if let Some(val) = event.get("event.duration") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9244,7 +9244,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("_temp_.labels") {
+                if event.has_value("_temp_.labels") {
                     if let Some(val) = event.get("_temp_.labels") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9310,7 +9310,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.nat.port") {
+                if event.has_value("source.nat.port") {
                     if let Some(val) = event.get("source.nat.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9376,7 +9376,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.nat.port") {
+                if event.has_value("destination.nat.port") {
                     if let Some(val) = event.get("destination.nat.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9442,7 +9442,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.repeat_count") {
+                if event.has_value("panw.panos.repeat_count") {
                     if let Some(val) = event.get("panw.panos.repeat_count") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9508,7 +9508,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.sctp.chunks") {
+                if event.has_value("panw.panos.sctp.chunks") {
                     if let Some(val) = event.get("panw.panos.sctp.chunks") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9574,7 +9574,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.sctp.chunks_sent") {
+                if event.has_value("panw.panos.sctp.chunks_sent") {
                     if let Some(val) = event.get("panw.panos.sctp.chunks_sent") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9640,7 +9640,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.sctp.chunks_received") {
+                if event.has_value("panw.panos.sctp.chunks_received") {
                     if let Some(val) = event.get("panw.panos.sctp.chunks_received") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9706,7 +9706,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.network.bytes") {
+                if event.has_value("panw.panos.network.bytes") {
                     if let Some(val) = event.get("panw.panos.network.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9772,7 +9772,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.network.packets") {
+                if event.has_value("panw.panos.network.packets") {
                     if let Some(val) = event.get("panw.panos.network.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9838,7 +9838,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.bytes_sent") {
+                if event.has_value("panw.panos.bytes_sent") {
                     if let Some(val) = event.get("panw.panos.bytes_sent") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9904,7 +9904,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.packets_sent") {
+                if event.has_value("panw.panos.packets_sent") {
                     if let Some(val) = event.get("panw.panos.packets_sent") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9970,7 +9970,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.bytes_received") {
+                if event.has_value("panw.panos.bytes_received") {
                     if let Some(val) = event.get("panw.panos.bytes_received") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10036,7 +10036,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.packets_received") {
+                if event.has_value("panw.panos.packets_received") {
                     if let Some(val) = event.get("panw.panos.packets_received") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10102,7 +10102,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.elapsed_time") {
+                if event.has_value("panw.panos.elapsed_time") {
                     if let Some(val) = event.get("panw.panos.elapsed_time") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10168,7 +10168,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.timeout") {
+                if event.has_value("panw.panos.timeout") {
                     if let Some(val) = event.get("panw.panos.timeout") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10234,7 +10234,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.error_code") {
+                if event.has_value("panw.panos.error_code") {
                     if let Some(val) = event.get("panw.panos.error_code") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10300,7 +10300,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.factorno") {
+                if event.has_value("panw.panos.factorno") {
                     if let Some(val) = event.get("panw.panos.factorno") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10366,7 +10366,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.certificate.size") {
+                if event.has_value("panw.panos.certificate.size") {
                     if let Some(val) = event.get("panw.panos.certificate.size") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10423,7 +10423,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("tls.client.x509.public_key_size") {
+                if event.has_value("tls.client.x509.public_key_size") {
                     if let Some(val) = event.get("tls.client.x509.public_key_size") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10481,7 +10481,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.issuer_common_name.length") {
+                if event.has_value("panw.panos.issuer_common_name.length") {
                     if let Some(val) = event.get("panw.panos.issuer_common_name.length") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10550,7 +10550,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.root_common_name.length") {
+                if event.has_value("panw.panos.root_common_name.length") {
                     if let Some(val) = event.get("panw.panos.root_common_name.length") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10616,7 +10616,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.subject_common_name.length") {
+                if event.has_value("panw.panos.subject_common_name.length") {
                     if let Some(val) = event.get("panw.panos.subject_common_name.length") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10685,7 +10685,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.server_name_indication.length") {
+                if event.has_value("panw.panos.server_name_indication.length") {
                     if let Some(val) = event.get("panw.panos.server_name_indication.length") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10754,7 +10754,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.link.change_count") {
+                if event.has_value("panw.panos.link.change_count") {
                     if let Some(val) = event.get("panw.panos.link.change_count") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10820,7 +10820,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.login_duration") {
+                if event.has_value("panw.panos.login_duration") {
                     if let Some(val) = event.get("panw.panos.login_duration") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10886,7 +10886,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.strict_check") {
+                if event.has_value("panw.panos.strict_check") {
                     if let Some(val) = event.get("panw.panos.strict_check") {
                         let converted = match val {
                             Value::String(s) => {
@@ -10952,7 +10952,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.tunnel_fragment") {
+                if event.has_value("panw.panos.tunnel_fragment") {
                     if let Some(val) = event.get("panw.panos.tunnel_fragment") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11018,7 +11018,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.unknown_protocol") {
+                if event.has_value("panw.panos.unknown_protocol") {
                     if let Some(val) = event.get("panw.panos.unknown_protocol") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11084,7 +11084,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.sessions.closed") {
+                if event.has_value("panw.panos.sessions.closed") {
                     if let Some(val) = event.get("panw.panos.sessions.closed") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11150,7 +11150,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.sessions.created") {
+                if event.has_value("panw.panos.sessions.created") {
                     if let Some(val) = event.get("panw.panos.sessions.created") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11216,7 +11216,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.max_encapsulation") {
+                if event.has_value("panw.panos.max_encapsulation") {
                     if let Some(val) = event.get("panw.panos.max_encapsulation") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11282,7 +11282,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.application.risk_level") {
+                if event.has_value("panw.panos.application.risk_level") {
                     if let Some(val) = event.get("panw.panos.application.risk_level") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11348,7 +11348,7 @@ impl Transform for Default {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("panw.panos.response_time") {
+                if event.has_value("panw.panos.response_time") {
                     if let Some(val) = event.get("panw.panos.response_time") {
                         let converted = match val {
                             Value::String(s) => {
@@ -11412,7 +11412,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("panw.panos.src.mac") {
+            if event.has_value("panw.panos.src.mac") {
                 if let Some(s) = event.get_string("panw.panos.src.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -11420,14 +11420,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("panw.panos.src.mac") {
+            if event.has_value("panw.panos.src.mac") {
                 if let Some(s) = event.get_string("panw.panos.src.mac") {
                     let uppered = s.to_uppercase();
                     event.set("panw.panos.src.mac", uppered)?;
                 }
             }
 
-            if event.has("panw.panos.dst.mac") {
+            if event.has_value("panw.panos.dst.mac") {
                 if let Some(s) = event.get_string("panw.panos.dst.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -11435,14 +11435,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("panw.panos.dst.mac") {
+            if event.has_value("panw.panos.dst.mac") {
                 if let Some(s) = event.get_string("panw.panos.dst.mac") {
                     let uppered = s.to_uppercase();
                     event.set("panw.panos.dst.mac", uppered)?;
                 }
             }
 
-            if event.has("host.mac") {
+            if event.has_value("host.mac") {
                 if let Some(s) = event.get_string("host.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -11450,14 +11450,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("host.mac") {
+            if event.has_value("host.mac") {
                 if let Some(s) = event.get_string("host.mac") {
                     let uppered = s.to_uppercase();
                     event.set("host.mac", uppered)?;
                 }
             }
 
-            if event.has("panw.panos.machine.mac_address") {
+            if event.has_value("panw.panos.machine.mac_address") {
                 if let Some(s) = event.get_string("panw.panos.machine.mac_address") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -11465,28 +11465,28 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("panw.panos.machine.mac_address") {
+            if event.has_value("panw.panos.machine.mac_address") {
                 if let Some(s) = event.get_string("panw.panos.machine.mac_address") {
                     let uppered = s.to_uppercase();
                     event.set("panw.panos.machine.mac_address", uppered)?;
                 }
             }
 
-            if event.has("network.application") {
+            if event.has_value("network.application") {
                 if let Some(s) = event.get_string("network.application") {
                     let lowered = s.to_lowercase();
                     event.set("network.application", lowered)?;
                 }
             }
 
-            if event.has("network.transport") {
+            if event.has_value("network.transport") {
                 if let Some(s) = event.get_string("network.transport") {
                     let lowered = s.to_lowercase();
                     event.set("network.transport", lowered)?;
                 }
             }
 
-            if event.has("network.protocol") {
+            if event.has_value("network.protocol") {
                 if let Some(s) = event.get_string("network.protocol") {
                     let lowered = s.to_lowercase();
                     event.set("network.protocol", lowered)?;
@@ -11544,7 +11544,7 @@ impl Transform for Default {
                 event.rename("_temp_.srcuser", "panw.panos.x_forwarded_for")?;
             }
 
-            if event.has("panw.panos.x_forwarded_for") {
+            if event.has_value("panw.panos.x_forwarded_for") {
                 if let Some(s) = event.get_string("panw.panos.x_forwarded_for") {
                     let re = cached_regex!("x-fwd-for: ");
                     let replaced = re.replace_all(&s, "").into_owned();
@@ -11554,7 +11554,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.srcuser") };
             if _cond {
-                if event.has("_temp_.srcuser") {
+                if event.has_value("_temp_.srcuser") {
                     if let Some(input) = event.get_string("_temp_.srcuser") {
                         // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
                         if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
@@ -11574,7 +11574,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.dstuser") };
             if _cond {
-                if event.has("_temp_.dstuser") {
+                if event.has_value("_temp_.dstuser") {
                     if let Some(input) = event.get_string("_temp_.dstuser") {
                         // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
                         if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
@@ -11741,7 +11741,7 @@ impl Transform for Default {
                 event.set("event.action", json!("wildfire_virus_detected"))?;
             }
 
-            if event.has("log.level") {
+            if event.has_value("log.level") {
                 if let Some(s) = event.get_string("log.level") {
                     let lowered = s.to_lowercase();
                     event.set("log.level", lowered)?;
@@ -12112,7 +12112,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("_temp_.user_agent") {
+            if event.has_value("_temp_.user_agent") {
                 if let Some(ua_str) = event.get_string("_temp_.user_agent") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
@@ -12141,7 +12141,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -12158,7 +12158,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.nat.ip") && !event.has_value("source.as") };
             if _cond {
-                if event.has("source.nat.ip") {
+                if event.has_value("source.nat.ip") {
                     if let Some(ip_str) = event.get_string("source.nat.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -12174,7 +12174,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -12192,7 +12192,7 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("destination.nat.ip") && !event.has_value("destination.as") };
             if _cond {
-                if event.has("destination.nat.ip") {
+                if event.has_value("destination.nat.ip") {
                     if let Some(ip_str) = event.get_string("destination.nat.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-ASN.mmdb)

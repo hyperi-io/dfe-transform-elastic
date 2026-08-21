@@ -509,7 +509,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.ipAddress") {
+                if event.has_value("json.client.ipAddress") {
                     if let Some(s) = event.get_string("json.client.ipAddress") {
                         // Validate IP format
                         let s = s.trim();
@@ -651,7 +651,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.flattened.behaviors") {
+                    if event.has_value("okta.debug_context.debug_data.flattened.behaviors") {
                         if let Some(input) =
                             event.get_string("okta.debug_context.debug_data.flattened.behaviors")
                         {
@@ -742,7 +742,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.flattened.risk") {
+                    if event.has_value("okta.debug_context.debug_data.flattened.risk") {
                         if let Some(input) =
                             event.get_string("okta.debug_context.debug_data.flattened.risk")
                         {
@@ -1166,7 +1166,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.behaviors") {
+                    if event.has_value("okta.debug_context.debug_data.behaviors") {
                         if let Some(input) =
                             event.get_string("okta.debug_context.debug_data.behaviors")
                         {
@@ -1252,7 +1252,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.risk") {
+                    if event.has_value("okta.debug_context.debug_data.risk") {
                         if let Some(input) = event.get_string("okta.debug_context.debug_data.risk")
                         {
                             let mut remaining: &str = &input;
@@ -1797,7 +1797,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("okta.request.ip_chain") {
+            if event.has_value("okta.request.ip_chain") {
                 if let Some(Value::Array(items)) = event.get("okta.request.ip_chain").cloned() {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
@@ -1819,7 +1819,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("okta.request.ip_chain") {
+            if event.has_value("okta.request.ip_chain") {
                 if let Some(Value::Array(items)) = event.get("okta.request.ip_chain").cloned() {
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
@@ -1945,7 +1945,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("okta.outcome.result") {
+            if event.has_value("okta.outcome.result") {
                 if let Some(s) = event.get_string("okta.outcome.result") {
                     let lowered = s.to_lowercase();
                     event.set("okta.outcome.result_lower", lowered)?;
@@ -2147,7 +2147,7 @@ impl Transform for Default {
 
             event.remove("json");
 
-            if event.has("user_agent.original") {
+            if event.has_value("user_agent.original") {
                 if let Some(ua_str) = event.get_string("user_agent.original") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
@@ -2176,7 +2176,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -2209,7 +2209,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -2242,7 +2242,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -2257,7 +2257,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -2297,7 +2297,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("okta_url") {
+            if event.has_value("okta_url") {
                 uri_parts(event, "okta_url", "okta_url", false, false)?;
             }
 

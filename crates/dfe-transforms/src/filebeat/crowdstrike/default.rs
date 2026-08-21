@@ -96,7 +96,7 @@ impl Transform for Default {
 
             event.set("observer.product", json!("Falcon"))?;
 
-            if event.has("crowdstrike.event.IncidentType") {
+            if event.has_value("crowdstrike.event.IncidentType") {
                 if let Some(val) = event.get("crowdstrike.event.IncidentType") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -109,7 +109,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("crowdstrike.event.PatternId") {
+            if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -499,7 +499,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.Score") {
+                    if event.has_value("crowdstrike.event.Score") {
                         if let Some(val) = event.get("crowdstrike.event.Score") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -583,7 +583,7 @@ impl Transform for Default {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
                             event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.PatternId") {
+                            if event.has_value("_ingest._value.PatternId") {
                                 if let Some(val) = event.get("_ingest._value.PatternId") {
                                     let converted = match val {
                                         Value::String(_) => val.clone(),
@@ -614,7 +614,7 @@ impl Transform for Default {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
                             event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.TemplateInstanceId") {
+                            if event.has_value("_ingest._value.TemplateInstanceId") {
                                 if let Some(val) = event.get("_ingest._value.TemplateInstanceId") {
                                     let converted = match val {
                                         Value::String(_) => val.clone(),
@@ -647,7 +647,7 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             // on_failure: 2 handler(s)
                             if let Err(err) = (|| -> Result<()> {
-                                if event.has("_ingest._value.Severity") {
+                                if event.has_value("_ingest._value.Severity") {
                                     if let Some(val) = event.get("_ingest._value.Severity") {
                                         let converted = match val {
                                             Value::String(s) => {
@@ -727,7 +727,7 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             // on_failure: 2 handler(s)
                             if let Err(err) = (|| -> Result<()> {
-                                if event.has("_ingest._value.PatternDisposition") {
+                                if event.has_value("_ingest._value.PatternDisposition") {
                                     if let Some(val) =
                                         event.get("_ingest._value.PatternDisposition")
                                     {
@@ -978,7 +978,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if event.has("crowdstrike.event.IPv4") {
+                        if event.has_value("crowdstrike.event.IPv4") {
                             if let Some(s) = event.get_string("crowdstrike.event.IPv4") {
                                 // Validate IP format
                                 let s = s.trim();
@@ -1026,7 +1026,7 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if event.has("crowdstrike.event.IPv6") {
+                        if event.has_value("crowdstrike.event.IPv6") {
                             if let Some(s) = event.get_string("crowdstrike.event.IPv6") {
                                 // Validate IP format
                                 let s = s.trim();
@@ -1070,7 +1070,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("threat.indicator.ip") {
+                if event.has_value("threat.indicator.ip") {
                     if let Some(ip_str) = event.get_string("threat.indicator.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -1102,7 +1102,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("threat.indicator.ip") {
+                if event.has_value("threat.indicator.ip") {
                     if let Some(ip_str) = event.get_string("threat.indicator.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -1323,7 +1323,7 @@ impl Transform for Default {
                 event.append("event.type", json!("info"))?;
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.DataVolume") {
+                    if event.has_value("crowdstrike.event.DataVolume") {
                         if let Some(val) = event.get("crowdstrike.event.DataVolume") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -1399,7 +1399,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.ContentPatterns.ConfidenceLevel") {
+                    if event.has_value("crowdstrike.event.ContentPatterns.ConfidenceLevel") {
                         if let Some(val) =
                             event.get("crowdstrike.event.ContentPatterns.ConfidenceLevel")
                         {
@@ -1473,7 +1473,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.ContentPatterns.MatchCount") {
+                    if event.has_value("crowdstrike.event.ContentPatterns.MatchCount") {
                         if let Some(val) = event.get("crowdstrike.event.ContentPatterns.MatchCount")
                         {
                             let converted = match val {
@@ -1562,7 +1562,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.FilesEgressedCount") {
+                    if event.has_value("crowdstrike.event.FilesEgressedCount") {
                         if let Some(val) = event.get("crowdstrike.event.FilesEgressedCount") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -1646,7 +1646,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserNotified") {
+                    if event.has_value("crowdstrike.event.UserNotified") {
                         if let Some(val) = event.get("crowdstrike.event.UserNotified") {
                             let converted = match val {
                                 Value::Bool(_) => val.clone(),
@@ -1702,7 +1702,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserMapped") {
+                    if event.has_value("crowdstrike.event.UserMapped") {
                         if let Some(val) = event.get("crowdstrike.event.UserMapped") {
                             let converted = match val {
                                 Value::Bool(_) => val.clone(),
@@ -1758,7 +1758,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.IsClipboard") {
+                    if event.has_value("crowdstrike.event.IsClipboard") {
                         if let Some(val) = event.get("crowdstrike.event.IsClipboard") {
                             let converted = match val {
                                 Value::Bool(_) => val.clone(),
@@ -2124,7 +2124,7 @@ impl Transform for Default {
                 {
                     event.set("host.name", v)?;
                 }
-                if event.has("crowdstrike.event.Platform") {
+                if event.has_value("crowdstrike.event.Platform") {
                     if let Some(s) = event.get_string("crowdstrike.event.Platform") {
                         let lowered = s.to_lowercase();
                         event.set("host.os.platform", lowered)?;
@@ -2271,7 +2271,7 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.ProcessId") {
                     event.rename("crowdstrike.event.ProcessId", "process.pid")?;
                 }
-                if event.has("crowdstrike.event.HostGroups") {
+                if event.has_value("crowdstrike.event.HostGroups") {
                     if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
                         let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                         event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
@@ -2389,7 +2389,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("host.mac") };
                 if _cond {
-                    if event.has("host.mac") {
+                    if event.has_value("host.mac") {
                         if let Some(s) = event.get_string("host.mac") {
                             let uppered = s.to_uppercase();
                             event.set("host.mac", uppered)?;
@@ -2760,7 +2760,7 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.ProcessId") {
                     event.rename("crowdstrike.event.ProcessId", "process.pid")?;
                 }
-                if event.has("crowdstrike.event.HostGroups") {
+                if event.has_value("crowdstrike.event.HostGroups") {
                     if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
                         let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                         event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
@@ -2878,7 +2878,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("host.mac") };
                 if _cond {
-                    if event.has("host.mac") {
+                    if event.has_value("host.mac") {
                         if let Some(s) = event.get_string("host.mac") {
                             let uppered = s.to_uppercase();
                             event.set("host.mac", uppered)?;
@@ -2984,7 +2984,7 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.MobileDetectionId") {
                     event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
                 }
-                if event.has("event.id") {
+                if event.has_value("event.id") {
                     if let Some(val) = event.get("event.id") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -3087,7 +3087,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.Severity") {
+                    if event.has_value("crowdstrike.event.Severity") {
                         if let Some(val) = event.get("crowdstrike.event.Severity") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -3175,7 +3175,7 @@ impl Transform for Default {
                 event.append("event.action", json!("incident"))?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserId") {
+                    if event.has_value("crowdstrike.event.UserId") {
                         if let Some(input) = event.get_string("crowdstrike.event.UserId") {
                             // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                             if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
@@ -3318,7 +3318,7 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
-                if event.has("crowdstrike.event.PatternId") {
+                if event.has_value("crowdstrike.event.PatternId") {
                     if let Some(val) = event.get("crowdstrike.event.PatternId") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -3657,7 +3657,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.StartTimeEpoch") };
                 if _cond {
-                    if event.has("crowdstrike.event.StartTimeEpoch") {
+                    if event.has_value("crowdstrike.event.StartTimeEpoch") {
                         if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -3723,7 +3723,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.EndTimeEpoch") };
                 if _cond {
-                    if event.has("crowdstrike.event.EndTimeEpoch") {
+                    if event.has_value("crowdstrike.event.EndTimeEpoch") {
                         if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -3836,7 +3836,7 @@ impl Transform for Default {
                         "host.geo.country_iso_code",
                     )?;
                 }
-                if event.has("crowdstrike.event.PatternId") {
+                if event.has_value("crowdstrike.event.PatternId") {
                     if let Some(val) = event.get("crowdstrike.event.PatternId") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -3950,7 +3950,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.ContextTimeStamp") };
                 if _cond {
-                    if event.has("crowdstrike.event.ContextTimeStamp") {
+                    if event.has_value("crowdstrike.event.ContextTimeStamp") {
                         if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -4012,7 +4012,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.AccountCreationTimeStamp") };
                 if _cond {
-                    if event.has("crowdstrike.event.AccountCreationTimeStamp") {
+                    if event.has_value("crowdstrike.event.AccountCreationTimeStamp") {
                         if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -4075,7 +4075,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.StartTime") };
                 if _cond {
-                    if event.has("crowdstrike.event.StartTime") {
+                    if event.has_value("crowdstrike.event.StartTime") {
                         if let Some(val) = event.get("crowdstrike.event.StartTime") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -4133,7 +4133,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.EndTime") };
                 if _cond {
-                    if event.has("crowdstrike.event.EndTime") {
+                    if event.has_value("crowdstrike.event.EndTime") {
                         if let Some(val) = event.get("crowdstrike.event.EndTime") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -4473,7 +4473,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.StartTime") };
                 if _cond {
-                    if event.has("crowdstrike.event.StartTime") {
+                    if event.has_value("crowdstrike.event.StartTime") {
                         if let Some(val) = event.get("crowdstrike.event.StartTime") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -4531,7 +4531,7 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.EndTime") };
                 if _cond {
-                    if event.has("crowdstrike.event.EndTime") {
+                    if event.has_value("crowdstrike.event.EndTime") {
                         if let Some(val) = event.get("crowdstrike.event.EndTime") {
                             let converted = match val {
                                 Value::String(_) => val.clone(),
@@ -4822,7 +4822,7 @@ impl Transform for Default {
                 event.set("event.action", json!("user_activity_audit_event"))?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserId") {
+                    if event.has_value("crowdstrike.event.UserId") {
                         if let Some(input) = event.get_string("crowdstrike.event.UserId") {
                             // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                             if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
@@ -4954,7 +4954,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserId") {
+                    if event.has_value("crowdstrike.event.UserId") {
                         if let Some(input) = event.get_string("crowdstrike.event.UserId") {
                             // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                             if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
@@ -5076,7 +5076,7 @@ impl Transform for Default {
                 if event.has("crowdstrike.event.Ipv") {
                     event.rename("crowdstrike.event.Ipv", "network.type")?;
                 }
-                if event.has("crowdstrike.event.PID") {
+                if event.has_value("crowdstrike.event.PID") {
                     if let Some(val) = event.get("crowdstrike.event.PID") {
                         let converted = match val {
                             Value::String(s) => {
@@ -5176,7 +5176,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("ingress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.LocalPort") {
+                    if event.has_value("crowdstrike.event.LocalPort") {
                         if let Some(val) = event.get("crowdstrike.event.LocalPort") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -5223,7 +5223,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("ingress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.RemotePort") {
+                    if event.has_value("crowdstrike.event.RemotePort") {
                         if let Some(val) = event.get("crowdstrike.event.RemotePort") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -5288,7 +5288,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("egress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.LocalPort") {
+                    if event.has_value("crowdstrike.event.LocalPort") {
                         if let Some(val) = event.get("crowdstrike.event.LocalPort") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -5335,7 +5335,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("egress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.RemotePort") {
+                    if event.has_value("crowdstrike.event.RemotePort") {
                         if let Some(val) = event.get("crowdstrike.event.RemotePort") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -5396,7 +5396,7 @@ impl Transform for Default {
                 event.append("event.type", json!("start"))?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserName") {
+                    if event.has_value("crowdstrike.event.UserName") {
                         if let Some(input) = event.get_string("crowdstrike.event.UserName") {
                             // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                             if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
@@ -5475,7 +5475,7 @@ impl Transform for Default {
                 event.append("event.type", json!("end"))?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("crowdstrike.event.UserName") {
+                    if event.has_value("crowdstrike.event.UserName") {
                         if let Some(input) = event.get_string("crowdstrike.event.UserName") {
                             // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                             if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
@@ -5597,7 +5597,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
+                if event.has_value("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
                     if let Some(val) =
                         event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration")
                     {
@@ -5628,7 +5628,7 @@ impl Transform for Default {
                         )?;
                     }
                 }
-                if event.has("crowdstrike.event.ExecutionMetadata.ResultCount") {
+                if event.has_value("crowdstrike.event.ExecutionMetadata.ResultCount") {
                     if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount")
                     {
                         let converted = match val {
@@ -5720,7 +5720,7 @@ impl Transform for Default {
                         event.set("user.email", v)?;
                     }
                 }
-                if event.has("crowdstrike.event.Status") {
+                if event.has_value("crowdstrike.event.Status") {
                     if let Some(val) = event.get("crowdstrike.event.Status") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -5860,7 +5860,7 @@ impl Transform for Default {
                 event.set("_id", json!(hash))?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -5893,7 +5893,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -5916,7 +5916,7 @@ impl Transform for Default {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -5949,7 +5949,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -6108,7 +6108,7 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            if event.has("_ingest._value.PatternID") {
+                            if event.has_value("_ingest._value.PatternID") {
                                 if let Some(val) = event.get("_ingest._value.PatternID") {
                                     let converted = match val {
                                         Value::String(_) => val.clone(),

@@ -79,7 +79,7 @@ impl Transform for Traffic {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("fortinet.firewall.tranip") {
+                if event.has_value("fortinet.firewall.tranip") {
                     if let Some(s) = event.get_string("fortinet.firewall.tranip") {
                         // Validate IP format
                         let s = s.trim();
@@ -123,7 +123,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.dstport") {
+                if event.has_value("fortinet.firewall.dstport") {
                     if let Some(val) = event.get("fortinet.firewall.dstport") {
                         let converted = match val {
                             Value::String(s) => {
@@ -163,7 +163,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.tranport") {
+                if event.has_value("fortinet.firewall.tranport") {
                     if let Some(val) = event.get("fortinet.firewall.tranport") {
                         let converted = match val {
                             Value::String(s) => {
@@ -203,7 +203,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.rcvddelta") {
+                if event.has_value("fortinet.firewall.rcvddelta") {
                     if let Some(val) = event.get("fortinet.firewall.rcvddelta") {
                         let converted = match val {
                             Value::String(s) => {
@@ -243,7 +243,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.rcvdbyte") {
+                if event.has_value("fortinet.firewall.rcvdbyte") {
                     if let Some(val) = event.get("fortinet.firewall.rcvdbyte") {
                         let converted = match val {
                             Value::String(s) => {
@@ -283,7 +283,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.rcvdpkt") {
+                if event.has_value("fortinet.firewall.rcvdpkt") {
                     if let Some(val) = event.get("fortinet.firewall.rcvdpkt") {
                         let converted = match val {
                             Value::String(s) => {
@@ -347,7 +347,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.sentdelta") {
+                if event.has_value("fortinet.firewall.sentdelta") {
                     if let Some(val) = event.get("fortinet.firewall.sentdelta") {
                         let converted = match val {
                             Value::String(s) => {
@@ -387,7 +387,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.sentbyte") {
+                if event.has_value("fortinet.firewall.sentbyte") {
                     if let Some(val) = event.get("fortinet.firewall.sentbyte") {
                         let converted = match val {
                             Value::String(s) => {
@@ -439,7 +439,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.srcport") {
+                if event.has_value("fortinet.firewall.srcport") {
                     if let Some(val) = event.get("fortinet.firewall.srcport") {
                         let converted = match val {
                             Value::String(s) => {
@@ -502,7 +502,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.sentpkt") {
+                if event.has_value("fortinet.firewall.sentpkt") {
                     if let Some(val) = event.get("fortinet.firewall.sentpkt") {
                         let converted = match val {
                             Value::String(s) => {
@@ -542,7 +542,7 @@ impl Transform for Traffic {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("fortinet.firewall.transip") {
+                if event.has_value("fortinet.firewall.transip") {
                     if let Some(s) = event.get_string("fortinet.firewall.transip") {
                         // Validate IP format
                         let s = s.trim();
@@ -586,7 +586,7 @@ impl Transform for Traffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.transport") {
+                if event.has_value("fortinet.firewall.transport") {
                     if let Some(val) = event.get("fortinet.firewall.transport") {
                         let converted = match val {
                             Value::String(s) => {
@@ -670,7 +670,7 @@ impl Transform for Traffic {
                 event.rename("fortinet.firewall.appcat", "rule.category")?;
             }
 
-            if event.has("rule.category") {
+            if event.has_value("rule.category") {
                 if let Some(s) = event.get_string("rule.category") {
                     let re = cached_regex!("\\.");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -690,7 +690,7 @@ impl Transform for Traffic {
                 event.rename("fortinet.firewall.srcthreatfeed", "threat.feed.name")?;
             }
 
-            if event.has("network.protocol") {
+            if event.has_value("network.protocol") {
                 if let Some(s) = event.get_string("network.protocol") {
                     let lowered = s.to_lowercase();
                     event.set("network.protocol", lowered)?;

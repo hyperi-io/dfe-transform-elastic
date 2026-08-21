@@ -45,7 +45,7 @@ impl Transform for IpdDetectionSummary {
                 )?;
             }
 
-            if event.has("crowdstrike.event.PatternId") {
+            if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -175,7 +175,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.ContextTimeStamp") };
             if _cond {
-                if event.has("crowdstrike.event.ContextTimeStamp") {
+                if event.has_value("crowdstrike.event.ContextTimeStamp") {
                     if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -234,7 +234,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.AccountCreationTimeStamp") };
             if _cond {
-                if event.has("crowdstrike.event.AccountCreationTimeStamp") {
+                if event.has_value("crowdstrike.event.AccountCreationTimeStamp") {
                     if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -297,7 +297,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.StartTime") };
             if _cond {
-                if event.has("crowdstrike.event.StartTime") {
+                if event.has_value("crowdstrike.event.StartTime") {
                     if let Some(val) = event.get("crowdstrike.event.StartTime") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -356,7 +356,7 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.EndTime") };
             if _cond {
-                if event.has("crowdstrike.event.EndTime") {
+                if event.has_value("crowdstrike.event.EndTime") {
                     if let Some(val) = event.get("crowdstrike.event.EndTime") {
                         let converted = match val {
                             Value::String(_) => val.clone(),

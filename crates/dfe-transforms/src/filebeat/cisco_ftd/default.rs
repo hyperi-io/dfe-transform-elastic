@@ -7196,7 +7196,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("_temp_.cisco.dap_records") {
+            if event.has_value("_temp_.cisco.dap_records") {
                 if let Some(s) = event.get_string("_temp_.cisco.dap_records") {
                     let parts: Vec<Value> = cached_regex!(",\\s+")
                         .split(&s)
@@ -8894,7 +8894,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("_temp_.cisco.source_user_security_group_tag") {
+            if event.has_value("_temp_.cisco.source_user_security_group_tag") {
                 if let Some(val) = event.get("_temp_.cisco.source_user_security_group_tag") {
                     let converted = match val {
                         Value::String(s) => {
@@ -8941,7 +8941,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("_temp_.cisco.destination_user_security_group_tag") {
+            if event.has_value("_temp_.cisco.destination_user_security_group_tag") {
                 if let Some(val) = event.get("_temp_.cisco.destination_user_security_group_tag") {
                     let converted = match val {
                         Value::String(s) => {
@@ -9181,7 +9181,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("event.outcome") {
+            if event.has_value("event.outcome") {
                 if let Some(s) = event.get_string("event.outcome") {
                     let lowered = s.to_lowercase();
                     event.set("event.outcome", lowered)?;
@@ -9225,7 +9225,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("source.port") {
+                if event.has_value("source.port") {
                     if let Some(val) = event.get("source.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9265,7 +9265,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("destination.port") {
+                if event.has_value("destination.port") {
                     if let Some(val) = event.get("destination.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9305,7 +9305,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("source.bytes") {
+                if event.has_value("source.bytes") {
                     if let Some(val) = event.get("source.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9345,7 +9345,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("destination.bytes") {
+                if event.has_value("destination.bytes") {
                     if let Some(val) = event.get("destination.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9385,7 +9385,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("network.bytes") {
+                if event.has_value("network.bytes") {
                     if let Some(val) = event.get("network.bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9425,7 +9425,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("source.packets") {
+                if event.has_value("source.packets") {
                     if let Some(val) = event.get("source.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9465,7 +9465,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("destination.packets") {
+                if event.has_value("destination.packets") {
                     if let Some(val) = event.get("destination.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9505,7 +9505,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_temp_.cisco.mapped_source_port") {
+                if event.has_value("_temp_.cisco.mapped_source_port") {
                     if let Some(val) = event.get("_temp_.cisco.mapped_source_port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9545,7 +9545,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_temp_.cisco.mapped_destination_port") {
+                if event.has_value("_temp_.cisco.mapped_destination_port") {
                     if let Some(val) = event.get("_temp_.cisco.mapped_destination_port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9585,7 +9585,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_temp_.cisco.icmp_code") {
+                if event.has_value("_temp_.cisco.icmp_code") {
                     if let Some(val) = event.get("_temp_.cisco.icmp_code") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9625,7 +9625,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_temp_.cisco.icmp_type") {
+                if event.has_value("_temp_.cisco.icmp_type") {
                     if let Some(val) = event.get("_temp_.cisco.icmp_type") {
                         let converted = match val {
                             Value::String(s) => {
@@ -9737,7 +9737,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("network.iana_number") {
+                if event.has_value("network.iana_number") {
                     if let Some(val) = event.get("network.iana_number") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -9832,7 +9832,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -9865,7 +9865,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -9898,7 +9898,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -9913,7 +9913,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -9984,7 +9984,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.nat.ip") {
+            if event.has_value("source.nat.ip") {
                 if let Some(s) = event.get_string("source.nat.ip") {
                     // Validate IP format
                     let s = s.trim();
@@ -10015,7 +10015,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.nat.port") {
+            if event.has_value("source.nat.port") {
                 if let Some(val) = event.get("source.nat.port") {
                     let converted = match val {
                         Value::String(s) => {
@@ -10066,7 +10066,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.nat.ip") {
+            if event.has_value("destination.nat.ip") {
                 if let Some(s) = event.get_string("destination.nat.ip") {
                     // Validate IP format
                     let s = s.trim();
@@ -10097,7 +10097,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.nat.port") {
+            if event.has_value("destination.nat.port") {
                 if let Some(val) = event.get("destination.nat.port") {
                     let converted = match val {
                         Value::String(s) => {
@@ -10412,7 +10412,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("dns.question.name") {
+                if event.has_value("dns.question.name") {
                     if let Some(domain_str) = event.get_string("dns.question.name") {
                         let domain = domain_str.to_string();
                         event.set("dns.question.domain", json!(domain.clone()))?;
@@ -10969,7 +10969,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("source.ip") {
+                if event.has_value("source.ip") {
                     // Community ID v1 hash
                     if let (Some(src_ip), Some(dst_ip), Some(protocol)) = (
                         event.get_string("source.ip"),

@@ -92,7 +92,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.audit.ttl") {
+                if event.has_value("microsoft_dnsserver.audit.ttl") {
                     if let Some(val) = event.get("microsoft_dnsserver.audit.ttl") {
                         let converted = match val {
                             Value::String(s) => {
@@ -138,7 +138,7 @@ impl Transform for Default {
                 event.set("dns.answers.ttl", v)?;
             }
 
-            if event.has("microsoft_dnsserver.audit.question_name") {
+            if event.has_value("microsoft_dnsserver.audit.question_name") {
                 if let Some(s) = event.get_string("microsoft_dnsserver.audit.question_name") {
                     let re = cached_regex!("\\.$");
                     let replaced = re.replace_all(&s, "").into_owned();
@@ -148,7 +148,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("_temp.question_name") {
+                if event.has_value("_temp.question_name") {
                     if let Some(domain_str) = event.get_string("_temp.question_name") {
                         let domain = domain_str.to_string();
                         event.set("dns.question.domain", json!(domain.clone()))?;
@@ -222,7 +222,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.audit.bytes_sent") {
+                if event.has_value("microsoft_dnsserver.audit.bytes_sent") {
                     if let Some(val) = event.get("microsoft_dnsserver.audit.bytes_sent") {
                         let converted = match val {
                             Value::String(s) => {
@@ -272,7 +272,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.audit.Source") {
+                if event.has_value("microsoft_dnsserver.audit.Source") {
                     if let Some(s) = event.get_string("microsoft_dnsserver.audit.Source") {
                         // Validate IP format
                         let s = s.trim();
@@ -302,7 +302,7 @@ impl Transform for Default {
                 event.set("source.ip", v)?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -335,7 +335,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -362,7 +362,7 @@ impl Transform for Default {
                 event.rename("winlog.process", "process")?;
             }
 
-            if event.has("winlog.record_id") {
+            if event.has_value("winlog.record_id") {
                 if let Some(val) = event.get("winlog.record_id") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -401,7 +401,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("error.code") {
+            if event.has_value("error.code") {
                 if let Some(val) = event.get("error.code") {
                     let converted = match val {
                         Value::String(_) => val.clone(),

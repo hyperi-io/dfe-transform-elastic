@@ -444,7 +444,7 @@ impl Transform for Events {
                 }
             }
 
-            if event.has("source.mac") {
+            if event.has_value("source.mac") {
                 if let Some(s) = event.get_string("source.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -452,7 +452,7 @@ impl Transform for Events {
                 }
             }
 
-            if event.has("source.mac") {
+            if event.has_value("source.mac") {
                 if let Some(s) = event.get_string("source.mac") {
                     let uppered = s.to_uppercase();
                     event.set("source.mac", uppered)?;
@@ -491,7 +491,7 @@ impl Transform for Events {
                 )?;
             }
 
-            if event.has("_temp.event_original_lower") {
+            if event.has_value("_temp.event_original_lower") {
                 if let Some(s) = event.get_string("_temp.event_original_lower") {
                     let lowered = s.to_lowercase();
                     event.set("_temp.event_original_lower", lowered)?;
@@ -531,7 +531,7 @@ impl Transform for Events {
                 }
             }
 
-            if event.has("_temp.port_action") {
+            if event.has_value("_temp.port_action") {
                 if let Some(s) = event.get_string("_temp.port_action") {
                     let re = cached_regex!(" ");
                     let replaced = re.replace_all(&s, "_").into_owned();
@@ -539,7 +539,7 @@ impl Transform for Events {
                 }
             }
 
-            if event.has("_temp.port_action") {
+            if event.has_value("_temp.port_action") {
                 if let Some(s) = event.get_string("_temp.port_action") {
                     let lowered = s.to_lowercase();
                     event.set("_temp.port_action", lowered)?;
@@ -1314,7 +1314,7 @@ impl Transform for Events {
                 })();
             }
 
-            if event.has("client.mac") {
+            if event.has_value("client.mac") {
                 if let Some(s) = event.get_string("client.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -1322,14 +1322,14 @@ impl Transform for Events {
                 }
             }
 
-            if event.has("client.mac") {
+            if event.has_value("client.mac") {
                 if let Some(s) = event.get_string("client.mac") {
                     let uppered = s.to_uppercase();
                     event.set("client.mac", uppered)?;
                 }
             }
 
-            if event.has("server.mac") {
+            if event.has_value("server.mac") {
                 if let Some(s) = event.get_string("server.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -1337,14 +1337,14 @@ impl Transform for Events {
                 }
             }
 
-            if event.has("server.mac") {
+            if event.has_value("server.mac") {
                 if let Some(s) = event.get_string("server.mac") {
                     let uppered = s.to_uppercase();
                     event.set("server.mac", uppered)?;
                 }
             }
 
-            if event.has("user.name") {
+            if event.has_value("user.name") {
                 if let Some(s) = event.get_string("user.name") {
                     let lowered = s.to_lowercase();
                     event.set("user.name", lowered)?;
@@ -1366,7 +1366,7 @@ impl Transform for Events {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("user.email") {
+                    if event.has_value("user.email") {
                         if let Some(input) = event.get_string("user.email") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -1403,7 +1403,7 @@ impl Transform for Events {
                     })
             };
             if _cond {
-                if event.has("user.name") {
+                if event.has_value("user.name") {
                     if let Some(input) = event.get_string("user.name") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();

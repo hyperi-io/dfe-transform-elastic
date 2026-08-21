@@ -62,7 +62,7 @@ impl Transform for MobileDetectionSummary {
                 event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
             }
 
-            if event.has("event.id") {
+            if event.has_value("event.id") {
                 if let Some(val) = event.get("event.id") {
                     let converted = match val {
                         Value::String(_) => val.clone(),

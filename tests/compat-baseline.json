@@ -14,6 +14,7 @@
     "crowdstrike": { "events": 49, "events_total": 49, "fields_wrong": 0 },
     "entityanalytics_entra_id": { "events": 0, "events_total": 7, "fields_wrong": 115 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
+    "microsoft_defender_endpoint": { "events": 10, "events_total": 23, "fields_wrong": 271 },
     "microsoft_dnsserver": { "events": 2, "events_total": 14, "fields_wrong": 69 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },

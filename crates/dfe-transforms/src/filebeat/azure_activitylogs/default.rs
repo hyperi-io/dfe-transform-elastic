@@ -89,7 +89,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("azure.activitylogs.callerIpAddress") {
+                if event.has_value("azure.activitylogs.callerIpAddress") {
                     if let Some(s) = event.get_string("azure.activitylogs.callerIpAddress") {
                         // Validate IP format
                         let s = s.trim();
@@ -352,7 +352,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.activitylogs.operation_name") {
+            if event.has_value("azure.activitylogs.operation_name") {
                 if let Some(val) = event.get("azure.activitylogs.operation_name") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -447,7 +447,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -572,7 +572,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -605,7 +605,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -630,7 +630,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("azure.activitylogs.identity.claims_initiated_by_user.name") {
+                if event.has_value("azure.activitylogs.identity.claims_initiated_by_user.name") {
                     if let Some(input) = event
                         .get_string("azure.activitylogs.identity.claims_initiated_by_user.name")
                     {
@@ -679,7 +679,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.activitylogs.identity.claims_initiated_by_user.fullname") {
+            if event.has_value("azure.activitylogs.identity.claims_initiated_by_user.fullname") {
                 if let Some(val) =
                     event.get("azure.activitylogs.identity.claims_initiated_by_user.fullname")
                 {
@@ -844,7 +844,7 @@ impl Transform for Default {
             if event.has("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
-            if event.has("event.outcome") {
+            if event.has_value("event.outcome") {
                 if let Some(s) = event.get_string("event.outcome") {
                     let lowered = s.to_lowercase();
                     event.set("event.outcome", lowered)?;

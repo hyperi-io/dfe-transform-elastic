@@ -84,7 +84,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("azure.auditlogs.durationMs") {
+                    if event.has_value("azure.auditlogs.durationMs") {
                         if let Some(val) = event.get("azure.auditlogs.durationMs") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -181,7 +181,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("azure.auditlogs.operationName") {
+                if event.has_value("azure.auditlogs.operationName") {
                     if let Some(val) = event.get("azure.auditlogs.operationName") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -259,7 +259,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("azure.auditlogs.callerIpAddress") {
+                if event.has_value("azure.auditlogs.callerIpAddress") {
                     if let Some(s) = event.get_string("azure.auditlogs.callerIpAddress") {
                         // Validate IP format
                         let s = s.trim();
@@ -415,7 +415,7 @@ impl Transform for Default {
                 event.set("user.name", v)?;
             }
 
-            if event.has("azure.auditlogs.properties.initiated_by.user.id") {
+            if event.has_value("azure.auditlogs.properties.initiated_by.user.id") {
                 if let Some(val) = event.get("azure.auditlogs.properties.initiated_by.user.id") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -436,7 +436,7 @@ impl Transform for Default {
                 event.set("user.full_name", v)?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -469,7 +469,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -709,7 +709,7 @@ impl Transform for Default {
             if event.has("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
-            if event.has("event.outcome") {
+            if event.has_value("event.outcome") {
                 if let Some(s) = event.get_string("event.outcome") {
                     let lowered = s.to_lowercase();
                     event.set("event.outcome", lowered)?;

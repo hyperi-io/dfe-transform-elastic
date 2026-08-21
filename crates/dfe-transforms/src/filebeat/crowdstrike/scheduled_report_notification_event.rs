@@ -69,7 +69,7 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
-            if event.has("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
+            if event.has_value("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
                 if let Some(val) =
                     event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration")
                 {
@@ -115,7 +115,7 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
-            if event.has("crowdstrike.event.ExecutionMetadata.ResultCount") {
+            if event.has_value("crowdstrike.event.ExecutionMetadata.ResultCount") {
                 if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount") {
                     let converted = match val {
                         Value::String(s) => {
@@ -205,7 +205,7 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
-            if event.has("crowdstrike.event.Status") {
+            if event.has_value("crowdstrike.event.Status") {
                 if let Some(val) = event.get("crowdstrike.event.Status") {
                     let converted = match val {
                         Value::String(_) => val.clone(),

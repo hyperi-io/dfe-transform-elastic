@@ -202,7 +202,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint") {
+                if event.has_value("checkpoint") {
                     if let Some(Value::Array(items)) = event.get("checkpoint").cloned() {
                         let mut out = Vec::with_capacity(items.len());
                         for item in items {
@@ -267,7 +267,7 @@ impl Transform for Default {
                 event.set("event.timezone", v)?;
             }
 
-            if event.has("event.timezone") {
+            if event.has_value("event.timezone") {
                 if let Some(s) = event.get_string("event.timezone") {
                     let re = cached_regex!("([+-][0-9]{2})([0-9]{2})");
                     let replaced = re.replace_all(&s, "$1:$2").into_owned();
@@ -275,7 +275,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("event.timezone") {
+            if event.has_value("event.timezone") {
                 if let Some(s) = event.get_string("event.timezone") {
                     let re = cached_regex!("([+-])([0-9]):?([0-9]{2})");
                     let replaced = re.replace_all(&s, "$10$2:$3").into_owned();
@@ -543,7 +543,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.failed_login_factor_num") {
+                if event.has_value("checkpoint.failed_login_factor_num") {
                     if let Some(val) = event.get("checkpoint.failed_login_factor_num") {
                         let converted = match val {
                             Value::String(s) => {
@@ -583,7 +583,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.client_outbound_packets") {
+                if event.has_value("checkpoint.client_outbound_packets") {
                     if let Some(val) = event.get("checkpoint.client_outbound_packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -623,7 +623,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.server_outbound_packets") {
+                if event.has_value("checkpoint.server_outbound_packets") {
                     if let Some(val) = event.get("checkpoint.server_outbound_packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -663,7 +663,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.client_outbound_bytes") {
+                if event.has_value("checkpoint.client_outbound_bytes") {
                     if let Some(val) = event.get("checkpoint.client_outbound_bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -705,7 +705,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("checkpoint.sent_byte") {
+                    if event.has_value("checkpoint.sent_byte") {
                         if let Some(val) = event.get("checkpoint.sent_byte") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -752,7 +752,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.server_outbound_bytes") {
+                if event.has_value("checkpoint.server_outbound_bytes") {
                     if let Some(val) = event.get("checkpoint.server_outbound_bytes") {
                         let converted = match val {
                             Value::String(s) => {
@@ -794,7 +794,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("checkpoint.received_bytes") {
+                    if event.has_value("checkpoint.received_bytes") {
                         if let Some(val) = event.get("checkpoint.received_bytes") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -843,7 +843,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("checkpoint.service") {
+                    if event.has_value("checkpoint.service") {
                         if let Some(val) = event.get("checkpoint.service") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -892,7 +892,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("checkpoint.xlatedport") {
+                    if event.has_value("checkpoint.xlatedport") {
                         if let Some(val) = event.get("checkpoint.xlatedport") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -939,7 +939,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.s_port") {
+                if event.has_value("checkpoint.s_port") {
                     if let Some(val) = event.get("checkpoint.s_port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -981,7 +981,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("checkpoint.xlatesport") {
+                    if event.has_value("checkpoint.xlatesport") {
                         if let Some(val) = event.get("checkpoint.xlatesport") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -1088,7 +1088,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.origin_sic_name") {
+                if event.has_value("checkpoint.origin_sic_name") {
                     if let Some(input) = event.get_string("checkpoint.origin_sic_name") {
                         // Grok pattern: (?i)^CN=%{DATA:_temp_.sic_cn},O=%{GREEDYDATA}$
                         if !cached_grok!("(?i)^CN=%{DATA:_temp_.sic_cn},O=%{GREEDYDATA}$")
@@ -1551,7 +1551,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("checkpoint.additional_info") {
+                    if event.has_value("checkpoint.additional_info") {
                         if let Some(input) = event.get_string("checkpoint.additional_info") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -1590,7 +1590,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.sequencenum") {
+                if event.has_value("checkpoint.sequencenum") {
                     if let Some(val) = event.get("checkpoint.sequencenum") {
                         let converted = match val {
                             Value::String(s) => {
@@ -1630,7 +1630,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.severity") {
+                if event.has_value("checkpoint.severity") {
                     if let Some(val) = event.get("checkpoint.severity") {
                         let converted = match val {
                             Value::String(s) => {
@@ -1841,49 +1841,49 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("user.name") {
+            if event.has_value("user.name") {
                 if let Some(s) = event.get_string("user.name") {
                     let lowered = s.to_lowercase();
                     event.set("user.name", lowered)?;
                 }
             }
 
-            if event.has("user.id") {
+            if event.has_value("user.id") {
                 if let Some(s) = event.get_string("user.id") {
                     let lowered = s.to_lowercase();
                     event.set("user.id", lowered)?;
                 }
             }
 
-            if event.has("user.email") {
+            if event.has_value("user.email") {
                 if let Some(s) = event.get_string("user.email") {
                     let lowered = s.to_lowercase();
                     event.set("user.email", lowered)?;
                 }
             }
 
-            if event.has("user.domain") {
+            if event.has_value("user.domain") {
                 if let Some(s) = event.get_string("user.domain") {
                     let lowered = s.to_lowercase();
                     event.set("user.domain", lowered)?;
                 }
             }
 
-            if event.has("user.group.name") {
+            if event.has_value("user.group.name") {
                 if let Some(s) = event.get_string("user.group.name") {
                     let lowered = s.to_lowercase();
                     event.set("user.group.name", lowered)?;
                 }
             }
 
-            if event.has("source.user.name") {
+            if event.has_value("source.user.name") {
                 if let Some(s) = event.get_string("source.user.name") {
                     let lowered = s.to_lowercase();
                     event.set("source.user.name", lowered)?;
                 }
             }
 
-            if event.has("destination.user.name") {
+            if event.has_value("destination.user.name") {
                 if let Some(s) = event.get_string("destination.user.name") {
                     let lowered = s.to_lowercase();
                     event.set("destination.user.name", lowered)?;
@@ -1950,7 +1950,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.file_size") {
+                if event.has_value("checkpoint.file_size") {
                     if let Some(val) = event.get("checkpoint.file_size") {
                         let converted = match val {
                             Value::String(s) => {
@@ -2032,7 +2032,7 @@ impl Transform for Default {
                 event.rename("checkpoint.ifdir", "network.direction")?;
             }
 
-            if event.has("checkpoint.bytes") {
+            if event.has_value("checkpoint.bytes") {
                 if let Some(val) = event.get("checkpoint.bytes") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2068,7 +2068,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.icmp_code") {
+                if event.has_value("checkpoint.icmp_code") {
                     if let Some(val) = event.get("checkpoint.icmp_code") {
                         let converted = match val {
                             Value::String(s) => {
@@ -2108,7 +2108,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.icmp_type") {
+                if event.has_value("checkpoint.icmp_type") {
                     if let Some(val) = event.get("checkpoint.icmp_type") {
                         let converted = match val {
                             Value::String(s) => {
@@ -2266,7 +2266,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.packets") {
+                if event.has_value("checkpoint.packets") {
                     if let Some(val) = event.get("checkpoint.packets") {
                         let converted = match val {
                             Value::String(s) => {
@@ -2317,7 +2317,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("checkpoint.packet_amount") {
+                if event.has_value("checkpoint.packet_amount") {
                     if let Some(val) = event.get("checkpoint.packet_amount") {
                         let converted = match val {
                             Value::String(s) => {
@@ -2443,7 +2443,7 @@ impl Transform for Default {
                 event.rename("checkpoint.mac_address", "_temp_.observer.mac")?;
             }
 
-            if event.has("_temp_.observer.mac") {
+            if event.has_value("_temp_.observer.mac") {
                 if let Some(s) = event.get_string("_temp_.observer.mac") {
                     let re = cached_regex!("[:]");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -2451,7 +2451,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("_temp_.observer.mac") {
+            if event.has_value("_temp_.observer.mac") {
                 if let Some(s) = event.get_string("_temp_.observer.mac") {
                     let uppered = s.to_uppercase();
                     event.set("_temp_.observer.mac", uppered)?;
@@ -2749,7 +2749,7 @@ impl Transform for Default {
                 event.rename("checkpoint.duration", "event.duration")?;
             }
 
-            if event.has("event.duration") {
+            if event.has_value("event.duration") {
                 if let Some(val) = event.get("event.duration") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2783,7 +2783,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.session_timeout") {
+            if event.has_value("checkpoint.session_timeout") {
                 if let Some(val) = event.get("checkpoint.session_timeout") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2828,7 +2828,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("checkpoint.update_count") {
+            if event.has_value("checkpoint.update_count") {
                 if let Some(val) = event.get("checkpoint.update_count") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2862,7 +2862,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.connection_count") {
+            if event.has_value("checkpoint.connection_count") {
                 if let Some(val) = event.get("checkpoint.connection_count") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2896,7 +2896,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.aggregated_log_count") {
+            if event.has_value("checkpoint.aggregated_log_count") {
                 if let Some(val) = event.get("checkpoint.aggregated_log_count") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2961,7 +2961,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("user.email") {
+                    if event.has_value("user.email") {
                         if let Some(input) = event.get_string("user.email") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -3041,7 +3041,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("source.user.email") {
+                    if event.has_value("source.user.email") {
                         if let Some(input) = event.get_string("source.user.email") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -3121,7 +3121,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("destination.user.email") {
+                    if event.has_value("destination.user.email") {
                         if let Some(input) = event.get_string("destination.user.email") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -3259,7 +3259,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.geo") };
             if _cond {
-                if event.has("source.ip") {
+                if event.has_value("source.ip") {
                     if let Some(ip_str) = event.get_string("source.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -3295,7 +3295,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("destination.geo") };
             if _cond {
-                if event.has("destination.ip") {
+                if event.has_value("destination.ip") {
                     if let Some(ip_str) = event.get_string("destination.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -3329,7 +3329,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -3344,7 +3344,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)

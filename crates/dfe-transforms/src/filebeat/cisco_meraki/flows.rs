@@ -62,7 +62,7 @@ impl Transform for Flows {
                 }
             }
 
-            if event.has("source.mac") {
+            if event.has_value("source.mac") {
                 if let Some(s) = event.get_string("source.mac") {
                     let re = cached_regex!("[:.]");
                     let replaced = re.replace_all(&s, "-").into_owned();

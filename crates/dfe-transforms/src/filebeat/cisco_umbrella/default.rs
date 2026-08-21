@@ -132,7 +132,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("dns.question.name") {
+            if event.has_value("dns.question.name") {
                 if let Some(s) = event.get_string("dns.question.name") {
                     let re = cached_regex!("\\.$");
                     let replaced = re.replace_all(&s, "").into_owned();
@@ -1212,7 +1212,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("cisco.umbrella.audit.before") {
+                    if event.has_value("cisco.umbrella.audit.before") {
                         if let Some(kv_str) = event.get_string("cisco.umbrella.audit.before") {
                             for pair in cached_regex!("\\n").split(&kv_str).into_iter() {
                                 if pair.trim().is_empty() {
@@ -1276,7 +1276,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("cisco.umbrella.audit.type") != Some("global_settings") };
             if _cond {
-                if event.has("cisco.umbrella.audit.before") {
+                if event.has_value("cisco.umbrella.audit.before") {
                     if let Some(s) = event.get_string("cisco.umbrella.audit.before") {
                         let parts: Vec<Value> = cached_regex!("\\n")
                             .split(&s)
@@ -1292,7 +1292,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("cisco.umbrella.audit.after") {
+                    if event.has_value("cisco.umbrella.audit.after") {
                         if let Some(kv_str) = event.get_string("cisco.umbrella.audit.after") {
                             for pair in cached_regex!("\\n").split(&kv_str).into_iter() {
                                 if pair.trim().is_empty() {
@@ -1356,7 +1356,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("cisco.umbrella.audit.type") != Some("global_settings") };
             if _cond {
-                if event.has("cisco.umbrella.audit.after") {
+                if event.has_value("cisco.umbrella.audit.after") {
                     if let Some(s) = event.get_string("cisco.umbrella.audit.after") {
                         let parts: Vec<Value> = cached_regex!("\\n")
                             .split(&s)
@@ -1662,7 +1662,7 @@ impl Transform for Default {
                 event.set("dns.type", json!("query"))?;
             }
 
-            if event.has("dns.question.name") {
+            if event.has_value("dns.question.name") {
                 if let Some(domain_str) = event.get_string("dns.question.name") {
                     let domain = domain_str.to_string();
                     event.set("dns.question.domain", json!(domain.clone()))?;
@@ -1682,7 +1682,7 @@ impl Transform for Default {
 
             event.remove("dns.question.domain");
 
-            if event.has("user_agent.original") {
+            if event.has_value("user_agent.original") {
                 if let Some(ua_str) = event.get_string("user_agent.original") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
@@ -2636,7 +2636,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.address") {
+                if event.has_value("source.address") {
                     if let Some(s) = event.get_string("source.address") {
                         // Validate IP format
                         let s = s.trim();
@@ -2666,7 +2666,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.address") {
+                if event.has_value("destination.address") {
                     if let Some(s) = event.get_string("destination.address") {
                         // Validate IP format
                         let s = s.trim();
@@ -2696,7 +2696,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.nat.ip") {
+                if event.has_value("source.nat.ip") {
                     if let Some(s) = event.get_string("source.nat.ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -2726,7 +2726,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 // Community ID v1 hash
                 if let (Some(src_ip), Some(dst_ip), Some(protocol)) = (
                     event.get_string("source.ip"),
@@ -2760,7 +2760,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -2793,7 +2793,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -2816,7 +2816,7 @@ impl Transform for Default {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -2849,7 +2849,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)

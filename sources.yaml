@@ -148,6 +148,40 @@ sources:
     framing: line
     transforms: [default]
 
+  # Four streams, all on httpjson or cel -- pure transports, so dfe-fetcher can
+  # obtain the same bytes the agent would.
+  microsoft_defender_endpoint_log:
+    package: microsoft_defender_endpoint
+    data_stream: log
+    pipelines: microsoft_defender_endpoint/log
+    fixtures: microsoft_defender_endpoint/log
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  microsoft_defender_endpoint_machine:
+    package: microsoft_defender_endpoint
+    data_stream: machine
+    pipelines: microsoft_defender_endpoint/machine
+    fixtures: microsoft_defender_endpoint/machine
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  microsoft_defender_endpoint_machine_action:
+    package: microsoft_defender_endpoint
+    data_stream: machine_action
+    pipelines: microsoft_defender_endpoint/machine_action
+    fixtures: microsoft_defender_endpoint/machine_action
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  microsoft_defender_endpoint_vulnerability:
+    package: microsoft_defender_endpoint
+    data_stream: vulnerability
+    pipelines: microsoft_defender_endpoint/vulnerability
+    fixtures: microsoft_defender_endpoint/vulnerability
+    intakes: [beats, fetcher]
+    transforms: [default]
+
   # The pipeline groks a whole RFC 5424 line out of `message`, so a syslog
   # delivery must leave the header on.
   checkpoint:

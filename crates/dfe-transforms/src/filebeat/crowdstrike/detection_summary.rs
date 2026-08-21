@@ -98,7 +98,7 @@ impl Transform for DetectionSummary {
                 event.rename("crowdstrike.event.ProcessId", "process.pid")?;
             }
 
-            if event.has("crowdstrike.event.HostGroups") {
+            if event.has_value("crowdstrike.event.HostGroups") {
                 if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
                     let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
                     event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
@@ -235,7 +235,7 @@ impl Transform for DetectionSummary {
 
             let _cond = { event.has_value("host.mac") };
             if _cond {
-                if event.has("host.mac") {
+                if event.has_value("host.mac") {
                     if let Some(s) = event.get_string("host.mac") {
                         let uppered = s.to_uppercase();
                         event.set("host.mac", uppered)?;

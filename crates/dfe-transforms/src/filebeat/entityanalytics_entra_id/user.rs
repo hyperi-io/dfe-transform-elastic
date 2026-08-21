@@ -41,7 +41,7 @@ impl Transform for User {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("entityanalytics_entra_id.user.account_enabled") {
+                if event.has_value("entityanalytics_entra_id.user.account_enabled") {
                     if let Some(val) = event.get("entityanalytics_entra_id.user.account_enabled") {
                         let converted = match val {
                             Value::Bool(_) => val.clone(),
@@ -365,7 +365,7 @@ impl Transform for User {
 
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("entityanalytics_entra_id.user.mfa.is_mfa_registered") {
+                if event.has_value("entityanalytics_entra_id.user.mfa.is_mfa_registered") {
                     if let Some(val) =
                         event.get("entityanalytics_entra_id.user.mfa.is_mfa_registered")
                     {

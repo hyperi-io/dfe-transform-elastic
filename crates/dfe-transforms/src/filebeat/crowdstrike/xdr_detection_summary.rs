@@ -44,7 +44,7 @@ impl Transform for XdrDetectionSummary {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.PatternId") {
+            if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -402,7 +402,7 @@ impl Transform for XdrDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.StartTimeEpoch") };
             if _cond {
-                if event.has("crowdstrike.event.StartTimeEpoch") {
+                if event.has_value("crowdstrike.event.StartTimeEpoch") {
                     if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -468,7 +468,7 @@ impl Transform for XdrDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.EndTimeEpoch") };
             if _cond {
-                if event.has("crowdstrike.event.EndTimeEpoch") {
+                if event.has_value("crowdstrike.event.EndTimeEpoch") {
                     if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
                         let converted = match val {
                             Value::String(_) => val.clone(),

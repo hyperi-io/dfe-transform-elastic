@@ -69,7 +69,7 @@ impl Transform for Config {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_temp_.check_field") {
+                if event.has_value("_temp_.check_field") {
                     if let Some(val) = event.get("_temp_.check_field") {
                         let converted = match val {
                             Value::String(s) => {

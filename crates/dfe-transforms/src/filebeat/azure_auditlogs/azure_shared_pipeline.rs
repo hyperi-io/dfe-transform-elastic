@@ -140,7 +140,7 @@ impl Transform for AzureSharedPipeline {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
 
-            if event.has("event.outcome") {
+            if event.has_value("event.outcome") {
                 if let Some(s) = event.get_string("event.outcome") {
                     let lowered = s.to_lowercase();
                     event.set("event.outcome", lowered)?;

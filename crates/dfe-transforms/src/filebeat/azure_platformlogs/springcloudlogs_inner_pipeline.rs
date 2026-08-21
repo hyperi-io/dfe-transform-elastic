@@ -152,7 +152,7 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.operation_name") {
+            if event.has_value("azure.springcloudlogs.operation_name") {
                 if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
                     let converted = match val {
                         Value::String(_) => val.clone(),

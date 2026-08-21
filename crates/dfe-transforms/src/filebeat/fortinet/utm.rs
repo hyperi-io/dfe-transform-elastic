@@ -59,7 +59,7 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.dst_port") {
+                if event.has_value("fortinet.firewall.dst_port") {
                     if let Some(val) = event.get("fortinet.firewall.dst_port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -101,7 +101,7 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.remport") {
+                    if event.has_value("fortinet.firewall.remport") {
                         if let Some(val) = event.get("fortinet.firewall.remport") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -150,7 +150,7 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.dstport") {
+                    if event.has_value("fortinet.firewall.dstport") {
                         if let Some(val) = event.get("fortinet.firewall.dstport") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -197,7 +197,7 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.rcvdbyte") {
+                if event.has_value("fortinet.firewall.rcvdbyte") {
                     if let Some(val) = event.get("fortinet.firewall.rcvdbyte") {
                         let converted = match val {
                             Value::String(s) => {
@@ -261,7 +261,7 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.locport") {
+                if event.has_value("fortinet.firewall.locport") {
                     if let Some(val) = event.get("fortinet.firewall.locport") {
                         let converted = match val {
                             Value::String(s) => {
@@ -303,7 +303,7 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.src_port") {
+                    if event.has_value("fortinet.firewall.src_port") {
                         if let Some(val) = event.get("fortinet.firewall.src_port") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -352,7 +352,7 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.srcport") {
+                    if event.has_value("fortinet.firewall.srcport") {
                         if let Some(val) = event.get("fortinet.firewall.srcport") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -399,7 +399,7 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.sentbyte") {
+                if event.has_value("fortinet.firewall.sentbyte") {
                     if let Some(val) = event.get("fortinet.firewall.sentbyte") {
                         let converted = match val {
                             Value::String(s) => {
@@ -520,7 +520,7 @@ impl Transform for Utm {
 
             let _cond = { event.has_value("rule.category") };
             if _cond {
-                if event.has("rule.category") {
+                if event.has_value("rule.category") {
                     if let Some(s) = event.get_string("rule.category") {
                         let re = cached_regex!("\\.");
                         let replaced = re.replace_all(&s, "-").into_owned();
@@ -554,7 +554,7 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.filesize") {
+                if event.has_value("fortinet.firewall.filesize") {
                     if let Some(val) = event.get("fortinet.firewall.filesize") {
                         let converted = match val {
                             Value::String(s) => {
@@ -635,7 +635,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.ipaddr", "dns.resolved_ip")?;
             }
 
-            if event.has("dns.resolved_ip") {
+            if event.has_value("dns.resolved_ip") {
                 if let Some(s) = event.get_string("dns.resolved_ip") {
                     let parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
                     event.set("dns.resolved_ip", Value::Array(parts))?;
@@ -698,7 +698,7 @@ impl Transform for Utm {
                 event.rename("fortinet.firewall.service", "network.protocol")?;
             }
 
-            if event.has("network.protocol") {
+            if event.has_value("network.protocol") {
                 if let Some(s) = event.get_string("network.protocol") {
                     let lowered = s.to_lowercase();
                     event.set("network.protocol", lowered)?;
@@ -912,7 +912,7 @@ impl Transform for Utm {
                 }
             }
 
-            if event.has("tls.server.x509.public_key_size") {
+            if event.has_value("tls.server.x509.public_key_size") {
                 if let Some(val) = event.get("tls.server.x509.public_key_size") {
                     let converted = match val {
                         Value::String(s) => {
@@ -988,7 +988,7 @@ impl Transform for Utm {
                 event.set("tls.server.x509.not_before", v)?;
             }
 
-            if event.has("fortinet.firewall.san") {
+            if event.has_value("fortinet.firewall.san") {
                 if let Some(s) = event.get_string("fortinet.firewall.san") {
                     let parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
                     event.set("tls.server.x509.alternative_names", Value::Array(parts))?;
@@ -1098,7 +1098,7 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("dns.question.name") {
+                if event.has_value("dns.question.name") {
                     if let Some(domain_str) = event.get_string("dns.question.name") {
                         let domain = domain_str.to_string();
                         event.set("dns.question.domain", json!(domain.clone()))?;

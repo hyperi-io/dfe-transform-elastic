@@ -128,7 +128,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("source.address") {
+                if event.has_value("source.address") {
                     if let Some(s) = event.get_string("source.address") {
                         // Validate IP format
                         let s = s.trim();
@@ -146,7 +146,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("azure.signinlogs.caller_ip_address") {
+                if event.has_value("azure.signinlogs.caller_ip_address") {
                     if let Some(s) = event.get_string("azure.signinlogs.caller_ip_address") {
                         // Validate IP format
                         let s = s.trim();
@@ -186,7 +186,7 @@ impl Transform for Default {
                 event.set("client.ip", v)?;
             }
 
-            if event.has("azure.signinlogs.level") {
+            if event.has_value("azure.signinlogs.level") {
                 if let Some(val) = event.get("azure.signinlogs.level") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -210,7 +210,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("azure.signinlogs.duration_ms") {
+                    if event.has_value("azure.signinlogs.duration_ms") {
                         if let Some(val) = event.get("azure.signinlogs.duration_ms") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -284,7 +284,7 @@ impl Transform for Default {
                 event.rename("azure.signinlogs.location", "geo.country_iso_code")?;
             }
 
-            if event.has("azure.signinlogs.operation_name") {
+            if event.has_value("azure.signinlogs.operation_name") {
                 if let Some(val) = event.get("azure.signinlogs.operation_name") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -443,7 +443,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("azure.signinlogs.properties.user_display_name") {
+            if event.has_value("azure.signinlogs.properties.user_display_name") {
                 if let Some(val) = event.get("azure.signinlogs.properties.user_display_name") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -461,7 +461,7 @@ impl Transform for Default {
                 event.remove("azure.signinlogs.properties.user_id");
             }
 
-            if event.has("azure.signinlogs.properties.user_id") {
+            if event.has_value("azure.signinlogs.properties.user_id") {
                 if let Some(val) = event.get("azure.signinlogs.properties.user_id") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -522,7 +522,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -555,7 +555,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -593,7 +593,7 @@ impl Transform for Default {
                 event.remove("azure.signinlogs.properties.user_agent");
             }
 
-            if event.has("user_agent.original") {
+            if event.has_value("user_agent.original") {
                 if let Some(ua_str) = event.get_string("user_agent.original") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
@@ -839,7 +839,7 @@ impl Transform for Default {
             if event.has("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
-            if event.has("event.outcome") {
+            if event.has_value("event.outcome") {
                 if let Some(s) = event.get_string("event.outcome") {
                     let lowered = s.to_lowercase();
                     event.set("event.outcome", lowered)?;

@@ -63,6 +63,11 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return try_bit_flags(event, &normalised, params);
     }
 
+    // Pattern: the first member of a params list the subject contains.
+    if normalised.contains("for (String ") && normalised.contains(".put(") {
+        return try_first_contained_member(event, &normalised, params);
+    }
+
     // Pattern: rename an object's keys, recursively, through a name map.
     if normalised.contains("keyMap.containsKey(key)") {
         return try_rename_keys(event, &normalised, params);
@@ -690,6 +695,90 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
     let value = params.get(&key).cloned().unwrap_or(Value::String(key));
     let _ = event.set(&target, value);
     true
+}
+
+/// The first member of a params list the subject contains, written to a field.
+///
+/// Microsoft's Defender pipelines classify by substring: an OS platform that
+/// contains `linux` is Linux, a vulnerability id that contains `CVE` is a CVE.
+/// The list is the params, and a trailing block of literal `contains` tests
+/// catches what the list misses.
+fn try_first_contained_member(
+    event: &mut Event,
+    script: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some((subject, folded)) = subject_of_binding(script) else {
+        return false;
+    };
+    let Some(text) = event.get_as_string(&subject) else {
+        return false;
+    };
+    let text = if folded {
+        text.to_lowercase()
+    } else {
+        text.to_uppercase()
+    };
+
+    let Some(members) = params_ref(script, params, "params.").and_then(Value::as_array) else {
+        return false;
+    };
+    let Some(target) = put_target(script) else {
+        return false;
+    };
+
+    for member in members {
+        let Some(member) = member.as_str() else {
+            continue;
+        };
+        if text.contains(member) {
+            let _ = event.set(&target, member);
+            return true;
+        }
+    }
+
+    // The tail: `if (x.contains('centos') || ...) { ctx.a.put('b', 'linux'); }`
+    // Its subject is the same local, already folded, so the literals are
+    // tested against the text in hand rather than re-read from the event.
+    for block in script.split("if (").skip(1) {
+        // `) {` ends the header; the first `)` alone sits inside `contains(`.
+        let Some((guard, body)) = block.split_once(") {") else {
+            continue;
+        };
+        if !guard.contains(".contains(") {
+            continue;
+        }
+        let matched = guard
+            .split("||")
+            .filter_map(|term| quoted_after(term, ".contains("))
+            .any(|literal| text.contains(&literal));
+        if matched && let Some(literal) = quoted_after(body, ", ") {
+            let _ = event.set(&target, literal);
+            break;
+        }
+    }
+    true
+}
+
+/// The `ctx.` path a `String x = ctx.<path>[.toLowerCase()];` binds, and
+/// whether it was folded DOWN rather than up.
+fn subject_of_binding(script: &str) -> Option<(String, bool)> {
+    let at = script.find("String ")?;
+    let statement = script[at..].split(';').next()?;
+    let (_, bound) = statement.split_once('=')?;
+    let bound = bound.trim();
+    let folded = bound.contains(".toLowerCase()");
+    let path = bound
+        .replace(".toLowerCase()", "")
+        .replace(".toUpperCase()", "");
+    Some((clean_path(path.trim().strip_prefix("ctx.")?), folded))
+}
+
+/// The field a `ctx.<path>.put('<key>', ...)` writes.
+fn put_target(script: &str) -> Option<String> {
+    let path = ctx_path_before(script, ".put(")?;
+    let key = quoted_after(script, ".put(")?;
+    Some(format!("{path}.{key}"))
 }
 
 /// Rename an object's keys, recursively, through a name map.
@@ -1593,6 +1682,68 @@ mod tests {
                               ctx.event.type = addUnique(ctx.event.type, p.type);\n\
                               ctx.event.category = addUnique(ctx.event.category, p.category);\n\
                               ctx.tags = addUnique(ctx.tags, p.tags);";
+
+    /// Verbatim from `pipelines/microsoft_defender_endpoint/vulnerability`,
+    /// tagged `script_map_host_os_type`.
+    const CONTAINED: &str = "String os_platform = \
+        ctx.microsoft_defender_endpoint.vulnerability.os_platform.toLowerCase();\n\
+        for (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    \
+        ctx.host.os.put('type', os);\n    return;\n  }\n}\n\
+        if (os_platform.contains('centos') || os_platform.contains('ubuntu')) {\n  \
+        ctx.host.os.put('type', 'linux');\n}\n";
+
+    fn contained_params() -> Value {
+        json!({ "os_type": ["linux", "macos", "windows"] })
+    }
+
+    /// The first member the subject contains wins, case-folded as the script
+    /// folds it.
+    #[test]
+    fn the_first_contained_member_is_the_answer() {
+        let mut event = Event::new(json!({
+            "microsoft_defender_endpoint": { "vulnerability": { "os_platform": "Windows10" } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CONTAINED,
+            &contained_params()
+        ));
+
+        assert_eq!(event.get("host.os.type"), Some(&json!("windows")));
+    }
+
+    /// A subject no member matches falls to the script's own literal tail.
+    #[test]
+    fn a_subject_no_member_matches_falls_to_the_tail() {
+        let mut event = Event::new(json!({
+            "microsoft_defender_endpoint": { "vulnerability": { "os_platform": "CentOS7" } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CONTAINED,
+            &contained_params()
+        ));
+
+        assert_eq!(event.get("host.os.type"), Some(&json!("linux")));
+    }
+
+    /// And one neither reaches leaves the field alone.
+    #[test]
+    fn a_subject_nothing_matches_writes_nothing() {
+        let mut event = Event::new(json!({
+            "microsoft_defender_endpoint": { "vulnerability": { "os_platform": "Plan9" } },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            CONTAINED,
+            &contained_params()
+        ));
+
+        assert_eq!(event.get("host.os.type"), None);
+    }
 
     /// Verbatim from `pipelines/microsoft_dnsserver/analytical/default.yml`,
     /// cut to the branches that decide a key's fate.

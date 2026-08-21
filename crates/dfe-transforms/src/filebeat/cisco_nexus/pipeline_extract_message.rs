@@ -181,7 +181,7 @@ impl Transform for PipelineExtractMessage {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.mac") {
+                if event.has_value("source.mac") {
                     if let Some(s) = event.get_string("source.mac") {
                         let re = cached_regex!("[.]");
                         let replaced = re.replace_all(&s, "").into_owned();
@@ -224,7 +224,7 @@ impl Transform for PipelineExtractMessage {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.mac") {
+                if event.has_value("source.mac") {
                     if let Some(s) = event.get_string("source.mac") {
                         let re = cached_regex!("(..)(?!$)");
                         let replaced = re.replace_all(&s, "$1-").into_owned();
@@ -265,7 +265,7 @@ impl Transform for PipelineExtractMessage {
                 }
             }
 
-            if event.has("source.mac") {
+            if event.has_value("source.mac") {
                 if let Some(s) = event.get_string("source.mac") {
                     let uppered = s.to_uppercase();
                     event.set("source.mac", uppered)?;
@@ -274,7 +274,7 @@ impl Transform for PipelineExtractMessage {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("temp.message") {
+                if event.has_value("temp.message") {
                     if let Some(kv_str) = event.get_string("temp.message") {
                         for pair in cached_regex!("\\s+").split(&kv_str).into_iter() {
                             if pair.trim().is_empty() {
@@ -299,7 +299,7 @@ impl Transform for PipelineExtractMessage {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("temp.message2") {
+                if event.has_value("temp.message2") {
                     if let Some(kv_str) = event.get_string("temp.message2") {
                         for pair in kv_str.split(" ; ") {
                             if pair.trim().is_empty() {
@@ -366,7 +366,7 @@ impl Transform for PipelineExtractMessage {
                 event.rename("temp.USER", "user.name")?;
             }
 
-            if event.has("network.protocol") {
+            if event.has_value("network.protocol") {
                 if let Some(s) = event.get_string("network.protocol") {
                     let lowered = s.to_lowercase();
                     event.set("network.protocol", lowered)?;

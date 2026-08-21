@@ -170,7 +170,7 @@ impl Transform for Default {
                 event.set("dns.id", v)?;
             }
 
-            if event.has("microsoft_dnsserver.analytical.question_name") {
+            if event.has_value("microsoft_dnsserver.analytical.question_name") {
                 if let Some(s) = event.get_string("microsoft_dnsserver.analytical.question_name") {
                     let re = cached_regex!("\\.$");
                     let replaced = re.replace_all(&s, "").into_owned();
@@ -180,7 +180,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("_temp.question_name") {
+                if event.has_value("_temp.question_name") {
                     if let Some(domain_str) = event.get_string("_temp.question_name") {
                         let domain = domain_str.to_string();
                         event.set("dns.question.domain", json!(domain.clone()))?;
@@ -315,7 +315,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.bytes_sent") {
+                if event.has_value("microsoft_dnsserver.analytical.bytes_sent") {
                     if let Some(val) = event.get("microsoft_dnsserver.analytical.bytes_sent") {
                         let converted = match val {
                             Value::String(s) => {
@@ -373,7 +373,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("winlog.process_id") {
+                if event.has_value("winlog.process_id") {
                     if let Some(val) = event.get("winlog.process_id") {
                         let converted = match val {
                             Value::String(s) => {
@@ -413,7 +413,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("winlog.thread_id") {
+                if event.has_value("winlog.thread_id") {
                     if let Some(val) = event.get("winlog.thread_id") {
                         let converted = match val {
                             Value::String(s) => {
@@ -498,7 +498,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.Destination") {
+                if event.has_value("microsoft_dnsserver.analytical.Destination") {
                     if let Some(s) = event.get_string("microsoft_dnsserver.analytical.Destination")
                     {
                         // Validate IP format
@@ -543,7 +543,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.destination.port") {
+                if event.has_value("microsoft_dnsserver.analytical.destination.port") {
                     if let Some(val) = event.get("microsoft_dnsserver.analytical.destination.port")
                     {
                         let converted = match val {
@@ -592,7 +592,7 @@ impl Transform for Default {
                 event.set("destination.port", v)?;
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -625,7 +625,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -660,7 +660,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.Source") {
+                if event.has_value("microsoft_dnsserver.analytical.Source") {
                     if let Some(s) = event.get_string("microsoft_dnsserver.analytical.Source") {
                         // Validate IP format
                         let s = s.trim();
@@ -702,7 +702,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.source.port") {
+                if event.has_value("microsoft_dnsserver.analytical.source.port") {
                     if let Some(val) = event.get("microsoft_dnsserver.analytical.source.port") {
                         let converted = match val {
                             Value::String(s) => {
@@ -750,7 +750,7 @@ impl Transform for Default {
                 event.set("source.port", v)?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -783,7 +783,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -813,7 +813,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.InterfaceIP") {
+                if event.has_value("microsoft_dnsserver.analytical.InterfaceIP") {
                     if let Some(s) = event.get_string("microsoft_dnsserver.analytical.InterfaceIP")
                     {
                         // Validate IP format
@@ -832,7 +832,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("microsoft_dnsserver.analytical.ForwardInterfaceIP") {
+                if event.has_value("microsoft_dnsserver.analytical.ForwardInterfaceIP") {
                     if let Some(s) =
                         event.get_string("microsoft_dnsserver.analytical.ForwardInterfaceIP")
                     {

@@ -27,7 +27,7 @@ impl Transform for RemoteResponseSessionEnd {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("crowdstrike.event.UserName") {
+                if event.has_value("crowdstrike.event.UserName") {
                     if let Some(input) = event.get_string("crowdstrike.event.UserName") {
                         // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                         if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")

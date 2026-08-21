@@ -191,6 +191,30 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "fortinet_fortigate.log",
     ),
     (
+        "filebeat.microsoft_defender_endpoint_log.default",
+        &filebeat::microsoft_defender_endpoint_log::default::Default,
+        fetched(),
+        "microsoft_defender_endpoint.log",
+    ),
+    (
+        "filebeat.microsoft_defender_endpoint_machine.default",
+        &filebeat::microsoft_defender_endpoint_machine::default::Default,
+        fetched(),
+        "microsoft_defender_endpoint.machine",
+    ),
+    (
+        "filebeat.microsoft_defender_endpoint_machine_action.default",
+        &filebeat::microsoft_defender_endpoint_machine_action::default::Default,
+        fetched(),
+        "microsoft_defender_endpoint.machine_action",
+    ),
+    (
+        "filebeat.microsoft_defender_endpoint_vulnerability.default",
+        &filebeat::microsoft_defender_endpoint_vulnerability::default::Default,
+        fetched(),
+        "microsoft_defender_endpoint.vulnerability",
+    ),
+    (
         "filebeat.microsoft_dnsserver_analytical.default",
         &filebeat::microsoft_dnsserver_analytical::default::Default,
         agent_only(),

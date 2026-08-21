@@ -134,7 +134,7 @@ impl Transform for Urls {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("mac") {
+                if event.has_value("mac") {
                     if let Some(input) = event.get_string("mac") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -332,7 +332,7 @@ impl Transform for Urls {
                 event.set("cisco_meraki.event_subtype", json!("http_access_error"))?;
             }
 
-            if event.has("user_agent.original") {
+            if event.has_value("user_agent.original") {
                 if let Some(ua_str) = event.get_string("user_agent.original") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
@@ -367,7 +367,7 @@ impl Transform for Urls {
                 uri_parts(event, "url.original", "url", true, false)?;
             }
 
-            if event.has("url.domain") {
+            if event.has_value("url.domain") {
                 if let Some(domain_str) = event.get_string("url.domain") {
                     let domain = domain_str.to_string();
                     event.set("url.domain", json!(domain.clone()))?;

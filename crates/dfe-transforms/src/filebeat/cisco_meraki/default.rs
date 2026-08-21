@@ -211,7 +211,7 @@ impl Transform for Default {
                         });
                     }
                 }
-                if event.has("source.mac") {
+                if event.has_value("source.mac") {
                     if let Some(s) = event.get_string("source.mac") {
                         let re = cached_regex!("[:.]");
                         let replaced = re.replace_all(&s, "-").into_owned();
@@ -812,7 +812,7 @@ impl Transform for Default {
                 if event.has("signature") {
                     event.rename("signature", "cisco_meraki.security.signature")?;
                 }
-                if event.has("dhost") {
+                if event.has_value("dhost") {
                     if let Some(s) = event.get_string("dhost") {
                         let re = cached_regex!("[-:.]");
                         let replaced = re.replace_all(&s, "-").into_owned();
@@ -822,7 +822,7 @@ impl Transform for Default {
                 if event.has("direction") {
                     event.rename("direction", "network.direction")?;
                 }
-                if event.has("protocol") {
+                if event.has_value("protocol") {
                     if let Some(s) = event.get_string("protocol") {
                         let lowered = s.to_lowercase();
                         event.set("network.protocol", lowered)?;
@@ -839,7 +839,7 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                if event.has("mac") {
+                if event.has_value("mac") {
                     if let Some(s) = event.get_string("mac") {
                         let re = cached_regex!("[-:.]");
                         let replaced = re.replace_all(&s, "-").into_owned();
@@ -883,7 +883,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("_temp.src_ip") {
+                if event.has_value("_temp.src_ip") {
                     if let Some(s) = event.get_string("_temp.src_ip") {
                         // Validate IP format
                         let s = s.trim();
@@ -900,7 +900,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("sport") {
+                        if event.has_value("sport") {
                             if let Some(val) = event.get("sport") {
                                 let converted = match val {
                                     Value::String(s) => {
@@ -971,7 +971,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("_temp.dst_ip") {
+                    if event.has_value("_temp.dst_ip") {
                         if let Some(s) = event.get_string("_temp.dst_ip") {
                             // Validate IP format
                             let s = s.trim();
@@ -994,7 +994,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("dport") {
+                        if event.has_value("dport") {
                             if let Some(val) = event.get("dport") {
                                 let converted = match val {
                                     Value::String(s) => {
@@ -1687,14 +1687,14 @@ impl Transform for Default {
                 }
                     }
                 }
-                if event.has("source.mac") {
+                if event.has_value("source.mac") {
                     if let Some(s) = event.get_string("source.mac") {
                         let re = cached_regex!("[:.]");
                         let replaced = re.replace_all(&s, "-").into_owned();
                         event.set("source.mac", replaced)?;
                     }
                 }
-                if event.has("source.mac") {
+                if event.has_value("source.mac") {
                     if let Some(s) = event.get_string("source.mac") {
                         let uppered = s.to_uppercase();
                         event.set("source.mac", uppered)?;
@@ -1727,7 +1727,7 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                if event.has("_temp.event_original_lower") {
+                if event.has_value("_temp.event_original_lower") {
                     if let Some(s) = event.get_string("_temp.event_original_lower") {
                         let lowered = s.to_lowercase();
                         event.set("_temp.event_original_lower", lowered)?;
@@ -1765,14 +1765,14 @@ impl Transform for Default {
                 }
                     }
                 }
-                if event.has("_temp.port_action") {
+                if event.has_value("_temp.port_action") {
                     if let Some(s) = event.get_string("_temp.port_action") {
                         let re = cached_regex!(" ");
                         let replaced = re.replace_all(&s, "_").into_owned();
                         event.set("_temp.port_action", replaced)?;
                     }
                 }
-                if event.has("_temp.port_action") {
+                if event.has_value("_temp.port_action") {
                     if let Some(s) = event.get_string("_temp.port_action") {
                         let lowered = s.to_lowercase();
                         event.set("_temp.port_action", lowered)?;
@@ -2509,33 +2509,33 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                if event.has("client.mac") {
+                if event.has_value("client.mac") {
                     if let Some(s) = event.get_string("client.mac") {
                         let re = cached_regex!("[:.]");
                         let replaced = re.replace_all(&s, "-").into_owned();
                         event.set("client.mac", replaced)?;
                     }
                 }
-                if event.has("client.mac") {
+                if event.has_value("client.mac") {
                     if let Some(s) = event.get_string("client.mac") {
                         let uppered = s.to_uppercase();
                         event.set("client.mac", uppered)?;
                     }
                 }
-                if event.has("server.mac") {
+                if event.has_value("server.mac") {
                     if let Some(s) = event.get_string("server.mac") {
                         let re = cached_regex!("[:.]");
                         let replaced = re.replace_all(&s, "-").into_owned();
                         event.set("server.mac", replaced)?;
                     }
                 }
-                if event.has("server.mac") {
+                if event.has_value("server.mac") {
                     if let Some(s) = event.get_string("server.mac") {
                         let uppered = s.to_uppercase();
                         event.set("server.mac", uppered)?;
                     }
                 }
-                if event.has("user.name") {
+                if event.has_value("user.name") {
                     if let Some(s) = event.get_string("user.name") {
                         let lowered = s.to_lowercase();
                         event.set("user.name", lowered)?;
@@ -2555,7 +2555,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("user.email") {
+                        if event.has_value("user.email") {
                             if let Some(input) = event.get_string("user.email") {
                                 let mut remaining: &str = &input;
                                 let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -2593,7 +2593,7 @@ impl Transform for Default {
                         })
                 };
                 if _cond {
-                    if event.has("user.name") {
+                    if event.has_value("user.name") {
                         if let Some(input) = event.get_string("user.name") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -2797,7 +2797,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("mac") {
+                    if event.has_value("mac") {
                         if let Some(input) = event.get_string("mac") {
                             let mut remaining: &str = &input;
                             let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -2993,7 +2993,7 @@ impl Transform for Default {
                 if _cond {
                     event.set("cisco_meraki.event_subtype", json!("http_access_error"))?;
                 }
-                if event.has("user_agent.original") {
+                if event.has_value("user_agent.original") {
                     if let Some(ua_str) = event.get_string("user_agent.original") {
                         let ua_str = ua_str.to_string();
                         // User agent parsing
@@ -3027,7 +3027,7 @@ impl Transform for Default {
                 if _cond {
                     uri_parts(event, "url.original", "url", true, false)?;
                 }
-                if event.has("url.domain") {
+                if event.has_value("url.domain") {
                     if let Some(domain_str) = event.get_string("url.domain") {
                         let domain = domain_str.to_string();
                         event.set("url.domain", json!(domain.clone()))?;
@@ -3066,7 +3066,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.geo") && event.has_value("source.ip") };
             if _cond {
-                if event.has("source.ip") {
+                if event.has_value("source.ip") {
                     if let Some(ip_str) = event.get_string("source.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -3102,7 +3102,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                if event.has("source.ip") {
+                if event.has_value("source.ip") {
                     if let Some(ip_str) = event.get_string("source.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -3129,7 +3129,7 @@ impl Transform for Default {
             let _cond =
                 { !event.has_value("destination.geo") && event.has_value("destination.ip") };
             if _cond {
-                if event.has("destination.ip") {
+                if event.has_value("destination.ip") {
                     if let Some(ip_str) = event.get_string("destination.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -3165,7 +3165,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                if event.has("destination.ip") {
+                if event.has_value("destination.ip") {
                     if let Some(ip_str) = event.get_string("destination.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -3194,7 +3194,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("client.geo") && event.has_value("client.ip") };
             if _cond {
-                if event.has("client.ip") {
+                if event.has_value("client.ip") {
                     if let Some(ip_str) = event.get_string("client.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -3230,7 +3230,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("client.ip") };
             if _cond {
-                if event.has("client.ip") {
+                if event.has_value("client.ip") {
                     if let Some(ip_str) = event.get_string("client.ip") {
                         let ip_str = ip_str.to_string();
                         // GeoIP enrichment (GeoLite2-ASN.mmdb)

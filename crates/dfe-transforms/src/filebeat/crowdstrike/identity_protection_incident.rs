@@ -110,7 +110,7 @@ impl Transform for IdentityProtectionIncident {
 
             let _cond = { event.has_value("crowdstrike.event.StartTime") };
             if _cond {
-                if event.has("crowdstrike.event.StartTime") {
+                if event.has_value("crowdstrike.event.StartTime") {
                     if let Some(val) = event.get("crowdstrike.event.StartTime") {
                         let converted = match val {
                             Value::String(_) => val.clone(),
@@ -169,7 +169,7 @@ impl Transform for IdentityProtectionIncident {
 
             let _cond = { event.has_value("crowdstrike.event.EndTime") };
             if _cond {
-                if event.has("crowdstrike.event.EndTime") {
+                if event.has_value("crowdstrike.event.EndTime") {
                     if let Some(val) = event.get("crowdstrike.event.EndTime") {
                         let converted = match val {
                             Value::String(_) => val.clone(),

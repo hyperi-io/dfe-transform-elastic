@@ -92,7 +92,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("log.syslog.hostname") {
+                if event.has_value("log.syslog.hostname") {
                     if let Some(input) = event.get_string("log.syslog.hostname") {
                         // Grok pattern: ^%{NUMBER:_temp_.sequence}$
                         if !cached_grok!("^%{NUMBER:_temp_.sequence}$")
@@ -185,7 +185,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("_temp_.cisco_timestamp") {
+            if event.has_value("_temp_.cisco_timestamp") {
                 if let Some(s) = event.get_string("_temp_.cisco_timestamp") {
                     let re = cached_regex!("\\s+");
                     let replaced = re.replace_all(&s, " ").into_owned();
@@ -234,7 +234,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("message") {
+            if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
                     if !cached_grok!("%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)? {
@@ -254,7 +254,7 @@ impl Transform for Default {
                         .is_some_and(|i| i.is_some())
             };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
                         if !cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)? {
@@ -268,7 +268,7 @@ impl Transform for Default {
                     && event.get_str("event.code") == Some("SESS_AUDIT_TRAIL")
             };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}
                         if !cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(&input, event)? {
@@ -282,7 +282,7 @@ impl Transform for Default {
                     && event.get_str("event.code") == Some("DROP_PKT")
             };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}
                         if !cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(&input, event)? {
@@ -296,7 +296,7 @@ impl Transform for Default {
                 event.rename("_temp_.generic_message", "message")?;
             }
 
-            if event.has("event.severity") {
+            if event.has_value("event.severity") {
                 if let Some(val) = event.get("event.severity") {
                     let converted = match val {
                         Value::String(s) => {
@@ -330,7 +330,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("event.sequence") {
+            if event.has_value("event.sequence") {
                 if let Some(val) = event.get("event.sequence") {
                     let converted = match val {
                         Value::String(s) => {
@@ -364,7 +364,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("event.code") {
+            if event.has_value("event.code") {
                 if let Some(s) = event.get_string("event.code") {
                     let trimmed = s.trim().to_string();
                     event.set("event.code", trimmed)?;
@@ -1183,7 +1183,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("BADAUTH") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$
                         if !cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(&input, event)? {
@@ -1261,7 +1261,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("destination.address") {
+                if event.has_value("destination.address") {
                     if let Some(s) = event.get_string("destination.address") {
                         // Validate IP format
                         let s = s.trim();
@@ -1292,7 +1292,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("source.address") {
+                if event.has_value("source.address") {
                     if let Some(s) = event.get_string("source.address") {
                         // Validate IP format
                         let s = s.trim();
@@ -1321,7 +1321,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("cisco.ios.pim.source.ip") {
+            if event.has_value("cisco.ios.pim.source.ip") {
                 if let Some(s) = event.get_string("cisco.ios.pim.source.ip") {
                     // Validate IP format
                     let s = s.trim();
@@ -1335,7 +1335,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.port") {
+            if event.has_value("source.port") {
                 if let Some(val) = event.get("source.port") {
                     let converted = match val {
                         Value::String(s) => {
@@ -1369,7 +1369,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.packets") {
+            if event.has_value("source.packets") {
                 if let Some(val) = event.get("source.packets") {
                     let converted = match val {
                         Value::String(s) => {
@@ -1403,7 +1403,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.port") {
+            if event.has_value("destination.port") {
                 if let Some(val) = event.get("destination.port") {
                     let converted = match val {
                         Value::String(s) => {
@@ -1538,7 +1538,7 @@ impl Transform for Default {
                 event.set("log.level", json!("debug"))?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -1571,7 +1571,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -1604,7 +1604,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -1619,7 +1619,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.ip") {
+            if event.has_value("destination.ip") {
                 if let Some(ip_str) = event.get_string("destination.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -1653,7 +1653,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("source.mac") {
+            if event.has_value("source.mac") {
                 if let Some(s) = event.get_string("source.mac") {
                     let re = cached_regex!(":");
                     let replaced = re.replace_all(&s, "-").into_owned();
@@ -1661,7 +1661,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.mac") {
+            if event.has_value("source.mac") {
                 if let Some(s) = event.get_string("source.mac") {
                     let uppered = s.to_uppercase();
                     event.set("source.mac", uppered)?;
@@ -1730,7 +1730,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("source.ip") {
+                if event.has_value("source.ip") {
                     // Community ID v1 hash
                     if let (Some(src_ip), Some(dst_ip), Some(protocol)) = (
                         event.get_string("source.ip"),

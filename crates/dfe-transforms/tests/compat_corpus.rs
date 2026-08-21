@@ -66,6 +66,18 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
             &filebeat::entityanalytics_entra_id::default::Default
         }
         ("checkpoint", "firewall") => &filebeat::checkpoint::default::Default,
+        ("microsoft_defender_endpoint", "log") => {
+            &filebeat::microsoft_defender_endpoint_log::default::Default
+        }
+        ("microsoft_defender_endpoint", "machine") => {
+            &filebeat::microsoft_defender_endpoint_machine::default::Default
+        }
+        ("microsoft_defender_endpoint", "machine_action") => {
+            &filebeat::microsoft_defender_endpoint_machine_action::default::Default
+        }
+        ("microsoft_defender_endpoint", "vulnerability") => {
+            &filebeat::microsoft_defender_endpoint_vulnerability::default::Default
+        }
         _ => return None,
     })
 }

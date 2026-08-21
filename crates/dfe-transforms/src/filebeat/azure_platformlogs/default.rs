@@ -116,7 +116,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("event.original") {
+                    if event.has_value("event.original") {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: resourceId\": ?\"%{DATA:azure.platformlogs.resourceId}\"
                             if !cached_grok!(
@@ -130,7 +130,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("event.original") {
+                    if event.has_value("event.original") {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: category\": ?\"%{DATA:azure.platformlogs.category}\"
                             if !cached_grok!("category\": ?\"%{DATA:azure.platformlogs.category}\"")
@@ -142,7 +142,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("event.original") {
+                    if event.has_value("event.original") {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: time\": ?\"%{DATA:azure.platformlogs.time}\"
                             if !cached_grok!("time\": ?\"%{DATA:azure.platformlogs.time}\"")
@@ -367,7 +367,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("azure.platformlogs.callerIpAddress") {
+                if event.has_value("azure.platformlogs.callerIpAddress") {
                     if let Some(s) = event.get_string("azure.platformlogs.callerIpAddress") {
                         // Validate IP format
                         let s = s.trim();
@@ -438,7 +438,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("azure.platformlogs.durationMs") {
+                    if event.has_value("azure.platformlogs.durationMs") {
                         if let Some(val) = event.get("azure.platformlogs.durationMs") {
                             let converted = match val {
                                 Value::String(s) => {
@@ -619,7 +619,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.platformlogs.operation_name") {
+            if event.has_value("azure.platformlogs.operation_name") {
                 if let Some(val) = event.get("azure.platformlogs.operation_name") {
                     let converted = match val {
                         Value::String(_) => val.clone(),
@@ -654,7 +654,7 @@ impl Transform for Default {
                 event.rename("azure.platformlogs.Status", "azure.platformlogs.status")?;
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -700,7 +700,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -733,7 +733,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)
@@ -860,7 +860,7 @@ impl Transform for Default {
             if event.has("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
-            if event.has("event.outcome") {
+            if event.has_value("event.outcome") {
                 if let Some(s) = event.get_string("event.outcome") {
                     let lowered = s.to_lowercase();
                     event.set("event.outcome", lowered)?;
@@ -996,7 +996,7 @@ impl Transform for Default {
                         "azure.springcloudlogs.operation_name",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.operation_name") {
+                if event.has_value("azure.springcloudlogs.operation_name") {
                     if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
                         let converted = match val {
                             Value::String(_) => val.clone(),

@@ -82,7 +82,7 @@ impl Transform for FirewallMatch {
                 event.rename("crowdstrike.event.Ipv", "network.type")?;
             }
 
-            if event.has("crowdstrike.event.PID") {
+            if event.has_value("crowdstrike.event.PID") {
                 if let Some(val) = event.get("crowdstrike.event.PID") {
                     let converted = match val {
                         Value::String(s) => {
@@ -193,7 +193,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("ingress")
             };
             if _cond {
-                if event.has("crowdstrike.event.LocalPort") {
+                if event.has_value("crowdstrike.event.LocalPort") {
                     if let Some(val) = event.get("crowdstrike.event.LocalPort") {
                         let converted = match val {
                             Value::String(s) => {
@@ -235,7 +235,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("ingress")
             };
             if _cond {
-                if event.has("crowdstrike.event.RemotePort") {
+                if event.has_value("crowdstrike.event.RemotePort") {
                     if let Some(val) = event.get("crowdstrike.event.RemotePort") {
                         let converted = match val {
                             Value::String(s) => {
@@ -297,7 +297,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("egress")
             };
             if _cond {
-                if event.has("crowdstrike.event.LocalPort") {
+                if event.has_value("crowdstrike.event.LocalPort") {
                     if let Some(val) = event.get("crowdstrike.event.LocalPort") {
                         let converted = match val {
                             Value::String(s) => {
@@ -339,7 +339,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("egress")
             };
             if _cond {
-                if event.has("crowdstrike.event.RemotePort") {
+                if event.has_value("crowdstrike.event.RemotePort") {
                     if let Some(val) = event.get("crowdstrike.event.RemotePort") {
                         let converted = match val {
                             Value::String(s) => {

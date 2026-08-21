@@ -26,7 +26,7 @@ impl Transform for UserActivityAudit {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("crowdstrike.event.UserId") {
+                if event.has_value("crowdstrike.event.UserId") {
                     if let Some(input) = event.get_string("crowdstrike.event.UserId") {
                         // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                         if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")

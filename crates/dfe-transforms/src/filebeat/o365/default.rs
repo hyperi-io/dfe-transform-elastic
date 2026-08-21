@@ -528,7 +528,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("o365audit.Parameters._raw") {
+                    if event.has_value("o365audit.Parameters._raw") {
                         if let Some(input) = event.get_string("o365audit.Parameters._raw") {
                             // Grok pattern: ^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$
                             if !cached_grok!(
@@ -589,7 +589,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("host.os.type") {
+            if event.has_value("host.os.type") {
                 if let Some(s) = event.get_string("host.os.type") {
                     let lowered = s.to_lowercase();
                     event.set("host.os.type", lowered)?;
@@ -1737,7 +1737,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("client._temp") {
+            if event.has_value("client._temp") {
                 if let Some(s) = event.get_string("client._temp") {
                     let re = cached_regex!(
                         "^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](:[0-9]+)?)?$"
@@ -1800,7 +1800,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("server._temp") {
+            if event.has_value("server._temp") {
                 if let Some(s) = event.get_string("server._temp") {
                     let re = cached_regex!("[\n\r]");
                     let replaced = re.replace_all(&s, "").into_owned();
@@ -1852,7 +1852,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("client._port") {
+            if event.has_value("client._port") {
                 if let Some(val) = event.get("client._port") {
                     let converted = match val {
                         Value::String(s) => {
@@ -2110,7 +2110,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("organization.id") {
+                if event.has_value("organization.id") {
                     if let Some(s) = event.get_string("organization.id") {
                         let lowered = s.to_lowercase();
                         event.set("organization.id", lowered)?;
@@ -2548,7 +2548,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("o365audit.Data.sip") {
+                    if event.has_value("o365audit.Data.sip") {
                         if let Some(s) = event.get_string("o365audit.Data.sip") {
                             // Validate IP format
                             let s = s.trim();
@@ -3111,7 +3111,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("user_agent") };
             if _cond {
-                if event.has("o365audit.ExtendedProperties.additionalDetails.User-Agent") {
+                if event.has_value("o365audit.ExtendedProperties.additionalDetails.User-Agent") {
                     if let Some(ua_str) = event
                         .get_string("o365audit.ExtendedProperties.additionalDetails.User-Agent")
                     {
@@ -3214,7 +3214,7 @@ impl Transform for Default {
                 event.rename("o365audit", "o365.audit")?;
             }
 
-            if event.has("user_agent.original") {
+            if event.has_value("user_agent.original") {
                 if let Some(ua_str) = event.get_string("user_agent.original") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
@@ -3243,7 +3243,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-City.mmdb)
@@ -3276,7 +3276,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.ip") {
+            if event.has_value("source.ip") {
                 if let Some(ip_str) = event.get_string("source.ip") {
                     let ip_str = ip_str.to_string();
                     // GeoIP enrichment (GeoLite2-ASN.mmdb)

@@ -99,7 +99,7 @@ impl Transform for Default {
                 )?;
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.device.account_enabled") {
+                    if event.has_value("entityanalytics_entra_id.device.account_enabled") {
                         if let Some(val) =
                             event.get("entityanalytics_entra_id.device.account_enabled")
                         {
@@ -191,7 +191,7 @@ impl Transform for Default {
                                 event.set("_ingest._value", item)?;
                                 // on_failure: 2 handler(s)
                                 if let Err(err) = (|| -> Result<()> {
-                                    if event.has("_ingest._value.type") {
+                                    if event.has_value("_ingest._value.type") {
                                         if let Some(val) = event.get("_ingest._value.type") {
                                             let converted = match val {
                                                 Value::String(s) => {
@@ -393,7 +393,7 @@ impl Transform for Default {
                 }
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.device.device_version") {
+                    if event.has_value("entityanalytics_entra_id.device.device_version") {
                         if let Some(val) =
                             event.get("entityanalytics_entra_id.device.device_version")
                         {
@@ -474,7 +474,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.device.is_compliant") {
+                    if event.has_value("entityanalytics_entra_id.device.is_compliant") {
                         if let Some(val) = event.get("entityanalytics_entra_id.device.is_compliant")
                         {
                             let converted = match val {
@@ -534,7 +534,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.device.is_managed") {
+                    if event.has_value("entityanalytics_entra_id.device.is_managed") {
                         if let Some(val) = event.get("entityanalytics_entra_id.device.is_managed") {
                             let converted = match val {
                                 Value::Bool(_) => val.clone(),
@@ -691,7 +691,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.device.on_premises_sync_enabled") {
+                    if event.has_value("entityanalytics_entra_id.device.on_premises_sync_enabled") {
                         if let Some(val) =
                             event.get("entityanalytics_entra_id.device.on_premises_sync_enabled")
                         {
@@ -760,7 +760,7 @@ impl Transform for Default {
                 {
                     event.set("host.os.type", v)?;
                 }
-                if event.has("host.os.type") {
+                if event.has_value("host.os.type") {
                     if let Some(s) = event.get_string("host.os.type") {
                         let lowered = s.to_lowercase();
                         event.set("host.os.type", lowered)?;
@@ -1443,7 +1443,7 @@ impl Transform for Default {
                 )?;
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.user.account_enabled") {
+                    if event.has_value("entityanalytics_entra_id.user.account_enabled") {
                         if let Some(val) =
                             event.get("entityanalytics_entra_id.user.account_enabled")
                         {
@@ -1753,7 +1753,7 @@ impl Transform for Default {
                 }
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("entityanalytics_entra_id.user.mfa.is_mfa_registered") {
+                    if event.has_value("entityanalytics_entra_id.user.mfa.is_mfa_registered") {
                         if let Some(val) =
                             event.get("entityanalytics_entra_id.user.mfa.is_mfa_registered")
                         {
