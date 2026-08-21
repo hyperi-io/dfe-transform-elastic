@@ -299,6 +299,30 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "gcp.vpcflow",
     ),
     (
+        "filebeat.m365_defender_alert.default",
+        &filebeat::m365_defender_alert::default::Default,
+        fetched(),
+        "m365_defender.alert",
+    ),
+    (
+        "filebeat.m365_defender_event.default",
+        &filebeat::m365_defender_event::default::Default,
+        fetched(),
+        "m365_defender.event",
+    ),
+    (
+        "filebeat.m365_defender_incident.default",
+        &filebeat::m365_defender_incident::default::Default,
+        fetched(),
+        "m365_defender.incident",
+    ),
+    (
+        "filebeat.m365_defender_vulnerability.default",
+        &filebeat::m365_defender_vulnerability::default::Default,
+        fetched(),
+        "m365_defender.vulnerability",
+    ),
+    (
         "filebeat.microsoft_defender_endpoint_log.default",
         &filebeat::microsoft_defender_endpoint_log::default::Default,
         fetched(),

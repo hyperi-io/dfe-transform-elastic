@@ -229,6 +229,30 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.m365_defender_alert.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.m365_defender_event.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.m365_defender_incident.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.m365_defender_vulnerability.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.microsoft_defender_endpoint_log.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"

@@ -176,6 +176,12 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("zscaler_zia", "firewall") => &filebeat::zscaler_zia_firewall::default::Default,
         ("zscaler_zia", "tunnel") => &filebeat::zscaler_zia_tunnel::default::Default,
         ("zscaler_zia", "web") => &filebeat::zscaler_zia_web::default::Default,
+        ("m365_defender", "alert") => &filebeat::m365_defender_alert::default::Default,
+        ("m365_defender", "incident") => &filebeat::m365_defender_incident::default::Default,
+        ("m365_defender", "vulnerability") => {
+            &filebeat::m365_defender_vulnerability::default::Default
+        }
+        ("m365_defender", "event") => &filebeat::m365_defender_event::default::Default,
         _ => return None,
     })
 }

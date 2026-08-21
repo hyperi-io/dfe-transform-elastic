@@ -12,8 +12,11 @@ use std::borrow::Cow;
 
 use chrono::{DateTime, Datelike, FixedOffset, NaiveDateTime, TimeZone, Utc};
 
-/// The output shape: ISO 8601 with milliseconds and an explicit offset.
-const ISO_OUT: &str = "%Y-%m-%dT%H:%M:%S%.3f%:z";
+/// The output shape: ISO 8601 with milliseconds, ending in `Z`.
+///
+/// Everything is converted to UTC before it is formatted, and Elastic writes
+/// that zone as `Z` rather than `+00:00`.
+const ISO_OUT: &str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 
 /// Zero offset, the fallback when no zone is named anywhere.
 const UTC_OFFSET: FixedOffset = match FixedOffset::east_opt(0) {
@@ -406,7 +409,7 @@ mod tests {
     fn a_nexus_timestamp_parses_with_its_zone_name() {
         let formats = ["yyyy MMM d HH:mm:ss zzz", "yyyy MMM d HH:mm:ss"];
         let out = parse_date("2023 May  2 12:55:19 UTC", &formats, None).unwrap();
-        assert_eq!(out, "2023-05-02T12:55:19.000+00:00");
+        assert_eq!(out, "2023-05-02T12:55:19.000Z");
     }
 
     /// The single-space format has to cover the padded day too -- chrono
@@ -414,7 +417,7 @@ mod tests {
     #[test]
     fn a_padded_day_matches_the_single_space_format() {
         let out = parse_date("2023 Apr  7 09:36:56", &["yyyy MMM d HH:mm:ss"], None).unwrap();
-        assert_eq!(out, "2023-04-07T09:36:56.000+00:00");
+        assert_eq!(out, "2023-04-07T09:36:56.000Z");
     }
 
     /// The FIRST format that parses wins; Elastic stops there, and a later
@@ -422,7 +425,7 @@ mod tests {
     #[test]
     fn the_first_matching_format_wins() {
         let out = parse_date("1587230269", &["UNIX", "UNIX_MS"], None).unwrap();
-        assert_eq!(out, "2020-04-18T17:17:49.000+00:00");
+        assert_eq!(out, "2020-04-18T17:17:49.000Z");
     }
 
     #[test]
@@ -432,7 +435,7 @@ mod tests {
             &["yyyy MMM d HH:mm:ss"],
             Some("+1000"),
         );
-        assert_eq!(out.unwrap(), "2023-05-02T02:55:19.000+00:00");
+        assert_eq!(out.unwrap(), "2023-05-02T02:55:19.000Z");
     }
 
     /// Elasticsearch's own named formats, not Java patterns. They were read as
@@ -450,11 +453,7 @@ mod tests {
             "strict_date_time_no_millis",
         ] {
             let out = parse_date("2021-05-26T16:26:47.123456789Z", &[format], None);
-            assert_eq!(
-                out.as_deref(),
-                Some("2021-05-26T16:26:47.123+00:00"),
-                "{format}"
-            );
+            assert_eq!(out.as_deref(), Some("2021-05-26T16:26:47.123Z"), "{format}");
         }
     }
 
@@ -464,14 +463,14 @@ mod tests {
     fn a_nanosecond_instant_renders_at_millisecond_precision() {
         let formats = ["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"];
         let out = parse_date("2021-05-26T16:26:47.000000000Z", &formats, None);
-        assert_eq!(out.as_deref(), Some("2021-05-26T16:26:47.000+00:00"));
+        assert_eq!(out.as_deref(), Some("2021-05-26T16:26:47.000Z"));
     }
 
     #[test]
     fn an_offset_in_the_text_beats_the_processor_setting() {
         let formats = ["yyyy-MM-dd HH:mm:ss Z"];
         let out = parse_date("2023-05-02 12:55:19 -0500", &formats, Some("+1000")).unwrap();
-        assert_eq!(out, "2023-05-02T17:55:19.000+00:00");
+        assert_eq!(out, "2023-05-02T17:55:19.000Z");
     }
 
     /// Verbatim from `tests/fixtures/cisco/nexus`: AEST is +10:00, and
@@ -484,7 +483,7 @@ mod tests {
             &["yyyy MMM d HH:mm:ss.SSS zzz"],
             None,
         );
-        assert_eq!(out.unwrap(), "2023-05-03T03:55:35.928+00:00");
+        assert_eq!(out.unwrap(), "2023-05-03T03:55:35.928Z");
     }
 
     #[test]

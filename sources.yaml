@@ -148,6 +148,41 @@ sources:
     framing: line
     transforms: [default]
 
+  # Two streams on httpjson, one on cel and one on azure-eventhub. All four are
+  # PULLED, so `fetcher` is the intake and `receiver` is not -- an event hub is
+  # a queue the agent reads, not a device pushing at us.
+  m365_defender_alert:
+    package: m365_defender
+    data_stream: alert
+    pipelines: m365_defender/alert
+    fixtures: m365_defender/alert
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  m365_defender_event:
+    package: m365_defender
+    data_stream: event
+    pipelines: m365_defender/event
+    fixtures: m365_defender/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  m365_defender_incident:
+    package: m365_defender
+    data_stream: incident
+    pipelines: m365_defender/incident
+    fixtures: m365_defender/incident
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  m365_defender_vulnerability:
+    package: m365_defender
+    data_stream: vulnerability
+    pipelines: m365_defender/vulnerability
+    fixtures: m365_defender/vulnerability
+    intakes: [beats, fetcher]
+    transforms: [default]
+
   # Four streams, all on httpjson or cel -- pure transports, so dfe-fetcher can
   # obtain the same bytes the agent would.
   microsoft_defender_endpoint_log:

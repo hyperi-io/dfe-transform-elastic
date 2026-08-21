@@ -172,6 +172,41 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
     Ok(())
 }
 
+/// Sort an array's elements, the way Elastic's `sort` processor does.
+///
+/// Elastic sorts by the elements' natural ordering, so the array has to be
+/// all-numbers or all-strings; anything mixed throws in Java. Booleans sort
+/// false before true, which is Java's `Boolean.compareTo`.
+///
+/// Returns `None` when the value is not an array, or holds something with no
+/// natural ordering -- an object, a nested array, a null, or a mix of kinds.
+/// That is the case Elastic throws on, so the caller raises.
+#[must_use]
+pub fn sort_values(value: &Value, descending: bool) -> Option<Vec<Value>> {
+    let items = value.as_array()?;
+
+    let mut sorted = items.clone();
+    let all = |f: fn(&Value) -> bool| items.iter().all(f);
+    if all(Value::is_string) {
+        sorted.sort_by(|a, b| a.as_str().cmp(&b.as_str()));
+    } else if all(Value::is_number) {
+        sorted.sort_by(|a, b| {
+            a.as_f64()
+                .partial_cmp(&b.as_f64())
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+    } else if all(Value::is_boolean) {
+        sorted.sort_by_key(Value::as_bool);
+    } else if !items.is_empty() {
+        return None;
+    }
+
+    if descending {
+        sorted.reverse();
+    }
+    Some(sorted)
+}
+
 /// Percent-decode a string the way Elastic's `urldecode` processor does.
 ///
 /// The processor calls Java's `URLDecoder.decode(value, "UTF-8")`, which is
