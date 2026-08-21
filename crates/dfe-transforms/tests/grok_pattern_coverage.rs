@@ -20,18 +20,15 @@ use std::path::{Path, PathBuf};
 ///
 /// Was 391 before `SPACE`, `PORT`, `TIME`, `QS` and the syslog names were
 /// defined; `%{SPACE}` alone accounted for 152 of them.
-const CEILING: usize = 2;
+const CEILING: usize = 0;
 
 /// Names that may still fall through, because their definitions live in the
 /// upstream pipelines' `pattern_definitions` and have not been carried across.
 /// A name NOT on this list falling through is a regression.
 ///
-/// `ISO8601_TIMEZONE` is here for a reason worth knowing: defining it Elastic's
-/// own way -- `(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))` -- scores WORSE on the corpus
-/// than the catch-all does, 3561 of checkpoint's fields against 3703. The loose
-/// capture is absorbing something the strict one leaves behind, and until that
-/// is understood, defining it correctly would be a regression.
-const ALLOWED: &[&str] = &["ISO8601_TIMEZONE"];
+/// Empty: the generator inlines every `pattern_definitions` entry, so a
+/// vendor name never reaches the emitted Rust.
+const ALLOWED: &[&str] = &[];
 
 fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
     let Ok(entries) = std::fs::read_dir(dir) else {

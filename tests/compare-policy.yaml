@@ -83,6 +83,23 @@ known_different:
   - prefix: cisco_nexus.log.syslog_time
     why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
 
+# Elasticsearch is wrong here and we are right, so these never go away. Every
+# entry names the bug, because a divergence without one is indistinguishable
+# from a defect of our own.
+corrected:
+  - prefix: event.duration
+    why: >-
+      Elasticsearch 9.2.2 multiplies milliseconds into a 32-bit int, so azure's
+      durationMs 2826 overflows to -1468967296 where the answer is 2826000000.
+  - prefix: event.kind
+    why: >-
+      cisco_nexus ships 27 events whose timestamp its own date processor cannot
+      parse, so Elastic emits pipeline_error where we emit a parsed event.
+  - prefix: error.message
+    why: >-
+      The other half of the cisco_nexus date failure -- Elastic's own error
+      text, which we have nothing to report.
+
 # ECS fields whose values are sets. Same members in a different sequence is
 # equality, not a difference.
 unordered:

@@ -96,6 +96,23 @@ Each fixture's own `dynamic_fields` and `numeric_keyword_fields` are honoured
 on top of the policy. A source reports `CURRENT` when `real` is zero, and the
 `clean` count is the events with no real difference.
 
+## Correct beats bug-compatible
+
+The corpus is the reference for what a pipeline MEANS, not a specification of
+what Elasticsearch does in every case. Where its output is wrong, we emit the
+right value and record the divergence -- we do not reproduce the bug.
+
+Two live examples. Elasticsearch 9.2.2 overflows a 2,826 ms duration to
+`event.duration: -1468967296` where the correct value is 2,826,000,000, because
+it multiplies into a 32-bit int. And cisco_nexus ships 27 events whose
+timestamp its own date processor cannot parse, so it emits
+`event.kind: pipeline_error` where we emit a correctly parsed event.
+
+Both are recorded in `tests/compare-policy.yaml` with the reason attached, so
+the difference is excluded from scoring and stays visible to anyone reading it.
+A divergence taken this way is a decision with a name on it, and it is never
+the quiet option: matching the bug would have scored better.
+
 ## Older stacks
 
 Every committed expectation declares ECS 1.12.0, which is the Beats 7 era,

@@ -28,6 +28,8 @@ struct PolicyFile {
     #[serde(default)]
     known_different: Vec<Rule>,
     #[serde(default)]
+    corrected: Vec<Rule>,
+    #[serde(default)]
     unordered: Vec<String>,
 }
 
@@ -91,6 +93,7 @@ pub fn policy() -> &'static Policy {
             .iter()
             .chain(&file.not_emitted)
             .chain(&file.known_different)
+            .chain(&file.corrected)
             .map(|r| r.path.clone())
             .collect();
 

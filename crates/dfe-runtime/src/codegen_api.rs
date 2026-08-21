@@ -495,7 +495,14 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "GROUPID" | "PROVIDERNAME" | "PROVIDER" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
         "MONTHDAY" | "MONTHNUM" => r"\d{1,2}",
         "YEAR" => r"\d{4}",
-        "HOUR" | "MINUTE" | "SECOND" => r"\d{2}",
+        // Elastic's own, and each part earns its shape. HOUR takes one digit
+        // or two, because an offset is written `-5:00` as often as `-05:00`.
+        // SECOND carries an optional fraction, without which checkpoint's
+        // `16:39:12.000Z` leaves `.000Z` for the next literal to fail on.
+        "HOUR" => r"(?:2[0-3]|[01]?\d)",
+        "MINUTE" => r"[0-5]\d",
+        "SECOND" => r"(?:[0-5]?\d|60)(?:[:.,]\d+)?",
+        "ISO8601_TIMEZONE" => r"(?:Z|[+-](?:2[0-3]|[01]?\d)(?::?[0-5]\d))",
         // Whitespace, not "anything". The catch-all below made every pattern
         // containing %{SPACE} match arbitrary text -- 152 sites' worth.
         "SPACE" => r"\s*",

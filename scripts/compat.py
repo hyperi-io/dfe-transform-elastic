@@ -1002,6 +1002,7 @@ class Policy:
         nondeterministic: Paths that carry no information.
         not_emitted: Prefixes of Elastic plumbing DFE does not produce.
         known_different: Prefixes both sides produce, differently.
+        corrected: Prefixes where Elasticsearch is WRONG and we are right.
         unordered: ECS fields whose values are sets.
         reasons: Prefix to the reason it is excluded.
     """
@@ -1009,6 +1010,7 @@ class Policy:
     nondeterministic: tuple[str, ...]
     not_emitted: tuple[str, ...]
     known_different: tuple[str, ...]
+    corrected: tuple[str, ...]
     unordered: frozenset[str]
     reasons: dict[str, str]
 
@@ -1028,7 +1030,7 @@ def load_policy() -> Policy:
     raw = yaml.safe_load(POLICY_PATH.read_text(encoding="utf-8")) or {}
     reasons: dict[str, str] = {}
     groups: dict[str, list[str]] = {}
-    for group in ("nondeterministic", "not_emitted", "known_different"):
+    for group in ("nondeterministic", "not_emitted", "known_different", "corrected"):
         entries = raw.get(group) or []
         keys = [entry.get("path") or entry.get("prefix") for entry in entries]
         groups[group] = [key for key in keys if key]
@@ -1039,6 +1041,7 @@ def load_policy() -> Policy:
         nondeterministic=tuple(groups["nondeterministic"]),
         not_emitted=tuple(groups["not_emitted"]),
         known_different=tuple(groups["known_different"]),
+        corrected=tuple(groups["corrected"]),
         unordered=frozenset(raw.get("unordered") or []),
         reasons=reasons,
     )
@@ -1131,7 +1134,12 @@ def matching_rule(base: str) -> str | None:
         The longest matching prefix, or None when nothing excludes it.
     """
     policy = load_policy()
-    candidates = policy.not_emitted + policy.known_different + policy.nondeterministic
+    candidates = (
+        policy.not_emitted
+        + policy.known_different
+        + policy.corrected
+        + policy.nondeterministic
+    )
     matches = [prefix for prefix in candidates if base.startswith(prefix)]
     return max(matches, key=len) if matches else None
 
@@ -1167,7 +1175,7 @@ def categorise(
             continue
         if base.startswith(not_emitted):
             buckets["metadata"].add(base)
-        elif base.startswith(policy.known_different):
+        elif base.startswith(policy.known_different + policy.corrected):
             buckets["enrichment"].add(base)
         elif base in policy.unordered and _same_members(
             _resolve(committed, base.split(".")), _resolve(compat, base.split("."))
