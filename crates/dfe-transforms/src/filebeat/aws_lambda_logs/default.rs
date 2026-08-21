@@ -524,42 +524,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("parsed.function_memory_size") {
                         if let Some(val) = event.get("parsed.function_memory_size") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "parsed.function_memory_size".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "parsed.function_memory_size".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "parsed.function_memory_size".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "parsed.function_memory_size".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("aws.lambda.metrics.memory_size_mb", converted)?;
                         }
                     }

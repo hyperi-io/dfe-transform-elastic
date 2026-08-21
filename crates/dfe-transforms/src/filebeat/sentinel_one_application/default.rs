@@ -166,36 +166,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.applicationVersionsCount") {
                     if let Some(val) = event.get("json.applicationVersionsCount") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.applicationVersionsCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.applicationVersionsCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.applicationVersionsCount".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.applicationVersionsCount".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "sentinel_one.application.application_versions_count",
                             converted,
@@ -240,36 +216,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.coreCount") {
                     if let Some(val) = event.get("json.coreCount") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.coreCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.coreCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.coreCount".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.coreCount".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.application.core_count", converted)?;
                     }
                 }
@@ -315,36 +267,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.cpuCount") {
                     if let Some(val) = event.get("json.cpuCount") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.cpuCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.cpuCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.cpuCount".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.cpuCount".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.application.cpu_count", converted)?;
                     }
                 }
@@ -491,36 +419,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.endpointsCount") {
                     if let Some(val) = event.get("json.endpointsCount") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.endpointsCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.endpointsCount".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.endpointsCount".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.endpointsCount".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.application.endpoints_count", converted)?;
                     }
                 }
@@ -562,17 +466,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.estimate") {
                     if let Some(val) = event.get("json.estimate") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.estimate".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.estimate".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.application.estimate", converted)?;
                     }
                 }
@@ -614,36 +513,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.fileSize") {
                     if let Some(val) = event.get("json.fileSize") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.fileSize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.fileSize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.fileSize".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.fileSize".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.application.file_size", converted)?;
                     }
                 }

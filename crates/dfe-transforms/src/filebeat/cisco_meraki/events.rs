@@ -879,20 +879,18 @@ impl Transform for Events {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string(
-                        "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip",
-                    ) {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) =
+                        event.get("cisco_meraki.multiple_dhcp_servers_detected.original_server_ip")
+                    {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path:
                                     "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip"
                                         .into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("server.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("server.ip", converted)?;
                     }
                     Ok(())
                 })();
@@ -955,18 +953,18 @@ impl Transform for Events {
                     == Some("multiple_dhcp_servers_detected")
             };
             if _cond {
-                if let Some(s) =
-                    event.get_string("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
+                if let Some(val) =
+                    event.get("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
                 {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "cisco_meraki.multiple_dhcp_servers_detected.server_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("cisco_meraki.multiple_dhcp_servers_detected.server_ip", s)?;
+                            message,
+                        })?;
+                    event.set(
+                        "cisco_meraki.multiple_dhcp_servers_detected.server_ip",
+                        converted,
+                    )?;
                 }
             }
 
@@ -1299,16 +1297,14 @@ impl Transform for Events {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("_temp.client_ip") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("_temp.client_ip") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "_temp.client_ip".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("client.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("client.ip", converted)?;
                     }
                     Ok(())
                 })();

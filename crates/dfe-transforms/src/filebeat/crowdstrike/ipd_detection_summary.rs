@@ -47,13 +47,12 @@ impl Transform for IpdDetectionSummary {
 
             if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.PatternId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("rule.uuid", converted)?;
                 }
             }
@@ -177,13 +176,12 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 if event.has_value("crowdstrike.event.ContextTimeStamp") {
                     if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.ContextTimeStamp", converted)?;
                     }
                 }
@@ -236,13 +234,12 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 if event.has_value("crowdstrike.event.AccountCreationTimeStamp") {
                     if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
                     }
                 }
@@ -299,13 +296,12 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 if event.has_value("crowdstrike.event.StartTime") {
                     if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.StartTime".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.StartTime", converted)?;
                     }
                 }
@@ -358,13 +354,12 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 if event.has_value("crowdstrike.event.EndTime") {
                     if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.EndTime".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.EndTime", converted)?;
                     }
                 }

@@ -113,16 +113,13 @@ impl Transform for Default {
             }
 
             if event.has_value("json.event.src_ip") {
-                if let Some(s) = event.get_string("json.event.src_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("json.event.src_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "json.event.src_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("source.address", s)?;
+                            message,
+                        })?;
+                    event.set("source.address", converted)?;
                 }
             }
 
@@ -136,34 +133,12 @@ impl Transform for Default {
             let _cond = { event.has_value("json.event.src_port") };
             if _cond {
                 if let Some(val) = event.get("json.event.src_port") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "json.event.src_port".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "json.event.src_port".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "integer").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.event.src_port".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "json.event.src_port".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("source.port", converted)?;
                 }
             }
@@ -251,16 +226,13 @@ impl Transform for Default {
             }
 
             if event.has_value("json.event.dest_ip") {
-                if let Some(s) = event.get_string("json.event.dest_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("json.event.dest_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "json.event.dest_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("destination.address", s)?;
+                            message,
+                        })?;
+                    event.set("destination.address", converted)?;
                 }
             }
 
@@ -274,34 +246,12 @@ impl Transform for Default {
             let _cond = { event.has_value("json.event.dest_port") };
             if _cond {
                 if let Some(val) = event.get("json.event.dest_port") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "json.event.dest_port".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "json.event.dest_port".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "integer").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.event.dest_port".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "json.event.dest_port".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("destination.port", converted)?;
                 }
             }
@@ -378,13 +328,12 @@ impl Transform for Default {
 
             if event.has_value("json.event.alert.category") {
                 if let Some(val) = event.get("json.event.alert.category") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.event.alert.category".into(),
+                            message,
+                        }
+                    })?;
                     event.set("message", converted)?;
                 }
             }
@@ -644,13 +593,12 @@ impl Transform for Default {
 
             if event.has_value("aws.firewall.flow.id") {
                 if let Some(val) = event.get("aws.firewall.flow.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "aws.firewall.flow.id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("aws.firewall.flow.id", converted)?;
                 }
             }

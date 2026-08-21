@@ -154,13 +154,12 @@ impl Transform for SpringcloudlogsInnerPipeline {
 
             if event.has_value("azure.springcloudlogs.operation_name") {
                 if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.springcloudlogs.operation_name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.action", converted)?;
                 }
             }

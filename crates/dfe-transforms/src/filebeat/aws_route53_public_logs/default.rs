@@ -95,16 +95,13 @@ impl Transform for Default {
             }
 
             if event.has_value("source.address") {
-                if let Some(s) = event.get_string("source.address") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("source.address") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "source.address".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("source.ip", s)?;
+                            message,
+                        })?;
+                    event.set("source.ip", converted)?;
                 }
             }
 

@@ -115,22 +115,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.baseScore") {
                     if let Some(val) = event.get("json.baseScore") {
-                        let converted = match val {
-                            Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| {
-                                TransformError::ParseError {
-                                    path: "json.baseScore".into(),
-                                    message: format!("cannot convert '{}' to float", s),
-                                }
-                            })?),
-                            Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                            Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.baseScore".into(),
-                                    message: "cannot convert to float".into(),
-                                });
+                        let converted = convert_value(val, "double").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.baseScore".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.application_risk.base_score", converted)?;
                     }
                 }
@@ -215,36 +205,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.daysDetected") {
                     if let Some(val) = event.get("json.daysDetected") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.daysDetected".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.daysDetected".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.daysDetected".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.daysDetected".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.application_risk.days_detected", converted)?;
                     }
                 }
@@ -333,13 +299,12 @@ impl Transform for Default {
 
             if event.has_value("json.endpointId") {
                 if let Some(val) = event.get("json.endpointId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.endpointId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("sentinel_one.application_risk.endpoint_id", converted)?;
                 }
             }
@@ -399,13 +364,12 @@ impl Transform for Default {
 
             if event.has_value("json.id") {
                 if let Some(val) = event.get("json.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("sentinel_one.application_risk.id", converted)?;
                 }
             }
@@ -644,24 +608,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.nvdBaseScore") {
                         if let Some(val) = event.get("json.nvdBaseScore") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    json!(s.trim().parse::<f64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.nvdBaseScore".into(),
-                                            message: format!("cannot convert '{}' to float", s),
-                                        }
-                                    })?)
+                            let converted = convert_value(val, "float").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.nvdBaseScore".into(),
+                                    message,
                                 }
-                                Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                                Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.nvdBaseScore".into(),
-                                        message: "cannot convert to float".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("sentinel_one.application_risk.nvd_base_score", converted)?;
                         }
                     }
@@ -818,22 +770,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.riskScore") {
                     if let Some(val) = event.get("json.riskScore") {
-                        let converted = match val {
-                            Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| {
-                                TransformError::ParseError {
-                                    path: "json.riskScore".into(),
-                                    message: format!("cannot convert '{}' to float", s),
-                                }
-                            })?),
-                            Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                            Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.riskScore".into(),
-                                    message: "cannot convert to float".into(),
-                                });
+                        let converted = convert_value(val, "double").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.riskScore".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.application_risk.risk_score", converted)?;
                     }
                 }

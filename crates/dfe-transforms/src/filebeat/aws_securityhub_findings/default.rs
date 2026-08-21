@@ -252,12 +252,11 @@ impl Transform for Default {
                         if let Some(val) = event
                             .get("json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lat")
                         {
-                            let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lat".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lat".into(), message: "cannot convert to float".into() }),
-                    };
+                            let converted = convert_value(val, "double")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lat".into(),
+                            message,
+                        })?;
                             event.set("aws.securityhub_findings.action.aws_api_call.remote_ip.geolocation.latitude", converted)?;
                         }
                     }
@@ -296,12 +295,11 @@ impl Transform for Default {
                         if let Some(val) = event
                             .get("json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lon")
                         {
-                            let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lon".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lon".into(), message: "cannot convert to float".into() }),
-                    };
+                            let converted = convert_value(val, "double")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.AwsApiCallAction.RemoteIpDetails.GeoLocation.Lon".into(),
+                            message,
+                        })?;
                             event.set("aws.securityhub_findings.action.aws_api_call.remote_ip.geolocation.longitude", converted)?;
                         }
                     }
@@ -335,20 +333,17 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.IpAddressV4") {
-                        if let Some(s) = event
-                            .get_string("json.Action.AwsApiCallAction.RemoteIpDetails.IpAddressV4")
+                        if let Some(val) =
+                            event.get("json.Action.AwsApiCallAction.RemoteIpDetails.IpAddressV4")
                         {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
-                                    path:
-                                        "json.Action.AwsApiCallAction.RemoteIpDetails.IpAddressV4"
-                                            .into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("aws.securityhub_findings.action.aws_api_call.remote_ip.ip.address_v4", s)?;
+                            let converted =
+                                convert_value(val, "ip").map_err(|message| {
+                                    TransformError::ParseError {
+                            path: "json.Action.AwsApiCallAction.RemoteIpDetails.IpAddressV4".into(),
+                            message,
+                        }
+                                })?;
+                            event.set("aws.securityhub_findings.action.aws_api_call.remote_ip.ip.address_v4", converted)?;
                         }
                     }
                     Ok(())
@@ -386,13 +381,11 @@ impl Transform for Default {
                         if let Some(val) = event
                             .get("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Asn")
                         {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Asn".into(),
+                            message,
+                        })?;
                             event.set("aws.securityhub_findings.action.aws_api_call.remote_ip.organization.asn", converted)?;
                         }
                     }
@@ -443,17 +436,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Action.DnsRequestAction.Blocked") {
                         if let Some(val) = event.get("json.Action.DnsRequestAction.Blocked") {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Action.DnsRequestAction.Blocked".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Action.DnsRequestAction.Blocked".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.action.dns_request.blocked",
                                 converted,
@@ -504,17 +492,12 @@ impl Transform for Default {
                     if event.has_value("json.Action.NetworkConnectionAction.Blocked") {
                         if let Some(val) = event.get("json.Action.NetworkConnectionAction.Blocked")
                         {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Action.NetworkConnectionAction.Blocked".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Action.NetworkConnectionAction.Blocked".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.action.network_connection.blocked",
                                 converted,
@@ -562,26 +545,14 @@ impl Transform for Default {
                         if let Some(val) =
                             event.get("json.Action.NetworkConnectionAction.LocalPortDetails.Port")
                         {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.Action.NetworkConnectionAction.LocalPortDetails.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.Action.NetworkConnectionAction.LocalPortDetails.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                    }
-                                }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => return Err(TransformError::ParseError {
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
                                     path:
                                         "json.Action.NetworkConnectionAction.LocalPortDetails.Port"
                                             .into(),
-                                    message: "cannot convert to integer".into(),
-                                }),
-                            };
+                                    message,
+                                }
+                            })?;
                             event.set("aws.securityhub_findings.action.network_connection.local.port.number", converted)?;
                         }
                     }
@@ -657,12 +628,11 @@ impl Transform for Default {
                         if let Some(val) = event.get(
                             "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lat",
                         ) {
-                            let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lat".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lat".into(), message: "cannot convert to float".into() }),
-                    };
+                            let converted = convert_value(val, "double")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lat".into(),
+                            message,
+                        })?;
                             event.set("aws.securityhub_findings.action.network_connection.remote_ip.geolocation.latitude", converted)?;
                         }
                     }
@@ -701,12 +671,11 @@ impl Transform for Default {
                         if let Some(val) = event.get(
                             "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lon",
                         ) {
-                            let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lon".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lon".into(), message: "cannot convert to float".into() }),
-                    };
+                            let converted = convert_value(val, "double")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.NetworkConnectionAction.RemoteIpDetails.GeoLocation.Lon".into(),
+                            message,
+                        })?;
                             event.set("aws.securityhub_findings.action.network_connection.remote_ip.geolocation.longitude", converted)?;
                         }
                     }
@@ -742,15 +711,15 @@ impl Transform for Default {
                     if event.has_value(
                         "json.Action.NetworkConnectionAction.RemoteIpDetails.IpAddressV4",
                     ) {
-                        if let Some(s) = event.get_string(
-                            "json.Action.NetworkConnectionAction.RemoteIpDetails.IpAddressV4",
-                        ) {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemoteIpDetails.IpAddressV4".into(), message: format!("cannot convert '{}' to IP", s) });
-                            }
-                            event.set("aws.securityhub_findings.action.network_connection.remote_ip.ip.address_v4", s)?;
+                        if let Some(val) = event
+                            .get("json.Action.NetworkConnectionAction.RemoteIpDetails.IpAddressV4")
+                        {
+                            let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.NetworkConnectionAction.RemoteIpDetails.IpAddressV4".into(),
+                            message,
+                        })?;
+                            event.set("aws.securityhub_findings.action.network_connection.remote_ip.ip.address_v4", converted)?;
                         }
                     }
                     Ok(())
@@ -789,13 +758,11 @@ impl Transform for Default {
                         if let Some(val) = event.get(
                             "json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Asn",
                         ) {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Asn".into(),
+                            message,
+                        })?;
                             event.set("aws.securityhub_findings.action.network_connection.remote_ip.organization.asn", converted)?;
                         }
                     }
@@ -846,26 +813,14 @@ impl Transform for Default {
                         if let Some(val) =
                             event.get("json.Action.NetworkConnectionAction.RemotePortDetails.Port")
                         {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemotePortDetails.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.Action.NetworkConnectionAction.RemotePortDetails.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                    }
-                                }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => return Err(TransformError::ParseError {
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
                                     path:
                                         "json.Action.NetworkConnectionAction.RemotePortDetails.Port"
                                             .into(),
-                                    message: "cannot convert to integer".into(),
-                                }),
-                            };
+                                    message,
+                                }
+                            })?;
                             event.set("aws.securityhub_findings.action.network_connection.remote.port.number", converted)?;
                         }
                     }
@@ -904,17 +859,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Action.PortProbeAction.Blocked") {
                         if let Some(val) = event.get("json.Action.PortProbeAction.Blocked") {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Action.PortProbeAction.Blocked".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Action.PortProbeAction.Blocked".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.action.port_probe.blocked",
                                 converted,
@@ -962,19 +912,20 @@ impl Transform for Default {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.LocalIpDetails.IpAddressV4") {
-                                    if let Some(s) = event
-                                        .get_string("_ingest._value.LocalIpDetails.IpAddressV4")
+                                    if let Some(val) =
+                                        event.get("_ingest._value.LocalIpDetails.IpAddressV4")
                                     {
-                                        // Validate IP format
-                                        let s = s.trim();
-                                        if s.parse::<std::net::IpAddr>().is_err() {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.LocalIpDetails.IpAddressV4"
-                                                    .into(),
-                                                message: format!("cannot convert '{}' to IP", s),
-                                            });
-                                        }
-                                        event.set("_ingest._value.local.ip.address_v4", s)?;
+                                        let converted =
+                                            convert_value(val, "ip").map_err(|message| {
+                                                TransformError::ParseError {
+                                                    path:
+                                                        "_ingest._value.LocalIpDetails.IpAddressV4"
+                                                            .into(),
+                                                    message,
+                                                }
+                                            })?;
+                                        event
+                                            .set("_ingest._value.local.ip.address_v4", converted)?;
                                     }
                                 }
                                 Ok(())
@@ -1030,28 +981,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.LocalPortDetails.Port")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.LocalPortDetails.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.LocalPortDetails.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.LocalPortDetails.Port"
                                                         .into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set("_ingest._value.local.port.number", converted)?;
                                     }
                                 }
@@ -1245,12 +1182,13 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.RemoteIpDetails.GeoLocation.Lat")
                                     {
-                                        let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.RemoteIpDetails.GeoLocation.Lat".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "_ingest._value.RemoteIpDetails.GeoLocation.Lat".into(), message: "cannot convert to float".into() }),
-                        };
+                                        let converted =
+                                            convert_value(val, "double").map_err(|message| {
+                                                TransformError::ParseError {
+                        path: "_ingest._value.RemoteIpDetails.GeoLocation.Lat".into(),
+                        message,
+                        }
+                                            })?;
                                         event.set(
                                             "_ingest._value.remote_ip.geolocation.latitude",
                                             converted,
@@ -1311,12 +1249,13 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.RemoteIpDetails.GeoLocation.Lon")
                                     {
-                                        let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.RemoteIpDetails.GeoLocation.Lon".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "_ingest._value.RemoteIpDetails.GeoLocation.Lon".into(), message: "cannot convert to float".into() }),
-                        };
+                                        let converted =
+                                            convert_value(val, "double").map_err(|message| {
+                                                TransformError::ParseError {
+                        path: "_ingest._value.RemoteIpDetails.GeoLocation.Lon".into(),
+                        message,
+                        }
+                                            })?;
                                         event.set(
                                             "_ingest._value.remote_ip.geolocation.longitude",
                                             converted,
@@ -1373,19 +1312,22 @@ impl Transform for Default {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.RemoteIpDetails.IpAddressV4") {
-                                    if let Some(s) = event
-                                        .get_string("_ingest._value.RemoteIpDetails.IpAddressV4")
+                                    if let Some(val) =
+                                        event.get("_ingest._value.RemoteIpDetails.IpAddressV4")
                                     {
-                                        // Validate IP format
-                                        let s = s.trim();
-                                        if s.parse::<std::net::IpAddr>().is_err() {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.RemoteIpDetails.IpAddressV4"
-                                                    .into(),
-                                                message: format!("cannot convert '{}' to IP", s),
-                                            });
-                                        }
-                                        event.set("_ingest._value.remote_ip.ip.address_v4", s)?;
+                                        let converted =
+                                            convert_value(val, "ip").map_err(|message| {
+                                                TransformError::ParseError {
+                                                    path:
+                                                        "_ingest._value.RemoteIpDetails.IpAddressV4"
+                                                            .into(),
+                                                    message,
+                                                }
+                                            })?;
+                                        event.set(
+                                            "_ingest._value.remote_ip.ip.address_v4",
+                                            converted,
+                                        )?;
                                     }
                                 }
                                 Ok(())
@@ -1443,13 +1385,13 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.RemoteIpDetails.Organization.Asn")
                                     {
-                                        let converted = match val {
-                                            Value::String(_) => val.clone(),
-                                            Value::Number(n) => json!(n.to_string()),
-                                            Value::Bool(b) => json!(b.to_string()),
-                                            Value::Null => json!("null"),
-                                            _ => json!(val.to_string()),
-                                        };
+                                        let converted =
+                                            convert_value(val, "string").map_err(|message| {
+                                                TransformError::ParseError {
+                        path: "_ingest._value.RemoteIpDetails.Organization.Asn".into(),
+                        message,
+                        }
+                                            })?;
                                         event.set(
                                             "_ingest._value.remote_ip.organization.asn",
                                             converted,
@@ -1821,42 +1763,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Confidence") {
                         if let Some(val) = event.get("json.Confidence") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Confidence".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Confidence".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Confidence".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Confidence".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("aws.securityhub_findings.confidence", converted)?;
                         }
                     }
@@ -1988,42 +1900,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Criticality") {
                         if let Some(val) = event.get("json.Criticality") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Criticality".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Criticality".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Criticality".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Criticality".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("aws.securityhub_findings.criticality", converted)?;
                         }
                     }
@@ -2070,44 +1952,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.FindingProviderFields.Confidence") {
                         if let Some(val) = event.get("json.FindingProviderFields.Confidence") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.FindingProviderFields.Confidence"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.FindingProviderFields.Confidence"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.FindingProviderFields.Confidence".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.FindingProviderFields.Confidence".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.provider_fields.confidence",
                                 converted,
@@ -2142,44 +1992,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.FindingProviderFields.Criticality") {
                         if let Some(val) = event.get("json.FindingProviderFields.Criticality") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.FindingProviderFields.Criticality"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.FindingProviderFields.Criticality"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.FindingProviderFields.Criticality".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.FindingProviderFields.Criticality".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.provider_fields.criticality",
                                 converted,
@@ -2303,13 +2121,12 @@ impl Transform for Default {
                         if let Some(val) =
                             event.get("json.FindingProviderFields.Severity.Normalized")
                         {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.FindingProviderFields.Severity.Normalized".into(),
+                                    message,
+                                }
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.provider_fields.severity.normalized",
                                 converted,
@@ -2346,13 +2163,12 @@ impl Transform for Default {
                     if event.has_value("json.FindingProviderFields.Severity.Product") {
                         if let Some(val) = event.get("json.FindingProviderFields.Severity.Product")
                         {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.FindingProviderFields.Severity.Product".into(),
+                                    message,
+                                }
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.provider_fields.severity.product",
                                 converted,
@@ -2683,16 +2499,17 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.DestinationIpV4") {
-                        if let Some(s) = event.get_string("json.Network.DestinationIpV4") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.Network.DestinationIpV4") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.Network.DestinationIpV4".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("aws.securityhub_findings.network.destination.ip.v4", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set(
+                                "aws.securityhub_findings.network.destination.ip.v4",
+                                converted,
+                            )?;
                         }
                     }
                     Ok(())
@@ -2738,16 +2555,17 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.DestinationIpV6") {
-                        if let Some(s) = event.get_string("json.Network.DestinationIpV6") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.Network.DestinationIpV6") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.Network.DestinationIpV6".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("aws.securityhub_findings.network.destination.ip.v6", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set(
+                                "aws.securityhub_findings.network.destination.ip.v6",
+                                converted,
+                            )?;
                         }
                     }
                     Ok(())
@@ -2794,42 +2612,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.DestinationPort") {
                         if let Some(val) = event.get("json.Network.DestinationPort") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.DestinationPort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.DestinationPort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Network.DestinationPort".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Network.DestinationPort".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.network.destination.port",
                                 converted,
@@ -2894,42 +2682,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.OpenPortRange.Begin") {
                         if let Some(val) = event.get("json.Network.OpenPortRange.Begin") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.OpenPortRange.Begin".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.OpenPortRange.Begin".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Network.OpenPortRange.Begin".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Network.OpenPortRange.Begin".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.network.open_port_range.begin",
                                 converted,
@@ -2964,42 +2722,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.OpenPortRange.End") {
                         if let Some(val) = event.get("json.Network.OpenPortRange.End") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.OpenPortRange.End".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.OpenPortRange.End".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Network.OpenPortRange.End".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Network.OpenPortRange.End".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.network.open_port_range.end",
                                 converted,
@@ -3076,16 +2804,15 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.SourceIpV4") {
-                        if let Some(s) = event.get_string("json.Network.SourceIpV4") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.Network.SourceIpV4") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.Network.SourceIpV4".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("aws.securityhub_findings.network.source.ip.v4", s)?;
+                                    message,
+                                }
+                            })?;
+                            event
+                                .set("aws.securityhub_findings.network.source.ip.v4", converted)?;
                         }
                     }
                     Ok(())
@@ -3131,16 +2858,15 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.SourceIpV6") {
-                        if let Some(s) = event.get_string("json.Network.SourceIpV6") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.Network.SourceIpV6") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.Network.SourceIpV6".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("aws.securityhub_findings.network.source.ip.v6", s)?;
+                                    message,
+                                }
+                            })?;
+                            event
+                                .set("aws.securityhub_findings.network.source.ip.v6", converted)?;
                         }
                     }
                     Ok(())
@@ -3220,42 +2946,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Network.SourcePort") {
                         if let Some(val) = event.get("json.Network.SourcePort") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.SourcePort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Network.SourcePort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Network.SourcePort".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Network.SourcePort".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("aws.securityhub_findings.network.source.port", converted)?;
                         }
                     }
@@ -3397,36 +3093,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.Begin")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.Begin"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event.set(
                                                             "_ingest._value.begin",
                                                             converted,
@@ -3516,36 +3190,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.End")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.End"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event
                                                             .set("_ingest._value.end", converted)?;
                                                     }
@@ -3758,36 +3410,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.Begin")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.Begin"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event.set(
                                                             "_ingest._value.begin",
                                                             converted,
@@ -3877,36 +3507,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.End")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.End"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event
                                                             .set("_ingest._value.end", converted)?;
                                                     }
@@ -4094,36 +3702,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.Begin")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.Begin"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event.set(
                                                             "_ingest._value.begin",
                                                             converted,
@@ -4214,36 +3800,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.End")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.End"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event
                                                             .set("_ingest._value.end", converted)?;
                                                     }
@@ -4457,36 +4021,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.Begin")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.Begin".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.Begin"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event.set(
                                                             "_ingest._value.begin",
                                                             converted,
@@ -4547,36 +4089,14 @@ impl Transform for Default {
                                                     if let Some(val) =
                                                         event.get("_ingest._value.End")
                                                     {
-                                                        let converted = match val {
-                                                            Value::String(s) => {
-                                                                let s = s.trim();
-                                                                if let Some(hex) =
-                                                                    s.strip_prefix("0x")
-                                                                {
-                                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                } else {
-                                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.End".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                                }
-                                                            }
-                                                            Value::Number(n) => {
-                                                                json!(n.as_i64().unwrap_or(
-                                                                    n.as_f64().unwrap_or(0.0)
-                                                                        as i64
-                                                                ))
-                                                            }
-                                                            Value::Bool(b) => {
-                                                                json!(if *b { 1 } else { 0 })
-                                                            }
-                                                            _ => return Err(
+                                                        let converted = convert_value(val, "long")
+                                                            .map_err(|message| {
                                                                 TransformError::ParseError {
                                                                     path: "_ingest._value.End"
                                                                         .into(),
-                                                                    message:
-                                                                        "cannot convert to integer"
-                                                                            .into(),
-                                                                },
-                                                            ),
-                                                        };
+                                                                    message,
+                                                                }
+                                                            })?;
                                                         event
                                                             .set("_ingest._value.end", converted)?;
                                                     }
@@ -4770,42 +4290,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.PatchSummary.FailedCount") {
                         if let Some(val) = event.get("json.PatchSummary.FailedCount") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.FailedCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.FailedCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.PatchSummary.FailedCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.PatchSummary.FailedCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.patch_summary.failed.count",
                                 converted,
@@ -4847,42 +4337,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.PatchSummary.InstalledCount") {
                         if let Some(val) = event.get("json.PatchSummary.InstalledCount") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.PatchSummary.InstalledCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.PatchSummary.InstalledCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.patch_summary.installed.count",
                                 converted,
@@ -4917,44 +4377,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.PatchSummary.InstalledOtherCount") {
                         if let Some(val) = event.get("json.PatchSummary.InstalledOtherCount") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledOtherCount"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledOtherCount"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.PatchSummary.InstalledOtherCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.PatchSummary.InstalledOtherCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.patch_summary.installed.other.count",
                                 converted,
@@ -4989,44 +4417,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.PatchSummary.InstalledPendingReboot") {
                         if let Some(val) = event.get("json.PatchSummary.InstalledPendingReboot") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledPendingReboot"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledPendingReboot"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.PatchSummary.InstalledPendingReboot".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.PatchSummary.InstalledPendingReboot".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.patch_summary.installed.pending_reboot",
                                 converted,
@@ -5061,44 +4457,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.PatchSummary.InstalledRejectedCount") {
                         if let Some(val) = event.get("json.PatchSummary.InstalledRejectedCount") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledRejectedCount"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.InstalledRejectedCount"
-                                                    .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.PatchSummary.InstalledRejectedCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.PatchSummary.InstalledRejectedCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.patch_summary.installed.rejected.count",
                                 converted,
@@ -5133,42 +4497,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.PatchSummary.MissingCount") {
                         if let Some(val) = event.get("json.PatchSummary.MissingCount") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.MissingCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.PatchSummary.MissingCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.PatchSummary.MissingCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.PatchSummary.MissingCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "aws.securityhub_findings.patch_summary.missing.count",
                                 converted,
@@ -5367,42 +4701,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Process.ParentPid") {
                         if let Some(val) = event.get("json.Process.ParentPid") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Process.ParentPid".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Process.ParentPid".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Process.ParentPid".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Process.ParentPid".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("aws.securityhub_findings.process.parent.pid", converted)?;
                         }
                     }
@@ -5457,42 +4761,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Process.Pid") {
                         if let Some(val) = event.get("json.Process.Pid") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Process.Pid".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "json.Process.Pid".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Process.Pid".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Process.Pid".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("aws.securityhub_findings.process.pid", converted)?;
                         }
                     }
@@ -5751,17 +5025,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Sample") {
                         if let Some(val) = event.get("json.Sample") {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Sample".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Sample".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set("aws.securityhub_findings.sample", converted)?;
                         }
                     }
@@ -5810,13 +5079,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Severity.Normalized") {
                         if let Some(val) = event.get("json.Severity.Normalized") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Severity.Normalized".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("aws.securityhub_findings.severity.normalized", converted)?;
                         }
                     }
@@ -5847,38 +5115,12 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(val) = event.get("aws.securityhub_findings.severity.normalized") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "aws.securityhub_findings.severity.normalized"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "aws.securityhub_findings.severity.normalized"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "aws.securityhub_findings.severity.normalized".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "aws.securityhub_findings.severity.normalized".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("event.severity", converted)?;
                     }
                     Ok(())
@@ -5929,13 +5171,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Severity.Product") {
                         if let Some(val) = event.get("json.Severity.Product") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Severity.Product".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("aws.securityhub_findings.severity.product", converted)?;
                         }
                     }
@@ -6511,26 +5752,29 @@ impl Transform for Default {
                                         for item in items {
                                             event.set("_ingest._value", item)?;
                                             // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.BaseScore") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.BaseScore")
-                                                    {
-                                                        let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.BaseScore".into(), message: format!("cannot convert '{}' to float", s) })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => return Err(TransformError::ParseError { path: "_ingest._value.BaseScore".into(), message: "cannot convert to float".into() }),
-                        };
-                                                        event.set(
-                                                            "_ingest._value.base_score",
-                                                            converted,
-                                                        )?;
+                                            if let Err(err) =
+                                                (|| -> Result<()> {
+                                                    if event.has_value("_ingest._value.BaseScore") {
+                                                        if let Some(val) =
+                                                            event.get("_ingest._value.BaseScore")
+                                                        {
+                                                            let converted =
+                                                                convert_value(val, "double")
+                                                                    .map_err(|message| {
+                                                                        TransformError::ParseError {
+                        path: "_ingest._value.BaseScore".into(),
+                        message,
+                        }
+                                                                    })?;
+                                                            event.set(
+                                                                "_ingest._value.base_score",
+                                                                converted,
+                                                            )?;
+                                                        }
                                                     }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
+                                                    Ok(())
+                                                })()
+                                            {
                                                 event.set(
                                                     "_ingest.on_failure_message",
                                                     err.to_string(),

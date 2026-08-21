@@ -31,13 +31,12 @@ impl Transform for Default {
                 // Begin nested pipeline: "security_default"
                 if event.has_value("event.code") {
                     if let Some(val) = event.get("event.code") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "event.code".into(),
+                                message,
+                            }
+                        })?;
                         event.set("event.code", converted)?;
                     }
                 }
@@ -786,25 +785,23 @@ impl Transform for Default {
                 }
                 if event.has_value("winlog.record_id") {
                     if let Some(val) = event.get("winlog.record_id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "winlog.record_id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("winlog.record_id", converted)?;
                     }
                 }
                 if event.has_value("winlog.event_id") {
                     if let Some(val) = event.get("winlog.event_id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "winlog.event_id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("winlog.event_id", converted)?;
                     }
                 }
@@ -880,13 +877,12 @@ impl Transform for Default {
                 }
                 if event.has_value("error.code") {
                     if let Some(val) = event.get("error.code") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "error.code".into(),
+                                message,
+                            }
+                        })?;
                         event.set("error.code", converted)?;
                     }
                 }
@@ -1058,42 +1054,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.event_data.SequenceNumber") {
                         if let Some(val) = event.get("winlog.event_data.SequenceNumber") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.SequenceNumber".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.SequenceNumber".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.event_data.SequenceNumber".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "winlog.event_data.SequenceNumber".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("event.sequence", converted)?;
                         }
                     }
@@ -1103,13 +1069,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.record_id") {
                         if let Some(val) = event.get("winlog.record_id") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.record_id".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("winlog.record_id", converted)?;
                         }
                     }
@@ -1316,42 +1281,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.DetailTotal") {
                             if let Some(val) = event.get("winlog.event_data.DetailTotal") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.DetailTotal".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.DetailTotal".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.DetailTotal".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.DetailTotal".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("powershell.total", converted)?;
                             }
                         }
@@ -1364,42 +1299,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.DetailSequence") {
                             if let Some(val) = event.get("winlog.event_data.DetailSequence") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.DetailSequence".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.DetailSequence".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.DetailSequence".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.DetailSequence".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("powershell.sequence", converted)?;
                             }
                         }
@@ -1582,13 +1487,12 @@ impl Transform for Default {
                 }
                 if event.has_value("error.code") {
                     if let Some(val) = event.get("error.code") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "error.code".into(),
+                                message,
+                            }
+                        })?;
                         event.set("error.code", converted)?;
                     }
                 }
@@ -1776,42 +1680,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.event_data.SequenceNumber") {
                         if let Some(val) = event.get("winlog.event_data.SequenceNumber") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.SequenceNumber".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.SequenceNumber".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.event_data.SequenceNumber".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "winlog.event_data.SequenceNumber".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("event.sequence", converted)?;
                         }
                     }
@@ -1821,13 +1695,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.record_id") {
                         if let Some(val) = event.get("winlog.record_id") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.record_id".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("winlog.record_id", converted)?;
                         }
                     }
@@ -2102,42 +1975,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.event_data.MessageNumber") {
                         if let Some(val) = event.get("winlog.event_data.MessageNumber") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.MessageNumber".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.MessageNumber".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.event_data.MessageNumber".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "winlog.event_data.MessageNumber".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("powershell.sequence", converted)?;
                         }
                     }
@@ -2147,42 +1990,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.event_data.MessageTotal") {
                         if let Some(val) = event.get("winlog.event_data.MessageTotal") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.MessageTotal".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "winlog.event_data.MessageTotal".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.event_data.MessageTotal".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "winlog.event_data.MessageTotal".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("powershell.total", converted)?;
                         }
                     }
@@ -2470,13 +2283,12 @@ impl Transform for Default {
                 }
                 if event.has_value("error.code") {
                     if let Some(val) = event.get("error.code") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "error.code".into(),
+                                message,
+                            }
+                        })?;
                         event.set("error.code", converted)?;
                     }
                 }
@@ -2636,13 +2448,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.record_id") {
                         if let Some(val) = event.get("winlog.record_id") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "winlog.record_id".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("winlog.record_id", converted)?;
                         }
                     }
@@ -2777,42 +2588,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.ProcessId") {
                             if let Some(val) = event.get("winlog.event_data.ProcessId") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.ProcessId".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.ProcessId".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.ProcessId".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.ProcessId".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("process.pid", converted)?;
                             }
                         }
@@ -2873,44 +2654,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.SourceProcessId") {
                             if let Some(val) = event.get("winlog.event_data.SourceProcessId") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.SourceProcessId"
-                                                        .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.SourceProcessId"
-                                                        .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.SourceProcessId".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.SourceProcessId".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("process.pid", converted)?;
                             }
                         }
@@ -2926,42 +2675,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.SourceThreadId") {
                             if let Some(val) = event.get("winlog.event_data.SourceThreadId") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.SourceThreadId".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.SourceThreadId".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.SourceThreadId".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.SourceThreadId".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("process.thread.id", converted)?;
                             }
                         }
@@ -3049,44 +2768,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.ParentProcessId") {
                             if let Some(val) = event.get("winlog.event_data.ParentProcessId") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.ParentProcessId"
-                                                        .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.ParentProcessId"
-                                                        .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.ParentProcessId".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.ParentProcessId".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("process.parent.pid", converted)?;
                             }
                         }
@@ -3590,16 +3277,14 @@ impl Transform for Default {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.SourceIp") {
-                            if let Some(s) = event.get_string("winlog.event_data.SourceIp") {
-                                // Validate IP format
-                                let s = s.trim();
-                                if s.parse::<std::net::IpAddr>().is_err() {
-                                    return Err(TransformError::ParseError {
+                            if let Some(val) = event.get("winlog.event_data.SourceIp") {
+                                let converted = convert_value(val, "ip").map_err(|message| {
+                                    TransformError::ParseError {
                                         path: "winlog.event_data.SourceIp".into(),
-                                        message: format!("cannot convert '{}' to IP", s),
-                                    });
-                                }
-                                event.set("source.ip", s)?;
+                                        message,
+                                    }
+                                })?;
+                                event.set("source.ip", converted)?;
                             }
                         }
                         Ok(())
@@ -3627,42 +3312,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.SourcePort") {
                             if let Some(val) = event.get("winlog.event_data.SourcePort") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.SourcePort".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.SourcePort".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.SourcePort".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.SourcePort".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("source.port", converted)?;
                             }
                         }
@@ -3677,16 +3332,14 @@ impl Transform for Default {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.DestinationIp") {
-                            if let Some(s) = event.get_string("winlog.event_data.DestinationIp") {
-                                // Validate IP format
-                                let s = s.trim();
-                                if s.parse::<std::net::IpAddr>().is_err() {
-                                    return Err(TransformError::ParseError {
+                            if let Some(val) = event.get("winlog.event_data.DestinationIp") {
+                                let converted = convert_value(val, "ip").map_err(|message| {
+                                    TransformError::ParseError {
                                         path: "winlog.event_data.DestinationIp".into(),
-                                        message: format!("cannot convert '{}' to IP", s),
-                                    });
-                                }
-                                event.set("destination.ip", s)?;
+                                        message,
+                                    }
+                                })?;
+                                event.set("destination.ip", converted)?;
                             }
                         }
                         Ok(())
@@ -3717,44 +3370,12 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.DestinationPort") {
                             if let Some(val) = event.get("winlog.event_data.DestinationPort") {
-                                let converted = match val {
-                                    Value::String(s) => {
-                                        let s = s.trim();
-                                        if let Some(hex) = s.strip_prefix("0x") {
-                                            json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.DestinationPort"
-                                                        .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        } else {
-                                            json!(s.parse::<i64>().map_err(|_| {
-                                                TransformError::ParseError {
-                                                    path: "winlog.event_data.DestinationPort"
-                                                        .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to integer",
-                                                        s
-                                                    ),
-                                                }
-                                            })?)
-                                        }
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "winlog.event_data.DestinationPort".into(),
+                                        message,
                                     }
-                                    Value::Number(n) => json!(
-                                        n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                    ),
-                                    Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                    _ => {
-                                        return Err(TransformError::ParseError {
-                                            path: "winlog.event_data.DestinationPort".into(),
-                                            message: "cannot convert to integer".into(),
-                                        });
-                                    }
-                                };
+                                })?;
                                 event.set("destination.port", converted)?;
                             }
                         }
@@ -3873,16 +3494,15 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
-                                if let Some(s) = event.get_string("_ingest._value") {
-                                    // Validate IP format
-                                    let s = s.trim();
-                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                        return Err(TransformError::ParseError {
-                                            path: "_ingest._value".into(),
-                                            message: format!("cannot convert '{}' to IP", s),
-                                        });
-                                    }
-                                    event.set("_ingest._value", s)?;
+                                if let Some(val) = event.get("_ingest._value") {
+                                    let converted =
+                                        convert_value(val, "ip").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value", converted)?;
                                 }
                                 Ok(())
                             })() {
@@ -4165,24 +3785,13 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.Archived") {
                             if let Some(val) = event.get("winlog.event_data.Archived") {
-                                let converted = match val {
-                                    Value::Bool(_) => val.clone(),
-                                    Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                        json!(true)
-                                    }
-                                    Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                        json!(false)
-                                    }
-                                    other => {
-                                        return Err(TransformError::ParseError {
+                                let converted =
+                                    convert_value(val, "boolean").map_err(|message| {
+                                        TransformError::ParseError {
                                             path: "winlog.event_data.Archived".into(),
-                                            message: format!(
-                                                "cannot convert '{}' to boolean",
-                                                other
-                                            ),
-                                        });
-                                    }
-                                };
+                                            message,
+                                        }
+                                    })?;
                                 event.set("sysmon.file.archived", converted)?;
                             }
                         }
@@ -4198,24 +3807,13 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("winlog.event_data.IsExecutable") {
                             if let Some(val) = event.get("winlog.event_data.IsExecutable") {
-                                let converted = match val {
-                                    Value::Bool(_) => val.clone(),
-                                    Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                        json!(true)
-                                    }
-                                    Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                        json!(false)
-                                    }
-                                    other => {
-                                        return Err(TransformError::ParseError {
+                                let converted =
+                                    convert_value(val, "boolean").map_err(|message| {
+                                        TransformError::ParseError {
                                             path: "winlog.event_data.IsExecutable".into(),
-                                            message: format!(
-                                                "cannot convert '{}' to boolean",
-                                                other
-                                            ),
-                                        });
-                                    }
-                                };
+                                            message,
+                                        }
+                                    })?;
                                 event.set("sysmon.file.is_executable", converted)?;
                             }
                         }
@@ -4224,13 +3822,12 @@ impl Transform for Default {
                 }
                 if event.has_value("error.code") {
                     if let Some(val) = event.get("error.code") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "error.code".into(),
+                                message,
+                            }
+                        })?;
                         event.set("error.code", converted)?;
                     }
                 }
@@ -4416,13 +4013,12 @@ impl Transform for Default {
 
             if event.has_value("error.code") {
                 if let Some(val) = event.get("error.code") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "error.code".into(),
+                            message,
+                        }
+                    })?;
                     event.set("error.code", converted)?;
                 }
             }

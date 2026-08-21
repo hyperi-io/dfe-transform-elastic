@@ -390,12 +390,11 @@ impl Transform for Default {
                     if let Some(val) = event.get(
                         "json.ConfigRuleInfo.Source.CustomPolicyDetails.EnableDebugLogDelivery",
                     ) {
-                        let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "json.ConfigRuleInfo.Source.CustomPolicyDetails.EnableDebugLogDelivery".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                        let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.ConfigRuleInfo.Source.CustomPolicyDetails.EnableDebugLogDelivery".into(),
+                            message,
+                        })?;
                         event.set("aws.config.rule_info.source.custom_policy_details.enable_debug_log_delivery", converted)?;
                     }
                 }

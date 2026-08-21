@@ -368,16 +368,14 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("azure.platformlogs.callerIpAddress") {
-                    if let Some(s) = event.get_string("azure.platformlogs.callerIpAddress") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("azure.platformlogs.callerIpAddress") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "azure.platformlogs.callerIpAddress".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("source.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("source.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -440,42 +438,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("azure.platformlogs.durationMs") {
                         if let Some(val) = event.get("azure.platformlogs.durationMs") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "azure.platformlogs.durationMs".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "azure.platformlogs.durationMs".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "azure.platformlogs.durationMs".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "azure.platformlogs.durationMs".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("event.duration", converted)?;
                         }
                     }
@@ -539,13 +507,12 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(val) = event.get("azure.platformlogs.result_type") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.platformlogs.result_type".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.outcome", converted)?;
                 }
             }
@@ -564,13 +531,12 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(val) = event.get("azure.platformlogs.properties.result") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.platformlogs.properties.result".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.outcome", converted)?;
                 }
             }
@@ -586,13 +552,12 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(val) = event.get("azure.platformlogs.Status") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.platformlogs.Status".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.outcome", converted)?;
                 }
             }
@@ -621,13 +586,12 @@ impl Transform for Default {
 
             if event.has_value("azure.platformlogs.operation_name") {
                 if let Some(val) = event.get("azure.platformlogs.operation_name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.platformlogs.operation_name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.action", converted)?;
                 }
             }
@@ -998,13 +962,12 @@ impl Transform for Default {
                 }
                 if event.has_value("azure.springcloudlogs.operation_name") {
                     if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "azure.springcloudlogs.operation_name".into(),
+                                message,
+                            }
+                        })?;
                         event.set("event.action", converted)?;
                     }
                 }

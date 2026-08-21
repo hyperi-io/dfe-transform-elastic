@@ -89,13 +89,12 @@ impl Transform for Default {
 
             if event.has_value("error.code") {
                 if let Some(val) = event.get("error.code") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "error.code".into(),
+                            message,
+                        }
+                    })?;
                     event.set("error.code", converted)?;
                 }
             }
@@ -207,13 +206,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("winlog.record_id") {
                     if let Some(val) = event.get("winlog.record_id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "winlog.record_id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("winlog.record_id", converted)?;
                     }
                 }

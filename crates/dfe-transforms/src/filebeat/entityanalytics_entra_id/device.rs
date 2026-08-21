@@ -43,17 +43,12 @@ impl Transform for Device {
                 if event.has_value("entityanalytics_entra_id.device.account_enabled") {
                     if let Some(val) = event.get("entityanalytics_entra_id.device.account_enabled")
                     {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "entityanalytics_entra_id.device.account_enabled".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.account_enabled".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("entityanalytics_entra_id.device.account_enabled", converted)?;
                     }
                 }
@@ -131,43 +126,13 @@ impl Transform for Device {
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.type") {
                                     if let Some(val) = event.get("_ingest._value.type") {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(
-                                                        |_| TransformError::ParseError {
-                                                            path: "_ingest._value.type".into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to integer",
-                                                                s
-                                                            )
-                                                        }
-                                                    )?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| {
-                                                        TransformError::ParseError {
-                                                            path: "_ingest._value.type".into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to integer",
-                                                                s
-                                                            ),
-                                                        }
-                                                    })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.type".into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set("_ingest._value.type", converted)?;
                                     }
                                 }
@@ -350,13 +315,12 @@ impl Transform for Device {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("entityanalytics_entra_id.device.device_version") {
                     if let Some(val) = event.get("entityanalytics_entra_id.device.device_version") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.device_version".into(),
+                                message,
+                            }
+                        })?;
                         event.set("entityanalytics_entra_id.device.version", converted)?;
                     }
                 }
@@ -434,17 +398,12 @@ impl Transform for Device {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("entityanalytics_entra_id.device.is_compliant") {
                     if let Some(val) = event.get("entityanalytics_entra_id.device.is_compliant") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "entityanalytics_entra_id.device.is_compliant".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.is_compliant".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("entityanalytics_entra_id.device.is_compliant", converted)?;
                     }
                 }
@@ -494,17 +453,12 @@ impl Transform for Device {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("entityanalytics_entra_id.device.is_managed") {
                     if let Some(val) = event.get("entityanalytics_entra_id.device.is_managed") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "entityanalytics_entra_id.device.is_managed".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.is_managed".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("entityanalytics_entra_id.device.is_managed", converted)?;
                     }
                 }
@@ -659,18 +613,13 @@ impl Transform for Device {
                     if let Some(val) =
                         event.get("entityanalytics_entra_id.device.on_premises_sync_enabled")
                     {
-                        let converted =
-                            match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => return Err(TransformError::ParseError {
-                                    path:
-                                        "entityanalytics_entra_id.device.on_premises_sync_enabled"
-                                            .into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                }),
-                            };
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.on_premises_sync_enabled"
+                                    .into(),
+                                message,
+                            }
+                        })?;
                         event.set(
                             "entityanalytics_entra_id.device.on_premises_sync_enabled",
                             converted,

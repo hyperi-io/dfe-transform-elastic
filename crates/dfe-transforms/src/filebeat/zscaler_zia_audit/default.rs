@@ -355,16 +355,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.clientip") {
-                        if let Some(s) = event.get_string("json.clientip") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.clientip") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.clientip".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("zscaler_zia.audit.client_ip", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set("zscaler_zia.audit.client_ip", converted)?;
                         }
                     }
                     Ok(())

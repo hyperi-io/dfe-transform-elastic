@@ -149,13 +149,13 @@ impl Transform for PipelineAlert {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.RemoteIP") {
-                if let Some(s) = event.get_string("json.properties.RemoteIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.RemoteIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.remote.ip", s)?;
+                if let Some(val) = event.get("json.properties.RemoteIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.RemoteIP".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.remote.ip", converted)?;
                 }
             }
                 Ok(())
@@ -179,19 +179,11 @@ impl Transform for PipelineAlert {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.FileSize") {
                 if let Some(val) = event.get("json.properties.FileSize") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.FileSize".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.FileSize".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.FileSize".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.FileSize".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.file.size", converted)?;
                 }
             }
@@ -215,13 +207,13 @@ impl Transform for PipelineAlert {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.LocalIP") {
-                if let Some(s) = event.get_string("json.properties.LocalIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.LocalIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.local.ip", s)?;
+                if let Some(val) = event.get("json.properties.LocalIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.LocalIP".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.local.ip", converted)?;
                 }
             }
                 Ok(())
@@ -349,13 +341,11 @@ impl Transform for PipelineAlert {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.EmailClusterId") {
                 if let Some(val) = event.get("json.properties.EmailClusterId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.EmailClusterId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.email.cluster_id", converted)?;
                 }
             }
@@ -496,13 +486,11 @@ impl Transform for PipelineAlert {
 
             if event.has_value("json.properties.ApplicationId") {
                 if let Some(val) = event.get("json.properties.ApplicationId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.ApplicationId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.application_id", converted)?;
                 }
             }

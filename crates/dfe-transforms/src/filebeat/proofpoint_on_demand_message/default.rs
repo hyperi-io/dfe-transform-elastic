@@ -128,16 +128,14 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("json.connection.helo") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.connection.helo") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.connection.helo".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("json.connection.helo_ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("json.connection.helo_ip", converted)?;
                     }
                     Ok(())
                 })();
@@ -220,16 +218,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.connection.ip") {
-                        if let Some(s) = event.get_string("json.connection.ip") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.connection.ip") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.connection.ip".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("proofpoint_on_demand.message.connection.ip", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set("proofpoint_on_demand.message.connection.ip", converted)?;
                         }
                     }
                     Ok(())
@@ -378,36 +374,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.connection.tls.inbound.cipherBits") {
                     if let Some(val) = event.get("json.connection.tls.inbound.cipherBits") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.connection.tls.inbound.cipherBits".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.connection.tls.inbound.cipherBits".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.connection.tls.inbound.cipherBits".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.connection.tls.inbound.cipherBits".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.connection.tls.inbound.cipher_bits",
                             converted,
@@ -585,24 +557,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.isFinal") {
                                 if let Some(val) = event.get("_ingest._value.isFinal") {
-                                    let converted = match val {
-                                        Value::Bool(_) => val.clone(),
-                                        Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                            json!(true)
-                                        }
-                                        Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                            json!(false)
-                                        }
-                                        other => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value.isFinal".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to boolean",
-                                                    other
-                                                ),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.is_final", converted)?;
                                 }
                             }
@@ -725,22 +686,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.durationSecs") {
                     if let Some(val) = event.get("json.filter.durationSecs") {
-                        let converted = match val {
-                            Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| {
-                                TransformError::ParseError {
-                                    path: "json.filter.durationSecs".into(),
-                                    message: format!("cannot convert '{}' to float", s),
-                                }
-                            })?),
-                            Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                            Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.durationSecs".into(),
-                                    message: "cannot convert to float".into(),
-                                });
+                        let converted = convert_value(val, "double").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.durationSecs".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.duration_secs",
                             converted,
@@ -833,17 +784,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.isMsgEncrypted") {
                     if let Some(val) = event.get("json.filter.isMsgEncrypted") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.isMsgEncrypted".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.isMsgEncrypted".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.is_msg_encrypted",
                             converted,
@@ -888,17 +834,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.isMsgReinjected") {
                     if let Some(val) = event.get("json.filter.isMsgReinjected") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.isMsgReinjected".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.isMsgReinjected".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.is_msg_reinjected",
                             converted,
@@ -1242,36 +1183,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.pdr.v1.rscore") {
                     if let Some(val) = event.get("json.filter.modules.pdr.v1.rscore") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v1.rscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v1.rscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.pdr.v1.rscore".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.pdr.v1.rscore".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.modules.pdr.v1.rscore",
                             converted,
@@ -1316,36 +1233,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.pdr.v1.spamscore") {
                     if let Some(val) = event.get("json.filter.modules.pdr.v1.spamscore") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v1.spamscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v1.spamscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.pdr.v1.spamscore".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.pdr.v1.spamscore".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.modules.pdr.v1.spamscore",
                             converted,
@@ -1390,36 +1283,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.pdr.v1.virusscore") {
                     if let Some(val) = event.get("json.filter.modules.pdr.v1.virusscore") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v1.virusscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v1.virusscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.pdr.v1.virusscore".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.pdr.v1.virusscore".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.modules.pdr.v1.virusscore",
                             converted,
@@ -1471,36 +1340,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.pdr.v2.rscore") {
                     if let Some(val) = event.get("json.filter.modules.pdr.v2.rscore") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v2.rscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.pdr.v2.rscore".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.pdr.v2.rscore".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.pdr.v2.rscore".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.modules.pdr.v2.rscore",
                             converted,
@@ -1593,38 +1438,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.urldefense.counts.maxLimit") {
                     if let Some(val) = event.get("json.filter.modules.urldefense.counts.maxLimit") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.maxLimit"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.maxLimit"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.urldefense.counts.maxLimit".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.urldefense.counts.maxLimit".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.max_limit", converted)?;
                     }
                 }
@@ -1670,19 +1489,11 @@ impl Transform for Default {
                     if let Some(val) = event
                         .get("json.filter.modules.urldefense.counts.noRewriteIsContentTypeText")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsContentTypeText".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsContentTypeText".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsContentTypeText".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.filter.modules.urldefense.counts.noRewriteIsContentTypeText".into(),
+                            message,
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_content_type_text", converted)?;
                     }
                 }
@@ -1726,27 +1537,13 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("json.filter.modules.urldefense.counts.noRewriteIsEmail")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsEmail".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsEmail".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.urldefense.counts.noRewriteIsEmail"
+                                    .into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.urldefense.counts.noRewriteIsEmail"
-                                        .into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_email", converted)?;
                     }
                 }
@@ -1792,19 +1589,11 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("json.filter.modules.urldefense.counts.noRewriteIsExcludedDomain")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsExcludedDomain".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsExcludedDomain".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsExcludedDomain".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.filter.modules.urldefense.counts.noRewriteIsExcludedDomain".into(),
+                            message,
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_excluded_domain", converted)?;
                     }
                 }
@@ -1850,19 +1639,11 @@ impl Transform for Default {
                     if let Some(val) = event
                         .get("json.filter.modules.urldefense.counts.noRewriteIsLargeMsgPartSize")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsLargeMsgPartSize".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsLargeMsgPartSize".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsLargeMsgPartSize".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.filter.modules.urldefense.counts.noRewriteIsLargeMsgPartSize".into(),
+                            message,
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_large_msgpart_size", converted)?;
                     }
                 }
@@ -1908,19 +1689,11 @@ impl Transform for Default {
                     if let Some(val) = event
                         .get("json.filter.modules.urldefense.counts.noRewriteIsMaxLengthExceeded")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsMaxLengthExceeded".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsMaxLengthExceeded".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsMaxLengthExceeded".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.filter.modules.urldefense.counts.noRewriteIsMaxLengthExceeded".into(),
+                            message,
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_maxlength_exceeded", converted)?;
                     }
                 }
@@ -1964,25 +1737,13 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("json.filter.modules.urldefense.counts.noRewriteIsSchemeless")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsSchemeless".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsSchemeless".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                }
-                            }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => return Err(TransformError::ParseError {
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.filter.modules.urldefense.counts.noRewriteIsSchemeless"
                                     .into(),
-                                message: "cannot convert to integer".into(),
-                            }),
-                        };
+                                message,
+                            }
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_schemeless", converted)?;
                     }
                 }
@@ -2028,19 +1789,11 @@ impl Transform for Default {
                     if let Some(val) = event
                         .get("json.filter.modules.urldefense.counts.noRewriteIsUnsupportedScheme")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsUnsupportedScheme".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsUnsupportedScheme".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.filter.modules.urldefense.counts.noRewriteIsUnsupportedScheme".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.filter.modules.urldefense.counts.noRewriteIsUnsupportedScheme".into(),
+                            message,
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.no_rewrite.is_unsupported_scheme", converted)?;
                     }
                 }
@@ -2083,38 +1836,12 @@ impl Transform for Default {
                 if event.has_value("json.filter.modules.urldefense.counts.rewritten") {
                     if let Some(val) = event.get("json.filter.modules.urldefense.counts.rewritten")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.rewritten"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.rewritten"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.urldefense.counts.rewritten".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.urldefense.counts.rewritten".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("proofpoint_on_demand.message.filter.modules.urldefense.counts.rewritten", converted)?;
                     }
                 }
@@ -2156,38 +1883,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.urldefense.counts.total") {
                     if let Some(val) = event.get("json.filter.modules.urldefense.counts.total") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.total"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.total"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.urldefense.counts.total".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.urldefense.counts.total".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.modules.urldefense.counts.total",
                             converted,
@@ -2232,38 +1933,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.modules.urldefense.counts.unique") {
                     if let Some(val) = event.get("json.filter.modules.urldefense.counts.unique") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.unique"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.modules.urldefense.counts.unique"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.modules.urldefense.counts.unique".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.modules.urldefense.counts.unique".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.modules.urldefense.counts.unique",
                             converted,
@@ -2313,13 +1988,12 @@ impl Transform for Default {
 
             if event.has_value("json.filter.modules.urldefense.version.engine") {
                 if let Some(val) = event.get("json.filter.modules.urldefense.version.engine") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.filter.modules.urldefense.version.engine".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "proofpoint_on_demand.message.filter.modules.urldefense.version.engine",
                         converted,
@@ -2329,13 +2003,12 @@ impl Transform for Default {
 
             if event.has_value("json.filter.modules.zerohour.score") {
                 if let Some(val) = event.get("json.filter.modules.zerohour.score") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.filter.modules.zerohour.score".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "proofpoint_on_demand.message.filter.modules.zerohour.score",
                         converted,
@@ -2347,36 +2020,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.filter.msgSizeBytes") {
                     if let Some(val) = event.get("json.filter.msgSizeBytes") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.msgSizeBytes".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.filter.msgSizeBytes".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.filter.msgSizeBytes".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.filter.msgSizeBytes".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "proofpoint_on_demand.message.filter.msg_size_bytes",
                             converted,
@@ -2440,13 +2089,12 @@ impl Transform for Default {
 
             if event.has_value("json.filter.pe.rcpts") {
                 if let Some(val) = event.get("json.filter.pe.rcpts") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.filter.pe.rcpts".into(),
+                            message,
+                        }
+                    })?;
                     event.set("proofpoint_on_demand.message.filter.pe.rcpts", converted)?;
                 }
             }
@@ -2526,13 +2174,12 @@ impl Transform for Default {
 
             if event.has_value("json.filter.suborgs.rcpts") {
                 if let Some(val) = event.get("json.filter.suborgs.rcpts") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.filter.suborgs.rcpts".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "proofpoint_on_demand.message.filter.suborgs.rcpts",
                         converted,
@@ -2542,13 +2189,12 @@ impl Transform for Default {
 
             if event.has_value("json.filter.suborgs.sender") {
                 if let Some(val) = event.get("json.filter.suborgs.sender") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.filter.suborgs.sender".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "proofpoint_on_demand.message.filter.suborgs.sender",
                         converted,
@@ -2561,16 +2207,17 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.filter.throttleIp") {
-                        if let Some(s) = event.get_string("json.filter.throttleIp") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.filter.throttleIp") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.filter.throttleIp".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("proofpoint_on_demand.message.filter.throttle_ip", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set(
+                                "proofpoint_on_demand.message.filter.throttle_ip",
+                                converted,
+                            )?;
                         }
                     }
                     Ok(())
@@ -3307,36 +2954,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.msg.sizeBytes") {
                     if let Some(val) = event.get("json.msg.sizeBytes") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.msg.sizeBytes".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.msg.sizeBytes".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.msg.sizeBytes".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.msg.sizeBytes".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("proofpoint_on_demand.message.msg.size_bytes", converted)?;
                     }
                 }

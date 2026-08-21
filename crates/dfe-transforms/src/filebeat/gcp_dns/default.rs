@@ -80,13 +80,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("json.resource.labels.project_id") {
                     if let Some(val) = event.get("json.resource.labels.project_id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.resource.labels.project_id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.project.id", converted)?;
                     }
                 }
@@ -96,13 +95,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("json.resource.labels.location") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.resource.labels.location".into(),
+                            message,
+                        }
+                    })?;
                     event.set("cloud.region", converted)?;
                 }
                 Ok(())
@@ -134,16 +132,13 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("gcp.dns.destination_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("gcp.dns.destination_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "gcp.dns.destination_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("destination.ip", s)?;
+                            message,
+                        })?;
+                    event.set("destination.ip", converted)?;
                 }
                 Ok(())
             })();
@@ -373,16 +368,13 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("gcp.dns.source_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("gcp.dns.source_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "gcp.dns.source_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("source.ip", s)?;
+                            message,
+                        })?;
+                    event.set("source.ip", converted)?;
                 }
                 Ok(())
             })();

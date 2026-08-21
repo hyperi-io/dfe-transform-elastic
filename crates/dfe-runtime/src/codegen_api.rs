@@ -172,6 +172,84 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
     Ok(())
 }
 
+/// Convert a value the way Elastic's `convert` processor does.
+///
+/// An ARRAY is converted element by element -- "if the field value is an
+/// array, all members will be converted" -- where stringifying the array
+/// whole gave `"[\"0\"]"` for a list that should have been `["0"]`, and the
+/// pipeline's own sentinel pass then had nothing it recognised to remove.
+///
+/// `kind` is the processor's `type`: `integer`, `long`, `float`, `double`,
+/// `string`, `boolean` or `ip`. `auto` picks its type at ingest time and a
+/// compiled transform cannot do that, so the generator refuses it and it
+/// never reaches here.
+///
+/// # Errors
+///
+/// Returns the message Elastic's processor throws with, for the caller to
+/// wrap in a `ParseError` naming the field.
+pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, String> {
+    if let Value::Array(items) = value {
+        return items
+            .iter()
+            .map(|item| convert_value(item, kind))
+            .collect::<std::result::Result<Vec<_>, _>>()
+            .map(Value::Array);
+    }
+
+    let cannot = |target: &str| format!("cannot convert '{value}' to {target}");
+    match kind {
+        "integer" | "long" => match value {
+            Value::String(s) => {
+                let s = s.trim();
+                let parsed = s.strip_prefix("0x").map_or_else(
+                    || s.parse::<i64>().ok(),
+                    |hex| i64::from_str_radix(hex, 16).ok(),
+                );
+                parsed.map(Value::from).ok_or_else(|| cannot("integer"))
+            }
+            #[allow(clippy::cast_possible_truncation)]
+            Value::Number(n) => Ok(Value::from(
+                n.as_i64()
+                    .unwrap_or_else(|| n.as_f64().unwrap_or(0.0) as i64),
+            )),
+            Value::Bool(b) => Ok(Value::from(i64::from(*b))),
+            _ => Err(cannot("integer")),
+        },
+        "float" | "double" => match value {
+            Value::String(s) => s
+                .trim()
+                .parse::<f64>()
+                .ok()
+                .map(Value::from)
+                .ok_or_else(|| cannot("float")),
+            Value::Number(n) => Ok(Value::from(n.as_f64().unwrap_or(0.0))),
+            Value::Bool(b) => Ok(Value::from(if *b { 1.0 } else { 0.0 })),
+            _ => Err(cannot("float")),
+        },
+        "string" => match value {
+            Value::String(_) => Ok(value.clone()),
+            Value::Number(n) => Ok(Value::from(n.to_string())),
+            Value::Bool(b) => Ok(Value::from(b.to_string())),
+            Value::Null => Ok(Value::from("null")),
+            other => Ok(Value::from(other.to_string())),
+        },
+        // Elastic accepts only the exact strings, case insensitively, and
+        // throws on anything else.
+        "boolean" => match value {
+            Value::Bool(_) => Ok(value.clone()),
+            Value::String(s) if s.eq_ignore_ascii_case("true") => Ok(Value::from(true)),
+            Value::String(s) if s.eq_ignore_ascii_case("false") => Ok(Value::from(false)),
+            _ => Err(cannot("boolean")),
+        },
+        "ip" => match value.as_str() {
+            Some(s) if s.trim().parse::<std::net::IpAddr>().is_ok() => Ok(Value::from(s.trim())),
+            _ => Err(cannot("IP")),
+        },
+        other => Err(format!("unknown convert type '{other}'")),
+    }
+}
+
 /// The digest Elastic's `fingerprint` processor writes at its defaults.
 ///
 /// Method `SHA-1`, no salt, and the result base64-encoded. Each value is
@@ -983,6 +1061,28 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `proofpoint_on_demand/message`, which converts a LIST of
+    /// suborg recipients to string. Rendering the array whole gave the string
+    /// `["0"]`, which the pipeline's own sentinel pass does not recognise.
+    #[test]
+    fn convert_walks_an_array_element_by_element() {
+        assert_eq!(
+            convert_value(&json!([0, 1]), "string").unwrap(),
+            json!(["0", "1"])
+        );
+        assert_eq!(
+            convert_value(&json!(["7", "8"]), "long").unwrap(),
+            json!([7, 8])
+        );
+    }
+
+    /// One bad member fails the whole conversion, which is where Elastic
+    /// throws and the processor's `on_failure` runs.
+    #[test]
+    fn one_unconvertible_member_fails_the_array() {
+        assert!(convert_value(&json!(["7", "not a number"]), "long").is_err());
+    }
 
     /// Verbatim from the compat corpus: `m365_defender/event/test-device`
     /// carries both the fingerprint's input and the digest Elasticsearch

@@ -250,16 +250,14 @@ impl Transform for Default {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("source.ip") {
-                    if let Some(s) = event.get_string("source.ip") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("source.ip") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "source.ip".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("source.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("source.ip", converted)?;
                     }
                 }
                 Ok(())

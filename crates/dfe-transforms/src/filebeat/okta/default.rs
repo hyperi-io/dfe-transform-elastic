@@ -73,13 +73,12 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(val) = event.get("json.uuid") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.uuid".into(),
+                                message,
+                            }
+                        })?;
                         event.set("_id", converted)?;
                     }
                     Ok(())
@@ -510,16 +509,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("json.client.ipAddress") {
-                    if let Some(s) = event.get_string("json.client.ipAddress") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.client.ipAddress") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.client.ipAddress".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("okta.client.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("okta.client.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -1844,13 +1841,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("okta.client.user_agent.raw_user_agent") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "okta.client.user_agent.raw_user_agent".into(),
+                            message,
+                        }
+                    })?;
                     event.set("user_agent.original", converted)?;
                 }
                 Ok(())
@@ -1873,13 +1869,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("okta.event_type") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "okta.event_type".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.action", converted)?;
                 }
                 Ok(())
@@ -1888,13 +1883,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("okta.security_context.as.organization.name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "okta.security_context.as.organization.name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("client.as.organization.name", converted)?;
                 }
                 Ok(())
@@ -1903,13 +1897,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("okta.security_context.domain") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "okta.security_context.domain".into(),
+                            message,
+                        }
+                    })?;
                     event.set("client.domain", converted)?;
                 }
                 Ok(())
@@ -1918,13 +1911,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("okta.security_context.domain") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "okta.security_context.domain".into(),
+                            message,
+                        }
+                    })?;
                     event.set("source.domain", converted)?;
                 }
                 Ok(())
@@ -1933,13 +1925,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("okta.uuid") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "okta.uuid".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.id", converted)?;
                 }
                 Ok(())

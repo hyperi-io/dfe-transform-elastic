@@ -100,13 +100,12 @@ impl Transform for Default {
 
             if event.has_value("zscaler_zia.sandbox_verdict.record_id") {
                 if let Some(val) = event.get("zscaler_zia.sandbox_verdict.record_id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.sandbox_verdict.record_id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.sandbox_verdict.record_id", converted)?;
                 }
             }

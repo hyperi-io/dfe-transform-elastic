@@ -309,34 +309,12 @@ impl Transform for Default {
 
             if event.has_value("json.jsonPayload.rtt_msec") {
                 if let Some(val) = event.get("json.jsonPayload.rtt_msec") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "json.jsonPayload.rtt_msec".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "json.jsonPayload.rtt_msec".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.jsonPayload.rtt_msec".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "json.jsonPayload.rtt_msec".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("json.jsonPayload.rtt.ms", converted)?;
                 }
             }
@@ -347,81 +325,36 @@ impl Transform for Default {
 
             if event.has_value("source.bytes") {
                 if let Some(val) = event.get("source.bytes") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "source.bytes".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "source.bytes".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "source.bytes".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "source.bytes".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("source.bytes", converted)?;
                 }
             }
 
             if event.has_value("source.packets") {
                 if let Some(val) = event.get("source.packets") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "source.packets".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "source.packets".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "source.packets".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "source.packets".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("source.packets", converted)?;
                 }
             }
 
             if event.has_value("network.iana_number") {
                 if let Some(val) = event.get("network.iana_number") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "network.iana_number".into(),
+                            message,
+                        }
+                    })?;
                     event.set("network.iana_number", converted)?;
                 }
             }
@@ -469,13 +402,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.source.instance.project_id") {
                     if let Some(val) = event.get("gcp.source.instance.project_id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.source.instance.project_id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.project.id", converted)?;
                     }
                 }
@@ -485,13 +417,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.source.instance.vm_name") {
                     if let Some(val) = event.get("gcp.source.instance.vm_name") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.source.instance.vm_name".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.instance.name", converted)?;
                     }
                 }
@@ -501,13 +432,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.source.instance.region") {
                     if let Some(val) = event.get("gcp.source.instance.region") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.source.instance.region".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.region", converted)?;
                     }
                 }
@@ -517,13 +447,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.source.instance.zone") {
                     if let Some(val) = event.get("gcp.source.instance.zone") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.source.instance.zone".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.availability_zone", converted)?;
                     }
                 }
@@ -535,13 +464,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("gcp.source.vpc.subnetwork_name") {
                         if let Some(val) = event.get("gcp.source.vpc.subnetwork_name") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "gcp.source.vpc.subnetwork_name".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("network.name", converted)?;
                         }
                     }
@@ -553,13 +481,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.destination.instance.project_id") {
                     if let Some(val) = event.get("gcp.destination.instance.project_id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.destination.instance.project_id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.project.id", converted)?;
                     }
                 }
@@ -569,13 +496,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.destination.instance.vm_name") {
                     if let Some(val) = event.get("gcp.destination.instance.vm_name") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.destination.instance.vm_name".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.instance.name", converted)?;
                     }
                 }
@@ -585,13 +511,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.destination.instance.region") {
                     if let Some(val) = event.get("gcp.destination.instance.region") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.destination.instance.region".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.region", converted)?;
                     }
                 }
@@ -601,13 +526,12 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.destination.instance.zone") {
                     if let Some(val) = event.get("gcp.destination.instance.zone") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "gcp.destination.instance.zone".into(),
+                                message,
+                            }
+                        })?;
                         event.set("cloud.availability_zone", converted)?;
                     }
                 }
@@ -619,13 +543,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("gcp.destination.vpc.subnetwork_name") {
                         if let Some(val) = event.get("gcp.destination.vpc.subnetwork_name") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "gcp.destination.vpc.subnetwork_name".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("network.name", converted)?;
                         }
                     }
@@ -635,68 +558,24 @@ impl Transform for Default {
 
             if event.has_value("source.bytes") {
                 if let Some(val) = event.get("source.bytes") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "source.bytes".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "source.bytes".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "source.bytes".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "source.bytes".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("network.bytes", converted)?;
                 }
             }
 
             if event.has_value("source.packets") {
                 if let Some(val) = event.get("source.packets") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "source.packets".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "source.packets".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "source.packets".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "source.packets".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("network.packets", converted)?;
                 }
             }

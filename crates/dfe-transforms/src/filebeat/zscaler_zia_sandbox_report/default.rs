@@ -165,22 +165,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.Classification.Max Score") {
                     if let Some(val) = event.get("json.Classification.Max Score") {
-                        let converted = match val {
-                            Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| {
-                                TransformError::ParseError {
-                                    path: "json.Classification.Max Score".into(),
-                                    message: format!("cannot convert '{}' to float", s),
-                                }
-                            })?),
-                            Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                            Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.Classification.Max Score".into(),
-                                    message: "cannot convert to float".into(),
-                                });
+                        let converted = convert_value(val, "double").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.Classification.Max Score".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "zscaler_zia.sandbox_report.classification.max_score",
                             converted,
@@ -227,24 +217,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Classification.Score") {
                         if let Some(val) = event.get("json.Classification.Score") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    json!(s.trim().parse::<f64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.Classification.Score".into(),
-                                            message: format!("cannot convert '{}' to float", s),
-                                        }
-                                    })?)
+                            let converted = convert_value(val, "double").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.Classification.Score".into(),
+                                    message,
                                 }
-                                Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                                Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "json.Classification.Score".into(),
-                                        message: "cannot convert to float".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "zscaler_zia.sandbox_report.classification.score",
                                 converted,
@@ -321,36 +299,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.FileProperties.FileSize") {
                     if let Some(val) = event.get("json.FileProperties.FileSize") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.FileProperties.FileSize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.FileProperties.FileSize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.FileProperties.FileSize".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.FileProperties.FileSize".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "zscaler_zia.sandbox_report.file_properties.file_size",
                             converted,
@@ -658,13 +612,12 @@ impl Transform for Default {
 
             if event.has_value("json.Summary.Analysis") {
                 if let Some(val) = event.get("json.Summary.Analysis") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.Summary.Analysis".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.sandbox_report.summary.analysis", converted)?;
                 }
             }
@@ -680,36 +633,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.Summary.Duration") {
                     if let Some(val) = event.get("json.Summary.Duration") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.Summary.Duration".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.Summary.Duration".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.Summary.Duration".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.Summary.Duration".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.sandbox_report.summary.duration", converted)?;
                     }
                 }

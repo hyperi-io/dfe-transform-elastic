@@ -43,17 +43,12 @@ impl Transform for User {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("entityanalytics_entra_id.user.account_enabled") {
                     if let Some(val) = event.get("entityanalytics_entra_id.user.account_enabled") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "entityanalytics_entra_id.user.account_enabled".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.user.account_enabled".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("entityanalytics_entra_id.user.account_enabled", converted)?;
                     }
                 }
@@ -369,18 +364,12 @@ impl Transform for User {
                     if let Some(val) =
                         event.get("entityanalytics_entra_id.user.mfa.is_mfa_registered")
                     {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "entityanalytics_entra_id.user.mfa.is_mfa_registered"
-                                        .into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "entityanalytics_entra_id.user.mfa.is_mfa_registered".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "entityanalytics_entra_id.user.mfa.is_mfa_registered",
                             converted,

@@ -528,36 +528,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.activityType") {
                     if let Some(val) = event.get("json.activityType") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.activityType".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.activityType".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.activityType".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.activityType".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.activity.type", converted)?;
                     }
                 }
@@ -600,13 +576,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.data.accountId") {
                     if let Some(val) = event.get("json.data.accountId") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.data.accountId".into(),
+                                message,
+                            }
+                        })?;
                         event.set("sentinel_one.activity.data.account.id", converted)?;
                     }
                 }
@@ -757,13 +732,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.data.newValue") {
                     if let Some(val) = event.get("json.data.newValue") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.data.newValue".into(),
+                                message,
+                            }
+                        })?;
                         event.set("sentinel_one.activity.data.new.value", converted)?;
                     }
                 }
@@ -805,16 +779,14 @@ impl Transform for Default {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.data.externalIp") {
-                    if let Some(s) = event.get_string("json.data.externalIp") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.data.externalIp") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.data.externalIp".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("json.data.externalIp", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("json.data.externalIp", converted)?;
                     }
                 }
                 Ok(())
@@ -888,16 +860,14 @@ impl Transform for Default {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.data.ipAddress") {
-                    if let Some(s) = event.get_string("json.data.ipAddress") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.data.ipAddress") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.data.ipAddress".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("json.data.ipAddress", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("json.data.ipAddress", converted)?;
                     }
                 }
                 Ok(())
@@ -1065,17 +1035,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.data.system") {
                     if let Some(val) = event.get("json.data.system") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.data.system".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.data.system".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.activity.data.system", converted)?;
                     }
                 }
@@ -1293,13 +1258,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.data.policyName") {
                     if let Some(val) = event.get("json.data.policyName") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.data.policyName".into(),
+                                message,
+                            }
+                        })?;
                         event.set("sentinel_one.activity.data.policy_name", converted)?;
                     }
                 }

@@ -86,42 +86,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("azure.auditlogs.durationMs") {
                         if let Some(val) = event.get("azure.auditlogs.durationMs") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "azure.auditlogs.durationMs".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "azure.auditlogs.durationMs".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "azure.auditlogs.durationMs".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "azure.auditlogs.durationMs".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("event.duration", converted)?;
                         }
                     }
@@ -183,13 +153,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("azure.auditlogs.operationName") {
                     if let Some(val) = event.get("azure.auditlogs.operationName") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "azure.auditlogs.operationName".into(),
+                                message,
+                            }
+                        })?;
                         event.set("event.action", converted)?;
                     }
                 }
@@ -260,16 +229,14 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("azure.auditlogs.callerIpAddress") {
-                    if let Some(s) = event.get_string("azure.auditlogs.callerIpAddress") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("azure.auditlogs.callerIpAddress") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "azure.auditlogs.callerIpAddress".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("source.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("source.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -417,13 +384,12 @@ impl Transform for Default {
 
             if event.has_value("azure.auditlogs.properties.initiated_by.user.id") {
                 if let Some(val) = event.get("azure.auditlogs.properties.initiated_by.user.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.auditlogs.properties.initiated_by.user.id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("user.id", converted)?;
                 }
             }

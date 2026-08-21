@@ -73,41 +73,12 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(val) =
                     event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration")
                 {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path:
-                                            "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                                .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| {
-                                    TransformError::ParseError {
-                                        path:
-                                            "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                                .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                    .into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set(
                         "crowdstrike.event.ExecutionMetadata.ExecutionDuration",
                         converted,
@@ -117,35 +88,12 @@ impl Transform for ScheduledReportNotificationEvent {
 
             if event.has_value("crowdstrike.event.ExecutionMetadata.ResultCount") {
                 if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "crowdstrike.event.ExecutionMetadata.ResultCount"
-                                            .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
                 }
             }
@@ -207,13 +155,12 @@ impl Transform for ScheduledReportNotificationEvent {
 
             if event.has_value("crowdstrike.event.Status") {
                 if let Some(val) = event.get("crowdstrike.event.Status") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.Status".into(),
+                            message,
+                        }
+                    })?;
                     event.set("crowdstrike.event.Status", converted)?;
                 }
             }

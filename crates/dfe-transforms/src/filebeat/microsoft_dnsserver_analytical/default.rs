@@ -317,38 +317,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("microsoft_dnsserver.analytical.bytes_sent") {
                     if let Some(val) = event.get("microsoft_dnsserver.analytical.bytes_sent") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "microsoft_dnsserver.analytical.bytes_sent"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "microsoft_dnsserver.analytical.bytes_sent"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "microsoft_dnsserver.analytical.bytes_sent".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "microsoft_dnsserver.analytical.bytes_sent".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("microsoft_dnsserver.analytical.bytes_sent", converted)?;
                     }
                 }
@@ -375,36 +349,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("winlog.process_id") {
                     if let Some(val) = event.get("winlog.process_id") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "winlog.process_id".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "winlog.process_id".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "winlog.process_id".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "winlog.process_id".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("process.pid", converted)?;
                     }
                 }
@@ -415,36 +365,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("winlog.thread_id") {
                     if let Some(val) = event.get("winlog.thread_id") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "winlog.thread_id".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "winlog.thread_id".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "winlog.thread_id".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "winlog.thread_id".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("process.thread.id", converted)?;
                     }
                 }
@@ -499,17 +425,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("microsoft_dnsserver.analytical.Destination") {
-                    if let Some(s) = event.get_string("microsoft_dnsserver.analytical.Destination")
-                    {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("microsoft_dnsserver.analytical.Destination") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "microsoft_dnsserver.analytical.Destination".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("microsoft_dnsserver.analytical.destination.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("microsoft_dnsserver.analytical.destination.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -546,38 +469,12 @@ impl Transform for Default {
                 if event.has_value("microsoft_dnsserver.analytical.destination.port") {
                     if let Some(val) = event.get("microsoft_dnsserver.analytical.destination.port")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "microsoft_dnsserver.analytical.destination.port"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "microsoft_dnsserver.analytical.destination.port"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "microsoft_dnsserver.analytical.destination.port".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "microsoft_dnsserver.analytical.destination.port".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("microsoft_dnsserver.analytical.destination.port", converted)?;
                     }
                 }
@@ -661,16 +558,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("microsoft_dnsserver.analytical.Source") {
-                    if let Some(s) = event.get_string("microsoft_dnsserver.analytical.Source") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("microsoft_dnsserver.analytical.Source") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "microsoft_dnsserver.analytical.Source".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("microsoft_dnsserver.analytical.source.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("microsoft_dnsserver.analytical.source.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -704,38 +599,12 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("microsoft_dnsserver.analytical.source.port") {
                     if let Some(val) = event.get("microsoft_dnsserver.analytical.source.port") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "microsoft_dnsserver.analytical.source.port"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "microsoft_dnsserver.analytical.source.port"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "microsoft_dnsserver.analytical.source.port".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "microsoft_dnsserver.analytical.source.port".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("microsoft_dnsserver.analytical.source.port", converted)?;
                     }
                 }
@@ -814,17 +683,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("microsoft_dnsserver.analytical.InterfaceIP") {
-                    if let Some(s) = event.get_string("microsoft_dnsserver.analytical.InterfaceIP")
-                    {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("microsoft_dnsserver.analytical.InterfaceIP") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "microsoft_dnsserver.analytical.InterfaceIP".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("microsoft_dnsserver.analytical.interface_ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("microsoft_dnsserver.analytical.interface_ip", converted)?;
                     }
                 }
                 Ok(())
@@ -833,18 +699,19 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("microsoft_dnsserver.analytical.ForwardInterfaceIP") {
-                    if let Some(s) =
-                        event.get_string("microsoft_dnsserver.analytical.ForwardInterfaceIP")
+                    if let Some(val) =
+                        event.get("microsoft_dnsserver.analytical.ForwardInterfaceIP")
                     {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "microsoft_dnsserver.analytical.ForwardInterfaceIP".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("microsoft_dnsserver.analytical.forward_interface_ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set(
+                            "microsoft_dnsserver.analytical.forward_interface_ip",
+                            converted,
+                        )?;
                     }
                 }
                 Ok(())

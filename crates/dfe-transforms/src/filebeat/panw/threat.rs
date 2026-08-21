@@ -663,16 +663,13 @@ impl Transform for Threat {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("_temp_.forwarded_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("_temp_.forwarded_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "_temp_.forwarded_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("network.forwarded_ip", s)?;
+                            message,
+                        })?;
+                    event.set("network.forwarded_ip", converted)?;
                 }
                 Ok(())
             })() {

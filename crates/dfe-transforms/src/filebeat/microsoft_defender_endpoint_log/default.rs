@@ -509,26 +509,24 @@ impl Transform for Default {
 
             if event.has_value("microsoft.defender_endpoint.incidentId") {
                 if let Some(val) = event.get("microsoft.defender_endpoint.incidentId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "microsoft.defender_endpoint.incidentId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("microsoft.defender_endpoint.incidentId", converted)?;
                 }
             }
 
             if event.has_value("microsoft.defender_endpoint.investigationId") {
                 if let Some(val) = event.get("microsoft.defender_endpoint.investigationId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "microsoft.defender_endpoint.investigationId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("microsoft.defender_endpoint.investigationId", converted)?;
                 }
             }

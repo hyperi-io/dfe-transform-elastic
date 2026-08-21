@@ -102,36 +102,12 @@ impl Transform for Event {
             let _ = (|| -> Result<()> {
                 if event.has_value("fortinet.firewall.dstport") {
                     if let Some(val) = event.get("fortinet.firewall.dstport") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.dstport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.dstport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.dstport".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.dstport".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("destination.port", converted)?;
                     }
                 }
@@ -144,42 +120,12 @@ impl Transform for Event {
                 let _ = (|| -> Result<()> {
                     if event.has_value("fortinet.firewall.remport") {
                         if let Some(val) = event.get("fortinet.firewall.remport") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.remport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.remport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.remport".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.remport".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("destination.port", converted)?;
                         }
                     }
@@ -191,36 +137,12 @@ impl Transform for Event {
             let _ = (|| -> Result<()> {
                 if event.has_value("fortinet.firewall.rcvdbyte") {
                     if let Some(val) = event.get("fortinet.firewall.rcvdbyte") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.rcvdbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.rcvdbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.rcvdbyte".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.rcvdbyte".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("destination.bytes", converted)?;
                     }
                 }
@@ -253,36 +175,12 @@ impl Transform for Event {
             let _ = (|| -> Result<()> {
                 if event.has_value("fortinet.firewall.sentbyte") {
                     if let Some(val) = event.get("fortinet.firewall.sentbyte") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.sentbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.sentbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.sentbyte".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.sentbyte".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("source.bytes", converted)?;
                     }
                 }
@@ -315,36 +213,12 @@ impl Transform for Event {
             let _ = (|| -> Result<()> {
                 if event.has_value("fortinet.firewall.srcport") {
                     if let Some(val) = event.get("fortinet.firewall.srcport") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.srcport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.srcport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.srcport".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.srcport".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("source.port", converted)?;
                     }
                 }
@@ -357,42 +231,12 @@ impl Transform for Event {
                 let _ = (|| -> Result<()> {
                     if event.has_value("fortinet.firewall.locport") {
                         if let Some(val) = event.get("fortinet.firewall.locport") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.locport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.locport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.locport".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.locport".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("source.port", converted)?;
                         }
                     }
@@ -420,36 +264,12 @@ impl Transform for Event {
             let _ = (|| -> Result<()> {
                 if event.has_value("fortinet.firewall.filesize") {
                     if let Some(val) = event.get("fortinet.firewall.filesize") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.filesize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.filesize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.filesize".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.filesize".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("file.size", converted)?;
                     }
                 }
@@ -505,16 +325,14 @@ impl Transform for Event {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("fortinet.firewall.addr") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("fortinet.firewall.addr") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "fortinet.firewall.addr".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("fortinet.firewall.addr", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("fortinet.firewall.addr", converted)?;
                     }
                     Ok(())
                 })() {
@@ -557,42 +375,12 @@ impl Transform for Event {
                 let _ = (|| -> Result<()> {
                     if event.has_value("fortinet.firewall.sess_duration") {
                         if let Some(val) = event.get("fortinet.firewall.sess_duration") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.sess_duration".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.sess_duration".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.sess_duration".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.sess_duration".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("event.duration", converted)?;
                         }
                     }
@@ -604,36 +392,12 @@ impl Transform for Event {
             let _ = (|| -> Result<()> {
                 if event.has_value("fortinet.firewall.mem") {
                     if let Some(val) = event.get("fortinet.firewall.mem") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.mem".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.mem".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "integer").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.mem".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.mem".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("fortinet.firewall.mem", converted)?;
                     }
                 }
@@ -642,44 +406,24 @@ impl Transform for Event {
 
             if event.has_value("fortinet.firewall.jitter") {
                 if let Some(val) = event.get("fortinet.firewall.jitter") {
-                    let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| {
-                            TransformError::ParseError {
-                                path: "fortinet.firewall.jitter".into(),
-                                message: format!("cannot convert '{}' to float", s),
-                            }
-                        })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "fortinet.firewall.jitter".into(),
-                                message: "cannot convert to float".into(),
-                            });
+                    let converted = convert_value(val, "float").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "fortinet.firewall.jitter".into(),
+                            message,
                         }
-                    };
+                    })?;
                     event.set("fortinet.firewall.jitter", converted)?;
                 }
             }
 
             if event.has_value("fortinet.firewall.latency") {
                 if let Some(val) = event.get("fortinet.firewall.latency") {
-                    let converted = match val {
-                        Value::String(s) => json!(s.trim().parse::<f64>().map_err(|_| {
-                            TransformError::ParseError {
-                                path: "fortinet.firewall.latency".into(),
-                                message: format!("cannot convert '{}' to float", s),
-                            }
-                        })?),
-                        Value::Number(n) => json!(n.as_f64().unwrap_or(0.0)),
-                        Value::Bool(b) => json!(if *b { 1.0 } else { 0.0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "fortinet.firewall.latency".into(),
-                                message: "cannot convert to float".into(),
-                            });
+                    let converted = convert_value(val, "float").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "fortinet.firewall.latency".into(),
+                            message,
                         }
-                    };
+                    })?;
                     event.set("fortinet.firewall.latency", converted)?;
                 }
             }

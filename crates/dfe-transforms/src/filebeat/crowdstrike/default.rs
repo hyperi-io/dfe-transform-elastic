@@ -98,26 +98,24 @@ impl Transform for Default {
 
             if event.has_value("crowdstrike.event.IncidentType") {
                 if let Some(val) = event.get("crowdstrike.event.IncidentType") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.IncidentType".into(),
+                            message,
+                        }
+                    })?;
                     event.set("crowdstrike.event.IncidentType", converted)?;
                 }
             }
 
             if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.PatternId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("crowdstrike.event.PatternId", converted)?;
                 }
             }
@@ -501,42 +499,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.Score") {
                         if let Some(val) = event.get("crowdstrike.event.Score") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.Score".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.Score".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.Score".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.Score".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("crowdstrike.event.Score", converted)?;
                         }
                     }
@@ -585,13 +553,13 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             if event.has_value("_ingest._value.PatternId") {
                                 if let Some(val) = event.get("_ingest._value.PatternId") {
-                                    let converted = match val {
-                                        Value::String(_) => val.clone(),
-                                        Value::Number(n) => json!(n.to_string()),
-                                        Value::Bool(b) => json!(b.to_string()),
-                                        Value::Null => json!("null"),
-                                        _ => json!(val.to_string()),
-                                    };
+                                    let converted =
+                                        convert_value(val, "string").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.PatternId".into(),
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.PatternId", converted)?;
                                 }
                             }
@@ -616,13 +584,13 @@ impl Transform for Default {
                             event.set("_ingest._value", item)?;
                             if event.has_value("_ingest._value.TemplateInstanceId") {
                                 if let Some(val) = event.get("_ingest._value.TemplateInstanceId") {
-                                    let converted = match val {
-                                        Value::String(_) => val.clone(),
-                                        Value::Number(n) => json!(n.to_string()),
-                                        Value::Bool(b) => json!(b.to_string()),
-                                        Value::Null => json!("null"),
-                                        _ => json!(val.to_string()),
-                                    };
+                                    let converted =
+                                        convert_value(val, "string").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.TemplateInstanceId".into(),
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.TemplateInstanceId", converted)?;
                                 }
                             }
@@ -649,43 +617,13 @@ impl Transform for Default {
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.Severity") {
                                     if let Some(val) = event.get("_ingest._value.Severity") {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(
-                                                        |_| TransformError::ParseError {
-                                                            path: "_ingest._value.Severity".into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to integer",
-                                                                s
-                                                            )
-                                                        }
-                                                    )?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| {
-                                                        TransformError::ParseError {
-                                                            path: "_ingest._value.Severity".into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to integer",
-                                                                s
-                                                            ),
-                                                        }
-                                                    })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.Severity".into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set("_ingest._value.Severity", converted)?;
                                     }
                                 }
@@ -731,38 +669,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.PatternDisposition")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.PatternDisposition".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| {
-                                                        TransformError::ParseError {
-                                                            path:
-                                                                "_ingest._value.PatternDisposition"
-                                                                    .into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to integer",
-                                                                s
-                                                            ),
-                                                        }
-                                                    })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.PatternDisposition"
                                                         .into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event
                                             .set("_ingest._value.PatternDisposition", converted)?;
                                     }
@@ -979,16 +893,14 @@ impl Transform for Default {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if event.has_value("crowdstrike.event.IPv4") {
-                            if let Some(s) = event.get_string("crowdstrike.event.IPv4") {
-                                // Validate IP format
-                                let s = s.trim();
-                                if s.parse::<std::net::IpAddr>().is_err() {
-                                    return Err(TransformError::ParseError {
+                            if let Some(val) = event.get("crowdstrike.event.IPv4") {
+                                let converted = convert_value(val, "ip").map_err(|message| {
+                                    TransformError::ParseError {
                                         path: "crowdstrike.event.IPv4".into(),
-                                        message: format!("cannot convert '{}' to IP", s),
-                                    });
-                                }
-                                event.set("threat.indicator.ip", s)?;
+                                        message,
+                                    }
+                                })?;
+                                event.set("threat.indicator.ip", converted)?;
                             }
                         }
                         Ok(())
@@ -1027,16 +939,14 @@ impl Transform for Default {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if event.has_value("crowdstrike.event.IPv6") {
-                            if let Some(s) = event.get_string("crowdstrike.event.IPv6") {
-                                // Validate IP format
-                                let s = s.trim();
-                                if s.parse::<std::net::IpAddr>().is_err() {
-                                    return Err(TransformError::ParseError {
+                            if let Some(val) = event.get("crowdstrike.event.IPv6") {
+                                let converted = convert_value(val, "ip").map_err(|message| {
+                                    TransformError::ParseError {
                                         path: "crowdstrike.event.IPv6".into(),
-                                        message: format!("cannot convert '{}' to IP", s),
-                                    });
-                                }
-                                event.set("threat.indicator.ip", s)?;
+                                        message,
+                                    }
+                                })?;
+                                event.set("threat.indicator.ip", converted)?;
                             }
                         }
                         Ok(())
@@ -1325,42 +1235,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.DataVolume") {
                         if let Some(val) = event.get("crowdstrike.event.DataVolume") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.DataVolume".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.DataVolume".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.DataVolume".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.DataVolume".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("crowdstrike.event.DataVolume", converted)?;
                         }
                     }
@@ -1403,27 +1283,13 @@ impl Transform for Default {
                         if let Some(val) =
                             event.get("crowdstrike.event.ContentPatterns.ConfidenceLevel")
                         {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ContentPatterns.ConfidenceLevel".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ContentPatterns.ConfidenceLevel".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.ContentPatterns.ConfidenceLevel"
+                                        .into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.ContentPatterns.ConfidenceLevel"
-                                            .into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set(
                                 "crowdstrike.event.ContentPatterns.ConfidenceLevel",
                                 converted,
@@ -1476,46 +1342,12 @@ impl Transform for Default {
                     if event.has_value("crowdstrike.event.ContentPatterns.MatchCount") {
                         if let Some(val) = event.get("crowdstrike.event.ContentPatterns.MatchCount")
                         {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path:
-                                                    "crowdstrike.event.ContentPatterns.MatchCount"
-                                                        .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path:
-                                                    "crowdstrike.event.ContentPatterns.MatchCount"
-                                                        .into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.ContentPatterns.MatchCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.ContentPatterns.MatchCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("crowdstrike.event.ContentPatterns.MatchCount", converted)?;
                         }
                     }
@@ -1564,42 +1396,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.FilesEgressedCount") {
                         if let Some(val) = event.get("crowdstrike.event.FilesEgressedCount") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.FilesEgressedCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.FilesEgressedCount".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.FilesEgressedCount".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.FilesEgressedCount".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("crowdstrike.event.FilesEgressedCount", converted)?;
                         }
                     }
@@ -1648,17 +1450,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.UserNotified") {
                         if let Some(val) = event.get("crowdstrike.event.UserNotified") {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.UserNotified".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.UserNotified".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set("crowdstrike.event.UserNotified", converted)?;
                         }
                     }
@@ -1704,17 +1501,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.UserMapped") {
                         if let Some(val) = event.get("crowdstrike.event.UserMapped") {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.UserMapped".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.UserMapped".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set("crowdstrike.event.UserMapped", converted)?;
                         }
                     }
@@ -1760,17 +1552,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.IsClipboard") {
                         if let Some(val) = event.get("crowdstrike.event.IsClipboard") {
-                            let converted = match val {
-                                Value::Bool(_) => val.clone(),
-                                Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                                Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                                other => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.IsClipboard".into(),
-                                        message: format!("cannot convert '{}' to boolean", other),
-                                    });
+                            let converted = convert_value(val, "boolean").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.IsClipboard".into(),
+                                    message,
                                 }
-                            };
+                            })?;
                             event.set("crowdstrike.event.IsClipboard", converted)?;
                         }
                     }
@@ -2505,16 +2292,14 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("crowdstrike.event.LocalIPv6") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("crowdstrike.event.LocalIPv6") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "crowdstrike.event.LocalIPv6".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("crowdstrike.event.LocalIPv6", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set("crowdstrike.event.LocalIPv6", converted)?;
                         }
                         Ok(())
                     })() {
@@ -2986,13 +2771,12 @@ impl Transform for Default {
                 }
                 if event.has_value("event.id") {
                     if let Some(val) = event.get("event.id") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "event.id".into(),
+                                message,
+                            }
+                        })?;
                         event.set("event.id", converted)?;
                     }
                 }
@@ -3089,42 +2873,12 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("crowdstrike.event.Severity") {
                         if let Some(val) = event.get("crowdstrike.event.Severity") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.Severity".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.Severity".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.Severity".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.Severity".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("crowdstrike.event.Severity", converted)?;
                         }
                     }
@@ -3320,13 +3074,12 @@ impl Transform for Default {
                 }
                 if event.has_value("crowdstrike.event.PatternId") {
                     if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.PatternId".into(),
+                                message,
+                            }
+                        })?;
                         event.set("rule.uuid", converted)?;
                     }
                 }
@@ -3659,13 +3412,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.StartTimeEpoch") {
                         if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.StartTimeEpoch".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.StartTimeEpoch", converted)?;
                         }
                     }
@@ -3725,13 +3477,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.EndTimeEpoch") {
                         if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.EndTimeEpoch".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.EndTimeEpoch", converted)?;
                         }
                     }
@@ -3838,13 +3589,12 @@ impl Transform for Default {
                 }
                 if event.has_value("crowdstrike.event.PatternId") {
                     if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.PatternId".into(),
+                                message,
+                            }
+                        })?;
                         event.set("rule.uuid", converted)?;
                     }
                 }
@@ -3952,13 +3702,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.ContextTimeStamp") {
                         if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.ContextTimeStamp".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.ContextTimeStamp", converted)?;
                         }
                     }
@@ -4014,13 +3763,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.AccountCreationTimeStamp") {
                         if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
                         }
                     }
@@ -4077,13 +3825,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.StartTime") {
                         if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.StartTime".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.StartTime", converted)?;
                         }
                     }
@@ -4135,13 +3882,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.EndTime") {
                         if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.EndTime".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.EndTime", converted)?;
                         }
                     }
@@ -4475,13 +4221,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.StartTime") {
                         if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.StartTime".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.StartTime", converted)?;
                         }
                     }
@@ -4533,13 +4278,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.EndTime") {
                         if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                            let converted = match val {
-                                Value::String(_) => val.clone(),
-                                Value::Number(n) => json!(n.to_string()),
-                                Value::Bool(b) => json!(b.to_string()),
-                                Value::Null => json!("null"),
-                                _ => json!(val.to_string()),
-                            };
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.EndTime".into(),
+                                    message,
+                                }
+                            })?;
                             event.set("crowdstrike.event.EndTime", converted)?;
                         }
                     }
@@ -5078,36 +4822,12 @@ impl Transform for Default {
                 }
                 if event.has_value("crowdstrike.event.PID") {
                     if let Some(val) = event.get("crowdstrike.event.PID") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.PID".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.PID".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.PID".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.PID".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("process.pid", converted)?;
                     }
                 }
@@ -5178,42 +4898,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.LocalPort") {
                         if let Some(val) = event.get("crowdstrike.event.LocalPort") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.LocalPort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.LocalPort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.LocalPort".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.LocalPort".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("destination.port", converted)?;
                         }
                     }
@@ -5225,42 +4915,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.RemotePort") {
                         if let Some(val) = event.get("crowdstrike.event.RemotePort") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.RemotePort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.RemotePort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.RemotePort".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.RemotePort".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("source.port", converted)?;
                         }
                     }
@@ -5290,42 +4950,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.LocalPort") {
                         if let Some(val) = event.get("crowdstrike.event.LocalPort") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.LocalPort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.LocalPort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.LocalPort".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.LocalPort".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("source.port", converted)?;
                         }
                     }
@@ -5337,42 +4967,12 @@ impl Transform for Default {
                 if _cond {
                     if event.has_value("crowdstrike.event.RemotePort") {
                         if let Some(val) = event.get("crowdstrike.event.RemotePort") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.RemotePort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "crowdstrike.event.RemotePort".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "crowdstrike.event.RemotePort".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "crowdstrike.event.RemotePort".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("destination.port", converted)?;
                         }
                     }
@@ -5601,27 +5201,13 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
+                                    .into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                        .into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "crowdstrike.event.ExecutionMetadata.ExecutionDuration",
                             converted,
@@ -5631,38 +5217,12 @@ impl Transform for Default {
                 if event.has_value("crowdstrike.event.ExecutionMetadata.ResultCount") {
                     if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.ExecutionMetadata.ResultCount"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "crowdstrike.event.ExecutionMetadata.ResultCount"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
                     }
                 }
@@ -5722,13 +5282,12 @@ impl Transform for Default {
                 }
                 if event.has_value("crowdstrike.event.Status") {
                     if let Some(val) = event.get("crowdstrike.event.Status") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.Status".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.Status", converted)?;
                     }
                 }
@@ -6110,13 +5669,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.PatternID") {
                                 if let Some(val) = event.get("_ingest._value.PatternID") {
-                                    let converted = match val {
-                                        Value::String(_) => val.clone(),
-                                        Value::Number(n) => json!(n.to_string()),
-                                        Value::Bool(b) => json!(b.to_string()),
-                                        Value::Null => json!("null"),
-                                        _ => json!(val.to_string()),
-                                    };
+                                    let converted =
+                                        convert_value(val, "string").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.PatternID".into(),
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.PatternID", converted)?;
                                 }
                             }

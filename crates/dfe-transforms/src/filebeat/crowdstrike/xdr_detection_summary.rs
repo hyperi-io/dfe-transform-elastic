@@ -46,13 +46,12 @@ impl Transform for XdrDetectionSummary {
 
             if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.PatternId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("rule.uuid", converted)?;
                 }
             }
@@ -404,13 +403,12 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 if event.has_value("crowdstrike.event.StartTimeEpoch") {
                     if let Some(val) = event.get("crowdstrike.event.StartTimeEpoch") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.StartTimeEpoch".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.StartTimeEpoch", converted)?;
                     }
                 }
@@ -470,13 +468,12 @@ impl Transform for XdrDetectionSummary {
             if _cond {
                 if event.has_value("crowdstrike.event.EndTimeEpoch") {
                     if let Some(val) = event.get("crowdstrike.event.EndTimeEpoch") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.EndTimeEpoch".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.EndTimeEpoch", converted)?;
                     }
                 }

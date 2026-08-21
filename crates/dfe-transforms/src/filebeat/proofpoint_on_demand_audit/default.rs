@@ -162,18 +162,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.metadata.origin.data.agent") {
-                        if let Some(s) = event.get_string("json.metadata.origin.data.agent") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.metadata.origin.data.agent") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.metadata.origin.data.agent".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
+                                    message,
+                                }
+                            })?;
                             event.set(
                                 "proofpoint_on_demand.audit.metadata.origin.data.agent_ip",
-                                s,
+                                converted,
                             )?;
                         }
                     }
@@ -264,13 +262,12 @@ impl Transform for Default {
 
             if event.has_value("json.metadata.origin.data.version") {
                 if let Some(val) = event.get("json.metadata.origin.data.version") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.metadata.origin.data.version".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "proofpoint_on_demand.audit.metadata.origin.data.version",
                         converted,
@@ -288,13 +285,12 @@ impl Transform for Default {
 
             if event.has_value("json.metadata.origin.schemaVersion") {
                 if let Some(val) = event.get("json.metadata.origin.schemaVersion") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.metadata.origin.schemaVersion".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "proofpoint_on_demand.audit.metadata.origin.schema_version",
                         converted,
@@ -406,16 +402,15 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.audit.service.ipAddress") {
-                        if let Some(s) = event.get_string("json.audit.service.ipAddress") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.audit.service.ipAddress") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.audit.service.ipAddress".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("proofpoint_on_demand.audit.service.ip_address", s)?;
+                                    message,
+                                }
+                            })?;
+                            event
+                                .set("proofpoint_on_demand.audit.service.ip_address", converted)?;
                         }
                     }
                     Ok(())
@@ -473,13 +468,13 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         if event.has_value("_ingest._value.value") {
                             if let Some(val) = event.get("_ingest._value.value") {
-                                let converted = match val {
-                                    Value::String(_) => val.clone(),
-                                    Value::Number(n) => json!(n.to_string()),
-                                    Value::Bool(b) => json!(b.to_string()),
-                                    Value::Null => json!("null"),
-                                    _ => json!(val.to_string()),
-                                };
+                                let converted =
+                                    convert_value(val, "string").map_err(|message| {
+                                        TransformError::ParseError {
+                                            path: "_ingest._value.value".into(),
+                                            message,
+                                        }
+                                    })?;
                                 event.set("_ingest._value.value", converted)?;
                             }
                         }
@@ -649,16 +644,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.audit.user.ipAddress") {
-                        if let Some(s) = event.get_string("json.audit.user.ipAddress") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.audit.user.ipAddress") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.audit.user.ipAddress".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("proofpoint_on_demand.audit.user.ip_address", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set("proofpoint_on_demand.audit.user.ip_address", converted)?;
                         }
                     }
                     Ok(())

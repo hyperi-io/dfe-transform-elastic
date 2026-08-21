@@ -20,10 +20,10 @@ pub use crate::{cached_grok, cached_grok_mapped, cached_params, cached_regex, ca
 pub use crate::date_formats::{parse_date, parse_date_out};
 
 pub use crate::codegen_api::{
-    RegisteredDomainResult, community_id_v1, csv_close_quote_gap, dot_expand, fingerprint_default,
-    geoip_lookup, grok_to_regex, grok_to_regex_with_map, is_internal_ip, join_values,
-    painless_exec, painless_exec_params, parse_user_agent, registered_domain_lookup, resolve_path,
-    sort_values, uri_parts, url_decode,
+    RegisteredDomainResult, community_id_v1, convert_value, csv_close_quote_gap, dot_expand,
+    fingerprint_default, geoip_lookup, grok_to_regex, grok_to_regex_with_map, is_internal_ip,
+    join_values, painless_exec, painless_exec_params, parse_user_agent, registered_domain_lookup,
+    resolve_path, sort_values, uri_parts, url_decode,
 };
 
 pub use crate::painless_helpers::{

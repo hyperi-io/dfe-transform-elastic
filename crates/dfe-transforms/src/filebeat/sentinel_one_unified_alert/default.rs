@@ -199,24 +199,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.accessible") {
                                 if let Some(val) = event.get("_ingest._value.accessible") {
-                                    let converted = match val {
-                                        Value::Bool(_) => val.clone(),
-                                        Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                            json!(true)
-                                        }
-                                        Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                            json!(false)
-                                        }
-                                        other => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value.accessible".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to boolean",
-                                                    other
-                                                ),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.accessible", converted)?;
                                 }
                             }
@@ -260,24 +249,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.decommissioned") {
                                 if let Some(val) = event.get("_ingest._value.decommissioned") {
-                                    let converted = match val {
-                                        Value::Bool(_) => val.clone(),
-                                        Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                            json!(true)
-                                        }
-                                        Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                            json!(false)
-                                        }
-                                        other => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value.decommissioned".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to boolean",
-                                                    other
-                                                ),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.decommissioned", converted)?;
                                 }
                             }
@@ -321,24 +299,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.pending_reboot") {
                                 if let Some(val) = event.get("_ingest._value.pending_reboot") {
-                                    let converted = match val {
-                                        Value::Bool(_) => val.clone(),
-                                        Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                            json!(true)
-                                        }
-                                        Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                            json!(false)
-                                        }
-                                        other => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value.pending_reboot".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to boolean",
-                                                    other
-                                                ),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.pending_reboot", converted)?;
                                 }
                             }
@@ -430,24 +397,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.accessible") {
                                 if let Some(val) = event.get("_ingest._value.accessible") {
-                                    let converted = match val {
-                                        Value::Bool(_) => val.clone(),
-                                        Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                            json!(true)
-                                        }
-                                        Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                            json!(false)
-                                        }
-                                        other => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value.accessible".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to boolean",
-                                                    other
-                                                ),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value.accessible", converted)?;
                                 }
                             }
@@ -494,18 +450,21 @@ impl Transform for Default {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.asset.console_ip_address") {
-                                if let Some(s) =
-                                    event.get_string("_ingest._value.asset.console_ip_address")
+                                if let Some(val) =
+                                    event.get("_ingest._value.asset.console_ip_address")
                                 {
-                                    // Validate IP format
-                                    let s = s.trim();
-                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                        return Err(TransformError::ParseError {
-                                            path: "_ingest._value.asset.console_ip_address".into(),
-                                            message: format!("cannot convert '{}' to IP", s),
-                                        });
-                                    }
-                                    event.set("_ingest._value.asset.console_ip_address", s)?;
+                                    let converted =
+                                        convert_value(val, "ip").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.asset.console_ip_address"
+                                                    .into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set(
+                                        "_ingest._value.asset.console_ip_address",
+                                        converted,
+                                    )?;
                                 }
                             }
                             Ok(())
@@ -551,16 +510,15 @@ impl Transform for Default {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.asset.ip_v4") {
-                                if let Some(s) = event.get_string("_ingest._value.asset.ip_v4") {
-                                    // Validate IP format
-                                    let s = s.trim();
-                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                        return Err(TransformError::ParseError {
-                                            path: "_ingest._value.asset.ip_v4".into(),
-                                            message: format!("cannot convert '{}' to IP", s),
-                                        });
-                                    }
-                                    event.set("_ingest._value.asset.ip_v4", s)?;
+                                if let Some(val) = event.get("_ingest._value.asset.ip_v4") {
+                                    let converted =
+                                        convert_value(val, "ip").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.asset.ip_v4".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value.asset.ip_v4", converted)?;
                                 }
                             }
                             Ok(())
@@ -606,16 +564,15 @@ impl Transform for Default {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.asset.ip_v6") {
-                                if let Some(s) = event.get_string("_ingest._value.asset.ip_v6") {
-                                    // Validate IP format
-                                    let s = s.trim();
-                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                        return Err(TransformError::ParseError {
-                                            path: "_ingest._value.asset.ip_v6".into(),
-                                            message: format!("cannot convert '{}' to IP", s),
-                                        });
-                                    }
-                                    event.set("_ingest._value.asset.ip_v6", s)?;
+                                if let Some(val) = event.get("_ingest._value.asset.ip_v6") {
+                                    let converted =
+                                        convert_value(val, "ip").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.asset.ip_v6".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value.asset.ip_v6", converted)?;
                                 }
                             }
                             Ok(())
@@ -704,20 +661,20 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("sentinel_one.unified_alert.detection_time.attacker.ip") {
-                        if let Some(s) = event
-                            .get_string("sentinel_one.unified_alert.detection_time.attacker.ip")
+                        if let Some(val) =
+                            event.get("sentinel_one.unified_alert.detection_time.attacker.ip")
                         {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "sentinel_one.unified_alert.detection_time.attacker.ip"
                                         .into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event
-                                .set("sentinel_one.unified_alert.detection_time.attacker.ip", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set(
+                                "sentinel_one.unified_alert.detection_time.attacker.ip",
+                                converted,
+                            )?;
                         }
                     }
                     Ok(())
@@ -861,17 +818,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("sentinel_one.unified_alert.note_exists") {
                     if let Some(val) = event.get("sentinel_one.unified_alert.note_exists") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "sentinel_one.unified_alert.note_exists".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "sentinel_one.unified_alert.note_exists".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.unified_alert.note_exists", converted)?;
                     }
                 }
@@ -923,12 +875,11 @@ impl Transform for Default {
                     "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_complete",
                 ) {
                     if let Some(val) = event.get("sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_complete") {
-                    let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_complete".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_complete".into(),
+                            message,
+                        })?;
                     event.set("sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_complete", converted)?;
                 }
                 }
@@ -977,19 +928,11 @@ impl Transform for Default {
                     if let Some(val) = event.get(
                         "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_due",
                     ) {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_due".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_due".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_due".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_due".into(),
+                            message,
+                        })?;
                         event.set("sentinel_one.unified_alert.slo_details.time_to_resolve_data.action_due", converted)?;
                     }
                 }
@@ -1047,19 +990,11 @@ impl Transform for Default {
                     if let Some(val) = event.get(
                         "sentinel_one.unified_alert.slo_details.time_to_resolve_data.completion",
                     ) {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.completion".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.completion".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.completion".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.completion".into(),
+                            message,
+                        })?;
                         event.set("sentinel_one.unified_alert.slo_details.time_to_resolve_data.completion", converted)?;
                     }
                 }
@@ -1170,19 +1105,11 @@ impl Transform for Default {
                     if let Some(val) = event
                         .get("sentinel_one.unified_alert.slo_details.time_to_resolve_data.target")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.target".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.target".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.target".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_resolve_data.target".into(),
+                            message,
+                        })?;
                         event.set(
                             "sentinel_one.unified_alert.slo_details.time_to_resolve_data.target",
                             converted,
@@ -1293,12 +1220,11 @@ impl Transform for Default {
                     "sentinel_one.unified_alert.slo_details.time_to_response_data.action_complete",
                 ) {
                     if let Some(val) = event.get("sentinel_one.unified_alert.slo_details.time_to_response_data.action_complete") {
-                    let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.action_complete".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_response_data.action_complete".into(),
+                            message,
+                        })?;
                     event.set("sentinel_one.unified_alert.slo_details.time_to_response_data.action_complete", converted)?;
                 }
                 }
@@ -1347,19 +1273,11 @@ impl Transform for Default {
                     if let Some(val) = event.get(
                         "sentinel_one.unified_alert.slo_details.time_to_response_data.action_due",
                     ) {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.action_due".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.action_due".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.action_due".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_response_data.action_due".into(),
+                            message,
+                        })?;
                         event.set("sentinel_one.unified_alert.slo_details.time_to_response_data.action_due", converted)?;
                     }
                 }
@@ -1413,19 +1331,11 @@ impl Transform for Default {
                     if let Some(val) = event.get(
                         "sentinel_one.unified_alert.slo_details.time_to_response_data.completion",
                     ) {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.completion".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.completion".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.completion".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_response_data.completion".into(),
+                            message,
+                        })?;
                         event.set("sentinel_one.unified_alert.slo_details.time_to_response_data.completion", converted)?;
                     }
                 }
@@ -1532,19 +1442,11 @@ impl Transform for Default {
                     if let Some(val) = event
                         .get("sentinel_one.unified_alert.slo_details.time_to_response_data.target")
                     {
-                        let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.target".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.target".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "sentinel_one.unified_alert.slo_details.time_to_response_data.target".into(), message: "cannot convert to integer".into() }),
-                    };
+                        let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "sentinel_one.unified_alert.slo_details.time_to_response_data.target".into(),
+                            message,
+                        })?;
                         event.set(
                             "sentinel_one.unified_alert.slo_details.time_to_response_data.target",
                             converted,

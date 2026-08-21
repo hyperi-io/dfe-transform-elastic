@@ -622,19 +622,11 @@ impl Transform for PipelineDevice {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.InitiatingProcessFileSize") {
                 if let Some(val) = event.get("json.properties.InitiatingProcessFileSize") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.InitiatingProcessFileSize".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.InitiatingProcessFileSize".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.InitiatingProcessFileSize".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.InitiatingProcessFileSize".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.initiating_process.file_size", converted)?;
                 }
             }
@@ -657,13 +649,11 @@ impl Transform for PipelineDevice {
             if _cond {
             if event.has_value("json.properties.InitiatingProcessLogonId") {
                 if let Some(val) = event.get("json.properties.InitiatingProcessLogonId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.InitiatingProcessLogonId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.initiating_process.logon_id", converted)?;
                 }
             }
@@ -673,13 +663,11 @@ impl Transform for PipelineDevice {
             if _cond {
             if event.has_value("json.properties.LogonId") {
                 if let Some(val) = event.get("json.properties.LogonId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.LogonId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.logon.id", converted)?;
                 }
             }
@@ -691,19 +679,11 @@ impl Transform for PipelineDevice {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.ProcessId") {
                 if let Some(val) = event.get("json.properties.ProcessId") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.ProcessId".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.ProcessId".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.ProcessId".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.ProcessId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.process.id", converted)?;
                 }
             }
@@ -726,13 +706,11 @@ impl Transform for PipelineDevice {
             if _cond {
             if event.has_value("json.properties.ReportId") {
                 if let Some(val) = event.get("json.properties.ReportId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.ReportId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.report_id", converted)?;
                 }
             }
@@ -743,13 +721,13 @@ impl Transform for PipelineDevice {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IPv4Dhcp") {
-                if let Some(s) = event.get_string("json.properties.IPv4Dhcp") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.IPv4Dhcp".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.ipv4_dhcp", s)?;
+                if let Some(val) = event.get("json.properties.IPv4Dhcp") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IPv4Dhcp".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.ipv4_dhcp", converted)?;
                 }
             }
                 Ok(())
@@ -772,13 +750,13 @@ impl Transform for PipelineDevice {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IPv6Dhcp") {
-                if let Some(s) = event.get_string("json.properties.IPv6Dhcp") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.IPv6Dhcp".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.ipv6_dhcp", s)?;
+                if let Some(val) = event.get("json.properties.IPv6Dhcp") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IPv6Dhcp".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.ipv6_dhcp", converted)?;
                 }
             }
                 Ok(())
@@ -1333,13 +1311,13 @@ impl Transform for PipelineDevice {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.FileOriginIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.FileOriginIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("json.properties.FileOriginIP", s)?;
+                if let Some(val) = event.get("json.properties.FileOriginIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.FileOriginIP".into(),
+                            message,
+                        })?;
+                    event.set("json.properties.FileOriginIP", converted)?;
                 }
                 Ok(())
             })() {
@@ -1366,13 +1344,13 @@ impl Transform for PipelineDevice {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.RemoteIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.RemoteIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("json.properties.RemoteIP", s)?;
+                if let Some(val) = event.get("json.properties.RemoteIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.RemoteIP".into(),
+                            message,
+                        })?;
+                    event.set("json.properties.RemoteIP", converted)?;
                 }
                 Ok(())
             })() {
@@ -1399,13 +1377,13 @@ impl Transform for PipelineDevice {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.LocalIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.LocalIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("json.properties.LocalIP", s)?;
+                if let Some(val) = event.get("json.properties.LocalIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.LocalIP".into(),
+                            message,
+                        })?;
+                    event.set("json.properties.LocalIP", converted)?;
                 }
                 Ok(())
             })() {
@@ -1432,13 +1410,13 @@ impl Transform for PipelineDevice {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.RequestSourceIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.RequestSourceIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("json.properties.RequestSourceIP", s)?;
+                if let Some(val) = event.get("json.properties.RequestSourceIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.RequestSourceIP".into(),
+                            message,
+                        })?;
+                    event.set("json.properties.RequestSourceIP", converted)?;
                 }
                 Ok(())
             })() {
@@ -1477,13 +1455,13 @@ impl Transform for PipelineDevice {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.PublicIP") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.PublicIP".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("json.properties.PublicIP", s)?;
+                if let Some(val) = event.get("json.properties.PublicIP") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.PublicIP".into(),
+                            message,
+                        })?;
+                    event.set("json.properties.PublicIP", converted)?;
                 }
                 Ok(())
             })() {
@@ -1885,13 +1863,11 @@ impl Transform for PipelineDevice {
             if _cond {
             if event.has_value("process.Ext.api.parameters.protection") {
                 if let Some(val) = event.get("process.Ext.api.parameters.protection") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "process.Ext.api.parameters.protection".into(),
+                            message,
+                        })?;
                     event.set("process.Ext.api.parameters.protection", converted)?;
                 }
             }

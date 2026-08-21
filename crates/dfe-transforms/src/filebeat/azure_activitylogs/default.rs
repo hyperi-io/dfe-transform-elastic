@@ -90,16 +90,14 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("azure.activitylogs.callerIpAddress") {
-                    if let Some(s) = event.get_string("azure.activitylogs.callerIpAddress") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("azure.activitylogs.callerIpAddress") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "azure.activitylogs.callerIpAddress".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("source.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("source.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -309,13 +307,12 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(val) = event.get("azure.activitylogs.result_type") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.activitylogs.result_type".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.outcome", converted)?;
                 }
             }
@@ -334,13 +331,12 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(val) = event.get("azure.activitylogs.properties.result") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.activitylogs.properties.result".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.outcome", converted)?;
                 }
             }
@@ -354,13 +350,12 @@ impl Transform for Default {
 
             if event.has_value("azure.activitylogs.operation_name") {
                 if let Some(val) = event.get("azure.activitylogs.operation_name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.activitylogs.operation_name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.action", converted)?;
                 }
             }
@@ -683,13 +678,13 @@ impl Transform for Default {
                 if let Some(val) =
                     event.get("azure.activitylogs.identity.claims_initiated_by_user.fullname")
                 {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.activitylogs.identity.claims_initiated_by_user.fullname"
+                                .into(),
+                            message,
+                        }
+                    })?;
                     event.set("user.full_name", converted)?;
                 }
             }

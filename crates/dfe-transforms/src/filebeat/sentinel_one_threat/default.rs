@@ -276,16 +276,14 @@ impl Transform for Default {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentDetectionInfo.agentIpV4") {
-                    if let Some(s) = event.get_string("json.agentDetectionInfo.agentIpV4") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.agentDetectionInfo.agentIpV4") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.agentDetectionInfo.agentIpV4".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("sentinel_one.threat.detection.agent.ipv4", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("sentinel_one.threat.detection.agent.ipv4", converted)?;
                     }
                 }
                 Ok(())
@@ -368,16 +366,14 @@ impl Transform for Default {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentDetectionInfo.agentIpV6") {
-                    if let Some(s) = event.get_string("json.agentDetectionInfo.agentIpV6") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.agentDetectionInfo.agentIpV6") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.agentDetectionInfo.agentIpV6".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("sentinel_one.threat.detection.agent.ipv6", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("sentinel_one.threat.detection.agent.ipv6", converted)?;
                     }
                 }
                 Ok(())
@@ -624,16 +620,14 @@ impl Transform for Default {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentDetectionInfo.externalIp") {
-                    if let Some(s) = event.get_string("json.agentDetectionInfo.externalIp") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("json.agentDetectionInfo.externalIp") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "json.agentDetectionInfo.externalIp".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("json.agentDetectionInfo.externalIp", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("json.agentDetectionInfo.externalIp", converted)?;
                     }
                 }
                 Ok(())
@@ -801,36 +795,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentRealtimeInfo.activeThreats") {
                     if let Some(val) = event.get("json.agentRealtimeInfo.activeThreats") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.agentRealtimeInfo.activeThreats".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.agentRealtimeInfo.activeThreats".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.agentRealtimeInfo.activeThreats".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.agentRealtimeInfo.activeThreats".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.agent.active_threats", converted)?;
                     }
                 }
@@ -890,17 +860,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentRealtimeInfo.agentDecommissionedAt") {
                     if let Some(val) = event.get("json.agentRealtimeInfo.agentDecommissionedAt") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.agentRealtimeInfo.agentDecommissionedAt".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.agentRealtimeInfo.agentDecommissionedAt".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.agent.decommissioned_at", converted)?;
                     }
                 }
@@ -958,17 +923,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentRealtimeInfo.agentInfected") {
                     if let Some(val) = event.get("json.agentRealtimeInfo.agentInfected") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.agentRealtimeInfo.agentInfected".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.agentRealtimeInfo.agentInfected".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.agent.infected", converted)?;
                     }
                 }
@@ -1008,17 +968,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentRealtimeInfo.agentIsActive") {
                     if let Some(val) = event.get("json.agentRealtimeInfo.agentIsActive") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.agentRealtimeInfo.agentIsActive".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.agentRealtimeInfo.agentIsActive".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.agent.is_active", converted)?;
                     }
                 }
@@ -1058,17 +1013,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentRealtimeInfo.agentIsDecommissioned") {
                     if let Some(val) = event.get("json.agentRealtimeInfo.agentIsDecommissioned") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.agentRealtimeInfo.agentIsDecommissioned".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.agentRealtimeInfo.agentIsDecommissioned".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.agent.is_decommissioned", converted)?;
                     }
                 }
@@ -1220,20 +1170,15 @@ impl Transform for Default {
                                         // on_failure: 2 handler(s)
                                         if let Err(err) = (|| -> Result<()> {
                                             if event.has_value("_ingest._value") {
-                                                if let Some(s) = event.get_string("_ingest._value")
-                                                {
-                                                    // Validate IP format
-                                                    let s = s.trim();
-                                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                                        return Err(TransformError::ParseError {
-                                                            path: "_ingest._value".into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to IP",
-                                                                s
-                                                            ),
-                                                        });
-                                                    }
-                                                    event.set("_ingest._value", s)?;
+                                                if let Some(val) = event.get("_ingest._value") {
+                                                    let converted = convert_value(val, "ip")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value", converted)?;
                                                 }
                                             }
                                             Ok(())
@@ -1368,20 +1313,15 @@ impl Transform for Default {
                                         // on_failure: 2 handler(s)
                                         if let Err(err) = (|| -> Result<()> {
                                             if event.has_value("_ingest._value") {
-                                                if let Some(s) = event.get_string("_ingest._value")
-                                                {
-                                                    // Validate IP format
-                                                    let s = s.trim();
-                                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                                        return Err(TransformError::ParseError {
-                                                            path: "_ingest._value".into(),
-                                                            message: format!(
-                                                                "cannot convert '{}' to IP",
-                                                                s
-                                                            ),
-                                                        });
-                                                    }
-                                                    event.set("_ingest._value", s)?;
+                                                if let Some(val) = event.get("_ingest._value") {
+                                                    let converted = convert_value(val, "ip")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value", converted)?;
                                                 }
                                             }
                                             Ok(())
@@ -1591,17 +1531,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.agentRealtimeInfo.rebootRequired") {
                     if let Some(val) = event.get("json.agentRealtimeInfo.rebootRequired") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.agentRealtimeInfo.rebootRequired".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.agentRealtimeInfo.rebootRequired".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.agent.reboot_required", converted)?;
                     }
                 }
@@ -2274,28 +2209,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.actionsCounters.failed")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.failed".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.failed".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.actionsCounters.failed"
                                                         .into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set(
                                             "_ingest._value.action_counters.failed",
                                             converted,
@@ -2341,28 +2262,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.actionsCounters.notFound")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.notFound".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.notFound".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.actionsCounters.notFound"
                                                         .into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set(
                                             "_ingest._value.action_counters.not_found",
                                             converted,
@@ -2408,27 +2315,13 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.actionsCounters.pendingReboot")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.pendingReboot".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.pendingReboot".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => return Err(TransformError::ParseError {
-                                                path:
-                                                    "_ingest._value.actionsCounters.pendingReboot"
-                                                        .into(),
-                                                message: "cannot convert to integer".into(),
-                                            }),
-                                        };
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
+                        path: "_ingest._value.actionsCounters.pendingReboot".into(),
+                        message,
+                        }
+                                            })?;
                                         event.set(
                                             "_ingest._value.action_counters.pending_reboot",
                                             converted,
@@ -2474,28 +2367,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.actionsCounters.success")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.success".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.success".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.actionsCounters.success"
                                                         .into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set(
                                             "_ingest._value.action_counters.success",
                                             converted,
@@ -2541,28 +2420,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.actionsCounters.total")
                                     {
-                                        let converted = match val {
-                                            Value::String(s) => {
-                                                let s = s.trim();
-                                                if let Some(hex) = s.strip_prefix("0x") {
-                                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.total".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                } else {
-                                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "_ingest._value.actionsCounters.total".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                                }
-                                            }
-                                            Value::Number(n) => json!(
-                                                n.as_i64()
-                                                    .unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                            ),
-                                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                            _ => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "long").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.actionsCounters.total"
                                                         .into(),
-                                                    message: "cannot convert to integer".into(),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set(
                                             "_ingest._value.action_counters.total",
                                             converted,
@@ -2608,25 +2473,14 @@ impl Transform for Default {
                                     if let Some(val) =
                                         event.get("_ingest._value.agentSupportsReport")
                                     {
-                                        let converted = match val {
-                                            Value::Bool(_) => val.clone(),
-                                            Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                                json!(true)
-                                            }
-                                            Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                                json!(false)
-                                            }
-                                            other => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "boolean").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.agentSupportsReport"
                                                         .into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to boolean",
-                                                        other
-                                                    ),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set(
                                             "_ingest._value.agent_supports_report",
                                             converted,
@@ -2670,24 +2524,13 @@ impl Transform for Default {
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.groupNotFound") {
                                     if let Some(val) = event.get("_ingest._value.groupNotFound") {
-                                        let converted = match val {
-                                            Value::Bool(_) => val.clone(),
-                                            Value::String(s) if s.eq_ignore_ascii_case("true") => {
-                                                json!(true)
-                                            }
-                                            Value::String(s) if s.eq_ignore_ascii_case("false") => {
-                                                json!(false)
-                                            }
-                                            other => {
-                                                return Err(TransformError::ParseError {
+                                        let converted =
+                                            convert_value(val, "boolean").map_err(|message| {
+                                                TransformError::ParseError {
                                                     path: "_ingest._value.groupNotFound".into(),
-                                                    message: format!(
-                                                        "cannot convert '{}' to boolean",
-                                                        other
-                                                    ),
-                                                });
-                                            }
-                                        };
+                                                    message,
+                                                }
+                                            })?;
                                         event.set("_ingest._value.group_not_found", converted)?;
                                     }
                                 }
@@ -2921,17 +2764,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.automaticallyResolved") {
                     if let Some(val) = event.get("json.threatInfo.automaticallyResolved") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.automaticallyResolved".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.automaticallyResolved".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.automatically_resolved", converted)?;
                     }
                 }
@@ -3082,17 +2920,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.externalTicketExists") {
                     if let Some(val) = event.get("json.threatInfo.externalTicketExists") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.externalTicketExists".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.externalTicketExists".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.external_ticket.exist", converted)?;
                     }
                 }
@@ -3139,17 +2972,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.failedActions") {
                     if let Some(val) = event.get("json.threatInfo.failedActions") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.failedActions".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.failedActions".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.failed_actions", converted)?;
                     }
                 }
@@ -3215,36 +3043,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.fileSize") {
                     if let Some(val) = event.get("json.threatInfo.fileSize") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.threatInfo.fileSize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.threatInfo.fileSize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.fileSize".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.fileSize".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("threat.indicator.file.size", converted)?;
                     }
                 }
@@ -3393,17 +3197,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.isFileless") {
                     if let Some(val) = event.get("json.threatInfo.isFileless") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.isFileless".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.isFileless".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.is_fileless", converted)?;
                     }
                 }
@@ -3443,17 +3242,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.isValidCertificate") {
                     if let Some(val) = event.get("json.threatInfo.isValidCertificate") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.isValidCertificate".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.isValidCertificate".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.is_valid_certificate", converted)?;
                     }
                 }
@@ -3504,17 +3298,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.mitigatedPreemptively") {
                     if let Some(val) = event.get("json.threatInfo.mitigatedPreemptively") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.mitigatedPreemptively".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.mitigatedPreemptively".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.mitigated_preemptively", converted)?;
                     }
                 }
@@ -3575,17 +3364,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.pendingActions") {
                     if let Some(val) = event.get("json.threatInfo.pendingActions") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.pendingActions".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.pendingActions".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.pending_actions", converted)?;
                     }
                 }
@@ -3655,17 +3439,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.reachedEventsLimit") {
                     if let Some(val) = event.get("json.threatInfo.reachedEventsLimit") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.reachedEventsLimit".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.reachedEventsLimit".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.reached_events_limit", converted)?;
                     }
                 }
@@ -3705,17 +3484,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.threatInfo.rebootRequired") {
                     if let Some(val) = event.get("json.threatInfo.rebootRequired") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.threatInfo.rebootRequired".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.threatInfo.rebootRequired".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("sentinel_one.threat.reboot_required", converted)?;
                     }
                 }

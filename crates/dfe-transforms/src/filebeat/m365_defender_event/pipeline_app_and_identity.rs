@@ -142,13 +142,13 @@ impl Transform for PipelineAppAndIdentity {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.DestinationIPAddress") {
-                if let Some(s) = event.get_string("json.properties.DestinationIPAddress") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.DestinationIPAddress".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.destination.ip_address", s)?;
+                if let Some(val) = event.get("json.properties.DestinationIPAddress") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.DestinationIPAddress".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.destination.ip_address", converted)?;
                 }
             }
                 Ok(())
@@ -172,19 +172,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.DestinationPort") {
                 if let Some(val) = event.get("json.properties.DestinationPort") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.DestinationPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.DestinationPort".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.DestinationPort".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.DestinationPort".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.destination.port", converted)?;
                 }
             }
@@ -208,13 +200,13 @@ impl Transform for PipelineAppAndIdentity {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IPAddress") {
-                if let Some(s) = event.get_string("json.properties.IPAddress") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.IPAddress".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.ip_address", s)?;
+                if let Some(val) = event.get("json.properties.IPAddress") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IPAddress".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.ip_address", converted)?;
                 }
             }
                 Ok(())
@@ -238,13 +230,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.ReportId") {
                 if let Some(val) = event.get("json.properties.ReportId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.ReportId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.report_id", converted)?;
                 }
             }
@@ -269,19 +259,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.AppInstanceId") {
                 if let Some(val) = event.get("json.properties.AppInstanceId") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.AppInstanceId".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.AppInstanceId".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.AppInstanceId".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.AppInstanceId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.app_instance_id", converted)?;
                 }
             }
@@ -306,19 +288,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.Port") {
                 if let Some(val) = event.get("json.properties.Port") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.Port".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.Port".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.Port".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.port", converted)?;
                 }
             }
@@ -341,13 +315,11 @@ impl Transform for PipelineAppAndIdentity {
             if _cond {
             if event.has_value("json.properties.ApplicationId") {
                 if let Some(val) = event.get("json.properties.ApplicationId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.ApplicationId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.application_id", converted)?;
                 }
             }
@@ -410,13 +382,13 @@ impl Transform for PipelineAppAndIdentity {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IpAddress") {
-                if let Some(s) = event.get_string("json.properties.IpAddress") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError { path: "json.properties.IpAddress".into(), message: format!("cannot convert '{}' to IP", s) });
-                    }
-                    event.set("m365_defender.event.storage_ip_address", s)?;
+                if let Some(val) = event.get("json.properties.IpAddress") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IpAddress".into(),
+                            message,
+                        })?;
+                    event.set("m365_defender.event.storage_ip_address", converted)?;
                 }
             }
                 Ok(())
@@ -438,19 +410,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.OperationsCount") {
                 if let Some(val) = event.get("json.properties.OperationsCount") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.OperationsCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.OperationsCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.OperationsCount".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.OperationsCount".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.operations_count", converted)?;
                 }
             }
@@ -472,19 +436,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.SuccessfulOperationsCount") {
                 if let Some(val) = event.get("json.properties.SuccessfulOperationsCount") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.SuccessfulOperationsCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.SuccessfulOperationsCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.SuccessfulOperationsCount".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.SuccessfulOperationsCount".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.successful_operations_count", converted)?;
                 }
             }
@@ -506,12 +462,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IsKnownSuspiciousIp") {
                 if let Some(val) = event.get("json.properties.IsKnownSuspiciousIp") {
-                    let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "json.properties.IsKnownSuspiciousIp".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IsKnownSuspiciousIp".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.is_known_suspicious_ip", converted)?;
                 }
             }
@@ -533,12 +488,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IsPrivateIp") {
                 if let Some(val) = event.get("json.properties.IsPrivateIp") {
-                    let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "json.properties.IsPrivateIp".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IsPrivateIp".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.is_private_ip", converted)?;
                 }
             }
@@ -560,19 +514,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.FailedOperationsCount") {
                 if let Some(val) = event.get("json.properties.FailedOperationsCount") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.FailedOperationsCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.FailedOperationsCount".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.FailedOperationsCount".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.FailedOperationsCount".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.failed_operations_count", converted)?;
                 }
             }
@@ -646,19 +592,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.TotalResponseLength") {
                 if let Some(val) = event.get("json.properties.TotalResponseLength") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.TotalResponseLength".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.TotalResponseLength".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.TotalResponseLength".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.TotalResponseLength".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.total_response_length", converted)?;
                 }
             }
@@ -680,19 +618,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.SuccessfulReadOperations") {
                 if let Some(val) = event.get("json.properties.SuccessfulReadOperations") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.SuccessfulReadOperations".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.SuccessfulReadOperations".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.SuccessfulReadOperations".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.SuccessfulReadOperations".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.successful_read_operations", converted)?;
                 }
             }
@@ -714,19 +644,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.DistinctGetOperations") {
                 if let Some(val) = event.get("json.properties.DistinctGetOperations") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.DistinctGetOperations".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.DistinctGetOperations".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.DistinctGetOperations".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.DistinctGetOperations".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.distinct_get_operations", converted)?;
                 }
             }
@@ -748,19 +670,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.AnonymousSuccessfulOperations") {
                 if let Some(val) = event.get("json.properties.AnonymousSuccessfulOperations") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "json.properties.AnonymousSuccessfulOperations".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "json.properties.AnonymousSuccessfulOperations".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                            }
-                        }
-                        Value::Number(n) => json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)),
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => return Err(TransformError::ParseError { path: "json.properties.AnonymousSuccessfulOperations".into(), message: "cannot convert to integer".into() }),
-                    };
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.AnonymousSuccessfulOperations".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.anonymous_successful_operations", converted)?;
                 }
             }
@@ -782,12 +696,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.HasAnonymousResourceNotFoundFailures") {
                 if let Some(val) = event.get("json.properties.HasAnonymousResourceNotFoundFailures") {
-                    let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "json.properties.HasAnonymousResourceNotFoundFailures".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.HasAnonymousResourceNotFoundFailures".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.has_anonymous_resource_not_found_failures", converted)?;
                 }
             }
@@ -809,12 +722,11 @@ impl Transform for PipelineAppAndIdentity {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("json.properties.IsTorExitNode") {
                 if let Some(val) = event.get("json.properties.IsTorExitNode") {
-                    let converted = match val {
-                        Value::Bool(_) => val.clone(),
-                        Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                        Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                        other => return Err(TransformError::ParseError { path: "json.properties.IsTorExitNode".into(), message: format!("cannot convert '{}' to boolean", other) }),
-                    };
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.IsTorExitNode".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.is_tor_exit_node", converted)?;
                 }
             }
@@ -1226,13 +1138,11 @@ impl Transform for PipelineAppAndIdentity {
 
             if event.has_value("json.properties.AccountTenantId") {
                 if let Some(val) = event.get("json.properties.AccountTenantId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.properties.AccountTenantId".into(),
+                            message,
+                        })?;
                     event.set("m365_defender.event.account_tenant_id", converted)?;
                 }
             }

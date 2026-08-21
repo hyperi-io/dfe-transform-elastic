@@ -129,16 +129,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("source.address") {
-                    if let Some(s) = event.get_string("source.address") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("source.address") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "source.address".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("source.ip", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("source.ip", converted)?;
                     }
                 }
                 Ok(())
@@ -147,16 +145,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("azure.signinlogs.caller_ip_address") {
-                    if let Some(s) = event.get_string("azure.signinlogs.caller_ip_address") {
-                        // Validate IP format
-                        let s = s.trim();
-                        if s.parse::<std::net::IpAddr>().is_err() {
-                            return Err(TransformError::ParseError {
+                    if let Some(val) = event.get("azure.signinlogs.caller_ip_address") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
                                 path: "azure.signinlogs.caller_ip_address".into(),
-                                message: format!("cannot convert '{}' to IP", s),
-                            });
-                        }
-                        event.set("azure.signinlogs.caller_ip_address", s)?;
+                                message,
+                            }
+                        })?;
+                        event.set("azure.signinlogs.caller_ip_address", converted)?;
                     }
                 }
                 Ok(())
@@ -188,13 +184,12 @@ impl Transform for Default {
 
             if event.has_value("azure.signinlogs.level") {
                 if let Some(val) = event.get("azure.signinlogs.level") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.signinlogs.level".into(),
+                            message,
+                        }
+                    })?;
                     event.set("log.level", converted)?;
                 }
             }
@@ -212,42 +207,12 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("azure.signinlogs.duration_ms") {
                         if let Some(val) = event.get("azure.signinlogs.duration_ms") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "azure.signinlogs.duration_ms".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "azure.signinlogs.duration_ms".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "azure.signinlogs.duration_ms".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "azure.signinlogs.duration_ms".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("event.duration", converted)?;
                         }
                     }
@@ -286,13 +251,12 @@ impl Transform for Default {
 
             if event.has_value("azure.signinlogs.operation_name") {
                 if let Some(val) = event.get("azure.signinlogs.operation_name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.signinlogs.operation_name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.action", converted)?;
                 }
             }
@@ -445,13 +409,12 @@ impl Transform for Default {
 
             if event.has_value("azure.signinlogs.properties.user_display_name") {
                 if let Some(val) = event.get("azure.signinlogs.properties.user_display_name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.signinlogs.properties.user_display_name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("user.full_name", converted)?;
                 }
             }
@@ -463,13 +426,12 @@ impl Transform for Default {
 
             if event.has_value("azure.signinlogs.properties.user_id") {
                 if let Some(val) = event.get("azure.signinlogs.properties.user_id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.signinlogs.properties.user_id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("user.id", converted)?;
                 }
             }

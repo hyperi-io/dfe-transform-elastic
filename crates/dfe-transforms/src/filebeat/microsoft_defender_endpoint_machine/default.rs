@@ -302,16 +302,15 @@ impl Transform for Default {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.ipAddress") {
-                                if let Some(s) = event.get_string("_ingest._value.ipAddress") {
-                                    // Validate IP format
-                                    let s = s.trim();
-                                    if s.parse::<std::net::IpAddr>().is_err() {
-                                        return Err(TransformError::ParseError {
-                                            path: "_ingest._value.ipAddress".into(),
-                                            message: format!("cannot convert '{}' to IP", s),
-                                        });
-                                    }
-                                    event.set("_ingest._value.ip_address", s)?;
+                                if let Some(val) = event.get("_ingest._value.ipAddress") {
+                                    let converted =
+                                        convert_value(val, "ip").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.ipAddress".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value.ip_address", converted)?;
                                 }
                             }
                             Ok(())
@@ -442,17 +441,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.isAadJoined") {
                     if let Some(val) = event.get("json.isAadJoined") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.isAadJoined".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.isAadJoined".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "microsoft_defender_endpoint.machine.is_aad_joined",
                             converted,
@@ -497,17 +491,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.isExcluded") {
                     if let Some(val) = event.get("json.isExcluded") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.isExcluded".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.isExcluded".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set("microsoft_defender_endpoint.machine.is_excluded", converted)?;
                     }
                 }
@@ -549,17 +538,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.isPotentialDuplication") {
                     if let Some(val) = event.get("json.isPotentialDuplication") {
-                        let converted = match val {
-                            Value::Bool(_) => val.clone(),
-                            Value::String(s) if s.eq_ignore_ascii_case("true") => json!(true),
-                            Value::String(s) if s.eq_ignore_ascii_case("false") => json!(false),
-                            other => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.isPotentialDuplication".into(),
-                                    message: format!("cannot convert '{}' to boolean", other),
-                                });
+                        let converted = convert_value(val, "boolean").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.isPotentialDuplication".into(),
+                                message,
                             }
-                        };
+                        })?;
                         event.set(
                             "microsoft_defender_endpoint.machine.is_potential_duplication",
                             converted,
@@ -605,18 +589,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.lastExternalIpAddress") {
-                        if let Some(s) = event.get_string("json.lastExternalIpAddress") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.lastExternalIpAddress") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.lastExternalIpAddress".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
+                                    message,
+                                }
+                            })?;
                             event.set(
                                 "microsoft_defender_endpoint.machine.last_external_ip_address",
-                                s,
+                                converted,
                             )?;
                         }
                     }
@@ -719,16 +701,17 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.lastIpAddress") {
-                        if let Some(s) = event.get_string("json.lastIpAddress") {
-                            // Validate IP format
-                            let s = s.trim();
-                            if s.parse::<std::net::IpAddr>().is_err() {
-                                return Err(TransformError::ParseError {
+                        if let Some(val) = event.get("json.lastIpAddress") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
                                     path: "json.lastIpAddress".into(),
-                                    message: format!("cannot convert '{}' to IP", s),
-                                });
-                            }
-                            event.set("microsoft_defender_endpoint.machine.last_ip_address", s)?;
+                                    message,
+                                }
+                            })?;
+                            event.set(
+                                "microsoft_defender_endpoint.machine.last_ip_address",
+                                converted,
+                            )?;
                         }
                     }
                     Ok(())
@@ -848,13 +831,12 @@ impl Transform for Default {
 
             if event.has_value("json.mergedIntoMachineId") {
                 if let Some(val) = event.get("json.mergedIntoMachineId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.mergedIntoMachineId".into(),
+                            message,
+                        }
+                    })?;
                     event.set(
                         "microsoft_defender_endpoint.machine.merged_into_machine_id",
                         converted,
@@ -880,36 +862,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.osBuild") {
                     if let Some(val) = event.get("json.osBuild") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.osBuild".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "json.osBuild".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.osBuild".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "json.osBuild".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("microsoft_defender_endpoint.machine.os_build", converted)?;
                     }
                 }
@@ -995,13 +953,12 @@ impl Transform for Default {
 
             if event.has_value("json.osVersion") {
                 if let Some(val) = event.get("json.osVersion") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "json.osVersion".into(),
+                            message,
+                        }
+                    })?;
                     event.set("microsoft_defender_endpoint.machine.os_version", converted)?;
                 }
             }
@@ -1010,13 +967,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("json.rbacGroupId") {
                     if let Some(val) = event.get("json.rbacGroupId") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "json.rbacGroupId".into(),
+                                message,
+                            }
+                        })?;
                         event.set(
                             "microsoft_defender_endpoint.machine.rbac_group_id",
                             converted,

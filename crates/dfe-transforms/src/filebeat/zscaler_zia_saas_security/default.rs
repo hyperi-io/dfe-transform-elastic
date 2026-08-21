@@ -97,78 +97,72 @@ impl Transform for Default {
 
             if event.has_value("zscaler_zia.saas_security.record_id") {
                 if let Some(val) = event.get("zscaler_zia.saas_security.record_id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.record_id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.saas_security.record_id", converted)?;
                 }
             }
 
             if event.has_value("zscaler_zia.saas_security.company.id") {
                 if let Some(val) = event.get("zscaler_zia.saas_security.company.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.company.id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.saas_security.company.id", converted)?;
                 }
             }
 
             if event.has_value("zscaler_zia.saas_security.bucket.id") {
                 if let Some(val) = event.get("zscaler_zia.saas_security.bucket.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.bucket.id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.saas_security.bucket.id", converted)?;
                 }
             }
 
             if event.has_value("zscaler_zia.saas_security.dlp.identifier") {
                 if let Some(val) = event.get("zscaler_zia.saas_security.dlp.identifier") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.dlp.identifier".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.saas_security.dlp.identifier", converted)?;
                 }
             }
 
             if event.has_value("zscaler_zia.saas_security.genai.run_id") {
                 if let Some(val) = event.get("zscaler_zia.saas_security.genai.run_id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.genai.run_id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.saas_security.genai.run_id", converted)?;
                 }
             }
 
             if event.has_value("zscaler_zia.saas_security.genai.scan_id") {
                 if let Some(val) = event.get("zscaler_zia.saas_security.genai.scan_id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.genai.scan_id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("zscaler_zia.saas_security.genai.scan_id", converted)?;
                 }
             }
@@ -177,36 +171,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("zscaler_zia.saas_security.collab_count") {
                     if let Some(val) = event.get("zscaler_zia.saas_security.collab_count") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.collab_count".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.collab_count".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.collab_count".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.collab_count".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.saas_security.collab_count", converted)?;
                     }
                 }
@@ -251,28 +221,13 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("zscaler_zia.saas_security.email.external_recipients_count")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "zscaler_zia.saas_security.email.external_recipients_count".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "zscaler_zia.saas_security.email.external_recipients_count".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.email.external_recipients_count"
+                                    .into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path:
-                                        "zscaler_zia.saas_security.email.external_recipients_count"
-                                            .into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "zscaler_zia.saas_security.email.external_recipients_count",
                             converted,
@@ -320,28 +275,13 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("zscaler_zia.saas_security.email.internal_recipients_count")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| TransformError::ParseError { path: "zscaler_zia.saas_security.email.internal_recipients_count".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| TransformError::ParseError { path: "zscaler_zia.saas_security.email.internal_recipients_count".into(), message: format!("cannot convert '{}' to integer", s) })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.email.internal_recipients_count"
+                                    .into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path:
-                                        "zscaler_zia.saas_security.email.internal_recipients_count"
-                                            .into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "zscaler_zia.saas_security.email.internal_recipients_count",
                             converted,
@@ -389,41 +329,12 @@ impl Transform for Default {
                     if let Some(val) =
                         event.get("zscaler_zia.saas_security.email.message_size_bytes")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path:
-                                                "zscaler_zia.saas_security.email.message_size_bytes"
-                                                    .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path:
-                                                "zscaler_zia.saas_security.email.message_size_bytes"
-                                                    .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.email.message_size_bytes".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.email.message_size_bytes"
-                                        .into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set(
                             "zscaler_zia.saas_security.email.message_size_bytes",
                             converted,
@@ -470,38 +381,12 @@ impl Transform for Default {
                 if event.has_value("zscaler_zia.saas_security.external_collab_count") {
                     if let Some(val) = event.get("zscaler_zia.saas_security.external_collab_count")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.external_collab_count"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.external_collab_count"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.external_collab_count".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.external_collab_count".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.saas_security.external_collab_count", converted)?;
                     }
                 }
@@ -545,38 +430,12 @@ impl Transform for Default {
                 if event.has_value("zscaler_zia.saas_security.file.download_time_ms") {
                     if let Some(val) = event.get("zscaler_zia.saas_security.file.download_time_ms")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.file.download_time_ms"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.file.download_time_ms"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.file.download_time_ms".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.file.download_time_ms".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.saas_security.file.download_time_ms", converted)?;
                     }
                 }
@@ -619,38 +478,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("zscaler_zia.saas_security.file.scan_time_ms") {
                     if let Some(val) = event.get("zscaler_zia.saas_security.file.scan_time_ms") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.file.scan_time_ms"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.file.scan_time_ms"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.file.scan_time_ms".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.file.scan_time_ms".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.saas_security.file.scan_time_ms", converted)?;
                     }
                 }
@@ -693,36 +526,12 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("zscaler_zia.saas_security.file.size") {
                     if let Some(val) = event.get("zscaler_zia.saas_security.file.size") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.file.size".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.file.size".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.file.size".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.file.size".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.saas_security.file.size", converted)?;
                     }
                 }
@@ -766,38 +575,12 @@ impl Transform for Default {
                 if event.has_value("zscaler_zia.saas_security.internal_collab_count") {
                     if let Some(val) = event.get("zscaler_zia.saas_security.internal_collab_count")
                     {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.internal_collab_count"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "zscaler_zia.saas_security.internal_collab_count"
-                                                .into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "zscaler_zia.saas_security.internal_collab_count".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "zscaler_zia.saas_security.internal_collab_count".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("zscaler_zia.saas_security.internal_collab_count", converted)?;
                     }
                 }
@@ -978,42 +761,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value") {
                                 if let Some(val) = event.get("_ingest._value") {
-                                    let converted = match val {
-                                        Value::String(s) => {
-                                            let s = s.trim();
-                                            if let Some(hex) = s.strip_prefix("0x") {
-                                                json!(i64::from_str_radix(hex, 16).map_err(
-                                                    |_| TransformError::ParseError {
-                                                        path: "_ingest._value".into(),
-                                                        message: format!(
-                                                            "cannot convert '{}' to integer",
-                                                            s
-                                                        )
-                                                    }
-                                                )?)
-                                            } else {
-                                                json!(s.parse::<i64>().map_err(|_| {
-                                                    TransformError::ParseError {
-                                                        path: "_ingest._value".into(),
-                                                        message: format!(
-                                                            "cannot convert '{}' to integer",
-                                                            s
-                                                        ),
-                                                    }
-                                                })?)
-                                            }
-                                        }
-                                        Value::Number(n) => json!(
-                                            n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                        ),
-                                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                        _ => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "long").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value".into(),
-                                                message: "cannot convert to integer".into(),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value", converted)?;
                                 }
                             }
@@ -1061,42 +815,13 @@ impl Transform for Default {
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value") {
                                 if let Some(val) = event.get("_ingest._value") {
-                                    let converted = match val {
-                                        Value::String(s) => {
-                                            let s = s.trim();
-                                            if let Some(hex) = s.strip_prefix("0x") {
-                                                json!(i64::from_str_radix(hex, 16).map_err(
-                                                    |_| TransformError::ParseError {
-                                                        path: "_ingest._value".into(),
-                                                        message: format!(
-                                                            "cannot convert '{}' to integer",
-                                                            s
-                                                        )
-                                                    }
-                                                )?)
-                                            } else {
-                                                json!(s.parse::<i64>().map_err(|_| {
-                                                    TransformError::ParseError {
-                                                        path: "_ingest._value".into(),
-                                                        message: format!(
-                                                            "cannot convert '{}' to integer",
-                                                            s
-                                                        ),
-                                                    }
-                                                })?)
-                                            }
-                                        }
-                                        Value::Number(n) => json!(
-                                            n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64)
-                                        ),
-                                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                        _ => {
-                                            return Err(TransformError::ParseError {
+                                    let converted =
+                                        convert_value(val, "long").map_err(|message| {
+                                            TransformError::ParseError {
                                                 path: "_ingest._value".into(),
-                                                message: "cannot convert to integer".into(),
-                                            });
-                                        }
-                                    };
+                                                message,
+                                            }
+                                        })?;
                                     event.set("_ingest._value", converted)?;
                                 }
                             }
