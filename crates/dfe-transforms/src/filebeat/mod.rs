@@ -26,3 +26,6 @@ pub mod microsoft_dnsserver_audit;
 pub mod o365;
 pub mod okta;
 pub mod panw;
+pub mod proofpoint_on_demand_audit;
+pub mod proofpoint_on_demand_mail;
+pub mod proofpoint_on_demand_message;

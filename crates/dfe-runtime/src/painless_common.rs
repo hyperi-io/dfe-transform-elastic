@@ -84,7 +84,7 @@ macro_rules! cached_script {
 /// packages -- `cisco_asa` among them -- write `removeIf(v -> v == null)` and
 /// mean it: an empty string stays. Applying the fullest reading to all of them
 /// drops fields Elastic keeps.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DropPolicy {
     /// `v == ''` appears in the predicate.
     pub empty_strings: bool,
@@ -93,6 +93,10 @@ pub struct DropPolicy {
     /// The script prunes list ENTRIES as well as map values. The null-only
     /// variant's `handleList` walks without removing anything.
     pub prune_lists: bool,
+    /// Values the vendor counts as empty beyond the empty string. Proofpoint
+    /// reads `**` and `0` as "no value", and they are its own literals rather
+    /// than anything general.
+    pub sentinels: Vec<String>,
 }
 
 impl DropPolicy {
@@ -105,8 +109,39 @@ impl DropPolicy {
             // One `removeIf` prunes the map alone; the shapes that prune both
             // spell it twice, once per collection kind.
             prune_lists: script.matches("removeIf").count() >= 2,
+            sentinels: predicate_sentinels(script),
         }
     }
+}
+
+/// The non-empty literals a drop predicate compares its value against.
+///
+/// Only the first `if` is read -- the predicate -- so a literal from further
+/// down the script cannot widen what counts as empty.
+fn predicate_sentinels(script: &str) -> Vec<String> {
+    let Some(predicate) = script
+        .split("if (")
+        .nth(1)
+        .and_then(|s| s.split(')').next())
+    else {
+        return Vec::new();
+    };
+    let mut found = Vec::new();
+    for term in predicate.split("||") {
+        let Some((_, rest)) = term.split_once("== ") else {
+            continue;
+        };
+        // Quoted, so the `null` keyword is not read as the string "null".
+        let rest = rest.trim();
+        if !rest.starts_with(['\'', '"']) {
+            continue;
+        }
+        let literal = rest.trim_matches(['\'', '"']);
+        if !literal.is_empty() && !found.iter().any(|f: &String| f == literal) {
+            found.push(literal.to_string());
+        }
+    }
+    found
 }
 
 /// Recursively drop null and empty values from the event, per `policy`.
@@ -121,15 +156,16 @@ impl DropPolicy {
 /// }
 /// drop(ctx);
 /// ```
-pub fn drop_empty_recursive(event: &mut Event, policy: DropPolicy) {
+pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
     let inner = event.as_value_mut();
     drop_value(inner, policy);
 }
 
-fn drop_value(value: &mut Value, policy: DropPolicy) -> bool {
+fn drop_value(value: &mut Value, policy: &DropPolicy) -> bool {
     match value {
         Value::Null => true,
         Value::String(s) if s.is_empty() => policy.empty_strings,
+        Value::String(s) if policy.sentinels.iter().any(|v| v == s) => true,
         Value::Object(map) => {
             let keys_to_remove: Vec<String> = map
                 .iter_mut()
@@ -2358,7 +2394,7 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && normalised.contains("instanceof List")
         && normalised.contains("(ctx)")
     {
-        drop_empty_recursive(event, DropPolicy::read(&normalised));
+        drop_empty_recursive(event, &DropPolicy::read(&normalised));
         return true;
     }
 
@@ -3761,11 +3797,14 @@ def event_timezone = get_timezone(ctx);
 
     /// The predicate 245 of the 351 packages spell: null, empty string, empty
     /// collection, in both maps and lists.
-    const DROP_EVERYTHING: DropPolicy = DropPolicy {
-        empty_strings: true,
-        empty_collections: true,
-        prune_lists: true,
-    };
+    fn drop_everything() -> DropPolicy {
+        DropPolicy {
+            empty_strings: true,
+            empty_collections: true,
+            prune_lists: true,
+            sentinels: Vec::new(),
+        }
+    }
 
     #[test]
     fn drop_empty_removes_nulls() {
@@ -3776,7 +3815,7 @@ def event_timezone = get_timezone(ctx);
             "d": {"e": null, "f": "keep"},
             "g": [null, "", "keep"]
         }));
-        drop_empty_recursive(&mut event, DROP_EVERYTHING);
+        drop_empty_recursive(&mut event, &drop_everything());
         assert_eq!(event.get_str("a"), Some("keep"));
         assert!(!event.has("b"));
         assert!(!event.has("c"));
@@ -3803,6 +3842,7 @@ def event_timezone = get_timezone(ctx);
                 empty_strings: false,
                 empty_collections: false,
                 prune_lists: false,
+                sentinels: Vec::new(),
             }
         );
 
@@ -3834,7 +3874,7 @@ def event_timezone = get_timezone(ctx);
             ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } return false; } \
             drop(ctx);";
 
-        assert_eq!(DropPolicy::read(script), DROP_EVERYTHING);
+        assert_eq!(DropPolicy::read(script), drop_everything());
     }
 
     #[test]
@@ -4015,7 +4055,7 @@ def event_timezone = get_timezone(ctx);
             "keep": "yes",
             "nested": {"arr": [null, "", {"inner": null}]}
         }));
-        drop_empty_recursive(&mut event, DROP_EVERYTHING);
+        drop_empty_recursive(&mut event, &drop_everything());
         assert!(event.has("keep"));
         // nested.arr should be empty after removing all null/empty items
         assert!(!event.has("nested"));

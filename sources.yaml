@@ -182,6 +182,32 @@ sources:
     intakes: [beats, fetcher]
     transforms: [default]
 
+  # Three streams on one websocket feed -- a pure transport, so dfe-fetcher can
+  # obtain the same bytes.
+  proofpoint_on_demand_audit:
+    package: proofpoint_on_demand
+    data_stream: audit
+    pipelines: proofpoint_on_demand/audit
+    fixtures: proofpoint_on_demand/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  proofpoint_on_demand_mail:
+    package: proofpoint_on_demand
+    data_stream: mail
+    pipelines: proofpoint_on_demand/mail
+    fixtures: proofpoint_on_demand/mail
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  proofpoint_on_demand_message:
+    package: proofpoint_on_demand
+    data_stream: message
+    pipelines: proofpoint_on_demand/message
+    fixtures: proofpoint_on_demand/message
+    intakes: [beats, fetcher]
+    transforms: [default]
+
   # The pipeline groks a whole RFC 5424 line out of `message`, so a syslog
   # delivery must leave the header on.
   checkpoint:

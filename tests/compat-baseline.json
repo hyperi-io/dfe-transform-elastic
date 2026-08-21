@@ -18,6 +18,7 @@
     "microsoft_dnsserver": { "events": 2, "events_total": 14, "fields_wrong": 69 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
+    "proofpoint_on_demand": { "events": 11, "events_total": 55, "fields_wrong": 130 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 }
   }
 }

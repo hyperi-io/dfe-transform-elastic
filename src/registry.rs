@@ -319,6 +319,24 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         pushed(Framing::Body),
         "panw.panos",
     ),
+    (
+        "filebeat.proofpoint_on_demand_audit.default",
+        &filebeat::proofpoint_on_demand_audit::default::Default,
+        fetched(),
+        "proofpoint_on_demand.audit",
+    ),
+    (
+        "filebeat.proofpoint_on_demand_mail.default",
+        &filebeat::proofpoint_on_demand_mail::default::Default,
+        fetched(),
+        "proofpoint_on_demand.mail",
+    ),
+    (
+        "filebeat.proofpoint_on_demand_message.default",
+        &filebeat::proofpoint_on_demand_message::default::Default,
+        fetched(),
+        "proofpoint_on_demand.message",
+    ),
 ];
 
 /// Resolve a source name to its transform.

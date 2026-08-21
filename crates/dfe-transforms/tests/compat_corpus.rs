@@ -78,6 +78,13 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("microsoft_defender_endpoint", "vulnerability") => {
             &filebeat::microsoft_defender_endpoint_vulnerability::default::Default
         }
+        ("proofpoint_on_demand", "audit") => {
+            &filebeat::proofpoint_on_demand_audit::default::Default
+        }
+        ("proofpoint_on_demand", "mail") => &filebeat::proofpoint_on_demand_mail::default::Default,
+        ("proofpoint_on_demand", "message") => {
+            &filebeat::proofpoint_on_demand_message::default::Default
+        }
         _ => return None,
     })
 }

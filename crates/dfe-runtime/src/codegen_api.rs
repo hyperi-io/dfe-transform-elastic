@@ -114,6 +114,64 @@ pub fn painless_exec_params(
     Ok(())
 }
 
+/// Turn keys whose NAME contains dots into the nested objects they describe.
+///
+/// `path` names the object to work on, empty for the document root, and
+/// `field` the key to expand -- `*` for every dotted key it holds. A key that
+/// is not there, or holds no dot, is left alone.
+///
+/// # Errors
+///
+/// Returns an error only if the event refuses a write.
+pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::Result<()> {
+    let container = if path.is_empty() {
+        event.as_value().clone()
+    } else {
+        match event.get(path) {
+            Some(value) => value.clone(),
+            None => return Ok(()),
+        }
+    };
+    let Some(members) = container.as_object() else {
+        return Ok(());
+    };
+
+    // Rebuilt whole rather than removed and re-set key by key: a dotted key
+    // and the nested path that replaces it are spelled the same, so the two
+    // operations would race over one name.
+    let mut rebuilt = serde_json::Map::new();
+    let mut expanded = false;
+    for (key, value) in members {
+        if key.contains('.') && (field == "*" || key == field) {
+            expanded = true;
+            let mut node = &mut rebuilt;
+            let mut segments = key.split('.').peekable();
+            while let Some(segment) = segments.next() {
+                if segments.peek().is_none() {
+                    node.insert(segment.to_string(), value.clone());
+                    break;
+                }
+                node = node
+                    .entry(segment.to_string())
+                    .or_insert_with(|| Value::Object(serde_json::Map::new()))
+                    .as_object_mut()
+                    .ok_or_else(|| crate::TransformError::FieldNotFound { path: key.clone() })?;
+            }
+        } else {
+            rebuilt.insert(key.clone(), value.clone());
+        }
+    }
+
+    if expanded {
+        if path.is_empty() {
+            *event.as_value_mut() = Value::Object(rebuilt);
+        } else {
+            event.set(path, Value::Object(rebuilt))?;
+        }
+    }
+    Ok(())
+}
+
 /// Close the gap between a delimiter and an opening quote, and nothing else.
 ///
 /// Elasticsearch's CSV processor treats `, "a,b"` as a quoted field; a strict

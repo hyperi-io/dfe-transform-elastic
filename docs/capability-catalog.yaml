@@ -163,6 +163,18 @@
     name: filebeat.panw.userid
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
+  - kind: service
+    name: filebeat.proofpoint_on_demand_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.proofpoint_on_demand_mail.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.proofpoint_on_demand_message.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
 - kind: source
   name: kafka
   description: Kafka consumer and producer via the scalo transport.
