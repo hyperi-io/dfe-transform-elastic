@@ -85,6 +85,27 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("proofpoint_on_demand", "message") => {
             &filebeat::proofpoint_on_demand_message::default::Default
         }
+        ("mimecast", "archive_search_logs") => {
+            &filebeat::mimecast_archive_search_logs::default::Default
+        }
+        ("mimecast", "audit_events") => &filebeat::mimecast_audit_events::default::Default,
+        ("mimecast", "cloud_integrated_logs") => {
+            &filebeat::mimecast_cloud_integrated_logs::default::Default
+        }
+        ("mimecast", "dlp_logs") => &filebeat::mimecast_dlp_logs::default::Default,
+        ("mimecast", "message_release_logs") => {
+            &filebeat::mimecast_message_release_logs::default::Default
+        }
+        ("mimecast", "siem_logs") => &filebeat::mimecast_siem_logs::default::Default,
+        ("mimecast", "threat_intel_malware_customer") => {
+            &filebeat::mimecast_threat_intel_malware_customer::default::Default
+        }
+        ("mimecast", "threat_intel_malware_grid") => {
+            &filebeat::mimecast_threat_intel_malware_grid::default::Default
+        }
+        ("mimecast", "ttp_ap_logs") => &filebeat::mimecast_ttp_ap_logs::default::Default,
+        ("mimecast", "ttp_ip_logs") => &filebeat::mimecast_ttp_ip_logs::default::Default,
+        ("mimecast", "ttp_url_logs") => &filebeat::mimecast_ttp_url_logs::default::Default,
         _ => return None,
     })
 }

@@ -232,6 +232,98 @@ sources:
     intakes: [beats, fetcher]
     transforms: [default, device, user]
 
+  # Every stream is on cel or httpjson -- pure transports, so dfe-fetcher can
+  # obtain the same bytes the agent would.
+  mimecast_archive_search_logs:
+    package: mimecast
+    data_stream: archive_search_logs
+    pipelines: mimecast/archive_search_logs
+    fixtures: mimecast/archive_search_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_audit_events:
+    package: mimecast
+    data_stream: audit_events
+    pipelines: mimecast/audit_events
+    fixtures: mimecast/audit_events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_cloud_integrated_logs:
+    package: mimecast
+    data_stream: cloud_integrated_logs
+    pipelines: mimecast/cloud_integrated_logs
+    fixtures: mimecast/cloud_integrated_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_dlp_logs:
+    package: mimecast
+    data_stream: dlp_logs
+    pipelines: mimecast/dlp_logs
+    fixtures: mimecast/dlp_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_message_release_logs:
+    package: mimecast
+    data_stream: message_release_logs
+    pipelines: mimecast/message_release_logs
+    fixtures: mimecast/message_release_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_siem_logs:
+    package: mimecast
+    data_stream: siem_logs
+    pipelines: mimecast/siem_logs
+    fixtures: mimecast/siem_logs
+    intakes: [beats, fetcher]
+    # Two feed versions, each its own pipeline behind the default's routing.
+    transforms: [default, v1_pipeline, v2_pipeline]
+
+  mimecast_threat_intel_malware_customer:
+    package: mimecast
+    data_stream: threat_intel_malware_customer
+    pipelines: mimecast/threat_intel_malware_customer
+    fixtures: mimecast/threat_intel_malware_customer
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_threat_intel_malware_grid:
+    package: mimecast
+    data_stream: threat_intel_malware_grid
+    pipelines: mimecast/threat_intel_malware_grid
+    fixtures: mimecast/threat_intel_malware_grid
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_ttp_ap_logs:
+    package: mimecast
+    data_stream: ttp_ap_logs
+    pipelines: mimecast/ttp_ap_logs
+    fixtures: mimecast/ttp_ap_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_ttp_ip_logs:
+    package: mimecast
+    data_stream: ttp_ip_logs
+    pipelines: mimecast/ttp_ip_logs
+    fixtures: mimecast/ttp_ip_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  mimecast_ttp_url_logs:
+    package: mimecast
+    data_stream: ttp_url_logs
+    pipelines: mimecast/ttp_url_logs
+    fixtures: mimecast/ttp_url_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+
   # Two data streams from two different Windows subsystems: `analytical` is the
   # per-query ETW trace, `audit` the change log from the Windows event log.
   # Neither agent input is a pure transport and neither is pushed by a device,

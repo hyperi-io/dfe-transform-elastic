@@ -684,8 +684,15 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
     let Some(key_expr) = last_call_argument(script, "params.get(") else {
         return false;
     };
-    // Both writes are to the same field, so either assignment names the target.
-    let Some(target) = ctx_assignment_target(script) else {
+    // The field assigned from the lookup, falling back to the last assignment
+    // where the lookup is bound to a local first.
+    let writes = ctx_writes(script);
+    let target = writes
+        .iter()
+        .find(|(_, rhs)| rhs.contains("params.get("))
+        .map(|(path, _)| path.clone())
+        .or_else(|| writes.last().map(|(path, _)| path.clone()));
+    let Some(target) = target else {
         return false;
     };
     let Some(key) = resolve_key(event, script, &key_expr) else {
@@ -1589,24 +1596,6 @@ pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
     let head = &script[..end];
     let start = head.rfind("ctx.")? + "ctx.".len();
     Some(clean_path(&head[start..]))
-}
-
-/// The `ctx.` path a script assigns to, from the LAST `ctx.<path> = ` in it.
-///
-/// A `def x = ctx.a.b` binding reads rather than writes, so the search is for
-/// a path that IS the left-hand side, not merely one before an `=`.
-fn ctx_assignment_target(script: &str) -> Option<String> {
-    let mut found = None;
-    for segment in script.split("ctx.").skip(1) {
-        let end = segment
-            .find(|c: char| !c.is_alphanumeric() && !".?_".contains(c))
-            .unwrap_or(segment.len());
-        let rest = segment[end..].trim_start();
-        if rest.starts_with('=') && !rest.starts_with("==") {
-            found = Some(clean_path(&segment[..end]));
-        }
-    }
-    found
 }
 
 /// The dotted `ctx.` path written between two markers.

@@ -104,6 +104,58 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.mimecast_archive_search_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_audit_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_cloud_integrated_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_dlp_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_message_release_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_siem_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_siem_logs.v1_pipeline
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_siem_logs.v2_pipeline
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_threat_intel_malware_customer.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_threat_intel_malware_grid.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_ttp_ap_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_ttp_ip_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mimecast_ttp_url_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.o365.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
