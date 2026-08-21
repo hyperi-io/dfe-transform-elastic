@@ -3,6 +3,43 @@
 
 //! Filebeat integration transforms.
 
+pub mod aws_apigateway_logs;
+pub mod aws_awshealth;
+pub mod aws_billing;
+pub mod aws_cloudfront_logs;
+pub mod aws_cloudtrail;
+pub mod aws_cloudwatch_logs;
+pub mod aws_cloudwatch_metrics;
+pub mod aws_config;
+pub mod aws_dynamodb;
+pub mod aws_ec2_logs;
+pub mod aws_ec2_metrics;
+pub mod aws_elb_logs;
+pub mod aws_emr_logs;
+pub mod aws_firewall_logs;
+pub mod aws_guardduty;
+pub mod aws_inspector;
+pub mod aws_kafka_metrics;
+pub mod aws_kinesis;
+pub mod aws_lambda;
+pub mod aws_lambda_logs;
+pub mod aws_natgateway;
+pub mod aws_rds;
+pub mod aws_redshift;
+pub mod aws_route53_public_logs;
+pub mod aws_route53_resolver_logs;
+pub mod aws_s3_daily_storage;
+pub mod aws_s3_request;
+pub mod aws_s3access;
+pub mod aws_securityhub_findings;
+pub mod aws_securityhub_findings_full_posture;
+pub mod aws_securityhub_insights;
+pub mod aws_sqs;
+pub mod aws_transitgateway;
+pub mod aws_usage;
+pub mod aws_vpcflow;
+pub mod aws_vpn;
+pub mod aws_waf;
 pub mod azure_activitylogs;
 pub mod azure_auditlogs;
 pub mod azure_platformlogs;

@@ -40,6 +40,306 @@
 #            are the sources where the agent adds nothing we would lose.
 
 sources:
+  # Every aws input is a PULL -- aws-s3, aws-cloudwatch, aws/metrics,
+  # httpjson, cel -- so `fetcher` is the intake throughout and no stream
+  # takes `receiver`. The package ships more data streams than this; these
+  # 37 are the ones with an ingest pipeline.
+  aws_apigateway_logs:
+    package: aws
+    data_stream: apigateway_logs
+    pipelines: aws/apigateway_logs
+    fixtures: aws/apigateway_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_awshealth:
+    package: aws
+    data_stream: awshealth
+    pipelines: aws/awshealth
+    fixtures: aws/awshealth
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_billing:
+    package: aws
+    data_stream: billing
+    pipelines: aws/billing
+    fixtures: aws/billing
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_cloudfront_logs:
+    package: aws
+    data_stream: cloudfront_logs
+    pipelines: aws/cloudfront_logs
+    fixtures: aws/cloudfront_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_cloudtrail:
+    package: aws
+    data_stream: cloudtrail
+    pipelines: aws/cloudtrail
+    fixtures: aws/cloudtrail
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_cloudwatch_logs:
+    package: aws
+    data_stream: cloudwatch_logs
+    pipelines: aws/cloudwatch_logs
+    fixtures: aws/cloudwatch_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_cloudwatch_metrics:
+    package: aws
+    data_stream: cloudwatch_metrics
+    pipelines: aws/cloudwatch_metrics
+    fixtures: aws/cloudwatch_metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_config:
+    package: aws
+    data_stream: config
+    pipelines: aws/config
+    fixtures: aws/config
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_dynamodb:
+    package: aws
+    data_stream: dynamodb
+    pipelines: aws/dynamodb
+    fixtures: aws/dynamodb
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_ec2_logs:
+    package: aws
+    data_stream: ec2_logs
+    pipelines: aws/ec2_logs
+    fixtures: aws/ec2_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_ec2_metrics:
+    package: aws
+    data_stream: ec2_metrics
+    pipelines: aws/ec2_metrics
+    fixtures: aws/ec2_metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_elb_logs:
+    package: aws
+    data_stream: elb_logs
+    pipelines: aws/elb_logs
+    fixtures: aws/elb_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_emr_logs:
+    package: aws
+    data_stream: emr_logs
+    pipelines: aws/emr_logs
+    fixtures: aws/emr_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_firewall_logs:
+    package: aws
+    data_stream: firewall_logs
+    pipelines: aws/firewall_logs
+    fixtures: aws/firewall_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_guardduty:
+    package: aws
+    data_stream: guardduty
+    pipelines: aws/guardduty
+    fixtures: aws/guardduty
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_inspector:
+    package: aws
+    data_stream: inspector
+    pipelines: aws/inspector
+    fixtures: aws/inspector
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_kafka_metrics:
+    package: aws
+    data_stream: kafka_metrics
+    pipelines: aws/kafka_metrics
+    fixtures: aws/kafka_metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_kinesis:
+    package: aws
+    data_stream: kinesis
+    pipelines: aws/kinesis
+    fixtures: aws/kinesis
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_lambda:
+    package: aws
+    data_stream: lambda
+    pipelines: aws/lambda
+    fixtures: aws/lambda
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_lambda_logs:
+    package: aws
+    data_stream: lambda_logs
+    pipelines: aws/lambda_logs
+    fixtures: aws/lambda_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_natgateway:
+    package: aws
+    data_stream: natgateway
+    pipelines: aws/natgateway
+    fixtures: aws/natgateway
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_rds:
+    package: aws
+    data_stream: rds
+    pipelines: aws/rds
+    fixtures: aws/rds
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_redshift:
+    package: aws
+    data_stream: redshift
+    pipelines: aws/redshift
+    fixtures: aws/redshift
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_route53_public_logs:
+    package: aws
+    data_stream: route53_public_logs
+    pipelines: aws/route53_public_logs
+    fixtures: aws/route53_public_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_route53_resolver_logs:
+    package: aws
+    data_stream: route53_resolver_logs
+    pipelines: aws/route53_resolver_logs
+    fixtures: aws/route53_resolver_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_s3_daily_storage:
+    package: aws
+    data_stream: s3_daily_storage
+    pipelines: aws/s3_daily_storage
+    fixtures: aws/s3_daily_storage
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_s3_request:
+    package: aws
+    data_stream: s3_request
+    pipelines: aws/s3_request
+    fixtures: aws/s3_request
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_s3access:
+    package: aws
+    data_stream: s3access
+    pipelines: aws/s3access
+    fixtures: aws/s3access
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_securityhub_findings:
+    package: aws
+    data_stream: securityhub_findings
+    pipelines: aws/securityhub_findings
+    fixtures: aws/securityhub_findings
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_securityhub_findings_full_posture:
+    package: aws
+    data_stream: securityhub_findings_full_posture
+    pipelines: aws/securityhub_findings_full_posture
+    fixtures: aws/securityhub_findings_full_posture
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_securityhub_insights:
+    package: aws
+    data_stream: securityhub_insights
+    pipelines: aws/securityhub_insights
+    fixtures: aws/securityhub_insights
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_sqs:
+    package: aws
+    data_stream: sqs
+    pipelines: aws/sqs
+    fixtures: aws/sqs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_transitgateway:
+    package: aws
+    data_stream: transitgateway
+    pipelines: aws/transitgateway
+    fixtures: aws/transitgateway
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_usage:
+    package: aws
+    data_stream: usage
+    pipelines: aws/usage
+    fixtures: aws/usage
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_vpcflow:
+    package: aws
+    data_stream: vpcflow
+    pipelines: aws/vpcflow
+    fixtures: aws/vpcflow
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_vpn:
+    package: aws
+    data_stream: vpn
+    pipelines: aws/vpn
+    fixtures: aws/vpn
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  aws_waf:
+    package: aws
+    data_stream: waf
+    pipelines: aws/waf
+    fixtures: aws/waf
+    intakes: [beats, fetcher]
+    transforms: [default]
+
   azure_activitylogs:
     package: azure
     data_stream: activitylogs

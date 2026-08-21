@@ -596,6 +596,15 @@ const MONTH: &str = concat!(
 /// pattern anchored on `%{TIME}` has to accept `13:20:48.739`.
 const TIME: &str = r"\d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?";
 
+/// `%{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME} %{INT}` -- the Apache common-log
+/// date, which the AWS load-balancer and cloudfront pipelines grok.
+const HTTPDATE: &str = concat!(
+    r"\d{1,2}/",
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
+    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
+    r"/\d{4}:\d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)? [+-]?\d+",
+);
+
 /// `%{MONTH} +%{MONTHDAY} %{TIME}` -- the BSD syslog date, fraction and all.
 const SYSLOG_TIMESTAMP: &str = concat!(
     r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
@@ -643,6 +652,9 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "POSINT" | "PORT" | "NONNEGINT" => r"\d+",
         "INT" => r"[+-]?\d+",
         "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
+        // Elastic's own, look-behind and all, so it compiles on fancy-regex.
+        // Without the guard `deadbeef` would match starting at `eadbeef`.
+        "BASE16NUM" => r"(?<![0-9A-Fa-f])(?:[+-]?(?:0x)?(?:[0-9A-Fa-f]+))",
         "NOTSPACE" | "URI" | "URIPROTO" => r"\S+",
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
@@ -672,6 +684,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // containing %{SPACE} match arbitrary text -- 152 sites' worth.
         "SPACE" => r"\s*",
         "TIME" => TIME,
+        "HTTPDATE" => HTTPDATE,
         "IPORHOST" | "SYSLOGHOST" => IPORHOST.as_str(),
         // Elastic accepts the abbreviation or the full name, either case.
         "DAY" => {
