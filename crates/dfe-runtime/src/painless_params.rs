@@ -798,6 +798,11 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
 
     let value = params.get(&key).cloned().unwrap_or(Value::String(key));
     let _ = event.set(&target, value);
+
+    // Whatever else the script writes on its own account, AFTER the lookup so
+    // a `ctx.x = null` that clears the field the key came from is not read
+    // before it is used. mimecast's siem_logs is that shape exactly.
+    run_guarded_literals(event, script);
     true
 }
 
@@ -1242,6 +1247,11 @@ fn written_value(event: &Event, text: &str) -> Option<Value> {
 /// a one-element array.
 fn literal_value(text: &str) -> Option<Value> {
     let text = text.trim();
+    // Painless reads a present-but-null field as null, and several pipelines
+    // write one deliberately so their own drop-empty pass takes the field.
+    if text == "null" {
+        return Some(Value::Null);
+    }
     let Some(inner) = text
         .strip_prefix('[')
         .and_then(|rest| rest.strip_suffix(']'))
