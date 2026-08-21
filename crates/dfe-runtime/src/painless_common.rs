@@ -489,6 +489,102 @@ fn try_related_from_dns_answers(event: &mut Event) -> bool {
     true
 }
 
+/// Collect every value a script names into one sorted, unique list.
+///
+/// gcp's audit pipeline gathers principals, resource names and role bindings
+/// into a `TreeSet` and writes it to `related.entity`. The paths are read off
+/// the script's own `addValue(...)` calls rather than transcribed, so a
+/// vendor adding one is picked up by regenerating.
+///
+/// Three argument shapes appear, and all three resolve to a value on the
+/// event: a `ctx.` path, a local bound to one, and a member of a local -- the
+/// loops walk a list and add `i.principalSubject` from each element. A
+/// `TreeSet` is sorted and unique, and nothing empty goes in.
+fn try_collect_entities(event: &mut Event, script: &str) -> bool {
+    // The path immediately before the assignment, not the first `ctx.` in the
+    // script -- these open by reading half a dozen other fields.
+    let Some(target) = script
+        .find(" = entities")
+        .map(|at| &script[..at])
+        .and_then(painless_path)
+    else {
+        return false;
+    };
+
+    let mut entities: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+    for call in script.split("addValue(").skip(1) {
+        let Some((arguments, _)) = call.split_once(");") else {
+            continue;
+        };
+        let Some((_, expression)) = arguments.split_once(',') else {
+            continue;
+        };
+        collect_entity_values(event, script, expression.trim(), &mut entities);
+    }
+
+    if !entities.is_empty() {
+        let list: Vec<Value> = entities.into_iter().map(Value::from).collect();
+        let _ = event.set(&target, Value::Array(list));
+    }
+    true
+}
+
+/// Every non-empty string an `addValue` argument resolves to.
+fn collect_entity_values(
+    event: &Event,
+    script: &str,
+    expression: &str,
+    into: &mut std::collections::BTreeSet<String>,
+) {
+    let mut push = |value: Option<&Value>| {
+        if let Some(text) = value.and_then(Value::as_str)
+            && !text.is_empty()
+        {
+            into.insert(text.to_string());
+        }
+    };
+
+    if let Some(path) = expression.strip_prefix("ctx.") {
+        push(event.get(&clean_path(path)));
+        return;
+    }
+
+    // `authInfo.principalEmail` and `i.principalSubject`: a local bound to a
+    // ctx path, or a loop variable over the list one names.
+    let Some((local, member)) = expression.split_once('.') else {
+        return;
+    };
+    let member = clean_path(member);
+    if let Some(path) = ctx_path_bound_to(script, local) {
+        push(event.get(&format!("{path}.{member}")));
+        return;
+    }
+    let Some(source) = loop_source(script, local) else {
+        return;
+    };
+    let Some(Value::Array(items)) = event.get(&source) else {
+        return;
+    };
+    for item in items {
+        push(item.pointer(&format!("/{}", member.replace('.', "/"))));
+    }
+}
+
+/// The list a `for (def x: <list>)` walks, as a ctx path.
+fn loop_source(script: &str, local: &str) -> Option<String> {
+    for opener in [
+        format!("for (def {local}: "),
+        format!("for (def {local} : "),
+    ] {
+        if let Some(at) = script.find(&opener) {
+            let rest = &script[at + opener.len()..];
+            let end = rest.find(')')?;
+            return rest[..end].trim().strip_prefix("ctx.").map(clean_path);
+        }
+    }
+    None
+}
+
 /// Parse Google's DNS `RData` into `dns.answers`.
 ///
 /// One answer per line, five tab-separated columns:
@@ -1434,19 +1530,27 @@ fn strip_trailing_call(path: &str) -> &str {
     }
 }
 
-/// The ctx path a `def name = ctx.a.b;` binding reads, if there is one.
+/// The ctx path a `<type> name = ctx.a.b;` binding reads, if there is one.
+///
+/// The type is whatever the script declared -- `def`, `String`, `HashMap` --
+/// and naming them one at a time missed `HashMap authInfo = ...`, so any
+/// single leading word counts. A `?:` default is cut off: the path is what
+/// comes before it.
 pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
     use crate::painless_params::clean_path;
 
-    for form in ["def ", "String ", "int ", "long "] {
-        let needle = format!("{form}{name} = ctx.");
-        if let Some(at) = script.find(&needle) {
-            let rest = &script[at + needle.len()..];
-            let end = rest.find([';', '\n']).unwrap_or(rest.len());
-            return Some(clean_path(rest[..end].trim()));
-        }
+    let needle = format!(" {name} = ctx.");
+    let at = script.find(&needle)?;
+    // One word before the name, which is what a declaration looks like.
+    let declaration = script[..at].rsplit(['\n', ';', '{', '}']).next()?.trim();
+    if declaration.is_empty() || declaration.contains(' ') {
+        return None;
     }
-    None
+
+    let rest = &script[at + needle.len()..];
+    let end = rest.find([';', '\n']).unwrap_or(rest.len());
+    let path = rest[..end].split(" ?:").next().unwrap_or_default();
+    Some(clean_path(path.trim()))
 }
 
 /// An equality ladder whose arms COLLECT into a list, then write it as a scalar
@@ -2786,6 +2890,12 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && try_basename_after_separator(event, &normalised)
     {
         return true;
+    }
+
+    // Pattern: collect every non-empty value the script names into one sorted,
+    // unique list.
+    if normalised.contains("void addValue(") && normalised.contains("new TreeSet(") {
+        return try_collect_entities(event, &normalised);
     }
 
     // Pattern: DNS RData as tab-separated columns, one answer per line.
@@ -4439,6 +4549,57 @@ def event_timezone = get_timezone(ctx);
         let mut event = Event::new(json!({"a": {"b": "Solaris"}}));
         try_known_painless(&mut event, script);
         assert_eq!(event.get("host.os.type"), None);
+    }
+
+    /// Cut from `pipelines/gcp/audit/default.yml` to the three argument
+    /// shapes: a `ctx.` path, a member of a bound local, and a member of a
+    /// loop variable over a list.
+    const ENTITIES: &str = "void addValue(Set entities, def value) {\n\
+        if (value != null && value != \"\") { entities.add(value); }\n\
+        }\n\
+        TreeSet entities = new TreeSet();\n\
+        addValue(entities, ctx.json.protoPayload.resourceName);\n\
+        HashMap authInfo = ctx.json?.protoPayload?.authenticationInfo ?: new HashMap();\n\
+        addValue(entities, authInfo.principalEmail);\n\
+        for (def i: ctx.json.protoPayload.delegates) {\n\
+        addValue(entities, i.principalSubject);\n\
+        }\n\
+        if (entities.size() > 0) {\n\
+        ctx.related = ctx.related ?: [:];\n\
+        ctx.related.entity = entities;\n\
+        }";
+
+    #[test]
+    fn entities_collect_sorted_unique_and_non_empty() {
+        let mut event = Event::new(json!({"json": {"protoPayload": {
+            "resourceName": "projects/elastic-beats",
+            "authenticationInfo": {"principalEmail": "xxx@xxx.xxx"},
+            "delegates": [
+                {"principalSubject": "serviceAccount:a"},
+                {"principalSubject": ""},
+                {"principalSubject": "serviceAccount:a"},
+            ],
+        }}}));
+
+        assert!(try_known_painless(&mut event, ENTITIES));
+        assert_eq!(
+            event.get("related.entity"),
+            Some(&json!([
+                "projects/elastic-beats",
+                "serviceAccount:a",
+                "xxx@xxx.xxx"
+            ])),
+            "sorted, unique, and nothing empty"
+        );
+    }
+
+    /// Nothing to collect leaves the field alone rather than writing an empty
+    /// list, which is what the script's own `entities.size() > 0` says.
+    #[test]
+    fn no_entities_writes_no_list() {
+        let mut event = Event::new(json!({"json": {}}));
+        assert!(try_known_painless(&mut event, ENTITIES));
+        assert_eq!(event.get("related.entity"), None);
     }
 
     /// Verbatim from `pipelines/gcp/dns/default.yml`, cut to the lines the

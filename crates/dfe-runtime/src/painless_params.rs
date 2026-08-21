@@ -1792,7 +1792,7 @@ pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
 }
 
 /// The dotted `ctx.` path written between two markers.
-fn ctx_path_between(script: &str, open: &str, close: &str) -> Option<String> {
+pub(crate) fn ctx_path_between(script: &str, open: &str, close: &str) -> Option<String> {
     let start = script.find(open)? + open.len();
     let tail = &script[start..];
     let end = tail.find(close)?;
