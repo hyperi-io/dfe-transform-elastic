@@ -2403,6 +2403,15 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
 /// ECS field. Nothing is written when the source is absent, which is what
 /// stops an explicit null propagating into the ECS field.
 fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
+    // Every guarded copy in the script, not just the first. Windows'
+    // `security_standard` is four hundred lines of them -- one per winlog
+    // field, each in its own `if (... != null) { ... }` with a null-guard
+    // preamble -- and taking only the first claimed the script and lost the
+    // rest.
+    if crate::painless_params::run_guarded_literals(event, script) {
+        return true;
+    }
+
     let Some((cond, body)) = script.split_once("!= null") else {
         return false;
     };
@@ -2964,6 +2973,11 @@ fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
         return try_guarded_copy(event, normalised);
     }
 
+    // Running the statements a script writes that CAN be read, as a last
+    // resort, was tried and is NOT here: it moved nothing and cost gcp eight
+    // fields. A partial read writes a value where Elastic's whole script
+    // would have written a different one, and the corpus says that is worse
+    // than writing nothing.
     false
 }
 

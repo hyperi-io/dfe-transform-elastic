@@ -1031,20 +1031,23 @@ fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>)
 /// The grammar is deliberately tiny, because that is all these tails do once
 /// the row is on the event: compare a field to a literal, and append or assign
 /// another literal. Anything outside it is left alone rather than guessed at.
-fn run_guarded_literals(event: &mut Event, body: &str) {
+/// Returns whether anything was written, so a caller can tell a script it
+/// read from one it walked past.
+pub(crate) fn run_guarded_literals(event: &mut Event, body: &str) -> bool {
+    let mut wrote = false;
     let mut rest = body;
     while let Some(offset) = rest.find(|c: char| !c.is_whitespace()) {
         rest = &rest[offset..];
         if let Some(after) = rest.strip_prefix("return") {
             let _ = after;
-            return;
+            return wrote;
         }
         if let Some(after) = rest.strip_prefix("if") {
             let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
-                return;
+                return wrote;
             };
             let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
-                return;
+                return wrote;
             };
             // An `else` arm when there is one. `else if` has no braces of its
             // own, so the whole tail becomes the alternative and the recursion
@@ -1058,18 +1061,19 @@ fn run_guarded_literals(event: &mut Event, body: &str) {
             };
 
             if guard_holds(event, test) {
-                run_guarded_literals(event, block);
+                wrote |= run_guarded_literals(event, block);
             } else if let Some(body) = alternative {
-                run_guarded_literals(event, body);
+                wrote |= run_guarded_literals(event, body);
             }
             rest = after;
             continue;
         }
         // A plain statement, up to its terminator.
         let end = rest.find(';').unwrap_or(rest.len());
-        run_literal_statement(event, &rest[..end]);
+        wrote |= run_literal_statement(event, &rest[..end]);
         rest = &rest[(end + 1).min(rest.len())..];
     }
+    wrote
 }
 
 /// Split `text` at the region opened by `open` and closed by its match.
@@ -1128,7 +1132,14 @@ fn term_holds(event: &Event, term: &str) -> bool {
     // `ctx['@timestamp']` and `ctx.event.action` name the same kind of thing.
     let term = &subject_path(term);
     if let Some((subject, literal)) = term.split_once(".contains(") {
-        let Some(wanted) = quoted_after(literal, "") else {
+        // The argument is a literal or another field -- `!ctx.related.user
+        // .contains(ctx.winlog.event_data.SubjectUserName)` is the append-once
+        // guard these scripts use.
+        let Some(wanted) = quoted_after(literal, "").or_else(|| {
+            let argument = literal.trim().trim_end_matches([')', ';']).trim();
+            let path = argument.strip_prefix("ctx.")?;
+            event.get_as_string(&clean_path(path))
+        }) else {
             return false;
         };
         let Some(path) = subject.trim().strip_prefix("ctx.") else {
@@ -1160,28 +1171,68 @@ fn term_holds(event: &Event, term: &str) -> bool {
     false
 }
 
-/// `ctx.<path>.add('<literal>')` or `ctx.<path> = '<literal>'`.
-fn run_literal_statement(event: &mut Event, statement: &str) {
+/// One statement that writes a value the script already has to hand.
+///
+/// Four shapes, and the value is either a literal or another `ctx.` field:
+/// `ctx.a.add(v)`, `ctx.a.put('k', v)`, `ctx.a = v`, and the `.put` and `.add`
+/// forms with a copied source. Anything else is left alone.
+fn run_literal_statement(event: &mut Event, statement: &str) -> bool {
     if let Some((subject, argument)) = statement.split_once(".add(") {
-        let (Some(path), Some(literal)) = (
+        let (Some(path), Some(value)) = (
             subject.trim().strip_prefix("ctx."),
-            quoted_after(argument, ""),
+            written_value(event, argument),
         ) else {
-            return;
+            return false;
         };
-        append_or_create(event, &clean_path(path), Value::String(literal));
-        return;
+        append_or_create(event, &clean_path(path), value);
+        return true;
+    }
+    // `ctx.user.put("name", ctx.winlog.event_data.SubjectUserName)`. The
+    // null-guard blocks these scripts open with -- `ctx.put("user", hm)` --
+    // fall out here: the subject is bare `ctx` and the value is a local.
+    if let Some((subject, arguments)) = statement.split_once(".put(") {
+        let Some(parent) = subject.trim().strip_prefix("ctx.") else {
+            return false;
+        };
+        let (Some(key), Some((_, rest))) = (quoted_after(arguments, ""), arguments.split_once(','))
+        else {
+            return false;
+        };
+        let Some(value) = written_value(event, rest) else {
+            return false;
+        };
+        let _ = event.set(&format!("{}.{key}", clean_path(parent)), value);
+        return true;
     }
     let Some((subject, value)) = split_assignment(statement) else {
-        return;
+        return false;
     };
     let Some(path) = subject.trim().strip_prefix("ctx.") else {
-        return;
+        return false;
     };
-    let Some(literal) = literal_value(value) else {
-        return;
+    let Some(value) = written_value(event, value) else {
+        return false;
     };
-    let _ = event.set(&clean_path(path), literal);
+    let _ = event.set(&clean_path(path), value);
+    true
+}
+
+/// The value a statement writes: a literal, or a `ctx.` field read off the
+/// event.
+fn written_value(event: &Event, text: &str) -> Option<Value> {
+    let text = text.trim().trim_end_matches([')', ';']).trim();
+    if let Some(path) = text.strip_prefix("ctx.") {
+        // A source path and nothing else. `ctx.a + ctx.b` and a method call
+        // on one are different shapes with their own matchers.
+        if path
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
+        {
+            return event.get(&clean_path(path)).cloned();
+        }
+        return None;
+    }
+    literal_value(text)
 }
 
 /// A quoted string, or a bracketed list of them.
