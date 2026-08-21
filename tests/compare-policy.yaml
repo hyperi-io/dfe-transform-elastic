@@ -66,6 +66,8 @@ known_different:
     why: DB-IP Lite against MaxMind GeoLite2.
   - prefix: server.geo
     why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: host.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
   - prefix: geo
     why: Azure writes activity-log locations to a bare geo object.
   - prefix: source.as

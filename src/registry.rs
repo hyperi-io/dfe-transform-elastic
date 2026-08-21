@@ -523,6 +523,60 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         fetched(),
         "proofpoint_on_demand.message",
     ),
+    (
+        "filebeat.sentinel_one_activity.default",
+        &filebeat::sentinel_one_activity::default::Default,
+        fetched(),
+        "sentinel_one.activity",
+    ),
+    (
+        "filebeat.sentinel_one_agent.default",
+        &filebeat::sentinel_one_agent::default::Default,
+        fetched(),
+        "sentinel_one.agent",
+    ),
+    (
+        "filebeat.sentinel_one_alert.default",
+        &filebeat::sentinel_one_alert::default::Default,
+        fetched(),
+        "sentinel_one.alert",
+    ),
+    (
+        "filebeat.sentinel_one_application.default",
+        &filebeat::sentinel_one_application::default::Default,
+        fetched(),
+        "sentinel_one.application",
+    ),
+    (
+        "filebeat.sentinel_one_application_risk.default",
+        &filebeat::sentinel_one_application_risk::default::Default,
+        fetched(),
+        "sentinel_one.application_risk",
+    ),
+    (
+        "filebeat.sentinel_one_group.default",
+        &filebeat::sentinel_one_group::default::Default,
+        fetched(),
+        "sentinel_one.group",
+    ),
+    (
+        "filebeat.sentinel_one_threat.default",
+        &filebeat::sentinel_one_threat::default::Default,
+        fetched(),
+        "sentinel_one.threat",
+    ),
+    (
+        "filebeat.sentinel_one_threat_event.default",
+        &filebeat::sentinel_one_threat_event::default::Default,
+        fetched(),
+        "sentinel_one.threat_event",
+    ),
+    (
+        "filebeat.sentinel_one_unified_alert.default",
+        &filebeat::sentinel_one_unified_alert::default::Default,
+        fetched(),
+        "sentinel_one.unified_alert",
+    ),
 ];
 
 /// Resolve a source name to its transform.

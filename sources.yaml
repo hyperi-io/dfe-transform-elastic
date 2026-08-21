@@ -534,3 +534,77 @@ sources:
       - traffic
       - tunnel_inspection
       - userid
+
+  # Every sentinel_one stream is API-pulled -- five `httpjson`, four `cel` --
+  # so a device never pushes one and `receiver` is not an intake here.
+  sentinel_one_activity:
+    package: sentinel_one
+    data_stream: activity
+    pipelines: sentinel_one/activity
+    fixtures: sentinel_one/activity
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_agent:
+    package: sentinel_one
+    data_stream: agent
+    pipelines: sentinel_one/agent
+    fixtures: sentinel_one/agent
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_alert:
+    package: sentinel_one
+    data_stream: alert
+    pipelines: sentinel_one/alert
+    fixtures: sentinel_one/alert
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_application:
+    package: sentinel_one
+    data_stream: application
+    pipelines: sentinel_one/application
+    fixtures: sentinel_one/application
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_application_risk:
+    package: sentinel_one
+    data_stream: application_risk
+    pipelines: sentinel_one/application_risk
+    fixtures: sentinel_one/application_risk
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_group:
+    package: sentinel_one
+    data_stream: group
+    pipelines: sentinel_one/group
+    fixtures: sentinel_one/group
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_threat:
+    package: sentinel_one
+    data_stream: threat
+    pipelines: sentinel_one/threat
+    fixtures: sentinel_one/threat
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_threat_event:
+    package: sentinel_one
+    data_stream: threat_event
+    pipelines: sentinel_one/threat_event
+    fixtures: sentinel_one/threat_event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sentinel_one_unified_alert:
+    package: sentinel_one
+    data_stream: unified_alert
+    pipelines: sentinel_one/unified_alert
+    fixtures: sentinel_one/unified_alert
+    intakes: [beats, fetcher]
+    transforms: [default]

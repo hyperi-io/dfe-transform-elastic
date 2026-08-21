@@ -226,6 +226,67 @@ pub fn keys_to_snake_case(value: &mut Value) {
     }
 }
 
+/// The `convertToSnakeCase` helper the integrations copy verbatim between
+/// packages -- `sentinel_one`'s `unified_alert` and `entityanalytics_entra_id`'s
+/// user and device all carry the same twenty lines.
+///
+/// Two details separate it from [`keys_to_snake_case`], and both are visible
+/// in the fixtures. A key holding an `@` is DROPPED rather than renamed, which
+/// is how Microsoft's `@odata.*` metadata stays out of the document. And the
+/// underscore goes in wherever the previous character was not itself
+/// uppercase, digits included, so `cve2021Id` becomes `cve2021_id`.
+///
+/// Returns a new value; the script assigns the result rather than mutating.
+#[must_use]
+pub fn camel_map_to_snake(value: &Value) -> Value {
+    match value {
+        Value::Object(map) => {
+            let mut out = serde_json::Map::with_capacity(map.len());
+            for (key, inner) in map {
+                if key.contains('@') {
+                    continue;
+                }
+                out.insert(
+                    to_snake_case(key, SnakeRule::AfterNonUpper),
+                    camel_map_to_snake(inner),
+                );
+            }
+            Value::Object(out)
+        }
+        Value::Array(items) => Value::Array(items.iter().map(camel_map_to_snake).collect()),
+        other => other.clone(),
+    }
+}
+
+/// The `ctx.<target> = <fn>(ctx.<source>)` line the converter is applied by.
+///
+/// The two spellings differ only in whether the target is the source: `entra_id`
+/// rewrites its own object in place, `sentinel_one` writes the converted `json`
+/// somewhere new. Both are one assignment, so one reader covers them.
+fn snake_case_apply(script: &str) -> Option<(String, String)> {
+    for line in script.lines().rev() {
+        let line = line.trim().trim_end_matches(';');
+        let Some((target, rhs)) = line.split_once(" = ") else {
+            continue;
+        };
+        let target = target.trim();
+        if !target.starts_with("ctx.") {
+            continue;
+        }
+        // `convertToSnakeCase(ctx.json)` -- the helper's name is not fixed, so
+        // the shape of the call is what identifies it.
+        let Some((_, argument)) = rhs.trim().split_once("SnakeCase(") else {
+            continue;
+        };
+        let argument = argument.trim_end_matches(')').trim();
+        if !argument.starts_with("ctx.") {
+            continue;
+        }
+        return Some((target[4..].to_string(), argument[4..].to_string()));
+    }
+    None
+}
+
 /// Extract process fields from a command line string.
 ///
 /// Sets: `process.command_line`, process.args, process.executable
@@ -2398,6 +2459,21 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: the integrations' own recursive camelCase-to-snake_case pair,
+    // applied to one object. Checked EARLY: the recursive arm spells `.add(`
+    // and `instanceof Map`, which the append-each matcher below claims and
+    // then does nothing with.
+    if normalised.contains("Character.isUpperCase(")
+        && normalised.contains("instanceof Map")
+        && let Some((target, source)) = snake_case_apply(&normalised)
+    {
+        if let Some(value) = event.get(&source) {
+            let converted = camel_map_to_snake(value);
+            let _ = event.set(&target, converted);
+        }
+        return true;
+    }
+
     // Pattern: split, trim and collect several optional fields into one list.
     // Checked early: the script also spells `.add(` and `.splitOnToken(`, which
     // a later matcher reads as a different shape entirely.
@@ -3888,6 +3964,89 @@ def event_timezone = get_timezone(ctx);
         assert!(val.get("event_type").is_some());
         assert!(val.get("client_ip").is_some());
         assert!(val.get("eventType").is_none());
+    }
+
+    /// The twenty-line `camelToSnake` / `convertToSnakeCase` pair, cut down to
+    /// what the matcher keys on plus the apply line it reads the paths from.
+    const CAMEL_TO_SNAKE: &str = "String camelToSnake(String str) {\n\
+        def result = \"\";\n\
+        if (Character.isUpperCase(c)) { result += \"_\"; }\n\
+        return result;\n\
+        }\n\
+        def convertToSnakeCase(def obj) {\n\
+        if (obj instanceof Map) {\n\
+        if (!entry.getKey().contains(\"@\")) {\n\
+        String newKey = camelToSnake(entry.getKey());\n\
+        newObj[newKey] = convertToSnakeCase(entry.getValue());\n\
+        }\n\
+        } else if (obj instanceof List) {\n\
+        for (item in obj) { newList.add(convertToSnakeCase(item)); }\n\
+        }\n\
+        }\n";
+
+    #[test]
+    fn camel_to_snake_writes_the_converted_object_to_its_target() {
+        let script = format!(
+            "{CAMEL_TO_SNAKE}ctx.sentinel_one = ctx.sentinel_one ?: [:];\n\
+             ctx.sentinel_one.unified_alert = convertToSnakeCase(ctx.json);\n"
+        );
+        let mut event = Event::new(json!({
+            "json": {"analystVerdict": "UNDEFINED", "detectionSource": {"vendorName": "S1"}}
+        }));
+
+        assert!(try_known_painless(&mut event, &script));
+        assert_eq!(
+            event.get_str("sentinel_one.unified_alert.analyst_verdict"),
+            Some("UNDEFINED")
+        );
+        assert_eq!(
+            event.get_str("sentinel_one.unified_alert.detection_source.vendor_name"),
+            Some("S1"),
+        );
+        assert!(event.has("json"), "the source object is not consumed");
+    }
+
+    /// `entra_id` rewrites its own object rather than writing somewhere new, and
+    /// drops the `@odata.*` metadata on the way through.
+    #[test]
+    fn camel_to_snake_rewrites_in_place_and_drops_at_keys() {
+        let script = format!(
+            "{CAMEL_TO_SNAKE}if (ctx.entityanalytics_entra_id?.user != null) {{\n\
+             ctx.entityanalytics_entra_id.user = \
+             convertToSnakeCase(ctx.entityanalytics_entra_id.user);\n\
+             }}\n"
+        );
+        let mut event = Event::new(json!({
+            "entityanalytics_entra_id": {"user": {
+                "accountEnabled": true,
+                "@odata.type": "#microsoft.graph.user",
+            }}
+        }));
+
+        assert!(try_known_painless(&mut event, &script));
+        assert_eq!(
+            event.get("entityanalytics_entra_id.user.account_enabled"),
+            Some(&json!(true))
+        );
+        assert!(
+            !event.has("entityanalytics_entra_id.user.accountEnabled"),
+            "the camelCase key does not survive beside the snake_case one",
+        );
+        let user = event.get("entityanalytics_entra_id.user").unwrap();
+        assert_eq!(
+            user.as_object().unwrap().len(),
+            1,
+            "the @odata key is dropped, not renamed: {user}"
+        );
+    }
+
+    /// The integrations' own rule breaks the word wherever the PREVIOUS
+    /// character was not uppercase, which a digit satisfies.
+    #[test]
+    fn camel_to_snake_breaks_after_a_digit() {
+        let converted = camel_map_to_snake(&json!({"cve2021Id": 1, "HTTPServer": 2}));
+        assert!(converted.get("cve2021_id").is_some(), "{converted}");
+        assert!(converted.get("httpserver").is_some(), "{converted}");
     }
 
     #[test]

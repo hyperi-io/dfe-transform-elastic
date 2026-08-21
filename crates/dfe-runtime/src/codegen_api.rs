@@ -172,6 +172,40 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
     Ok(())
 }
 
+/// Join an array's elements into one separated string, the way Elastic's
+/// `join` processor does.
+///
+/// Every element is stringified first -- Elastic calls `toString()` on each,
+/// so a list of numbers joins as readily as a list of strings, and only a
+/// nested object or array has no sensible rendering. Those are skipped rather
+/// than written as their JSON, which is what `to_string` would give and is
+/// never what the pipeline meant.
+///
+/// Returns `None` when the value is not an array, which is the case Elastic
+/// throws on: writing a joined string for a scalar would invent one.
+#[must_use]
+pub fn join_values(value: &Value, separator: &str) -> Option<String> {
+    let items = value.as_array()?;
+    let mut out = String::new();
+    // A `first` flag, not `out.is_empty()`: an empty string as the FIRST
+    // element leaves `out` empty and would swallow the separator after it.
+    let mut first = true;
+    for item in items {
+        let piece = match item {
+            Value::String(s) => s.clone(),
+            Value::Number(n) => n.to_string(),
+            Value::Bool(b) => b.to_string(),
+            Value::Null | Value::Array(_) | Value::Object(_) => continue,
+        };
+        if !first {
+            out.push_str(separator);
+        }
+        first = false;
+        out.push_str(&piece);
+    }
+    Some(out)
+}
+
 /// Close the gap between a delimiter and an opening quote, and nothing else.
 ///
 /// Elasticsearch's CSV processor treats `, "a,b"` as a quoted field; a strict

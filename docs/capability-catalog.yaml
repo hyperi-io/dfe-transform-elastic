@@ -299,6 +299,42 @@
     name: filebeat.proofpoint_on_demand_message.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_activity.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_agent.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_alert.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_application.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_application_risk.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_group.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_threat.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_threat_event.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sentinel_one_unified_alert.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
 - kind: source
   name: kafka
   description: Kafka consumer and producer via the scalo transport.

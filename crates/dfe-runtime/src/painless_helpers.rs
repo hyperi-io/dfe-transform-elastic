@@ -303,6 +303,12 @@ pub enum SnakeRule {
     OnWordBreak,
     /// Underscore before every uppercase character after the first.
     BeforeEveryUpper,
+    /// Underscore before an uppercase character whose predecessor was not
+    /// itself uppercase. This is the rule the integrations' own `camelToSnake`
+    /// helper implements -- `lastCharWasUpperCase` is set by an uppercase
+    /// char and cleared by ANY other, so a digit or a dot before an uppercase
+    /// still breaks the word where [`Self::OnWordBreak`] would not.
+    AfterNonUpper,
 }
 
 /// Convert a string to `snake_case` under `rule`.
@@ -314,6 +320,7 @@ pub enum SnakeRule {
 pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
     let mut result = String::with_capacity(s.len() + 4);
     let mut prev_was_lowercase = false;
+    let mut prev_was_uppercase = false;
     let mut first = true;
 
     for ch in s.chars() {
@@ -321,6 +328,7 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
             let separate = match rule {
                 SnakeRule::OnWordBreak => prev_was_lowercase,
                 SnakeRule::BeforeEveryUpper => !first,
+                SnakeRule::AfterNonUpper => !first && !prev_was_uppercase,
             };
             if separate {
                 result.push('_');
@@ -330,6 +338,7 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
             result.push(ch);
         }
         prev_was_lowercase = ch.is_lowercase();
+        prev_was_uppercase = ch.is_uppercase();
         first = false;
     }
 

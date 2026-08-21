@@ -124,6 +124,19 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("gcp", "storage") => &filebeat::gcp_storage::default::Default,
         ("gcp", "firewall") => &filebeat::gcp_firewall::default::Default,
         ("gcp", "vpcflow") => &filebeat::gcp_vpcflow::default::Default,
+        ("sentinel_one", "activity") => &filebeat::sentinel_one_activity::default::Default,
+        ("sentinel_one", "agent") => &filebeat::sentinel_one_agent::default::Default,
+        ("sentinel_one", "alert") => &filebeat::sentinel_one_alert::default::Default,
+        ("sentinel_one", "application") => &filebeat::sentinel_one_application::default::Default,
+        ("sentinel_one", "application_risk") => {
+            &filebeat::sentinel_one_application_risk::default::Default
+        }
+        ("sentinel_one", "group") => &filebeat::sentinel_one_group::default::Default,
+        ("sentinel_one", "threat_event") => &filebeat::sentinel_one_threat_event::default::Default,
+        ("sentinel_one", "unified_alert") => {
+            &filebeat::sentinel_one_unified_alert::default::Default
+        }
+        ("sentinel_one", "threat") => &filebeat::sentinel_one_threat::default::Default,
         _ => return None,
     })
 }

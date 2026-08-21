@@ -512,7 +512,11 @@ sources exercise it.
 | `convert` | Done | All | Type coercion: `str→i64`, `str→f64`, `i64→str` |
 | `drop` | Done | All | `return Ok(TransformResult::Drop)` |
 | `split` | Done | O365 | `event.set(path, s.split(sep).collect())?` |
+| `join` | Done | SentinelOne | `join_values(value, sep)`, `None` on a non-array |
 | `uri_parts` | Done | Panw | Scheme, host, port, path, query components |
+| `dot_expander` | Done | GCP | `dot_expand(event, path, field)` |
+| `fail` | Done | CrowdStrike | Returns a `TransformError` carrying the message |
+| `terminate` | Done | Defender | Stops the pipeline and KEEPS the document |
 
 ### Medium (~8) — read a field value and reshape it
 
@@ -540,9 +544,11 @@ sources exercise it.
 | `fingerprint` | Done | O365 | SHA-256/SHA-1/MD5/MurmurHash3 |
 | `pipeline` (nested) | Partial | CrowdStrike, Fortinet | Direct call into the target module |
 
-Not implemented (not used by current integrations): bytes, cef, date_index_name,
-dot_expander, enrich, fail, geo_grid, html_strip, inference, join, redact, reroute,
-set_security_user, sort, terminate, urldecode.
+Not implemented (not used by any vendored pipeline): bytes, cef, date_index_name,
+enrich, geo_grid, html_strip, inference, redact, reroute, set_security_user,
+sort, urldecode. The generator ERRORS on one rather than skipping it, so a
+package that starts using one fails to onboard and says which -- that is how
+`join`, `dot_expander`, `fail` and `terminate` got written.
 
 ### Painless Coverage
 
