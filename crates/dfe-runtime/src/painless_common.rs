@@ -448,6 +448,91 @@ fn last_index_of_separator(script: &str) -> Option<char> {
     after.chars().next().filter(|c| *c != '"')
 }
 
+/// Fan a DNS answer set out into the ECS lists it feeds.
+///
+/// An address record is a resolved ip and a related ip; a CNAME is a related
+/// host; an MX is a preference and a host, so the host is the SECOND
+/// space-separated token. Each list is appended to without duplicates.
+fn try_related_from_dns_answers(event: &mut Event) -> bool {
+    let Some(Value::Array(answers)) = event.get("dns.answers").cloned() else {
+        return false;
+    };
+
+    let mut ips: Vec<Value> = Vec::new();
+    let mut hosts: Vec<Value> = Vec::new();
+    for answer in &answers {
+        let (Some(kind), Some(data)) = (
+            answer.pointer("/type").and_then(Value::as_str),
+            answer.pointer("/data").and_then(Value::as_str),
+        ) else {
+            continue;
+        };
+        match kind {
+            "A" | "AAAA" => ips.push(Value::from(data)),
+            "CNAME" => hosts.push(Value::from(data)),
+            "MX" => {
+                if let Some((_, host)) = data.split_once(' ') {
+                    hosts.push(Value::from(host));
+                }
+            }
+            _ => {}
+        }
+    }
+
+    for ip in ips {
+        let _ = event.append_unique("related.ip", ip.clone());
+        let _ = event.append_unique("dns.resolved_ip", ip);
+    }
+    for host in hosts {
+        let _ = event.append_unique("related.hosts", host);
+    }
+    true
+}
+
+/// Parse Google's DNS `RData` into `dns.answers`.
+///
+/// One answer per line, five tab-separated columns:
+///
+/// ```text
+/// elastic.co.\t300\tIN\ta\t127.0.0.1
+/// ```
+///
+/// A trailing `...` line means the vendor truncated the list and is dropped.
+/// Trailing dots come off the name and the data, and the type is uppercased.
+/// A line with fewer than five columns is where Painless throws on the index,
+/// so the whole answer set is abandoned rather than half-built.
+fn try_dns_rdata_answers(event: &mut Event, script: &str) -> bool {
+    let Some(source) = ctx_path_bound_to(script, "rdata") else {
+        return false;
+    };
+    let Some(rdata) = event.get_str(&source) else {
+        return false;
+    };
+
+    let lines: Vec<&str> = rdata.split('\n').collect();
+    let kept = lines.len() - usize::from(rdata.ends_with("..."));
+    let mut answers = Vec::with_capacity(kept);
+    for line in lines.iter().take(kept) {
+        let columns: Vec<&str> = line.split('\t').collect();
+        let [name, ttl, class, kind, data] = columns[..] else {
+            return true;
+        };
+        let Ok(ttl) = ttl.parse::<i64>() else {
+            return true;
+        };
+        answers.push(json!({
+            "name": name.trim_end_matches('.'),
+            "ttl": ttl,
+            "class": class,
+            "type": kind.to_uppercase(),
+            "data": data.trim_end_matches('.'),
+        }));
+    }
+
+    let _ = event.set("dns.answers", Value::Array(answers));
+    true
+}
+
 /// Append one DNS answer per resolved address, typed by its family.
 ///
 /// sysmon's `QueryResults` lists the CNAME chain and the addresses separately,
@@ -2703,6 +2788,16 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: DNS RData as tab-separated columns, one answer per line.
+    if normalised.contains("answer_parts[") && normalised.contains("dns_answers.add(") {
+        return try_dns_rdata_answers(event, &normalised);
+    }
+
+    // Pattern: the ECS lists an answer set feeds, keyed on the record type.
+    if normalised.contains("for (answer in ctx.dns.answers)") {
+        return try_related_from_dns_answers(event);
+    }
+
     // Pattern: one synthesised DNS answer per resolved address, typed by
     // whether the address holds a colon.
     if normalised.contains("ctx.dns.answers.add(") && normalised.contains("ip.indexOf(\":\")") {
@@ -4344,6 +4439,69 @@ def event_timezone = get_timezone(ctx);
         let mut event = Event::new(json!({"a": {"b": "Solaris"}}));
         try_known_painless(&mut event, script);
         assert_eq!(event.get("host.os.type"), None);
+    }
+
+    /// Verbatim from `pipelines/gcp/dns/default.yml`, cut to the lines the
+    /// matcher keys on.
+    const RDATA: &str = "def rdata = ctx.gcp.dns.rdata;\n\
+        def dns_answers = [];\n\
+        def answer_parts = /\\t/.split(rdata_answers[i]);\n\
+        def name = answer_parts[0];\n\
+        def ttl = Long.parseLong(answer_parts[1]);\n\
+        dns_answers.add([\"name\": name]);\n\
+        ctx.dns.answers = dns_answers;";
+
+    #[test]
+    fn dns_rdata_columns_become_answers() {
+        let mut event = Event::new(json!({"gcp": {"dns": {"rdata": concat!(
+            "elastic.co.\t300\tIN\ta\t127.0.0.1\n",
+            "elastic.co.\t21600\tIN\tns\tns-1168.awsdns-18.org."
+        )}}}));
+
+        assert!(try_known_painless(&mut event, RDATA));
+        assert_eq!(
+            event.get("dns.answers"),
+            Some(&json!([
+                {"name": "elastic.co", "ttl": 300, "class": "IN", "type": "A", "data": "127.0.0.1"},
+                {"name": "elastic.co", "ttl": 21600, "class": "IN", "type": "NS",
+                 "data": "ns-1168.awsdns-18.org"},
+            ]))
+        );
+    }
+
+    /// A trailing `...` is the vendor saying the list was cut short, and is
+    /// not an answer.
+    #[test]
+    fn a_truncated_rdata_list_drops_its_last_line() {
+        let mut event = Event::new(json!({"gcp": {"dns": {"rdata":
+            "elastic.co.\t300\tIN\ta\t127.0.0.1\n..."}}}));
+
+        assert!(try_known_painless(&mut event, RDATA));
+        let Some(Value::Array(answers)) = event.get("dns.answers") else {
+            panic!("no answers")
+        };
+        assert_eq!(answers.len(), 1);
+    }
+
+    /// An address is a resolved ip, a CNAME is a host, and an MX's host is
+    /// its SECOND token -- the first is the preference.
+    #[test]
+    fn an_answer_set_fans_out_into_the_ecs_lists() {
+        let script = "for (answer in ctx.dns.answers) { ctx.related.ip.add(answer.data); }";
+        let mut event = Event::new(json!({"dns": {"answers": [
+            {"type": "A", "data": "127.0.0.1"},
+            {"type": "CNAME", "data": "www.elastic.co"},
+            {"type": "MX", "data": "1 aspmx.l.google.com"},
+            {"type": "TXT", "data": "v=spf1"},
+        ]}}));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("dns.resolved_ip"), Some(&json!(["127.0.0.1"])));
+        assert_eq!(event.get("related.ip"), Some(&json!(["127.0.0.1"])));
+        assert_eq!(
+            event.get("related.hosts"),
+            Some(&json!(["www.elastic.co", "aspmx.l.google.com"]))
+        );
     }
 
     #[test]
