@@ -489,6 +489,115 @@ fn try_related_from_dns_answers(event: &mut Event) -> bool {
     true
 }
 
+/// Sort each member of a list into the ECS path its own text earns.
+///
+/// gcp's audit pipeline classifies principals by prefix and substring: one
+/// opening `serviceAccount:` is a service, one holding `@` is a user, one
+/// holding `/instances` is a host, and the rest fall to a catch-all. The
+/// ladders, the tests and the destinations all come off the script.
+///
+/// One pass per `if (ctx.<path> instanceof List)` block, so the actor list
+/// and the target list are read separately with their own ladders.
+fn try_classify_members(event: &mut Event, script: &str) -> bool {
+    let mut classified = false;
+    for (at, _) in script.match_indices("instanceof List") {
+        // The list is named just before the test; the ladder is the braced
+        // body just after the `) {` that closes it.
+        let Some(source) = painless_path(&script[..at]) else {
+            continue;
+        };
+        let Some(after) = script[at..].split_once(") {").map(|(_, tail)| tail) else {
+            continue;
+        };
+        let Some((body, _)) = crate::painless_params::balanced(&format!("{{{after}"), '{', '}')
+            .map(|(body, rest)| (body.to_string(), rest.to_string()))
+        else {
+            continue;
+        };
+        let Some(Value::Array(members)) = event.get(&source).cloned() else {
+            continue;
+        };
+
+        for member in &members {
+            let Some(text) = member.as_str() else {
+                continue;
+            };
+            if let Some(target) = classify(&body, text) {
+                let _ = event.append_unique(&target, Value::from(text));
+                classified = true;
+            }
+        }
+    }
+    classified
+}
+
+/// The destination the first holding arm of a ladder names.
+fn classify(ladder: &str, member: &str) -> Option<String> {
+    for arm in ladder.split("if (").skip(1) {
+        let Some((test, tail)) = arm.split_once(") {") else {
+            continue;
+        };
+        if !string_predicate(test, member) {
+            continue;
+        }
+        return destination(tail);
+    }
+    // The trailing `else { addNestedValue(ctx, "entity.id", actor); }`.
+    let (_, last) = ladder.rsplit_once("else {")?;
+    destination(last)
+}
+
+/// The path an arm's own block names, bounded by that block's braces so a
+/// later arm's destination cannot be read instead.
+fn destination(tail: &str) -> Option<String> {
+    let braced = format!("{{{tail}");
+    let (block, _) = crate::painless_params::balanced(&braced, '{', '}')?;
+    let (_, arguments) = block.split_once("addNestedValue(")?;
+    first_quoted(arguments)
+}
+
+/// One arm's test, evaluated against the member rather than the event.
+///
+/// The grammar is what these ladders use: `||`, `&&`, `!`, `startsWith` and
+/// `contains`, each over a quoted literal.
+fn string_predicate(test: &str, member: &str) -> bool {
+    test.split("||").any(|conjunction| {
+        conjunction
+            .split("&&")
+            .all(|term| string_term(term.trim(), member))
+    })
+}
+
+/// The first single- or double-quoted literal in a fragment.
+fn first_quoted(text: &str) -> Option<String> {
+    let start = text.find(['\'', '"'])?;
+    let quote = text[start..].chars().next()?;
+    let rest = &text[start + quote.len_utf8()..];
+    let end = rest.find(quote)?;
+    Some(rest[..end].to_string())
+}
+
+fn string_term(term: &str, member: &str) -> bool {
+    // A grouping paren is not part of the term, and there may be several.
+    let term = term.trim().trim_start_matches('(').trim();
+    if let Some(inner) = term.strip_prefix('!') {
+        return !string_term(inner, member);
+    }
+    let Some((call, argument)) = term.split_once('(') else {
+        return false;
+    };
+    let Some(wanted) = first_quoted(argument) else {
+        return false;
+    };
+    if call.ends_with(".startsWith") {
+        member.starts_with(&wanted)
+    } else if call.ends_with(".contains") {
+        member.contains(&wanted)
+    } else {
+        false
+    }
+}
+
 /// Keep a rendered copy of a nested object beside the object itself.
 ///
 /// aws's cloudtrail writes `requestParameters`, `responseElements` and
@@ -2949,6 +3058,11 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
+    // Pattern: classify each member of a list by string tests on the member.
+    if normalised.contains("addNestedValue(") && normalised.contains("instanceof List") {
+        return try_classify_members(event, &normalised);
+    }
+
     // Pattern: keep a rendered copy of a nested object beside the object.
     if normalised.contains("keep_flattened_duplicates") {
         return try_flattened_duplicates(event, &normalised);
@@ -4611,6 +4725,54 @@ def event_timezone = get_timezone(ctx);
         let mut event = Event::new(json!({"a": {"b": "Solaris"}}));
         try_known_painless(&mut event, script);
         assert_eq!(event.get("host.os.type"), None);
+    }
+
+    /// Cut from `pipelines/gcp/audit/default.yml`, tagged "Classify actor and
+    /// target entities into type-specific fields".
+    const CLASSIFY: &str = "void addNestedValue(def currentCtx, String path, def value) {\n\
+        return;\n\
+        }\n\
+        if (ctx.actor?.entity?.id instanceof List) {\n\
+        for (def actorId : ctx.actor.entity.id) {\n\
+        String actor = actorId.toString();\n\
+        if (actor.startsWith(\"serviceAccount:\") || actor.contains(\".gserviceaccount.com\")) {\n\
+        addNestedValue(ctx, \"service.entity.id\", actor);\n\
+        }\n\
+        else if (actor.startsWith(\"user:\") || (actor.contains(\"@\") && \
+        !actor.contains(\".gserviceaccount.com\"))) {\n\
+        addNestedValue(ctx, \"user.entity.id\", actor);\n\
+        }\n\
+        else {\n\
+        addNestedValue(ctx, \"entity.id\", actor);\n\
+        }\n\
+        }\n\
+        }";
+
+    #[test]
+    fn each_member_lands_in_the_path_its_own_text_earns() {
+        let mut event = Event::new(json!({"actor": {"entity": {"id": [
+            "serviceAccount:svc@project.iam.gserviceaccount.com",
+            "user@mycompany.com",
+            "projects/foo/workloadIdentityPools/bar",
+        ]}}}));
+
+        assert!(try_known_painless(&mut event, CLASSIFY));
+        assert_eq!(
+            event.get("service.entity.id"),
+            Some(&json!([
+                "serviceAccount:svc@project.iam.gserviceaccount.com"
+            ]))
+        );
+        assert_eq!(
+            event.get("user.entity.id"),
+            Some(&json!(["user@mycompany.com"])),
+            "an `@` that is not a service account is a user"
+        );
+        assert_eq!(
+            event.get("entity.id"),
+            Some(&json!(["projects/foo/workloadIdentityPools/bar"])),
+            "the trailing else is the catch-all"
+        );
     }
 
     /// Cut from `pipelines/aws/cloudtrail/default.yml`, both scripts.
