@@ -23,6 +23,7 @@ pub use crate::codegen_api::{
     RegisteredDomainResult, community_id_v1, csv_close_quote_gap, dot_expand, geoip_lookup,
     grok_to_regex, grok_to_regex_with_map, is_internal_ip, join_values, painless_exec,
     painless_exec_params, parse_user_agent, registered_domain_lookup, resolve_path, uri_parts,
+    url_decode,
 };
 
 pub use crate::painless_helpers::{

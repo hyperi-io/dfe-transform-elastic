@@ -573,7 +573,13 @@ fn try_filetime_field_list(event: &mut Event, script: &str, params: &Map<String,
 /// they were fields, which is how `event.denied.action` and its two siblings
 /// appeared in place of one `event.action`.
 fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some(target) = ctx_path_between(script, "forEach((k, v) -> ctx.", "[k] = v") else {
+    // The lambda is written both inline and as a braced block that branches on
+    // the value's type, so the target is read from the `ctx.<path>[k] =`
+    // assignment ANYWHERE after the `forEach` rather than from its head.
+    let Some(body) = script.split_once("forEach(").map(|(_, tail)| tail) else {
+        return false;
+    };
+    let Some(target) = ctx_path_between(body, "ctx.", "[k] = ") else {
         return false;
     };
     let keys = get_chain(script);

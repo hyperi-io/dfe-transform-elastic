@@ -15,14 +15,15 @@
     "entityanalytics_entra_id": { "events": 6, "events_total": 7, "fields_wrong": 3 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
     "gcp": { "events": 323, "events_total": 382, "fields_wrong": 185 },
-    "microsoft_defender_endpoint": { "events": 10, "events_total": 23, "fields_wrong": 271 },
+    "microsoft_defender_endpoint": { "events": 14, "events_total": 23, "fields_wrong": 262 },
     "mimecast": { "events": 36, "events_total": 262, "fields_wrong": 237 },
     "microsoft_dnsserver": { "events": 2, "events_total": 14, "fields_wrong": 69 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
-    "proofpoint_on_demand": { "events": 11, "events_total": 55, "fields_wrong": 130 },
+    "proofpoint_on_demand": { "events": 11, "events_total": 55, "fields_wrong": 102 },
     "sentinel_one": { "events": 46, "events_total": 68, "fields_wrong": 179 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
-    "windows": { "events": 369, "events_total": 596, "fields_wrong": 1775 }
+    "windows": { "events": 374, "events_total": 596, "fields_wrong": 1403 },
+    "zscaler_zia": { "events": 31, "events_total": 93, "fields_wrong": 352 }
   }
 }

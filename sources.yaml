@@ -684,3 +684,115 @@ sources:
     fixtures: windows/windows_defender
     intakes: [beats]
     transforms: [default]
+
+  # Zscaler streams the NSS feed over `tcp` and `http_endpoint`, so a device
+  # pushes every one of these and `receiver` is an intake. `sandbox_report` is
+  # the exception: `cel` only, pulled from the API, so `fetcher` instead.
+  # Framing is `body` throughout -- every pipeline JSON-parses `message`, and a
+  # reconstructed syslog header in front of it would break the parse.
+  zscaler_zia_alerts:
+    package: zscaler_zia
+    data_stream: alerts
+    pipelines: zscaler_zia/alerts
+    fixtures: zscaler_zia/alerts
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_audit:
+    package: zscaler_zia
+    data_stream: audit
+    pipelines: zscaler_zia/audit
+    fixtures: zscaler_zia/audit
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_dns:
+    package: zscaler_zia
+    data_stream: dns
+    pipelines: zscaler_zia/dns
+    fixtures: zscaler_zia/dns
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_email_dlp:
+    package: zscaler_zia
+    data_stream: email_dlp
+    pipelines: zscaler_zia/email_dlp
+    fixtures: zscaler_zia/email_dlp
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_endpoint_dlp:
+    package: zscaler_zia
+    data_stream: endpoint_dlp
+    pipelines: zscaler_zia/endpoint_dlp
+    fixtures: zscaler_zia/endpoint_dlp
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_firewall:
+    package: zscaler_zia
+    data_stream: firewall
+    pipelines: zscaler_zia/firewall
+    fixtures: zscaler_zia/firewall
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_saas_security:
+    package: zscaler_zia
+    data_stream: saas_security
+    pipelines: zscaler_zia/saas_security
+    fixtures: zscaler_zia/saas_security
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_saas_security_activity:
+    package: zscaler_zia
+    data_stream: saas_security_activity
+    pipelines: zscaler_zia/saas_security_activity
+    fixtures: zscaler_zia/saas_security_activity
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_sandbox_report:
+    package: zscaler_zia
+    data_stream: sandbox_report
+    pipelines: zscaler_zia/sandbox_report
+    fixtures: zscaler_zia/sandbox_report
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  zscaler_zia_sandbox_verdict:
+    package: zscaler_zia
+    data_stream: sandbox_verdict
+    pipelines: zscaler_zia/sandbox_verdict
+    fixtures: zscaler_zia/sandbox_verdict
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_tunnel:
+    package: zscaler_zia
+    data_stream: tunnel
+    pipelines: zscaler_zia/tunnel
+    fixtures: zscaler_zia/tunnel
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  zscaler_zia_web:
+    package: zscaler_zia
+    data_stream: web
+    pipelines: zscaler_zia/web
+    fixtures: zscaler_zia/web
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]

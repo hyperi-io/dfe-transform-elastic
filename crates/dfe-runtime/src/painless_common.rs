@@ -259,6 +259,109 @@ pub fn camel_map_to_snake(value: &Value) -> Value {
     }
 }
 
+/// Map one field's value through a table written as an if/else-if chain.
+///
+/// The pipelines write a small lookup this way rather than as params:
+///
+/// ```text
+/// String osType = ctx.zscaler_zia.firewall.device.os.type;
+/// if (osType == 'iOS') { ctx.host.os.put('type', 'ios'); }
+/// else if (osType == 'Android OS') { ctx.host.os.put('type', 'android'); }
+/// ```
+///
+/// Only branches testing the bound local against a literal are read, so the
+/// null-guard preamble those scripts open with is skipped. Both `.put(k, v)`
+/// and a plain assignment are recognised as the write.
+///
+/// Returns false when nothing parses.
+fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
+    let Some((local, source)) = local_bound_to_ctx(script) else {
+        return false;
+    };
+    let Some(subject) = event.get_as_string(&source) else {
+        // The field is absent, which every one of these scripts is gated on.
+        return false;
+    };
+
+    let mut matched = false;
+    for block in script.split("if (").skip(1) {
+        let Some((guard, body)) = block.split_once(") {") else {
+            continue;
+        };
+        let Some(literal) = equality_literal(guard, &local) else {
+            continue;
+        };
+        if literal != subject {
+            continue;
+        }
+        let Some((target, value)) = branch_write(body) else {
+            continue;
+        };
+        let _ = event.set(&target, value);
+        matched = true;
+        break;
+    }
+    matched
+}
+
+/// The first `String x = ctx.<path>;` binding, as (local, path).
+fn local_bound_to_ctx(script: &str) -> Option<(String, String)> {
+    for line in script.lines() {
+        let line = line.trim().trim_end_matches(';');
+        let Some((declaration, value)) = line.split_once(" = ") else {
+            continue;
+        };
+        let Some(path) = value.trim().strip_prefix("ctx.") else {
+            continue;
+        };
+        let name = declaration.rsplit(' ').next()?;
+        if declaration.split(' ').count() != 2 || name.is_empty() {
+            continue;
+        }
+        return Some((name.to_string(), clean_path(path)));
+    }
+    None
+}
+
+/// The literal a guard compares `local` to, whichever quote it used.
+fn equality_literal(guard: &str, local: &str) -> Option<String> {
+    let rest = guard.trim().strip_prefix(local)?.trim_start();
+    let rest = rest.strip_prefix("==")?.trim();
+    let quote = rest.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let rest = &rest[quote.len_utf8()..];
+    let end = rest.find(quote)?;
+    // A compound guard is a different shape, not this one.
+    rest[end + quote.len_utf8()..]
+        .trim()
+        .is_empty()
+        .then(|| rest[..end].to_string())
+}
+
+/// The field a branch writes and the literal it writes there.
+///
+/// `ctx.host.os.put('type', 'ios')` and `ctx.host.os.type = 'ios'` are the
+/// same write spelled two ways.
+fn branch_write(body: &str) -> Option<(String, String)> {
+    let statement = body.split("ctx.").nth(1)?;
+    if let Some((path, arguments)) = statement.split_once(".put(") {
+        let (key, rest) = leading_literal(arguments)?;
+        let (value, _) = leading_literal(rest.trim_start().strip_prefix(',')?)?;
+        return Some((format!("{}.{key}", clean_path(path)), value));
+    }
+    let (path, value) = statement.split_once(" = ")?;
+    let (value, _) = leading_literal(value)?;
+    Some((clean_path(path), value))
+}
+
+/// A leading single- or double-quoted literal, and what follows it.
+fn leading_literal(text: &str) -> Option<(String, &str)> {
+    let text = text.trim_start();
+    let quote = text.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let rest = &text[quote.len_utf8()..];
+    let end = rest.find(quote)?;
+    Some((rest[..end].to_string(), &rest[end + quote.len_utf8()..]))
+}
+
 /// Write the basename of one or more path fields.
 ///
 /// The shape is a helper that finds the last separator and returns what
@@ -2745,6 +2848,12 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         return try_append_each(event, &normalised);
     }
 
+    // Pattern: a value map written out as an if/else-if chain over one field.
+    // Guarded by the parse, so a script that merely branches falls through.
+    if normalised.contains("else if (") && try_literal_value_map(event, &normalised) {
+        return true;
+    }
+
     // Pattern: keys_to_snake_case
     if normalised.contains("keys_to_snake_case") || normalised.contains("keysToSnakeCase") {
         if let Some(field) = extract_target_field(&normalised) {
@@ -4185,6 +4294,42 @@ def event_timezone = get_timezone(ctx);
         let converted = camel_map_to_snake(&json!({"cve2021Id": 1, "HTTPServer": 2}));
         assert!(converted.get("cve2021_id").is_some(), "{converted}");
         assert!(converted.get("httpserver").is_some(), "{converted}");
+    }
+
+    /// A value map written as an if/else-if chain with `.put()` as the write.
+    /// Verbatim from `zscaler_zia/firewall`, whose device OS table is spelled
+    /// this way rather than as params.
+    #[test]
+    fn a_literal_value_map_writes_through_put() {
+        let script = "String osType = ctx.zscaler_zia.firewall.device.os.type;\n\
+            if (ctx.host == null) {\n    Map map = new HashMap();\n    ctx.put('host', map);\n}\n\
+            if (ctx.host?.os == null) {\n    Map map = new HashMap();\n    ctx.host.put('os', map);\n}\n\
+            if (osType == 'iOS') {\n   ctx.host.os.put('type', 'ios');\n}\n\
+            else if (osType == 'Android OS') {\n   ctx.host.os.put('type', 'android');\n}\n\
+            else if (osType == 'Windows OS') {\n   ctx.host.os.put('type', 'windows');\n}\n";
+
+        let mut event = Event::new(json!({
+            "zscaler_zia": {"firewall": {"device": {"os": {"type": "iOS"}}}}
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("host.os.type"), Some("ios"));
+
+        let mut event = Event::new(json!({
+            "zscaler_zia": {"firewall": {"device": {"os": {"type": "Android OS"}}}}
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("host.os.type"), Some("android"));
+    }
+
+    /// A value the table has no arm for leaves the field alone.
+    #[test]
+    fn a_literal_value_map_writes_nothing_for_an_unlisted_value() {
+        let script = "String osType = ctx.a.b;\n\
+            if (osType == 'iOS') {\n   ctx.host.os.put('type', 'ios');\n}\n\
+            else if (osType == 'MAC OS') {\n   ctx.host.os.put('type', 'macos');\n}\n";
+        let mut event = Event::new(json!({"a": {"b": "Solaris"}}));
+        try_known_painless(&mut event, script);
+        assert_eq!(event.get("host.os.type"), None);
     }
 
     #[test]

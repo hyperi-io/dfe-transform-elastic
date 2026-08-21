@@ -172,6 +172,44 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
     Ok(())
 }
 
+/// Percent-decode a string the way Elastic's `urldecode` processor does.
+///
+/// The processor calls Java's `URLDecoder.decode(value, "UTF-8")`, which is
+/// the `application/x-www-form-urlencoded` reading rather than the RFC 3986
+/// one: `+` becomes a SPACE. Zscaler's rule labels arrive that way.
+///
+/// Returns `None` on a malformed escape -- a `%` with fewer than two hex
+/// digits after it -- which is where Java throws and the processor's
+/// `on_failure` runs. Borrows when there is nothing to decode.
+#[must_use]
+pub fn url_decode(text: &str) -> Option<std::borrow::Cow<'_, str>> {
+    if !text.contains('%') && !text.contains('+') {
+        return Some(std::borrow::Cow::Borrowed(text));
+    }
+
+    let bytes = text.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        match bytes[i] {
+            b'+' => {
+                out.push(b' ');
+                i += 1;
+            }
+            b'%' => {
+                let hex = text.get(i + 1..i + 3)?;
+                out.push(u8::from_str_radix(hex, 16).ok()?);
+                i += 3;
+            }
+            byte => {
+                out.push(byte);
+                i += 1;
+            }
+        }
+    }
+    String::from_utf8(out).ok().map(std::borrow::Cow::Owned)
+}
+
 /// Join an array's elements into one separated string, the way Elastic's
 /// `join` processor does.
 ///

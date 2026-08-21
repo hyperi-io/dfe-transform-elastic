@@ -158,6 +158,24 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
             &filebeat::windows_sysmon_operational::default::Default
         }
         ("windows", "windows_defender") => &filebeat::windows_windows_defender::default::Default,
+        ("zscaler_zia", "alerts") => &filebeat::zscaler_zia_alerts::default::Default,
+        ("zscaler_zia", "audit") => &filebeat::zscaler_zia_audit::default::Default,
+        ("zscaler_zia", "email_dlp") => &filebeat::zscaler_zia_email_dlp::default::Default,
+        ("zscaler_zia", "endpoint_dlp") => &filebeat::zscaler_zia_endpoint_dlp::default::Default,
+        ("zscaler_zia", "saas_security") => &filebeat::zscaler_zia_saas_security::default::Default,
+        ("zscaler_zia", "saas_security_activity") => {
+            &filebeat::zscaler_zia_saas_security_activity::default::Default
+        }
+        ("zscaler_zia", "sandbox_report") => {
+            &filebeat::zscaler_zia_sandbox_report::default::Default
+        }
+        ("zscaler_zia", "sandbox_verdict") => {
+            &filebeat::zscaler_zia_sandbox_verdict::default::Default
+        }
+        ("zscaler_zia", "dns") => &filebeat::zscaler_zia_dns::default::Default,
+        ("zscaler_zia", "firewall") => &filebeat::zscaler_zia_firewall::default::Default,
+        ("zscaler_zia", "tunnel") => &filebeat::zscaler_zia_tunnel::default::Default,
+        ("zscaler_zia", "web") => &filebeat::zscaler_zia_web::default::Default,
         _ => return None,
     })
 }

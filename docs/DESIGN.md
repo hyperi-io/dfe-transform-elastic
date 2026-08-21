@@ -517,6 +517,7 @@ sources exercise it.
 | `dot_expander` | Done | GCP | `dot_expand(event, path, field)` |
 | `fail` | Done | CrowdStrike | Returns a `TransformError` carrying the message |
 | `terminate` | Done | Defender | Stops the pipeline and KEEPS the document |
+| `urldecode` | Done | Zscaler | `url_decode`, form-encoded so `+` is a space |
 
 ### Medium (~8) — read a field value and reshape it
 
@@ -546,9 +547,9 @@ sources exercise it.
 
 Not implemented (not used by any vendored pipeline): bytes, cef, date_index_name,
 enrich, geo_grid, html_strip, inference, redact, reroute, set_security_user,
-sort, urldecode. The generator ERRORS on one rather than skipping it, so a
-package that starts using one fails to onboard and says which -- that is how
-`join`, `dot_expander`, `fail` and `terminate` got written.
+sort. The generator ERRORS on one rather than skipping it, so a package that
+starts using one fails to onboard and says which -- that is how `join`,
+`urldecode`, `dot_expander`, `fail` and `terminate` got written.
 
 ### Painless Coverage
 

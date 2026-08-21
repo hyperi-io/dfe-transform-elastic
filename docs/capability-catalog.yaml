@@ -371,6 +371,54 @@
     name: filebeat.windows_windows_defender.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_alerts.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_dns.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_email_dlp.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_endpoint_dlp.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_firewall.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_saas_security.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_saas_security_activity.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_sandbox_report.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_sandbox_verdict.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_tunnel.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.zscaler_zia_web.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
 - kind: source
   name: kafka
   description: Kafka consumer and producer via the scalo transport.
