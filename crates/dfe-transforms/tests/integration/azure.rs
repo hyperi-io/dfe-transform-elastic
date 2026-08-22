@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Baselines are the measured match count per fixture, and only ever go up.
+//! Floors over committed fixtures -- no panic, errors pinned, fields emitted.
+//! Parity lives in `tests/compat_corpus.rs`; see `integration/remaining.rs`.
 //!
 //! Azure is 10/10.
 
@@ -12,7 +13,7 @@ const FIXTURE_BASE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fix
 #[test]
 fn azure_activitylogs_raw() {
     let dir = format!("{FIXTURE_BASE}/activitylogs");
-    super::common::run_fixture(
+    super::common::run_floor(
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-raw",
@@ -23,7 +24,7 @@ fn azure_activitylogs_raw() {
 #[test]
 fn azure_activitylogs_identity() {
     let dir = format!("{FIXTURE_BASE}/activitylogs");
-    super::common::run_fixture(
+    super::common::run_floor(
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-identity",
@@ -34,7 +35,7 @@ fn azure_activitylogs_identity() {
 #[test]
 fn azure_activitylogs_edgecases() {
     let dir = format!("{FIXTURE_BASE}/activitylogs");
-    super::common::run_fixture(
+    super::common::run_floor(
         &azure_activitylogs::default::Default,
         &dir,
         "test-activitylogs-edgecases",
@@ -45,7 +46,7 @@ fn azure_activitylogs_edgecases() {
 #[test]
 fn azure_auditlogs_raw() {
     let dir = format!("{FIXTURE_BASE}/auditlogs");
-    super::common::run_fixture(
+    super::common::run_floor(
         &azure_auditlogs::default::Default,
         &dir,
         "test-auditlogs-raw",
@@ -56,7 +57,7 @@ fn azure_auditlogs_raw() {
 #[test]
 fn azure_signinlogs_raw() {
     let dir = format!("{FIXTURE_BASE}/signinlogs");
-    super::common::run_fixture(
+    super::common::run_floor(
         &azure_signinlogs::default::Default,
         &dir,
         "test-signinlogs-raw",
@@ -67,7 +68,7 @@ fn azure_signinlogs_raw() {
 #[test]
 fn azure_signinlogs_sample() {
     let dir = format!("{FIXTURE_BASE}/signinlogs");
-    super::common::run_fixture(
+    super::common::run_floor(
         &azure_signinlogs::default::Default,
         &dir,
         "test-signinlogs-sample",

@@ -1,70 +1,57 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Baselines are the measured match count per fixture, and only ever go up.
+//! Floors over committed fixtures: no panic, errors pinned, fields emitted.
 //!
-//! **These fixtures are no longer the parity target.** Every expectation here
-//! was captured from an older generation of Elastic's pipelines, and the
-//! transforms are now generated from the current ones. Agreement with them is
-//! therefore coincidence where it survives, and a low number is not a defect.
-//! `tests/compat_corpus.rs` compares against what Elastic's engine produces
-//! now, and that is the number that means something.
-//!
-//! What these still earn: they run every transform over real vendor payloads
-//! on every build, so a panic, an error or a collapse to zero extraction shows
-//! up immediately. The baselines guard that floor, nothing more.
-//!
-//! o365 is the clearest case. It scores 0 of 204 here and 404 of 409 against
-//! the compat corpus: its expectations are keyed `o365.audit.*` where the
-//! pipeline reads `o365audit.*`, so not one field can line up.
-//!
-//! **A baseline here going DOWN while the corpus goes up is the expected
-//! direction, not a regression.** The two fortinet numbers dropped twice on
-//! 2026-08-20 for that reason: these fixtures put the whole query string inside
-//! `url.path` with no `url.query`, expect fortinet's login sub-pipeline never to
-//! run, and expect VPN source and destination unswapped. Real Elasticsearch
-//! 9.2.2 disagrees on all three, and the corpus gained 38 events across the same
-//! changes.
+//! The parity half of these tests is RETIRED. Every committed expectation was
+//! captured from an older generation of Elastic's pipelines and disagrees
+//! with the current engine, so scoring against them punished correct output
+//! -- `tests/compat_corpus.rs` against real Elasticsearch is the parity
+//! measure, ratcheted by `tests/compat-baseline.json`. What survives here is
+//! what is true regardless of expected output: the transform runs every
+//! committed vendor payload without panic, without new errors, and still
+//! extracts something. That floor runs on every build with no corpus on disk,
+//! which the corpus test cannot.
 
 use dfe_transforms::filebeat::{cisco_ios, cisco_meraki, cisco_nexus, fortinet, o365, panw};
 
 const FIXTURE_BASE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures");
 
-macro_rules! parity {
-    ($name:ident, $transform:expr, $dir:literal, $fixture:literal, $baseline:expr) => {
+macro_rules! floor {
+    ($name:ident, $transform:expr, $dir:literal, $fixture:literal, $max_errors:expr) => {
         #[test]
         fn $name() {
             let dir = format!("{FIXTURE_BASE}/{}", $dir);
-            super::common::run_fixture(&$transform, &dir, $fixture, $baseline);
+            super::common::run_floor(&$transform, &dir, $fixture, $max_errors);
         }
     };
 }
 
-parity!(
+floor!(
     fortinet_default,
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet",
-    42
+    0
 );
 
-parity!(
+floor!(
     fortinet_6_2,
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-6-2",
-    46
+    0
 );
 
-parity!(
+floor!(
     fortinet_7_4,
     fortinet::default::Default,
     "fortinet/fortigate",
     "test-fortinet-7-4",
-    56
+    0
 );
 
-parity!(
+floor!(
     cisco_ios_default,
     cisco_ios::default::Default,
     "cisco/ios",
@@ -72,7 +59,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     cisco_ios_syslog,
     cisco_ios::default::Default,
     "cisco/ios",
@@ -80,26 +67,26 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     cisco_nexus_default,
     cisco_nexus::default::Default,
     "cisco/nexus",
     "test-nexus",
-    1
+    0
 );
 
-parity!(
+floor!(
     cisco_meraki_events,
     cisco_meraki::default::Default,
     "cisco/meraki/logs",
     "test-events",
-    7
+    0
 );
 
 // The sub-pipelines are INLINED into `default`, which is also where the
 // syslog header is parsed -- a fixture driven straight at `flows` or `urls`
 // never sees the fields the router keys on and comes out untouched.
-parity!(
+floor!(
     cisco_meraki_flows,
     cisco_meraki::default::Default,
     "cisco/meraki/logs",
@@ -107,7 +94,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     cisco_meraki_urls,
     cisco_meraki::default::Default,
     "cisco/meraki/logs",
@@ -115,7 +102,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     o365_exchange_admin,
     o365::default::Default,
     "o365/audit",
@@ -123,7 +110,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     o365_sharepoint,
     o365::default::Default,
     "o365/audit",
@@ -131,7 +118,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     o365_azuread,
     o365::default::Default,
     "o365/audit",
@@ -142,7 +129,7 @@ parity!(
 // `panw/default` is the router AND where the shared work lives -- the CSV
 // parse, every `convert`, and the `_temp_` removal. A sub-pipeline driven on
 // its own sees none of it.
-parity!(
+floor!(
     panw_traffic,
     panw::default::Default,
     "panw/panos",
@@ -150,7 +137,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     panw_threat,
     panw::default::Default,
     "panw/panos",
@@ -158,7 +145,7 @@ parity!(
     0
 );
 
-parity!(
+floor!(
     panw_userid,
     panw::default::Default,
     "panw/panos",

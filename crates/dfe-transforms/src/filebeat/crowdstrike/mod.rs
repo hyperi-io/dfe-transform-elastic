@@ -4,14 +4,19 @@
 //! Transforms for the crowdstrike integration.
 
 pub mod auth_activity_audit;
+pub mod automated_lead_summary;
 pub mod cspm_events;
+pub mod customer_ioc_event;
+pub mod data_protection_detection_summary;
 pub mod default;
 pub mod detection_summary;
+pub mod epp_detection_summary;
 pub mod firewall_match;
 pub mod identity_protection_incident;
 pub mod incident_summary;
 pub mod ipd_detection_summary;
 pub mod mobile_detection_summary;
+pub mod overwatch_generic_detection_summary;
 pub mod recon_notification_summary;
 pub mod remote_response_session_end;
 pub mod remote_response_session_start;

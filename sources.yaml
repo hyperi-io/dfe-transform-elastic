@@ -856,6 +856,7 @@ sources:
     intakes: [beats, receiver]
     framing: body
     transforms:
+      - audit
       - authentication
       - correlated_event
       - decryption

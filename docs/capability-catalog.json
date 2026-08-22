@@ -601,6 +601,12 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.panw.audit",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.panw.authentication",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"

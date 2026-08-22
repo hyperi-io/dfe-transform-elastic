@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! First coverage for the six sources with no parity test.
+//! Floors over RAW-shaped fixtures, without the config wrapping.
 //!
-//! fortinet, panw, o365, cisco_ios, cisco_meraki and cisco_nexus have
-//! committed `.log` inputs but no `-expected.json` the harness can read, so
-//! nothing has ever run them. This does not check ECS parity -- it checks the
-//! things that are true regardless of what the expected output is:
+//! `tests/integration/` runs the same sources through the full harness
+//! (config fields merged, envelope detected); these cases feed the bare
+//! `.log` lines instead, which is the other intake shape, and panw's per-type
+//! transforms have no coverage anywhere else. No ECS parity here -- that is
+//! `tests/compat_corpus.rs` -- only the things true regardless of expected
+//! output:
 //!
 //! 1. The transform does not panic. A panic takes the pod and stalls a
 //!    partition, and these are the sources with the most grok in them.
@@ -16,8 +18,6 @@
 //!    having done nothing is indistinguishable from a working one without
 //!    this.
 //!
-//! Parity comes when the fixture licence question is settled and real
-//! expectations can land.
 
 use dfe_runtime::{Event, Transform, TransformResult};
 

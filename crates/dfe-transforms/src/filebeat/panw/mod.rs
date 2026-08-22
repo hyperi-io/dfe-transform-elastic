@@ -3,6 +3,7 @@
 
 //! Transforms for the panw integration.
 
+pub mod audit;
 pub mod authentication;
 pub mod config;
 pub mod correlated_event;

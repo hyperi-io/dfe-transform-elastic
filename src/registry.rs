@@ -674,6 +674,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
     // the per-type entries depend on. The per-type entries suit a feed already
     // narrowed to one log type.
     (
+        "filebeat.panw.audit",
+        &filebeat::panw::audit::Audit,
+        pushed(Framing::Body),
+        "panw.panos",
+    ),
+    (
         "filebeat.panw.authentication",
         &filebeat::panw::authentication::Authentication,
         pushed(Framing::Body),

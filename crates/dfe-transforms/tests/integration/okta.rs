@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Baselines are the measured match count per fixture, and only ever go up.
+//! Floors over committed fixtures -- no panic, errors pinned, fields emitted.
+//! Parity lives in `tests/compat_corpus.rs`; see `integration/remaining.rs`.
 
 use dfe_transforms::filebeat::okta;
 
@@ -14,7 +15,7 @@ const FIXTURE_DIR: &str = concat!(
 // target detailEntry edge case.
 #[test]
 fn okta_default_system_events() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &okta::default::Default,
         FIXTURE_DIR,
         "test-okta-system-events",
