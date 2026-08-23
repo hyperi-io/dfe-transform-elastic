@@ -67,6 +67,7 @@ pub(crate) enum ParamsShape {
     SysmonRegistry,
     MessageTable,
     FirstAsset,
+    MatcherKv,
     LookupPut {
         source: String,
         target: String,
@@ -194,6 +195,14 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::FirstAsset);
     }
 
+    // Pattern: powershell's matcher-driven KV -- tab-prefixed keys, the
+    // value everything up to the next key, multiline included.
+    if normalised.contains("ctx.winlog?.event_data[params[")
+        && normalised.contains("previousEnd")
+    {
+        return Some(ParamsShape::MatcherKv);
+    }
+
     // Pattern: look one field up in the table and `.put` the row somewhere
     // ELSE -- the security pipeline's logon type, dnsserver's QTYPE with its
     // trailing `.remove`. Ahead of the normalise shape, which writes back to
@@ -298,6 +307,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
         ParamsShape::MessageTable => crate::painless_windows::run_message_table(event, params),
         ParamsShape::FirstAsset => try_first_asset(event, params),
+        ParamsShape::MatcherKv => try_matcher_kv(event, params),
         ParamsShape::LookupPut {
             source,
             target,
@@ -439,6 +449,48 @@ fn parse_lookup_wrap_list(script: &str) -> Option<(String, String)> {
     let before = &script[..store_at];
     let target = clean_path(before[before.rfind("ctx.")? + 4..].trim());
     Some((clean_path(source), target))
+}
+
+/// powershell's matcher-driven KV over `winlog.event_data.<params.field>`:
+/// a key is a TAB, a word run and an equals sign, and its value is
+/// everything -- newlines, equals signs and all -- up to the next key,
+/// trimmed. No key found writes nothing, which is where the script's own
+/// `group` would have thrown.
+fn try_matcher_kv(event: &mut Event, params: &Map<String, Value>) -> bool {
+    let Some(field) = params.get("field").and_then(Value::as_str) else {
+        return true;
+    };
+    let Some(text) = event
+        .get_str(&format!("winlog.event_data.{field}"))
+        .map(str::to_string)
+    else {
+        return true;
+    };
+
+    let bytes = text.as_bytes();
+    let mut keys: Vec<(usize, usize, String)> = Vec::new();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'\t' {
+            let mut j = i + 1;
+            while j < bytes.len() && (bytes[j].is_ascii_alphanumeric() || bytes[j] == b'_') {
+                j += 1;
+            }
+            if j > i + 1 && bytes.get(j) == Some(&b'=') {
+                keys.push((i, j + 1, text[i + 1..j].to_string()));
+                i = j + 1;
+                continue;
+            }
+        }
+        i += 1;
+    }
+
+    for (index, (_, end, key)) in keys.iter().enumerate() {
+        let until = keys.get(index + 1).map_or(text.len(), |(start, ..)| *start);
+        let value = text[*end..until].trim().to_string();
+        let _ = event.set(&format!("winlog.event_data.{key}"), json!(value));
+    }
+    true
 }
 
 /// `sentinel_one`'s first-asset extraction, transliterated: the container
