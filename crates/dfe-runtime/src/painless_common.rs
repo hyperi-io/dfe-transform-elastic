@@ -325,6 +325,111 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// One arm of a loop-over-category ladder: the members it matches, any extra
+/// ctx equality it requires, the LIST literal it assigns, and whether it
+/// only fires while the target is still unset.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CategoryArm {
+    list: String,
+    literals: Vec<String>,
+    extras: Vec<(String, String)>,
+    target: String,
+    values: Vec<String>,
+    only_if_unset: bool,
+}
+
+/// Read the sequential `for (<v> in ctx.<list>) { if (<v> == 'a' || ...) {
+/// ctx.<t> = ['x']; break; } }` blocks, later ones gated on the target
+/// still being null.
+fn parse_category_type_ladder(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let mut arms = Vec::new();
+    let mut cursor = 0usize;
+    while let Some(rel) = script[cursor..].find("for (") {
+        let at = cursor + rel;
+        let only_if_unset = script[..at]
+            .rfind("if (")
+            .is_some_and(|guard| script[guard..at].contains("== null"));
+
+        let rest = &script[at + "for (".len()..];
+        let (header, tail) = rest.split_once(')')?;
+        let (var, list) = header.split_once(" in ctx.")?;
+        let var = var.trim();
+
+        let (condition, tail) = tail.split_once("if (")?.1.split_once(") {")?;
+        let mut literals = Vec::new();
+        let mut extras = Vec::new();
+        for disjunct in condition.split("||") {
+            for term in disjunct.split("&&") {
+                let Some((lhs, rhs)) = term.split_once("==") else {
+                    continue;
+                };
+                let Some(literal) = quoted_first(rhs) else {
+                    continue;
+                };
+                let lhs = lhs.trim();
+                if lhs == var {
+                    literals.push(literal);
+                } else if lhs.contains("ctx") {
+                    let cleaned =
+                        clean_path(lhs.trim_start_matches("ctx?.").trim_start_matches("ctx."));
+                    extras.push((cleaned, literal));
+                }
+            }
+        }
+
+        let (assignment, _) = tail.split_once(';')?;
+        let (lhs, rhs) = assignment.split_once('=')?;
+        let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
+        let values = quoted_members(rhs);
+        if literals.is_empty() || values.is_empty() {
+            return None;
+        }
+
+        arms.push(CategoryArm {
+            list: clean_path(list.trim()),
+            literals,
+            extras,
+            target,
+            values,
+            only_if_unset,
+        });
+        cursor = at + "for (".len();
+    }
+
+    (!arms.is_empty()).then_some(KnownShape::CategoryTypeLadder(arms))
+}
+
+/// Run the ladder: each arm in order, matching any member of its list.
+fn run_category_type_ladder(event: &mut Event, arms: &[CategoryArm]) -> bool {
+    for arm in arms {
+        if arm.only_if_unset && event.has_value(&arm.target) {
+            continue;
+        }
+        let extras_hold = arm
+            .extras
+            .iter()
+            .all(|(path, value)| event.get_str(path) == Some(value.as_str()));
+        if !extras_hold {
+            continue;
+        }
+        let Some(Value::Array(members)) = event.get(&arm.list) else {
+            continue;
+        };
+        let hit = members
+            .iter()
+            .filter_map(Value::as_str)
+            .any(|member| arm.literals.iter().any(|l| l == member));
+        if hit {
+            let values: Vec<Value> =
+                arm.values.iter().map(|v| Value::String(v.clone())).collect();
+            let _ = event.set(&arm.target, Value::Array(values));
+        }
+    }
+    true
+}
+
 /// Read the angle-strip helper's call sites: `ctx.<p> = <name>(ctx.<p>);`
 /// scalars, and the loop rebuilding a list through the same helper.
 fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
@@ -3698,6 +3803,7 @@ pub(crate) enum KnownShape {
         target: String,
     },
     ResourcesRenameDedup(String),
+    CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
     StripAnglePairs {
         scalars: Vec<String>,
@@ -3913,6 +4019,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         shapes.push(KnownShape::ResourcesRenameDedup(
             crate::painless_params::clean_path(source),
         ));
+        return shapes;
+    }
+
+    // Pattern: sequential loop-over-category ladders assigning a LIST
+    // literal -- defender's event.type.
+    if normalised.contains(" in ctx.event.category)")
+        && normalised.contains("break;")
+        && let Some(shape) = parse_category_type_ladder(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -4441,6 +4557,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
+        KnownShape::CategoryTypeLadder(arms) => run_category_type_ladder(event, arms),
         KnownShape::KeysStripWhitespace(source) => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
                 let mut rebuilt = Map::new();

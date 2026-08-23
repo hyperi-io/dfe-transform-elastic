@@ -25,7 +25,7 @@
     "proofpoint_on_demand": { "events": 45, "events_total": 55, "fields_wrong": 40 },
     "sentinel_one": { "events": 54, "events_total": 68, "fields_wrong": 41 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
-    "windows": { "events": 518, "events_total": 596, "fields_wrong": 163 },
+    "windows": { "events": 524, "events_total": 596, "fields_wrong": 152 },
     "zscaler_zia": { "events": 69, "events_total": 93, "fields_wrong": 49 }
   }
 }
