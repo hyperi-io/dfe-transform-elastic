@@ -1156,6 +1156,47 @@ fn try_dns_rdata_answers(event: &mut Event, script: &str) -> bool {
     true
 }
 
+/// Google Public DNS's structured `RData` into `dns.answers`.
+///
+/// Each member keeps its class and type, parses the ttl STRING to a number,
+/// takes `rvalue` as the data with ONE trailing dot stripped, and names the
+/// answer from `domainName` only when an rvalue is there. A ttl that will
+/// not parse throws in Painless and `ignore_failure` leaves the event
+/// untouched, so nothing is written on the first bad one.
+fn try_structured_rdata_answers(event: &mut Event) -> bool {
+    let Some(Value::Array(members)) = event.get("json.jsonPayload.structuredRdata") else {
+        return true;
+    };
+
+    let mut answers = Vec::with_capacity(members.len());
+    for member in members {
+        let mut answer = Map::new();
+        if let Some(class) = member.get("class") {
+            answer.insert("class".into(), class.clone());
+        }
+        if let Some(kind) = member.get("type") {
+            answer.insert("type".into(), kind.clone());
+        }
+        if let Some(ttl) = member.get("ttl").and_then(Value::as_str) {
+            let Ok(ttl) = ttl.parse::<i64>() else {
+                return true;
+            };
+            answer.insert("ttl".into(), Value::from(ttl));
+        }
+        if let Some(rvalue) = member.get("rvalue").and_then(Value::as_str) {
+            let data = rvalue.strip_suffix('.').unwrap_or(rvalue);
+            answer.insert("data".into(), Value::from(data));
+            if let Some(name) = member.get("domainName") {
+                answer.insert("name".into(), name.clone());
+            }
+        }
+        answers.push(Value::Object(answer));
+    }
+
+    let _ = event.set("dns.answers", Value::Array(answers));
+    true
+}
+
 /// Append one DNS answer per resolved address, typed by its family.
 ///
 /// sysmon's `QueryResults` lists the CNAME chain and the addresses separately,
@@ -3484,6 +3525,7 @@ pub(crate) enum KnownShape {
     FlattenedDuplicates,
     CollectEntities,
     DnsRdataAnswers,
+    StructuredRdataAnswers,
     RelatedFromDnsAnswers,
     AnswersFromResolvedIp,
     CamelToSnake {
@@ -3777,6 +3819,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Pattern: DNS RData as tab-separated columns, one answer per line.
     if normalised.contains("answer_parts[") && normalised.contains("dns_answers.add(") {
         shapes.push(KnownShape::DnsRdataAnswers);
+        return shapes;
+    }
+
+    // Pattern: Google Public DNS's structured RData into `dns.answers`.
+    if normalised.contains("structuredRdata") {
+        shapes.push(KnownShape::StructuredRdataAnswers);
         return shapes;
     }
 
@@ -4148,6 +4196,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
         KnownShape::CollectEntities => try_collect_entities(event, normalised),
         KnownShape::DnsRdataAnswers => try_dns_rdata_answers(event, normalised),
+        KnownShape::StructuredRdataAnswers => try_structured_rdata_answers(event),
         KnownShape::RelatedFromDnsAnswers => try_related_from_dns_answers(event),
         KnownShape::AnswersFromResolvedIp => try_answers_from_resolved_ip(event),
         KnownShape::CamelToSnake { target, source } => {
