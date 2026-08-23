@@ -312,6 +312,48 @@ fn run_decode_base64(event: &mut Event, source: &str, target: &str) -> bool {
     true
 }
 
+/// Store a split's token count, Java's trailing-empty drop included.
+fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &str) -> bool {
+    if let Some(text) = event.get_str(source).map(str::to_string) {
+        let mut pieces: Vec<&str> = text.split(separator).collect();
+        while pieces.last() == Some(&"") {
+            pieces.pop();
+        }
+        let count = i64::try_from(pieces.len()).unwrap_or(i64::MAX);
+        let _ = event.set(target, json!(count));
+    }
+    true
+}
+
+/// Read `ctx.<t> = ctx.<s>.splitOnToken("<sep>").length;` as a
+/// [`KnownShape::TokenCount`].
+fn parse_token_count(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".splitOnToken(")?;
+    let after = &script[at + ".splitOnToken(".len()..];
+    let (arguments, rest) = after.split_once(')')?;
+    if !rest.starts_with(".length") {
+        return None;
+    }
+    let separator = quoted_first(arguments)?;
+
+    let before = &script[..at];
+    let source = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    let eq = before.rfind(" = ")?;
+    let head = &before[..eq];
+    let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
+    if target == source || separator.is_empty() {
+        return None;
+    }
+
+    Some(KnownShape::TokenCount {
+        source,
+        separator,
+        target,
+    })
+}
+
 /// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` as a
 /// [`KnownShape::WrapValueInList`].
 fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
@@ -376,7 +418,12 @@ fn parse_decode_base64(script: &str) -> Option<KnownShape> {
 /// mean it: an empty string stays. Applying the fullest reading to all of them
 /// drops fields Elastic keeps.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(clippy::struct_excessive_bools)] // Independent predicate axes read off the script, not a state machine.
 pub struct DropPolicy {
+    /// `v == null` appears in the predicate. vpcflow's dash-removal drops
+    /// ONLY the dash, and reading nulls into it dropped values the script
+    /// keeps.
+    pub nulls: bool,
     /// `v == ''` appears in the predicate.
     pub empty_strings: bool,
     /// `v.size() == 0` or `v.length == 0` appears in the predicate.
@@ -395,6 +442,7 @@ impl DropPolicy {
     #[must_use]
     pub fn read(script: &str) -> Self {
         Self {
+            nulls: script.contains("== null"),
             empty_strings: script.contains("== ''") || script.contains("== \"\""),
             empty_collections: script.contains(".size() == 0") || script.contains(".length == 0"),
             // One `removeIf` prunes the map alone; the shapes that prune both
@@ -418,12 +466,18 @@ fn predicate_sentinels(script: &str) -> Vec<String> {
             let Some((_, rest)) = term.split_once("== ") else {
                 continue;
             };
-            // Quoted, so the `null` keyword is not read as the string "null".
+            // Quoted, so the `null` keyword is not read as the string "null"
+            // -- and read to the CLOSING quote, so a lambda's trailing `)`
+            // stays out of the literal.
             let rest = rest.trim();
-            if !rest.starts_with(['\'', '"']) {
+            let Some(quote) = rest.chars().next().filter(|c| matches!(c, '\'' | '"')) else {
                 continue;
-            }
-            let literal = rest.trim_matches(['\'', '"']);
+            };
+            let inner = &rest[quote.len_utf8()..];
+            let Some(end) = inner.find(quote) else {
+                continue;
+            };
+            let literal = &inner[..end];
             if !literal.is_empty() && !found.iter().any(|f: &String| f == literal) {
                 found.push(literal.to_string());
             }
@@ -440,6 +494,13 @@ fn predicate_sentinels(script: &str) -> Vec<String> {
     for chain in script.split("return ").skip(1) {
         if let Some(chain) = chain.split(';').next() {
             collect(chain);
+        }
+    }
+    // vpcflow's dash removal carries its literal in the lambda itself:
+    // `removeIf(v -> v instanceof String && v == "-")`.
+    for lambda in script.split("removeIf(").skip(1) {
+        if let Some(body) = lambda.split(';').next() {
+            collect(body);
         }
     }
     found
@@ -464,7 +525,7 @@ pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
 
 fn drop_value(value: &mut Value, policy: &DropPolicy) -> bool {
     match value {
-        Value::Null => true,
+        Value::Null => policy.nulls,
         Value::String(s) if s.is_empty() => policy.empty_strings,
         Value::String(s) if policy.sentinels.iter().any(|v| v == s) => true,
         Value::Object(map) => {
@@ -3367,7 +3428,10 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 /// FIELD NAMES and recognise whose script it is, ending in the two catch-alls.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum KnownShape {
-    DropEmpty(DropPolicy),
+    DropEmpty {
+        policy: DropPolicy,
+        root: Option<String>,
+    },
     SplitCommandLine(crate::painless_windows::ArgvScript),
     Basename,
     FileInfo(String),
@@ -3401,6 +3465,11 @@ pub(crate) enum KnownShape {
     },
     DecodeBase64 {
         source: String,
+        target: String,
+    },
+    TokenCount {
+        source: String,
+        separator: String,
         target: String,
     },
     WrapValueInList {
@@ -3482,14 +3551,31 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Pattern: drop null and empty values recursively. Matched on the SHAPE,
     // not the helper's name -- panw spells it `dropEmptyFields`, and keying
     // on `drop(ctx)` left every emptied object behind. What counts as empty
-    // comes from the script's own predicate, which is not the same everywhere.
+    // comes from the script's own predicate, which is not the same
+    // everywhere; vpcflow runs it over ONE subtree rather than the document.
     if normalised.contains("removeIf")
         && normalised.contains("instanceof Map")
         && normalised.contains("instanceof List")
-        && normalised.contains("(ctx)")
     {
-        shapes.push(KnownShape::DropEmpty(DropPolicy::read(normalised)));
-        return shapes;
+        if normalised.contains("(ctx)") {
+            shapes.push(KnownShape::DropEmpty {
+                policy: DropPolicy::read(normalised),
+                root: None,
+            });
+            return shapes;
+        }
+        if let Some(at) = normalised.rfind("(ctx.")
+            && let Some(root) = normalised[at + "(ctx.".len()..].split(')').next()
+            && root
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '.' || c == '_' || c == '?')
+        {
+            shapes.push(KnownShape::DropEmpty {
+                policy: DropPolicy::read(normalised),
+                root: Some(crate::painless_params::clean_path(root)),
+            });
+            return shapes;
+        }
     }
 
     // Pattern: Windows argument splitting, the Go implementation the sysmon,
@@ -3634,6 +3720,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // referer.
     if normalised.contains(".decodeBase64()")
         && let Some(shape) = parse_decode_base64(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: a split's token COUNT stored on the event -- vpcflow's format
+    // dispatch, where every dissect gates on it.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains(").length")
+        && let Some(shape) = parse_token_count(normalised)
     {
         shapes.push(shape);
         return shapes;
@@ -3971,10 +4067,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
 /// Returns whether the script counts as HANDLED, with each branch's semantics
 /// unchanged from the old inline dispatch: a guarded branch may decline, and
 /// the caller then tries the next shape in the list.
+#[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
 pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &KnownShape) -> bool {
     match shape {
-        KnownShape::DropEmpty(policy) => {
-            drop_empty_recursive(event, policy);
+        KnownShape::DropEmpty { policy, root } => {
+            match root {
+                None => drop_empty_recursive(event, policy),
+                Some(path) => {
+                    if let Some(subtree) = crate::painless_params::pointer_mut(event, path) {
+                        drop_value(subtree, policy);
+                    }
+                }
+            }
             true
         }
         KnownShape::SplitCommandLine(script) => {
@@ -4021,6 +4125,11 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => run_split_token_field(event, source, *separator, *parse_int, target),
         KnownShape::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
+        KnownShape::TokenCount {
+            source,
+            separator,
+            target,
+        } => run_token_count(event, source, separator, target),
         KnownShape::WrapValueInList { source, target } => {
             if let Some(value) = event.get(source).cloned() {
                 let _ = event.set(target, Value::Array(vec![value]));
@@ -5315,6 +5424,7 @@ def event_timezone = get_timezone(ctx);
     /// collection, in both maps and lists.
     fn drop_everything() -> DropPolicy {
         DropPolicy {
+            nulls: true,
             empty_strings: true,
             empty_collections: true,
             prune_lists: true,
@@ -5355,6 +5465,7 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(
             policy,
             DropPolicy {
+                nulls: true,
                 empty_strings: false,
                 empty_collections: false,
                 prune_lists: false,

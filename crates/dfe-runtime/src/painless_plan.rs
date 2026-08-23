@@ -218,7 +218,10 @@ mod tests {
              return false; } drop(ctx);",
         );
         assert!(
-            matches!(plan.known.as_slice(), [KnownShape::DropEmpty(policy)] if policy.empty_strings)
+            matches!(
+                plan.known.as_slice(),
+                [KnownShape::DropEmpty { policy, root: None }] if policy.empty_strings
+            )
         );
     }
 }
