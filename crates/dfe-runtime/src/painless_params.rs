@@ -66,7 +66,15 @@ pub(crate) enum ParamsShape {
     SysmonQueryResults,
     SysmonRegistry,
     MessageTable,
-    LookupPut { source: String, target: String },
+    LookupPut {
+        source: String,
+        target: String,
+        removes: Vec<String>,
+    },
+    LookupWrapList {
+        source: String,
+        target: String,
+    },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -168,12 +176,26 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     }
 
     // Pattern: look one field up in the table and `.put` the row somewhere
-    // ELSE -- the security pipeline's logon type. Ahead of the normalise
-    // shape, which writes back to the field it read.
+    // ELSE -- the security pipeline's logon type, dnsserver's QTYPE with its
+    // trailing `.remove`. Ahead of the normalise shape, which writes back to
+    // the field it read.
     if normalised.contains("= params.get(ctx.")
         && let Some((source, target)) = parse_lookup_put(normalised)
     {
-        return Some(ParamsShape::LookupPut { source, target });
+        return Some(ParamsShape::LookupPut {
+            source,
+            target,
+            removes: parse_removes(normalised),
+        });
+    }
+
+    // Pattern: the row wrapped in a one-element list -- dnsserver's winlog
+    // keywords.
+    if normalised.contains("= params.get(ctx.")
+        && normalised.contains("new ArrayList()")
+        && let Some((source, target)) = parse_lookup_wrap_list(normalised)
+    {
+        return Some(ParamsShape::LookupWrapList { source, target });
     }
 
     // Pattern: map a field through a params table in whichever direction it
@@ -248,13 +270,32 @@ pub(crate) fn run_params_shape(
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
         ParamsShape::MessageTable => crate::painless_windows::run_message_table(event, params),
-        ParamsShape::LookupPut { source, target } => {
+        ParamsShape::LookupPut {
+            source,
+            target,
+            removes,
+        } => {
             if let Some(row) = event
                 .get_as_string(source)
                 .and_then(|key| params.get(&key))
                 .cloned()
             {
                 let _ = event.set(target, row);
+            }
+            // The script removes OUTSIDE its null guard, so a key with no
+            // table row still goes.
+            for path in removes {
+                event.remove(path);
+            }
+            true
+        }
+        ParamsShape::LookupWrapList { source, target } => {
+            if let Some(row) = event
+                .get_as_string(source)
+                .and_then(|key| params.get(&key))
+                .cloned()
+            {
+                let _ = event.set(target, Value::Array(vec![row]));
             }
             true
         }
@@ -296,6 +337,49 @@ fn parse_lookup_put(script: &str) -> Option<(String, String)> {
     let leaf = before[put_at + ".put(\"".len()..].trim_end_matches('"');
     let base = clean_path(before[..put_at].rsplit("ctx.").next()?);
     Some((clean_path(source), format!("{base}.{leaf}")))
+}
+
+/// Every `ctx.<base>.remove("<key>")` in the script, as dotted paths.
+fn parse_removes(script: &str) -> Vec<String> {
+    let mut removes = Vec::new();
+    for (at, _) in script.match_indices(".remove(\"") {
+        let Some(key) = script[at + ".remove(\"".len()..].split('"').next() else {
+            continue;
+        };
+        let before = &script[..at];
+        let Some(ctx_at) = before.rfind("ctx.") else {
+            continue;
+        };
+        let base = clean_path(&before[ctx_at + 4..]);
+        if base.chars().all(|c| c.is_alphanumeric() || c == '.' || c == '_') {
+            removes.push(format!("{base}.{key}"));
+        }
+    }
+    removes
+}
+
+/// Read the wrap-in-list shape: `def <t> = params.get(ctx.<source>); def
+/// <list> = new ArrayList(); <list>.add(<t>); ctx.<target> = <list>;`.
+fn parse_lookup_wrap_list(script: &str) -> Option<(String, String)> {
+    let at = script.find("= params.get(ctx.")?;
+    let after = &script[at + "= params.get(ctx.".len()..];
+    let (source, _) = after.split_once(')')?;
+    let local = script[..at].split_whitespace().next_back()?;
+
+    let add = format!(".add({local})");
+    let add_at = script.find(&add)?;
+    let list = script[..add_at]
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
+    if list.is_empty() {
+        return None;
+    }
+
+    let store = format!(" = {list};");
+    let store_at = script.rfind(&store)?;
+    let before = &script[..store_at];
+    let target = clean_path(before[before.rfind("ctx.")? + 4..].trim());
+    Some((clean_path(source), target))
 }
 
 /// Split sysmon's `QueryResults` into `dns.answers`, `dns.resolved_ip` and
