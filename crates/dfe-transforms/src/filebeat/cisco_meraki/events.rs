@@ -677,7 +677,7 @@ impl Transform for Events {
                                 _ => value,
                             };
                             if !key.is_empty() {
-                                event.set(&format!("{}{}", kv_target_prefix, key), value)?;
+                                kv_put(event, &format!("{}{}", kv_target_prefix, key), value)?;
                             }
                         }
                     }
@@ -715,7 +715,8 @@ impl Transform for Events {
                                 _ => value,
                             };
                             if !key.is_empty() {
-                                event.set(
+                                kv_put(
+                                    event,
                                     &format!(
                                         "cisco_meraki.site_to_site_vpn.connectivity_change.{}",
                                         key
@@ -1279,7 +1280,11 @@ impl Transform for Events {
                         };
                         {
                             if !key.is_empty() {
-                                event.set(&format!("cisco_meraki.martian_vlan.{}", key), value)?;
+                                kv_put(
+                                    event,
+                                    &format!("cisco_meraki.martian_vlan.{}", key),
+                                    value,
+                                )?;
                             }
                         }
                     }

@@ -1235,7 +1235,8 @@ impl Transform for Default {
                                 {
                                     let key = key.trim_matches(|c| " ".contains(c));
                                     if !key.is_empty() {
-                                        event.set(
+                                        kv_put(
+                                            event,
                                             &format!("cisco.umbrella.audit.before_values.{}", key),
                                             value,
                                         )?;
@@ -1315,7 +1316,8 @@ impl Transform for Default {
                                 {
                                     let key = key.trim_matches(|c| " ".contains(c));
                                     if !key.is_empty() {
-                                        event.set(
+                                        kv_put(
+                                            event,
                                             &format!("cisco.umbrella.audit.after_values.{}", key),
                                             value,
                                         )?;

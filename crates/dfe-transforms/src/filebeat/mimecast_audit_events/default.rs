@@ -363,7 +363,8 @@ impl Transform for Default {
                             };
                             {
                                 if !key.is_empty() {
-                                    event.set(
+                                    kv_put(
+                                        event,
                                         &format!("mimecast.event_info_parts.{}", key),
                                         value,
                                     )?;

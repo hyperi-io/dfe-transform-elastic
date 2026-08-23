@@ -8857,7 +8857,7 @@ impl Transform for Default {
                             let key = key.trim_matches(|c| " ".contains(c));
                             let value = value.trim_matches(|c| " ".contains(c));
                             if !key.is_empty() {
-                                event.set(&format!("_temp_.orig_security.{}", key), value)?;
+                                kv_put(event, &format!("_temp_.orig_security.{}", key), value)?;
                             }
                         }
                     }
@@ -8892,7 +8892,7 @@ impl Transform for Default {
                             let key = key.trim_matches(|c| " ".contains(c));
                             let value = value.trim_matches(|c| " ".contains(c));
                             if !key.is_empty() {
-                                event.set(&format!("_temp_.cisco.dn_parts.{}", key), value)?;
+                                kv_put(event, &format!("_temp_.cisco.dn_parts.{}", key), value)?;
                             }
                         }
                     }

@@ -98,7 +98,7 @@ impl Transform for Security {
                     {
                         let value = value.trim_matches(|c| " '\"".contains(c));
                         if !key.is_empty() {
-                            event.set(key, value)?;
+                            kv_put(event, key, value)?;
                         }
                     }
                 }

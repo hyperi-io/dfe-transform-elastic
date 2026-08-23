@@ -152,7 +152,7 @@ impl Transform for Airmarshal {
                             _ => value,
                         };
                         if !key.is_empty() {
-                            event.set(&format!("_temp.kv.{}", key), value)?;
+                            kv_put(event, &format!("_temp.kv.{}", key), value)?;
                         }
                     }
                 }

@@ -88,7 +88,7 @@ impl Transform for UseFlattenedDebug {
                         };
                         {
                             if !key.is_empty() {
-                                event.set(&format!("_behaviors_object.{}", key), value)?;
+                                kv_put(event, &format!("_behaviors_object.{}", key), value)?;
                             }
                         }
                     }
@@ -184,7 +184,7 @@ impl Transform for UseFlattenedDebug {
                             };
                             {
                                 if !key.is_empty() {
-                                    event.set(&format!("_risk_object.{}", key), value)?;
+                                    kv_put(event, &format!("_risk_object.{}", key), value)?;
                                 }
                             }
                         }

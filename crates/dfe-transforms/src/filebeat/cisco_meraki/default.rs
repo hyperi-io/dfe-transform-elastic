@@ -313,7 +313,7 @@ impl Transform for Default {
                             };
                             {
                                 if !key.is_empty() {
-                                    event.set(key, value)?;
+                                    kv_put(event, key, value)?;
                                 }
                             }
                         }
@@ -555,7 +555,7 @@ impl Transform for Default {
                                 _ => value,
                             };
                             if !key.is_empty() {
-                                event.set(&format!("_temp.kv.{}", key), value)?;
+                                kv_put(event, &format!("_temp.kv.{}", key), value)?;
                             }
                         }
                     }
@@ -699,7 +699,7 @@ impl Transform for Default {
                         {
                             let value = value.trim_matches(|c| " '\"".contains(c));
                             if !key.is_empty() {
-                                event.set(key, value)?;
+                                kv_put(event, key, value)?;
                             }
                         }
                     }
@@ -1719,7 +1719,7 @@ impl Transform for Default {
                                     _ => value,
                                 };
                                 if !key.is_empty() {
-                                    event.set(&format!("{}{}", kv_target_prefix, key), value)?;
+                                    kv_put(event, &format!("{}{}", kv_target_prefix, key), value)?;
                                 }
                             }
                         }
@@ -1756,7 +1756,8 @@ impl Transform for Default {
                                     _ => value,
                                 };
                                 if !key.is_empty() {
-                                    event.set(
+                                    kv_put(
+                                        event,
                                         &format!(
                                             "cisco_meraki.site_to_site_vpn.connectivity_change.{}",
                                             key
@@ -2295,7 +2296,8 @@ impl Transform for Default {
                             };
                             {
                                 if !key.is_empty() {
-                                    event.set(
+                                    kv_put(
+                                        event,
                                         &format!("cisco_meraki.martian_vlan.{}", key),
                                         value,
                                     )?;

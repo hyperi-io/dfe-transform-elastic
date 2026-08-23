@@ -5,9 +5,9 @@
   "sources": {
     "aws": { "events": 432, "events_total": 538, "fields_wrong": 286 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
-    "checkpoint": { "events": 98, "events_total": 111, "fields_wrong": 43 },
+    "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },
     "cisco_asa": { "events": 508, "events_total": 512, "fields_wrong": 19 },
-    "cisco_ftd": { "events": 429, "events_total": 432, "fields_wrong": 2 },
+    "cisco_ftd": { "events": 430, "events_total": 432, "fields_wrong": 0 },
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
     "cisco_meraki": { "events": 245, "events_total": 245, "fields_wrong": 0 },
     "cisco_nexus": { "events": 45, "events_total": 45, "fields_wrong": 0 },

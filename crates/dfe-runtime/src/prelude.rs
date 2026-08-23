@@ -28,9 +28,9 @@ pub use crate::date_formats::{parse_date, parse_date_out};
 pub use crate::codegen_api::{
     RegisteredDomainResult, community_id_v1, convert_value, csv_close_quote_gap, dot_expand,
     fingerprint_default, foreach_array, geoip_lookup, grok_to_regex, grok_to_regex_with_map,
-    gsub_field, is_internal_ip, join_values, map_strings, painless_exec, painless_exec_params,
-    parse_json_field, parse_json_str, parse_user_agent, registered_domain_lookup, resolve_path,
-    sort_values, uri_parts, url_decode,
+    gsub_field, is_internal_ip, join_values, kv_put, map_strings, painless_exec,
+    painless_exec_params, parse_json_field, parse_json_str, parse_user_agent,
+    registered_domain_lookup, resolve_path, sort_values, uri_parts, url_decode,
 };
 
 pub use crate::painless_helpers::{

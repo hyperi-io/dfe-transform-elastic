@@ -1053,7 +1053,7 @@ impl Transform for Default {
                                 };
                                 {
                                     if !key.is_empty() {
-                                        event.set(&format!("temp.{}", key), value)?;
+                                        kv_put(event, &format!("temp.{}", key), value)?;
                                     }
                                 }
                             }
@@ -1077,7 +1077,7 @@ impl Transform for Default {
                                 };
                                 {
                                     if !key.is_empty() {
-                                        event.set(&format!("temp.{}", key), value)?;
+                                        kv_put(event, &format!("temp.{}", key), value)?;
                                     }
                                 }
                             }

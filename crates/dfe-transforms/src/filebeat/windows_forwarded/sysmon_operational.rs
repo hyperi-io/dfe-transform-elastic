@@ -168,7 +168,7 @@ impl Transform for SysmonOperational {
                         };
                         {
                             if !key.is_empty() {
-                                event.set(&format!("_temp.hashes.{}", key), value)?;
+                                kv_put(event, &format!("_temp.hashes.{}", key), value)?;
                             }
                         }
                     }

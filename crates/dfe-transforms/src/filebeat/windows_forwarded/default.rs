@@ -939,7 +939,7 @@ impl Transform for Default {
                                 let key = key.trim_matches(|c| "\n\t".contains(c));
                                 let value = value.trim_matches(|c| "\n\t".contains(c));
                                 if !key.is_empty() {
-                                    event.set(&format!("winlog.event_data.{}", key), value)?;
+                                    kv_put(event, &format!("winlog.event_data.{}", key), value)?;
                                 }
                             }
                         }
@@ -1569,7 +1569,7 @@ impl Transform for Default {
                                 let key = key.trim_matches(|c| " \n\t".contains(c));
                                 let value = value.trim_matches(|c| " \n\t".contains(c));
                                 if !key.is_empty() {
-                                    event.set(&format!("winlog.event_data.{}", key), value)?;
+                                    kv_put(event, &format!("winlog.event_data.{}", key), value)?;
                                 }
                             }
                         }
@@ -2552,7 +2552,7 @@ impl Transform for Default {
                                 };
                                 {
                                     if !key.is_empty() {
-                                        event.set(&format!("_temp.hashes.{}", key), value)?;
+                                        kv_put(event, &format!("_temp.hashes.{}", key), value)?;
                                     }
                                 }
                             }

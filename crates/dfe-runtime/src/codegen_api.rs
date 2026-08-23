@@ -1192,6 +1192,25 @@ fn path_extension(path: &str) -> Option<&str> {
     (!extension.is_empty()).then_some(extension)
 }
 
+/// Write one `kv` pair, APPENDING where the field already holds something.
+///
+/// Elastic's processor asks `hasField` first and appends when it does, so a key
+/// that repeats in the line collects a list. Overwriting kept only the last:
+/// checkpoint logs several `match_id` and `rule_action` per connection and we
+/// reported one of each.
+///
+/// # Errors
+///
+/// Propagates a failure to set or append.
+pub fn kv_put(event: &mut Event, path: &str, value: impl AsRef<str>) -> Result<()> {
+    let value = value.as_ref();
+    if event.get(path).is_some() {
+        event.append(path, value)
+    } else {
+        event.set(path, value)
+    }
+}
+
 /// Elastic's string processors: `lowercase`, `uppercase` and `trim`.
 ///
 /// Each is an `AbstractStringProcessor` there, and every one of them walks a

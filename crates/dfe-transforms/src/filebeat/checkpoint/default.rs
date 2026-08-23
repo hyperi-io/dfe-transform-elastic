@@ -117,7 +117,7 @@ impl Transform for Default {
                                 continue;
                             }
                             if !key.is_empty() {
-                                event.set(&format!("checkpoint.{}", key), value)?;
+                                kv_put(event, &format!("checkpoint.{}", key), value)?;
                             }
                         }
                     }
@@ -189,7 +189,7 @@ impl Transform for Default {
                                     continue;
                                 }
                                 if !key.is_empty() {
-                                    event.set(&format!("checkpoint.{}", key), value)?;
+                                    kv_put(event, &format!("checkpoint.{}", key), value)?;
                                 }
                             }
                         }
