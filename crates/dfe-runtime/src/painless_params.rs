@@ -85,6 +85,7 @@ pub(crate) enum ParamsShape {
     },
     MimecastLogType,
     InvocationDetails,
+    ScheduledTask,
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -138,6 +139,12 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return Some(ParamsShape::SentinelRemoval);
+    }
+
+    // Pattern: windows security's decoded scheduled-task XML, normalised
+    // against the trigger and action tables params carries.
+    if normalised.contains("ArrayList normalizeTriggers(") {
+        return Some(ParamsShape::ScheduledTask);
     }
 
     // Pattern: powershell's raw invocation details, one structured map per
@@ -344,6 +351,7 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::MimecastLogType => try_mimecast_log_type(event, params),
         ParamsShape::InvocationDetails => try_invocation_details(event, params),
+        ParamsShape::ScheduledTask => crate::painless_scheduled_task::run(event, params),
         ParamsShape::ProtocolPrefix {
             list,
             fallback,
