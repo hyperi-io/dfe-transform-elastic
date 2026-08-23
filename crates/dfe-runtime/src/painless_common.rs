@@ -649,6 +649,51 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
     true
 }
 
+/// `ctx.<f>.removeIf(v -> v == '<literal>')` as a
+/// [`KnownShape::RemoveListValue`].
+fn parse_remove_list_value(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".removeIf(")?;
+    let before = &script[..at];
+    let subject = &before[before.rfind("ctx.")? + 4..];
+    // A ctx FIELD and nothing else. crowdstrike's argv split calls the same
+    // method on a local and on an entry set, and reading back to the nearest
+    // `ctx.` claimed those scripts for a field they never touch.
+    if !subject
+        .chars()
+        .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    {
+        return None;
+    }
+    let field = clean_path(subject);
+    let (_, lambda) = script[at..].split_once("->")?;
+    let lambda = lambda.split(')').next()?;
+    // ONE literal comparison and nothing else. A drop-empty predicate is a
+    // chain of them over several sentinels, and reading its first literal
+    // would claim that whole script for a single removal.
+    if lambda.matches("==").count() != 1 || lambda.contains('|') || lambda.contains('&') {
+        return None;
+    }
+    let (_, rhs) = lambda.split_once("==")?;
+    let value = quoted_first(rhs)?;
+    (!field.is_empty()).then_some(KnownShape::RemoveListValue { field, value })
+}
+
+/// Drop every member of a list equal to one literal.
+fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
+    let Some(Value::Array(members)) = event.get(field) else {
+        return true;
+    };
+    let kept: Vec<Value> = members
+        .iter()
+        .filter(|member| member.as_str() != Some(value))
+        .cloned()
+        .collect();
+    let _ = event.set(field, Value::Array(kept));
+    true
+}
+
 /// gcp audit's `related.entity`, transliterated.
 ///
 /// The `isKubernetes` gate is the whole point of it: for a k8s cluster the
@@ -4886,6 +4931,10 @@ pub(crate) enum KnownShape {
     },
     MailRelated(Box<MailRelatedScript>),
     GcpRelatedEntity,
+    RemoveListValue {
+        field: String,
+        value: String,
+    },
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -5130,6 +5179,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::SecurityhubResources);
             return shapes;
         }
+    }
+
+    // Pattern: drop one literal out of a list -- m365's file.path, whose
+    // append leaves a bare separator when neither half of its template is
+    // there.
+    if normalised.contains(".removeIf(")
+        && !normalised.contains("instanceof Map")
+        && let Some(shape) = parse_remove_list_value(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
     }
 
     // Pattern: gcp audit's related.entity, whose `isKubernetes` gate decides
@@ -5761,6 +5821,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::InspectorResources { multi } => run_inspector_resources(event, *multi),
         KnownShape::MailRelated(script) => run_mail_related(event, script),
         KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
+        KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()

@@ -145,6 +145,12 @@ pub fn painless_to_string(v: &Value) -> String {
 pub fn template_to_string(v: &Value) -> String {
     use std::fmt::Write as _;
 
+    // Mustache renders a null the same way it renders an absent field: as
+    // NOTHING. Painless's `toString` gives the four letters, and appending
+    // those put a literal "null" into m365's related.user and device.id.
+    if v.is_null() {
+        return String::new();
+    }
     let Value::Array(items) = v else {
         return painless_to_string(v);
     };
@@ -454,6 +460,10 @@ mod tests {
             "{0=golang.org/x/net, 1=nerdctl}"
         );
         assert_eq!(template_to_string(&json!([])), "{}");
+
+        // A null renders as NOTHING, the way an absent field does -- Painless
+        // gives the four letters and appending those is a literal "null".
+        assert_eq!(template_to_string(&Value::Null), "");
 
         // Everything else renders exactly as Painless does.
         assert_eq!(template_to_string(&json!("plain")), "plain");
