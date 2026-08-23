@@ -105,23 +105,17 @@ impl Transform for Default {
 
             let _cond = { event.get("mimecast.to").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("mimecast.to").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.to.address",
-                            json!(
-                                event
-                                    .get("_ingest._value.emailAddress")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("mimecast.to", Value::Array(out))?;
-                }
+                foreach_array(event, "mimecast.to", |event| {
+                    event.append_unique(
+                        "email.to.address",
+                        json!(
+                            event
+                                .get("_ingest._value.emailAddress")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             if let Some(v) = event
@@ -190,23 +184,17 @@ impl Transform for Default {
                     && event.get("mimecast.to").is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("mimecast.to").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "user.full_name",
-                            json!(
-                                event
-                                    .get("_ingest._value.displayableName")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("mimecast.to", Value::Array(out))?;
-                }
+                foreach_array(event, "mimecast.to", |event| {
+                    event.append_unique(
+                        "user.full_name",
+                        json!(
+                            event
+                                .get("_ingest._value.displayableName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             // ignore_failure: true

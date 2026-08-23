@@ -548,27 +548,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.comments").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.createdByDisplayName")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.comments", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.comments", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.createdByDisplayName")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -671,28 +665,22 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.createdDateTime")
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.createdDateTime")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set("_ingest._value.created_datetime", parsed)?;
-                                    }
+                                    event.set("_ingest._value.created_datetime", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -705,21 +693,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.remediationStatus") {
-                                event.rename(
-                                    "_ingest._value.remediationStatus",
-                                    "_ingest._value.remediation_status",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.remediationStatus") {
+                            event.rename(
+                                "_ingest._value.remediationStatus",
+                                "_ingest._value.remediation_status",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -732,21 +714,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.remediationStatusDetails") {
-                                event.rename(
-                                    "_ingest._value.remediationStatusDetails",
-                                    "_ingest._value.remediation_status_details",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.remediationStatusDetails") {
+                            event.rename(
+                                "_ingest._value.remediationStatusDetails",
+                                "_ingest._value.remediation_status_details",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1004,27 +980,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.comments").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.createdByDisplayName")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.comments", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.comments", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.createdByDisplayName")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1033,27 +1003,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.comments").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.createdBy")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.comments", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.comments", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.createdBy")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1087,20 +1051,56 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.@odata.type") {
+                        event.rename("_ingest._value.@odata.type", "_ingest._value.odata_type")?;
+                    }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
                         // ignore_failure: true
                         let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value", "@odata.type")?;
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.receivedDateTime")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                                {
+                                    event.set("_ingest._value.received_datetime", parsed)?;
+                                }
+                            }
                             Ok(())
                         })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
             }
 
             let _cond = {
@@ -1109,53 +1109,44 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.@odata.type") {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "email.delivery_timestamp",
+                                json!(
+                                    event
+                                        .get("_ingest._value.received_datetime")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.antiSpamDirection") {
                             event.rename(
-                                "_ingest._value.@odata.type",
-                                "_ingest._value.odata_type",
+                                "_ingest._value.antiSpamDirection",
+                                "_ingest._value.antispam_direction",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.receivedDateTime")
-                                {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set("_ingest._value.received_datetime", parsed)?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1168,27 +1159,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "email.delivery_timestamp",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.received_datetime")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "email.direction",
+                                json!(
+                                    event
+                                        .get("_ingest._value.antispam_direction")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1201,21 +1186,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.antiSpamDirection") {
-                                event.rename(
-                                    "_ingest._value.antiSpamDirection",
-                                    "_ingest._value.antispam_direction",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "email.subject",
+                                json!(
+                                    event
+                                        .get("_ingest._value.subject")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1228,27 +1213,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "email.direction",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.antispam_direction")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.recipientEmailAddress") {
+                            event.rename(
+                                "_ingest._value.recipientEmailAddress",
+                                "_ingest._value.recipient_email_address",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1261,27 +1234,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "email.subject",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.subject")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.recipient_email_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1294,87 +1261,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.recipientEmailAddress") {
-                                event.rename(
-                                    "_ingest._value.recipientEmailAddress",
-                                    "_ingest._value.recipient_email_address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.recipient_email_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "email.to.address",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.recipient_email_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "email.to.address",
+                                json!(
+                                    event
+                                        .get("_ingest._value.recipient_email_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1440,149 +1341,17 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.deliveryAction") {
-                                event.rename(
-                                    "_ingest._value.deliveryAction",
-                                    "_ingest._value.delivery_action",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.deliveryLocation") {
-                                event.rename(
-                                    "_ingest._value.deliveryLocation",
-                                    "_ingest._value.delivery_location",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.internetMessageId") {
-                                event.rename(
-                                    "_ingest._value.internetMessageId",
-                                    "_ingest._value.internet_message_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.networkMessageId") {
-                                event.rename(
-                                    "_ingest._value.networkMessageId",
-                                    "_ingest._value.network_message_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value.p1Sender", "@odata.type")?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.p1Sender.@odata.type") {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.deliveryAction") {
                             event.rename(
-                                "_ingest._value.p1Sender.@odata.type",
-                                "_ingest._value.p1_sender.odata_type",
+                                "_ingest._value.deliveryAction",
+                                "_ingest._value.delivery_action",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
             }
 
             let _cond = {
@@ -1591,68 +1360,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value.p2Sender", "@odata.type")?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.p2Sender.@odata.type") {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.deliveryLocation") {
                             event.rename(
-                                "_ingest._value.p2Sender.@odata.type",
-                                "_ingest._value.p2_sender.odata_type",
+                                "_ingest._value.deliveryLocation",
+                                "_ingest._value.delivery_location",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.p1Sender.displayName") {
-                                event.rename(
-                                    "_ingest._value.p1Sender.displayName",
-                                    "_ingest._value.p1_sender.display_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1665,27 +1383,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p1_sender.display_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.internetMessageId") {
+                            event.rename(
+                                "_ingest._value.internetMessageId",
+                                "_ingest._value.internet_message_id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1698,21 +1404,102 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.p1Sender.domainName") {
-                                event.rename(
-                                    "_ingest._value.p1Sender.domainName",
-                                    "_ingest._value.p1_sender.domain_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.networkMessageId") {
+                            event.rename(
+                                "_ingest._value.networkMessageId",
+                                "_ingest._value.network_message_id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value.p1Sender", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.p1Sender.@odata.type") {
+                        event.rename(
+                            "_ingest._value.p1Sender.@odata.type",
+                            "_ingest._value.p1_sender.odata_type",
+                        )?;
                     }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value.p2Sender", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.p2Sender.@odata.type") {
+                        event.rename(
+                            "_ingest._value.p2Sender.@odata.type",
+                            "_ingest._value.p2_sender.odata_type",
+                        )?;
+                    }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.p1Sender.displayName") {
+                            event.rename(
+                                "_ingest._value.p1Sender.displayName",
+                                "_ingest._value.p1_sender.display_name",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1725,27 +1512,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hosts",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p1_sender.domain_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p1_sender.display_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1758,21 +1539,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.p1Sender.emailAddress") {
-                                event.rename(
-                                    "_ingest._value.p1Sender.emailAddress",
-                                    "_ingest._value.p1_sender.email_address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.p1Sender.domainName") {
+                            event.rename(
+                                "_ingest._value.p1Sender.domainName",
+                                "_ingest._value.p1_sender.domain_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1785,27 +1560,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "email.from.address",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p1_sender.email_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hosts",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p1_sender.domain_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1818,27 +1587,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p1_sender.email_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.p1Sender.emailAddress") {
+                            event.rename(
+                                "_ingest._value.p1Sender.emailAddress",
+                                "_ingest._value.p1_sender.email_address",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1851,21 +1608,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.p2Sender.displayName") {
-                                event.rename(
-                                    "_ingest._value.p2Sender.displayName",
-                                    "_ingest._value.p2_sender.display_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "email.from.address",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p1_sender.email_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1878,27 +1635,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p2_sender.display_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p1_sender.email_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1911,21 +1662,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.p2Sender.domainName") {
-                                event.rename(
-                                    "_ingest._value.p2Sender.domainName",
-                                    "_ingest._value.p2_sender.domain_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.p2Sender.displayName") {
+                            event.rename(
+                                "_ingest._value.p2Sender.displayName",
+                                "_ingest._value.p2_sender.display_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1938,27 +1683,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hosts",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p2_sender.domain_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p2_sender.display_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1971,21 +1710,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.p2Sender.emailAddress") {
-                                event.rename(
-                                    "_ingest._value.p2Sender.emailAddress",
-                                    "_ingest._value.p2_sender.email_address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.p2Sender.domainName") {
+                            event.rename(
+                                "_ingest._value.p2Sender.domainName",
+                                "_ingest._value.p2_sender.domain_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1998,27 +1731,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "email.from.address",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p2_sender.email_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hosts",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p2_sender.domain_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2031,27 +1758,69 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.p2_sender.email_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.p2Sender.emailAddress") {
+                            event.rename(
+                                "_ingest._value.p2Sender.emailAddress",
+                                "_ingest._value.p2_sender.email_address",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "email.from.address",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p2_sender.email_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.p2_sender.email_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2116,27 +1885,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.ip",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.sender_ip")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.ip",
+                                json!(
+                                    event
+                                        .get("_ingest._value.sender_ip")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2149,21 +1912,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.threatDetectionMethods") {
-                                event.rename(
-                                    "_ingest._value.threatDetectionMethods",
-                                    "_ingest._value.threat_detection_methods",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.threatDetectionMethods") {
+                            event.rename(
+                                "_ingest._value.threatDetectionMethods",
+                                "_ingest._value.threat_detection_methods",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2280,27 +2037,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "cloud.instance.id",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.instance_id")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "cloud.instance.id",
+                                json!(
+                                    event
+                                        .get("_ingest._value.instance_id")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2313,21 +2064,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.instanceName") {
-                                event.rename(
-                                    "_ingest._value.instanceName",
-                                    "_ingest._value.instance_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.instanceName") {
+                            event.rename(
+                                "_ingest._value.instanceName",
+                                "_ingest._value.instance_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2340,27 +2085,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "cloud.instance.name",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.instance_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "cloud.instance.name",
+                                json!(
+                                    event
+                                        .get("_ingest._value.instance_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2425,21 +2164,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.displayName") {
-                                event.rename(
-                                    "_ingest._value.displayName",
-                                    "_ingest._value.display_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.displayName") {
+                            event.rename(
+                                "_ingest._value.displayName",
+                                "_ingest._value.display_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2504,21 +2237,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.vmMetadata.cloudProvider") {
-                                event.rename(
-                                    "_ingest._value.vmMetadata.cloudProvider",
-                                    "_ingest._value.vm_metadata.cloud_provider",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.vmMetadata.cloudProvider") {
+                            event.rename(
+                                "_ingest._value.vmMetadata.cloudProvider",
+                                "_ingest._value.vm_metadata.cloud_provider",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2531,21 +2258,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.mdeDeviceId") {
-                                event.rename(
-                                    "_ingest._value.mdeDeviceId",
-                                    "_ingest._value.mde_device_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.mdeDeviceId") {
+                            event.rename(
+                                "_ingest._value.mdeDeviceId",
+                                "_ingest._value.mde_device_id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2558,21 +2279,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.osPlatform") {
-                                event.rename(
-                                    "_ingest._value.osPlatform",
-                                    "_ingest._value.os_platform",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.osPlatform") {
+                            event.rename(
+                                "_ingest._value.osPlatform",
+                                "_ingest._value.os_platform",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2585,89 +2300,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "host.os.name",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.os_platform")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "host.os.version",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.version")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
                             event.append_unique(
-                                "device.id",
+                                "host.os.name",
                                 json!(
                                     event
-                                        .get("_ingest._value.azureAdDeviceId")
+                                        .get("_ingest._value.os_platform")
                                         .map_or_else(String::new, painless_to_string)
                                 ),
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2680,170 +2327,134 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.azureAdDeviceId") {
-                                event.rename(
-                                    "_ingest._value.azureAdDeviceId",
-                                    "_ingest._value.azure_ad_device_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.defenderAvStatus") {
-                                event.rename(
-                                    "_ingest._value.defenderAvStatus",
-                                    "_ingest._value.defender_av_status",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.deviceDnsName") {
-                                event.rename(
-                                    "_ingest._value.deviceDnsName",
-                                    "_ingest._value.device_dns_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hosts",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.device_dns_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "host.name",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.device_dns_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
                             event.append_unique(
-                                "host.hostname",
+                                "host.os.version",
+                                json!(
+                                    event
+                                        .get("_ingest._value.version")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        event.append_unique(
+                            "device.id",
+                            json!(
+                                event
+                                    .get("_ingest._value.azureAdDeviceId")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.azureAdDeviceId") {
+                            event.rename(
+                                "_ingest._value.azureAdDeviceId",
+                                "_ingest._value.azure_ad_device_id",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.defenderAvStatus") {
+                            event.rename(
+                                "_ingest._value.defenderAvStatus",
+                                "_ingest._value.defender_av_status",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.deviceDnsName") {
+                            event.rename(
+                                "_ingest._value.deviceDnsName",
+                                "_ingest._value.device_dns_name",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hosts",
                                 json!(
                                     event
                                         .get("_ingest._value.device_dns_name")
                                         .map_or_else(String::new, painless_to_string)
                                 ),
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2856,55 +2467,72 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.firstSeenDateTime")
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "host.name",
+                                json!(
+                                    event
+                                        .get("_ingest._value.device_dns_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        event.append_unique(
+                            "host.hostname",
+                            json!(
+                                event
+                                    .get("_ingest._value.device_dns_name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.firstSeenDateTime")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set("_ingest._value.first_seen_datetime", parsed)?;
-                                    }
+                                    event.set("_ingest._value.first_seen_datetime", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.healthStatus") {
-                                event.rename(
-                                    "_ingest._value.healthStatus",
-                                    "_ingest._value.health_status",
-                                )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2917,408 +2545,45 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.accountName") {
-                                                event.rename(
-                                                    "_ingest._value.accountName",
-                                                    "_ingest._value.account_name",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.healthStatus") {
+                            event.rename(
+                                "_ingest._value.healthStatus",
+                                "_ingest._value.health_status",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    if event.has("_ingest._value.accountName") {
+                                        event.rename(
+                                            "_ingest._value.accountName",
+                                            "_ingest._value.account_name",
                                         )?;
                                     }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                event.append_unique(
-                                                    "user.name",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest._value.account_name")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                event.append_unique(
-                                                    "related.user",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest._value.account_name")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.domainName") {
-                                                event.rename(
-                                                    "_ingest._value.domainName",
-                                                    "_ingest._value.domain_name",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                event.append_unique(
-                                                    "related.hosts",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest._value.domain_name")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                dot_expand(event, "_ingest._value", "@odata.type")?;
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.loggedOnUsers") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.loggedOnUsers").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.@odata.type") {
-                                                event.rename(
-                                                    "_ingest._value.@odata.type",
-                                                    "_ingest._value.odata_type",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.loggedOnUsers",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.loggedOnUsers") {
-                                event.rename(
-                                    "_ingest._value.loggedOnUsers",
-                                    "_ingest._value.logged_on_users",
-                                )?;
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3331,21 +2596,233 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.onboardingStatus") {
-                                event.rename(
-                                    "_ingest._value.onboardingStatus",
-                                    "_ingest._value.onboarding_status",
-                                )?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        event.append_unique(
+                                            "user.name",
+                                            json!(
+                                                event
+                                                    .get("_ingest._value.account_name")
+                                                    .map_or_else(String::new, painless_to_string)
+                                            ),
+                                        )?;
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        event.append_unique(
+                                            "related.user",
+                                            json!(
+                                                event
+                                                    .get("_ingest._value.account_name")
+                                                    .map_or_else(String::new, painless_to_string)
+                                            ),
+                                        )?;
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    if event.has("_ingest._value.domainName") {
+                                        event.rename(
+                                            "_ingest._value.domainName",
+                                            "_ingest._value.domain_name",
+                                        )?;
+                                    }
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        event.append_unique(
+                                            "related.hosts",
+                                            json!(
+                                                event
+                                                    .get("_ingest._value.domain_name")
+                                                    .map_or_else(String::new, painless_to_string)
+                                            ),
+                                        )?;
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        dot_expand(event, "_ingest._value", "@odata.type")?;
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.loggedOnUsers") {
+                                foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
+                                    if event.has("_ingest._value.@odata.type") {
+                                        event.rename(
+                                            "_ingest._value.@odata.type",
+                                            "_ingest._value.odata_type",
+                                        )?;
+                                    }
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.loggedOnUsers") {
+                            event.rename(
+                                "_ingest._value.loggedOnUsers",
+                                "_ingest._value.logged_on_users",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.onboardingStatus") {
+                            event.rename(
+                                "_ingest._value.onboardingStatus",
+                                "_ingest._value.onboarding_status",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3462,120 +2939,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.rbacGroupName") {
-                                event.rename(
-                                    "_ingest._value.rbacGroupName",
-                                    "_ingest._value.rbac_group.name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.riskScore") {
-                                event.rename(
-                                    "_ingest._value.riskScore",
-                                    "_ingest._value.risk_score",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value.vmMetadata", "@odata.type")?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.vmMetadata.@odata.type") {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.rbacGroupName") {
                             event.rename(
-                                "_ingest._value.vmMetadata.@odata.type",
-                                "_ingest._value.vm_metadata.odata_type",
+                                "_ingest._value.rbacGroupName",
+                                "_ingest._value.rbac_group.name",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.vmMetadata.resourceId") {
-                                event.rename(
-                                    "_ingest._value.vmMetadata.resourceId",
-                                    "_ingest._value.vm_metadata.resource_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3588,23 +2960,48 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.vmMetadata.subscriptionId") {
-                                event.rename(
-                                    "_ingest._value.vmMetadata.subscriptionId",
-                                    "_ingest._value.vm_metadata.subscription_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.riskScore") {
+                            event
+                                .rename("_ingest._value.riskScore", "_ingest._value.risk_score")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value.vmMetadata", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.vmMetadata.@odata.type") {
+                        event.rename(
+                            "_ingest._value.vmMetadata.@odata.type",
+                            "_ingest._value.vm_metadata.odata_type",
+                        )?;
+                    }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -3615,153 +3012,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.vmMetadata.vmId") {
-                                event.rename(
-                                    "_ingest._value.vmMetadata.vmId",
-                                    "_ingest._value.vm_metadata.vm_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.detectionStatus") {
-                                event.rename(
-                                    "_ingest._value.detectionStatus",
-                                    "_ingest._value.detection_status",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "event.action",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.detection_status")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value.fileDetails", "@odata.type")?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.fileDetails.@odata.type") {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.vmMetadata.resourceId") {
                             event.rename(
-                                "_ingest._value.fileDetails.@odata.type",
-                                "_ingest._value.file_details.odata_type",
+                                "_ingest._value.vmMetadata.resourceId",
+                                "_ingest._value.vm_metadata.resource_id",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.sha1") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.sha1",
-                                    "_ingest._value.file_details.sha1",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3774,27 +3033,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "file.hash.sha1",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.file_details.sha1")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.vmMetadata.subscriptionId") {
+                            event.rename(
+                                "_ingest._value.vmMetadata.subscriptionId",
+                                "_ingest._value.vm_metadata.subscription_id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3807,27 +3054,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hash",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.file_details.sha1")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.vmMetadata.vmId") {
+                            event.rename(
+                                "_ingest._value.vmMetadata.vmId",
+                                "_ingest._value.vm_metadata.vm_id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3840,21 +3075,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.sha256") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.sha256",
-                                    "_ingest._value.file_details.sha256",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.detectionStatus") {
+                            event.rename(
+                                "_ingest._value.detectionStatus",
+                                "_ingest._value.detection_status",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3867,27 +3096,75 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "file.hash.sha256",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.file_details.sha256")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "event.action",
+                                json!(
+                                    event
+                                        .get("_ingest._value.detection_status")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value.fileDetails", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.fileDetails.@odata.type") {
+                        event.rename(
+                            "_ingest._value.fileDetails.@odata.type",
+                            "_ingest._value.file_details.odata_type",
+                        )?;
                     }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.sha1") {
+                            event.rename(
+                                "_ingest._value.fileDetails.sha1",
+                                "_ingest._value.file_details.sha1",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3900,27 +3177,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hash",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.file_details.sha256")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "file.hash.sha1",
+                                json!(
+                                    event
+                                        .get("_ingest._value.file_details.sha1")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3933,21 +3204,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.fileName") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.fileName",
-                                    "_ingest._value.file_details.name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hash",
+                                json!(
+                                    event
+                                        .get("_ingest._value.file_details.sha1")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3960,27 +3231,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "file.name",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.file_details.name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.sha256") {
+                            event.rename(
+                                "_ingest._value.fileDetails.sha256",
+                                "_ingest._value.file_details.sha256",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3993,21 +3252,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.filePath") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.filePath",
-                                    "_ingest._value.file_details.path",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "file.hash.sha256",
+                                json!(
+                                    event
+                                        .get("_ingest._value.file_details.sha256")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4020,31 +3279,121 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "file.path",
-                                    json!(format!(
-                                        "{}\\{}",
-                                        event
-                                            .get("_ingest._value.file_details.path")
-                                            .map_or_else(String::new, painless_to_string),
-                                        event
-                                            .get("_ingest._value.file_details.name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    )),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hash",
+                                json!(
+                                    event
+                                        .get("_ingest._value.file_details.sha256")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.fileName") {
+                            event.rename(
+                                "_ingest._value.fileDetails.fileName",
+                                "_ingest._value.file_details.name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "file.name",
+                                json!(
+                                    event
+                                        .get("_ingest._value.file_details.name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.filePath") {
+                            event.rename(
+                                "_ingest._value.fileDetails.filePath",
+                                "_ingest._value.file_details.path",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "file.path",
+                                json!(format!(
+                                    "{}\\{}",
+                                    event
+                                        .get("_ingest._value.file_details.path")
+                                        .map_or_else(String::new, painless_to_string),
+                                    event
+                                        .get("_ingest._value.file_details.name")
+                                        .map_or_else(String::new, painless_to_string)
+                                )),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4126,21 +3475,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.filePublisher") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.filePublisher",
-                                    "_ingest._value.file_details.publisher",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.filePublisher") {
+                            event.rename(
+                                "_ingest._value.fileDetails.filePublisher",
+                                "_ingest._value.file_details.publisher",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4153,21 +3496,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.issuer") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.issuer",
-                                    "_ingest._value.file_details.issuer",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.issuer") {
+                            event.rename(
+                                "_ingest._value.fileDetails.issuer",
+                                "_ingest._value.file_details.issuer",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4180,21 +3517,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.fileDetails.signer") {
-                                event.rename(
-                                    "_ingest._value.fileDetails.signer",
-                                    "_ingest._value.file_details.signer",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.fileDetails.signer") {
+                            event.rename(
+                                "_ingest._value.fileDetails.signer",
+                                "_ingest._value.file_details.signer",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4259,27 +3590,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "source.ip",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.ip_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "source.ip",
+                                json!(
+                                    event
+                                        .get("_ingest._value.ip_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4292,27 +3617,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.ip",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.ip_address")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.ip",
+                                json!(
+                                    event
+                                        .get("_ingest._value.ip_address")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4323,20 +3642,14 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value.userAccount", "@odata.type")?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value.userAccount", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -4345,46 +3658,34 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.userAccount.@odata.type") {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.userAccount.@odata.type") {
+                        event.rename(
+                            "_ingest._value.userAccount.@odata.type",
+                            "_ingest._value.user_account.odata_type",
+                        )?;
+                    }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.userAccount.domainName") {
                             event.rename(
-                                "_ingest._value.userAccount.@odata.type",
-                                "_ingest._value.user_account.odata_type",
+                                "_ingest._value.userAccount.domainName",
+                                "_ingest._value.user_account.domain_name",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userAccount.domainName") {
-                                event.rename(
-                                    "_ingest._value.userAccount.domainName",
-                                    "_ingest._value.user_account.domain_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4397,203 +3698,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hosts",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.user_account.domain_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userAccount.azureAdUserId") {
-                                event.rename(
-                                    "_ingest._value.userAccount.azureAdUserId",
-                                    "_ingest._value.user_account.azure_ad_user_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.user_account.azure_ad_user_id")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userAccount.userPrincipalName") {
-                                event.rename(
-                                    "_ingest._value.userAccount.userPrincipalName",
-                                    "_ingest._value.user_account.user_principal_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.user_account.user_principal_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.primaryAddress") {
-                                event.rename(
-                                    "_ingest._value.primaryAddress",
-                                    "_ingest._value.primary_address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
                             event.append_unique(
-                                "user.email",
+                                "related.hosts",
                                 json!(
                                     event
-                                        .get("_ingest._value.primary_address")
+                                        .get("_ingest._value.user_account.domain_name")
                                         .map_or_else(String::new, painless_to_string)
                                 ),
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4606,23 +3725,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.primary_address")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.userAccount.azureAdUserId") {
+                            event.rename(
+                                "_ingest._value.userAccount.azureAdUserId",
+                                "_ingest._value.user_account.azure_ad_user_id",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4635,110 +3746,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userAccount.accountName") {
-                                event.rename(
-                                    "_ingest._value.userAccount.accountName",
-                                    "_ingest._value.user_account.account_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userAccount.displayName") {
-                                event.rename(
-                                    "_ingest._value.userAccount.displayName",
-                                    "_ingest._value.user_account.display_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
                         // ignore_failure: true
                         let _ = (|| -> Result<()> {
                             event.append_unique(
                                 "related.user",
                                 json!(
                                     event
-                                        .get("_ingest._value.user_account.display_name")
+                                        .get("_ingest._value.user_account.azure_ad_user_id")
                                         .map_or_else(String::new, painless_to_string)
                                 ),
                             )?;
                             Ok(())
                         })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.user_account.account_name")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4751,21 +3773,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userAccount.userSid") {
-                                event.rename(
-                                    "_ingest._value.userAccount.userSid",
-                                    "_ingest._value.user_account.user_sid",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.userAccount.userPrincipalName") {
+                            event.rename(
+                                "_ingest._value.userAccount.userPrincipalName",
+                                "_ingest._value.user_account.user_principal_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4778,27 +3794,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.user",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.user_account.user_sid")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.user_account.user_principal_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4811,21 +3821,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.clusterBy") {
-                                event.rename(
-                                    "_ingest._value.clusterBy",
-                                    "_ingest._value.cluster_by",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.primaryAddress") {
+                            event.rename(
+                                "_ingest._value.primaryAddress",
+                                "_ingest._value.primary_address",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4838,21 +3842,220 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.clusterByValue") {
-                                event.rename(
-                                    "_ingest._value.clusterByValue",
-                                    "_ingest._value.cluster_by_value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        event.append_unique(
+                            "user.email",
+                            json!(
+                                event
+                                    .get("_ingest._value.primary_address")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.primary_address")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.userAccount.accountName") {
+                            event.rename(
+                                "_ingest._value.userAccount.accountName",
+                                "_ingest._value.user_account.account_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.userAccount.displayName") {
+                            event.rename(
+                                "_ingest._value.userAccount.displayName",
+                                "_ingest._value.user_account.display_name",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.user_account.display_name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.user_account.account_name")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.userAccount.userSid") {
+                            event.rename(
+                                "_ingest._value.userAccount.userSid",
+                                "_ingest._value.user_account.user_sid",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.user",
+                                json!(
+                                    event
+                                        .get("_ingest._value.user_account.user_sid")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.clusterBy") {
+                            event
+                                .rename("_ingest._value.clusterBy", "_ingest._value.cluster_by")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.clusterByValue") {
+                            event.rename(
+                                "_ingest._value.clusterByValue",
+                                "_ingest._value.cluster_by_value",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4917,21 +4120,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.networkMessageIds") {
-                                event.rename(
-                                    "_ingest._value.networkMessageIds",
-                                    "_ingest._value.network_message_ids",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.networkMessageIds") {
+                            event.rename(
+                                "_ingest._value.networkMessageIds",
+                                "_ingest._value.network_message_ids",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4944,21 +4141,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.objectId") {
-                                event.rename(
-                                    "_ingest._value.objectId",
-                                    "_ingest._value.object_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.objectId") {
+                            event.rename("_ingest._value.objectId", "_ingest._value.object_id")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4971,21 +4159,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.processCommandLine") {
-                                event.rename(
-                                    "_ingest._value.processCommandLine",
-                                    "_ingest._value.process.command_line",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.processCommandLine") {
+                            event.rename(
+                                "_ingest._value.processCommandLine",
+                                "_ingest._value.process.command_line",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4998,27 +4180,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.command_line",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.process.command_line")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "process.command_line",
+                                json!(
+                                    event
+                                        .get("_ingest._value.process.command_line")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5074,20 +4250,14 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            dot_expand(event, "_ingest._value.imageFile", "@odata.type")?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(event, "_ingest._value.imageFile", "@odata.type")?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -5096,46 +4266,34 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.imageFile.@odata.type") {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.imageFile.@odata.type") {
+                        event.rename(
+                            "_ingest._value.imageFile.@odata.type",
+                            "_ingest._value.image_file.odata_type",
+                        )?;
+                    }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.sha1") {
                             event.rename(
-                                "_ingest._value.imageFile.@odata.type",
-                                "_ingest._value.image_file.odata_type",
+                                "_ingest._value.imageFile.sha1",
+                                "_ingest._value.image_file.sha1",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.sha1") {
-                                event.rename(
-                                    "_ingest._value.imageFile.sha1",
-                                    "_ingest._value.image_file.sha1",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5148,181 +4306,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.hash.sha1",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.image_file.sha1")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hash",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.image_file.sha1")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.sha256") {
-                                event.rename(
-                                    "_ingest._value.imageFile.sha256",
-                                    "_ingest._value.image_file.sha256",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.hash.sha256",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.image_file.sha256")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hash",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.image_file.sha256")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
                         // ignore_failure: true
                         let _ = (|| -> Result<()> {
-                            dot_expand(
-                                event,
-                                "_ingest._value.parentProcessImageFile",
-                                "@odata.type",
+                            event.append_unique(
+                                "process.hash.sha1",
+                                json!(
+                                    event
+                                        .get("_ingest._value.image_file.sha1")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
                             )?;
                             Ok(())
                         })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
             }
 
             let _cond = {
@@ -5331,46 +4331,44 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.parentProcessImageFile.@odata.type") {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hash",
+                                json!(
+                                    event
+                                        .get("_ingest._value.image_file.sha1")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.sha256") {
                             event.rename(
-                                "_ingest._value.parentProcessImageFile.@odata.type",
-                                "_ingest._value.parent_process.image_file.odata_type",
+                                "_ingest._value.imageFile.sha256",
+                                "_ingest._value.image_file.sha256",
                             )?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.alerts.evidence", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.sha1") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.sha1",
-                                    "_ingest._value.parent_process.image_file.sha1",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5383,27 +4381,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.parent.hash.sha1",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.parent_process.image_file.sha1")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "process.hash.sha256",
+                                json!(
+                                    event
+                                        .get("_ingest._value.image_file.sha256")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5416,27 +4408,79 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hash",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.parent_process.image_file.sha1")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hash",
+                                json!(
+                                    event
+                                        .get("_ingest._value.image_file.sha256")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        dot_expand(
+                            event,
+                            "_ingest._value.parentProcessImageFile",
+                            "@odata.type",
+                        )?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "json.alerts.evidence", |event| {
+                    if event.has("_ingest._value.parentProcessImageFile.@odata.type") {
+                        event.rename(
+                            "_ingest._value.parentProcessImageFile.@odata.type",
+                            "_ingest._value.parent_process.image_file.odata_type",
+                        )?;
                     }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.sha1") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.sha1",
+                                "_ingest._value.parent_process.image_file.sha1",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5449,21 +4493,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.sha256") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.sha256",
-                                    "_ingest._value.parent_process.image_file.sha256",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "process.parent.hash.sha1",
+                                json!(
+                                    event
+                                        .get("_ingest._value.parent_process.image_file.sha1")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5476,27 +4520,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.parent.hash.sha256",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.parent_process.image_file.sha256")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hash",
+                                json!(
+                                    event
+                                        .get("_ingest._value.parent_process.image_file.sha1")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5509,27 +4547,69 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.hash",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.parent_process.image_file.sha256")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.sha256") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.sha256",
+                                "_ingest._value.parent_process.image_file.sha256",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "process.parent.hash.sha256",
+                                json!(
+                                    event
+                                        .get("_ingest._value.parent_process.image_file.sha256")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.hash",
+                                json!(
+                                    event
+                                        .get("_ingest._value.parent_process.image_file.sha256")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5594,31 +4674,25 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event
-                                    .get_as_string("_ingest._value.parentProcessCreationDateTime")
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.parentProcessCreationDateTime")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set(
-                                            "_ingest._value.parent_process.creation_datetime",
-                                            parsed,
-                                        )?;
-                                    }
+                                    event.set(
+                                        "_ingest._value.parent_process.creation_datetime",
+                                        parsed,
+                                    )?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5631,27 +4705,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.parent.start",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.parent_process.creation_datetime")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "process.parent.start",
+                                json!(
+                                    event
+                                        .get("_ingest._value.parent_process.creation_datetime")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5716,91 +4784,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.processCreationDateTime")
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.processCreationDateTime")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set(
-                                            "_ingest._value.process.creation_datetime",
-                                            parsed,
-                                        )?;
-                                    }
+                                    event
+                                        .set("_ingest._value.process.creation_datetime", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "process.start",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.process.creation_datetime")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.alerts.evidence")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.fileName") {
-                                event.rename(
-                                    "_ingest._value.imageFile.fileName",
-                                    "_ingest._value.image_file.name",
-                                )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5813,21 +4813,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.filePath") {
-                                event.rename(
-                                    "_ingest._value.imageFile.filePath",
-                                    "_ingest._value.image_file.path",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "process.start",
+                                json!(
+                                    event
+                                        .get("_ingest._value.process.creation_datetime")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5840,21 +4840,57 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.filePublisher") {
-                                event.rename(
-                                    "_ingest._value.imageFile.filePublisher",
-                                    "_ingest._value.image_file.publisher",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.fileName") {
+                            event.rename(
+                                "_ingest._value.imageFile.fileName",
+                                "_ingest._value.image_file.name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.filePath") {
+                            event.rename(
+                                "_ingest._value.imageFile.filePath",
+                                "_ingest._value.image_file.path",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.alerts.evidence")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.filePublisher") {
+                            event.rename(
+                                "_ingest._value.imageFile.filePublisher",
+                                "_ingest._value.image_file.publisher",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5922,21 +4958,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.issuer") {
-                                event.rename(
-                                    "_ingest._value.imageFile.issuer",
-                                    "_ingest._value.image_file.issuer",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.issuer") {
+                            event.rename(
+                                "_ingest._value.imageFile.issuer",
+                                "_ingest._value.image_file.issuer",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5949,21 +4979,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.imageFile.signer") {
-                                event.rename(
-                                    "_ingest._value.imageFile.signer",
-                                    "_ingest._value.image_file.signer",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.imageFile.signer") {
+                            event.rename(
+                                "_ingest._value.imageFile.signer",
+                                "_ingest._value.image_file.signer",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5976,21 +5000,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.fileName") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.fileName",
-                                    "_ingest._value.parent_process.image_file.name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.fileName") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.fileName",
+                                "_ingest._value.parent_process.image_file.name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6003,21 +5021,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.filePath") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.filePath",
-                                    "_ingest._value.parent_process.image_file.path",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.filePath") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.filePath",
+                                "_ingest._value.parent_process.image_file.path",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6030,21 +5042,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.filePublisher") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.filePublisher",
-                                    "_ingest._value.parent_process.image_file.publisher",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.filePublisher") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.filePublisher",
+                                "_ingest._value.parent_process.image_file.publisher",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6119,21 +5125,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.issuer") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.issuer",
-                                    "_ingest._value.parent_process.image_file.issuer",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.issuer") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.issuer",
+                                "_ingest._value.parent_process.image_file.issuer",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6146,21 +5146,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.parentProcessImageFile.signer") {
-                                event.rename(
-                                    "_ingest._value.parentProcessImageFile.signer",
-                                    "_ingest._value.parent_process.image_file.signer",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.parentProcessImageFile.signer") {
+                            event.rename(
+                                "_ingest._value.parentProcessImageFile.signer",
+                                "_ingest._value.parent_process.image_file.signer",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6190,21 +5184,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.registryHive") {
-                                event.rename(
-                                    "_ingest._value.registryHive",
-                                    "_ingest._value.registry_hive",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.registryHive") {
+                            event.rename(
+                                "_ingest._value.registryHive",
+                                "_ingest._value.registry_hive",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6217,27 +5205,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "registry.hive",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.registry_hive")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "registry.hive",
+                                json!(
+                                    event
+                                        .get("_ingest._value.registry_hive")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6250,21 +5232,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.registryKey") {
-                                event.rename(
-                                    "_ingest._value.registryKey",
-                                    "_ingest._value.registry_key",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.registryKey") {
+                            event.rename(
+                                "_ingest._value.registryKey",
+                                "_ingest._value.registry_key",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6277,27 +5253,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "registry.key",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.registry_key")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "registry.key",
+                                json!(
+                                    event
+                                        .get("_ingest._value.registry_key")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6310,21 +5280,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.registryValueType") {
-                                event.rename(
-                                    "_ingest._value.registryValueType",
-                                    "_ingest._value.registry_value_type",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.registryValueType") {
+                            event.rename(
+                                "_ingest._value.registryValueType",
+                                "_ingest._value.registry_value_type",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6337,27 +5301,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "registry.data.type",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.registry_value_type")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "registry.data.type",
+                                json!(
+                                    event
+                                        .get("_ingest._value.registry_value_type")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6370,21 +5328,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.registryValue") {
-                                event.rename(
-                                    "_ingest._value.registryValue",
-                                    "_ingest._value.registry_value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.registryValue") {
+                            event.rename(
+                                "_ingest._value.registryValue",
+                                "_ingest._value.registry_value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6397,27 +5349,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "registry.value",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.registry_value")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "registry.value",
+                                json!(
+                                    event
+                                        .get("_ingest._value.registry_value")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6430,21 +5376,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.registryValueName") {
-                                event.rename(
-                                    "_ingest._value.registryValueName",
-                                    "_ingest._value.registry_value_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.registryValueName") {
+                            event.rename(
+                                "_ingest._value.registryValueName",
+                                "_ingest._value.registry_value_name",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6457,21 +5397,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.securityGroupId") {
-                                event.rename(
-                                    "_ingest._value.securityGroupId",
-                                    "_ingest._value.security_group_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        if event.has("_ingest._value.securityGroupId") {
+                            event.rename(
+                                "_ingest._value.securityGroupId",
+                                "_ingest._value.security_group_id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6484,27 +5418,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "group.id",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.security_group_id")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "group.id",
+                                json!(
+                                    event
+                                        .get("_ingest._value.security_group_id")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6532,46 +5460,34 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("process.parent.entity_id").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        {
-                            let mut values = Vec::new();
-                            if let Some(v) = event.get("_ingest._value") {
-                                values.push(v.clone());
-                            }
-                            if !values.is_empty() {
-                                event.set("_ingest._value", json!(fingerprint_default(&values)))?;
-                            }
+                foreach_array(event, "process.parent.entity_id", |event| {
+                    {
+                        let mut values = Vec::new();
+                        if let Some(v) = event.get("_ingest._value") {
+                            values.push(v.clone());
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        if !values.is_empty() {
+                            event.set("_ingest._value", json!(fingerprint_default(&values)))?;
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("process.parent.entity_id", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get("process.entity_id").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("process.entity_id").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        {
-                            let mut values = Vec::new();
-                            if let Some(v) = event.get("_ingest._value") {
-                                values.push(v.clone());
-                            }
-                            if !values.is_empty() {
-                                event.set("_ingest._value", json!(fingerprint_default(&values)))?;
-                            }
+                foreach_array(event, "process.entity_id", |event| {
+                    {
+                        let mut values = Vec::new();
+                        if let Some(v) = event.get("_ingest._value") {
+                            values.push(v.clone());
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        if !values.is_empty() {
+                            event.set("_ingest._value", json!(fingerprint_default(&values)))?;
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("process.entity_id", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -6582,35 +5498,29 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.alerts.evidence").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.createdDateTime");
-                            event.remove("_ingest._value.receivedDateTime");
-                            event.remove("_ingest._value.attachmentsCount");
-                            event.remove("_ingest._value.firstSeenDateTime");
-                            event.remove("_ingest._value.parentProcessCreationDateTime");
-                            event.remove("_ingest._value.processCreationDateTime");
-                            event.remove("_ingest._value.senderIp");
-                            event.remove("_ingest._value.urlCount");
-                            event.remove("_ingest._value.instanceId");
-                            event.remove("_ingest._value.appId");
-                            event.remove("_ingest._value.saasAppId");
-                            event.remove("_ingest._value.osBuild");
-                            event.remove("_ingest._value.rbacGroupId");
-                            event.remove("_ingest._value.fileDetails.fileSize");
-                            event.remove("_ingest._value.ipAddress");
-                            event.remove("_ingest._value.emailCount");
-                            event.remove("_ingest._value.parentProcessId");
-                            event.remove("_ingest._value.processId");
-                            event.remove("_ingest._value.imageFile.fileSize");
-                            event.remove("_ingest._value.parentProcessImageFile.fileSize");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.alerts.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.alerts.evidence", |event| {
+                        event.remove("_ingest._value.createdDateTime");
+                        event.remove("_ingest._value.receivedDateTime");
+                        event.remove("_ingest._value.attachmentsCount");
+                        event.remove("_ingest._value.firstSeenDateTime");
+                        event.remove("_ingest._value.parentProcessCreationDateTime");
+                        event.remove("_ingest._value.processCreationDateTime");
+                        event.remove("_ingest._value.senderIp");
+                        event.remove("_ingest._value.urlCount");
+                        event.remove("_ingest._value.instanceId");
+                        event.remove("_ingest._value.appId");
+                        event.remove("_ingest._value.saasAppId");
+                        event.remove("_ingest._value.osBuild");
+                        event.remove("_ingest._value.rbacGroupId");
+                        event.remove("_ingest._value.fileDetails.fileSize");
+                        event.remove("_ingest._value.ipAddress");
+                        event.remove("_ingest._value.emailCount");
+                        event.remove("_ingest._value.parentProcessId");
+                        event.remove("_ingest._value.processId");
+                        event.remove("_ingest._value.imageFile.fileSize");
+                        event.remove("_ingest._value.parentProcessImageFile.fileSize");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6674,36 +5584,17 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("m365_defender.incident.alert.evidence").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(Value::Array(items)) =
-                                    event.get("_ingest._value.logged_on_users").cloned()
-                                {
-                                    let mut out = Vec::with_capacity(items.len());
-                                    for item in items {
-                                        event.set("_ingest._value", item)?;
-                                        event.remove("_ingest._value.account_name");
-                                        out.push(
-                                            event.remove("_ingest._value").unwrap_or(Value::Null),
-                                        );
-                                    }
-                                    event.remove("_ingest");
-                                    event
-                                        .set("_ingest._value.logged_on_users", Value::Array(out))?;
-                                }
+                    foreach_array(event, "m365_defender.incident.alert.evidence", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            foreach_array(event, "_ingest._value.logged_on_users", |event| {
+                                event.remove("_ingest._value.account_name");
                                 Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("m365_defender.incident.alert.evidence", Value::Array(out))?;
-                    }
+                            })?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6726,47 +5617,39 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("m365_defender.incident.alert.evidence").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.ip_address");
-                            event.remove("_ingest._value.detection_status");
-                            event.remove("_ingest._value.received_datetime");
-                            event.remove("_ingest._value.antispam_direction");
-                            event.remove("_ingest._value.subject");
-                            event.remove("_ingest._value.recipient_email_address");
-                            event.remove("_ingest._value.instance_id");
-                            event.remove("_ingest._value.instance_name");
-                            event.remove("_ingest._value.vm_metadata.cloud_provider");
-                            event.remove("_ingest._value.os_platform");
-                            event.remove("_ingest._value.version");
-                            event.remove("_ingest._value.file_details.sha1");
-                            event.remove("_ingest._value.file_details.sha256");
-                            event.remove("_ingest._value.file_details.name");
-                            event.remove("_ingest._value.file_details.path");
-                            event.remove("_ingest._value.file_details.size");
-                            event.remove("_ingest._value.process.command_line");
-                            event.remove("_ingest._value.image_file.sha1");
-                            event.remove("_ingest._value.image_file.sha256");
-                            event.remove("_ingest._value.parent_process.image_file.sha1");
-                            event.remove("_ingest._value.parent_process.image_file.sha256");
-                            event.remove("_ingest._value.parent_process.id");
-                            event.remove("_ingest._value.parent_process.creation_datetime");
-                            event.remove("_ingest._value.process.id");
-                            event.remove("_ingest._value.process.creation_datetime");
-                            event.remove("_ingest._value.registry_value_type");
-                            event.remove("_ingest._value.registry_hive");
-                            event.remove("_ingest._value.registry_key");
-                            event.remove("_ingest._value.registry_value");
-                            event.remove("_ingest._value.security_group_id");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("m365_defender.incident.alert.evidence", Value::Array(out))?;
-                    }
+                    foreach_array(event, "m365_defender.incident.alert.evidence", |event| {
+                        event.remove("_ingest._value.ip_address");
+                        event.remove("_ingest._value.detection_status");
+                        event.remove("_ingest._value.received_datetime");
+                        event.remove("_ingest._value.antispam_direction");
+                        event.remove("_ingest._value.subject");
+                        event.remove("_ingest._value.recipient_email_address");
+                        event.remove("_ingest._value.instance_id");
+                        event.remove("_ingest._value.instance_name");
+                        event.remove("_ingest._value.vm_metadata.cloud_provider");
+                        event.remove("_ingest._value.os_platform");
+                        event.remove("_ingest._value.version");
+                        event.remove("_ingest._value.file_details.sha1");
+                        event.remove("_ingest._value.file_details.sha256");
+                        event.remove("_ingest._value.file_details.name");
+                        event.remove("_ingest._value.file_details.path");
+                        event.remove("_ingest._value.file_details.size");
+                        event.remove("_ingest._value.process.command_line");
+                        event.remove("_ingest._value.image_file.sha1");
+                        event.remove("_ingest._value.image_file.sha256");
+                        event.remove("_ingest._value.parent_process.image_file.sha1");
+                        event.remove("_ingest._value.parent_process.image_file.sha256");
+                        event.remove("_ingest._value.parent_process.id");
+                        event.remove("_ingest._value.parent_process.creation_datetime");
+                        event.remove("_ingest._value.process.id");
+                        event.remove("_ingest._value.process.creation_datetime");
+                        event.remove("_ingest._value.registry_value_type");
+                        event.remove("_ingest._value.registry_hive");
+                        event.remove("_ingest._value.registry_key");
+                        event.remove("_ingest._value.registry_value");
+                        event.remove("_ingest._value.security_group_id");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }

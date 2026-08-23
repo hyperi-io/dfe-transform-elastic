@@ -895,13 +895,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.LocalIpDetails.IpAddressV4") {
@@ -940,14 +937,9 @@ impl Transform for Default {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -961,13 +953,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.LocalPortDetails.Port") {
@@ -1004,14 +993,9 @@ impl Transform for Default {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1025,27 +1009,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.LocalPortDetails.PortName") {
                                 event.rename(
                                     "_ingest._value.LocalPortDetails.PortName",
                                     "_ingest._value.local.port.name",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1059,27 +1035,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.RemoteIpDetails.City.CityName") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.City.CityName",
                                     "_ingest._value.remote_ip.city.name",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1093,27 +1061,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.RemoteIpDetails.Country.CountryCode") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Country.CountryCode",
                                     "_ingest._value.remote_ip.country.code",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1127,27 +1087,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.RemoteIpDetails.Country.CountryName") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Country.CountryName",
                                     "_ingest._value.remote_ip.country.name",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1161,13 +1113,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.RemoteIpDetails.GeoLocation.Lat")
@@ -1178,9 +1127,9 @@ impl Transform for Default {
                                         let converted =
                                             convert_value(val, "double").map_err(|message| {
                                                 TransformError::ParseError {
-                        path: "_ingest._value.RemoteIpDetails.GeoLocation.Lat".into(),
-                        message,
-                        }
+                    path: "_ingest._value.RemoteIpDetails.GeoLocation.Lat".into(),
+                    message,
+                    }
                                             })?;
                                         event.set(
                                             "_ingest._value.remote_ip.geolocation.latitude",
@@ -1207,14 +1156,9 @@ impl Transform for Default {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1228,13 +1172,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.RemoteIpDetails.GeoLocation.Lon")
@@ -1245,9 +1186,9 @@ impl Transform for Default {
                                         let converted =
                                             convert_value(val, "double").map_err(|message| {
                                                 TransformError::ParseError {
-                        path: "_ingest._value.RemoteIpDetails.GeoLocation.Lon".into(),
-                        message,
-                        }
+                    path: "_ingest._value.RemoteIpDetails.GeoLocation.Lon".into(),
+                    message,
+                    }
                                             })?;
                                         event.set(
                                             "_ingest._value.remote_ip.geolocation.longitude",
@@ -1274,14 +1215,9 @@ impl Transform for Default {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1295,13 +1231,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.RemoteIpDetails.IpAddressV4") {
@@ -1342,14 +1275,9 @@ impl Transform for Default {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1363,13 +1291,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event
@@ -1381,9 +1306,9 @@ impl Transform for Default {
                                         let converted =
                                             convert_value(val, "string").map_err(|message| {
                                                 TransformError::ParseError {
-                        path: "_ingest._value.RemoteIpDetails.Organization.Asn".into(),
-                        message,
-                        }
+                    path: "_ingest._value.RemoteIpDetails.Organization.Asn".into(),
+                    message,
+                    }
                                             })?;
                                         event.set(
                                             "_ingest._value.remote_ip.organization.asn",
@@ -1410,14 +1335,9 @@ impl Transform for Default {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1431,27 +1351,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.RemoteIpDetails.Organization.AsnOrg") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Organization.AsnOrg",
                                     "_ingest._value.remote_ip.organization.asn_organization",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1465,24 +1377,16 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.RemoteIpDetails.Organization.Isp") {
                                 event.rename("_ingest._value.RemoteIpDetails.Organization.Isp", "_ingest._value.remote_ip.organization.internet_service_provider")?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1496,27 +1400,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             if event.has("_ingest._value.RemoteIpDetails.Organization.Org") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Organization.Org",
                                     "_ingest._value.remote_ip.organization.internet_provider",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1530,24 +1426,16 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Action.PortProbeAction.PortProbeDetails")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Action.PortProbeAction.PortProbeDetails",
+                        |event| {
                             event.remove("_ingest._value.LocalIpDetails");
                             event.remove("_ingest._value.LocalPortDetails");
                             event.remove("_ingest._value.RemoteIpDetails");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Action.PortProbeAction.PortProbeDetails",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1602,13 +1490,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("aws.securityhub_findings.compliance.related_requirements")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "aws.securityhub_findings.compliance.related_requirements",
+                    |event| {
                         event.append_unique(
                             "rule.ruleset",
                             json!(
@@ -1617,14 +1502,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "aws.securityhub_findings.compliance.related_requirements",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             if event.has("json.Compliance.Status") {
@@ -1692,23 +1572,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Compliance.StatusReasons").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Description") {
-                                event.rename(
-                                    "_ingest._value.Description",
-                                    "_ingest._value.description",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Compliance.StatusReasons", |event| {
+                        if event.has("_ingest._value.Description") {
+                            event.rename(
+                                "_ingest._value.Description",
+                                "_ingest._value.description",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Compliance.StatusReasons", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1722,23 +1594,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Compliance.StatusReasons").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.ReasonCode") {
-                                event.rename(
-                                    "_ingest._value.ReasonCode",
-                                    "_ingest._value.reason_code",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Compliance.StatusReasons", |event| {
+                        if event.has("_ingest._value.ReasonCode") {
+                            event.rename(
+                                "_ingest._value.ReasonCode",
+                                "_ingest._value.reason_code",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Compliance.StatusReasons", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2028,24 +1892,16 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.FindingProviderFields.RelatedFindings")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.FindingProviderFields.RelatedFindings",
+                        |event| {
                             if event.has("_ingest._value.Id") {
                                 event.rename("_ingest._value.Id", "_ingest._value.id")?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.FindingProviderFields.RelatedFindings",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2059,27 +1915,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.FindingProviderFields.RelatedFindings")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.FindingProviderFields.RelatedFindings",
+                        |event| {
                             if event.has("_ingest._value.ProductArn") {
                                 event.rename(
                                     "_ingest._value.ProductArn",
                                     "_ingest._value.product.arn",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.FindingProviderFields.RelatedFindings",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2380,18 +2228,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Malware").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Name") {
-                                event.rename("_ingest._value.Name", "_ingest._value.name")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Malware", |event| {
+                        if event.has("_ingest._value.Name") {
+                            event.rename("_ingest._value.Name", "_ingest._value.name")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Malware", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2403,18 +2245,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Malware").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Path") {
-                                event.rename("_ingest._value.Path", "_ingest._value.path")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Malware", |event| {
+                        if event.has("_ingest._value.Path") {
+                            event.rename("_ingest._value.Path", "_ingest._value.path")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Malware", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2426,18 +2262,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Malware").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.State") {
-                                event.rename("_ingest._value.State", "_ingest._value.state")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Malware", |event| {
+                        if event.has("_ingest._value.State") {
+                            event.rename("_ingest._value.State", "_ingest._value.state")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Malware", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2449,18 +2279,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Malware").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Type") {
-                                event.rename("_ingest._value.Type", "_ingest._value.type")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Malware", |event| {
+                        if event.has("_ingest._value.Type") {
+                            event.rename("_ingest._value.Type", "_ingest._value.type")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Malware", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2988,21 +2812,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.ComponentId") {
-                                event.rename(
-                                    "_ingest._value.ComponentId",
-                                    "_ingest._value.component.id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.ComponentId") {
+                            event.rename(
+                                "_ingest._value.ComponentId",
+                                "_ingest._value.component.id",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3014,21 +2832,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.ComponentType") {
-                                event.rename(
-                                    "_ingest._value.ComponentType",
-                                    "_ingest._value.component.type",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.ComponentType") {
+                            event.rename(
+                                "_ingest._value.ComponentType",
+                                "_ingest._value.component.type",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3040,21 +2852,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Egress.Destination.Address") {
-                                event.rename(
-                                    "_ingest._value.Egress.Destination.Address",
-                                    "_ingest._value.egress.destination.address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Egress.Destination.Address") {
+                            event.rename(
+                                "_ingest._value.Egress.Destination.Address",
+                                "_ingest._value.egress.destination.address",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3066,409 +2872,69 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Egress.Destination.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.Begin") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.Begin")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.Begin"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event.set(
-                                                            "_ingest._value.begin",
-                                                            converted,
-                                                        )?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
-                                                {
-                                                    event.remove("_ingest");
-                                                }
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Egress.Destination.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Egress.Destination.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.End") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.End")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.End"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event
-                                                            .set("_ingest._value.end", converted)?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
-                                                {
-                                                    event.remove("_ingest");
-                                                }
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Egress.Destination.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Egress.Destination.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            event.remove("_ingest._value.Begin");
-                                            event.remove("_ingest._value.End");
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Egress.Destination.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Egress.Destination.PortRanges") {
-                                event.rename(
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
+                                foreach_array(
+                                    event,
                                     "_ingest._value.Egress.Destination.PortRanges",
-                                    "_ingest._value.egress.destination.port_ranges",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Egress.Protocol") {
-                                event.rename(
-                                    "_ingest._value.Egress.Protocol",
-                                    "_ingest._value.egress.protocol",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Egress.Source.Address") {
-                                event.rename(
-                                    "_ingest._value.Egress.Source.Address",
-                                    "_ingest._value.egress.source.address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Egress.Source.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Egress.Source.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.Begin") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.Begin")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.Begin"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event.set(
-                                                            "_ingest._value.begin",
-                                                            converted,
-                                                        )?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.Begin") {
+                                                if let Some(val) = event.get("_ingest._value.Begin")
                                                 {
-                                                    event.remove("_ingest");
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.Begin".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.begin", converted)?;
                                                 }
                                             }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
                                         }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Egress.Source.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3480,90 +2946,68 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Egress.Source.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Egress.Source.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.End") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.End")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.End"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event
-                                                            .set("_ingest._value.end", converted)?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
-                                                {
-                                                    event.remove("_ingest");
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Egress.Destination.PortRanges",
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.End") {
+                                                if let Some(val) = event.get("_ingest._value.End") {
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.End".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.end", converted)?;
                                                 }
                                             }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
                                         }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Egress.Source.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3575,42 +3019,24 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Egress.Source.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Egress.Source.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            event.remove("_ingest._value.Begin");
-                                            event.remove("_ingest._value.End");
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Egress.Source.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Egress.Destination.PortRanges",
+                                    |event| {
+                                        event.remove("_ingest._value.Begin");
+                                        event.remove("_ingest._value.End");
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3622,145 +3048,129 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Egress.Source.PortRanges") {
-                                event.rename(
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Egress.Destination.PortRanges") {
+                            event.rename(
+                                "_ingest._value.Egress.Destination.PortRanges",
+                                "_ingest._value.egress.destination.port_ranges",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Egress.Protocol") {
+                            event.rename(
+                                "_ingest._value.Egress.Protocol",
+                                "_ingest._value.egress.protocol",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Egress.Source.Address") {
+                            event.rename(
+                                "_ingest._value.Egress.Source.Address",
+                                "_ingest._value.egress.source.address",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Egress.Source.PortRanges") {
+                                foreach_array(
+                                    event,
                                     "_ingest._value.Egress.Source.PortRanges",
-                                    "_ingest._value.egress.source.port_ranges",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Ingress.Destination.Address") {
-                                event.rename(
-                                    "_ingest._value.Ingress.Destination.Address",
-                                    "_ingest._value.ingress.destination.address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Ingress.Destination.PortRanges")
-                                {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Ingress.Destination.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.Begin") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.Begin")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.Begin"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event.set(
-                                                            "_ingest._value.begin",
-                                                            converted,
-                                                        )?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.Begin") {
+                                                if let Some(val) = event.get("_ingest._value.Begin")
                                                 {
-                                                    event.remove("_ingest");
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.Begin".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.begin", converted)?;
                                                 }
                                             }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
                                         }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Ingress.Destination.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3772,91 +3182,68 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Ingress.Destination.PortRanges")
-                                {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Ingress.Destination.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.End") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.End")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.End"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event
-                                                            .set("_ingest._value.end", converted)?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
-                                                {
-                                                    event.remove("_ingest");
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Egress.Source.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Egress.Source.PortRanges",
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.End") {
+                                                if let Some(val) = event.get("_ingest._value.End") {
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.End".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.end", converted)?;
                                                 }
                                             }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
                                         }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Ingress.Destination.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3868,43 +3255,24 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Ingress.Destination.PortRanges")
-                                {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Ingress.Destination.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            event.remove("_ingest._value.Begin");
-                                            event.remove("_ingest._value.End");
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Ingress.Destination.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Egress.Source.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Egress.Source.PortRanges",
+                                    |event| {
+                                        event.remove("_ingest._value.Begin");
+                                        event.remove("_ingest._value.End");
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -3916,309 +3284,437 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Ingress.Destination.PortRanges") {
-                                event.rename(
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Egress.Source.PortRanges") {
+                            event.rename(
+                                "_ingest._value.Egress.Source.PortRanges",
+                                "_ingest._value.egress.source.port_ranges",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Ingress.Destination.Address") {
+                            event.rename(
+                                "_ingest._value.Ingress.Destination.Address",
+                                "_ingest._value.ingress.destination.address",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Ingress.Destination.PortRanges") {
+                                foreach_array(
+                                    event,
                                     "_ingest._value.Ingress.Destination.PortRanges",
-                                    "_ingest._value.ingress.destination.port_ranges",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Ingress.Protocol") {
-                                event.rename(
-                                    "_ingest._value.Ingress.Protocol",
-                                    "_ingest._value.ingress.protocol",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Ingress.Source.Address") {
-                                event.rename(
-                                    "_ingest._value.Ingress.Source.Address",
-                                    "_ingest._value.ingress.source.address",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Ingress.Source.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.Begin") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.Begin")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.Begin"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event.set(
-                                                            "_ingest._value.begin",
-                                                            converted,
-                                                        )?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Ingress.Source.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Ingress.Source.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.End") {
-                                                    if let Some(val) =
-                                                        event.get("_ingest._value.End")
-                                                    {
-                                                        let converted = convert_value(val, "long")
-                                                            .map_err(|message| {
-                                                                TransformError::ParseError {
-                                                                    path: "_ingest._value.End"
-                                                                        .into(),
-                                                                    message,
-                                                                }
-                                                            })?;
-                                                        event
-                                                            .set("_ingest._value.end", converted)?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            ) {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.Begin") {
+                                                if let Some(val) = event.get("_ingest._value.Begin")
                                                 {
-                                                    event.remove("_ingest");
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.Begin".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.begin", converted)?;
                                                 }
                                             }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
                                         }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Ingress.Source.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
-                                    if let Some(Value::Array(items)) = event
-                                        .get("_ingest._value.Ingress.Source.PortRanges")
-                                        .cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            event.remove("_ingest._value.Begin");
-                                            event.remove("_ingest._value.End");
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.Ingress.Source.PortRanges",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.NetworkPath")
-                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.NetworkPath").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Ingress.Source.PortRanges") {
-                                event.rename(
-                                    "_ingest._value.Ingress.Source.PortRanges",
-                                    "_ingest._value.ingress.source.port_ranges",
+                                        Ok(())
+                                    },
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Ingress.Destination.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Ingress.Destination.PortRanges",
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.End") {
+                                                if let Some(val) = event.get("_ingest._value.End") {
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.End".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.end", converted)?;
+                                                }
+                                            }
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Ingress.Destination.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Ingress.Destination.PortRanges",
+                                    |event| {
+                                        event.remove("_ingest._value.Begin");
+                                        event.remove("_ingest._value.End");
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Ingress.Destination.PortRanges") {
+                            event.rename(
+                                "_ingest._value.Ingress.Destination.PortRanges",
+                                "_ingest._value.ingress.destination.port_ranges",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.NetworkPath", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Ingress.Protocol") {
+                            event.rename(
+                                "_ingest._value.Ingress.Protocol",
+                                "_ingest._value.ingress.protocol",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Ingress.Source.Address") {
+                            event.rename(
+                                "_ingest._value.Ingress.Source.Address",
+                                "_ingest._value.ingress.source.address",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Ingress.Source.PortRanges",
+                                    |event| {
+                                        // ignore_failure: true
+                                        let _ = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.Begin") {
+                                                if let Some(val) = event.get("_ingest._value.Begin")
+                                                {
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.Begin".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.begin", converted)?;
+                                                }
+                                            }
+                                            Ok(())
+                                        })();
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Ingress.Source.PortRanges",
+                                    |event| {
+                                        // on_failure: 1 handler(s)
+                                        if let Err(err) = (|| -> Result<()> {
+                                            if event.has_value("_ingest._value.End") {
+                                                if let Some(val) = event.get("_ingest._value.End") {
+                                                    let converted = convert_value(val, "long")
+                                                        .map_err(|message| {
+                                                            TransformError::ParseError {
+                                                                path: "_ingest._value.End".into(),
+                                                                message,
+                                                            }
+                                                        })?;
+                                                    event.set("_ingest._value.end", converted)?;
+                                                }
+                                            }
+                                            Ok(())
+                                        })(
+                                        ) {
+                                            event.set(
+                                                "_ingest.on_failure_message",
+                                                err.to_string(),
+                                            )?;
+                                            event.set(
+                                                "_ingest.on_failure_processor_type",
+                                                "convert",
+                                            )?;
+                                            event.append(
+                                                "error.message",
+                                                json!(
+                                                    event
+                                                        .get("_ingest.on_failure_message")
+                                                        .map_or_else(
+                                                            String::new,
+                                                            painless_to_string
+                                                        )
+                                                ),
+                                            )?;
+                                            event.remove("_ingest.on_failure_message");
+                                            event.remove("_ingest.on_failure_processor_type");
+                                            event.remove("_ingest.on_failure_processor_tag");
+                                            if event
+                                                .get_object("_ingest")
+                                                .is_some_and(|m| m.is_empty())
+                                            {
+                                                event.remove("_ingest");
+                                            }
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.Ingress.Source.PortRanges",
+                                    |event| {
+                                        event.remove("_ingest._value.Begin");
+                                        event.remove("_ingest._value.End");
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.NetworkPath")
+                    && event.get("json.NetworkPath").is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.NetworkPath", |event| {
+                        if event.has("_ingest._value.Ingress.Source.PortRanges") {
+                            event.rename(
+                                "_ingest._value.Ingress.Source.PortRanges",
+                                "_ingest._value.ingress.source.port_ranges",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4886,18 +4382,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.RelatedFindings").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Id") {
-                                event.rename("_ingest._value.Id", "_ingest._value.id")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.RelatedFindings", |event| {
+                        if event.has("_ingest._value.Id") {
+                            event.rename("_ingest._value.Id", "_ingest._value.id")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.RelatedFindings", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -4911,21 +4401,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.RelatedFindings").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.ProductArn") {
-                                event.rename(
-                                    "_ingest._value.ProductArn",
-                                    "_ingest._value.product.arn",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.RelatedFindings", |event| {
+                        if event.has("_ingest._value.ProductArn") {
+                            event.rename(
+                                "_ingest._value.ProductArn",
+                                "_ingest._value.product.arn",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.RelatedFindings", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5235,21 +4719,12 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Category") {
-                                event
-                                    .rename("_ingest._value.Category", "_ingest._value.category")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        if event.has("_ingest._value.Category") {
+                            event.rename("_ingest._value.Category", "_ingest._value.category")?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5263,85 +4738,25 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.LastObservedAt")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.last_observed_at", parsed)?;
-                                    }
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.LastObservedAt")
+                            {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.last_observed_at", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.ThreatIntelIndicators")
-                    && event
-                        .get("json.ThreatIntelIndicators")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.LastObservedAt");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.ThreatIntelIndicators")
-                    && event
-                        .get("json.ThreatIntelIndicators")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Source") {
-                                event.rename("_ingest._value.Source", "_ingest._value.source")?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5355,110 +4770,110 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.SourceUrl") {
-                                event.rename(
-                                    "_ingest._value.SourceUrl",
-                                    "_ingest._value.source_url",
-                                )?;
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        event.remove("_ingest._value.LastObservedAt");
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.ThreatIntelIndicators")
+                    && event
+                        .get("json.ThreatIntelIndicators")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        if event.has("_ingest._value.Source") {
+                            event.rename("_ingest._value.Source", "_ingest._value.source")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.ThreatIntelIndicators")
+                    && event
+                        .get("json.ThreatIntelIndicators")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        if event.has("_ingest._value.SourceUrl") {
+                            event
+                                .rename("_ingest._value.SourceUrl", "_ingest._value.source_url")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.ThreatIntelIndicators")
+                    && event
+                        .get("json.ThreatIntelIndicators")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        if event.has("_ingest._value.Value") {
+                            event.rename("_ingest._value.Value", "_ingest._value.value")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.ThreatIntelIndicators")
+                    && event
+                        .get("json.ThreatIntelIndicators")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        if event.has("_ingest._value.Type") {
+                            event.rename("_ingest._value.Type", "_ingest._value.type")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.ThreatIntelIndicators")
+                    && event
+                        .get("json.ThreatIntelIndicators")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(v) = event.get("_ingest._value.last_observed_at").cloned() {
+                                event.set("threat.indicator.last_seen", v)?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.ThreatIntelIndicators")
-                    && event
-                        .get("json.ThreatIntelIndicators")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Value") {
-                                event.rename("_ingest._value.Value", "_ingest._value.value")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.ThreatIntelIndicators")
-                    && event
-                        .get("json.ThreatIntelIndicators")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Type") {
-                                event.rename("_ingest._value.Type", "_ingest._value.type")?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.ThreatIntelIndicators")
-                    && event
-                        .get("json.ThreatIntelIndicators")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.ThreatIntelIndicators").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(v) =
-                                    event.get("_ingest._value.last_observed_at").cloned()
-                                {
-                                    event.set("threat.indicator.last_seen", v)?;
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -5530,612 +4945,174 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.Adjustments") {
-                                                    if let Some(Value::Array(items)) = event
-                                                        .get("_ingest._value.Adjustments")
-                                                        .cloned()
-                                                    {
-                                                        let mut out =
-                                                            Vec::with_capacity(items.len());
-                                                        for item in items {
-                                                            event.set("_ingest._value", item)?;
-                                                            if event.has("_ingest._value.Metric") {
-                                                                event.rename(
-                                                                    "_ingest._value.Metric",
-                                                                    "_ingest._value.metric",
-                                                                )?;
-                                                            }
-                                                            out.push(
-                                                                event
-                                                                    .remove("_ingest._value")
-                                                                    .unwrap_or(Value::Null),
-                                                            );
-                                                        }
-                                                        event.remove("_ingest");
-                                                        event.set(
-                                                            "_ingest._value.Adjustments",
-                                                            Value::Array(out),
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        if event.has_value("_ingest._value.Adjustments") {
+                                            foreach_array(
+                                                event,
+                                                "_ingest._value.Adjustments",
+                                                |event| {
+                                                    if event.has("_ingest._value.Metric") {
+                                                        event.rename(
+                                                            "_ingest._value.Metric",
+                                                            "_ingest._value.metric",
                                                         )?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                if event.has_value("_ingest._value.Adjustments") {
-                                                    if let Some(Value::Array(items)) = event
-                                                        .get("_ingest._value.Adjustments")
-                                                        .cloned()
-                                                    {
-                                                        let mut out =
-                                                            Vec::with_capacity(items.len());
-                                                        for item in items {
-                                                            event.set("_ingest._value", item)?;
-                                                            if event.has("_ingest._value.Reason") {
-                                                                event.rename(
-                                                                    "_ingest._value.Reason",
-                                                                    "_ingest._value.reason",
-                                                                )?;
-                                                            }
-                                                            out.push(
-                                                                event
-                                                                    .remove("_ingest._value")
-                                                                    .unwrap_or(Value::Null),
-                                                            );
-                                                        }
-                                                        event.remove("_ingest");
-                                                        event.set(
-                                                            "_ingest._value.Adjustments",
-                                                            Value::Array(out),
-                                                        )?;
-                                                    }
-                                                }
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Adjustments") {
-                                                event.rename(
-                                                    "_ingest._value.Adjustments",
-                                                    "_ingest._value.adjustments",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // on_failure: 1 handler(s)
-                                            if let Err(err) =
-                                                (|| -> Result<()> {
-                                                    if event.has_value("_ingest._value.BaseScore") {
-                                                        if let Some(val) =
-                                                            event.get("_ingest._value.BaseScore")
-                                                        {
-                                                            let converted =
-                                                                convert_value(val, "double")
-                                                                    .map_err(|message| {
-                                                                        TransformError::ParseError {
-                        path: "_ingest._value.BaseScore".into(),
-                        message,
-                        }
-                                                                    })?;
-                                                            event.set(
-                                                                "_ingest._value.base_score",
-                                                                converted,
-                                                            )?;
-                                                        }
                                                     }
                                                     Ok(())
-                                                })()
+                                                },
+                                            )?;
+                                        }
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        if event.has_value("_ingest._value.Adjustments") {
+                                            foreach_array(
+                                                event,
+                                                "_ingest._value.Adjustments",
+                                                |event| {
+                                                    if event.has("_ingest._value.Reason") {
+                                                        event.rename(
+                                                            "_ingest._value.Reason",
+                                                            "_ingest._value.reason",
+                                                        )?;
+                                                    }
+                                                    Ok(())
+                                                },
+                                            )?;
+                                        }
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    if event.has("_ingest._value.Adjustments") {
+                                        event.rename(
+                                            "_ingest._value.Adjustments",
+                                            "_ingest._value.adjustments",
+                                        )?;
+                                    }
+                                    Ok(())
+                                })?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    // on_failure: 1 handler(s)
+                                    if let Err(err) = (|| -> Result<()> {
+                                        if event.has_value("_ingest._value.BaseScore") {
+                                            if let Some(val) = event.get("_ingest._value.BaseScore")
                                             {
-                                                event.set(
-                                                    "_ingest.on_failure_message",
-                                                    err.to_string(),
-                                                )?;
-                                                event.set(
-                                                    "_ingest.on_failure_processor_type",
-                                                    "convert",
-                                                )?;
-                                                event.append(
-                                                    "error.message",
-                                                    json!(
-                                                        event
-                                                            .get("_ingest.on_failure_message")
-                                                            .map_or_else(
-                                                                String::new,
-                                                                painless_to_string
-                                                            )
-                                                    ),
-                                                )?;
-                                                event.remove("_ingest.on_failure_message");
-                                                event.remove("_ingest.on_failure_processor_type");
-                                                event.remove("_ingest.on_failure_processor_tag");
-                                                if event
-                                                    .get_object("_ingest")
-                                                    .is_some_and(|m| m.is_empty())
-                                                {
-                                                    event.remove("_ingest");
-                                                }
+                                                let converted = convert_value(val, "double")
+                                                    .map_err(|message| {
+                                                        TransformError::ParseError {
+                                                            path: "_ingest._value.BaseScore".into(),
+                                                            message,
+                                                        }
+                                                    })?;
+                                                event
+                                                    .set("_ingest._value.base_score", converted)?;
                                             }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
                                         }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.BaseVector") {
-                                                event.rename(
-                                                    "_ingest._value.BaseVector",
-                                                    "_ingest._value.base_vector",
-                                                )?;
-                                            }
-                                            out.push(
+                                        Ok(())
+                                    })() {
+                                        event.set("_ingest.on_failure_message", err.to_string())?;
+                                        event
+                                            .set("_ingest.on_failure_processor_type", "convert")?;
+                                        event.append(
+                                            "error.message",
+                                            json!(
                                                 event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
+                                                    .get("_ingest.on_failure_message")
+                                                    .map_or_else(String::new, painless_to_string)
+                                            ),
+                                        )?;
+                                        event.remove("_ingest.on_failure_message");
+                                        event.remove("_ingest.on_failure_processor_type");
+                                        event.remove("_ingest.on_failure_processor_tag");
+                                        if event.get_object("_ingest").is_some_and(|m| m.is_empty())
+                                        {
+                                            event.remove("_ingest");
                                         }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
                                     }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Source") {
-                                                event.rename(
-                                                    "_ingest._value.Source",
-                                                    "_ingest._value.source",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Version") {
-                                                event.rename(
-                                                    "_ingest._value.Version",
-                                                    "_ingest._value.version",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                if let Some(v) =
-                                                    event.get("_ingest._value.base_score").cloned()
-                                                {
-                                                    event.set("vulnerability.score.base", v)?;
-                                                }
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            // ignore_failure: true
-                                            let _ = (|| -> Result<()> {
-                                                if let Some(v) =
-                                                    event.get("_ingest._value.version").cloned()
-                                                {
-                                                    event.set("vulnerability.score.version", v)?;
-                                                }
-                                                Ok(())
-                                            })(
-                                            );
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.Cvss") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.Cvss").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            event.remove("_ingest._value.BaseScore");
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set("_ingest._value.Cvss", Value::Array(out))?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Cvss") {
-                                event.rename("_ingest._value.Cvss", "_ingest._value.cvss")?;
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6149,18 +5126,24 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Id") {
-                                event.rename("_ingest._value.Id", "_ingest._value.id")?;
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    if event.has("_ingest._value.BaseVector") {
+                                        event.rename(
+                                            "_ingest._value.BaseVector",
+                                            "_ingest._value.base_vector",
+                                        )?;
+                                    }
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6174,50 +5157,24 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(v) = event.get("_ingest._value.id").cloned() {
-                                    event.set("vulnerability.id", v)?;
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.ReferenceUrls") {
-                                event.rename(
-                                    "_ingest._value.ReferenceUrls",
-                                    "_ingest._value.reference_urls",
-                                )?;
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    if event.has("_ingest._value.Source") {
+                                        event.rename(
+                                            "_ingest._value.Source",
+                                            "_ingest._value.source",
+                                        )?;
+                                    }
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6231,51 +5188,24 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(v) = event.get("_ingest._value.reference_urls").cloned()
-                                {
-                                    event.set("vulnerability.reference", v)?;
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.RelatedVulnerabilities") {
-                                event.rename(
-                                    "_ingest._value.RelatedVulnerabilities",
-                                    "_ingest._value.related_vulnerabilities",
-                                )?;
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    if event.has("_ingest._value.Version") {
+                                        event.rename(
+                                            "_ingest._value.Version",
+                                            "_ingest._value.version",
+                                        )?;
+                                    }
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6289,21 +5219,27 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Vendor.Name") {
-                                event.rename(
-                                    "_ingest._value.Vendor.Name",
-                                    "_ingest._value.vendor.name",
-                                )?;
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        if let Some(v) =
+                                            event.get("_ingest._value.base_score").cloned()
+                                        {
+                                            event.set("vulnerability.score.base", v)?;
+                                        }
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6317,50 +5253,27 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(v) = event.get("_ingest._value.vendor.name").cloned() {
-                                    event.set("vulnerability.scanner.vendor", v)?;
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Vendor.Url") {
-                                event.rename(
-                                    "_ingest._value.Vendor.Url",
-                                    "_ingest._value.vendor.url",
-                                )?;
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        if let Some(v) =
+                                            event.get("_ingest._value.version").cloned()
+                                        {
+                                            event.set("vulnerability.score.version", v)?;
+                                        }
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6374,59 +5287,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.Vendor.VendorCreatedAt")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.vendor.created_at", parsed)?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.Vendor.VendorSeverity") {
-                                event.rename(
-                                    "_ingest._value.Vendor.VendorSeverity",
-                                    "_ingest._value.vendor.severity",
-                                )?;
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.Cvss") {
+                                foreach_array(event, "_ingest._value.Cvss", |event| {
+                                    event.remove("_ingest._value.BaseScore");
+                                    Ok(())
+                                })?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6440,31 +5313,218 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.Vendor.VendorUpdatedAt")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.vendor.updated_at", parsed)?;
-                                    }
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.Cvss") {
+                            event.rename("_ingest._value.Cvss", "_ingest._value.cvss")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.Id") {
+                            event.rename("_ingest._value.Id", "_ingest._value.id")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(v) = event.get("_ingest._value.id").cloned() {
+                                event.set("vulnerability.id", v)?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.ReferenceUrls") {
+                            event.rename(
+                                "_ingest._value.ReferenceUrls",
+                                "_ingest._value.reference_urls",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(v) = event.get("_ingest._value.reference_urls").cloned() {
+                                event.set("vulnerability.reference", v)?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.RelatedVulnerabilities") {
+                            event.rename(
+                                "_ingest._value.RelatedVulnerabilities",
+                                "_ingest._value.related_vulnerabilities",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.Vendor.Name") {
+                            event.rename(
+                                "_ingest._value.Vendor.Name",
+                                "_ingest._value.vendor.name",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(v) = event.get("_ingest._value.vendor.name").cloned() {
+                                event.set("vulnerability.scanner.vendor", v)?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.Vendor.Url") {
+                            event
+                                .rename("_ingest._value.Vendor.Url", "_ingest._value.vendor.url")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.Vendor.VendorCreatedAt")
+                            {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.vendor.created_at", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6478,17 +5538,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Vendor.VendorCreatedAt");
-                            event.remove("_ingest._value.Vendor.VendorUpdatedAt");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.Vendor.VendorSeverity") {
+                            event.rename(
+                                "_ingest._value.Vendor.VendorSeverity",
+                                "_ingest._value.vendor.severity",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6502,45 +5560,25 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Category") {
-                                                event.rename(
-                                                    "_ingest._value.Category",
-                                                    "_ingest._value.category",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.Vendor.VendorUpdatedAt")
+                            {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.vendor.updated_at", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6554,45 +5592,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Architecture") {
-                                                event.rename(
-                                                    "_ingest._value.Architecture",
-                                                    "_ingest._value.architecture",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        event.remove("_ingest._value.Vendor.VendorCreatedAt");
+                        event.remove("_ingest._value.Vendor.VendorUpdatedAt");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6606,333 +5610,295 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Epoch") {
-                                                event.rename(
-                                                    "_ingest._value.Epoch",
-                                                    "_ingest._value.epoch",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.FilePath") {
-                                                event.rename(
-                                                    "_ingest._value.FilePath",
-                                                    "_ingest._value.file_path",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Name") {
-                                                event.rename(
-                                                    "_ingest._value.Name",
-                                                    "_ingest._value.name",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.PackageManager") {
-                                                event.rename(
-                                                    "_ingest._value.PackageManager",
-                                                    "_ingest._value.package_manager",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Release") {
-                                                event.rename(
-                                                    "_ingest._value.Release",
-                                                    "_ingest._value.release",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.VulnerablePackages") {
-                                    if let Some(Value::Array(items)) =
-                                        event.get("_ingest._value.VulnerablePackages").cloned()
-                                    {
-                                        let mut out = Vec::with_capacity(items.len());
-                                        for item in items {
-                                            event.set("_ingest._value", item)?;
-                                            if event.has("_ingest._value.Version") {
-                                                event.rename(
-                                                    "_ingest._value.Version",
-                                                    "_ingest._value.version",
-                                                )?;
-                                            }
-                                            out.push(
-                                                event
-                                                    .remove("_ingest._value")
-                                                    .unwrap_or(Value::Null),
-                                            );
-                                        }
-                                        event.remove("_ingest");
-                                        event.set(
-                                            "_ingest._value.VulnerablePackages",
-                                            Value::Array(out),
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event.has_value("json.Vulnerabilities")
-                    && event
-                        .get("json.Vulnerabilities")
-                        .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.VulnerablePackages") {
-                                event.rename(
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
                                     "_ingest._value.VulnerablePackages",
-                                    "_ingest._value.vulnerable_packages",
+                                    |event| {
+                                        if event.has("_ingest._value.Category") {
+                                            event.rename(
+                                                "_ingest._value.Category",
+                                                "_ingest._value.category",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.Architecture") {
+                                            event.rename(
+                                                "_ingest._value.Architecture",
+                                                "_ingest._value.architecture",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.Epoch") {
+                                            event.rename(
+                                                "_ingest._value.Epoch",
+                                                "_ingest._value.epoch",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.FilePath") {
+                                            event.rename(
+                                                "_ingest._value.FilePath",
+                                                "_ingest._value.file_path",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.Name") {
+                                            event.rename(
+                                                "_ingest._value.Name",
+                                                "_ingest._value.name",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.PackageManager") {
+                                            event.rename(
+                                                "_ingest._value.PackageManager",
+                                                "_ingest._value.package_manager",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.Release") {
+                                            event.rename(
+                                                "_ingest._value.Release",
+                                                "_ingest._value.release",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.VulnerablePackages") {
+                                foreach_array(
+                                    event,
+                                    "_ingest._value.VulnerablePackages",
+                                    |event| {
+                                        if event.has("_ingest._value.Version") {
+                                            event.rename(
+                                                "_ingest._value.Version",
+                                                "_ingest._value.version",
+                                            )?;
+                                        }
+                                        Ok(())
+                                    },
+                                )?;
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event.has_value("json.Vulnerabilities")
+                    && event
+                        .get("json.Vulnerabilities")
+                        .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.Vulnerabilities", |event| {
+                        if event.has("_ingest._value.VulnerablePackages") {
+                            event.rename(
+                                "_ingest._value.VulnerablePackages",
+                                "_ingest._value.vulnerable_packages",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Vulnerabilities", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -6995,13 +5961,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("aws.securityhub_findings.action.port_probe.details")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "aws.securityhub_findings.action.port_probe.details",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 event.append_unique(
@@ -7014,14 +5977,9 @@ impl Transform for Default {
                                 )?;
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "aws.securityhub_findings.action.port_probe.details",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -7035,13 +5993,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("aws.securityhub_findings.action.port_probe.details")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "aws.securityhub_findings.action.port_probe.details",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 event.append_unique(
@@ -7054,14 +6009,9 @@ impl Transform for Default {
                                 )?;
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "aws.securityhub_findings.action.port_probe.details",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -7170,13 +6120,10 @@ impl Transform for Default {
             }
 
             if event.has_value("aws.securityhub_findings.threat_intel_indicators") {
-                if let Some(Value::Array(items)) = event
-                    .get("aws.securityhub_findings.threat_intel_indicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "aws.securityhub_findings.threat_intel_indicators",
+                    |event| {
                         let _cond = {
                             !event.has_value("tags")
                                 || !(event.get("tags").is_some_and(|v| match v {
@@ -7197,55 +6144,38 @@ impl Transform for Default {
                                 Ok(())
                             })();
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "aws.securityhub_findings.threat_intel_indicators",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             if event.has_value("aws.securityhub_findings.vulnerabilities") {
-                if let Some(Value::Array(items)) = event
-                    .get("aws.securityhub_findings.vulnerabilities")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        let _cond = {
-                            !event.has_value("tags")
-                                || !(event.get("tags").is_some_and(|v| match v {
-                                    serde_json::Value::Array(a) => a.iter().any(|x| {
-                                        x.as_str() == Some("preserve_duplicate_custom_fields")
-                                    }),
-                                    serde_json::Value::String(s) => {
-                                        s.contains("preserve_duplicate_custom_fields")
-                                    }
-                                    _ => false,
-                                }))
-                        };
-                        if _cond {
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.remove("_ingest._value.cvss.base_score");
-                                event.remove("_ingest._value.cvss.version");
-                                event.remove("_ingest._value.id");
-                                event.remove("_ingest._value.reference_urls");
-                                event.remove("_ingest._value.vendor.name");
-                                Ok(())
-                            })();
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "aws.securityhub_findings.vulnerabilities", |event| {
+                    let _cond = {
+                        !event.has_value("tags")
+                            || !(event.get("tags").is_some_and(|v| match v {
+                                serde_json::Value::Array(a) => a.iter().any(|x| {
+                                    x.as_str() == Some("preserve_duplicate_custom_fields")
+                                }),
+                                serde_json::Value::String(s) => {
+                                    s.contains("preserve_duplicate_custom_fields")
+                                }
+                                _ => false,
+                            }))
+                    };
+                    if _cond {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.remove("_ingest._value.cvss.base_score");
+                            event.remove("_ingest._value.cvss.version");
+                            event.remove("_ingest._value.id");
+                            event.remove("_ingest._value.reference_urls");
+                            event.remove("_ingest._value.vendor.name");
+                            Ok(())
+                        })();
                     }
-                    event.remove("_ingest");
-                    event.set(
-                        "aws.securityhub_findings.vulnerabilities",
-                        Value::Array(out),
-                    )?;
-                }
+                    Ok(())
+                })?;
             }
 
             // Painless script

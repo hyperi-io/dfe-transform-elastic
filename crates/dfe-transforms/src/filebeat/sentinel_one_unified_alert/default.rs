@@ -182,48 +182,57 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("sentinel_one.unified_alert.assets").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if event.has_value("_ingest._value.accessible") {
-                                if let Some(val) = event.get("_ingest._value.accessible") {
-                                    let converted =
-                                        convert_value(val, "boolean").map_err(|message| {
-                                            TransformError::ParseError {
-                                                path: "_ingest._value.accessible".into(),
-                                                message,
-                                            }
-                                        })?;
-                                    event.set("_ingest._value.accessible", converted)?;
-                                }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "convert_assets_accessible_to_boolean",
-                            )?;
-                            event.remove("_ingest._value.accessible");
-                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
+                foreach_array(event, "sentinel_one.unified_alert.assets", |event| {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has_value("_ingest._value.accessible") {
+                            if let Some(val) = event.get("_ingest._value.accessible") {
+                                let converted =
+                                    convert_value(val, "boolean").map_err(|message| {
+                                        TransformError::ParseError {
+                                            path: "_ingest._value.accessible".into(),
+                                            message,
+                                        }
+                                    })?;
+                                event.set("_ingest._value.accessible", converted)?;
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_assets_accessible_to_boolean",
+                        )?;
+                        event.remove("_ingest._value.accessible");
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("sentinel_one.unified_alert.assets", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -232,48 +241,57 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("sentinel_one.unified_alert.assets").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if event.has_value("_ingest._value.decommissioned") {
-                                if let Some(val) = event.get("_ingest._value.decommissioned") {
-                                    let converted =
-                                        convert_value(val, "boolean").map_err(|message| {
-                                            TransformError::ParseError {
-                                                path: "_ingest._value.decommissioned".into(),
-                                                message,
-                                            }
-                                        })?;
-                                    event.set("_ingest._value.decommissioned", converted)?;
-                                }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "convert_assets_decommissioned_to_boolean",
-                            )?;
-                            event.remove("_ingest._value.decommissioned");
-                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
+                foreach_array(event, "sentinel_one.unified_alert.assets", |event| {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has_value("_ingest._value.decommissioned") {
+                            if let Some(val) = event.get("_ingest._value.decommissioned") {
+                                let converted =
+                                    convert_value(val, "boolean").map_err(|message| {
+                                        TransformError::ParseError {
+                                            path: "_ingest._value.decommissioned".into(),
+                                            message,
+                                        }
+                                    })?;
+                                event.set("_ingest._value.decommissioned", converted)?;
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_assets_decommissioned_to_boolean",
+                        )?;
+                        event.remove("_ingest._value.decommissioned");
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("sentinel_one.unified_alert.assets", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -282,48 +300,57 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("sentinel_one.unified_alert.assets").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if event.has_value("_ingest._value.pending_reboot") {
-                                if let Some(val) = event.get("_ingest._value.pending_reboot") {
-                                    let converted =
-                                        convert_value(val, "boolean").map_err(|message| {
-                                            TransformError::ParseError {
-                                                path: "_ingest._value.pending_reboot".into(),
-                                                message,
-                                            }
-                                        })?;
-                                    event.set("_ingest._value.pending_reboot", converted)?;
-                                }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "convert_assets_pending_reboot_to_boolean",
-                            )?;
-                            event.remove("_ingest._value.pending_reboot");
-                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
+                foreach_array(event, "sentinel_one.unified_alert.assets", |event| {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has_value("_ingest._value.pending_reboot") {
+                            if let Some(val) = event.get("_ingest._value.pending_reboot") {
+                                let converted =
+                                    convert_value(val, "boolean").map_err(|message| {
+                                        TransformError::ParseError {
+                                            path: "_ingest._value.pending_reboot".into(),
+                                            message,
+                                        }
+                                    })?;
+                                event.set("_ingest._value.pending_reboot", converted)?;
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_assets_pending_reboot_to_boolean",
+                        )?;
+                        event.remove("_ingest._value.pending_reboot");
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("sentinel_one.unified_alert.assets", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -379,13 +406,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("sentinel_one.unified_alert.detection_time.assets")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "sentinel_one.unified_alert.detection_time.assets",
+                    |event| {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.accessible") {
@@ -417,14 +441,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "sentinel_one.unified_alert.detection_time.assets",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -433,13 +452,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("sentinel_one.unified_alert.detection_time.assets")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "sentinel_one.unified_alert.detection_time.assets",
+                    |event| {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.asset.console_ip_address") {
@@ -477,14 +493,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "sentinel_one.unified_alert.detection_time.assets",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -493,13 +504,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("sentinel_one.unified_alert.detection_time.assets")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "sentinel_one.unified_alert.detection_time.assets",
+                    |event| {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.asset.ip_v4") {
@@ -531,14 +539,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "sentinel_one.unified_alert.detection_time.assets",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -547,13 +550,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("sentinel_one.unified_alert.detection_time.assets")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "sentinel_one.unified_alert.detection_time.assets",
+                    |event| {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value.asset.ip_v6") {
@@ -585,14 +585,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "sentinel_one.unified_alert.detection_time.assets",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -601,13 +596,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("sentinel_one.unified_alert.detection_time.assets")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "sentinel_one.unified_alert.detection_time.assets",
+                    |event| {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if let Some(date_str) =
@@ -635,14 +627,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "sentinel_one.unified_alert.detection_time.assets",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -2086,35 +2073,27 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("sentinel_one.unified_alert.assets").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        let _cond = {
-                            !event.has_value("tags")
-                                || !(event.get("tags").is_some_and(|v| match v {
-                                    serde_json::Value::Array(a) => a.iter().any(|x| {
-                                        x.as_str() == Some("preserve_duplicate_custom_fields")
-                                    }),
-                                    serde_json::Value::String(s) => {
-                                        s.contains("preserve_duplicate_custom_fields")
-                                    }
-                                    _ => false,
-                                }))
-                        };
-                        if _cond {
-                            event.remove("_ingest._value.agent_uuid");
-                            event.remove("_ingest._value.agent_version");
-                            event.remove("_ingest._value.name");
-                            event.remove("_ingest._value.subcategory");
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "sentinel_one.unified_alert.assets", |event| {
+                    let _cond = {
+                        !event.has_value("tags")
+                            || !(event.get("tags").is_some_and(|v| match v {
+                                serde_json::Value::Array(a) => a.iter().any(|x| {
+                                    x.as_str() == Some("preserve_duplicate_custom_fields")
+                                }),
+                                serde_json::Value::String(s) => {
+                                    s.contains("preserve_duplicate_custom_fields")
+                                }
+                                _ => false,
+                            }))
+                    };
+                    if _cond {
+                        event.remove("_ingest._value.agent_uuid");
+                        event.remove("_ingest._value.agent_version");
+                        event.remove("_ingest._value.name");
+                        event.remove("_ingest._value.subcategory");
                     }
-                    event.remove("_ingest");
-                    event.set("sentinel_one.unified_alert.assets", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2123,13 +2102,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("sentinel_one.unified_alert.detection_time.assets")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "sentinel_one.unified_alert.detection_time.assets",
+                    |event| {
                         let _cond = {
                             !event.has_value("tags")
                                 || !(event.get("tags").is_some_and(|v| match v {
@@ -2162,14 +2138,9 @@ impl Transform for Default {
                             event.remove("_ingest._value.kubernetes.pod_labels");
                             event.remove("_ingest._value.kubernetes.pod_name");
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "sentinel_one.unified_alert.detection_time.assets",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {

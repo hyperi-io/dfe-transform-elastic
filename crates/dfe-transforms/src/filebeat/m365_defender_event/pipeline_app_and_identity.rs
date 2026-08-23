@@ -1510,16 +1510,10 @@ impl Transform for PipelineAppAndIdentity {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("host.ip").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("host.ip", Value::Array(out))?;
-                }
+                foreach_array(event, "host.ip", |event| {
+                    event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
+                    Ok(())
+                })?;
                 Ok(())
             })();
             }

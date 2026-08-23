@@ -205,30 +205,41 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_tmp.action_strings") };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.action_strings").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            parse_json_field(event, "_ingest._value", "_ingest._value")?;
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "json")?;
-                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
-                            }
+                foreach_array(event, "_tmp.action_strings", |event| {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        parse_json_field(event, "_ingest._value", "_ingest._value")?;
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "json")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
-                    event.set("_tmp.action_strings", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("_tmp.action_strings") };
@@ -2225,23 +2236,17 @@ impl Transform for Default {
                 event.get("o365audit.Recipients").is_some_and(|v| v.is_array()) && event.get("o365audit.Recipients").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 0)
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("o365audit.Recipients").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.to.address",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("o365audit.Recipients", Value::Array(out))?;
-                }
+                foreach_array(event, "o365audit.Recipients", |event| {
+                    event.append_unique(
+                        "email.to.address",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2250,23 +2255,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("destination.user.email").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.to.address",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("destination.user.email", Value::Array(out))?;
-                }
+                foreach_array(event, "destination.user.email", |event| {
+                    event.append_unique(
+                        "email.to.address",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2765,25 +2764,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("_tmp.entities.InternetMessageId").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.message_id",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.InternetMessageId", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.InternetMessageId", |event| {
+                    event.append_unique(
+                        "email.message_id",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2792,25 +2783,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("_tmp.entities.NetworkMessageId").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.local_id",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.NetworkMessageId", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.NetworkMessageId", |event| {
+                    event.append_unique(
+                        "email.local_id",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2819,23 +2802,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.entities.P1Sender").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.sender.address",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.P1Sender", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.P1Sender", |event| {
+                    event.append_unique(
+                        "email.sender.address",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2844,23 +2821,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.entities.P2Sender").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.from.address",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.P2Sender", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.P2Sender", |event| {
+                    event.append_unique(
+                        "email.from.address",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2869,23 +2840,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.entities.Recipient").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.to.address",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.Recipient", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.Recipient", |event| {
+                    event.append_unique(
+                        "email.to.address",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2907,23 +2872,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.entities.SenderIP").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.ip",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.SenderIP", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.SenderIP", |event| {
+                    event.append_unique(
+                        "related.ip",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -2932,44 +2891,32 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.entities.Subject").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.subject",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.Subject", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.Subject", |event| {
+                    event.append_unique(
+                        "email.subject",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get("_tmp.entities.Upn").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.entities.Upn").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.user",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.entities.Upn", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.entities.Upn", |event| {
+                    event.append_unique(
+                        "related.user",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             if event.has("_tmp.entities.OriginalDeliveryLocation") {

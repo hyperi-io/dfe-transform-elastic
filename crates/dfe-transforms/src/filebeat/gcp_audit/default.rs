@@ -443,21 +443,13 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if event.has_value("gcp.audit.authorization_info") {
-                        if let Some(Value::Array(items)) =
-                            event.get("gcp.audit.authorization_info").cloned()
-                        {
-                            let mut out = Vec::with_capacity(items.len());
-                            for item in items {
-                                event.set("_ingest._value", item)?;
-                                event.rename(
-                                    "_ingest._value.resourceAttributes",
-                                    "_ingest._value.resource_attributes",
-                                )?;
-                                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                            }
-                            event.remove("_ingest");
-                            event.set("gcp.audit.authorization_info", Value::Array(out))?;
-                        }
+                        foreach_array(event, "gcp.audit.authorization_info", |event| {
+                            event.rename(
+                                "_ingest._value.resourceAttributes",
+                                "_ingest._value.resource_attributes",
+                            )?;
+                            Ok(())
+                        })?;
                     }
                     Ok(())
                 })();
@@ -1009,23 +1001,12 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
-                    if let Some(Value::Array(items)) =
-                        event.get("gcp.audit.source_log_ids").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.insertId") {
-                                event.rename(
-                                    "_ingest._value.insertId",
-                                    "_ingest._value.insert_id",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "gcp.audit.source_log_ids", |event| {
+                        if event.has("_ingest._value.insertId") {
+                            event.rename("_ingest._value.insertId", "_ingest._value.insert_id")?;
                         }
-                        event.remove("_ingest");
-                        event.set("gcp.audit.source_log_ids", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                 }
             }
 
@@ -1036,23 +1017,12 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
-                    if let Some(Value::Array(items)) =
-                        event.get("gcp.audit.source_log_ids").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.queryUri") {
-                                event.rename(
-                                    "_ingest._value.queryUri",
-                                    "_ingest._value.query_uri",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "gcp.audit.source_log_ids", |event| {
+                        if event.has("_ingest._value.queryUri") {
+                            event.rename("_ingest._value.queryUri", "_ingest._value.query_uri")?;
                         }
-                        event.remove("_ingest");
-                        event.set("gcp.audit.source_log_ids", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                 }
             }
 
@@ -1063,23 +1033,15 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
-                    if let Some(Value::Array(items)) =
-                        event.get("gcp.audit.source_log_ids").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.resourceContainer") {
-                                event.rename(
-                                    "_ingest._value.resourceContainer",
-                                    "_ingest._value.resource_container",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "gcp.audit.source_log_ids", |event| {
+                        if event.has("_ingest._value.resourceContainer") {
+                            event.rename(
+                                "_ingest._value.resourceContainer",
+                                "_ingest._value.resource_container",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("gcp.audit.source_log_ids", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                 }
             }
 
@@ -1090,40 +1052,30 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
-                    if let Some(Value::Array(items)) =
-                        event.get("gcp.audit.source_log_ids").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.logTime")
+                    foreach_array(event, "gcp.audit.source_log_ids", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.logTime") {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set("_ingest._value.log_time", parsed)?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "date")?;
-                                event.remove("_ingest._value.logTime");
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
+                                    event.set("_ingest._value.log_time", parsed)?;
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.remove("_ingest._value.logTime");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
                         }
-                        event.remove("_ingest");
-                        event.set("gcp.audit.source_log_ids", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                 }
             }
 
@@ -1134,18 +1086,10 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
-                    if let Some(Value::Array(items)) =
-                        event.get("gcp.audit.source_log_ids").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.logTime");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("gcp.audit.source_log_ids", Value::Array(out))?;
-                    }
+                    foreach_array(event, "gcp.audit.source_log_ids", |event| {
+                        event.remove("_ingest._value.logTime");
+                        Ok(())
+                    })?;
                 }
             }
 

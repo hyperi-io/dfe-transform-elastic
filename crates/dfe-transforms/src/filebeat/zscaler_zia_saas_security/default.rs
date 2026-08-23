@@ -743,13 +743,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.dlp.dict_counts")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.dlp.dict_counts",
+                    |event| {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value") {
@@ -781,14 +778,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.dlp.dict_counts",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -797,13 +789,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.attachments.file_sizes")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.attachments.file_sizes",
+                    |event| {
                         // on_failure: 2 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("_ingest._value") {
@@ -835,14 +824,9 @@ impl Transform for Default {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.attachments.file_sizes",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1197,13 +1181,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.collaboration.external_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.collaboration.external_recipients",
+                    |event| {
                         event.append_unique(
                             "destination.user.email",
                             json!(
@@ -1212,14 +1193,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.collaboration.external_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1228,13 +1204,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.collaboration.internal_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.collaboration.internal_recipients",
+                    |event| {
                         event.append_unique(
                             "destination.user.email",
                             json!(
@@ -1243,14 +1216,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.collaboration.internal_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1259,13 +1227,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.external_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.external_recipients",
+                    |event| {
                         event.append_unique(
                             "destination.user.email",
                             json!(
@@ -1274,14 +1239,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.external_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1290,13 +1250,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.internal_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.internal_recipients",
+                    |event| {
                         event.append_unique(
                             "destination.user.email",
                             json!(
@@ -1305,14 +1262,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.internal_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond =
@@ -1368,13 +1320,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.external_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.external_recipients",
+                    |event| {
                         event.append_unique(
                             "email.to.address",
                             json!(
@@ -1383,14 +1332,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.external_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1399,13 +1343,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.internal_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.internal_recipients",
+                    |event| {
                         event.append_unique(
                             "email.to.address",
                             json!(
@@ -1414,14 +1355,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.internal_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1754,25 +1690,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("zscaler_zia.saas_security.collab_names").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.user",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("zscaler_zia.saas_security.collab_names", Value::Array(out))?;
-                }
+                foreach_array(event, "zscaler_zia.saas_security.collab_names", |event| {
+                    event.append_unique(
+                        "related.user",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -1781,13 +1709,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.external_collab_names")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.external_collab_names",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1796,14 +1721,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.external_collab_names",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1812,13 +1732,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.internal_collab_names")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.internal_collab_names",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1827,14 +1744,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.internal_collab_names",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1843,13 +1755,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.collaboration.external_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.collaboration.external_recipients",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1858,14 +1767,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.collaboration.external_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1874,13 +1778,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.collaboration.internal_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.collaboration.internal_recipients",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1889,14 +1790,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.collaboration.internal_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1905,13 +1801,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.external_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.external_recipients",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1920,14 +1813,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.external_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1936,13 +1824,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.internal_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.internal_recipients",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1951,14 +1836,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.internal_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = { event.has_value("zscaler_zia.saas_security.file.hash.md5") };
@@ -1991,13 +1871,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.saas_security.email.attachments.md5s")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.saas_security.email.attachments.md5s",
+                    |event| {
                         event.append_unique(
                             "related.hash",
                             json!(
@@ -2006,14 +1883,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.saas_security.email.attachments.md5s",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = { event.has_value("zscaler_zia.saas_security.hostname") };

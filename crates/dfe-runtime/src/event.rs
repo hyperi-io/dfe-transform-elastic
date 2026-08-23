@@ -236,6 +236,23 @@ impl Event {
         }
     }
 
+    /// Move the ARRAY at a dotted path out, leaving anything else alone.
+    ///
+    /// The zero-copy half of the foreach machinery: the elements MOVE out
+    /// instead of being cloned, one array's worth of allocation saved per
+    /// call. A value that is not an array is left exactly where it was, and
+    /// the slot itself keeps an empty array until the caller writes the
+    /// processed list back.
+    ///
+    /// Resolves the path the way [`Self::get`] does, flat keys included.
+    pub fn take_array(&mut self, path: &str) -> Option<Vec<Value>> {
+        let slot = resolve_path_mut(&mut self.inner, path)?;
+        let Value::Array(items) = slot else {
+            return None;
+        };
+        Some(std::mem::take(items))
+    }
+
     /// Rename a field from one path to another.
     ///
     /// Removes the value at `from` and sets it at `to`. Intermediate objects

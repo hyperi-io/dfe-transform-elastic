@@ -90,22 +90,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.CreatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -119,22 +112,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.CreatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -148,30 +134,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.CreatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -185,31 +164,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.CreatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -223,18 +194,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.CreatedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -315,23 +279,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.FirstObservedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -345,23 +301,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.FirstObservedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -375,31 +323,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.FirstObservedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -413,32 +353,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.FirstObservedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -452,19 +383,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.FirstObservedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -503,23 +426,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.LastObservedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -533,23 +448,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.LastObservedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -563,31 +470,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.LastObservedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -601,32 +500,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.LastObservedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -640,19 +530,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.LastObservedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -785,23 +667,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -815,23 +689,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -845,31 +711,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -883,32 +741,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -922,19 +771,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -962,23 +803,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -992,23 +825,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1022,31 +847,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1060,32 +877,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1099,19 +907,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1160,23 +960,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1190,23 +982,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1220,31 +1004,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1258,32 +1034,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1297,19 +1064,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1418,27 +1177,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                        |event| {
                             if event.has("_ingest._value.DateRange.Unit") {
                                 event.rename(
                                     "_ingest._value.DateRange.Unit",
                                     "_ingest._value.date_range.unit",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1452,27 +1203,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                        |event| {
                             if event.has("_ingest._value.DateRange.Value") {
                                 event.rename(
                                     "_ingest._value.DateRange.Value",
                                     "_ingest._value.date_range.value",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1486,13 +1229,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 if let Some(date_str) = event.get_as_string("_ingest._value.End") {
@@ -1507,14 +1247,9 @@ impl Transform for Default {
                                 }
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1528,13 +1263,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 if let Some(date_str) = event.get_as_string("_ingest._value.Start")
@@ -1550,14 +1282,9 @@ impl Transform for Default {
                                 }
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1571,23 +1298,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                        |event| {
                             event.remove("_ingest._value.Start");
                             event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1629,27 +1348,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                        |event| {
                             if event.has("_ingest._value.DateRange.Unit") {
                                 event.rename(
                                     "_ingest._value.DateRange.Unit",
                                     "_ingest._value.date_range.unit",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1663,27 +1374,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                        |event| {
                             if event.has("_ingest._value.DateRange.Value") {
                                 event.rename(
                                     "_ingest._value.DateRange.Value",
                                     "_ingest._value.date_range.value",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1697,13 +1400,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 if let Some(date_str) = event.get_as_string("_ingest._value.End") {
@@ -1718,14 +1418,9 @@ impl Transform for Default {
                                 }
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1739,13 +1434,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 if let Some(date_str) = event.get_as_string("_ingest._value.Start")
@@ -1761,14 +1453,9 @@ impl Transform for Default {
                                 }
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1782,23 +1469,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                        |event| {
                             event.remove("_ingest._value.Start");
                             event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -1875,27 +1554,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1909,27 +1576,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1943,35 +1598,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1985,36 +1628,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2028,23 +1658,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                    foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2156,27 +1774,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                        |event| {
                             if event.has("_ingest._value.DateRange.Unit") {
                                 event.rename(
                                     "_ingest._value.DateRange.Unit",
                                     "_ingest._value.date_range.unit",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2190,27 +1800,19 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                        |event| {
                             if event.has("_ingest._value.DateRange.Value") {
                                 event.rename(
                                     "_ingest._value.DateRange.Value",
                                     "_ingest._value.date_range.value",
                                 )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2224,13 +1826,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 if let Some(date_str) = event.get_as_string("_ingest._value.End") {
@@ -2245,14 +1844,9 @@ impl Transform for Default {
                                 }
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2266,13 +1860,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                        |event| {
                             // ignore_failure: true
                             let _ = (|| -> Result<()> {
                                 if let Some(date_str) = event.get_as_string("_ingest._value.Start")
@@ -2288,14 +1879,9 @@ impl Transform for Default {
                                 }
                                 Ok(())
                             })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2309,23 +1895,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                        |event| {
                             event.remove("_ingest._value.Start");
                             event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -2385,22 +1963,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Unit") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Unit",
-                                    "_ingest._value.date_range.unit",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.UpdatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Unit") {
+                            event.rename(
+                                "_ingest._value.DateRange.Unit",
+                                "_ingest._value.date_range.unit",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2414,22 +1985,15 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.DateRange.Value") {
-                                event.rename(
-                                    "_ingest._value.DateRange.Value",
-                                    "_ingest._value.date_range.value",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.Filters.UpdatedAt", |event| {
+                        if event.has("_ingest._value.DateRange.Value") {
+                            event.rename(
+                                "_ingest._value.DateRange.Value",
+                                "_ingest._value.date_range.value",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2443,30 +2007,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.end", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.UpdatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.End") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.end", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2480,31 +2037,23 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    if let Some(parsed) = parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        event.set("_ingest._value.start", parsed)?;
-                                    }
+                    foreach_array(event, "json.Filters.UpdatedAt", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.Start") {
+                                if let Some(parsed) = parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                    None,
+                                    None,
+                                ) {
+                                    event.set("_ingest._value.start", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2518,18 +2067,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.Start");
-                            event.remove("_ingest._value.End");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
-                    }
+                    foreach_array(event, "json.Filters.UpdatedAt", |event| {
+                        event.remove("_ingest._value.Start");
+                        event.remove("_ingest._value.End");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }

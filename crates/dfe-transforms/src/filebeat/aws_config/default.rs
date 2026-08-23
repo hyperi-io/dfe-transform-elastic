@@ -274,20 +274,12 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("json.ConfigRuleInfo.EvaluationModes").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.Mode") {
-                            event.rename("_ingest._value.Mode", "_ingest._value.mode")?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.ConfigRuleInfo.EvaluationModes", |event| {
+                    if event.has("_ingest._value.Mode") {
+                        event.rename("_ingest._value.Mode", "_ingest._value.mode")?;
                     }
-                    event.remove("_ingest");
-                    event.set("json.ConfigRuleInfo.EvaluationModes", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             if event.has("json.ConfigRuleInfo.EvaluationModes") {
@@ -446,27 +438,13 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("json.ConfigRuleInfo.Source.SourceDetails")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.EventSource") {
-                            event.rename(
-                                "_ingest._value.EventSource",
-                                "_ingest._value.event_source",
-                            )?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.ConfigRuleInfo.Source.SourceDetails", |event| {
+                    if event.has("_ingest._value.EventSource") {
+                        event
+                            .rename("_ingest._value.EventSource", "_ingest._value.event_source")?;
                     }
-                    event.remove("_ingest");
-                    event.set(
-                        "json.ConfigRuleInfo.Source.SourceDetails",
-                        Value::Array(out),
-                    )?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -475,27 +453,15 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("json.ConfigRuleInfo.Source.SourceDetails")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.MaximumExecutionFrequency") {
-                            event.rename(
-                                "_ingest._value.MaximumExecutionFrequency",
-                                "_ingest._value.maximum_execution_frequency",
-                            )?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.ConfigRuleInfo.Source.SourceDetails", |event| {
+                    if event.has("_ingest._value.MaximumExecutionFrequency") {
+                        event.rename(
+                            "_ingest._value.MaximumExecutionFrequency",
+                            "_ingest._value.maximum_execution_frequency",
+                        )?;
                     }
-                    event.remove("_ingest");
-                    event.set(
-                        "json.ConfigRuleInfo.Source.SourceDetails",
-                        Value::Array(out),
-                    )?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -504,27 +470,13 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("json.ConfigRuleInfo.Source.SourceDetails")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.MessageType") {
-                            event.rename(
-                                "_ingest._value.MessageType",
-                                "_ingest._value.message_type",
-                            )?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.ConfigRuleInfo.Source.SourceDetails", |event| {
+                    if event.has("_ingest._value.MessageType") {
+                        event
+                            .rename("_ingest._value.MessageType", "_ingest._value.message_type")?;
                     }
-                    event.remove("_ingest");
-                    event.set(
-                        "json.ConfigRuleInfo.Source.SourceDetails",
-                        Value::Array(out),
-                    )?;
-                }
+                    Ok(())
+                })?;
             }
 
             if event.has("json.ConfigRuleInfo.Source.SourceDetails") {

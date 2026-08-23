@@ -210,13 +210,10 @@ impl Transform for User {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("entityanalytics_entra_id.user.business_phones")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "entityanalytics_entra_id.user.business_phones",
+                    |event| {
                         event.append_unique(
                             "user.phone",
                             json!(
@@ -225,14 +222,9 @@ impl Transform for User {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "entityanalytics_entra_id.user.business_phones",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             if let Some(v) = event
@@ -444,13 +436,10 @@ impl Transform for User {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("entityanalytics_entra_id.user.app_role_assignments")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "entityanalytics_entra_id.user.app_role_assignments",
+                        |event| {
                             event.append_unique(
                                 "user.entity.attributes.permissions",
                                 json!(
@@ -459,14 +448,9 @@ impl Transform for User {
                                         .map_or_else(String::new, painless_to_string)
                                 ),
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "entityanalytics_entra_id.user.app_role_assignments",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }

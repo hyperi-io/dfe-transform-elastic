@@ -318,33 +318,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("sentinel_one.threat.detection.agent.ipv4")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.ip",
-                                    json!(
-                                        event
-                                            .get("_ingest._value")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "sentinel_one.threat.detection.agent.ipv4",
-                            Value::Array(out),
-                        )?;
-                    }
+                    foreach_array(event, "sentinel_one.threat.detection.agent.ipv4", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.ip",
+                                json!(
+                                    event
+                                        .get("_ingest._value")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -408,33 +396,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("sentinel_one.threat.detection.agent.ipv6")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "related.ip",
-                                    json!(
-                                        event
-                                            .get("_ingest._value")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "sentinel_one.threat.detection.agent.ipv6",
-                            Value::Array(out),
-                        )?;
-                    }
+                    foreach_array(event, "sentinel_one.threat.detection.agent.ipv6", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "related.ip",
+                                json!(
+                                    event
+                                        .get("_ingest._value")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1231,50 +1207,28 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.agentRealtimeInfo.networkInterfaces")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(Value::Array(items)) =
-                                    event.get("_ingest._value.inet").cloned()
-                                {
-                                    let mut out = Vec::with_capacity(items.len());
-                                    for item in items {
-                                        event.set("_ingest._value", item)?;
-                                        // ignore_failure: true
-                                        let _ =
-                                            (|| -> Result<()> {
-                                                event.append_unique(
-                                                    "related.ip",
-                                                    json!(event.get("_ingest._value").map_or_else(
-                                                        String::new,
-                                                        painless_to_string
-                                                    )),
-                                                )?;
-                                                Ok(())
-                                            })();
-                                        out.push(
-                                            event.remove("_ingest._value").unwrap_or(Value::Null),
-                                        );
-                                    }
-                                    event.remove("_ingest");
-                                    event.set("_ingest._value.inet", Value::Array(out))?;
-                                }
+                    foreach_array(event, "json.agentRealtimeInfo.networkInterfaces", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            foreach_array(event, "_ingest._value.inet", |event| {
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    event.append_unique(
+                                        "related.ip",
+                                        json!(
+                                            event
+                                                .get("_ingest._value")
+                                                .map_or_else(String::new, painless_to_string)
+                                        ),
+                                    )?;
+                                    Ok(())
+                                })();
                                 Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.agentRealtimeInfo.networkInterfaces",
-                            Value::Array(out),
-                        )?;
-                    }
+                            })?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1374,50 +1328,28 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.agentRealtimeInfo.networkInterfaces")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(Value::Array(items)) =
-                                    event.get("_ingest._value.inet6").cloned()
-                                {
-                                    let mut out = Vec::with_capacity(items.len());
-                                    for item in items {
-                                        event.set("_ingest._value", item)?;
-                                        // ignore_failure: true
-                                        let _ =
-                                            (|| -> Result<()> {
-                                                event.append_unique(
-                                                    "related.ip",
-                                                    json!(event.get("_ingest._value").map_or_else(
-                                                        String::new,
-                                                        painless_to_string
-                                                    )),
-                                                )?;
-                                                Ok(())
-                                            })();
-                                        out.push(
-                                            event.remove("_ingest._value").unwrap_or(Value::Null),
-                                        );
-                                    }
-                                    event.remove("_ingest");
-                                    event.set("_ingest._value.inet6", Value::Array(out))?;
-                                }
+                    foreach_array(event, "json.agentRealtimeInfo.networkInterfaces", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            foreach_array(event, "_ingest._value.inet6", |event| {
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    event.append_unique(
+                                        "related.ip",
+                                        json!(
+                                            event
+                                                .get("_ingest._value")
+                                                .map_or_else(String::new, painless_to_string)
+                                        ),
+                                    )?;
+                                    Ok(())
+                                })();
                                 Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.agentRealtimeInfo.networkInterfaces",
-                            Value::Array(out),
-                        )?;
-                    }
+                            })?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1431,33 +1363,21 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.agentRealtimeInfo.networkInterfaces")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                event.append_unique(
-                                    "host.mac",
-                                    json!(
-                                        event
-                                            .get("_ingest._value.physical")
-                                            .map_or_else(String::new, painless_to_string)
-                                    ),
-                                )?;
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.agentRealtimeInfo.networkInterfaces",
-                            Value::Array(out),
-                        )?;
-                    }
+                    foreach_array(event, "json.agentRealtimeInfo.networkInterfaces", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            event.append_unique(
+                                "host.mac",
+                                json!(
+                                    event
+                                        .get("_ingest._value.physical")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1471,22 +1391,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.agentRealtimeInfo.networkInterfaces")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.physical");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "json.agentRealtimeInfo.networkInterfaces",
-                            Value::Array(out),
-                        )?;
-                    }
+                    foreach_array(event, "json.agentRealtimeInfo.networkInterfaces", |event| {
+                        event.remove("_ingest._value.physical");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1772,137 +1680,174 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.category") {
-                            event.rename(
-                                "_ingest._value.category",
-                                "_ingest._value.category.name",
-                            )?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.indicators", |event| {
+                    if event.has("_ingest._value.category") {
+                        event.rename("_ingest._value.category", "_ingest._value.category.name")?;
                     }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.categoryId") {
-                            event.rename(
-                                "_ingest._value.categoryId",
-                                "_ingest._value.category.id",
-                            )?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.indicators", |event| {
+                    if event.has("_ingest._value.categoryId") {
+                        event.rename("_ingest._value.categoryId", "_ingest._value.category.id")?;
                     }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(Value::Array(items)) =
-                                event.get("_ingest._value.ids").cloned()
-                            {
-                                let mut out = Vec::with_capacity(items.len());
-                                for item in items {
-                                    event.set("_ingest._value", item)?;
-                                    // ignore_failure: true
-                                    let _ = (|| -> Result<()> {
-                                        event.append_unique(
-                                            "threat.tactic.id",
-                                            json!(
-                                                event
-                                                    .get("_ingest._value")
-                                                    .map_or_else(String::new, painless_to_string)
-                                            ),
-                                        )?;
-                                        Ok(())
-                                    })();
-                                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                                }
-                                event.remove("_ingest");
-                                event.set("_ingest._value.ids", Value::Array(out))?;
-                            }
+                foreach_array(event, "json.indicators", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        foreach_array(event, "_ingest._value.ids", |event| {
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                event.append_unique(
+                                    "threat.tactic.id",
+                                    json!(
+                                        event
+                                            .get("_ingest._value")
+                                            .map_or_else(String::new, painless_to_string)
+                                    ),
+                                )?;
+                                Ok(())
+                            })();
                             Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
+                        })?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
                 Ok(())
             })();
 
             let _cond = { event.get("json.indicators").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.ids") {
-                            if let Some(Value::Array(items)) =
-                                event.get("_ingest._value.ids").cloned()
-                            {
-                                let mut out = Vec::with_capacity(items.len());
-                                for item in items {
-                                    event.set("_ingest._value", item)?;
-                                    event.append_unique(
-                                        "threat.indicator.id",
-                                        json!(
-                                            event
-                                                .get("_ingest._value")
-                                                .map_or_else(String::new, painless_to_string)
-                                        ),
-                                    )?;
-                                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                                }
-                                event.remove("_ingest");
-                                event.set("_ingest._value.ids", Value::Array(out))?;
-                            }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.indicators", |event| {
+                    if event.has_value("_ingest._value.ids") {
+                        foreach_array(event, "_ingest._value.ids", |event| {
+                            event.append_unique(
+                                "threat.indicator.id",
+                                json!(
+                                    event
+                                        .get("_ingest._value")
+                                        .map_or_else(String::new, painless_to_string)
+                                ),
+                            )?;
+                            Ok(())
+                        })?;
                     }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(Value::Array(items)) =
-                                event.get("_ingest._value.tactics").cloned()
-                            {
-                                let mut out = Vec::with_capacity(items.len());
-                                for item in items {
-                                    event.set("_ingest._value", item)?;
+                foreach_array(event, "json.indicators", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        foreach_array(event, "_ingest._value.tactics", |event| {
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                event.append_unique(
+                                    "threat.tactic.name",
+                                    json!(
+                                        event
+                                            .get("_ingest._value.name")
+                                            .map_or_else(String::new, painless_to_string)
+                                    ),
+                                )?;
+                                Ok(())
+                            })();
+                            Ok(())
+                        })?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+                Ok(())
+            })();
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                foreach_array(event, "json.indicators", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        foreach_array(event, "_ingest._value.tactics", |event| {
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                event.append_unique(
+                                    "threat.framework",
+                                    json!(
+                                        event
+                                            .get("_ingest._value.source")
+                                            .map_or_else(String::new, painless_to_string)
+                                    ),
+                                )?;
+                                Ok(())
+                            })();
+                            Ok(())
+                        })?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+                Ok(())
+            })();
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                foreach_array(event, "json.indicators", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        foreach_array(event, "_ingest._value.tactics", |event| {
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                foreach_array(event, "_ingest._value.techniques", |event| {
                                     // ignore_failure: true
                                     let _ = (|| -> Result<()> {
                                         event.append_unique(
-                                            "threat.tactic.name",
+                                            "threat.technique.reference",
+                                            json!(
+                                                event
+                                                    .get("_ingest._value.link")
+                                                    .map_or_else(String::new, painless_to_string)
+                                            ),
+                                        )?;
+                                        Ok(())
+                                    })();
+                                    Ok(())
+                                })?;
+                                Ok(())
+                            })();
+                            Ok(())
+                        })?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
+                Ok(())
+            })();
+
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                foreach_array(event, "json.indicators", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        foreach_array(event, "_ingest._value.tactics", |event| {
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                foreach_array(event, "_ingest._value.techniques", |event| {
+                                    // ignore_failure: true
+                                    let _ = (|| -> Result<()> {
+                                        event.append_unique(
+                                            "threat.technique.id",
                                             json!(
                                                 event
                                                     .get("_ingest._value.name")
@@ -1911,209 +1856,26 @@ impl Transform for Default {
                                         )?;
                                         Ok(())
                                     })();
-                                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                                }
-                                event.remove("_ingest");
-                                event.set("_ingest._value.tactics", Value::Array(out))?;
-                            }
+                                    Ok(())
+                                })?;
+                                Ok(())
+                            })();
                             Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
+                        })?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(Value::Array(items)) =
-                                event.get("_ingest._value.tactics").cloned()
-                            {
-                                let mut out = Vec::with_capacity(items.len());
-                                for item in items {
-                                    event.set("_ingest._value", item)?;
-                                    // ignore_failure: true
-                                    let _ = (|| -> Result<()> {
-                                        event.append_unique(
-                                            "threat.framework",
-                                            json!(
-                                                event
-                                                    .get("_ingest._value.source")
-                                                    .map_or_else(String::new, painless_to_string)
-                                            ),
-                                        )?;
-                                        Ok(())
-                                    })();
-                                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                                }
-                                event.remove("_ingest");
-                                event.set("_ingest._value.tactics", Value::Array(out))?;
-                            }
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
-                Ok(())
-            })();
-
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(Value::Array(items)) =
-                                event.get("_ingest._value.tactics").cloned()
-                            {
-                                let mut out = Vec::with_capacity(items.len());
-                                for item in items {
-                                    event.set("_ingest._value", item)?;
-                                    // ignore_failure: true
-                                    let _ = (|| -> Result<()> {
-                                        if let Some(Value::Array(items)) =
-                                            event.get("_ingest._value.techniques").cloned()
-                                        {
-                                            let mut out = Vec::with_capacity(items.len());
-                                            for item in items {
-                                                event.set("_ingest._value", item)?;
-                                                // ignore_failure: true
-                                                let _ = (|| -> Result<()> {
-                                                    event.append_unique(
-                                                        "threat.technique.reference",
-                                                        json!(
-                                                            event
-                                                                .get("_ingest._value.link")
-                                                                .map_or_else(
-                                                                    String::new,
-                                                                    painless_to_string
-                                                                )
-                                                        ),
-                                                    )?;
-                                                    Ok(())
-                                                })(
-                                                );
-                                                out.push(
-                                                    event
-                                                        .remove("_ingest._value")
-                                                        .unwrap_or(Value::Null),
-                                                );
-                                            }
-                                            event.remove("_ingest");
-                                            event.set(
-                                                "_ingest._value.techniques",
-                                                Value::Array(out),
-                                            )?;
-                                        }
-                                        Ok(())
-                                    })();
-                                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                                }
-                                event.remove("_ingest");
-                                event.set("_ingest._value.tactics", Value::Array(out))?;
-                            }
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
-                Ok(())
-            })();
-
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(Value::Array(items)) =
-                                event.get("_ingest._value.tactics").cloned()
-                            {
-                                let mut out = Vec::with_capacity(items.len());
-                                for item in items {
-                                    event.set("_ingest._value", item)?;
-                                    // ignore_failure: true
-                                    let _ = (|| -> Result<()> {
-                                        if let Some(Value::Array(items)) =
-                                            event.get("_ingest._value.techniques").cloned()
-                                        {
-                                            let mut out = Vec::with_capacity(items.len());
-                                            for item in items {
-                                                event.set("_ingest._value", item)?;
-                                                // ignore_failure: true
-                                                let _ = (|| -> Result<()> {
-                                                    event.append_unique(
-                                                        "threat.technique.id",
-                                                        json!(
-                                                            event
-                                                                .get("_ingest._value.name")
-                                                                .map_or_else(
-                                                                    String::new,
-                                                                    painless_to_string
-                                                                )
-                                                        ),
-                                                    )?;
-                                                    Ok(())
-                                                })(
-                                                );
-                                                out.push(
-                                                    event
-                                                        .remove("_ingest._value")
-                                                        .unwrap_or(Value::Null),
-                                                );
-                                            }
-                                            event.remove("_ingest");
-                                            event.set(
-                                                "_ingest._value.techniques",
-                                                Value::Array(out),
-                                            )?;
-                                        }
-                                        Ok(())
-                                    })();
-                                    out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                                }
-                                event.remove("_ingest");
-                                event.set("_ingest._value.tactics", Value::Array(out))?;
-                            }
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
-                Ok(())
-            })();
-
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("json.indicators").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.remove("_ingest._value.ids");
-                        event.remove("_ingest._value.tactics");
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.indicators", Value::Array(out))?;
-                }
+                foreach_array(event, "json.indicators", |event| {
+                    event.remove("_ingest._value.ids");
+                    event.remove("_ingest._value.tactics");
+                    Ok(())
+                })?;
                 Ok(())
             })();
 
@@ -2192,47 +1954,39 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.actionsCounters.failed") {
-                                    if let Some(val) =
-                                        event.get("_ingest._value.actionsCounters.failed")
-                                    {
-                                        let converted =
-                                            convert_value(val, "long").map_err(|message| {
-                                                TransformError::ParseError {
-                                                    path: "_ingest._value.actionsCounters.failed"
-                                                        .into(),
-                                                    message,
-                                                }
-                                            })?;
-                                        event.set(
-                                            "_ingest._value.action_counters.failed",
-                                            converted,
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.actionsCounters.failed") {
+                                if let Some(val) =
+                                    event.get("_ingest._value.actionsCounters.failed")
+                                {
+                                    let converted =
+                                        convert_value(val, "long").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.actionsCounters.failed"
+                                                    .into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event
+                                        .set("_ingest._value.action_counters.failed", converted)?;
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
                         }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2245,47 +1999,41 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.actionsCounters.notFound") {
-                                    if let Some(val) =
-                                        event.get("_ingest._value.actionsCounters.notFound")
-                                    {
-                                        let converted =
-                                            convert_value(val, "long").map_err(|message| {
-                                                TransformError::ParseError {
-                                                    path: "_ingest._value.actionsCounters.notFound"
-                                                        .into(),
-                                                    message,
-                                                }
-                                            })?;
-                                        event.set(
-                                            "_ingest._value.action_counters.not_found",
-                                            converted,
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.actionsCounters.notFound") {
+                                if let Some(val) =
+                                    event.get("_ingest._value.actionsCounters.notFound")
+                                {
+                                    let converted =
+                                        convert_value(val, "long").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.actionsCounters.notFound"
+                                                    .into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set(
+                                        "_ingest._value.action_counters.not_found",
+                                        converted,
+                                    )?;
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
                         }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2298,12 +2046,10 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) =
+                            (|| -> Result<()> {
                                 if event.has_value("_ingest._value.actionsCounters.pendingReboot") {
                                     if let Some(val) =
                                         event.get("_ingest._value.actionsCounters.pendingReboot")
@@ -2311,9 +2057,9 @@ impl Transform for Default {
                                         let converted =
                                             convert_value(val, "long").map_err(|message| {
                                                 TransformError::ParseError {
-                        path: "_ingest._value.actionsCounters.pendingReboot".into(),
-                        message,
-                        }
+                    path: "_ingest._value.actionsCounters.pendingReboot".into(),
+                    message,
+                    }
                                             })?;
                                         event.set(
                                             "_ingest._value.action_counters.pending_reboot",
@@ -2322,22 +2068,20 @@ impl Transform for Default {
                                     }
                                 }
                                 Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
-                                }
+                            })()
+                        {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2350,288 +2094,39 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.actionsCounters.success") {
-                                    if let Some(val) =
-                                        event.get("_ingest._value.actionsCounters.success")
-                                    {
-                                        let converted =
-                                            convert_value(val, "long").map_err(|message| {
-                                                TransformError::ParseError {
-                                                    path: "_ingest._value.actionsCounters.success"
-                                                        .into(),
-                                                    message,
-                                                }
-                                            })?;
-                                        event.set(
-                                            "_ingest._value.action_counters.success",
-                                            converted,
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
-                                }
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.mitigationStatus")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.actionsCounters.total") {
-                                    if let Some(val) =
-                                        event.get("_ingest._value.actionsCounters.total")
-                                    {
-                                        let converted =
-                                            convert_value(val, "long").map_err(|message| {
-                                                TransformError::ParseError {
-                                                    path: "_ingest._value.actionsCounters.total"
-                                                        .into(),
-                                                    message,
-                                                }
-                                            })?;
-                                        event.set(
-                                            "_ingest._value.action_counters.total",
-                                            converted,
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
-                                }
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.mitigationStatus")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.agentSupportsReport") {
-                                    if let Some(val) =
-                                        event.get("_ingest._value.agentSupportsReport")
-                                    {
-                                        let converted =
-                                            convert_value(val, "boolean").map_err(|message| {
-                                                TransformError::ParseError {
-                                                    path: "_ingest._value.agentSupportsReport"
-                                                        .into(),
-                                                    message,
-                                                }
-                                            })?;
-                                        event.set(
-                                            "_ingest._value.agent_supports_report",
-                                            converted,
-                                        )?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
-                                }
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.mitigationStatus")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // on_failure: 1 handler(s)
-                            if let Err(err) = (|| -> Result<()> {
-                                if event.has_value("_ingest._value.groupNotFound") {
-                                    if let Some(val) = event.get("_ingest._value.groupNotFound") {
-                                        let converted =
-                                            convert_value(val, "boolean").map_err(|message| {
-                                                TransformError::ParseError {
-                                                    path: "_ingest._value.groupNotFound".into(),
-                                                    message,
-                                                }
-                                            })?;
-                                        event.set("_ingest._value.group_not_found", converted)?;
-                                    }
-                                }
-                                Ok(())
-                            })() {
-                                event.set("_ingest.on_failure_message", err.to_string())?;
-                                event.set("_ingest.on_failure_processor_type", "convert")?;
-                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                                event.remove("_ingest.on_failure_message");
-                                event.remove("_ingest.on_failure_processor_type");
-                                event.remove("_ingest.on_failure_processor_tag");
-                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                    event.remove("_ingest");
-                                }
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.mitigationStatus")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.lastUpdate")
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.actionsCounters.success") {
+                                if let Some(val) =
+                                    event.get("_ingest._value.actionsCounters.success")
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set("_ingest._value.last_update", parsed)?;
-                                    }
+                                    let converted =
+                                        convert_value(val, "long").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.actionsCounters.success"
+                                                    .into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event
+                                        .set("_ingest._value.action_counters.success", converted)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.mitigationStatus")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.latestReport") {
-                                event.rename(
-                                    "_ingest._value.latestReport",
-                                    "_ingest._value.latest_report",
-                                )?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("json.mitigationStatus")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.reportId") {
-                                event.rename(
-                                    "_ingest._value.reportId",
-                                    "_ingest._value.report_id",
-                                )?;
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2644,28 +2139,36 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.mitigationEndedAt")
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.actionsCounters.total") {
+                                if let Some(val) = event.get("_ingest._value.actionsCounters.total")
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event.set("_ingest._value.mitigation_ended_at", parsed)?;
-                                    }
+                                    let converted =
+                                        convert_value(val, "long").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.actionsCounters.total".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value.action_counters.total", converted)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
                         }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2678,29 +2181,103 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) =
-                                    event.get_as_string("_ingest._value.mitigationStartedAt")
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.agentSupportsReport") {
+                                if let Some(val) = event.get("_ingest._value.agentSupportsReport") {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.agentSupportsReport".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value.agent_supports_report", converted)?;
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.mitigationStatus")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.groupNotFound") {
+                                if let Some(val) = event.get("_ingest._value.groupNotFound") {
+                                    let converted =
+                                        convert_value(val, "boolean").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value.groupNotFound".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value.group_not_found", converted)?;
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
+                            }
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.mitigationStatus")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.lastUpdate")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
                                 {
-                                    if let Some(parsed) =
-                                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                                    {
-                                        event
-                                            .set("_ingest._value.mitigation_started_at", parsed)?;
-                                    }
+                                    event.set("_ingest._value.last_update", parsed)?;
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -2713,21 +2290,110 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.remove("_ingest._value.actionsCounters");
-                            event.remove("_ingest._value.agentSupportsReport");
-                            event.remove("_ingest._value.groupNotFound");
-                            event.remove("_ingest._value.lastUpdate");
-                            event.remove("_ingest._value.mitigationEndedAt");
-                            event.remove("_ingest._value.mitigationStartedAt");
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        if event.has("_ingest._value.latestReport") {
+                            event.rename(
+                                "_ingest._value.latestReport",
+                                "_ingest._value.latest_report",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("json.mitigationStatus", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.mitigationStatus")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        if event.has("_ingest._value.reportId") {
+                            event.rename("_ingest._value.reportId", "_ingest._value.report_id")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.mitigationStatus")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.mitigationEndedAt")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                                {
+                                    event.set("_ingest._value.mitigation_ended_at", parsed)?;
+                                }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.mitigationStatus")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.mitigationStartedAt")
+                            {
+                                if let Some(parsed) =
+                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                                {
+                                    event.set("_ingest._value.mitigation_started_at", parsed)?;
+                                }
+                            }
+                            Ok(())
+                        })();
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("json.mitigationStatus")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "json.mitigationStatus", |event| {
+                        event.remove("_ingest._value.actionsCounters");
+                        event.remove("_ingest._value.agentSupportsReport");
+                        event.remove("_ingest._value.groupNotFound");
+                        event.remove("_ingest._value.lastUpdate");
+                        event.remove("_ingest._value.mitigationEndedAt");
+                        event.remove("_ingest._value.mitigationStartedAt");
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }

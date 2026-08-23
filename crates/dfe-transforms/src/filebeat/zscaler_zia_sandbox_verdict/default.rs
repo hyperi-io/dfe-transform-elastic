@@ -564,13 +564,10 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("zscaler_zia.sandbox_verdict.file.hash.children_md5") {
-                    if let Some(Value::Array(items)) = event
-                        .get("zscaler_zia.sandbox_verdict.file.hash.children_md5")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "zscaler_zia.sandbox_verdict.file.hash.children_md5",
+                        |event| {
                             event.append_unique(
                                 "related.hash",
                                 json!(
@@ -579,14 +576,9 @@ impl Transform for Default {
                                         .map_or_else(String::new, painless_to_string)
                                 ),
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "zscaler_zia.sandbox_verdict.file.hash.children_md5",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                 }
             }
 

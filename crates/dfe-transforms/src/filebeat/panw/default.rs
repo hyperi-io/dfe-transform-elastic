@@ -10714,27 +10714,21 @@ impl Transform for Default {
 
             let _cond = { event.get("host.ip").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("host.ip").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            event.append_unique(
-                                "related.ip",
-                                json!(
-                                    event
-                                        .get("_ingest._value")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
-                            )?;
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("host.ip", Value::Array(out))?;
-                }
+                foreach_array(event, "host.ip", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        event.append_unique(
+                            "related.ip",
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("panw.panos.xff.ip") };
@@ -11278,23 +11272,17 @@ impl Transform for Default {
                     && event.get("source.user.name").is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("source.user.name").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.user",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("source.user.name", Value::Array(out))?;
-                }
+                foreach_array(event, "source.user.name", |event| {
+                    event.append_unique(
+                        "related.user",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("server.user.name") };

@@ -298,24 +298,16 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("mimecast.tagMap.DangerousFileExt") {
-                    if let Some(Value::Array(items)) =
-                        event.get("mimecast.tagMap.DangerousFileExt").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has_value("_ingest._key") {
-                                if let Some(s) = event.get_string("_ingest._key") {
-                                    let re = cached_regex!(":");
-                                    let replaced = re.replace_all(&s, "_").into_owned();
-                                    event.set("_ingest._key", replaced)?;
-                                }
+                    foreach_array(event, "mimecast.tagMap.DangerousFileExt", |event| {
+                        if event.has_value("_ingest._key") {
+                            if let Some(s) = event.get_string("_ingest._key") {
+                                let re = cached_regex!(":");
+                                let replaced = re.replace_all(&s, "_").into_owned();
+                                event.set("_ingest._key", replaced)?;
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("mimecast.tagMap.DangerousFileExt", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                 }
                 Ok(())
             })();

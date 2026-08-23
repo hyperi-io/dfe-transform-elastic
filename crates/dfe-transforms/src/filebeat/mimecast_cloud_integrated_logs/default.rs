@@ -141,23 +141,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("mimecast.recipients").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "email.to.address",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("mimecast.recipients", Value::Array(out))?;
-                }
+                foreach_array(event, "mimecast.recipients", |event| {
+                    event.append_unique(
+                        "email.to.address",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -359,23 +353,17 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("email.from.address").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
-                            )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("email.from.address", Value::Array(out))?;
-                    }
+                    foreach_array(event, "email.from.address", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -384,23 +372,17 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("email.to.address").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
-                            )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("email.to.address", Value::Array(out))?;
-                    }
+                    foreach_array(event, "email.to.address", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -441,24 +423,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("email.attachments.file.hash").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.hash",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("email.attachments.file.hash", Value::Array(out))?;
-                }
+                foreach_array(event, "email.attachments.file.hash", |event| {
+                    event.append_unique(
+                        "related.hash",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("email.attachments") };

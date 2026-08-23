@@ -115,13 +115,10 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("entityanalytics_entra_id.device.alternative_security_ids")
-                        .cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
+                    foreach_array(
+                        event,
+                        "entityanalytics_entra_id.device.alternative_security_ids",
+                        |event| {
                             // on_failure: 2 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                                 if event.has_value("_ingest._value.type") {
@@ -153,14 +150,9 @@ impl Transform for Device {
                                     event.remove("_ingest");
                                 }
                             }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set(
-                            "entityanalytics_entra_id.device.alternative_security_ids",
-                            Value::Array(out),
-                        )?;
-                    }
+                            Ok(())
+                        },
+                    )?;
                     Ok(())
                 })();
             }
@@ -769,54 +761,15 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userPrincipalName") {
-                                event.rename(
-                                    "_ingest._value.userPrincipalName",
-                                    "_ingest._value.user_principal_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("device.registered_owners")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.user_principal_name")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "device.registered_owners", |event| {
+                        if event.has("_ingest._value.userPrincipalName") {
+                            event.rename(
+                                "_ingest._value.userPrincipalName",
+                                "_ingest._value.user_principal_name",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -829,25 +782,61 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.mail")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "device.registered_owners", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.user_principal_name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("device.registered_owners")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "device.registered_owners", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.mail")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("device.registered_owners")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "device.registered_owners", |event| {
+                        if event.has("_ingest._value.displayName") {
+                            event.rename(
+                                "_ingest._value.displayName",
+                                "_ingest._value.display_name",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -860,23 +849,17 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.displayName") {
-                                event.rename(
-                                    "_ingest._value.displayName",
-                                    "_ingest._value.display_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
+                    foreach_array(event, "device.registered_owners", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.display_name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -889,25 +872,52 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.display_name")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "device.registered_owners", |event| {
+                        if event.has("_ingest._value.givenName") {
+                            event
+                                .rename("_ingest._value.givenName", "_ingest._value.given_name")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("device.registered_owners")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "device.registered_owners", |event| {
+                        if event.has("_ingest._value.jobTitle") {
+                            event.rename("_ingest._value.jobTitle", "_ingest._value.job_title")?;
+                        }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("device.registered_owners")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "device.registered_owners", |event| {
+                        if event.has("_ingest._value.mobilePhone") {
+                            event.rename(
+                                "_ingest._value.mobilePhone",
+                                "_ingest._value.mobile_phone",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -920,168 +930,15 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.givenName") {
-                                event.rename(
-                                    "_ingest._value.givenName",
-                                    "_ingest._value.given_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("device.registered_owners")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.jobTitle") {
-                                event.rename(
-                                    "_ingest._value.jobTitle",
-                                    "_ingest._value.job_title",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("device.registered_owners")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.mobilePhone") {
-                                event.rename(
-                                    "_ingest._value.mobilePhone",
-                                    "_ingest._value.mobile_phone",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("device.registered_owners")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("device.registered_owners").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.businessPhones") {
-                                event.rename(
-                                    "_ingest._value.businessPhones",
-                                    "_ingest._value.business_phones",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_owners", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("device.registered_users")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.userPrincipalName") {
-                                event.rename(
-                                    "_ingest._value.userPrincipalName",
-                                    "_ingest._value.user_principal_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
-                    Ok(())
-                })();
-            }
-
-            let _cond = {
-                event
-                    .get("device.registered_users")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.user_principal_name")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "device.registered_owners", |event| {
+                        if event.has("_ingest._value.businessPhones") {
+                            event.rename(
+                                "_ingest._value.businessPhones",
+                                "_ingest._value.business_phones",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1094,24 +951,15 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.mail")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "device.registered_users", |event| {
+                        if event.has("_ingest._value.userPrincipalName") {
+                            event.rename(
+                                "_ingest._value.userPrincipalName",
+                                "_ingest._value.user_principal_name",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1124,22 +972,17 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.displayName") {
-                                event.rename(
-                                    "_ingest._value.displayName",
-                                    "_ingest._value.display_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                    foreach_array(event, "device.registered_users", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.user_principal_name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1152,24 +995,38 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            event.append_unique(
-                                "related.user",
-                                json!(
-                                    event
-                                        .get("_ingest._value.display_name")
-                                        .map_or_else(String::new, painless_to_string)
-                                ),
+                    foreach_array(event, "device.registered_users", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.mail")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("device.registered_users")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "device.registered_users", |event| {
+                        if event.has("_ingest._value.displayName") {
+                            event.rename(
+                                "_ingest._value.displayName",
+                                "_ingest._value.display_name",
                             )?;
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1182,22 +1039,17 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.givenName") {
-                                event.rename(
-                                    "_ingest._value.givenName",
-                                    "_ingest._value.given_name",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                    foreach_array(event, "device.registered_users", |event| {
+                        event.append_unique(
+                            "related.user",
+                            json!(
+                                event
+                                    .get("_ingest._value.display_name")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1210,22 +1062,13 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.jobTitle") {
-                                event.rename(
-                                    "_ingest._value.jobTitle",
-                                    "_ingest._value.job_title",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "device.registered_users", |event| {
+                        if event.has("_ingest._value.givenName") {
+                            event
+                                .rename("_ingest._value.givenName", "_ingest._value.given_name")?;
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1238,22 +1081,12 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.mobilePhone") {
-                                event.rename(
-                                    "_ingest._value.mobilePhone",
-                                    "_ingest._value.mobile_phone",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "device.registered_users", |event| {
+                        if event.has("_ingest._value.jobTitle") {
+                            event.rename("_ingest._value.jobTitle", "_ingest._value.job_title")?;
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }
@@ -1266,22 +1099,36 @@ impl Transform for Device {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("device.registered_users").cloned()
-                    {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if event.has("_ingest._value.businessPhones") {
-                                event.rename(
-                                    "_ingest._value.businessPhones",
-                                    "_ingest._value.business_phones",
-                                )?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "device.registered_users", |event| {
+                        if event.has("_ingest._value.mobilePhone") {
+                            event.rename(
+                                "_ingest._value.mobilePhone",
+                                "_ingest._value.mobile_phone",
+                            )?;
                         }
-                        event.remove("_ingest");
-                        event.set("device.registered_users", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
+                    Ok(())
+                })();
+            }
+
+            let _cond = {
+                event
+                    .get("device.registered_users")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    foreach_array(event, "device.registered_users", |event| {
+                        if event.has("_ingest._value.businessPhones") {
+                            event.rename(
+                                "_ingest._value.businessPhones",
+                                "_ingest._value.business_phones",
+                            )?;
+                        }
+                        Ok(())
+                    })?;
                     Ok(())
                 })();
             }

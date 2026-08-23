@@ -2847,23 +2847,17 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.umbrella.fqdns") };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("cisco.umbrella.fqdns").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.hosts",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("cisco.umbrella.fqdns", Value::Array(out))?;
-                }
+                foreach_array(event, "cisco.umbrella.fqdns", |event| {
+                    event.append_unique(
+                        "related.hosts",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("cisco.umbrella.sha_sha256") };

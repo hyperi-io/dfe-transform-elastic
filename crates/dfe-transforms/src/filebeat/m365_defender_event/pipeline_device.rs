@@ -2712,30 +2712,18 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.get("json.properties.LoggedOnUsers").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.properties.LoggedOnUsers").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append("m365_defender.event.active_users", json!(event.get("_ingest._value.UserName").map_or_else(String::new, painless_to_string)))?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.properties.LoggedOnUsers", Value::Array(out))?;
-                }
+                foreach_array(event, "json.properties.LoggedOnUsers", |event| {
+                    event.append("m365_defender.event.active_users", json!(event.get("_ingest._value.UserName").map_or_else(String::new, painless_to_string)))?;
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get("m365_defender.event.active_users").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("m365_defender.event.active_users").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append("related.user", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("m365_defender.event.active_users", Value::Array(out))?;
-                }
+                foreach_array(event, "m365_defender.event.active_users", |event| {
+                    event.append("related.user", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
+                    Ok(())
+                })?;
             }
 
             let _cond = { (event.has_value("process.command_line") && event.get_str("process.command_line") != Some("")) || (event.has_value("process.parent.command_line") && event.get_str("process.parent.command_line") != Some("")) };
@@ -2943,16 +2931,10 @@ impl Transform for PipelineDevice {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("host.ip").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("host.ip", Value::Array(out))?;
-                }
+                foreach_array(event, "host.ip", |event| {
+                    event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
+                    Ok(())
+                })?;
                 Ok(())
             })();
             }

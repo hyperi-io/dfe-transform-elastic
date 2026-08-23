@@ -168,47 +168,37 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if let Some(date_str) =
-                                event.get_as_string("_ingest._value.SignalAssociationTimestamp")
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if let Some(date_str) =
+                            event.get_as_string("_ingest._value.SignalAssociationTimestamp")
+                        {
+                            if let Some(parsed) =
+                                parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
                             {
-                                if let Some(parsed) =
-                                    parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
-                                {
-                                    event
-                                        .set("_ingest._value.SignalAssociationTimestamp", parsed)?;
-                                }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "date")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "date_threatgraph_indicators_signal_association_timestamp",
-                            )?;
-                            event.remove("_ingest._value.SignalAssociationTimestamp");
-                            event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
+                                event.set("_ingest._value.SignalAssociationTimestamp", parsed)?;
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "date")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "date_threatgraph_indicators_signal_association_timestamp",
+                        )?;
+                        event.remove("_ingest._value.SignalAssociationTimestamp");
+                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             // on_failure: 2 handler(s)
@@ -262,113 +252,20 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.PatternId") {
-                            if let Some(val) = event.get("_ingest._value.PatternId") {
-                                let converted =
-                                    convert_value(val, "string").map_err(|message| {
-                                        TransformError::ParseError {
-                                            path: "_ingest._value.PatternId".into(),
-                                            message,
-                                        }
-                                    })?;
-                                event.set("_ingest._value.PatternId", converted)?;
-                            }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.TemplateInstanceId") {
-                            if let Some(val) = event.get("_ingest._value.TemplateInstanceId") {
-                                let converted =
-                                    convert_value(val, "string").map_err(|message| {
-                                        TransformError::ParseError {
-                                            path: "_ingest._value.TemplateInstanceId".into(),
-                                            message,
-                                        }
-                                    })?;
-                                event.set("_ingest._value.TemplateInstanceId", converted)?;
-                            }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
-            }
-
-            let _cond = {
-                event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .is_some_and(|v| v.is_array())
-            };
-            if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if event.has_value("_ingest._value.Severity") {
-                                if let Some(val) = event.get("_ingest._value.Severity") {
-                                    let converted =
-                                        convert_value(val, "long").map_err(|message| {
-                                            TransformError::ParseError {
-                                                path: "_ingest._value.Severity".into(),
-                                                message,
-                                            }
-                                        })?;
-                                    event.set("_ingest._value.Severity", converted)?;
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    if event.has_value("_ingest._value.PatternId") {
+                        if let Some(val) = event.get("_ingest._value.PatternId") {
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "_ingest._value.PatternId".into(),
+                                    message,
                                 }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "convert_threatgraph_indicators_severity_to_long",
-                            )?;
-                            event.remove("_ingest._value.Severity");
-                            event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
-                            }
+                            })?;
+                            event.set("_ingest._value.PatternId", converted)?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -377,49 +274,102 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if event.has_value("_ingest._value.PatternDisposition") {
-                                if let Some(val) = event.get("_ingest._value.PatternDisposition") {
-                                    let converted =
-                                        convert_value(val, "long").map_err(|message| {
-                                            TransformError::ParseError {
-                                                path: "_ingest._value.PatternDisposition".into(),
-                                                message,
-                                            }
-                                        })?;
-                                    event.set("_ingest._value.PatternDisposition", converted)?;
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    if event.has_value("_ingest._value.TemplateInstanceId") {
+                        if let Some(val) = event.get("_ingest._value.TemplateInstanceId") {
+                            let converted = convert_value(val, "string").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "_ingest._value.TemplateInstanceId".into(),
+                                    message,
                                 }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "convert_threatgraph_indicators_pattern_disposition_to_long",
-                            )?;
-                            event.remove("_ingest._value.PatternDisposition");
-                            event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
+                            })?;
+                            event.set("_ingest._value.TemplateInstanceId", converted)?;
+                        }
+                    }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event.ThreatgraphIndicators")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has_value("_ingest._value.Severity") {
+                            if let Some(val) = event.get("_ingest._value.Severity") {
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "_ingest._value.Severity".into(),
+                                        message,
+                                    }
+                                })?;
+                                event.set("_ingest._value.Severity", converted)?;
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_threatgraph_indicators_severity_to_long",
+                        )?;
+                        event.remove("_ingest._value.Severity");
+                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
                     }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = {
+                event
+                    .get("crowdstrike.event.ThreatgraphIndicators")
+                    .is_some_and(|v| v.is_array())
+            };
+            if _cond {
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has_value("_ingest._value.PatternDisposition") {
+                            if let Some(val) = event.get("_ingest._value.PatternDisposition") {
+                                let converted = convert_value(val, "long").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "_ingest._value.PatternDisposition".into(),
+                                        message,
+                                    }
+                                })?;
+                                event.set("_ingest._value.PatternDisposition", converted)?;
+                            }
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_threatgraph_indicators_pattern_disposition_to_long",
+                        )?;
+                        event.remove("_ingest._value.PatternDisposition");
+                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                    Ok(())
+                })?;
             }
 
             if event.has("crowdstrike.event.CompositeId") {
@@ -436,26 +386,17 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "threat.indicator.id",
-                            json!(
-                                event
-                                    .get("_ingest._value.IndicatorId")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    event.append_unique(
+                        "threat.indicator.id",
+                        json!(
+                            event
+                                .get("_ingest._value.IndicatorId")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -464,26 +405,17 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "threat.indicator.name",
-                            json!(
-                                event
-                                    .get("_ingest._value.DisplayName")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    event.append_unique(
+                        "threat.indicator.name",
+                        json!(
+                            event
+                                .get("_ingest._value.DisplayName")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -492,26 +424,17 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "threat.indicator.description",
-                            json!(
-                                event
-                                    .get("_ingest._value.Description")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    event.append_unique(
+                        "threat.indicator.description",
+                        json!(
+                            event
+                                .get("_ingest._value.Description")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             let _cond = {
@@ -546,26 +469,17 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("crowdstrike.event.ThreatgraphIndicators")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.hosts",
-                            json!(
-                                event
-                                    .get("_ingest._value.Hostname")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
-                }
+                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
+                    event.append_unique(
+                        "related.hosts",
+                        json!(
+                            event
+                                .get("_ingest._value.Hostname")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             Ok(TransformResult::Continue)

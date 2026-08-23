@@ -288,139 +288,119 @@ impl Transform for Default {
 
             let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.ipAddresses").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if event.has_value("_ingest._value.ipAddress") {
-                                if let Some(val) = event.get("_ingest._value.ipAddress") {
-                                    let converted =
-                                        convert_value(val, "ip").map_err(|message| {
-                                            TransformError::ParseError {
-                                                path: "_ingest._value.ipAddress".into(),
-                                                message,
-                                            }
-                                        })?;
-                                    event.set("_ingest._value.ip_address", converted)?;
-                                }
-                            }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            event.set(
-                                "_ingest.on_failure_processor_tag",
-                                "convert_ipAddresses_ipAddress_to_ip",
-                            )?;
-                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                                event.remove("_ingest");
+                foreach_array(event, "json.ipAddresses", |event| {
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if event.has_value("_ingest._value.ipAddress") {
+                            if let Some(val) = event.get("_ingest._value.ipAddress") {
+                                let converted = convert_value(val, "ip").map_err(|message| {
+                                    TransformError::ParseError {
+                                        path: "_ingest._value.ipAddress".into(),
+                                        message,
+                                    }
+                                })?;
+                                event.set("_ingest._value.ip_address", converted)?;
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.ipAddresses", Value::Array(out))?;
-                }
-            }
-
-            let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.ipAddresses").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "related.ip",
-                            json!(
-                                event
-                                    .get("_ingest._value.ip_address")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "convert")?;
+                        event.set(
+                            "_ingest.on_failure_processor_tag",
+                            "convert_ipAddresses_ipAddress_to_ip",
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("json.ipAddresses", Value::Array(out))?;
-                }
-            }
-
-            let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("json.ipAddresses").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.macAddress") {
-                            if let Some(s) = event.get_string("_ingest._value.macAddress") {
-                                let uppered = s.to_uppercase();
-                                event.set("_ingest._value.mac_address", uppered)?;
-                            }
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, painless_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, painless_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
-                    event.set("json.ipAddresses", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.ipAddresses").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.mac_address") {
-                            if let Some(s) = event.get_string("_ingest._value.mac_address") {
-                                let re = cached_regex!("(..)(?!$)");
-                                let replaced = re.replace_all(&s, "$1-").into_owned();
-                                event.set("_ingest._value.mac_address", replaced)?;
-                            }
+                foreach_array(event, "json.ipAddresses", |event| {
+                    event.append_unique(
+                        "related.ip",
+                        json!(
+                            event
+                                .get("_ingest._value.ip_address")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
+            }
+
+            let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
+            if _cond {
+                foreach_array(event, "json.ipAddresses", |event| {
+                    if event.has_value("_ingest._value.macAddress") {
+                        if let Some(s) = event.get_string("_ingest._value.macAddress") {
+                            let uppered = s.to_uppercase();
+                            event.set("_ingest._value.mac_address", uppered)?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
-                    event.set("json.ipAddresses", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.ipAddresses").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value.operationalStatus") {
-                            event.rename(
-                                "_ingest._value.operationalStatus",
-                                "_ingest._value.operational_status",
-                            )?;
+                foreach_array(event, "json.ipAddresses", |event| {
+                    if event.has_value("_ingest._value.mac_address") {
+                        if let Some(s) = event.get_string("_ingest._value.mac_address") {
+                            let re = cached_regex!("(..)(?!$)");
+                            let replaced = re.replace_all(&s, "$1-").into_owned();
+                            event.set("_ingest._value.mac_address", replaced)?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
-                    event.set("json.ipAddresses", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("json.ipAddresses").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.remove("_ingest._value.ipAddress");
-                        event.remove("_ingest._value.macAddress");
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "json.ipAddresses", |event| {
+                    if event.has("_ingest._value.operationalStatus") {
+                        event.rename(
+                            "_ingest._value.operationalStatus",
+                            "_ingest._value.operational_status",
+                        )?;
                     }
-                    event.remove("_ingest");
-                    event.set("json.ipAddresses", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
+            }
+
+            let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
+            if _cond {
+                foreach_array(event, "json.ipAddresses", |event| {
+                    event.remove("_ingest._value.ipAddress");
+                    event.remove("_ingest._value.macAddress");
+                    Ok(())
+                })?;
             }
 
             if event.has("json.ipAddresses") {

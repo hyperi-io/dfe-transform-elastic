@@ -867,20 +867,14 @@ impl Transform for SysmonOperational {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("dns.answers").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if let Some(s) = event.get_string("_ingest._value") {
-                        let re = cached_regex!("^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](?::[0-9]+)?)?$");
-                        let replaced = re.replace_all(&s, "$1").into_owned();
-                        event.set("_ingest._value", replaced)?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "dns.answers", |event| {
+                    if let Some(s) = event.get_string("_ingest._value") {
+                    let re = cached_regex!("^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](?::[0-9]+)?)?$");
+                    let replaced = re.replace_all(&s, "$1").into_owned();
+                    event.set("_ingest._value", replaced)?;
                     }
-                    event.remove("_ingest");
-                    event.set("dns.answers", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
                 Ok(())
             })();
             }
@@ -889,20 +883,14 @@ impl Transform for SysmonOperational {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("dns.resolved_ip").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if let Some(s) = event.get_string("_ingest._value") {
-                        let re = cached_regex!("^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](?::[0-9]+)?)?$");
-                        let replaced = re.replace_all(&s, "$1").into_owned();
-                        event.set("_ingest._value", replaced)?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "dns.resolved_ip", |event| {
+                    if let Some(s) = event.get_string("_ingest._value") {
+                    let re = cached_regex!("^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](?::[0-9]+)?)?$");
+                    let replaced = re.replace_all(&s, "$1").into_owned();
+                    event.set("_ingest._value", replaced)?;
                     }
-                    event.remove("_ingest");
-                    event.set("dns.resolved_ip", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
                 Ok(())
             })();
             }
@@ -982,20 +970,14 @@ impl Transform for SysmonOperational {
             })();
 
             if event.has_value("dns.resolved_ip") {
-                if let Some(Value::Array(items)) = event.get("dns.resolved_ip").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                        event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
-                        Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("dns.resolved_ip", Value::Array(out))?;
-                }
+                foreach_array(event, "dns.resolved_ip", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                    event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
+                    Ok(())
+                    })();
+                    Ok(())
+                })?;
             }
 
             // ignore_failure: true

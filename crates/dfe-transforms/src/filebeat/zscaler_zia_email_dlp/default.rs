@@ -832,25 +832,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("zscaler_zia.email_dlp.actions").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "event.action",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("zscaler_zia.email_dlp.actions", Value::Array(out))?;
-                }
+                foreach_array(event, "zscaler_zia.email_dlp.actions", |event| {
+                    event.append_unique(
+                        "event.action",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             if event.has_value("event.action") {
@@ -912,25 +904,17 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) =
-                    event.get("zscaler_zia.email_dlp.rule.labels").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append_unique(
-                            "rule.name",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("zscaler_zia.email_dlp.rule.labels", Value::Array(out))?;
-                }
+                foreach_array(event, "zscaler_zia.email_dlp.rule.labels", |event| {
+                    event.append_unique(
+                        "rule.name",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             if let Some(v) = event
@@ -1051,13 +1035,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.email_dlp.email.triggered_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.email_dlp.email.triggered_recipients",
+                    |event| {
                         event.append_unique(
                             "email.to.address",
                             json!(
@@ -1066,14 +1047,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.email_dlp.email.triggered_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1082,13 +1058,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.email_dlp.email.other_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.email_dlp.email.other_recipients",
+                    |event| {
                         event.append_unique(
                             "email.to.address",
                             json!(
@@ -1097,14 +1070,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.email_dlp.email.other_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             if let Some(v) = event
@@ -1238,13 +1206,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.email_dlp.email.triggered_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.email_dlp.email.triggered_recipients",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1253,14 +1218,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.email_dlp.email.triggered_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1269,13 +1229,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.email_dlp.email.other_recipients")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.email_dlp.email.other_recipients",
+                    |event| {
                         event.append_unique(
                             "related.user",
                             json!(
@@ -1284,14 +1241,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.email_dlp.email.other_recipients",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             let _cond = {
@@ -1300,13 +1252,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event
-                    .get("zscaler_zia.email_dlp.email.attachments.md5s")
-                    .cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
+                foreach_array(
+                    event,
+                    "zscaler_zia.email_dlp.email.attachments.md5s",
+                    |event| {
                         event.append_unique(
                             "related.hash",
                             json!(
@@ -1315,14 +1264,9 @@ impl Transform for Default {
                                     .map_or_else(String::new, painless_to_string)
                             ),
                         )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set(
-                        "zscaler_zia.email_dlp.email.attachments.md5s",
-                        Value::Array(out),
-                    )?;
-                }
+                        Ok(())
+                    },
+                )?;
             }
 
             event.remove("zscaler_zia.email_dlp.time");

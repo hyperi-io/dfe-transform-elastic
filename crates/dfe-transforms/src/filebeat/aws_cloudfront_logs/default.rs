@@ -497,17 +497,10 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("_tmp.split_x_forwarded_for").cloned()
-                {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // SKIPPED: nested pipeline "pipeline_process_ip" is not in this pipeline set
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("_tmp.split_x_forwarded_for", Value::Array(out))?;
-                }
+                foreach_array(event, "_tmp.split_x_forwarded_for", |event| {
+                    // SKIPPED: nested pipeline "pipeline_process_ip" is not in this pipeline set
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("_tmp.invalid_ips") };
@@ -540,23 +533,17 @@ impl Transform for Default {
             }
 
             if event.has_value("network.forwarded_ip") {
-                if let Some(Value::Array(items)) = event.get("network.forwarded_ip").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        event.append(
-                            "related.ip",
-                            json!(
-                                event
-                                    .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
-                            ),
-                        )?;
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("network.forwarded_ip", Value::Array(out))?;
-                }
+                foreach_array(event, "network.forwarded_ip", |event| {
+                    event.append(
+                        "related.ip",
+                        json!(
+                            event
+                                .get("_ingest._value")
+                                .map_or_else(String::new, painless_to_string)
+                        ),
+                    )?;
+                    Ok(())
+                })?;
             }
 
             if event.has_value("_tmp.ssl_protocol") {

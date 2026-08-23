@@ -1761,47 +1761,35 @@ impl Transform for Default {
             })();
 
             if event.has_value("okta.request.ip_chain") {
-                if let Some(Value::Array(items)) = event.get("okta.request.ip_chain").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if event.has("_ingest._value.geographicalContext") {
-                                event.rename(
-                                    "_ingest._value.geographicalContext",
-                                    "_ingest._value.geographical_context",
-                                )?;
-                            }
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("okta.request.ip_chain", Value::Array(out))?;
-                }
+                foreach_array(event, "okta.request.ip_chain", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if event.has("_ingest._value.geographicalContext") {
+                            event.rename(
+                                "_ingest._value.geographicalContext",
+                                "_ingest._value.geographical_context",
+                            )?;
+                        }
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
             }
 
             if event.has_value("okta.request.ip_chain") {
-                if let Some(Value::Array(items)) = event.get("okta.request.ip_chain").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if event.has("_ingest._value.geographical_context.postalCode") {
-                                event.rename(
-                                    "_ingest._value.geographical_context.postalCode",
-                                    "_ingest._value.geographical_context.postal_code",
-                                )?;
-                            }
-                            Ok(())
-                        })();
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    event.remove("_ingest");
-                    event.set("okta.request.ip_chain", Value::Array(out))?;
-                }
+                foreach_array(event, "okta.request.ip_chain", |event| {
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if event.has("_ingest._value.geographical_context.postalCode") {
+                            event.rename(
+                                "_ingest._value.geographical_context.postalCode",
+                                "_ingest._value.geographical_context.postal_code",
+                            )?;
+                        }
+                        Ok(())
+                    })();
+                    Ok(())
+                })?;
             }
 
             // ignore_failure: true

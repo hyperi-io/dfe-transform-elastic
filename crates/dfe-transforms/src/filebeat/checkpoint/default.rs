@@ -203,19 +203,13 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("checkpoint") {
-                    if let Some(Value::Array(items)) = event.get("checkpoint").cloned() {
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            if let Some(s) = event.get_string("_ingest._key") {
-                                let lowered = s.to_lowercase();
-                                event.set("_ingest._key", lowered)?;
-                            }
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    foreach_array(event, "checkpoint", |event| {
+                        if let Some(s) = event.get_string("_ingest._key") {
+                            let lowered = s.to_lowercase();
+                            event.set("_ingest._key", lowered)?;
                         }
-                        event.remove("_ingest");
-                        event.set("checkpoint", Value::Array(out))?;
-                    }
+                        Ok(())
+                    })?;
                 }
                 Ok(())
             })();

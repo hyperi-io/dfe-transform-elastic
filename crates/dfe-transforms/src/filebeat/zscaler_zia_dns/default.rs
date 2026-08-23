@@ -1041,21 +1041,15 @@ impl Transform for Default {
 
             let _cond = { event.has_value("network.transport") };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("network.transport").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value") {
-                            if let Some(s) = event.get_string("_ingest._value") {
-                                let lowered = s.to_lowercase();
-                                event.set("_ingest._value", lowered)?;
-                            }
+                foreach_array(event, "network.transport", |event| {
+                    if event.has_value("_ingest._value") {
+                        if let Some(s) = event.get_string("_ingest._value") {
+                            let lowered = s.to_lowercase();
+                            event.set("_ingest._value", lowered)?;
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
-                    event.set("network.transport", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             if event.has_value("json.recordid") {
@@ -1205,18 +1199,12 @@ impl Transform for Default {
 
             let _cond = { event.get("dns.answers").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("dns.answers").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has("_ingest._value") {
-                            event.rename("_ingest._value", "_ingest._value.data")?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "dns.answers", |event| {
+                    if event.has("_ingest._value") {
+                        event.rename("_ingest._value", "_ingest._value.data")?;
                     }
-                    event.remove("_ingest");
-                    event.set("dns.answers", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.has_value("zscaler_zia.dns.response.ip") };
@@ -1281,22 +1269,16 @@ impl Transform for Default {
 
             let _cond = { event.get("dns.answers").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("dns.answers").cloned() {
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if let Some(v) = event
-                            .get("zscaler_zia.dns.response.type")
-                            .filter(|v| !painless_is_empty_value(v))
-                            .cloned()
-                        {
-                            event.set("_ingest._value.type", v)?;
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                foreach_array(event, "dns.answers", |event| {
+                    if let Some(v) = event
+                        .get("zscaler_zia.dns.response.type")
+                        .filter(|v| !painless_is_empty_value(v))
+                        .cloned()
+                    {
+                        event.set("_ingest._value.type", v)?;
                     }
-                    event.remove("_ingest");
-                    event.set("dns.answers", Value::Array(out))?;
-                }
+                    Ok(())
+                })?;
             }
 
             let _cond = { event.get_str("json.second") != Some("") };

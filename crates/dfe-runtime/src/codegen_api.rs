@@ -114,6 +114,61 @@ pub fn painless_exec_params(
     Ok(())
 }
 
+/// Run one processor over every element of an array field, the way Elastic's
+/// `foreach` does: each element is exposed at `_ingest._value` for the body,
+/// then collected back into the field.
+///
+/// The array is TAKEN, not cloned -- every element moves through
+/// `_ingest._value` and back without an allocation, where the old inline
+/// loop copied the whole array up front. The body only ever touches
+/// `_ingest._value`; a generated body that names the field itself stays on
+/// the cloning inline form, which the generator decides.
+///
+/// A body that fails part-way leaves what Elastic's shared-reference
+/// iteration leaves: the processed prefix with its mutations, the failing
+/// element -- still exposed at `_ingest._value`, as the inline loop left it
+/// -- and the untouched rest, all back in the field.
+///
+/// # Errors
+///
+/// Whatever the body returned, after the field is restored.
+pub fn foreach_array<F>(event: &mut Event, field: &str, mut body: F) -> Result<()>
+where
+    F: FnMut(&mut Event) -> Result<()>,
+{
+    let Some(items) = event.take_array(field) else {
+        return Ok(());
+    };
+
+    // Probe the `_ingest._value` slot before consuming anything: the one way
+    // the per-element set can fail is `_ingest` sitting there as a scalar,
+    // and failing NOW lets the array go back untouched.
+    if let Err(error) = event.set("_ingest._value", Value::Null) {
+        event.set(field, Value::Array(items))?;
+        return Err(error);
+    }
+
+    let mut out: Vec<Value> = Vec::with_capacity(items.len());
+    let mut rest = items.into_iter();
+    while let Some(item) = rest.next() {
+        // Cannot fail: the probe above proved the path writable.
+        event.set("_ingest._value", item)?;
+        if let Err(error) = body(event) {
+            if let Some(failed) = event.get("_ingest._value") {
+                out.push(failed.clone());
+            }
+            out.extend(rest);
+            event.set(field, Value::Array(out))?;
+            return Err(error);
+        }
+        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+    }
+
+    event.remove("_ingest");
+    event.set(field, Value::Array(out))?;
+    Ok(())
+}
+
 /// Parse one field's JSON string into `target`, the way Elastic's `json`
 /// processor does.
 ///
@@ -1113,6 +1168,61 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- foreach_array ---
+
+    /// The happy path: every element moves through `_ingest._value`, the
+    /// mutated list lands back on the field, and `_ingest` is gone.
+    #[test]
+    fn foreach_array_rebuilds_the_field_from_the_mutated_elements() {
+        let mut event = Event::new(json!({ "tags": ["a", "b"] }));
+        foreach_array(&mut event, "tags", |event| {
+            let text = event.get_str("_ingest._value").unwrap().to_uppercase();
+            event.set("_ingest._value", text)
+        })
+        .unwrap();
+        assert_eq!(event.as_value(), &json!({ "tags": ["A", "B"] }));
+    }
+
+    /// A value that is not an array is a no-op, exactly as the inline
+    /// `if let Some(Value::Array(..))` was -- and it is NOT removed.
+    #[test]
+    fn foreach_array_leaves_a_non_array_alone() {
+        let mut event = Event::new(json!({ "tags": "scalar" }));
+        foreach_array(&mut event, "tags", |_| {
+            panic!("the body must not run");
+        })
+        .unwrap();
+        assert_eq!(event.as_value(), &json!({ "tags": "scalar" }));
+    }
+
+    /// A body that fails part-way leaves the processed prefix, the failing
+    /// element -- still exposed at `_ingest._value` -- and the untouched
+    /// rest, all back in the field.
+    #[test]
+    fn foreach_array_restores_the_field_when_the_body_fails() {
+        let mut event = Event::new(json!({ "tags": ["a", "bad", "c"] }));
+        let error = foreach_array(&mut event, "tags", |event| {
+            let text = event.get_str("_ingest._value").unwrap().to_string();
+            if text == "bad" {
+                return Err(crate::TransformError::FieldNotFound { path: text });
+            }
+            event.set("_ingest._value", text.to_uppercase())
+        })
+        .unwrap_err();
+        assert!(error.to_string().contains("bad"));
+        assert_eq!(event.get("tags"), Some(&json!(["A", "bad", "c"])));
+        assert_eq!(event.get("_ingest._value"), Some(&json!("bad")));
+    }
+
+    /// An empty array still clears `_ingest` and writes the field back,
+    /// which is what the inline loop did.
+    #[test]
+    fn foreach_array_handles_an_empty_array() {
+        let mut event = Event::new(json!({ "tags": [], "_ingest": { "old": 1 } }));
+        foreach_array(&mut event, "tags", |_| Ok(())).unwrap();
+        assert_eq!(event.as_value(), &json!({ "tags": [] }));
+    }
 
     // --- parse_json_field ---
 
