@@ -302,9 +302,18 @@ impl CompiledGrok {
         event: &mut crate::Event,
     ) -> crate::Result<()> {
         let path = self.field_map.get(name).map_or(name, String::as_str);
-        match value.parse::<i64>() {
-            Ok(n) if self.numeric.contains_key(name) => event.set(path, n)?,
-            _ => event.set(path, value)?,
+        // A `:float` capture is numeric too, and an i64 parse alone left
+        // every fractional value a string -- lambda's duration_ms among them.
+        if self.numeric.contains_key(name) {
+            if let Ok(n) = value.parse::<i64>() {
+                event.set(path, n)?;
+            } else if let Ok(f) = value.parse::<f64>() {
+                event.set(path, f)?;
+            } else {
+                event.set(path, value)?;
+            }
+        } else {
+            event.set(path, value)?;
         }
         Ok(())
     }
