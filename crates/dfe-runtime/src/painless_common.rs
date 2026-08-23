@@ -3698,6 +3698,7 @@ pub(crate) enum KnownShape {
         target: String,
     },
     ResourcesRenameDedup(String),
+    KeysStripWhitespace(String),
     StripAnglePairs {
         scalars: Vec<String>,
         lists: Vec<String>,
@@ -3911,6 +3912,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     {
         shapes.push(KnownShape::ResourcesRenameDedup(
             crate::painless_params::clean_path(source),
+        ));
+        return shapes;
+    }
+
+    // Pattern: whitespace stripped from every key of one map -- powershell's
+    // spaced event_data names.
+    if normalised.contains(".matcher(entry.getKey()")
+        && normalised.contains("replaceAll(\"\")")
+        && let Some(at) = normalised.find(".entrySet()")
+        && let Some(start) = normalised[..at].rfind("ctx.")
+    {
+        shapes.push(KnownShape::KeysStripWhitespace(
+            crate::painless_params::clean_path(&normalised[start + 4..at]),
         ));
         return shapes;
     }
@@ -4427,6 +4441,18 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
+        KnownShape::KeysStripWhitespace(source) => {
+            if let Some(Value::Object(entries)) = event.get(source).cloned() {
+                let mut rebuilt = Map::new();
+                for (key, value) in entries {
+                    let stripped: String =
+                        key.chars().filter(|c| !c.is_whitespace()).collect();
+                    rebuilt.insert(stripped, value);
+                }
+                let _ = event.set(source, Value::Object(rebuilt));
+            }
+            true
+        }
         KnownShape::StripAnglePairs { scalars, lists } => {
             let strip = |text: &str| {
                 text.strip_prefix('<')
