@@ -3713,6 +3713,7 @@ pub(crate) enum KnownShape {
         tags: String,
         target: String,
     },
+    RenameCommonAuth(Vec<String>),
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
     CopyMemberName(Vec<String>),
@@ -3941,6 +3942,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_outcome_from_tags(normalised)
     {
         shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: "Rename Common Auth Fields" -- process, source and client
+    // fields out of event_data with the script's own conversions.
+    if normalised.contains("WorkstationName")
+        && normalised.contains("ClientAddress")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+    {
+        shapes.push(KnownShape::RenameCommonAuth(codes));
         return shapes;
     }
 
@@ -4452,6 +4463,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             tags,
             target,
         } => run_outcome_from_tags(event, action_field, tags, target),
+        KnownShape::RenameCommonAuth(codes) => {
+            crate::painless_windows::run_rename_common_auth(event, codes)
+        }
         KnownShape::CopyTargetUser(codes) => {
             crate::painless_windows::run_copy_target_user(event, codes)
         }

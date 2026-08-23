@@ -749,6 +749,78 @@ pub(crate) fn run_copy_user_to_base(
     true
 }
 
+/// "Rename Common Auth Fields": the process, source and client fields moved
+/// out of `event_data` with the script's own conversions -- `Long.decode` on
+/// the pid and port, `-` skipped, `LOCAL` corrected to loopback, and the
+/// process name from the executable's last backslash segment.
+pub(crate) fn run_rename_common_auth(event: &mut Event, codes: &[String]) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+
+    if let Some(pid) = event.get("winlog.event_data.ProcessId").cloned() {
+        let converted = match &pid {
+            Value::String(text) => java_long_decode(text).map(Value::from),
+            other => Some(other.clone()),
+        };
+        if let Some(converted) = converted {
+            let _ = event.set("process.pid", converted);
+            event.remove("winlog.event_data.ProcessId");
+        }
+    }
+    if let Some(name) = event
+        .get_str("winlog.event_data.ProcessName")
+        .map(str::to_string)
+    {
+        let _ = event.set("process.executable", json!(name));
+        event.remove("winlog.event_data.ProcessName");
+    }
+    if let Some(ip) = event
+        .get_str("winlog.event_data.IpAddress")
+        .filter(|v| *v != "-")
+        .map(str::to_string)
+    {
+        let _ = event.set("source.ip", json!(ip));
+        event.remove("winlog.event_data.IpAddress");
+    }
+    if let Some(port) = event
+        .get_str("winlog.event_data.IpPort")
+        .filter(|v| *v != "-")
+        .and_then(java_long_decode)
+    {
+        let _ = event.set("source.port", json!(port));
+        event.remove("winlog.event_data.IpPort");
+    }
+    if let Some(workstation) = event
+        .get_str("winlog.event_data.WorkstationName")
+        .map(str::to_string)
+    {
+        let _ = event.set("source.domain", json!(workstation));
+        event.remove("winlog.event_data.WorkstationName");
+    }
+    if let Some(client) = event
+        .get_str("winlog.event_data.ClientAddress")
+        .filter(|v| *v != "-" && *v != "Unknown")
+        .map(str::to_string)
+    {
+        let client = if client == "LOCAL" {
+            "127.0.0.1".to_string()
+        } else {
+            client
+        };
+        // The script PUTS a scalar, replacing whatever list sat there.
+        let _ = event.set("related.ip", json!(client));
+        event.remove("winlog.event_data.ClientAddress");
+    }
+    if !event.has_value("process.name")
+        && let Some(executable) = event.get_str("process.executable").map(str::to_string)
+    {
+        let name = executable.rsplit('\\').next().unwrap_or(&executable).to_string();
+        let _ = event.set("process.name", json!(name));
+    }
+    true
+}
+
 /// The base a copy-to-base script writes: the first `ctx.user.put("<base>"`.
 pub(crate) fn copy_base(script: &str) -> Option<String> {
     let at = script.find("ctx.user.put(\"")?;
