@@ -640,6 +640,132 @@ pub(crate) fn run_copy_subject_user(event: &mut Event, codes: &[String]) -> bool
     true
 }
 
+/// "Copy `MemberName` to User and User to Group": the split DN's first part
+/// minus `CN=` to `user.target.name` and `related.user`, its fourth minus
+/// `DC=` to the domain, the Target fields to `group.*`, and the group copied
+/// under `user.target.group.*`.
+pub(crate) fn run_copy_member_name(event: &mut Event, codes: &[String]) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+
+    if let Some(Value::Array(parts)) = event.get("_temp.MemberNameParts").cloned() {
+        if let Some(first) = parts.first().and_then(Value::as_str) {
+            let name = first.replace("CN=", "").replace("cn=", "");
+            let _ = event.set("user.target.name", json!(name.clone()));
+            let _ = event.append_unique("related.user", Value::String(name));
+        }
+        if parts.len() >= 4
+            && let Some(fourth) = parts.get(3).and_then(Value::as_str)
+        {
+            let domain = fourth.replace("DC=", "").replace("dc=", "");
+            let _ = event.set("user.target.domain", json!(domain));
+        }
+    }
+
+    for source in ["TargetUserSid", "TargetSid"] {
+        if let Some(id) = event
+            .get_str(&format!("winlog.event_data.{source}"))
+            .map(str::to_string)
+        {
+            let _ = event.set("group.id", json!(id));
+        }
+    }
+    if let Some(name) = event
+        .get_str("winlog.event_data.TargetUserName")
+        .map(str::to_string)
+    {
+        let _ = event.set("group.name", json!(name));
+    }
+    if let Some(domain) = event
+        .get_str("winlog.event_data.TargetDomainName")
+        .map(str::to_string)
+    {
+        let domain = domain.replace("DC=", "").replace("dc=", "");
+        let _ = event.set("group.domain", json!(domain));
+    }
+
+    if event.has_value("user.target") {
+        for leaf in ["id", "name", "domain"] {
+            if let Some(value) = event.get(&format!("group.{leaf}")).cloned() {
+                let _ = event.set(&format!("user.target.group.{leaf}"), value);
+            }
+        }
+    }
+    true
+}
+
+/// "Copy Target User to Computer Object": the Target SID, name and domain
+/// under `winlog.computerObject.*` for the computer-account events.
+pub(crate) fn run_copy_computer_object(event: &mut Event, codes: &[String]) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+    for (source, leaf) in [
+        ("TargetSid", "id"),
+        ("TargetUserName", "name"),
+        ("TargetDomainName", "domain"),
+    ] {
+        if let Some(value) = event
+            .get_str(&format!("winlog.event_data.{source}"))
+            .map(str::to_string)
+        {
+            let _ = event.set(&format!("winlog.computerObject.{leaf}"), json!(value));
+        }
+    }
+    true
+}
+
+/// "Copy Target User to Target" and its Effective twin: the SID, the
+/// username's pre-`@` half and the domain under `user.<base>.*`, the name
+/// joining `related.user`, `-` and empty skipped throughout.
+pub(crate) fn run_copy_user_to_base(
+    event: &mut Event,
+    codes: &[String],
+    base: &str,
+    sid_field: &str,
+) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+
+    let valid = |value: Option<&str>| {
+        value
+            .filter(|v| !v.is_empty() && *v != "-")
+            .map(str::to_string)
+    };
+
+    if let Some(id) = valid(event.get_str(sid_field)) {
+        let _ = event.set(&format!("user.{base}.id"), json!(id));
+    }
+    if let Some(name) = valid(event.get_str("winlog.event_data.TargetUserName")) {
+        let name = name.split('@').next().unwrap_or(&name).to_string();
+        let _ = event.set(&format!("user.{base}.name"), json!(name.clone()));
+        let _ = event.append_unique("related.user", Value::String(name));
+    }
+    if let Some(domain) = valid(event.get_str("winlog.event_data.TargetDomainName")) {
+        let _ = event.set(&format!("user.{base}.domain"), json!(domain));
+    }
+    true
+}
+
+/// The base a copy-to-base script writes: the first `ctx.user.put("<base>"`.
+pub(crate) fn copy_base(script: &str) -> Option<String> {
+    let at = script.find("ctx.user.put(\"")?;
+    let after = &script[at + "ctx.user.put(\"".len()..];
+    let (base, _) = after.split_once('"')?;
+    matches!(base, "target" | "effective").then(|| base.to_string())
+}
+
+/// The SID field a copy-to-base script reads: `def userId = ctx.winlog?.
+/// event_data?.<X>;`.
+pub(crate) fn copy_sid_field(script: &str) -> Option<String> {
+    let at = script.find("def userId = ctx.")?;
+    let after = &script[at + "def userId = ctx.".len()..];
+    let (path, _) = after.split_once(';')?;
+    Some(clean(path.trim()))
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;

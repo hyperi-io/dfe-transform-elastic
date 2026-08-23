@@ -3037,15 +3037,27 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
         return false;
     };
 
-    let sentinels = quoted_after(script, "entry.getValue() == ");
+    // Two spellings: `entry.getValue() == '<s>'` chains, and the security
+    // pipeline's `[null, "", "-", ...].contains(entry.getValue())` list.
+    let mut drops_null = false;
+    let mut sentinels = quoted_after(script, "entry.getValue() == ");
+    if sentinels.is_empty()
+        && let Some(at) = script.find("].contains(entry.getValue())")
+        && let Some(open) = script[..at].rfind('[')
+    {
+        let list = &script[open + 1..at];
+        sentinels = quoted_members(list);
+        drops_null = list.contains("null");
+    }
     let drops_odd_keys = script.contains("entry.getKey()") && script.contains(r"\W+");
-    if sentinels.is_empty() && !drops_odd_keys {
+    if sentinels.is_empty() && !drops_odd_keys && !drops_null {
         return false;
     }
 
     if let Some(Value::Object(map)) = crate::painless_params::pointer_mut(event, &path) {
         map.retain(|k, v| {
-            let sentinel = v.as_str().is_some_and(|s| sentinels.iter().any(|x| x == s));
+            let sentinel = (drops_null && v.is_null())
+                || v.as_str().is_some_and(|s| sentinels.iter().any(|x| x == s));
             let odd_key = drops_odd_keys && k.chars().any(|c| !c.is_alphanumeric() && c != '_');
             !sentinel && !odd_key
         });
@@ -3373,6 +3385,13 @@ pub(crate) enum KnownShape {
     },
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
+    CopyMemberName(Vec<String>),
+    CopyComputerObject(Vec<String>),
+    CopyUserToBase {
+        codes: Vec<String>,
+        base: String,
+        sid_field: String,
+    },
     SplitPipeFields(Vec<String>),
     SplitTokenField {
         source: String,
@@ -3527,6 +3546,40 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_prepend_to_array(normalised)
     {
         shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: "Copy MemberName to User and User to Group" -- the split DN
+    // to user.target, the Target fields to group.*. Ahead of its cousins,
+    // whose triggers its text also spells.
+    if normalised.contains("MemberNameParts")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+    {
+        shapes.push(KnownShape::CopyMemberName(codes));
+        return shapes;
+    }
+
+    // Pattern: "Copy Target User to Computer Object".
+    if normalised.contains("computerObject")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+    {
+        shapes.push(KnownShape::CopyComputerObject(codes));
+        return shapes;
+    }
+
+    // Pattern: "Copy Target User to Target" and its Effective twin -- the
+    // base and the SID field are the script's own.
+    if normalised.contains("def userId = ctx.")
+        && normalised.contains("ctx.user.put(")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+        && let Some(base) = crate::painless_windows::copy_base(normalised)
+        && let Some(sid_field) = crate::painless_windows::copy_sid_field(normalised)
+    {
+        shapes.push(KnownShape::CopyUserToBase {
+            codes,
+            base,
+            sid_field,
+        });
         return shapes;
     }
 
@@ -3949,6 +4002,17 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CopySubjectUser(codes) => {
             crate::painless_windows::run_copy_subject_user(event, codes)
         }
+        KnownShape::CopyMemberName(codes) => {
+            crate::painless_windows::run_copy_member_name(event, codes)
+        }
+        KnownShape::CopyComputerObject(codes) => {
+            crate::painless_windows::run_copy_computer_object(event, codes)
+        }
+        KnownShape::CopyUserToBase {
+            codes,
+            base,
+            sid_field,
+        } => crate::painless_windows::run_copy_user_to_base(event, codes, base, sid_field),
         KnownShape::SplitPipeFields(fields) => run_split_pipe_fields(event, fields),
         KnownShape::SplitTokenField {
             source,
