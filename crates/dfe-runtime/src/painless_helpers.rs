@@ -172,7 +172,7 @@ pub fn java_to_string(v: &Value) -> String {
 
 /// The table size a default-capacity Java `HashMap` holds `entries` in:
 /// 16 doubling whenever the count crosses three quarters of it.
-fn java_table_size(entries: usize) -> usize {
+pub(crate) fn java_table_size(entries: usize) -> usize {
     let mut capacity = 16usize;
     while entries > capacity * 3 / 4 {
         capacity *= 2;
@@ -183,7 +183,7 @@ fn java_table_size(entries: usize) -> usize {
 /// The bucket a key lands in: Java's `String.hashCode` over UTF-16 units,
 /// spread by `h ^ (h >>> 16)` and masked to the table.
 #[allow(clippy::cast_possible_wrap, clippy::cast_sign_loss)] // Java's own int arithmetic, wrap included.
-fn java_bucket(key: &str, table: usize) -> usize {
+pub(crate) fn java_bucket(key: &str, table: usize) -> usize {
     let mut hash: i32 = 0;
     for unit in key.encode_utf16() {
         hash = hash.wrapping_mul(31).wrapping_add(i32::from(unit));

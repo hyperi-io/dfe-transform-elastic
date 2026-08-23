@@ -13,7 +13,7 @@
 //! [`crate::painless_common::try_known_painless`], so a shape with a params
 //! block runs against the pipeline's real table rather than a transcribed copy.
 
-use serde_json::{Map, Value};
+use serde_json::{Map, Value, json};
 
 use crate::event::Event;
 use crate::painless_helpers::{filetime_to_unix_ms, remove_sentinel_values};
@@ -81,6 +81,7 @@ pub(crate) enum ParamsShape {
         subject: String,
         target: String,
     },
+    MimecastLogType,
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -134,6 +135,14 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return Some(ParamsShape::SentinelRemoval);
+    }
+
+    // Pattern: mimecast's scored log-type classifier, keyed on its four
+    // params tables.
+    if normalised.contains("params.definite_positive")
+        && normalised.contains("params.candidates")
+    {
+        return Some(ParamsShape::MimecastLogType);
     }
 
     // Pattern: convert every named field from Windows FILETIME to UNIX ms.
@@ -313,6 +322,7 @@ pub(crate) fn run_params_shape(
             }
             true
         }
+        ParamsShape::MimecastLogType => try_mimecast_log_type(event, params),
         ParamsShape::ProtocolPrefix {
             list,
             fallback,
@@ -424,6 +434,103 @@ fn parse_lookup_wrap_list(script: &str) -> Option<(String, String)> {
     let before = &script[..store_at];
     let target = clean_path(before[before.rfind("ctx.")? + 4..].trim());
     Some((clean_path(source), target))
+}
+
+/// mimecast's scored log-type classifier, tables from params.
+///
+/// Keys lowercase into a Java `HashSet`; a `definite_positive` hit wins
+/// outright, then candidate ELIMINATION through the `negative` table (a lone
+/// survivor wins), then the `positive` table scores what remains and every
+/// co-equal winner is listed. Iteration orders are Java's hash orders, which
+/// [`crate::painless_helpers::java_bucket`] reproduces -- the corpus's own
+/// single-winner strings depend on them.
+fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool {
+    use crate::painless_helpers::{java_bucket, java_table_size};
+
+    let Some(Value::Object(mimecast)) = event.get("mimecast") else {
+        return true;
+    };
+    let table = |name: &str| params.get(name).and_then(Value::as_object);
+    let (Some(definite), Some(negative), Some(positive), Some(candidates)) = (
+        table("definite_positive"),
+        table("negative"),
+        table("positive"),
+        table("candidates"),
+    ) else {
+        return true;
+    };
+
+    // The event's keys, lowercased into a HashSet and walked in ITS hash
+    // order -- insertion order is the mimecast map's own bucket walk.
+    let mut keys: Vec<String> = {
+        let map_table = java_table_size(mimecast.len());
+        let mut walked: Vec<(usize, usize, String)> = mimecast
+            .keys()
+            .enumerate()
+            .map(|(position, key)| (java_bucket(key, map_table), position, key.to_lowercase()))
+            .collect();
+        walked.sort_by_key(|(bucket, position, _)| (*bucket, *position));
+        let mut seen = Vec::new();
+        for (_, _, key) in walked {
+            if !seen.contains(&key) {
+                seen.push(key);
+            }
+        }
+        seen
+    };
+    let set_table = java_table_size(keys.len());
+    let mut ordered: Vec<(usize, usize, String)> = keys
+        .drain(..)
+        .enumerate()
+        .map(|(position, key)| (java_bucket(&key, set_table), position, key))
+        .collect();
+    ordered.sort_by_key(|(bucket, position, _)| (*bucket, *position));
+    let keys: Vec<String> = ordered.into_iter().map(|(_, _, key)| key).collect();
+
+    for key in &keys {
+        if let Some(kind) = definite.get(key).and_then(Value::as_str) {
+            let _ = event.set("mimecast.log_type", json!(kind));
+            return true;
+        }
+    }
+
+    // Elimination: candidates in the params table's own hash order.
+    let candidate_table = java_table_size(candidates.len());
+    let mut score: Vec<(usize, usize, String, i64)> = candidates
+        .keys()
+        .enumerate()
+        .map(|(position, name)| (java_bucket(name, candidate_table), position, name.clone(), 0))
+        .collect();
+    score.sort_by_key(|(bucket, position, ..)| (*bucket, *position));
+
+    for key in &keys {
+        if let Some(Value::Array(kinds)) = negative.get(key) {
+            for kind in kinds.iter().filter_map(Value::as_str) {
+                score.retain(|(_, _, name, _)| name != kind);
+            }
+        }
+    }
+    if score.len() == 1 {
+        let _ = event.set("mimecast.log_type", json!(score[0].2));
+        return true;
+    }
+
+    let mut max = 0i64;
+    for key in &keys {
+        if let Some(Value::Array(kinds)) = positive.get(key) {
+            for kind in kinds.iter().filter_map(Value::as_str) {
+                if let Some(entry) = score.iter_mut().find(|(_, _, name, _)| name == kind) {
+                    entry.3 += 1;
+                    max = max.max(entry.3);
+                }
+            }
+        }
+    }
+    score.retain(|(_, _, _, points)| *points >= max);
+
+    let winners: Vec<Value> = score.into_iter().map(|(_, _, name, _)| json!(name)).collect();
+    let _ = event.set("mimecast.log_type", Value::Array(winners));
+    true
 }
 
 /// Read the scheme-prefix shape: `if (params.<list>.contains(ctx.<subject>))
