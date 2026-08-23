@@ -93,7 +93,16 @@ impl Transform for SecurityStandard {
 
             let _cond = { event.has_value("winlog.event_data.MemberName") };
             if _cond {
-                // SKIPPED: separator unsupported by the regex engine: (?<!\\),
+            if event.has_value("winlog.event_data.MemberName") {
+                if let Some(s) = event.get_string("winlog.event_data.MemberName") {
+                    let parts: Vec<Value> = cached_regex!("(?<!\\\\),")
+                        .split(&s)
+                        .into_iter()
+                        .map(|p| json!(p))
+                        .collect();
+                    event.set("_temp.MemberNameParts", Value::Array(parts))?;
+                }
+            }
             }
 
                 // Painless script
