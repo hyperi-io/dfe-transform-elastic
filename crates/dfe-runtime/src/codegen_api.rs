@@ -140,6 +140,13 @@ where
         return Ok(());
     };
 
+    // A NESTED foreach borrows the same `_ingest._value` slot, so the
+    // enclosing element is saved and put back afterwards -- Elasticsearch's
+    // own processor restores the previous scope the same way. Without this
+    // the inner loop replaced the outer's element and then wrote back INTO
+    // the replacement.
+    let enclosing = event.get("_ingest._value").cloned();
+
     // Probe the `_ingest._value` slot before consuming anything: the one way
     // the per-element set can fail is `_ingest` sitting there as a scalar,
     // and failing NOW lets the array go back untouched.
@@ -164,7 +171,16 @@ where
         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
     }
 
-    event.remove("_ingest");
+    match enclosing {
+        // Restore BEFORE the write-back: a nested loop's field lives inside
+        // the restored element.
+        Some(previous) => {
+            event.set("_ingest._value", previous)?;
+        }
+        None => {
+            event.remove("_ingest");
+        }
+    }
     event.set(field, Value::Array(out))?;
     Ok(())
 }
