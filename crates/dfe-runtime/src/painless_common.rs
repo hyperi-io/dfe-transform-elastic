@@ -325,6 +325,31 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// elb's `tlsv12` split at the `v`: the head is the protocol, the tail the
+/// version, dotted after its first digit when it does not already carry one.
+/// A token that does not split in two leaves the event alone.
+fn run_tls_version_split(event: &mut Event, source: &str) -> bool {
+    let Some(raw) = event.get_str(source).map(str::to_string) else {
+        return true;
+    };
+    let parts: Vec<&str> = raw.split('v').collect();
+    if parts.len() != 2 {
+        return true;
+    }
+    let version = if parts[1].contains('.') {
+        parts[1].to_string()
+    } else {
+        let mut chars = parts[1].chars();
+        match chars.next() {
+            Some(first) => format!("{first}.{}", chars.as_str()),
+            None => return true,
+        }
+    };
+    let _ = event.set("tls.version", json!(version));
+    let _ = event.set("tls.version_protocol", json!(parts[0].to_lowercase()));
+    true
+}
+
 /// checkpoint's dropped-packet tuples: each `<ip,port,ip,port,proto;iface>`
 /// entry becomes a structured map, the sampled marker is noted, and the raw
 /// field goes once anything parsed. A port that will not parse is where the
@@ -1115,6 +1140,16 @@ fn parse_last_element(script: &str) -> Option<KnownShape> {
     let (lhs, _) = before.split_once('=')?;
     let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
     Some(KnownShape::LastElement { array, target })
+}
+
+/// Read elb's `tlsv12` split as a [`KnownShape::TlsVersionSplit`].
+fn parse_tls_version_split(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".splitOnToken(")?;
+    let before = &script[..at];
+    let source = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    (!source.is_empty()).then_some(KnownShape::TlsVersionSplit { source })
 }
 
 /// `ctx.<t> = ctx.<s>.decodeBase64();` as a [`KnownShape::DecodeBase64`].
@@ -4213,6 +4248,9 @@ pub(crate) enum KnownShape {
     SecurityhubResource,
     SecurityhubResources,
     CheckpointPackets,
+    TlsVersionSplit {
+        source: String,
+    },
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
     StripAnglePairs {
@@ -4450,6 +4488,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Pattern: checkpoint's dropped-packet tuples into structured maps.
     if normalised.contains("packets_dropped") && normalised.contains(".splitOnToken('>')") {
         shapes.push(KnownShape::CheckpointPackets);
+        return shapes;
+    }
+
+    // Pattern: elb's `tlsv12` -- the protocol and version out of one token.
+    if normalised.contains("ctx.tls.version_protocol")
+        && normalised.contains(".splitOnToken(\"v\")")
+        && let Some(shape) = parse_tls_version_split(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -4990,6 +5037,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
         KnownShape::SecurityhubResource => run_securityhub_resource(event),
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
+        KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
@@ -5454,6 +5502,27 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/aws/elb_logs/default.yml`: the network load
+    /// balancer writes `tlsv12`, which is TLS 1.2.
+    #[test]
+    fn the_tls_token_splits_into_protocol_and_version() {
+        let script = "def parts = ctx.aws.elb.ssl_protocol.splitOnToken(\"v\");\n\
+            if (parts.length != 2) {\n  return;\n}\n\
+            if (parts[1].contains(\".\")) {\n  ctx.tls.version = parts[1];\n} else {\n\
+            ctx.tls.version = parts[1].substring(0,1) + \".\" + parts[1].substring(1);\n}\n\
+            ctx.tls.version_protocol = parts[0].toLowerCase();";
+
+        let mut event = Event::new(json!({ "aws": { "elb": { "ssl_protocol": "tlsv12" }}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("tls.version"), Some(&json!("1.2")));
+        assert_eq!(event.get("tls.version_protocol"), Some(&json!("tls")));
+
+        // A token that does not split in two is the script's own early return.
+        let mut plain = Event::new(json!({ "aws": { "elb": { "ssl_protocol": "-" }}}));
+        assert!(try_known_painless(&mut plain, script));
+        assert!(plain.get("tls.version").is_none());
+    }
 
     /// Verbatim from `pipelines/cisco/umbrella/default.yml`: the identities
     /// dance's first half, the tail of one field past another's length.
