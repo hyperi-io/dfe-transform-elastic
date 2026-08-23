@@ -75,6 +75,12 @@ pub(crate) enum ParamsShape {
         source: String,
         target: String,
     },
+    ProtocolPrefix {
+        list: String,
+        fallback: String,
+        subject: String,
+        target: String,
+    },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -198,6 +204,14 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::LookupWrapList { source, target });
     }
 
+    // Pattern: prefix a field with a validated scheme -- zscaler web's
+    // `<protocol>://<url>` build, the fallback scheme from params.
+    if normalised.contains("+ '://' +")
+        && let Some(shape) = parse_protocol_prefix(normalised)
+    {
+        return Some(shape);
+    }
+
     // Pattern: map a field through a params table in whichever direction it
     // was written -- name to number, or a number already there back to a name.
     if normalised.contains("params.entrySet()") && normalised.contains("entry.getKey()") {
@@ -299,6 +313,33 @@ pub(crate) fn run_params_shape(
             }
             true
         }
+        ParamsShape::ProtocolPrefix {
+            list,
+            fallback,
+            subject,
+            target,
+        } => {
+            let (Some(scheme), Some(tail)) = (
+                event.get_str(subject).map(str::to_string),
+                event.get_str(target).map(str::to_string),
+            ) else {
+                return true;
+            };
+            let valid = params
+                .get(list)
+                .and_then(Value::as_array)
+                .is_some_and(|schemes| schemes.iter().any(|s| s.as_str() == Some(&scheme)));
+            let scheme = if valid {
+                scheme
+            } else {
+                match params.get(fallback).and_then(Value::as_str) {
+                    Some(fallback) => fallback.to_string(),
+                    None => return true,
+                }
+            };
+            let _ = event.set(target, Value::String(format!("{scheme}://{tail}")));
+            true
+        }
         ParamsShape::SentinelRemoval => try_sentinel_removal(event, normalised, params),
         ParamsShape::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
         ParamsShape::BitFlags => try_bit_flags(event, normalised, params),
@@ -380,6 +421,43 @@ fn parse_lookup_wrap_list(script: &str) -> Option<(String, String)> {
     let before = &script[..store_at];
     let target = clean_path(before[before.rfind("ctx.")? + 4..].trim());
     Some((clean_path(source), target))
+}
+
+/// Read the scheme-prefix shape: `if (params.<list>.contains(ctx.<subject>))
+/// { ctx.<target> = ctx.<subject> + '://' + ctx.<target>; } else {
+/// ctx.<target> = params.<fallback> + '://' + ... }`.
+fn parse_protocol_prefix(script: &str) -> Option<ParamsShape> {
+    let at = script.find(".contains(ctx.")?;
+    let before = &script[..at];
+    let list = before[before.rfind("params.")? + 7..].to_string();
+    let after = &script[at + ".contains(ctx.".len()..];
+    let (subject, _) = after.split_once(')')?;
+
+    // The concatenation's tail names the target; the else-arm's params read
+    // names the fallback scheme.
+    let concat_at = script.find("+ '://' + ctx.")?;
+    let tail = &script[concat_at + "+ '://' + ctx.".len()..];
+    let target = tail
+        .split([';', '\n'])
+        .next()?
+        .trim()
+        .trim_end_matches(';')
+        .trim();
+    let fallback_at = script.rfind("= params.")?;
+    let fallback = script[fallback_at + "= params.".len()..]
+        .split_whitespace()
+        .next()?
+        .to_string();
+
+    if list.is_empty() || fallback.is_empty() {
+        return None;
+    }
+    Some(ParamsShape::ProtocolPrefix {
+        list,
+        fallback,
+        subject: clean_path(subject),
+        target: clean_path(target),
+    })
 }
 
 /// Split sysmon's `QueryResults` into `dns.answers`, `dns.resolved_ip` and

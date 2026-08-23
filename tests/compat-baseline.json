@@ -26,6 +26,6 @@
     "sentinel_one": { "events": 46, "events_total": 68, "fields_wrong": 149 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
     "windows": { "events": 442, "events_total": 596, "fields_wrong": 647 },
-    "zscaler_zia": { "events": 31, "events_total": 93, "fields_wrong": 341 }
+    "zscaler_zia": { "events": 55, "events_total": 93, "fields_wrong": 78 }
   }
 }

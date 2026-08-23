@@ -181,6 +181,152 @@ fn try_prepend_to_array(event: &mut Event, scalar: &str, array: &str, target: &s
     true
 }
 
+/// The fields a `splitStr` batch names, as dotted paths.
+///
+/// The base is the `def <ss> = ctx.<base>;` binding, and each call names a
+/// member of it -- `splitStr(ss, 'key')` or `splitStr(ss.sub, 'key')`.
+fn parse_split_pipe_fields(script: &str) -> Option<Vec<String>> {
+    use crate::painless_params::clean_path;
+
+    // The one local bound to a ctx path that the calls pass.
+    let (local, base) = local_bound_to_ctx(script)?;
+
+    let mut fields = Vec::new();
+    for call in script.split("splitStr(").skip(1) {
+        let Some((arguments, _)) = call.split_once(')') else {
+            continue;
+        };
+        // The helper's own definition has typed parameters, not a call.
+        let Some((holder, key)) = arguments.split_once(',') else {
+            continue;
+        };
+        let holder = holder.trim();
+        let Some(key) = quoted_first(key) else {
+            continue;
+        };
+        if holder == local {
+            fields.push(format!("{base}.{key}"));
+        } else if let Some(sub) = holder.strip_prefix(&format!("{local}.")) {
+            fields.push(format!("{base}.{}.{key}", clean_path(sub)));
+        }
+    }
+    (!fields.is_empty()).then_some(fields)
+}
+
+/// Read the one-field token split: subject binding, separator, optional
+/// `Integer.parseInt`, and the list's final store.
+fn parse_split_token_field(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let (local, source) = local_bound_to_ctx(script)?;
+    let call = format!("{local}.splitOnToken(");
+    let at = script.find(&call)?;
+    let separator = quoted_first(&script[at + call.len()..])?;
+    if separator.chars().count() != 1 {
+        return None;
+    }
+
+    // The ArrayList the loop fills, and where it is stored.
+    let list_decl = script.find("= new ArrayList()")?;
+    let list = script[..list_decl].split_whitespace().next_back()?;
+    let store = format!(" = {list};");
+    let store_at = script.rfind(&store)?;
+    let before = &script[..store_at];
+    let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
+
+    // In place only: a script storing the list somewhere ELSE does more than
+    // this shape, and claiming it would write a wrong array.
+    if target != source {
+        return None;
+    }
+
+    Some(KnownShape::SplitTokenField {
+        source,
+        separator: separator.chars().next()?,
+        parse_int: script.contains("Integer.parseInt("),
+        target,
+    })
+}
+
+/// Split each named field's string on `|` in place, empties kept, exactly as
+/// the `splitStr` helper does -- a string with no pipe becomes a one-element
+/// list.
+fn run_split_pipe_fields(event: &mut Event, fields: &[String]) -> bool {
+    for field in fields {
+        if let Some(text) = event.get_str(field).map(str::to_string)
+            && !text.is_empty()
+        {
+            let pieces: Vec<Value> = text
+                .split('|')
+                .map(|p| Value::String(p.to_string()))
+                .collect();
+            let _ = event.set(field, Value::Array(pieces));
+        }
+    }
+    true
+}
+
+/// Split one field on its token in place, optionally keeping only the pieces
+/// that parse as 32-bit integers -- `Integer.parseInt`'s range, since Painless
+/// skips the ones that throw.
+fn run_split_token_field(
+    event: &mut Event,
+    source: &str,
+    separator: char,
+    parse_int: bool,
+    target: &str,
+) -> bool {
+    if let Some(text) = event.get_str(source).map(str::to_string) {
+        // Java's split drops trailing empty pieces.
+        let mut pieces: Vec<&str> = text.split(separator).collect();
+        while pieces.last() == Some(&"") {
+            pieces.pop();
+        }
+        let values: Vec<Value> = if parse_int {
+            pieces
+                .iter()
+                .filter_map(|p| p.parse::<i32>().ok())
+                .map(|n| Value::from(i64::from(n)))
+                .collect()
+        } else {
+            pieces
+                .iter()
+                .map(|p| Value::String((*p).to_string()))
+                .collect()
+        };
+        let _ = event.set(target, Value::Array(values));
+    }
+    true
+}
+
+/// Base64-decode one field into another; text that will not decode is left
+/// alone, which is where Elastic's engine throws to `on_failure` instead.
+fn run_decode_base64(event: &mut Event, source: &str, target: &str) -> bool {
+    use base64::Engine as _;
+    if let Some(text) = event.get_str(source).map(str::to_string)
+        && let Ok(bytes) = base64::engine::general_purpose::STANDARD.decode(&text)
+        && let Ok(decoded) = String::from_utf8(bytes)
+    {
+        let _ = event.set(target, json!(decoded));
+    }
+    true
+}
+
+/// `ctx.<t> = ctx.<s>.decodeBase64();` as a [`KnownShape::DecodeBase64`].
+fn parse_decode_base64(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".decodeBase64()")?;
+    let before = &script[..at];
+    let source = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    let (lhs, _) = before.split_once('=')?;
+    let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
+    (!target.is_empty() && !source.is_empty()).then_some(KnownShape::DecodeBase64 {
+        source,
+        target,
+    })
+}
+
 /// What a drop-empty script's OWN predicate says is droppable.
 ///
 /// The shape recurs across 245 of the 351 packages with an ingest pipeline, and
@@ -221,29 +367,39 @@ impl DropPolicy {
 
 /// The non-empty literals a drop predicate compares its value against.
 ///
-/// Only the first `if` is read -- the predicate -- so a literal from further
-/// down the script cannot widen what counts as empty.
+/// Two spellings carry the predicate: the first `if (` of the recursive
+/// helper, and zscaler's `boolean dropScalar(v) { return v == null || ... }`
+/// form, whose chains sit after `return`. Both are read; a literal from an
+/// unrelated statement cannot join because only `== '<quoted>'` terms count.
 fn predicate_sentinels(script: &str) -> Vec<String> {
-    let Some(predicate) = script
+    let mut found = Vec::new();
+    let mut collect = |chain: &str| {
+        for term in chain.split("||") {
+            let Some((_, rest)) = term.split_once("== ") else {
+                continue;
+            };
+            // Quoted, so the `null` keyword is not read as the string "null".
+            let rest = rest.trim();
+            if !rest.starts_with(['\'', '"']) {
+                continue;
+            }
+            let literal = rest.trim_matches(['\'', '"']);
+            if !literal.is_empty() && !found.iter().any(|f: &String| f == literal) {
+                found.push(literal.to_string());
+            }
+        }
+    };
+
+    if let Some(predicate) = script
         .split("if (")
         .nth(1)
         .and_then(|s| s.split(')').next())
-    else {
-        return Vec::new();
-    };
-    let mut found = Vec::new();
-    for term in predicate.split("||") {
-        let Some((_, rest)) = term.split_once("== ") else {
-            continue;
-        };
-        // Quoted, so the `null` keyword is not read as the string "null".
-        let rest = rest.trim();
-        if !rest.starts_with(['\'', '"']) {
-            continue;
-        }
-        let literal = rest.trim_matches(['\'', '"']);
-        if !literal.is_empty() && !found.iter().any(|f: &String| f == literal) {
-            found.push(literal.to_string());
+    {
+        collect(predicate);
+    }
+    for chain in script.split("return ").skip(1) {
+        if let Some(chain) = chain.split(';').next() {
+            collect(chain);
         }
     }
     found
@@ -3177,6 +3333,17 @@ pub(crate) enum KnownShape {
     },
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
+    SplitPipeFields(Vec<String>),
+    SplitTokenField {
+        source: String,
+        separator: char,
+        parse_int: bool,
+        target: String,
+    },
+    DecodeBase64 {
+        source: String,
+        target: String,
+    },
     ClassifyMembers,
     FlattenedDuplicates,
     CollectEntities,
@@ -3338,6 +3505,36 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
         shapes.push(KnownShape::CopySubjectUser(codes));
+        return shapes;
+    }
+
+    // Pattern: zscaler's splitStr batch -- named map members split on `|` in
+    // place. Ahead of the append-each matcher, whose `.add(` and
+    // `instanceof Map` triggers the helper also spells.
+    if normalised.contains("void splitStr(")
+        && let Some(fields) = parse_split_pipe_fields(normalised)
+    {
+        shapes.push(KnownShape::SplitPipeFields(fields));
+        return shapes;
+    }
+
+    // Pattern: one field split on a token into a list, optionally parsed to
+    // integers -- endpoint_dlp's dictionary counts. Same trigger overlap as
+    // above.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains("new ArrayList()")
+        && let Some(shape) = parse_split_token_field(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: `ctx.<t> = ctx.<s>.decodeBase64();` -- zscaler web's URL and
+    // referer.
+    if normalised.contains(".decodeBase64()")
+        && let Some(shape) = parse_decode_base64(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -3684,6 +3881,14 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CopySubjectUser(codes) => {
             crate::painless_windows::run_copy_subject_user(event, codes)
         }
+        KnownShape::SplitPipeFields(fields) => run_split_pipe_fields(event, fields),
+        KnownShape::SplitTokenField {
+            source,
+            separator,
+            parse_int,
+            target,
+        } => run_split_token_field(event, source, *separator, *parse_int, target),
+        KnownShape::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
         KnownShape::ClassifyMembers => try_classify_members(event, normalised),
         KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
         KnownShape::CollectEntities => try_collect_entities(event, normalised),
