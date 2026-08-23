@@ -156,6 +156,13 @@ where
     F: FnMut(&mut Event) -> Result<()>,
 {
     let Some(items) = event.take_array(field) else {
+        // A MAP is a foreach too: Elastic walks its entries, exposing the key
+        // at `_ingest._key` and the value at `_ingest._value`, and rebuilds it
+        // from whatever the body left in each. mimecast's attachment hashes
+        // are a map, and skipping it lost every one of them.
+        if event.get(field).is_some_and(Value::is_object) {
+            return foreach_map(event, field, body);
+        }
         return Ok(());
     };
 
@@ -201,6 +208,53 @@ where
         }
     }
     event.set(field, Value::Array(out))?;
+    Ok(())
+}
+
+/// [`foreach_array`] over a MAP: each entry's key and value are exposed, and
+/// the map is rebuilt from what the body leaves in them.
+///
+/// A body that renames `_ingest._key` moves the entry, which is what
+/// Elasticsearch's own processor does with the pair it puts back.
+fn foreach_map<F>(event: &mut Event, field: &str, mut body: F) -> Result<()>
+where
+    F: FnMut(&mut Event) -> Result<()>,
+{
+    let Some(Value::Object(entries)) = event.get(field).cloned() else {
+        return Ok(());
+    };
+    let enclosing_key = event.get("_ingest._key").cloned();
+    let enclosing_value = event.get("_ingest._value").cloned();
+
+    let mut out = serde_json::Map::with_capacity(entries.len());
+    for (key, value) in entries {
+        event.set("_ingest._key", Value::String(key))?;
+        event.set("_ingest._value", value)?;
+        body(event)?;
+        let Some(Value::String(key)) = event.remove("_ingest._key") else {
+            continue;
+        };
+        out.insert(key, event.remove("_ingest._value").unwrap_or(Value::Null));
+    }
+
+    for (path, previous) in [
+        ("_ingest._key", enclosing_key),
+        ("_ingest._value", enclosing_value),
+    ] {
+        match previous {
+            Some(value) => event.set(path, value)?,
+            None => {
+                event.remove(path);
+            }
+        }
+    }
+    if event
+        .get_object("_ingest")
+        .is_some_and(serde_json::Map::is_empty)
+    {
+        event.remove("_ingest");
+    }
+    event.set(field, Value::Object(out))?;
     Ok(())
 }
 
@@ -1494,6 +1548,27 @@ mod tests {
         })
         .unwrap();
         assert_eq!(event.as_value(), &json!({ "tags": ["A", "B"] }));
+    }
+
+    /// A MAP is a foreach too: the key and the value are both exposed, and the
+    /// map is rebuilt from what the body leaves in them. mimecast's attachment
+    /// hashes arrive that way, and skipping the map lost every one.
+    #[test]
+    fn foreach_array_walks_a_map_by_key_and_value() {
+        let mut event = Event::new(json!({ "hash": { "sha1": "aa", "md5": "bb" } }));
+        let mut seen: Vec<String> = Vec::new();
+        foreach_array(&mut event, "hash", |event| {
+            seen.push(event.get_str("_ingest._key").unwrap().to_string());
+            let text = event.get_str("_ingest._value").unwrap().to_uppercase();
+            event.set("_ingest._value", text)
+        })
+        .unwrap();
+
+        assert_eq!(
+            event.as_value(),
+            &json!({ "hash": { "sha1": "AA", "md5": "BB" } })
+        );
+        assert_eq!(seen, ["sha1", "md5"]);
     }
 
     /// A value that is not an array is a no-op, exactly as the inline
