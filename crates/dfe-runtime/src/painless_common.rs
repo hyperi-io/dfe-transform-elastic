@@ -3175,6 +3175,8 @@ pub(crate) enum KnownShape {
         array: String,
         target: String,
     },
+    CopyTargetUser(Vec<String>),
+    CopySubjectUser(Vec<String>),
     ClassifyMembers,
     FlattenedDuplicates,
     CollectEntities,
@@ -3310,6 +3312,32 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_prepend_to_array(normalised)
     {
         shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: the security pipeline's "Copy Target User" -- SID, username
+    // and domain to `user.*` or `user.target.*`, gated on the script's own
+    // event-code list. Ahead of the email-split matcher, whose trigger its
+    // `splitOnToken("@")` also spells.
+    if normalised.contains("TargetUserSid")
+        && normalised.contains("TargetDomainName")
+        && normalised.contains("user.target")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+    {
+        shapes.push(KnownShape::CopyTargetUser(codes));
+        return shapes;
+    }
+
+    // Pattern: its sibling "Copy Subject User from Event Data", which
+    // OVERWRITES `user.*`. The user_data variant is a different script and
+    // is excluded by name.
+    if normalised.contains("SubjectUserSid")
+        && normalised.contains("SubjectDomainName")
+        && normalised.contains("event_data")
+        && !normalised.contains("user_data")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+    {
+        shapes.push(KnownShape::CopySubjectUser(codes));
         return shapes;
     }
 
@@ -3650,6 +3678,12 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             array,
             target,
         } => try_prepend_to_array(event, scalar, array, target),
+        KnownShape::CopyTargetUser(codes) => {
+            crate::painless_windows::run_copy_target_user(event, codes)
+        }
+        KnownShape::CopySubjectUser(codes) => {
+            crate::painless_windows::run_copy_subject_user(event, codes)
+        }
         KnownShape::ClassifyMembers => try_classify_members(event, normalised),
         KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
         KnownShape::CollectEntities => try_collect_entities(event, normalised),

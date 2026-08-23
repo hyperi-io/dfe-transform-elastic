@@ -65,6 +65,7 @@ pub(crate) enum ParamsShape {
     AwsEntity(Box<crate::painless_entity::EntityScript>),
     SysmonQueryResults,
     SysmonRegistry,
+    LookupPut { source: String, target: String },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -157,6 +158,15 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::KeyedMessageTable);
     }
 
+    // Pattern: look one field up in the table and `.put` the row somewhere
+    // ELSE -- the security pipeline's logon type. Ahead of the normalise
+    // shape, which writes back to the field it read.
+    if normalised.contains("= params.get(ctx.")
+        && let Some((source, target)) = parse_lookup_put(normalised)
+    {
+        return Some(ParamsShape::LookupPut { source, target });
+    }
+
     // Pattern: map a field through a params table in whichever direction it
     // was written -- name to number, or a number already there back to a name.
     if normalised.contains("params.entrySet()") && normalised.contains("entry.getKey()") {
@@ -228,6 +238,16 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
+        ParamsShape::LookupPut { source, target } => {
+            if let Some(row) = event
+                .get_as_string(source)
+                .and_then(|key| params.get(&key))
+                .cloned()
+            {
+                let _ = event.set(target, row);
+            }
+            true
+        }
         ParamsShape::SentinelRemoval => try_sentinel_removal(event, normalised, params),
         ParamsShape::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
         ParamsShape::BitFlags => try_bit_flags(event, normalised, params),
@@ -246,6 +266,26 @@ pub(crate) fn run_params_shape(
         ParamsShape::AddUniqueRow => try_add_unique_row(event, normalised, params),
         ParamsShape::FrameworkPreference => try_framework_preference(event, normalised, params),
     }
+}
+
+/// Read `def <t> = params.get(ctx.<source>);` and the `ctx.<base>.put("<leaf>",
+/// <t>)` that stores it, as (source, target).
+fn parse_lookup_put(script: &str) -> Option<(String, String)> {
+    let at = script.find("= params.get(ctx.")?;
+    let after = &script[at + "= params.get(ctx.".len()..];
+    let (source, _) = after.split_once(')')?;
+    let local = script[..at].split_whitespace().next_back()?;
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    let store = format!(", {local})");
+    let store_at = script.find(&store)?;
+    let before = &script[..store_at];
+    let put_at = before.rfind(".put(\"")?;
+    let leaf = before[put_at + ".put(\"".len()..].trim_end_matches('"');
+    let base = clean_path(before[..put_at].rsplit("ctx.").next()?);
+    Some((clean_path(source), format!("{base}.{leaf}")))
 }
 
 /// Split sysmon's `QueryResults` into `dns.answers`, `dns.resolved_ip` and

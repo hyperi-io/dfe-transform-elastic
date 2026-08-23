@@ -332,6 +332,114 @@ pub(crate) fn run_registry(event: &mut Event, params: &Map<String, Value>) -> bo
     true
 }
 
+// ---------------------------------------------------------------------------
+// The security pipeline's user-copy scripts
+// ---------------------------------------------------------------------------
+
+/// The `!["4624", ...].contains(ctx.event.code)` gate's code list.
+pub(crate) fn event_code_list(script: &str) -> Option<Vec<String>> {
+    let at = script.find("![\"")?;
+    let after = &script[at + 1..];
+    let (list, rest) = after.split_once(']')?;
+    if !rest.trim_start().starts_with(".contains(ctx.event.code)") {
+        return None;
+    }
+    let codes: Vec<String> = list
+        .split(',')
+        .filter_map(|piece| {
+            let piece = piece.trim().trim_start_matches('[');
+            piece.strip_prefix('"')?.strip_suffix('"').map(str::to_string)
+        })
+        .collect();
+    (!codes.is_empty()).then_some(codes)
+}
+
+/// Does the event's code pass a script's own gate?
+fn code_gated(event: &Event, codes: &[String]) -> bool {
+    event
+        .get_str("event.code")
+        .is_some_and(|code| codes.iter().any(|c| c == code))
+}
+
+/// The security pipeline's "Copy Target User": the target SID to `user.id`
+/// or -- when a user is already named -- `user.target.id`, the username's
+/// pre-`@` half likewise plus `related.user`, and the domain the same way.
+pub(crate) fn run_copy_target_user(event: &mut Event, codes: &[String]) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+
+    let target_id = event
+        .get_str("winlog.event_data.TargetUserSid")
+        .or_else(|| event.get_str("winlog.event_data.TargetSid"))
+        .map(str::to_string);
+    if let Some(id) = target_id {
+        let field = if event.has_value("user.id") {
+            "user.target.id"
+        } else {
+            "user.id"
+        };
+        let _ = event.set(field, json!(id));
+    }
+
+    if let Some(name) = event
+        .get_str("winlog.event_data.TargetUserName")
+        .map(str::to_string)
+    {
+        let first = name.split('@').next().unwrap_or(&name).to_string();
+        let field = if event.has_value("user.name") {
+            "user.target.name"
+        } else {
+            "user.name"
+        };
+        let _ = event.set(field, json!(first.clone()));
+        let _ = event.append_unique("related.user", Value::String(first));
+    }
+
+    if let Some(domain) = event
+        .get_str("winlog.event_data.TargetDomainName")
+        .map(str::to_string)
+    {
+        let field = if event.has_value("user.domain") {
+            "user.target.domain"
+        } else {
+            "user.domain"
+        };
+        let _ = event.set(field, json!(domain));
+    }
+    true
+}
+
+/// The security pipeline's "Copy Subject User from Event Data": the subject
+/// SID, name and domain OVERWRITE `user.*`, the name also joining
+/// `related.user`.
+pub(crate) fn run_copy_subject_user(event: &mut Event, codes: &[String]) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+
+    if let Some(id) = event
+        .get_str("winlog.event_data.SubjectUserSid")
+        .map(str::to_string)
+    {
+        let _ = event.set("user.id", json!(id));
+    }
+    if let Some(name) = event
+        .get_str("winlog.event_data.SubjectUserName")
+        .map(str::to_string)
+    {
+        let _ = event.set("user.name", json!(name.clone()));
+        let _ = event.append_unique("related.user", Value::String(name));
+    }
+    if let Some(domain) = event
+        .get_str("winlog.event_data.SubjectDomainName")
+        .map(str::to_string)
+    {
+        let _ = event.set("user.domain", json!(domain));
+    }
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
