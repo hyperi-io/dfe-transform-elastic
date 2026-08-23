@@ -22,7 +22,7 @@
     "microsoft_dnsserver": { "events": 9, "events_total": 14, "fields_wrong": 14 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
-    "proofpoint_on_demand": { "events": 23, "events_total": 55, "fields_wrong": 100 },
+    "proofpoint_on_demand": { "events": 37, "events_total": 55, "fields_wrong": 64 },
     "sentinel_one": { "events": 46, "events_total": 68, "fields_wrong": 143 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
     "windows": { "events": 504, "events_total": 596, "fields_wrong": 401 },

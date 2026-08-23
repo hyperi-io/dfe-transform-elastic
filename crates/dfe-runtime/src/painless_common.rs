@@ -325,6 +325,131 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// Read `ctx.put("<t>", new HashMap()); for (<v> in ctx.<s>) {
+/// ctx.<t>.put(<v>.<k>, <v>.<val>); }` as a [`KnownShape::NameValueFold`].
+fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(", new HashMap())")?;
+    let before = &script[..at];
+    let open = before.rfind(".put(")?;
+    let target = quoted_first(&before[open..])?;
+
+    let for_at = script.find(" in ctx.")?;
+    let after = &script[for_at + " in ctx.".len()..];
+    let (source, _) = after.split_once(')')?;
+    let var = script[..for_at].rsplit(|c: char| !(c.is_alphanumeric() || c == '_')).next()?;
+
+    let call = format!("{target}.put({var}.");
+    let call_at = script.find(&call)?;
+    let arguments = &script[call_at + call.len()..];
+    let (key_member, rest) = arguments.split_once(',')?;
+    let value_member = rest
+        .trim()
+        .strip_prefix(&format!("{var}."))?
+        .split(')')
+        .next()?;
+
+    Some(KnownShape::NameValueFold {
+        source: clean_path(source),
+        target,
+        key_member: key_member.trim().to_string(),
+        value_member: value_member.trim().to_string(),
+    })
+}
+
+/// The fold itself: the target becomes a fresh map of each element's
+/// key member to its value member; an element with no key is skipped where
+/// Java would take a null key JSON cannot spell.
+fn run_name_value_fold(
+    event: &mut Event,
+    source: &str,
+    target: &str,
+    key_member: &str,
+    value_member: &str,
+) -> bool {
+    let Some(Value::Array(items)) = event.get(source).cloned() else {
+        return true;
+    };
+    let mut folded = Map::new();
+    for item in &items {
+        let Some(key) = item.get(key_member).and_then(Value::as_str) else {
+            continue;
+        };
+        let value = item.get(value_member).cloned().unwrap_or(Value::Null);
+        folded.insert(key.to_string(), value);
+    }
+    let _ = event.set(target, Value::Object(folded));
+    true
+}
+
+/// Read the outcome-from-tags shape: the action plus a dot prefixes the tag
+/// whose value decides success or failure.
+fn parse_outcome_from_tags(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let plus = script.find(" + '.'")?;
+    let before = &script[..plus];
+    let action_field = clean_path(&before[before.rfind("ctx.")? + 4..]);
+
+    let for_at = script.find(" in ctx.")?;
+    let after = &script[for_at + " in ctx.".len()..];
+    let (tags, _) = after.split_once(')')?;
+
+    let put_at = script.find(".put(\"outcome\"")?;
+    let head = &script[..put_at];
+    let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
+
+    Some(KnownShape::OutcomeFromTags {
+        action_field,
+        tags: clean_path(tags),
+        target: format!("{target}.outcome"),
+    })
+}
+
+/// The LAST tag whose name starts with `<action>.` decides: "true" is
+/// success, "false" failure, case folded. Writing needs the target's parent
+/// to exist, which is where the script's own put would have thrown.
+fn run_outcome_from_tags(
+    event: &mut Event,
+    action_field: &str,
+    tags: &str,
+    target: &str,
+) -> bool {
+    let Some(action) = event.get_str(action_field).map(str::to_string) else {
+        return true;
+    };
+    let Some(Value::Array(items)) = event.get(tags).cloned() else {
+        return true;
+    };
+    let Some((parent, _)) = target.rsplit_once('.') else {
+        return true;
+    };
+    if event.get(parent).is_none() {
+        return true;
+    }
+
+    let prefix = format!("{action}.");
+    let mut outcome: Option<&str> = None;
+    for item in &items {
+        let (Some(name), Some(value)) = (
+            item.get("name").and_then(Value::as_str),
+            item.get("value").and_then(Value::as_str),
+        ) else {
+            continue;
+        };
+        if name.starts_with(&prefix) {
+            match value.to_lowercase().as_str() {
+                "true" => outcome = Some("success"),
+                "false" => outcome = Some("failure"),
+                _ => {}
+            }
+        }
+    }
+    let _ = event.set(target, outcome.map_or(Value::Null, Value::from));
+    true
+}
+
 /// Read `ctx.<t> = ctx.<s>.splitOnToken("<sep>").length;` as a
 /// [`KnownShape::TokenCount`].
 fn parse_token_count(script: &str) -> Option<KnownShape> {
@@ -3488,6 +3613,17 @@ pub(crate) enum KnownShape {
         array: String,
         target: String,
     },
+    NameValueFold {
+        source: String,
+        target: String,
+        key_member: String,
+        value_member: String,
+    },
+    OutcomeFromTags {
+        action_field: String,
+        tags: String,
+        target: String,
+    },
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
     CopyMemberName(Vec<String>),
@@ -3672,6 +3808,26 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("new ArrayList()")
         && normalised.contains(".add(ctx.")
         && let Some(shape) = parse_prepend_to_array(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: a list of {name, value} pairs folded into a map that REPLACES
+    // the target -- proofpoint's audit labels.
+    if normalised.contains(", new HashMap())")
+        && normalised.contains("for (")
+        && let Some(shape) = parse_name_value_fold(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: an outcome read off the tag whose name carries the action's
+    // prefix -- proofpoint's audit outcome.
+    if normalised.contains("+ '.'")
+        && normalised.contains(".startsWith(action)")
+        && let Some(shape) = parse_outcome_from_tags(normalised)
     {
         shapes.push(shape);
         return shapes;
@@ -4148,6 +4304,17 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             array,
             target,
         } => try_prepend_to_array(event, scalar, array, target),
+        KnownShape::NameValueFold {
+            source,
+            target,
+            key_member,
+            value_member,
+        } => run_name_value_fold(event, source, target, key_member, value_member),
+        KnownShape::OutcomeFromTags {
+            action_field,
+            tags,
+            target,
+        } => run_outcome_from_tags(event, action_field, tags, target),
         KnownShape::CopyTargetUser(codes) => {
             crate::painless_windows::run_copy_target_user(event, codes)
         }
