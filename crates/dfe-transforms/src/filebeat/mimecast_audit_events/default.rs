@@ -242,7 +242,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" - ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?drop", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" - ") else {
                                     break 'dissect false;
@@ -269,7 +268,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -287,7 +285,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -314,7 +311,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -332,7 +328,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -501,7 +496,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find("> ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?drop", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix("> ") else {
                                     break 'dissect false;
@@ -537,7 +531,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find("> ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?drop", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix("> ") else {
                                     break 'dissect false;
@@ -573,7 +566,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" : ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" : ") else {
                                     break 'dissect false;
@@ -591,7 +583,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" :") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" :") else {
                                     break 'dissect false;
@@ -609,7 +600,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" :") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" :") else {
                                     break 'dissect false;
@@ -627,7 +617,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" :") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" :") else {
                                     break 'dissect false;
@@ -690,7 +679,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" :") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" :") else {
                                     break 'dissect false;
@@ -708,7 +696,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" :") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" :") else {
                                     break 'dissect false;
@@ -726,7 +713,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" : ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" : ") else {
                                     break 'dissect false;
@@ -744,7 +730,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -762,7 +747,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(" : ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(" : ") else {
                                     break 'dissect false;
@@ -780,7 +764,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -798,7 +781,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -816,7 +798,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
@@ -834,7 +815,6 @@ impl Transform for Default {
                                 let Some(pos) = remaining.find(": ") else {
                                     break 'dissect false;
                                 };
-                                captured.push(("?key", &remaining[..pos]));
                                 remaining = &remaining[pos..];
                                 let Some(rest) = remaining.strip_prefix(": ") else {
                                     break 'dissect false;
