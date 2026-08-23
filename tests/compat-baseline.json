@@ -3,7 +3,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "aws": { "events": 438, "events_total": 538, "fields_wrong": 247 },
+    "aws": { "events": 465, "events_total": 538, "fields_wrong": 146 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },
     "cisco_asa": { "events": 508, "events_total": 512, "fields_wrong": 19 },
@@ -23,7 +23,7 @@
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "proofpoint_on_demand": { "events": 45, "events_total": 55, "fields_wrong": 34 },
-    "sentinel_one": { "events": 66, "events_total": 68, "fields_wrong": 2 },
+    "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
     "windows": { "events": 570, "events_total": 596, "fields_wrong": 83 },
     "zscaler_zia": { "events": 73, "events_total": 93, "fields_wrong": 29 }

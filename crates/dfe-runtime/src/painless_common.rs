@@ -836,6 +836,39 @@ fn run_route53_answers(event: &mut Event) -> bool {
     true
 }
 
+/// The address a reverse-lookup question names, back into `related.ip`.
+///
+/// `143.69.2.81.in-addr.arpa` is 81.2.69.143 with its octets reversed, and
+/// `ip6.arpa` the same over single hex NIBBLES, four to a group. The script
+/// re-groups them without compressing anything, so a leading zero survives --
+/// `2a02:cf40:0add:...`, not `2a02:cf40:add:...`.
+fn run_reverse_lookup_address(event: &mut Event) -> bool {
+    let Some(name) = event.get_str("dns.question.name") else {
+        return true;
+    };
+
+    let address = if name.contains(".in-addr.arpa") {
+        let labels = name.replace(".in-addr.arpa", "");
+        labels.split('.').rev().collect::<Vec<_>>().join(".")
+    } else if name.contains(".ip6.arpa") {
+        let labels = name.replace(".ip6.arpa", "");
+        let nibbles: Vec<&str> = labels.split('.').rev().collect();
+        let mut out = String::with_capacity(nibbles.len() + nibbles.len() / 4);
+        for (index, nibble) in nibbles.iter().enumerate() {
+            out.push_str(nibble);
+            if index % 4 == 3 && index + 1 != nibbles.len() {
+                out.push(':');
+            }
+        }
+        out
+    } else {
+        return true;
+    };
+
+    let _ = event.append_unique("related.ip", json!(address));
+    true
+}
+
 /// m365's identity fields off the same alert evidence list -- the sibling of
 /// [`run_m365_process_evidence`], keyed on the evidence `odata_type`.
 fn run_m365_identity_evidence(event: &mut Event) -> bool {
@@ -1300,9 +1333,8 @@ fn run_inspector_resources(event: &mut Event, multi: bool) -> bool {
 /// one-resource case is handled here, as the script itself says; the
 /// multi-resource sibling is a separate script.
 #[allow(clippy::too_many_lines)] // A transliteration; splitting it would hide the script's order.
-fn run_securityhub_resource(event: &mut Event) -> bool {
-    let Some(Value::Array(resources)) = event.get("aws.securityhub_findings.resources").cloned()
-    else {
+fn run_securityhub_resource(event: &mut Event, source: &str) -> bool {
+    let Some(Value::Array(resources)) = event.get(source).cloned() else {
         return true;
     };
 
@@ -5192,8 +5224,8 @@ pub(crate) enum KnownShape {
         target: String,
     },
     ResourcesRenameDedup(String),
-    SecurityhubResource,
-    SecurityhubResources,
+    SecurityhubResource(String),
+    SecurityhubResources(String),
     InspectorResources {
         multi: bool,
     },
@@ -5206,6 +5238,7 @@ pub(crate) enum KnownShape {
     M365ProcessEvidence,
     M365IdentityEvidence,
     Route53Answers,
+    ReverseLookupAddress,
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -5442,14 +5475,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: securityhub's single-resource entity extraction, and its
-    // multi-resource sibling whose every write is an append.
-    if normalised.contains("securityhub_findings.resources") {
+    // multi-resource sibling whose every write is an append. The data stream
+    // is part of the path it reads, so take that from the binding rather than
+    // naming one -- `securityhub_findings` and `..._full_posture` ship the
+    // same pair of scripts over their own field.
+    if normalised.contains("res.Details[res.Type]?.Name")
+        && let Some(source) = ctx_path_bound_to(normalised, "resources")
+    {
         if normalised.contains("resources.size() == 1") {
-            shapes.push(KnownShape::SecurityhubResource);
+            shapes.push(KnownShape::SecurityhubResource(source));
             return shapes;
         }
         if normalised.contains("ctx.resource.type.add(") {
-            shapes.push(KnownShape::SecurityhubResources);
+            shapes.push(KnownShape::SecurityhubResources(source));
             return shapes;
         }
     }
@@ -5468,6 +5506,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Pattern: route53's answers rebuilt into ECS, feeding related.* as they go.
     if normalised.contains("answer?.Rdata") && normalised.contains("new_answer") {
         shapes.push(KnownShape::Route53Answers);
+        return shapes;
+    }
+
+    // Pattern: the address a reverse-lookup question names, back out of its
+    // `in-addr.arpa` / `ip6.arpa` labels and into `related.ip`.
+    if normalised.contains(".in-addr.arpa") && normalised.contains(".ip6.arpa") {
+        shapes.push(KnownShape::ReverseLookupAddress);
         return shapes;
     }
 
@@ -6097,7 +6142,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
-        KnownShape::SecurityhubResource => run_securityhub_resource(event),
+        KnownShape::SecurityhubResource(source) => run_securityhub_resource(event, source),
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::ConcatParts(script) => run_concat_parts(event, script),
@@ -6115,9 +6160,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::M365ProcessEvidence => run_m365_process_evidence(event),
         KnownShape::M365IdentityEvidence => run_m365_identity_evidence(event),
         KnownShape::Route53Answers => run_route53_answers(event),
-        KnownShape::SecurityhubResources => {
-            if let Some(Value::Array(resources)) =
-                event.get("aws.securityhub_findings.resources").cloned()
+        KnownShape::ReverseLookupAddress => run_reverse_lookup_address(event),
+        KnownShape::SecurityhubResources(source) => {
+            if let Some(Value::Array(resources)) = event.get(source).cloned()
                 && resources.len() > 1
             {
                 run_securityhub_multi(event, &resources)

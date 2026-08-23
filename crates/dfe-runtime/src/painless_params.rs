@@ -86,6 +86,7 @@ pub(crate) enum ParamsShape {
     MimecastLogType,
     InvocationDetails,
     ScheduledTask,
+    ThreatIndicatorType(String),
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -151,6 +152,18 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // line of the named event_data field.
     if normalised.contains("def parseRawDetail(String raw)") {
         return Some(ParamsShape::InvocationDetails);
+    }
+
+    // Pattern: securityhub's threat-intel indicators, each vendor type mapped
+    // through params to its STIX name and a hash indicator built when that
+    // name is `file`.
+    if normalised.contains("indicator.indicator.put(\"file\", file)")
+        && let Some(source) = normalised
+            .split_once("for (ti in ctx.")
+            .and_then(|(_, rest)| rest.split_once(')'))
+            .map(|(path, _)| clean_path(path.trim()))
+    {
+        return Some(ParamsShape::ThreatIndicatorType(source));
     }
 
     // Pattern: mimecast's scored log-type classifier, keyed on its four
@@ -352,6 +365,9 @@ pub(crate) fn run_params_shape(
         ParamsShape::MimecastLogType => try_mimecast_log_type(event, params),
         ParamsShape::InvocationDetails => try_invocation_details(event, params),
         ParamsShape::ScheduledTask => crate::painless_scheduled_task::run(event, params),
+        ParamsShape::ThreatIndicatorType(source) => {
+            try_threat_indicator_type(event, source, params)
+        }
         ParamsShape::ProtocolPrefix {
             list,
             fallback,
@@ -678,6 +694,46 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 /// co-equal winner is listed. Iteration orders are Java's hash orders, which
 /// [`crate::painless_helpers::java_bucket`] reproduces -- the corpus's own
 /// single-winner strings depend on them.
+/// securityhub's threat-intel indicators mapped to their STIX type names.
+///
+/// The vendor type is the params key, so `HASH_MD5` becomes `file` and the
+/// hash's own name is the tail of that key lowercased. Each indicator
+/// OVERWRITES `threat.indicator.type`, so the last one in the list wins, while
+/// the `file` enrichments accumulate.
+fn try_threat_indicator_type(event: &mut Event, source: &str, params: &Map<String, Value>) -> bool {
+    let Some(Value::Array(indicators)) = event.get(source).cloned() else {
+        return true;
+    };
+
+    for indicator in &indicators {
+        let Some(kind) = indicator.get("type").and_then(Value::as_str) else {
+            continue;
+        };
+        let Some(mapped) = params.get(kind).and_then(Value::as_str) else {
+            continue;
+        };
+        let _ = event.set("threat.indicator.type", json!(mapped));
+        if mapped != "file" {
+            continue;
+        }
+        // `HASH_MD5` -> `md5`. A type with no second token would throw in
+        // Painless, and the processor ignores its own failures, so skip it.
+        let Some(name) = kind.split('_').nth(1) else {
+            continue;
+        };
+        let Some(value) = indicator.get("value") else {
+            continue;
+        };
+        let mut hash = Map::new();
+        hash.insert(name.to_lowercase(), value.clone());
+        let _ = event.append(
+            "threat.enrichments",
+            json!({ "indicator": { "file": { "hash": hash } } }),
+        );
+    }
+    true
+}
+
 /// powershell's `parseRawDetail`: one structured map per raw detail line.
 ///
 /// `<type>(<related command>): <value>`, and a `ParameterBinding` type splits
