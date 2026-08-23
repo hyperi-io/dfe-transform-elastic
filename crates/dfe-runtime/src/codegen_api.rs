@@ -1119,11 +1119,80 @@ fn path_extension(path: &str) -> Option<&str> {
     (!extension.is_empty()).then_some(extension)
 }
 
+/// Whether `java.net.URI` accepts every character of `text`.
+///
+/// Its legal set is RFC 2396's unreserved, reserved and escaped, widened to any
+/// non-ASCII character that is neither a control nor a space. So a raw space, a
+/// control character, one of the excluded ASCII punctuation marks, or a `%` not
+/// followed by two hex digits throws `URISyntaxException` -- which is where
+/// Elasticsearch drops to the `java.net.URL` fallback below.
+fn java_uri_legal(text: &str) -> bool {
+    let bytes = text.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        let b = bytes[i];
+        if !b.is_ascii() {
+            // A multi-byte character: only the leading byte is inspected, and
+            // every non-ASCII scalar but a control or space char is legal.
+            i += 1;
+            continue;
+        }
+        if b == b'%' {
+            let hex = bytes.get(i + 1..i + 3);
+            if !hex.is_some_and(|h| h.iter().all(u8::is_ascii_hexdigit)) {
+                return false;
+            }
+            i += 3;
+            continue;
+        }
+        if !(b.is_ascii_alphanumeric() || b"-_.!~*'();/?:@&=+$,[]#".contains(&b)) {
+            return false;
+        }
+        i += 1;
+    }
+    text.chars().all(|c| !c.is_control() && !is_space_char(c))
+}
+
+/// Java's `Character.isSpaceChar`: the Unicode space separators.
+fn is_space_char(c: char) -> bool {
+    c == ' '
+        || c == '\u{a0}'
+        || c == '\u{1680}'
+        || ('\u{2000}'..='\u{200a}').contains(&c)
+        || matches!(
+            c,
+            '\u{2028}' | '\u{2029}' | '\u{202f}' | '\u{205f}' | '\u{3000}'
+        )
+}
+
+/// Whether `java.net.URL` -- what Elasticsearch falls back to when
+/// `java.net.URI` refuses the text -- would parse it.
+///
+/// It is far more forgiving about characters and far less about two things: it
+/// needs a protocol the JDK ships a handler for, and it runs the port through a
+/// bare `Integer.parseInt`, so a port like `80-` throws out of the constructor
+/// and the whole processor fails. Both together are why an ALB log's
+/// `http://host:80-/ ` yields NO `url.*` at all.
+fn java_url_parses(uri: &UriRef<'_>) -> bool {
+    let Some(scheme) = uri.scheme else {
+        return false;
+    };
+    if !matches!(
+        scheme.to_ascii_lowercase().as_str(),
+        "http" | "https" | "file" | "ftp" | "jar" | "mailto"
+    ) {
+        return false;
+    }
+    uri.port
+        .is_none_or(|port| port.is_empty() || port.bytes().all(|b| b.is_ascii_digit()))
+}
+
 /// Split `field` into ECS `url.*` components under `target`.
 ///
 /// Elastic's `uri_parts` processor. Returns whether anything was written, so
-/// the caller can run its `on_failure` block: a value that is not a string, or
-/// an empty one, writes nothing.
+/// the caller can run its `on_failure` block: a value that is not a string, an
+/// empty one, or one neither `java.net.URI` nor `java.net.URL` will parse,
+/// writes nothing.
 ///
 /// # Errors
 ///
@@ -1143,6 +1212,10 @@ pub fn uri_parts(
     }
 
     let uri = split_uri(&original);
+    let uri_legal = java_uri_legal(&original);
+    if !uri_legal && !java_url_parses(&uri) {
+        return Ok(false);
+    }
     let mut parts = serde_json::Map::new();
 
     if let Some(scheme) = uri.scheme {
@@ -1184,10 +1257,13 @@ pub fn uri_parts(
     if let Some(query) = uri.query {
         // java.net.URI's getQuery DECODES percent escapes once, and that is
         // what Elasticsearch emits -- umbrella's double-encoded overwolf URLs
-        // carry the proof. A malformed escape fails java.net.URI wholesale and
-        // Elasticsearch falls back to the raw text, so a query that will not
-        // decode strictly is kept as written.
-        let decoded = percent_decode_strict(query).unwrap_or_else(|| query.to_owned());
+        // carry the proof. The URL fallback decodes nothing, so a text java.net
+        // .URI refused keeps its query as written.
+        let decoded = if uri_legal {
+            percent_decode_strict(query).unwrap_or_else(|| query.to_owned())
+        } else {
+            query.to_owned()
+        };
         parts.insert("query".into(), Value::String(decoded));
     }
     if let Some(fragment) = uri.fragment {
@@ -1236,12 +1312,29 @@ mod tests {
     }
 
     /// A malformed escape fails java.net.URI wholesale, so the raw text is
-    /// what Elasticsearch keeps.
+    /// what the java.net.URL fallback -- which decodes nothing -- keeps.
     #[test]
     fn a_query_that_will_not_decode_is_kept_raw() {
         let mut event = Event::new(json!({ "src": "http://h/p?bad=%ZZ" }));
         assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
         assert_eq!(event.get("url.query"), Some(&json!("bad=%ZZ")));
+    }
+
+    /// Verbatim from the elb corpus: a space fails java.net.URI and the `80-`
+    /// port fails the java.net.URL fallback's `Integer.parseInt`, so
+    /// Elasticsearch writes NO url parts at all.
+    #[test]
+    fn a_url_neither_java_parser_takes_writes_nothing() {
+        let mut event =
+            Event::new(json!({ "src": "http://internal-service-alb.example.com:80-/ " }));
+        assert!(!uri_parts(&mut event, "src", "url", true, false).unwrap());
+        assert!(event.get("url.scheme").is_none());
+        assert!(event.get("url.original").is_none());
+
+        // The space alone still goes through the URL fallback.
+        let mut spaced = Event::new(json!({ "src": "http://h/a b" }));
+        assert!(uri_parts(&mut spaced, "src", "url", false, false).unwrap());
+        assert_eq!(spaced.get("url.path"), Some(&json!("/a b")));
     }
 
     /// A URL with an authority and no path gets `path: ""`, which is what
