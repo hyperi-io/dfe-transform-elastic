@@ -77,6 +77,110 @@ macro_rules! cached_script {
     }};
 }
 
+/// Read `<local> = ctx.<a>.substring(ctx.<b>.length())` and where the local
+/// finally lands, as a [`KnownShape::PrefixTail`].
+fn parse_prefix_tail(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".substring(ctx.")?;
+    let before = &script[..at];
+    let source = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    let after = &script[at + ".substring(ctx.".len()..];
+    let (prefix, _) = after.split_once(".length())")?;
+    let prefix = clean_path(prefix);
+
+    // The local the tail is bound to: the last word before the `=`.
+    let assignment = before.rfind('=')?;
+    let local = before[..assignment].split_whitespace().next_back()?;
+
+    // Where the local is finally stored: `ctx.<target> = <local>;`, last.
+    let store = format!(" = {local};");
+    let store_at = script.rfind(&store)?;
+    let head = &script[..store_at];
+    let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
+    if target == source {
+        return None;
+    }
+
+    Some(KnownShape::PrefixTail {
+        source,
+        prefix,
+        strip_comma: script.contains(".startsWith(',')"),
+        target,
+    })
+}
+
+/// The tail of `source` past `prefix`'s length, one leading comma dropped
+/// where the script does, stored at `target`.
+fn try_prefix_tail(
+    event: &mut Event,
+    source: &str,
+    prefix: &str,
+    strip_comma: bool,
+    target: &str,
+) -> bool {
+    let (Some(text), Some(prefix)) = (event.get_str(source), event.get_str(prefix)) else {
+        return true;
+    };
+    let Some(mut tail) = text.get(prefix.len()..) else {
+        return true;
+    };
+    if strip_comma {
+        tail = tail.strip_prefix(',').unwrap_or(tail);
+    }
+    let tail = tail.to_string();
+    let _ = event.set(target, tail);
+    true
+}
+
+/// Read `x.add(ctx.<scalar>); for (v in ctx.<array>) { x.add(v); }
+/// ctx.<target> = x;` as a [`KnownShape::PrependToArray`].
+fn parse_prepend_to_array(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let add_at = script.find(".add(ctx.")?;
+    let after = &script[add_at + ".add(ctx.".len()..];
+    let (scalar, _) = after.split_once(')')?;
+    let scalar = clean_path(scalar);
+
+    let for_at = script.find(" in ctx.")?;
+    let after = &script[for_at + " in ctx.".len()..];
+    let (array, _) = after.split_once(')')?;
+    let array = clean_path(array);
+
+    // The local built up: the word before `.add(ctx.`.
+    let head = &script[..add_at];
+    let local = head
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
+    let store = format!(" = {local};");
+    let store_at = script.rfind(&store)?;
+    let head = &script[..store_at];
+    let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
+
+    Some(KnownShape::PrependToArray {
+        scalar,
+        array,
+        target,
+    })
+}
+
+/// `target = [scalar] + array's elements`, the reconstruction half of the
+/// identities dance.
+fn try_prepend_to_array(event: &mut Event, scalar: &str, array: &str, target: &str) -> bool {
+    let Some(first) = event.get(scalar).cloned() else {
+        return true;
+    };
+    let Some(Value::Array(rest)) = event.get(array).cloned() else {
+        return true;
+    };
+    let mut out = Vec::with_capacity(rest.len() + 1);
+    out.push(first);
+    out.extend(rest);
+    let _ = event.set(target, Value::Array(out));
+    true
+}
+
 /// What a drop-empty script's OWN predicate says is droppable.
 ///
 /// The shape recurs across 245 of the 351 packages with an ingest pipeline, and
@@ -3060,6 +3164,17 @@ pub(crate) enum KnownShape {
     Basename,
     FileInfo(String),
     HashLowercase(String),
+    PrefixTail {
+        source: String,
+        prefix: String,
+        strip_comma: bool,
+        target: String,
+    },
+    PrependToArray {
+        scalar: String,
+        array: String,
+        target: String,
+    },
     ClassifyMembers,
     FlattenedDuplicates,
     CollectEntities,
@@ -3176,6 +3291,25 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(source) = crate::painless_windows::hash_lowercase_source(normalised)
     {
         shapes.push(KnownShape::HashLowercase(source));
+        return shapes;
+    }
+
+    // Pattern: the tail of one string field past another field's length,
+    // optionally dropping one leading comma -- umbrella's identities dance.
+    if normalised.contains(".substring(ctx.")
+        && normalised.contains(".length())")
+        && let Some(shape) = parse_prefix_tail(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: a scalar field prepended to an array field into a target.
+    if normalised.contains("new ArrayList()")
+        && normalised.contains(".add(ctx.")
+        && let Some(shape) = parse_prepend_to_array(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -3505,6 +3639,17 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::HashLowercase(source) => {
             crate::painless_windows::run_hash_lowercase(event, source)
         }
+        KnownShape::PrefixTail {
+            source,
+            prefix,
+            strip_comma,
+            target,
+        } => try_prefix_tail(event, source, prefix, *strip_comma, target),
+        KnownShape::PrependToArray {
+            scalar,
+            array,
+            target,
+        } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ClassifyMembers => try_classify_members(event, normalised),
         KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
         KnownShape::CollectEntities => try_collect_entities(event, normalised),
@@ -3863,6 +4008,51 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/cisco/umbrella/default.yml`: the identities
+    /// dance's first half, the tail of one field past another's length.
+    #[test]
+    fn prefix_tail_reads_its_three_paths_and_strips_the_comma() {
+        let script = "String identities_tail = ctx.cisco.umbrella.identities.substring(ctx.cisco.umbrella.identity.length());\n\
+            if (identities_tail.startsWith(',')) {\n  identities_tail = identities_tail.substring(1);\n}\n\
+            if (ctx.cisco.umbrella._tmp == null) {\n  ctx.cisco.umbrella._tmp = new HashMap();\n}\n\
+            ctx.cisco.umbrella._tmp.identities_tail = identities_tail;";
+        let mut event = Event::new(json!({
+            "cisco": { "umbrella": {
+                "identity": "Last, First (f.last@example.com)",
+                "identities": "Last, First (f.last@example.com),HOSTNAME1",
+            }},
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("cisco.umbrella._tmp.identities_tail"),
+            Some(&json!("HOSTNAME1"))
+        );
+    }
+
+    /// The dance's second half: the scalar prepended to the split tail.
+    #[test]
+    fn prepend_to_array_rebuilds_the_list() {
+        let script = "def identities = new ArrayList();\n\
+            identities.add(ctx.cisco.umbrella.identity);\n\
+            for (identity in ctx.cisco.umbrella._tmp.identities_tail) {\n  identities.add(identity);\n}\n\
+            ctx.cisco.umbrella._tmp.identities = identities;";
+        let mut event = Event::new(json!({
+            "cisco": { "umbrella": {
+                "identity": "Last, First (f.last@example.com)",
+                "_tmp": { "identities_tail": ["HOSTNAME1", "HOSTNAME2"] },
+            }},
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("cisco.umbrella._tmp.identities"),
+            Some(&json!([
+                "Last, First (f.last@example.com)",
+                "HOSTNAME1",
+                "HOSTNAME2"
+            ]))
+        );
+    }
 
     /// The scripts below are the verbatim text the transform modules pass
     /// to `painless_exec`, so a change upstream shows up here as a miss.

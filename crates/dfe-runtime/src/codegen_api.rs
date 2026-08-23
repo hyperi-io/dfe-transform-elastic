@@ -1064,6 +1064,29 @@ fn is_scheme(candidate: &str) -> bool {
         && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'))
 }
 
+/// Percent-decode a string the way `java.net.URI` does: `%XX` only, no `+`
+/// handling, and `None` on a malformed escape or invalid UTF-8 -- the cases
+/// where Java rejects the whole URI.
+fn percent_decode_strict(text: &str) -> Option<String> {
+    if !text.contains('%') {
+        return None;
+    }
+    let bytes = text.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'%' {
+            let hex = text.get(i + 1..i + 3)?;
+            out.push(u8::from_str_radix(hex, 16).ok()?);
+            i += 3;
+        } else {
+            out.push(bytes[i]);
+            i += 1;
+        }
+    }
+    String::from_utf8(out).ok()
+}
+
 /// The extension of a path, or `None` when its last segment has no dot.
 ///
 /// Read off the corpus rather than assumed: Elasticsearch 9.2.2 gives
@@ -1126,14 +1149,27 @@ pub fn uri_parts(
     if let Some(port) = uri.port.and_then(|p| p.parse::<u32>().ok()) {
         parts.insert("port".into(), Value::Number(port.into()));
     }
-    if !uri.path.is_empty() {
+    if uri.path.is_empty() {
+        // Elasticsearch's processor goes through java.net.URI, whose getPath
+        // returns the empty string for a URL with an authority and no path --
+        // and the processor writes it. Verbatim in the umbrella corpus.
+        if uri.host.is_some() {
+            parts.insert("path".into(), Value::String(String::new()));
+        }
+    } else {
         parts.insert("path".into(), Value::String(uri.path.to_owned()));
         if let Some(extension) = path_extension(uri.path) {
             parts.insert("extension".into(), Value::String(extension.to_owned()));
         }
     }
     if let Some(query) = uri.query {
-        parts.insert("query".into(), Value::String(query.to_owned()));
+        // java.net.URI's getQuery DECODES percent escapes once, and that is
+        // what Elasticsearch emits -- umbrella's double-encoded overwolf URLs
+        // carry the proof. A malformed escape fails java.net.URI wholesale and
+        // Elasticsearch falls back to the raw text, so a query that will not
+        // decode strictly is kept as written.
+        let decoded = percent_decode_strict(query).unwrap_or_else(|| query.to_owned());
+        parts.insert("query".into(), Value::String(decoded));
     }
     if let Some(fragment) = uri.fragment {
         parts.insert("fragment".into(), Value::String(fragment.to_owned()));
@@ -1168,6 +1204,43 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- uri_parts: the java.net.URI behaviours the corpus pinned ---
+
+    /// Verbatim from the umbrella corpus: the raw query is double-encoded
+    /// and Elasticsearch emits it decoded ONCE.
+    #[test]
+    fn a_query_is_percent_decoded_once() {
+        let mut event = Event::new(json!({ "src": "http://h/p?Extra=%255b%2522x%2522%255d" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(
+            event.get("url.query"),
+            Some(&json!("Extra=%5b%22x%22%5d"))
+        );
+    }
+
+    /// A malformed escape fails java.net.URI wholesale, so the raw text is
+    /// what Elasticsearch keeps.
+    #[test]
+    fn a_query_that_will_not_decode_is_kept_raw() {
+        let mut event = Event::new(json!({ "src": "http://h/p?bad=%ZZ" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get("url.query"), Some(&json!("bad=%ZZ")));
+    }
+
+    /// A URL with an authority and no path gets `path: ""`, which is what
+    /// java.net.URI's getPath returns and the processor writes.
+    #[test]
+    fn a_pathless_url_with_a_host_writes_an_empty_path() {
+        let mut event = Event::new(json!({ "src": "http://example.com?q=1" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get("url.path"), Some(&json!("")));
+
+        // A pure relative reference with no path still writes nothing.
+        let mut event = Event::new(json!({ "src": "?q=1" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get("url.path"), None);
+    }
 
     // --- foreach_array ---
 
