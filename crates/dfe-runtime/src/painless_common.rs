@@ -3056,7 +3056,10 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum KnownShape {
     DropEmpty(DropPolicy),
+    SplitCommandLine(crate::painless_windows::ArgvScript),
     Basename,
+    FileInfo(String),
+    HashLowercase(String),
     ClassifyMembers,
     FlattenedDuplicates,
     CollectEntities,
@@ -3138,11 +3141,42 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: Windows argument splitting, the Go implementation the sysmon,
+    // powershell and m365_defender pipelines all carry. Ahead of everything
+    // its 100 lines could otherwise trigger -- the named CommandLine matcher
+    // included.
+    if normalised.contains("commandLineToArgv(")
+        && normalised.contains("readNextArg")
+        && let Some(parsed) = crate::painless_windows::ArgvScript::parse(normalised)
+    {
+        shapes.push(KnownShape::SplitCommandLine(parsed));
+        return shapes;
+    }
+
     // Pattern: the basename of one or more path fields -- everything after
     // the last separator. Guarded by the parse rather than by the trigger,
     // so a script that only looks similar falls through.
     if normalised.contains("lastIndexOf(") && normalised.contains(".substring(") {
         shapes.push(KnownShape::Basename);
+    }
+
+    // Pattern: sysmon's file split -- name and directory at the last
+    // backslash, the extension off the whole path's last dot.
+    if normalised.contains(".name = path.substring(idx+1)")
+        && normalised.contains(".directory = path.substring(0, idx)")
+        && let Some(source) = crate::painless_windows::file_info_source(normalised)
+    {
+        shapes.push(KnownShape::FileInfo(source));
+        return shapes;
+    }
+
+    // Pattern: sysmon's hash-map lowercasing, empty and all-zero hashes
+    // dropped and `related` replaced with the hash list.
+    if normalised.contains("hashIsEmpty(")
+        && let Some(source) = crate::painless_windows::hash_lowercase_source(normalised)
+    {
+        shapes.push(KnownShape::HashLowercase(source));
+        return shapes;
     }
 
     // Pattern: classify each member of a list by string tests on the member.
@@ -3463,7 +3497,14 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             drop_empty_recursive(event, policy);
             true
         }
+        KnownShape::SplitCommandLine(script) => {
+            crate::painless_windows::run_argv_script(event, script)
+        }
         KnownShape::Basename => try_basename_after_separator(event, normalised),
+        KnownShape::FileInfo(source) => crate::painless_windows::run_file_info(event, source),
+        KnownShape::HashLowercase(source) => {
+            crate::painless_windows::run_hash_lowercase(event, source)
+        }
         KnownShape::ClassifyMembers => try_classify_members(event, normalised),
         KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
         KnownShape::CollectEntities => try_collect_entities(event, normalised),

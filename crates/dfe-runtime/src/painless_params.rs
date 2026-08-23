@@ -64,6 +64,7 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
 pub(crate) enum ParamsShape {
     AwsEntity(Box<crate::painless_entity::EntityScript>),
     SysmonQueryResults,
+    SysmonRegistry,
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -106,6 +107,12 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // `.put(` and `params`, which a later matcher reads as an indexed lookup.
     if normalised.contains("QueryResults") && normalised.contains("startsWith(\"type:\")") {
         return Some(ParamsShape::SysmonQueryResults);
+    }
+
+    // Pattern: sysmon's registry fields, the hive abbreviated through the
+    // params table and the Details value typed by its own text.
+    if normalised.contains("ctx.registry = new HashMap()") && normalised.contains("TargetObject") {
+        return Some(ParamsShape::SysmonRegistry);
     }
 
     // Pattern: strip the vendor's sentinel values out of a map.
@@ -220,6 +227,7 @@ pub(crate) fn run_params_shape(
             crate::painless_entity::run_entity_script(event, script, params)
         }
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
+        ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
         ParamsShape::SentinelRemoval => try_sentinel_removal(event, normalised, params),
         ParamsShape::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
         ParamsShape::BitFlags => try_bit_flags(event, normalised, params),
