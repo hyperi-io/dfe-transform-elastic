@@ -91,7 +91,6 @@ impl Transform for Default {
                         };
                         {
                             let key = key.trim_matches(|c| " ".contains(c));
-                            let value = value.trim_matches(|c| " ".contains(c));
                             let value = match (value.chars().next(), value.chars().last()) {
                                 (Some('('), Some(')'))
                                 | (Some('['), Some(']'))
@@ -102,8 +101,9 @@ impl Transform for Default {
                                 {
                                     &value[1..value.len() - 1]
                                 }
-                                _ => value,
+                                _ => &value[..],
                             };
+                            let value = value.trim_matches(|c| " ".contains(c));
                             if [
                                 "flags",
                                 "layer_uuid",
@@ -160,7 +160,6 @@ impl Transform for Default {
                             };
                             {
                                 let key = key.trim_matches(|c| " ".contains(c));
-                                let value = value.trim_matches(|c| " ".contains(c));
                                 let value = match (value.chars().next(), value.chars().last()) {
                                     (Some('('), Some(')'))
                                     | (Some('['), Some(']'))
@@ -171,8 +170,9 @@ impl Transform for Default {
                                     {
                                         &value[1..value.len() - 1]
                                     }
-                                    _ => value,
+                                    _ => &value[..],
                                 };
+                                let value = value.trim_matches(|c| " ".contains(c));
                                 if [
                                     "flags",
                                     "layer_uuid",

@@ -5,7 +5,7 @@
   "sources": {
     "aws": { "events": 357, "events_total": 538, "fields_wrong": 787 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
-    "checkpoint": { "events": 64, "events_total": 111, "fields_wrong": 176 },
+    "checkpoint": { "events": 95, "events_total": 111, "fields_wrong": 52 },
     "cisco_asa": { "events": 508, "events_total": 512, "fields_wrong": 19 },
     "cisco_ftd": { "events": 428, "events_total": 432, "fields_wrong": 3 },
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
