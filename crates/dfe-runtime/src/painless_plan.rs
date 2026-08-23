@@ -80,7 +80,7 @@ pub fn painless_exec_plan_params(
     plan: &PainlessPlan,
     params: &Value,
 ) -> Result<()> {
-    if let Some(shape) = plan.params
+    if let Some(shape) = &plan.params
         && let Some(map) = params.as_object()
         && run_params_shape(event, &plan.text, map, shape)
     {

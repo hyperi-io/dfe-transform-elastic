@@ -48,7 +48,7 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
     };
     let normalised = crate::painless_common::normalise(script);
     match params_shape(&normalised) {
-        Some(shape) => run_params_shape(event, &normalised, params, shape),
+        Some(shape) => run_params_shape(event, &normalised, params, &shape),
         None => false,
     }
 }
@@ -58,9 +58,11 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
 /// Every branch of the params dispatch is terminal -- the first trigger that
 /// holds names the matcher, whatever that matcher then returns -- so the whole
 /// decision is a property of the script TEXT and is made once per call site by
-/// [`crate::painless_plan::PainlessPlan`] rather than once per event.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// [`crate::painless_plan::PainlessPlan`] rather than once per event. A shape
+/// whose trigger is itself a parse carries the parse's result.
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ParamsShape {
+    AwsEntity(Box<crate::painless_entity::EntityScript>),
     SysmonQueryResults,
     SentinelRemoval,
     FiletimeFieldList,
@@ -87,6 +89,18 @@ pub(crate) enum ParamsShape {
 /// where it does; a script can spell several triggers and the FIRST wins,
 /// exactly as the old inline dispatch behaved.
 pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
+    // Pattern: aws cloudtrail's entity classifier, per-service enrichment
+    // into TreeSets then classification through the params tables. First,
+    // because its 950 lines spell half the other triggers somewhere. The
+    // trigger IS the parse: a restructured script declines here and falls
+    // through the dispatch unclaimed.
+    if normalised.contains("enrichCtx")
+        && normalised.contains("related.entity")
+        && let Some(parsed) = crate::painless_entity::EntityScript::parse(normalised)
+    {
+        return Some(ParamsShape::AwsEntity(Box::new(parsed)));
+    }
+
     // Pattern: sysmon's semicolon-separated DNS QueryResults, where params is
     // the RR-number-to-name table. Checked first: the script also spells
     // `.put(` and `params`, which a later matcher reads as an indexed lookup.
@@ -199,9 +213,12 @@ pub(crate) fn run_params_shape(
     event: &mut Event,
     normalised: &str,
     params: &Map<String, Value>,
-    shape: ParamsShape,
+    shape: &ParamsShape,
 ) -> bool {
     match shape {
+        ParamsShape::AwsEntity(script) => {
+            crate::painless_entity::run_entity_script(event, script, params)
+        }
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SentinelRemoval => try_sentinel_removal(event, normalised, params),
         ParamsShape::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
