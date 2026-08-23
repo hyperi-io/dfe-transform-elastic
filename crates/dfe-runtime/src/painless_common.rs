@@ -649,6 +649,148 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
     true
 }
 
+/// mimecast's `related.*` collection: which paths feed the user and host sets.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MailRelatedScript {
+    /// Read as a display name -- added to the users whole.
+    names: Vec<String>,
+    /// Read as an email address -- the local part and the whole address join
+    /// the users, the domain joins the hosts.
+    addresses: Vec<String>,
+    /// A list whose members carry `displayableName` and `emailAddress`.
+    lists: Vec<String>,
+    /// A map whose `emailAddress` REPLACES it on the event before anything
+    /// else, so the field stops being an object.
+    lift: Option<String>,
+}
+
+/// Read mimecast's `Populate related.* fields` script.
+fn parse_mail_related(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let ctx_path_at = |text: &str| -> Option<String> {
+        let path = text.strip_prefix("ctx.")?;
+        let end = path
+            .find(|c: char| !(c.is_alphanumeric() || c == '.' || c == '_' || c == '?'))
+            .unwrap_or(path.len());
+        Some(clean_path(&path[..end]))
+    };
+
+    let mut addresses = Vec::new();
+    for segment in script.split("splitmail(").skip(1) {
+        if let Some(path) = ctx_path_at(segment) {
+            addresses.push(path);
+        }
+    }
+
+    let mut names = Vec::new();
+    for segment in script.split("users.add(").skip(1) {
+        if let Some(path) = ctx_path_at(segment)
+            && !addresses.contains(&path)
+            && !names.contains(&path)
+        {
+            names.push(path);
+        }
+    }
+
+    let mut lists = Vec::new();
+    for segment in script.split("for (def ").skip(1) {
+        if let Some((_, tail)) = segment.split_once(':')
+            && let Some(path) = ctx_path_at(tail.trim_start())
+        {
+            lists.push(path);
+        }
+    }
+
+    // `ctx.<p> = ctx.<p>.emailAddress` under an `instanceof Map` guard.
+    let lift = script
+        .find(".emailAddress;")
+        .and_then(|at| script[..at].rfind("ctx.").map(|s| &script[s + 4..at]))
+        .map(clean_path)
+        .filter(|path| !path.is_empty());
+
+    (!addresses.is_empty() || !names.is_empty()).then_some(KnownShape::MailRelated(Box::new(
+        MailRelatedScript {
+            names,
+            addresses,
+            lists,
+            lift,
+        },
+    )))
+}
+
+/// Collect every display name and email address the script names into sorted
+/// `related.user` and `related.hosts` lists.
+fn run_mail_related(event: &mut Event, script: &MailRelatedScript) -> bool {
+    if let Some(path) = &script.lift
+        && event.get(path).is_some_and(Value::is_object)
+    {
+        let address = event.get(&format!("{path}.emailAddress")).cloned();
+        match address {
+            Some(value) => {
+                let _ = event.set(path, value);
+            }
+            // Painless writes the null back, and the field stops being a map.
+            None => {
+                let _ = event.set(path, Value::Null);
+            }
+        }
+    }
+
+    let mut users: Vec<String> = Vec::new();
+    let mut hosts: Vec<String> = Vec::new();
+    let add = |set: &mut Vec<String>, value: String| {
+        if !set.contains(&value) {
+            set.push(value);
+        }
+    };
+
+    for path in &script.names {
+        if let Some(name) = event.get_str(path).map(str::to_string) {
+            add(&mut users, name);
+        }
+    }
+    let split = |users: &mut Vec<String>, hosts: &mut Vec<String>, address: &str| {
+        if let Some((local, domain)) = address.split_once('@')
+            && !domain.contains('@')
+        {
+            add(users, local.to_string());
+            add(hosts, domain.to_string());
+        }
+        add(users, address.to_string());
+    };
+    for path in &script.addresses {
+        if let Some(address) = event.get_str(path).map(str::to_string) {
+            split(&mut users, &mut hosts, &address);
+        }
+    }
+    for path in &script.lists {
+        // Painless throws on a missing list, and the processor swallows it --
+        // which means NOTHING is written, because the writes come after.
+        let Some(Value::Array(members)) = event.get(path).cloned() else {
+            return true;
+        };
+        for member in members {
+            if let Some(name) = member.get("displayableName").and_then(Value::as_str) {
+                add(&mut users, name.to_string());
+            }
+            if let Some(address) = member.get("emailAddress").and_then(Value::as_str) {
+                split(&mut users, &mut hosts, address);
+            }
+        }
+    }
+
+    if !users.is_empty() && !event.has_value("related.user") {
+        users.sort();
+        let _ = event.set("related.user", json!(users));
+    }
+    if !hosts.is_empty() && !event.has_value("related.hosts") {
+        hosts.sort();
+        let _ = event.set("related.hosts", json!(hosts));
+    }
+    true
+}
+
 /// The EC2 members inspector reads off one resource, and where each lands.
 const INSPECTOR_EC2_FIELDS: [(&str, &str); 3] = [
     ("type", "cloud.machine.type"),
@@ -4572,6 +4714,7 @@ pub(crate) enum KnownShape {
     InspectorResources {
         multi: bool,
     },
+    MailRelated(Box<MailRelatedScript>),
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -4816,6 +4959,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::SecurityhubResources);
             return shapes;
         }
+    }
+
+    // Pattern: mimecast's related.* collection -- display names and email
+    // addresses off named paths, split at the `@`, sorted.
+    if normalised.contains("splitmail(")
+        && normalised.contains("related.hosts")
+        && let Some(shape) = parse_mail_related(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
     }
 
     // Pattern: inspector's twin of the above -- the same one-or-many split,
@@ -5428,6 +5581,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             value,
         } => run_starts_with_append(event, source, prefix, target, value),
         KnownShape::InspectorResources { multi } => run_inspector_resources(event, *multi),
+        KnownShape::MailRelated(script) => run_mail_related(event, script),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
@@ -5892,6 +6046,70 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/mimecast/message_release_logs/default.yml`:
+    /// every display name and address the script names, split at the `@` and
+    /// sorted, with the operator object flattened to its address first.
+    #[test]
+    fn the_mail_related_sets_collect_and_sort() {
+        let script = "def splitmail(String email) {\n\
+            String[] parts = email.splitOnToken(\"@\");\n\
+            if (parts.length != 2) {\n  return null;\n}\n  return parts;\n}\n\
+            def users = new HashSet();\ndef hosts = new HashSet();\n\
+            if (ctx.mimecast?.fromEnv?.displayableName != null) {\n\
+            users.add(ctx.mimecast.fromEnv.displayableName);\n}\n\
+            if (ctx.mimecast?.operator instanceof Map) {\n\
+            ctx.mimecast.operator = ctx.mimecast.operator.emailAddress;\n}\n\
+            if (ctx.mimecast?.operator != null) {\n\
+            def parts = splitmail(ctx.mimecast.operator);\n\
+            if (parts != null) {\n  users.add(parts[0]);\n  hosts.add(parts[1]);\n}\n\
+            users.add(ctx.mimecast.operator);\n}\n\
+            for (def to: ctx.mimecast.to) {\n\
+            if (to.displayableName != null) {\n  users.add(to.displayableName);\n}\n\
+            if (to.emailAddress != null) {\n\
+            def parts = splitmail(to.emailAddress);\n\
+            if (parts != null) {\n  users.add(parts[0]);\n  hosts.add(parts[1]);\n}\n\
+            users.add(to.emailAddress);\n}\n}\n\
+            if (users.size() != 0 || hosts.size() != 0) {\n\
+            if (ctx.related == null) {\n  ctx.related = new HashMap();\n}\n\
+            if (users.size() != 0 && ctx.related.user == null) {\n\
+            ctx.related.user = new ArrayList();\n\
+            for (def u: users) {\n  ctx.related.user.add(u);\n}\n\
+            Collections.sort(ctx.related.user);\n}\n\
+            if (hosts.size() != 0 && ctx.related.hosts == null) {\n\
+            ctx.related.hosts = new ArrayList();\n\
+            for (def h: hosts) {\n  ctx.related.hosts.add(h);\n}\n\
+            Collections.sort(ctx.related.hosts);\n}\n}";
+
+        let mut event = Event::new(json!({
+            "mimecast": {
+                "fromEnv": { "displayableName": "FromName LastName" },
+                "operator": { "emailAddress": "admin@domain.tld" },
+                "to": [{ "displayableName": "ToName LastName", "emailAddress": "to_user@to_domain.tld" }],
+            },
+        }));
+        assert!(try_known_painless(&mut event, script));
+
+        assert_eq!(
+            event.get("mimecast.operator"),
+            Some(&json!("admin@domain.tld"))
+        );
+        assert_eq!(
+            event.get("related.user"),
+            Some(&json!([
+                "FromName LastName",
+                "ToName LastName",
+                "admin",
+                "admin@domain.tld",
+                "to_user",
+                "to_user@to_domain.tld"
+            ]))
+        );
+        assert_eq!(
+            event.get("related.hosts"),
+            Some(&json!(["domain.tld", "to_domain.tld"]))
+        );
+    }
 
     /// Verbatim from `pipelines/aws/cloudfront_logs/default.yml`: the split
     /// x-forwarded-for is trimmed where it sits, because the grok that reads
