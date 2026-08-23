@@ -1057,6 +1057,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1097,7 +1100,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -1424,6 +1434,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1464,7 +1477,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -1515,6 +1535,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1555,7 +1578,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -1563,6 +1593,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1603,7 +1636,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -1654,6 +1694,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1694,7 +1737,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -1713,6 +1763,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1753,7 +1806,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -2138,6 +2198,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -2178,7 +2241,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -2186,6 +2256,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -2226,7 +2299,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -2516,6 +2596,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -2560,7 +2643,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -2607,6 +2697,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -2647,7 +2740,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -2966,6 +3066,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -3006,7 +3109,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -3291,6 +3401,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -3331,7 +3444,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -3391,6 +3511,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -3431,7 +3554,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -3542,6 +3672,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -3582,7 +3715,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }
@@ -3655,6 +3795,9 @@ impl Transform for Default {
             let _cond = { event.get("json.evidence").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("json.evidence").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -3705,7 +3848,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("json.evidence", Value::Array(out))?;
                 }
             }

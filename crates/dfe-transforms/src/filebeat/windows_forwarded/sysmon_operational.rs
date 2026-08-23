@@ -897,6 +897,9 @@ impl Transform for SysmonOperational {
 
             if event.has_value("dns.resolved_ip") {
                 if let Some(Value::Array(items)) = event.get("dns.resolved_ip").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -926,7 +929,10 @@ impl Transform for SysmonOperational {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => { event.set("_ingest._value", previous)?; }
+                        None => { event.remove("_ingest"); }
+                    }
                     event.set("dns.resolved_ip", Value::Array(out))?;
                 }
             }

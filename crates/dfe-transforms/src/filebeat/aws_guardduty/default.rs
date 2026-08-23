@@ -1371,6 +1371,9 @@ impl Transform for Default {
                     .get("json.resource.instanceDetails.networkInterfaces")
                     .cloned()
                 {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -1378,6 +1381,9 @@ impl Transform for Default {
                             if let Some(Value::Array(items)) =
                                 event.get("_ingest._value.ipv6Addresses").cloned()
                             {
+                                // A NESTED loop borrows the same `_ingest._value` slot, so
+                                // the enclosing element is saved and put back afterwards.
+                                let enclosing = event.get("_ingest._value").cloned();
                                 let mut out = Vec::with_capacity(items.len());
                                 for item in items {
                                     event.set("_ingest._value", item)?;
@@ -1422,13 +1428,27 @@ impl Transform for Default {
                                     }
                                     out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                                 }
-                                event.remove("_ingest");
+                                match enclosing {
+                                    Some(previous) => {
+                                        event.set("_ingest._value", previous)?;
+                                    }
+                                    None => {
+                                        event.remove("_ingest");
+                                    }
+                                }
                                 event.set("_ingest._value.ipv6Addresses", Value::Array(out))?;
                             }
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set(
                         "json.resource.instanceDetails.networkInterfaces",
                         Value::Array(out),
@@ -2990,6 +3010,9 @@ impl Transform for Default {
                     .get("json.service.action.kubernetesApiCallAction.sourceIPs")
                     .cloned()
                 {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -3033,7 +3056,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set(
                         "json.service.action.kubernetesApiCallAction.sourceIPs",
                         Value::Array(out),
@@ -5606,6 +5636,9 @@ impl Transform for Default {
             let _cond = { event.get("source.as.number").is_some_and(|v| v.is_array()) };
             if _cond {
                 if let Some(Value::Array(items)) = event.get("source.as.number").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
                     let mut out = Vec::with_capacity(items.len());
                     for item in items {
                         event.set("_ingest._value", item)?;
@@ -5649,7 +5682,14 @@ impl Transform for Default {
                         }
                         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
                     }
-                    event.remove("_ingest");
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
                     event.set("source.as.number", Value::Array(out))?;
                 }
             }

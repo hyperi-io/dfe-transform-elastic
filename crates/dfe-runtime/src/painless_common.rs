@@ -649,6 +649,94 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
     true
 }
 
+/// The EC2 members inspector reads off one resource, and where each lands.
+const INSPECTOR_EC2_FIELDS: [(&str, &str); 3] = [
+    ("type", "cloud.machine.type"),
+    ("type", "host.type"),
+    ("platform", "host.os.platform"),
+];
+
+/// The ECS `host.os.type` a platform name implies, in the script's own order.
+const INSPECTOR_OS_TYPES: [(&str, &str); 3] = [
+    ("windows", "windows"),
+    ("linux", "linux"),
+    ("macos", "macos"),
+];
+
+/// inspector's resource extraction: the single-resource script writes each
+/// field as a SCALAR, its multi-resource sibling appends to a list. One
+/// implementation, because the two scripts differ only in that.
+fn run_inspector_resources(event: &mut Event, multi: bool) -> bool {
+    let Some(Value::Array(resources)) = event.get("aws.inspector.resources").cloned() else {
+        return true;
+    };
+    // Each script's own guard: `size() == 1` for one, `size() > 1` for the
+    // other, so the wrong one leaves the event alone.
+    if multi == (resources.len() <= 1) {
+        return true;
+    }
+
+    let write = |event: &mut Event, path: &str, value: Option<Value>| {
+        let Some(value) = value.filter(|v| !v.is_null()) else {
+            return;
+        };
+        if multi {
+            let _ = event.append(path, value);
+        } else {
+            let _ = event.set(path, value);
+        }
+    };
+
+    for res in &resources {
+        let member = |path: &[&str]| -> Option<Value> {
+            path.iter()
+                .try_fold(res, |value, key| value.get(*key))
+                .cloned()
+        };
+
+        write(event, "resource.id", member(&["id"]));
+        write(event, "resource.name", member(&["tags", "Name"]));
+        write(event, "resource.type", member(&["type"]));
+        write(event, "cloud.region", member(&["region"]));
+
+        if member(&["type"]).as_ref().and_then(Value::as_str) != Some("AWS_EC2_INSTANCE") {
+            continue;
+        }
+        write(event, "cloud.instance.id", member(&["id"]));
+        write(event, "host.id", member(&["id"]));
+        write(event, "host.name", member(&["tags", "Name"]));
+        for (key, target) in INSPECTOR_EC2_FIELDS {
+            write(
+                event,
+                target,
+                member(&["details", "aws", "ec2_instance", key]),
+            );
+        }
+        // `host.ip` is a list in BOTH scripts -- the single-resource one seeds
+        // it with `[]` and then adds, rather than assigning.
+        for key in ["ipv4_addresses", "ipv6_addresses"] {
+            if let Some(Value::Array(addresses)) = member(&["details", "aws", "ec2_instance", key])
+            {
+                for address in addresses {
+                    let _ = event.append("host.ip", address);
+                }
+            }
+        }
+        // And `host.os.type` is assigned in both, even in the multi script.
+        if let Some(platform) = member(&["details", "aws", "ec2_instance", "platform"])
+            .as_ref()
+            .and_then(Value::as_str)
+            .map(str::to_lowercase)
+            && let Some((_, os)) = INSPECTOR_OS_TYPES
+                .iter()
+                .find(|(needle, _)| platform.contains(needle))
+        {
+            let _ = event.set("host.os.type", json!(*os));
+        }
+    }
+    true
+}
+
 /// securityhub's single-resource extraction, transliterated. Only the
 /// one-resource case is handled here, as the script itself says; the
 /// multi-resource sibling is a separate script.
@@ -4481,6 +4569,9 @@ pub(crate) enum KnownShape {
     ResourcesRenameDedup(String),
     SecurityhubResource,
     SecurityhubResources,
+    InspectorResources {
+        multi: bool,
+    },
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -4725,6 +4816,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::SecurityhubResources);
             return shapes;
         }
+    }
+
+    // Pattern: inspector's twin of the above -- the same one-or-many split,
+    // over its own lower-cased member names.
+    if normalised.contains("ctx.aws.inspector.resources") && normalised.contains("ctx.resource.id")
+    {
+        shapes.push(KnownShape::InspectorResources {
+            multi: normalised.contains("ctx.resource.id.add("),
+        });
+        return shapes;
     }
 
     // Pattern: checkpoint's dropped-packet tuples into structured maps.
@@ -5326,6 +5427,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
             value,
         } => run_starts_with_append(event, source, prefix, target, value),
+        KnownShape::InspectorResources { multi } => run_inspector_resources(event, *multi),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
