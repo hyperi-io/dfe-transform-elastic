@@ -20,7 +20,9 @@ use crate::event::Event;
 
 /// Result from a registered domain lookup.
 pub struct RegisteredDomainResult {
-    pub registered_domain: String,
+    /// Absent when the name is ITSELF a public suffix -- `com` has a top-level
+    /// domain and nothing registered under it.
+    pub registered_domain: Option<String>,
     pub top_level_domain: String,
     pub subdomain: Option<String>,
 }
@@ -51,29 +53,46 @@ pub fn community_id_v1(
     )
 }
 
-/// Look up the registered domain from a full domain name.
+/// Split a fully qualified domain name into its registered parts.
 ///
-/// Extracts the registered domain and TLD using simple heuristic
-/// (splits on dots — full PSL lookup deferred to Phase 5).
+/// An ICANN suffix is honoured whole, which is the only way `211.52.31.172
+/// .in-addr.arpa` registers `172.in-addr.arpa` rather than the last two labels.
+/// The PRIVATE half of the list is deliberately not: the corpus has
+/// Elasticsearch registering `akamaized.net`, `cloudfront.net` and
+/// `googleapis.com` -- all private entries -- under `net` and `com`, so
+/// applying them would move the split a label the wrong way.
+///
+/// An unlisted top-level domain gets NOTHING. Elasticsearch's processor is a
+/// list lookup and a name off the list has no answer, so `domain.tld` has no
+/// registered domain -- which is what the list is a dependency for.
 pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> {
     let parts: Vec<&str> = domain.rsplitn(3, '.').collect();
     if parts.len() < 2 {
         return None;
     }
+    if !psl::suffix(parts[0].as_bytes()).is_some_and(|suffix| suffix.is_known()) {
+        return None;
+    }
 
-    let tld = parts[0].to_string();
-    let sld = parts[1];
-    let registered_domain = format!("{sld}.{tld}");
+    let icann = psl::suffix(domain.as_bytes())
+        .filter(|suffix| suffix.typ() == Some(psl::Type::Icann))
+        .and_then(|suffix| std::str::from_utf8(suffix.as_bytes()).ok())
+        .filter(|suffix| suffix.len() < domain.len());
 
-    let subdomain = if parts.len() == 3 && !parts[2].is_empty() {
-        Some(parts[2].to_string())
-    } else {
-        None
+    // Everything the suffix does not cover, split at its last label.
+    let suffix = icann.unwrap_or(parts[0]);
+    let head = &domain[..domain.len() - suffix.len() - 1];
+    let (subdomain, label) = match head.rsplit_once('.') {
+        Some((rest, label)) => (Some(rest.to_string()), label),
+        None => (None, head),
     };
+    if label.is_empty() {
+        return None;
+    }
 
     Some(RegisteredDomainResult {
-        registered_domain,
-        top_level_domain: tld,
+        registered_domain: Some(format!("{label}.{suffix}")),
+        top_level_domain: suffix.to_string(),
         subdomain,
     })
 }
@@ -1311,6 +1330,50 @@ mod tests {
         assert_eq!(event.get("url.query"), Some(&json!("Extra=%5b%22x%22%5d")));
     }
 
+    /// Verbatim from the cloudfront corpus: `.tld` is not on the Public Suffix
+    /// List, and Elasticsearch writes nothing rather than inventing a
+    /// registration under it.
+    #[test]
+    fn an_unlisted_top_level_domain_registers_nothing() {
+        assert!(registered_domain_lookup("domain.tld").is_none());
+        assert!(registered_domain_lookup("host.invalidtld").is_none());
+        assert!(registered_domain_lookup("localhost").is_none());
+    }
+
+    /// A PRIVATE entry is not a suffix here: the corpus has Elasticsearch
+    /// registering `akamaized.net` under `net`, not a host under
+    /// `akamaized.net`.
+    #[test]
+    fn a_private_suffix_keeps_the_two_label_split() {
+        let result = registered_domain_lookup("static-s-msn-com.akamaized.net").expect("known");
+        assert_eq!(result.registered_domain.as_deref(), Some("akamaized.net"));
+        assert_eq!(result.top_level_domain, "net");
+        assert_eq!(result.subdomain.as_deref(), Some("static-s-msn-com"));
+    }
+
+    /// An ICANN suffix IS honoured whole -- reverse DNS is the case that needs
+    /// it, and `co.uk` is the same shape.
+    #[test]
+    fn an_icann_suffix_is_honoured_whole() {
+        let reverse = registered_domain_lookup("211.52.31.172.in-addr.arpa").expect("known");
+        assert_eq!(reverse.registered_domain.as_deref(), Some("172.in-addr.arpa"));
+        assert_eq!(reverse.top_level_domain, "in-addr.arpa");
+        assert_eq!(reverse.subdomain.as_deref(), Some("211.52.31"));
+
+        let uk = registered_domain_lookup("a.example.co.uk").expect("known");
+        assert_eq!(uk.registered_domain.as_deref(), Some("example.co.uk"));
+        assert_eq!(uk.top_level_domain, "co.uk");
+        assert_eq!(uk.subdomain.as_deref(), Some("a"));
+    }
+
+    #[test]
+    fn a_two_label_name_has_no_subdomain() {
+        let result = registered_domain_lookup("example.com").expect("a known suffix");
+        assert_eq!(result.registered_domain.as_deref(), Some("example.com"));
+        assert_eq!(result.top_level_domain, "com");
+        assert_eq!(result.subdomain, None);
+    }
+
     /// A malformed escape fails java.net.URI wholesale, so the raw text is
     /// what the java.net.URL fallback -- which decodes nothing -- keeps.
     #[test]
@@ -1806,22 +1869,9 @@ mod tests {
     #[test]
     fn registered_domain_simple() {
         let r = registered_domain_lookup("www.example.com").unwrap();
-        assert_eq!(r.registered_domain, "example.com");
+        assert_eq!(r.registered_domain.as_deref(), Some("example.com"));
         assert_eq!(r.top_level_domain, "com");
         assert_eq!(r.subdomain.as_deref(), Some("www"));
-    }
-
-    #[test]
-    fn registered_domain_no_subdomain() {
-        let r = registered_domain_lookup("example.com").unwrap();
-        assert_eq!(r.registered_domain, "example.com");
-        assert_eq!(r.top_level_domain, "com");
-        assert!(r.subdomain.is_none());
-    }
-
-    #[test]
-    fn registered_domain_bare_tld() {
-        assert!(registered_domain_lookup("com").is_none());
     }
 
     #[test]
@@ -2006,17 +2056,8 @@ mod tests {
     #[test]
     fn registered_domain_deeply_nested() {
         let r = registered_domain_lookup("deep.sub.example.com").unwrap();
-        // rsplitn(3, '.') gives ["com", "example", "deep.sub"]
-        assert_eq!(r.registered_domain, "example.com");
+        assert_eq!(r.registered_domain.as_deref(), Some("example.com"));
         assert_eq!(r.subdomain.as_deref(), Some("deep.sub"));
-    }
-
-    #[test]
-    fn registered_domain_single_char() {
-        let r = registered_domain_lookup("a.b");
-        assert!(r.is_some());
-        let r = r.unwrap();
-        assert_eq!(r.registered_domain, "a.b");
     }
 
     #[test]

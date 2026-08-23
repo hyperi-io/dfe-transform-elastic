@@ -166,6 +166,12 @@ regex = ">=1.10"
 # unchanged; without it those patterns silently match nothing.
 fancy-regex = ">=0.13"
 
+# Mozilla's Public Suffix List, compiled in. Elasticsearch's registered_domain
+# processor is a PSL lookup, and the last-two-labels heuristic it replaced was
+# wrong in both directions: `a.co.uk` came out registered to `co.uk`, and
+# `host.tld` got a registered domain Elasticsearch writes nothing for.
+psl = ">=2.1"
+
 # Timestamp handling
 chrono = { version = ">=0.4", features = ["serde"] }
 

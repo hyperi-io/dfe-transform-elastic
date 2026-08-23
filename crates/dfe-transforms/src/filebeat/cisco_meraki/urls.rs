@@ -327,7 +327,9 @@ impl Transform for Urls {
                     event.set("url.domain", json!(domain.clone()))?;
                     // Public suffix list lookup for registered domain extraction
                     if let Some(rd) = registered_domain_lookup(&domain) {
-                        event.set("url.registered_domain", json!(rd.registered_domain))?;
+                        if let Some(registered) = rd.registered_domain {
+                            event.set("url.registered_domain", json!(registered))?;
+                        }
                         event.set("url.top_level_domain", json!(rd.top_level_domain))?;
                         if let Some(sub) = rd.subdomain {
                             event.set("url.subdomain", json!(sub))?;

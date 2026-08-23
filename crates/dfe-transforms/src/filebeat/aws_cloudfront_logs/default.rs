@@ -498,7 +498,61 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "_tmp.split_x_forwarded_for", |event| {
-                    // SKIPPED: nested pipeline "pipeline_process_ip" is not in this pipeline set
+                    // Begin nested pipeline: "pipeline_process_ip"
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if event.has_value("_ingest._value") {
+                            if let Some(input) = event.get_string("_ingest._value") {
+                                // Grok pattern: ^%{IPV4:_tmp.valid_ip}$
+                                // Grok pattern: ^%{IPV6:_tmp.valid_ip}$
+                                // Grok pattern: ^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$
+                                // Grok pattern: ^\\[%{IPV6:_tmp.valid_ip}\\]$
+                                let _ = extract_first_match(
+                                    &[
+                                        cached_grok!("^%{IPV4:_tmp.valid_ip}$"),
+                                        cached_grok!("^%{IPV6:_tmp.valid_ip}$"),
+                                        cached_grok_mapped!(
+                                            "^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$",
+                                            [("_tmp_valid_ip", "_tmp.valid_ip")]
+                                        ),
+                                        cached_grok!("^\\[%{IPV6:_tmp.valid_ip}\\]$"),
+                                    ],
+                                    &input,
+                                    event,
+                                )?;
+                            }
+                        }
+                        Ok(())
+                    })();
+                    let _cond = {
+                        event.has_value("_tmp.valid_ip")
+                            && event.get_str("_tmp.valid_ip") != Some("")
+                    };
+                    if _cond {
+                        event.append_unique(
+                            "network.forwarded_ip",
+                            json!(
+                                event
+                                    .get("_tmp.valid_ip")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                    }
+                    let _cond = {
+                        event.has_value("_tmp.invalid_ip")
+                            && event.get_str("_tmp.invalid_ip") != Some("")
+                    };
+                    if _cond {
+                        event.append_unique(
+                            "_tmp.invalid_ips",
+                            json!(
+                                event
+                                    .get("_tmp.invalid_ip")
+                                    .map_or_else(String::new, painless_to_string)
+                            ),
+                        )?;
+                    }
+                    // End nested pipeline: "pipeline_process_ip"
                     Ok(())
                 })?;
             }
@@ -749,7 +803,9 @@ impl Transform for Default {
                     event.set("url.domain", json!(domain.clone()))?;
                     // Public suffix list lookup for registered domain extraction
                     if let Some(rd) = registered_domain_lookup(&domain) {
-                        event.set("url.registered_domain", json!(rd.registered_domain))?;
+                        if let Some(registered) = rd.registered_domain {
+                            event.set("url.registered_domain", json!(registered))?;
+                        }
                         event.set("url.top_level_domain", json!(rd.top_level_domain))?;
                         if let Some(sub) = rd.subdomain {
                             event.set("url.subdomain", json!(sub))?;

@@ -186,10 +186,9 @@ impl Transform for Default {
                         event.set("dns.question.domain", json!(domain.clone()))?;
                         // Public suffix list lookup for registered domain extraction
                         if let Some(rd) = registered_domain_lookup(&domain) {
-                            event.set(
-                                "dns.question.registered_domain",
-                                json!(rd.registered_domain),
-                            )?;
+                            if let Some(registered) = rd.registered_domain {
+                                event.set("dns.question.registered_domain", json!(registered))?;
+                            }
                             event
                                 .set("dns.question.top_level_domain", json!(rd.top_level_domain))?;
                             if let Some(sub) = rd.subdomain {

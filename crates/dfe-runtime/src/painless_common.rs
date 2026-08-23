@@ -325,6 +325,80 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// Trim every string member of a list, in place.
+fn run_trim_list(event: &mut Event, field: &str) -> bool {
+    let Some(Value::Array(members)) = event.get(field) else {
+        return true;
+    };
+    let trimmed: Vec<Value> = members
+        .iter()
+        .map(|member| match member {
+            Value::String(text) => json!(text.trim()),
+            other => other.clone(),
+        })
+        .collect();
+    let _ = event.set(field, Value::Array(trimmed));
+    true
+}
+
+/// Append a constant to a list once any member of another list starts with the
+/// script's prefix -- cloudfront's `localhost:8080` becoming `127.0.0.1`.
+fn run_starts_with_append(
+    event: &mut Event,
+    source: &str,
+    prefix: &str,
+    target: &str,
+    value: &str,
+) -> bool {
+    let Some(Value::Array(members)) = event.get(source) else {
+        return true;
+    };
+    let hits = members
+        .iter()
+        .filter(|member| member.as_str().is_some_and(|text| text.starts_with(prefix)))
+        .count();
+    if hits == 0 {
+        return true;
+    }
+
+    let mut list = match event.get(target) {
+        Some(Value::Array(existing)) => existing.clone(),
+        _ => Vec::new(),
+    };
+    // Once per matching member, which is what the loop does -- no dedup.
+    list.extend(std::iter::repeat_n(json!(value), hits));
+    let _ = event.set(target, Value::Array(list));
+    true
+}
+
+/// A guarded concatenation: each clause contributes only when every field it
+/// names is there and non-empty, and an empty result is written nowhere.
+fn run_concat_parts(event: &mut Event, script: &ConcatScript) -> bool {
+    let mut built = String::new();
+    for clause in &script.clauses {
+        let mut piece = String::new();
+        let mut complete = true;
+        for term in clause {
+            match term {
+                ConcatTerm::Literal(text) => piece.push_str(text),
+                ConcatTerm::Field(path) => match event.get(path) {
+                    Some(Value::String(text)) if !text.is_empty() => piece.push_str(text),
+                    Some(Value::Number(n)) => piece.push_str(&n.to_string()),
+                    Some(Value::Bool(b)) => piece.push_str(if *b { "true" } else { "false" }),
+                    _ => complete = false,
+                },
+            }
+        }
+        if complete {
+            built.push_str(&piece);
+        }
+    }
+    if !built.is_empty() {
+        let _ = event.set(&script.target, json!(built));
+    }
+    true
+}
+
 /// elb's `tlsv12` split at the `v`: the head is the protocol, the tail the
 /// version, dotted after its first digit when it does not already carry one.
 /// A token that does not split in two leaves the event alone.
@@ -1140,6 +1214,166 @@ fn parse_last_element(script: &str) -> Option<KnownShape> {
     let (lhs, _) = before.split_once('=')?;
     let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
     Some(KnownShape::LastElement { array, target })
+}
+
+/// Read `ctx.<a>[i] = ctx.<a>[i].trim()` as a [`KnownShape::TrimListInPlace`].
+fn parse_trim_list(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".trim()")?;
+    let before = &script[..at];
+    let read = clean_path(before[before.rfind("ctx.")? + 4..].strip_suffix("[i]")?);
+
+    // The same list on both sides, or this is some other loop entirely. The
+    // LAST `=` before the read is the assignment: the loop header has its own.
+    let (assignment, _) = before.rsplit_once('=')?;
+    let written = clean_path(
+        assignment[assignment.rfind("ctx.")? + 4..]
+            .trim()
+            .strip_suffix("[i]")?,
+    );
+    (read == written && !read.is_empty()).then_some(KnownShape::TrimListInPlace(read))
+}
+
+/// Read cloudfront's localhost edge case as a [`KnownShape::StartsWithAppend`]:
+/// a constant appended to a list when a member of another list has a prefix.
+fn parse_starts_with_append(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".startsWith(")?;
+    let prefix = quoted_argument(&script[at + ".startsWith(".len()..])?;
+
+    let loop_at = script.find(" : ctx")?;
+    let after = &script[loop_at + " : ctx".len()..];
+    let source = clean_path(
+        after
+            .trim_start_matches(['.', '?'])
+            .split([')', ' ', ';'])
+            .next()?,
+    );
+
+    // The append comes AFTER the prefix test, which is what makes it the
+    // consequence rather than some earlier write.
+    let add_at = at + script[at..].find(".add(")?;
+    let value = quoted_argument(&script[add_at + ".add(".len()..])?;
+    let target = bracket_path(&script[..add_at])?;
+
+    (!source.is_empty() && !target.is_empty()).then_some(KnownShape::StartsWithAppend {
+        source,
+        prefix,
+        target,
+        value,
+    })
+}
+
+/// The contents of the leading `'...'` or `"..."` of an argument list.
+fn quoted_argument(text: &str) -> Option<String> {
+    let quote = text.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let rest = &text[quote.len_utf8()..];
+    Some(rest[..rest.find(quote)?].to_string())
+}
+
+/// `ctx['a']['b']` at the end of `text`, as the dotted path `a.b`.
+fn bracket_path(text: &str) -> Option<String> {
+    let start = text.rfind("ctx[")?;
+    let mut path = String::new();
+    let mut rest = &text[start + 3..];
+    while let Some(open) = rest.strip_prefix('[') {
+        let name = quoted_argument(open)?;
+        if !path.is_empty() {
+            path.push('.');
+        }
+        path.push_str(&name);
+        rest = &rest[open.find(']')? + 2..];
+    }
+    (!path.is_empty()).then_some(path)
+}
+
+/// A string built up piece by piece, each piece guarded on the field it names.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ConcatScript {
+    /// Where the finished string lands, when it is not empty.
+    target: String,
+    /// One per `+=`, in order. A clause whose fields are not all present and
+    /// non-empty contributes nothing, which is what its own `if` says.
+    clauses: Vec<Vec<ConcatTerm>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ConcatTerm {
+    Literal(String),
+    Field(String),
+}
+
+/// Read cloudfront's `url.full` assembly as a [`KnownShape::ConcatParts`].
+///
+/// `def full = ""` then a run of guarded `full += ...`, and the result assigned
+/// to a ctx field when it came to something.
+fn parse_concat_parts(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find("def ")?;
+    let after = &script[at + 4..];
+    let (var, _) = after.split_once('=')?;
+    let var = var.trim();
+    if var.is_empty() || var.contains(char::is_whitespace) {
+        return None;
+    }
+
+    let append = format!("{var} +=");
+    let mut clauses = Vec::new();
+    let mut rest = after;
+    while let Some(start) = rest.find(&append) {
+        let expression = &rest[start + append.len()..];
+        let (expression, tail) = expression.split_once(';')?;
+        clauses.push(parse_concat_terms(expression)?);
+        rest = tail;
+    }
+    if clauses.len() < 2 {
+        return None;
+    }
+
+    // The assignment out: `ctx.<target> = <var>`, the only place the finished
+    // string can go.
+    let assignment = script.rfind(&format!("= {var}"))?;
+    let before = &script[..assignment];
+    let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    (!target.is_empty()).then_some(KnownShape::ConcatParts(ConcatScript { target, clauses }))
+}
+
+/// One `+=` expression as its literal and ctx-field terms.
+fn parse_concat_terms(expression: &str) -> Option<Vec<ConcatTerm>> {
+    let mut terms = Vec::new();
+    for piece in split_outside_quotes(expression, '+') {
+        let piece = piece.trim();
+        if piece.is_empty() {
+            continue;
+        }
+        if let Some(literal) = piece.strip_prefix('"').and_then(|p| p.strip_suffix('"')) {
+            terms.push(ConcatTerm::Literal(literal.to_string()));
+        } else {
+            let path = piece.strip_prefix("ctx.").or(piece.strip_prefix("ctx?."))?;
+            terms.push(ConcatTerm::Field(crate::painless_params::clean_path(path)));
+        }
+    }
+    (!terms.is_empty()).then_some(terms)
+}
+
+/// Split on `sep`, ignoring any that sits inside a double-quoted literal.
+fn split_outside_quotes(text: &str, sep: char) -> Vec<&str> {
+    let mut parts = Vec::new();
+    let mut start = 0;
+    let mut quoted = false;
+    for (at, c) in text.char_indices() {
+        if c == '"' {
+            quoted = !quoted;
+        } else if c == sep && !quoted {
+            parts.push(&text[start..at]);
+            start = at + c.len_utf8();
+        }
+    }
+    parts.push(&text[start..]);
+    parts
 }
 
 /// Read elb's `tlsv12` split as a [`KnownShape::TlsVersionSplit`].
@@ -4251,6 +4485,14 @@ pub(crate) enum KnownShape {
     TlsVersionSplit {
         source: String,
     },
+    ConcatParts(ConcatScript),
+    TrimListInPlace(String),
+    StartsWithAppend {
+        source: String,
+        prefix: String,
+        target: String,
+        value: String,
+    },
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
     StripAnglePairs {
@@ -4488,6 +4730,27 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Pattern: checkpoint's dropped-packet tuples into structured maps.
     if normalised.contains("packets_dropped") && normalised.contains(".splitOnToken('>')") {
         shapes.push(KnownShape::CheckpointPackets);
+        return shapes;
+    }
+
+    // Pattern: every member of a list trimmed where it sits -- cloudfront's
+    // split x-forwarded-for, whose next processor greps each member anchored.
+    if normalised.contains(".trim();")
+        && normalised.contains("[i] =")
+        && let Some(shape) = parse_trim_list(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: a constant appended when a member of a list carries a prefix --
+    // cloudfront's `localhost:8080`, which its grok cannot read as an address.
+    if normalised.contains(".startsWith(")
+        && normalised.contains(".add(")
+        && normalised.contains("ctx[")
+        && let Some(shape) = parse_starts_with_append(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -4779,6 +5042,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a string built up piece by piece under per-field guards --
+    // cloudfront's `url.full` out of the protocol, domain, path and query.
+    if normalised.contains("def ")
+        && normalised.contains(" += ")
+        && normalised.contains("!= \"\"")
+        && let Some(shape) = parse_concat_parts(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: build a string out of ctx fields and literals.
     if normalised.contains("?: ''")
         && normalised.contains(".isEmpty()")
@@ -5038,6 +5312,14 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::SecurityhubResource => run_securityhub_resource(event),
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
+        KnownShape::ConcatParts(script) => run_concat_parts(event, script),
+        KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
+        KnownShape::StartsWithAppend {
+            source,
+            prefix,
+            target,
+            value,
+        } => run_starts_with_append(event, source, prefix, target, value),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
@@ -5502,6 +5784,94 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/aws/cloudfront_logs/default.yml`: the split
+    /// x-forwarded-for is trimmed where it sits, because the grok that reads
+    /// each member next is anchored and a leading space fails it.
+    #[test]
+    fn a_split_list_is_trimmed_in_place() {
+        let script = "for (int i = 0; i < ctx._tmp.split_x_forwarded_for.length; i++) {\n\
+            ctx._tmp.split_x_forwarded_for[i] = ctx._tmp.split_x_forwarded_for[i].trim();\n}";
+        let mut event = Event::new(json!({
+            "_tmp": { "split_x_forwarded_for": ["81.2.69.142", " 216.160.83.56"] },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("_tmp.split_x_forwarded_for"),
+            Some(&json!(["81.2.69.142", "216.160.83.56"]))
+        );
+    }
+
+    /// Its sibling: `localhost:8080` is not an address any grok reads, so the
+    /// script appends the loopback for each member that carries it.
+    #[test]
+    fn a_prefixed_member_appends_the_scripts_constant() {
+        let script = "if (ctx.get('network') == null) {\n  ctx['network'] = new HashMap();\n}\n\
+            for (String item : ctx._tmp.split_x_forwarded_for ) {\n\
+            if (item.startsWith('localhost')) {\n\
+            if (ctx.network.forwarded_ip == null) {\n\
+            ctx['network']['forwarded_ip'] = new ArrayList();\n}\n\
+            ctx['network']['forwarded_ip'].add('127.0.0.1');\n}\n}";
+
+        let mut event = Event::new(json!({
+            "_tmp": { "split_x_forwarded_for": ["localhost:8080"] },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("network.forwarded_ip"),
+            Some(&json!(["127.0.0.1"]))
+        );
+
+        // No member with the prefix leaves the list untouched.
+        let mut plain = Event::new(json!({
+            "_tmp": { "split_x_forwarded_for": ["81.2.69.142"] },
+        }));
+        assert!(try_known_painless(&mut plain, script));
+        assert!(plain.get("network.forwarded_ip").is_none());
+    }
+
+    /// Verbatim from `pipelines/aws/cloudfront_logs/default.yml`: the URL is
+    /// reassembled out of whichever parts the log line carried.
+    #[test]
+    fn the_url_is_concatenated_from_the_parts_that_are_there() {
+        let script = "def full = \"\";\n\
+            if(ctx.network?.protocol != null && ctx.network?.protocol != \"\") {\n\
+            full += ctx.network.protocol+\"://\";\n}\n\
+            if(ctx.destination?.domain != null && ctx.destination?.domain != \"\") {\n\
+            full += ctx.destination.domain;\n}\n\
+            if(ctx.url?.path != null && ctx.url?.path != \"\") {\n  full += ctx.url.path;\n}\n\
+            if(ctx.url?.query != null && ctx.url?.query != \"\") {\n\
+            full += \"?\"+ctx.url.query;\n}\n\
+            if(full != \"\") {\n  ctx._tmp.url_full = full\n}";
+
+        let mut event = Event::new(json!({
+            "network": { "protocol": "https" },
+            "destination": { "domain": "test.com" },
+            "url": { "path": "/getApplications", "query": "source=global" },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("_tmp.url_full"),
+            Some(&json!("https://test.com/getApplications?source=global"))
+        );
+
+        // A missing part takes its whole clause -- the `?` with the query.
+        let mut partial = Event::new(json!({
+            "network": { "protocol": "http" },
+            "destination": { "domain": "www.example.com" },
+            "url": { "path": "/" },
+        }));
+        assert!(try_known_painless(&mut partial, script));
+        assert_eq!(
+            partial.get("_tmp.url_full"),
+            Some(&json!("http://www.example.com/"))
+        );
+
+        // Nothing to build from writes nothing.
+        let mut empty = Event::new(json!({}));
+        assert!(try_known_painless(&mut empty, script));
+        assert!(empty.get("_tmp.url_full").is_none());
+    }
 
     /// Verbatim from `pipelines/aws/elb_logs/default.yml`: the network load
     /// balancer writes `tlsv12`, which is TLS 1.2.
