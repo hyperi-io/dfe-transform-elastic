@@ -473,6 +473,7 @@ fn transforms_match_elastics_confirmed_output() {
     // Whole-diff output for one source. Printing every difference for every
     // source buries the summary the ranking exists to give.
     let detail = std::env::var("DFE_COMPAT_DETAIL").ok();
+    let dump = std::env::var("DFE_COMPAT_DUMP").ok();
 
     let mut unmapped = Vec::new();
     let mut by_source: BTreeMap<String, Score> = BTreeMap::new();
@@ -576,6 +577,16 @@ fn transforms_match_elastics_confirmed_output() {
 
             if detail.as_deref() == Some(capture.source.as_str()) {
                 println!("  {}[{i}]: {diff}", capture.fixture);
+            }
+            // A diff names the fields that disagree; it does not say what ELSE
+            // the transform wrote, which is where a stray value's real source
+            // shows up. `DFE_COMPAT_DUMP=<fixture>` prints the whole document.
+            if dump.as_deref() == Some(capture.fixture.as_str()) {
+                println!(
+                    "  {}[{i}] GOT: {}",
+                    capture.fixture,
+                    serde_json::to_string(event.as_value()).unwrap_or_default()
+                );
             }
 
             let mut paths = BTreeSet::new();

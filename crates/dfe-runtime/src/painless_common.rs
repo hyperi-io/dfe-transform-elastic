@@ -5149,9 +5149,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: flatten a field into an array, either by splitting a delimited
-    // string or by joining each map's two keys.
-    if normalised.contains(".add(")
-        && (normalised.contains(".splitOnToken(") || normalised.contains("instanceof Map"))
+    // string or by joining each map's two keys. The source has to come BEFORE
+    // the append -- you split, THEN add -- or the pair is two unrelated
+    // statements and this claims a script it cannot run: windows' connection
+    // events append an address and separately split an executable, and reading
+    // them as one pair put the path segments into `related.ip`.
+    if let Some(add_at) = normalised.find(".add(")
+        && [".splitOnToken(", "instanceof Map"]
+            .iter()
+            .any(|marker| normalised.find(marker).is_some_and(|at| at < add_at))
     {
         shapes.push(KnownShape::AppendEach);
         return shapes;
