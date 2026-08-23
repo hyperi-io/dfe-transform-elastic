@@ -325,6 +325,168 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// The multi-resource sibling: the same dispatch with every write an
+/// APPEND, so each field becomes an array across the finding's resources.
+#[allow(clippy::too_many_lines)] // A transliteration, as its single sibling is.
+fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
+    for path in [
+        "resource.type",
+        "resource.id",
+        "resource.name",
+        "user.name",
+        "user.id",
+        "host.id",
+        "host.ip",
+        "host.name",
+        "orchestrator.type",
+        "orchestrator.cluster.id",
+        "orchestrator.cluster.name",
+        "orchestrator.cluster.version",
+        "orchestrator.resource.id",
+        "orchestrator.resource.name",
+        "orchestrator.resource.type",
+        "cloud.instance.id",
+        "cloud.instance.name",
+        "cloud.service.name",
+        "cloud.availability_zone",
+    ] {
+        if !event.has_value(path) {
+            let _ = event.set(path, json!([]));
+        }
+    }
+
+    for res in resources {
+        let kind = res
+            .get("Type")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_string();
+        let _ = event.append("resource.type", res.get("Type").cloned().unwrap_or(Value::Null));
+        let _ = event.append("resource.id", res.get("Id").cloned().unwrap_or(Value::Null));
+        let Some(id) = res.get("Id").and_then(Value::as_str).map(str::to_string) else {
+            return true;
+        };
+        let tokens: Vec<&str> = id.split(':').collect();
+
+        let details = res.get("Details");
+        let detail = |member: &str| -> Option<&Value> {
+            details.and_then(|d| d.get(&kind)).and_then(|t| t.get(member))
+        };
+        let res_name = detail("Name").and_then(Value::as_str).map_or_else(
+            || (*tokens.last().unwrap_or(&"")).to_string(),
+            str::to_string,
+        );
+        let _ = event.append("resource.name", json!(res_name.clone()));
+
+        if details.is_some() {
+            for (wanted, member, target) in [
+                ("AwsIamUser", "UserName", "user.name"),
+                ("AwsIamAccessKey", "UserName", "user.name"),
+                ("AwsS3Bucket", "OwnerName", "user.name"),
+                ("AwsIamUser", "UserId", "user.id"),
+                ("AwsS3Bucket", "OwnerId", "user.id"),
+                ("AwsEcsContainer", "Name", "host.name"),
+            ] {
+                if kind == wanted
+                    && let Some(v) = detail(member).cloned()
+                {
+                    let _ = event.append(target, v);
+                }
+            }
+            if kind == "AwsEc2Instance" {
+                for member in ["IpV4Addresses", "IpV6Addresses"] {
+                    if let Some(Value::Array(addresses)) = detail(member) {
+                        for address in addresses.clone() {
+                            if address.is_string() {
+                                let _ = event.append("host.ip", address);
+                            }
+                        }
+                    }
+                }
+            }
+            if matches!(kind.as_str(), "AwsEcsCluster" | "AwsEcsTask")
+                && let Some(v) = details
+                    .and_then(|d| d.get("AwsEcsCluster"))
+                    .and_then(|t| t.get("ClusterArn"))
+                    .cloned()
+            {
+                let _ = event.append("orchestrator.cluster.id", v);
+            }
+            for (member, target) in [
+                ("Arn", "orchestrator.cluster.id"),
+                ("Name", "orchestrator.cluster.name"),
+                ("Version", "orchestrator.cluster.version"),
+            ] {
+                if kind == "AwsEksCluster"
+                    && let Some(v) = detail(member).cloned()
+                {
+                    let _ = event.append(target, v);
+                }
+            }
+            if kind == "AwsEcsCluster"
+                && let Some(v) = detail("ClusterName").cloned()
+            {
+                let _ = event.append("orchestrator.cluster.name", v);
+            }
+            if matches!(
+                kind.as_str(),
+                "AwsEc2Subnet" | "AwsRedshiftCluster" | "AwsDmsReplicationInstance"
+            ) && let Some(v) = detail("AvailabilityZone").cloned()
+            {
+                let _ = event.append("cloud.availability_zone", v);
+            }
+            if matches!(
+                kind.as_str(),
+                "AwsEc2VpcEndpointService" | "AwsElbLoadBalancer" | "AwsRdsDbCluster"
+            ) && let Some(Value::Array(zones)) = detail("AvailabilityZones")
+            {
+                for zone in zones.clone() {
+                    let _ = event.append("cloud.availability_zone", zone);
+                }
+            }
+            if kind == "AwsAutoScalingAutoScalingGroup"
+                && let Some(Value::Array(zones)) = detail("AvailabilityZones")
+            {
+                for zone in zones.clone() {
+                    if let Some(v) = zone.get("Value").cloned() {
+                        let _ = event.append("cloud.availability_zone", v);
+                    }
+                }
+            }
+            if kind == "AwsElbv2LoadBalancer"
+                && let Some(Value::Array(zones)) = detail("AvailabilityZones")
+            {
+                for zone in zones.clone() {
+                    if let Some(v) = zone.get("ZoneName").cloned() {
+                        let _ = event.append("cloud.availability_zone", v);
+                    }
+                }
+            }
+        }
+
+        if kind == "AwsEc2Instance" {
+            let _ = event.append("host.id", json!(id.clone()));
+            let _ = event.append("cloud.instance.id", json!(id.clone()));
+            let _ = event.append("cloud.instance.name", json!(res_name.clone()));
+        }
+        if kind.starts_with("AwsEks") || kind.starts_with("AwsEcs") {
+            let _ = event.append("orchestrator.resource.id", json!(id.clone()));
+            let _ = event.append("orchestrator.resource.name", json!(res_name));
+            let _ = event.append("orchestrator.resource.type", json!(kind.clone()));
+            let orchestrator = if kind.starts_with("AwsEks") {
+                "kubernetes"
+            } else {
+                "ecs"
+            };
+            let _ = event.append("orchestrator.type", json!(orchestrator));
+        }
+        if tokens.len() > 2 {
+            let _ = event.append("cloud.service.name", json!(tokens[2]));
+        }
+    }
+    true
+}
+
 /// securityhub's single-resource extraction, transliterated. Only the
 /// one-resource case is handled here, as the script itself says; the
 /// multi-resource sibling is a separate script.
@@ -3977,6 +4139,7 @@ pub(crate) enum KnownShape {
     },
     ResourcesRenameDedup(String),
     SecurityhubResource,
+    SecurityhubResources,
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
     StripAnglePairs {
@@ -4196,12 +4359,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: securityhub's single-resource entity extraction.
-    if normalised.contains("securityhub_findings.resources")
-        && normalised.contains("resources.size() == 1")
-    {
-        shapes.push(KnownShape::SecurityhubResource);
-        return shapes;
+    // Pattern: securityhub's single-resource entity extraction, and its
+    // multi-resource sibling whose every write is an append.
+    if normalised.contains("securityhub_findings.resources") {
+        if normalised.contains("resources.size() == 1") {
+            shapes.push(KnownShape::SecurityhubResource);
+            return shapes;
+        }
+        if normalised.contains("ctx.resource.type.add(") {
+            shapes.push(KnownShape::SecurityhubResources);
+            return shapes;
+        }
     }
 
     // Pattern: sequential loop-over-category ladders assigning a LIST
@@ -4740,6 +4908,16 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
         KnownShape::SecurityhubResource => run_securityhub_resource(event),
+        KnownShape::SecurityhubResources => {
+            if let Some(Value::Array(resources)) =
+                event.get("aws.securityhub_findings.resources").cloned()
+                && resources.len() > 1
+            {
+                run_securityhub_multi(event, &resources)
+            } else {
+                true
+            }
+        }
         KnownShape::CategoryTypeLadder(arms) => run_category_type_ladder(event, arms),
         KnownShape::KeysStripWhitespace(source) => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
