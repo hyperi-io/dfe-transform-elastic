@@ -3,7 +3,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "aws": { "events": 432, "events_total": 538, "fields_wrong": 286 },
+    "aws": { "events": 438, "events_total": 538, "fields_wrong": 247 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },
     "cisco_asa": { "events": 508, "events_total": 512, "fields_wrong": 19 },

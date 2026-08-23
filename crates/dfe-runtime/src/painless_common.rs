@@ -786,6 +786,56 @@ fn run_m365_process_evidence(event: &mut Event) -> bool {
     true
 }
 
+/// route53's answers rebuilt into ECS, feeding `related.ip` and
+/// `related.hosts` as they go.
+///
+/// The vendor's `Class`/`Type`/`Rdata` become `class`/`type`/`data`, one
+/// trailing dot is stripped off the data, and a CNAME repeats its data as the
+/// answer's `name`.
+fn run_route53_answers(event: &mut Event) -> bool {
+    let Some(Value::Array(answers)) = event.get("dns.answers").cloned() else {
+        return true;
+    };
+
+    let mut rebuilt = Vec::with_capacity(answers.len());
+    let mut addresses = Vec::new();
+    let mut hosts = Vec::new();
+    for answer in &answers {
+        let mut new_answer = Map::new();
+        for (from, to) in [("Class", "class"), ("Type", "type")] {
+            if let Some(value) = answer.get(from) {
+                new_answer.insert(to.to_string(), value.clone());
+            }
+        }
+        if let Some(rdata) = answer.get("Rdata").and_then(Value::as_str) {
+            let data = rdata.strip_suffix('.').unwrap_or(rdata).to_string();
+            let kind = new_answer
+                .get("type")
+                .and_then(Value::as_str)
+                .map(str::to_string);
+            let kind = kind.as_deref();
+            if kind == Some("CNAME") {
+                new_answer.insert("name".to_string(), json!(data.clone()));
+            }
+            match kind {
+                Some("A" | "AAAA") => addresses.push(data.clone()),
+                Some("CNAME" | "PTR") => hosts.push(data.clone()),
+                _ => {}
+            }
+            new_answer.insert("data".to_string(), json!(data));
+        }
+        rebuilt.push(Value::Object(new_answer));
+    }
+
+    let _ = event.set("dns.answers", Value::Array(rebuilt));
+    for (path, values) in [("related.ip", addresses), ("related.hosts", hosts)] {
+        for value in values {
+            let _ = event.append(path, json!(value));
+        }
+    }
+    true
+}
+
 /// m365's identity fields off the same alert evidence list -- the sibling of
 /// [`run_m365_process_evidence`], keyed on the evidence `odata_type`.
 fn run_m365_identity_evidence(event: &mut Event) -> bool {
@@ -5155,6 +5205,7 @@ pub(crate) enum KnownShape {
     },
     M365ProcessEvidence,
     M365IdentityEvidence,
+    Route53Answers,
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -5411,6 +5462,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
     if normalised.contains("def processUserName = new HashSet()") {
         shapes.push(KnownShape::M365IdentityEvidence);
+        return shapes;
+    }
+
+    // Pattern: route53's answers rebuilt into ECS, feeding related.* as they go.
+    if normalised.contains("answer?.Rdata") && normalised.contains("new_answer") {
+        shapes.push(KnownShape::Route53Answers);
         return shapes;
     }
 
@@ -6057,6 +6114,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
         KnownShape::M365ProcessEvidence => run_m365_process_evidence(event),
         KnownShape::M365IdentityEvidence => run_m365_identity_evidence(event),
+        KnownShape::Route53Answers => run_route53_answers(event),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
