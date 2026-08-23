@@ -65,6 +65,7 @@ pub(crate) enum ParamsShape {
     AwsEntity(Box<crate::painless_entity::EntityScript>),
     SysmonQueryResults,
     SysmonRegistry,
+    MessageTable,
     LookupPut { source: String, target: String },
     SentinelRemoval,
     FiletimeFieldList,
@@ -158,6 +159,15 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::KeyedMessageTable);
     }
 
+    // Pattern: the security pipeline's msobjs message-table decode, keyed on
+    // its two auxiliary tables. Ahead of the indexed lookup, whose `.put(`
+    // trigger its writes also spell.
+    if normalised.contains("AccessMaskDescriptions")
+        && normalised.contains("reversed_descriptions")
+    {
+        return Some(ParamsShape::MessageTable);
+    }
+
     // Pattern: look one field up in the table and `.put` the row somewhere
     // ELSE -- the security pipeline's logon type. Ahead of the normalise
     // shape, which writes back to the field it read.
@@ -238,6 +248,7 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
+        ParamsShape::MessageTable => crate::painless_windows::run_message_table(event, params),
         ParamsShape::LookupPut { source, target } => {
             if let Some(row) = event
                 .get_as_string(source)

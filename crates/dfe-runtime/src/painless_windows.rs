@@ -333,6 +333,191 @@ pub(crate) fn run_registry(event: &mut Event, params: &Map<String, Value>) -> bo
 }
 
 // ---------------------------------------------------------------------------
+// The security pipeline's message-table decode
+// ---------------------------------------------------------------------------
+
+/// The msobjs.dll message-table script: `%%`-prefixed codes translated
+/// through `params.descriptions`, the access mask OR-ed together and fanned
+/// out through `params.AccessMaskDescriptions`' hex keys.
+///
+/// The tables come from params, so a vendor table update flows through
+/// regeneration; the block structure is the script's and fixed.
+#[allow(clippy::too_many_lines)] // One block per event_data field, as the script has them.
+pub(crate) fn run_message_table(event: &mut Event, params: &Map<String, Value>) -> bool {
+    let descriptions = params.get("descriptions").and_then(Value::as_object);
+    let describe = |code: &str| -> Option<String> {
+        descriptions
+            .and_then(|table| table.get(code))
+            .and_then(Value::as_str)
+            .map(str::to_string)
+    };
+
+    // FailureReason: the description, or the bare code when the table has
+    // no row -- always written when the field is present.
+    if let Some(reason) = event
+        .get_str("winlog.event_data.FailureReason")
+        .map(str::to_string)
+    {
+        let code = reason.replace("%%", "");
+        let desc = describe(&code).unwrap_or(code);
+        let _ = event.set("winlog.logon.failure.reason", json!(desc));
+    }
+
+    // AuditPolicyChanges: a comma-separated string or an array, each code
+    // described where the table can.
+    if let Some(value) = event.get("winlog.event_data.AuditPolicyChanges").cloned() {
+        let elems: Vec<String> = match &value {
+            Value::String(s) => s.split(',').map(str::to_string).collect(),
+            Value::Array(items) => items
+                .iter()
+                .filter_map(Value::as_str)
+                .map(str::to_string)
+                .collect(),
+            _ => Vec::new(),
+        };
+        let results: Vec<Value> = elems
+            .iter()
+            .map(|elem| {
+                let code = elem.replace("%%", "").trim().to_string();
+                Value::String(describe(&code).unwrap_or(code))
+            })
+            .collect();
+        if !results.is_empty() {
+            let _ = event.set(
+                "winlog.event_data.AuditPolicyChangesDescription",
+                Value::Array(results),
+            );
+        }
+    }
+
+    // AccessList: the field is REWRITTEN to the cleaned codes, and the
+    // descriptions land beside it.
+    if let Some(value) = event.get("winlog.event_data.AccessList").cloned() {
+        let elems = whitespace_or_array(&value);
+        let mut codes: Vec<Value> = Vec::new();
+        let mut results: Vec<Value> = Vec::new();
+        for elem in &elems {
+            let code = elem.replace("%%", "").trim().to_string();
+            if !code.is_empty() {
+                codes.push(Value::String(code.clone()));
+            }
+            results.push(Value::String(describe(&code).unwrap_or(code)));
+        }
+        if !codes.is_empty() {
+            let _ = event.set("winlog.event_data.AccessList", Value::Array(codes));
+        }
+        if !results.is_empty() {
+            let _ = event.set(
+                "winlog.event_data.AccessListDescription",
+                Value::Array(results),
+            );
+        }
+    }
+
+    // Direction and LayerName: described only where the table has the code.
+    for (source, target) in [
+        ("winlog.event_data.Direction", "winlog.event_data.DirectionDescription"),
+        ("winlog.event_data.LayerName", "winlog.event_data.LayerNameDescription"),
+    ] {
+        if let Some(text) = event.get_str(source).map(str::to_string) {
+            let code = text.replace("%%", "").trim().to_string();
+            if let Some(desc) = describe(&code) {
+                let _ = event.set(target, json!(desc));
+            }
+        }
+    }
+
+    // AccessMask: each element described or kept, the numeric codes OR-ed
+    // into one mask, and every set bit fanned out through the hex-keyed
+    // AccessMaskDescriptions table.
+    if let Some(value) = event.get("winlog.event_data.AccessMask").cloned() {
+        let elems = whitespace_or_array(&value);
+        let reversed = params.get("reversed_descriptions").and_then(Value::as_object);
+        let mut list: Vec<Value> = Vec::new();
+        let mut mask: i64 = 0;
+        for elem in &elems {
+            if elem.is_empty() {
+                continue;
+            }
+            let mut code = elem.replace("%%", "").trim().to_string();
+            if let Some(desc) = describe(&code) {
+                list.push(Value::String(desc));
+            } else {
+                list.push(Value::String(code.clone()));
+                if let Some(mapped) = reversed
+                    .and_then(|table| table.get(&code))
+                    .and_then(Value::as_array)
+                    .and_then(|row| row.first())
+                    .and_then(Value::as_str)
+                {
+                    code = mapped.to_string();
+                }
+            }
+            if let Some(number) = java_long_decode(&code) {
+                mask |= number;
+            }
+        }
+        if !list.is_empty() {
+            let _ = event.set("winlog.event_data.AccessMask", Value::Array(list));
+        }
+
+        let flags = params.get("AccessMaskDescriptions").and_then(Value::as_object);
+        let mut descs: Vec<Value> = Vec::new();
+        for bit in 0..32u32 {
+            let flag = 1i64 << bit;
+            if mask & flag == flag {
+                if let Some(desc) = flags
+                    .and_then(|table| table.get(&format!("0x{flag:08X}")))
+                    .and_then(Value::as_str)
+                {
+                    descs.push(Value::String(desc.to_string()));
+                }
+            }
+        }
+        if !descs.is_empty() {
+            let _ = event.set(
+                "winlog.event_data.AccessMaskDescription",
+                Value::Array(descs),
+            );
+        }
+    }
+
+    true
+}
+
+/// A whitespace-split string, or the array's string members -- the two
+/// shapes the script's own `split` helper accepts.
+fn whitespace_or_array(value: &Value) -> Vec<String> {
+    match value {
+        Value::String(s) => s.split_whitespace().map(str::to_string).collect(),
+        Value::Array(items) => items
+            .iter()
+            .filter_map(Value::as_str)
+            .map(str::to_string)
+            .collect(),
+        _ => Vec::new(),
+    }
+}
+
+/// `Long.decode`: `0x`/`0X`/`#` hex, leading-`0` octal, else decimal.
+fn java_long_decode(text: &str) -> Option<i64> {
+    let (negative, rest) = match text.strip_prefix('-') {
+        Some(rest) => (true, rest),
+        None => (false, text),
+    };
+    let value = if let Some(hex) = rest.strip_prefix("0x").or_else(|| rest.strip_prefix("0X")) {
+        i64::from_str_radix(hex, 16).ok()?
+    } else if let Some(hex) = rest.strip_prefix('#') {
+        i64::from_str_radix(hex, 16).ok()?
+    } else if rest.len() > 1 && rest.starts_with('0') {
+        i64::from_str_radix(&rest[1..], 8).ok()?
+    } else {
+        rest.parse::<i64>().ok()?
+    };
+    Some(if negative { -value } else { value })
+}
+
+// ---------------------------------------------------------------------------
 // The security pipeline's user-copy scripts
 // ---------------------------------------------------------------------------
 
