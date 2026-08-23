@@ -392,7 +392,10 @@ fn parse_removes(script: &str) -> Vec<String> {
             continue;
         };
         let base = clean_path(&before[ctx_at + 4..]);
-        if base.chars().all(|c| c.is_alphanumeric() || c == '.' || c == '_') {
+        if base
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '.' || c == '_')
+        {
             removes.push(format!("{base}.{key}"));
         }
     }

@@ -168,7 +168,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("user.parts.length") && event.get("user.parts").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 1)
+                (event.get("user.parts").is_some_and(|v| v.is_array() || v.is_string()) || event.has_value("user.parts.length")) && event.get("user.parts").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 1)
             };
             if _cond {
                 if let Some(v) = event.get("user.parts.0").cloned() {
@@ -177,7 +177,7 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("user.parts.length") && event.get("user.parts").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 1)
+                (event.get("user.parts").is_some_and(|v| v.is_array() || v.is_string()) || event.has_value("user.parts.length")) && event.get("user.parts").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } > 1)
             };
             if _cond {
                 if let Some(v) = event.get("user.parts.1").cloned() {

@@ -312,6 +312,48 @@ fn run_decode_base64(event: &mut Event, source: &str, target: &str) -> bool {
     true
 }
 
+/// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` as a
+/// [`KnownShape::WrapValueInList`].
+fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let add_at = script.find(".add(ctx.")?;
+    let after = &script[add_at + ".add(ctx.".len()..];
+    let (source, _) = after.split_once(')')?;
+
+    let local = script[..add_at]
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
+    let store = format!(" = {local};");
+    let store_at = script.rfind(&store)?;
+    let before = &script[..store_at];
+    let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
+
+    Some(KnownShape::WrapValueInList {
+        source: clean_path(source),
+        target,
+    })
+}
+
+/// Read `ctx.<t> = ctx.<a>[ctx.<a>.length-1];` as a
+/// [`KnownShape::LastElement`].
+fn parse_last_element(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find("[ctx.")?;
+    let after = &script[at + "[ctx.".len()..];
+    let array = clean_path(after.split_once(".length-1]")?.0);
+
+    let before = &script[..at];
+    let subject = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    if subject != array {
+        return None;
+    }
+    let (lhs, _) = before.split_once('=')?;
+    let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
+    Some(KnownShape::LastElement { array, target })
+}
+
 /// `ctx.<t> = ctx.<s>.decodeBase64();` as a [`KnownShape::DecodeBase64`].
 fn parse_decode_base64(script: &str) -> Option<KnownShape> {
     use crate::painless_params::clean_path;
@@ -321,10 +363,8 @@ fn parse_decode_base64(script: &str) -> Option<KnownShape> {
     let source = clean_path(&before[before.rfind("ctx.")? + 4..]);
     let (lhs, _) = before.split_once('=')?;
     let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
-    (!target.is_empty() && !source.is_empty()).then_some(KnownShape::DecodeBase64 {
-        source,
-        target,
-    })
+    (!target.is_empty() && !source.is_empty())
+        .then_some(KnownShape::DecodeBase64 { source, target })
 }
 
 /// What a drop-empty script's OWN predicate says is droppable.
@@ -3344,6 +3384,14 @@ pub(crate) enum KnownShape {
         source: String,
         target: String,
     },
+    WrapValueInList {
+        source: String,
+        target: String,
+    },
+    LastElement {
+        array: String,
+        target: String,
+    },
     ClassifyMembers,
     FlattenedDuplicates,
     CollectEntities,
@@ -3533,6 +3581,26 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // referer.
     if normalised.contains(".decodeBase64()")
         && let Some(shape) = parse_decode_base64(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: one value wrapped in a one-element list -- mimecast's
+    // attachments promotion. No loop, or it is the prepend shape below.
+    if (normalised.contains("= [];") || normalised.contains("new ArrayList()"))
+        && normalised.contains(".add(ctx.")
+        && !normalised.contains("for (")
+        && let Some(shape) = parse_wrap_value_in_list(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: the LAST element of an array assigned to a field --
+    // mimecast's attachment extension off the split path.
+    if normalised.contains(".length-1]")
+        && let Some(shape) = parse_last_element(normalised)
     {
         shapes.push(shape);
         return shapes;
@@ -3889,6 +3957,20 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => run_split_token_field(event, source, *separator, *parse_int, target),
         KnownShape::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
+        KnownShape::WrapValueInList { source, target } => {
+            if let Some(value) = event.get(source).cloned() {
+                let _ = event.set(target, Value::Array(vec![value]));
+            }
+            true
+        }
+        KnownShape::LastElement { array, target } => {
+            if let Some(Value::Array(items)) = event.get(array)
+                && let Some(last) = items.last().cloned()
+            {
+                let _ = event.set(target, last);
+            }
+            true
+        }
         KnownShape::ClassifyMembers => try_classify_members(event, normalised),
         KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
         KnownShape::CollectEntities => try_collect_entities(event, normalised),
