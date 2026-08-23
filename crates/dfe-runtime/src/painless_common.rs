@@ -325,6 +325,41 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// Read the angle-strip helper's call sites: `ctx.<p> = <name>(ctx.<p>);`
+/// scalars, and the loop rebuilding a list through the same helper.
+fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let name_at = script.find("(def input)")?;
+    let head = &script[..name_at];
+    let name = head.rsplit(|c: char| !(c.is_alphanumeric() || c == '_')).next()?;
+    if name.is_empty() {
+        return None;
+    }
+
+    let mut scalars = Vec::new();
+    for site in script.split(&format!("= {name}(ctx.")).skip(1) {
+        if let Some((path, _)) = site.split_once(')') {
+            scalars.push(clean_path(path));
+        }
+    }
+
+    let mut lists = Vec::new();
+    for site in script.split("for (").skip(1) {
+        if let Some(at) = site.find(" in ctx.")
+            && let Some((path, rest)) = site[at + " in ctx.".len()..].split_once(')')
+            && rest.split('}').next().is_some_and(|body| body.contains(&format!("{name}(")))
+        {
+            lists.push(clean_path(path));
+        }
+    }
+
+    (!scalars.is_empty() || !lists.is_empty()).then_some(KnownShape::StripAnglePairs {
+        scalars,
+        lists,
+    })
+}
+
 /// cloudtrail's resources pass: ARN and accountId rename to their snake
 /// names (appended, as a Java put is), and duplicates of the
 /// `arn_account_type` composite collapse -- last one wins, keeping the first's
@@ -3663,6 +3698,10 @@ pub(crate) enum KnownShape {
         target: String,
     },
     ResourcesRenameDedup(String),
+    StripAnglePairs {
+        scalars: Vec<String>,
+        lists: Vec<String>,
+    },
     NameValueFold {
         source: String,
         target: String,
@@ -3872,6 +3911,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         shapes.push(KnownShape::ResourcesRenameDedup(
             crate::painless_params::clean_path(source),
         ));
+        return shapes;
+    }
+
+    // Pattern: strip a surrounding `<...>` pair from named fields and each
+    // member of a list -- proofpoint's mail addresses.
+    if normalised.contains(".startsWith(\"<\")")
+        && normalised.contains(".endsWith(\">\")")
+        && let Some(shape) = parse_strip_angle_pairs(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -4367,6 +4416,31 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
+        KnownShape::StripAnglePairs { scalars, lists } => {
+            let strip = |text: &str| {
+                text.strip_prefix('<')
+                    .and_then(|t| t.strip_suffix('>'))
+                    .map(str::to_string)
+            };
+            for path in scalars {
+                if let Some(stripped) = event.get_str(path).and_then(strip) {
+                    let _ = event.set(path, json!(stripped));
+                }
+            }
+            for path in lists {
+                if let Some(Value::Array(items)) = event.get(path).cloned() {
+                    let rebuilt: Vec<Value> = items
+                        .into_iter()
+                        .map(|item| match item.as_str().and_then(strip) {
+                            Some(stripped) => Value::String(stripped),
+                            None => item,
+                        })
+                        .collect();
+                    let _ = event.set(path, Value::Array(rebuilt));
+                }
+            }
+            true
+        }
         KnownShape::NameValueFold {
             source,
             target,
