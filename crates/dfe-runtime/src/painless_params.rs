@@ -197,9 +197,7 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
 
     // Pattern: powershell's matcher-driven KV -- tab-prefixed keys, the
     // value everything up to the next key, multiline included.
-    if normalised.contains("ctx.winlog?.event_data[params[")
-        && normalised.contains("previousEnd")
-    {
+    if normalised.contains("ctx.winlog?.event_data[params[") && normalised.contains("previousEnd") {
         return Some(ParamsShape::MatcherKv);
     }
 

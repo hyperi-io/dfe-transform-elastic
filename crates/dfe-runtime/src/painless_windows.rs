@@ -815,7 +815,11 @@ pub(crate) fn run_rename_common_auth(event: &mut Event, codes: &[String]) -> boo
     if !event.has_value("process.name")
         && let Some(executable) = event.get_str("process.executable").map(str::to_string)
     {
-        let name = executable.rsplit('\\').next().unwrap_or(&executable).to_string();
+        let name = executable
+            .rsplit('\\')
+            .next()
+            .unwrap_or(&executable)
+            .to_string();
         let _ = event.set("process.name", json!(name));
     }
     true

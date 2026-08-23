@@ -325,6 +325,64 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// checkpoint's dropped-packet tuples: each `<ip,port,ip,port,proto;iface>`
+/// entry becomes a structured map, the sampled marker is noted, and the raw
+/// field goes once anything parsed. A port that will not parse is where the
+/// script's own parseLong threw, so the remaining writes stop there.
+fn run_checkpoint_packets(event: &mut Event) -> bool {
+    let Some(raw) = event.get_str("checkpoint.packets").map(str::to_string) else {
+        return true;
+    };
+    let mut text = raw.trim().to_string();
+    if text.starts_with("(sample")
+        && let Some(close) = text.find(')')
+    {
+        let _ = event.set("checkpoint.packets_data_is_sampled", json!(true));
+        text = text[close + 1..].trim().to_string();
+    }
+    if let Some(stripped) = text.strip_suffix("\";") {
+        text = stripped.to_string();
+    }
+
+    let mut parsed: Vec<Value> = Vec::new();
+    for entry in text.split('>') {
+        let entry = entry.trim();
+        if entry.is_empty() {
+            continue;
+        }
+        let entry = entry.strip_prefix('<').unwrap_or(entry);
+        let mut packet = Map::new();
+        let mut parts = entry.split(';');
+        let tuple = parts.next().unwrap_or("");
+        if let Some(interface) = parts.next() {
+            packet.insert("interface".into(), json!({ "name": interface }));
+        }
+        let fields: Vec<&str> = tuple.split(',').collect();
+        if fields.len() >= 5 {
+            let (Ok(src_port), Ok(dst_port)) = (fields[1].parse::<i64>(), fields[3].parse::<i64>())
+            else {
+                return true;
+            };
+            packet.insert(
+                "source".into(),
+                json!({ "ip": fields[0], "port": src_port }),
+            );
+            packet.insert(
+                "destination".into(),
+                json!({ "ip": fields[2], "port": dst_port }),
+            );
+            packet.insert("network".into(), json!({ "iana_number": fields[4] }));
+            parsed.push(Value::Object(packet));
+        }
+    }
+
+    if !parsed.is_empty() {
+        let _ = event.set("checkpoint.packets_dropped", Value::Array(parsed));
+        event.remove("checkpoint.packets");
+    }
+    true
+}
+
 /// The multi-resource sibling: the same dispatch with every write an
 /// APPEND, so each field becomes an array across the finding's resources.
 #[allow(clippy::too_many_lines)] // A transliteration, as its single sibling is.
@@ -361,7 +419,10 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
             .and_then(Value::as_str)
             .unwrap_or_default()
             .to_string();
-        let _ = event.append("resource.type", res.get("Type").cloned().unwrap_or(Value::Null));
+        let _ = event.append(
+            "resource.type",
+            res.get("Type").cloned().unwrap_or(Value::Null),
+        );
         let _ = event.append("resource.id", res.get("Id").cloned().unwrap_or(Value::Null));
         let Some(id) = res.get("Id").and_then(Value::as_str).map(str::to_string) else {
             return true;
@@ -370,7 +431,9 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
 
         let details = res.get("Details");
         let detail = |member: &str| -> Option<&Value> {
-            details.and_then(|d| d.get(&kind)).and_then(|t| t.get(member))
+            details
+                .and_then(|d| d.get(&kind))
+                .and_then(|t| t.get(member))
         };
         let res_name = detail("Name").and_then(Value::as_str).map_or_else(
             || (*tokens.last().unwrap_or(&"")).to_string(),
@@ -518,7 +581,11 @@ fn run_securityhub_resource(event: &mut Event) -> bool {
         return true;
     }
     let res = &resources[0];
-    let kind = res.get("Type").and_then(Value::as_str).unwrap_or_default().to_string();
+    let kind = res
+        .get("Type")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_string();
     if let Some(v) = res.get("Type").cloned() {
         let _ = event.set("resource.type", v);
     }
@@ -532,11 +599,14 @@ fn run_securityhub_resource(event: &mut Event) -> bool {
 
     let details = res.get("Details");
     let detail = |member: &str| -> Option<&Value> {
-        details.and_then(|d| d.get(&kind)).and_then(|t| t.get(member))
+        details
+            .and_then(|d| d.get(&kind))
+            .and_then(|t| t.get(member))
     };
-    let res_name = detail("Name")
-        .and_then(Value::as_str)
-        .map_or_else(|| (*tokens.last().unwrap_or(&"")).to_string(), str::to_string);
+    let res_name = detail("Name").and_then(Value::as_str).map_or_else(
+        || (*tokens.last().unwrap_or(&"")).to_string(),
+        str::to_string,
+    );
     let _ = event.set("resource.name", json!(res_name.clone()));
 
     if details.is_some() {
@@ -757,8 +827,11 @@ fn run_category_type_ladder(event: &mut Event, arms: &[CategoryArm]) -> bool {
             .filter_map(Value::as_str)
             .any(|member| arm.literals.iter().any(|l| l == member));
         if hit {
-            let values: Vec<Value> =
-                arm.values.iter().map(|v| Value::String(v.clone())).collect();
+            let values: Vec<Value> = arm
+                .values
+                .iter()
+                .map(|v| Value::String(v.clone()))
+                .collect();
             let _ = event.set(&arm.target, Value::Array(values));
         }
     }
@@ -772,7 +845,9 @@ fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
 
     let name_at = script.find("(def input)")?;
     let head = &script[..name_at];
-    let name = head.rsplit(|c: char| !(c.is_alphanumeric() || c == '_')).next()?;
+    let name = head
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
     if name.is_empty() {
         return None;
     }
@@ -788,16 +863,17 @@ fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
     for site in script.split("for (").skip(1) {
         if let Some(at) = site.find(" in ctx.")
             && let Some((path, rest)) = site[at + " in ctx.".len()..].split_once(')')
-            && rest.split('}').next().is_some_and(|body| body.contains(&format!("{name}(")))
+            && rest
+                .split('}')
+                .next()
+                .is_some_and(|body| body.contains(&format!("{name}(")))
         {
             lists.push(clean_path(path));
         }
     }
 
-    (!scalars.is_empty() || !lists.is_empty()).then_some(KnownShape::StripAnglePairs {
-        scalars,
-        lists,
-    })
+    (!scalars.is_empty() || !lists.is_empty())
+        .then_some(KnownShape::StripAnglePairs { scalars, lists })
 }
 
 /// cloudtrail's resources pass: ARN and accountId rename to their snake
@@ -823,8 +899,7 @@ fn run_resources_rename_dedup(event: &mut Event, source: &str) -> bool {
         if let Some(value) = resource.remove("accountId") {
             resource.insert("account_id".into(), value);
         }
-        let part =
-            |k: &str| resource.get(k).map(painless_to_string).unwrap_or_default();
+        let part = |k: &str| resource.get(k).map(painless_to_string).unwrap_or_default();
         let key = format!("{}_{}_{}", part("arn"), part("account_id"), part("type"));
         let value = Value::Object(resource);
         if let Some(existing) = unique.iter_mut().find(|(k, _)| *k == key) {
@@ -862,7 +937,9 @@ fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
     let for_at = script.find(" in ctx.")?;
     let after = &script[for_at + " in ctx.".len()..];
     let (source, _) = after.split_once(')')?;
-    let var = script[..for_at].rsplit(|c: char| !(c.is_alphanumeric() || c == '_')).next()?;
+    let var = script[..for_at]
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
 
     let call = format!("{target}.put({var}.");
     let call_at = script.find(&call)?;
@@ -934,12 +1011,7 @@ fn parse_outcome_from_tags(script: &str) -> Option<KnownShape> {
 /// The LAST tag whose name starts with `<action>.` decides: "true" is
 /// success, "false" failure, case folded. Writing needs the target's parent
 /// to exist, which is where the script's own put would have thrown.
-fn run_outcome_from_tags(
-    event: &mut Event,
-    action_field: &str,
-    tags: &str,
-    target: &str,
-) -> bool {
+fn run_outcome_from_tags(event: &mut Event, action_field: &str, tags: &str, target: &str) -> bool {
     let Some(action) = event.get_str(action_field).map(str::to_string) else {
         return true;
     };
@@ -4140,6 +4212,7 @@ pub(crate) enum KnownShape {
     ResourcesRenameDedup(String),
     SecurityhubResource,
     SecurityhubResources,
+    CheckpointPackets,
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
     StripAnglePairs {
@@ -4351,7 +4424,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // element, then deduplicated by the arn_account_type composite.
     if normalised.contains("uniqueResources")
         && let Some(at) = normalised.find(" instanceof List")
-        && let Some(source) = normalised[..at].rfind("ctx.").map(|s| &normalised[s + 4..at])
+        && let Some(source) = normalised[..at]
+            .rfind("ctx.")
+            .map(|s| &normalised[s + 4..at])
     {
         shapes.push(KnownShape::ResourcesRenameDedup(
             crate::painless_params::clean_path(source),
@@ -4370,6 +4445,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::SecurityhubResources);
             return shapes;
         }
+    }
+
+    // Pattern: checkpoint's dropped-packet tuples into structured maps.
+    if normalised.contains("packets_dropped") && normalised.contains(".splitOnToken('>')") {
+        shapes.push(KnownShape::CheckpointPackets);
+        return shapes;
     }
 
     // Pattern: sequential loop-over-category ladders assigning a LIST
@@ -4908,6 +4989,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
         KnownShape::SecurityhubResource => run_securityhub_resource(event),
+        KnownShape::CheckpointPackets => run_checkpoint_packets(event),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
@@ -4923,8 +5005,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
                 let mut rebuilt = Map::new();
                 for (key, value) in entries {
-                    let stripped: String =
-                        key.chars().filter(|c| !c.is_whitespace()).collect();
+                    let stripped: String = key.chars().filter(|c| !c.is_whitespace()).collect();
                     rebuilt.insert(stripped, value);
                 }
                 let _ = event.set(source, Value::Object(rebuilt));
