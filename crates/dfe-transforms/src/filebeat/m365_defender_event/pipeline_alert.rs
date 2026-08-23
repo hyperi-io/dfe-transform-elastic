@@ -543,10 +543,7 @@ impl Transform for PipelineAlert {
             }
 
             if event.has_value("json.properties.Severity") {
-                if let Some(s) = event.get_string("json.properties.Severity") {
-                    let lowered = s.to_lowercase();
-                    event.set("m365_defender.event.severity", lowered)?;
-                }
+                map_strings(event, "json.properties.Severity", "m365_defender.event.severity", str::to_lowercase)?;
             }
 
             let _cond = { event.get("m365_defender.event.severity").is_some_and(|v| v.is_string()) };
@@ -577,10 +574,7 @@ impl Transform for PipelineAlert {
             }
 
             if event.has_value("host.name") {
-                if let Some(s) = event.get_string("host.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(event, "host.name", "host.name", str::to_lowercase)?;
             }
 
             if let Some(v) = event.get("m365_defender.event.device.id").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -592,10 +586,7 @@ impl Transform for PipelineAlert {
             }
 
             if event.has_value("network.direction") {
-                if let Some(s) = event.get_string("network.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                map_strings(event, "network.direction", "network.direction", str::to_lowercase)?;
             }
 
             if let Some(v) = event.get("m365_defender.event.process.command_line").filter(|v| !painless_is_empty_value(v)).cloned() {

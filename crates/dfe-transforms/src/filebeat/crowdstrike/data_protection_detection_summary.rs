@@ -722,10 +722,12 @@ impl Transform for DataProtectionDetectionSummary {
             }
 
             if event.has_value("crowdstrike.event.Platform") {
-                if let Some(s) = event.get_string("crowdstrike.event.Platform") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.os.platform", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "crowdstrike.event.Platform",
+                    "host.os.platform",
+                    str::to_lowercase,
+                )?;
             }
 
             if let Some(v) = event

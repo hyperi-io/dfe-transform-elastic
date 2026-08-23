@@ -130,11 +130,13 @@ impl Transform for IdentityProtectionIncident {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.StartTime", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.StartTime",
+                    "crowdstrike.event.StartTime",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -188,11 +190,13 @@ impl Transform for IdentityProtectionIncident {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.EndTime", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.EndTime",
+                    "crowdstrike.event.EndTime",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {

@@ -209,11 +209,13 @@ impl Transform for Default {
                     }
                 }
                 if event.has_value("source.mac") {
-                    if let Some(s) = event.get_string("source.mac") {
-                        let re = cached_regex!("[:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("source.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "source.mac",
+                        "source.mac",
+                        cached_regex!("[:.]"),
+                        "-",
+                    )?;
                 }
                 let _cond = { !event.has_value("cisco_meraki.flows.op") };
                 if _cond {
@@ -569,24 +571,30 @@ impl Transform for Default {
                 if _cond {
                     event.rename("_temp.kv.vap", "cisco_meraki.vap")?;
                 }
-                if let Some(s) = event.get_string("_temp.kv.src") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("source.mac", replaced)?;
-                }
-                if let Some(s) = event.get_string("_temp.kv.dst") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("destination.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp.kv.src",
+                    "source.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
+                gsub_field(
+                    event,
+                    "_temp.kv.dst",
+                    "destination.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
                 let _cond =
                     { event.get_str("cisco_meraki.event_subtype") == Some("rogue_ssid_detected") };
                 if _cond {
-                    if let Some(s) = event.get_string("_temp.kv.wired_mac") {
-                        let re = cached_regex!("[-:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("_temp.observer.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "_temp.kv.wired_mac",
+                        "_temp.observer.mac",
+                        cached_regex!("[-:.]"),
+                        "-",
+                    )?;
                 }
                 let _cond = { event.has_value("_temp.observer.mac") };
                 if _cond {
@@ -703,20 +711,19 @@ impl Transform for Default {
                     event.rename("signature", "cisco_meraki.security.signature")?;
                 }
                 if event.has_value("dhost") {
-                    if let Some(s) = event.get_string("dhost") {
-                        let re = cached_regex!("[-:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("cisco_meraki.security.dhost", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "dhost",
+                        "cisco_meraki.security.dhost",
+                        cached_regex!("[-:.]"),
+                        "-",
+                    )?;
                 }
                 if event.has("direction") {
                     event.rename("direction", "network.direction")?;
                 }
                 if event.has_value("protocol") {
-                    if let Some(s) = event.get_string("protocol") {
-                        let lowered = s.to_lowercase();
-                        event.set("network.protocol", lowered)?;
-                    }
+                    map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
                 }
                 if event.has("decision") {
                     event.rename("decision", "cisco_meraki.security.decision")?;
@@ -730,11 +737,13 @@ impl Transform for Default {
                     })();
                 }
                 if event.has_value("mac") {
-                    if let Some(s) = event.get_string("mac") {
-                        let re = cached_regex!("[-:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("cisco_meraki.security.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "mac",
+                        "cisco_meraki.security.mac",
+                        cached_regex!("[-:.]"),
+                        "-",
+                    )?;
                 }
                 if event.has("name") {
                     event.rename("name", "file.name")?;
@@ -1030,10 +1039,7 @@ impl Transform for Default {
                 event.rename("priority", "cisco_meraki.security.priority")?;
                 event.rename("signature", "cisco_meraki.security.signature")?;
                 event.rename("direction", "network.direction")?;
-                if let Some(s) = event.get_string("protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
                 let _cond = { event.has_value("src") };
                 if _cond {
                     if let Some(input) = event.get_string("src") {
@@ -1506,17 +1512,16 @@ impl Transform for Default {
                     }
                 }
                 if event.has_value("source.mac") {
-                    if let Some(s) = event.get_string("source.mac") {
-                        let re = cached_regex!("[:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("source.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "source.mac",
+                        "source.mac",
+                        cached_regex!("[:.]"),
+                        "-",
+                    )?;
                 }
                 if event.has_value("source.mac") {
-                    if let Some(s) = event.get_string("source.mac") {
-                        let uppered = s.to_uppercase();
-                        event.set("source.mac", uppered)?;
-                    }
+                    map_strings(event, "source.mac", "source.mac", str::to_uppercase)?;
                 }
                 let _cond = { event.has_value("_temp.blocked_arp") };
                 if _cond {
@@ -1546,10 +1551,12 @@ impl Transform for Default {
                     )?;
                 }
                 if event.has_value("_temp.event_original_lower") {
-                    if let Some(s) = event.get_string("_temp.event_original_lower") {
-                        let lowered = s.to_lowercase();
-                        event.set("_temp.event_original_lower", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "_temp.event_original_lower",
+                        "_temp.event_original_lower",
+                        str::to_lowercase,
+                    )?;
                 }
                 let _cond = {
                     event
@@ -1583,17 +1590,21 @@ impl Transform for Default {
                     }
                 }
                 if event.has_value("_temp.port_action") {
-                    if let Some(s) = event.get_string("_temp.port_action") {
-                        let re = cached_regex!(" ");
-                        let replaced = re.replace_all(&s, "_").into_owned();
-                        event.set("_temp.port_action", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "_temp.port_action",
+                        "_temp.port_action",
+                        cached_regex!(" "),
+                        "_",
+                    )?;
                 }
                 if event.has_value("_temp.port_action") {
-                    if let Some(s) = event.get_string("_temp.port_action") {
-                        let lowered = s.to_lowercase();
-                        event.set("_temp.port_action", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "_temp.port_action",
+                        "_temp.port_action",
+                        str::to_lowercase,
+                    )?;
                 }
                 let _cond = { event.has_value("_temp.port_action") };
                 if _cond {
@@ -2341,36 +2352,31 @@ impl Transform for Default {
                     })();
                 }
                 if event.has_value("client.mac") {
-                    if let Some(s) = event.get_string("client.mac") {
-                        let re = cached_regex!("[:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("client.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "client.mac",
+                        "client.mac",
+                        cached_regex!("[:.]"),
+                        "-",
+                    )?;
                 }
                 if event.has_value("client.mac") {
-                    if let Some(s) = event.get_string("client.mac") {
-                        let uppered = s.to_uppercase();
-                        event.set("client.mac", uppered)?;
-                    }
+                    map_strings(event, "client.mac", "client.mac", str::to_uppercase)?;
                 }
                 if event.has_value("server.mac") {
-                    if let Some(s) = event.get_string("server.mac") {
-                        let re = cached_regex!("[:.]");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("server.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "server.mac",
+                        "server.mac",
+                        cached_regex!("[:.]"),
+                        "-",
+                    )?;
                 }
                 if event.has_value("server.mac") {
-                    if let Some(s) = event.get_string("server.mac") {
-                        let uppered = s.to_uppercase();
-                        event.set("server.mac", uppered)?;
-                    }
+                    map_strings(event, "server.mac", "server.mac", str::to_uppercase)?;
                 }
                 if event.has_value("user.name") {
-                    if let Some(s) = event.get_string("user.name") {
-                        let lowered = s.to_lowercase();
-                        event.set("user.name", lowered)?;
-                    }
+                    map_strings(event, "user.name", "user.name", str::to_lowercase)?;
                 }
                 let _cond = {
                     event.has_value("user.name")
@@ -2750,11 +2756,13 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                if let Some(s) = event.get_string("mac") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("cisco_meraki.urls.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "mac",
+                    "cisco_meraki.urls.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
                 let _cond = {
                     !(event
                         .get_str("http.request.method")

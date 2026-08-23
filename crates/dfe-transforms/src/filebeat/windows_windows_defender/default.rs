@@ -322,10 +322,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("windows_defender.evidence_paths") {
-                    if let Some(s) = event.get_string("windows_defender.evidence_paths") {
-                        let trimmed = s.trim().to_string();
-                        event.set("windows_defender.evidence_paths", trimmed)?;
-                    }
+                    map_strings(
+                        event,
+                        "windows_defender.evidence_paths",
+                        "windows_defender.evidence_paths",
+                        |s| s.trim().to_string(),
+                    )?;
                 }
                 Ok(())
             })();
@@ -333,11 +335,13 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("windows_defender.evidence_paths") {
-                    if let Some(s) = event.get_string("windows_defender.evidence_paths") {
-                        let re = cached_regex!("file:_");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("windows_defender.evidence_paths", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "windows_defender.evidence_paths",
+                        "windows_defender.evidence_paths",
+                        cached_regex!("file:_"),
+                        "",
+                    )?;
                 }
                 Ok(())
             })();
@@ -345,11 +349,13 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("windows_defender.evidence_paths") {
-                    if let Some(s) = event.get_string("windows_defender.evidence_paths") {
-                        let re = cached_regex!("process:_");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("windows_defender.evidence_paths", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "windows_defender.evidence_paths",
+                        "windows_defender.evidence_paths",
+                        cached_regex!("process:_"),
+                        "",
+                    )?;
                 }
                 Ok(())
             })();

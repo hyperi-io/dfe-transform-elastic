@@ -312,10 +312,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("json.event.alert.category") {
@@ -494,10 +496,12 @@ impl Transform for Default {
             }
 
             if event.has_value("tls.version_protocol") {
-                if let Some(s) = event.get_string("tls.version_protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("tls.version_protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "tls.version_protocol",
+                    "tls.version_protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has("json.event.tls.ja3s.hash") {
@@ -521,11 +525,13 @@ impl Transform for Default {
             }
 
             if event.has_value("tls.server.x509.serial_number") {
-                if let Some(s) = event.get_string("tls.server.x509.serial_number") {
-                    let re = cached_regex!(":");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("tls.server.x509.serial_number", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "tls.server.x509.serial_number",
+                    "tls.server.x509.serial_number",
+                    cached_regex!(":"),
+                    "",
+                )?;
             }
 
             let _cond = { event.has_value("json.event.tls.notafter") };

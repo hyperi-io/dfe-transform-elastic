@@ -421,11 +421,13 @@ impl Transform for XdrDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.StartTimeEpoch") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.StartTimeEpoch", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.StartTimeEpoch",
+                    "crowdstrike.event.StartTimeEpoch",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -486,11 +488,13 @@ impl Transform for XdrDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.EndTimeEpoch") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.EndTimeEpoch", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.EndTimeEpoch",
+                    "crowdstrike.event.EndTimeEpoch",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {

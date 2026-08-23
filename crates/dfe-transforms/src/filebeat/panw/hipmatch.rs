@@ -193,10 +193,12 @@ impl Transform for Hipmatch {
 
             let _cond = { event.has_value("panw.panos.machine.name") };
             if _cond {
-                if let Some(s) = event.get_string("panw.panos.machine.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "panw.panos.machine.name",
+                    "host.name",
+                    str::to_lowercase,
+                )?;
             }
 
             // ignore_failure: true

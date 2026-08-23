@@ -586,10 +586,7 @@ impl Transform for Default {
             }
 
             if event.has_value("host.os.type") {
-                if let Some(s) = event.get_string("host.os.type") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.os.type", lowered)?;
-                }
+                map_strings(event, "host.os.type", "host.os.type", str::to_lowercase)?;
             }
 
             if let Some(v) = event
@@ -1734,13 +1731,15 @@ impl Transform for Default {
             }
 
             if event.has_value("client._temp") {
-                if let Some(s) = event.get_string("client._temp") {
-                    let re = cached_regex!(
+                gsub_field(
+                    event,
+                    "client._temp",
+                    "client._temp",
+                    cached_regex!(
                         "^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](:[0-9]+)?)?$"
-                    );
-                    let replaced = re.replace_all(&s, "$1$2").into_owned();
-                    event.set("client._temp", replaced)?;
-                }
+                    ),
+                    "$1$2",
+                )?;
             }
 
             let _cond = {
@@ -1793,11 +1792,13 @@ impl Transform for Default {
             }
 
             if event.has_value("server._temp") {
-                if let Some(s) = event.get_string("server._temp") {
-                    let re = cached_regex!("[\n\r]");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("server._temp", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "server._temp",
+                    "server._temp",
+                    cached_regex!("[\n\r]"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -2084,10 +2085,12 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("organization.id") {
-                    if let Some(s) = event.get_string("organization.id") {
-                        let lowered = s.to_lowercase();
-                        event.set("organization.id", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "organization.id",
+                        "organization.id",
+                        str::to_lowercase,
+                    )?;
                 }
                 Ok(())
             })();
@@ -2442,13 +2445,15 @@ impl Transform for Default {
                 event.has("o365audit.Data") && event.get_str("o365audit.RecordType") == Some("64")
             };
             if _cond {
-                if let Some(s) = event.get_string("o365audit.Data") {
-                    let re = cached_regex!(
+                gsub_field(
+                    event,
+                    "o365audit.Data",
+                    "o365audit.Data",
+                    cached_regex!(
                         ",\\\"QueryTime\\\":\\\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\\\"|\\\"QueryTime\\\":\\\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\\\","
-                    );
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("o365audit.Data", replaced)?;
-                }
+                    ),
+                    "",
+                )?;
             }
 
             let _cond = { event.has("o365audit.Data") };

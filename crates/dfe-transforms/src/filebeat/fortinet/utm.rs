@@ -305,11 +305,13 @@ impl Transform for Utm {
             let _cond = { event.has_value("rule.category") };
             if _cond {
                 if event.has_value("rule.category") {
-                    if let Some(s) = event.get_string("rule.category") {
-                        let re = cached_regex!("\\.");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("rule.category", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "rule.category",
+                        "rule.category",
+                        cached_regex!("\\."),
+                        "-",
+                    )?;
                 }
             }
 
@@ -459,10 +461,12 @@ impl Transform for Utm {
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.has_value("fortinet.firewall.url") };

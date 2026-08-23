@@ -1138,6 +1138,70 @@ fn path_extension(path: &str) -> Option<&str> {
     (!extension.is_empty()).then_some(extension)
 }
 
+/// Elastic's string processors: `lowercase`, `uppercase` and `trim`.
+///
+/// Each is an `AbstractStringProcessor` there, and every one of them walks a
+/// LIST element by element -- the same rule [`gsub_field`] needed.
+///
+/// # Errors
+///
+/// Propagates a failure to set the target.
+pub fn map_strings(
+    event: &mut Event,
+    field: &str,
+    target: &str,
+    each: impl Fn(&str) -> String,
+) -> Result<()> {
+    let mapped = match event.get(field) {
+        Some(Value::String(text)) => Value::String(each(text)),
+        Some(Value::Array(items)) => Value::Array(
+            items
+                .iter()
+                .map(|item| match item {
+                    Value::String(text) => Value::String(each(text)),
+                    other => other.clone(),
+                })
+                .collect(),
+        ),
+        _ => return Ok(()),
+    };
+    event.set(target, mapped)
+}
+
+/// Elastic's `gsub` processor: replace every match in `field` into `target`.
+///
+/// A LIST is rewritten element by element, which is what Elasticsearch's own
+/// processor does and what a string-only reader skipped: mimecast APPENDS the
+/// sender address, so the field it then scrubs `<>` out of is a one-element
+/// list, and the empty sender survived into `email.from.address`.
+///
+/// # Errors
+///
+/// Propagates a failure to set the target.
+pub fn gsub_field(
+    event: &mut Event,
+    field: &str,
+    target: &str,
+    pattern: &crate::grok_cache::Pattern,
+    replacement: &str,
+) -> Result<()> {
+    let rewrite = |text: &str| Value::String(pattern.replace_all(text, replacement).into_owned());
+    let replaced = match event.get(field) {
+        Some(Value::String(text)) => rewrite(text),
+        Some(Value::Array(items)) => Value::Array(
+            items
+                .iter()
+                .map(|item| match item {
+                    Value::String(text) => rewrite(text),
+                    other => other.clone(),
+                })
+                .collect(),
+        ),
+        _ => return Ok(()),
+    };
+    event.set(target, replaced)
+}
+
 /// Whether `java.net.URI` accepts every character of `text`.
 ///
 /// Its legal set is RFC 2396's unreserved, reserved and escaped, widened to any

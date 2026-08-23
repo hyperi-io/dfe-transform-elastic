@@ -113,11 +113,13 @@ impl Transform for Security {
             }
 
             if event.has_value("dhost") {
-                if let Some(s) = event.get_string("dhost") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("cisco_meraki.security.dhost", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "dhost",
+                    "cisco_meraki.security.dhost",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
             }
 
             if event.has("direction") {
@@ -125,10 +127,7 @@ impl Transform for Security {
             }
 
             if event.has_value("protocol") {
-                if let Some(s) = event.get_string("protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
             }
 
             if event.has("decision") {
@@ -145,11 +144,13 @@ impl Transform for Security {
             }
 
             if event.has_value("mac") {
-                if let Some(s) = event.get_string("mac") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("cisco_meraki.security.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "mac",
+                    "cisco_meraki.security.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
             }
 
             if event.has("name") {

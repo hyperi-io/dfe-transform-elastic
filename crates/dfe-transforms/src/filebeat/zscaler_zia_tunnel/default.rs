@@ -747,10 +747,7 @@ impl Transform for Default {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             let _cond = { event.get_str("event.action") != Some("") };
@@ -758,11 +755,13 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("event.action") {
-                        if let Some(s) = event.get_string("event.action") {
-                            let re = cached_regex!(" ");
-                            let replaced = re.replace_all(&s, "-").into_owned();
-                            event.set("event.action", replaced)?;
-                        }
+                        gsub_field(
+                            event,
+                            "event.action",
+                            "event.action",
+                            cached_regex!(" "),
+                            "-",
+                        )?;
                     }
                     Ok(())
                 })() {
@@ -1251,10 +1250,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.get_str("network.transport") == Some("tcp") };
@@ -1671,10 +1672,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.get_str("network.transport") == Some("gre") };

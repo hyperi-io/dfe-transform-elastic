@@ -713,18 +713,11 @@ impl Transform for PipelineEmail {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let re = cached_regex!(" ");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("event.action", replaced)?;
-                }
+                gsub_field(event, "event.action", "event.action", cached_regex!(" "), "-")?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.from_address") };

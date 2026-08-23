@@ -2125,10 +2125,12 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("panw.panos.url_category_list") };
                 if _cond {
-                    if let Some(s) = event.get_string("panw.panos.url_category_list") {
-                        let trimmed = s.trim().to_string();
-                        event.set("panw.panos.url_category_list", trimmed)?;
-                    }
+                    map_strings(
+                        event,
+                        "panw.panos.url_category_list",
+                        "panw.panos.url_category_list",
+                        |s| s.trim().to_string(),
+                    )?;
                 }
                 let _cond = { event.has_value("panw.panos.url_category_list") };
                 if _cond {
@@ -2316,10 +2318,12 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("panw.panos.machine.name") };
                 if _cond {
-                    if let Some(s) = event.get_string("panw.panos.machine.name") {
-                        let lowered = s.to_lowercase();
-                        event.set("host.name", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "panw.panos.machine.name",
+                        "host.name",
+                        str::to_lowercase,
+                    )?;
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -2936,10 +2940,12 @@ impl Transform for Default {
                 })();
                 let _cond = { event.has_value("panw.panos.machine.name") };
                 if _cond {
-                    if let Some(s) = event.get_string("panw.panos.machine.name") {
-                        let lowered = s.to_lowercase();
-                        event.set("host.name", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "panw.panos.machine.name",
+                        "host.name",
+                        str::to_lowercase,
+                    )?;
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -6726,10 +6732,12 @@ impl Transform for Default {
                     Ok(())
                 })();
                 if event.has_value("panw.panos.type") {
-                    if let Some(s) = event.get_string("panw.panos.type") {
-                        let uppered = s.to_uppercase();
-                        event.set("panw.panos.type", uppered)?;
-                    }
+                    map_strings(
+                        event,
+                        "panw.panos.type",
+                        "panw.panos.type",
+                        str::to_uppercase,
+                    )?;
                 }
                 event.set("event.kind", json!("event"))?;
                 event.append("event.category", json!("configuration"))?;
@@ -10259,84 +10267,95 @@ impl Transform for Default {
             }
 
             if event.has_value("panw.panos.src.mac") {
-                if let Some(s) = event.get_string("panw.panos.src.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("panw.panos.src.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "panw.panos.src.mac",
+                    "panw.panos.src.mac",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("panw.panos.src.mac") {
-                if let Some(s) = event.get_string("panw.panos.src.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("panw.panos.src.mac", uppered)?;
-                }
+                map_strings(
+                    event,
+                    "panw.panos.src.mac",
+                    "panw.panos.src.mac",
+                    str::to_uppercase,
+                )?;
             }
 
             if event.has_value("panw.panos.dst.mac") {
-                if let Some(s) = event.get_string("panw.panos.dst.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("panw.panos.dst.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "panw.panos.dst.mac",
+                    "panw.panos.dst.mac",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("panw.panos.dst.mac") {
-                if let Some(s) = event.get_string("panw.panos.dst.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("panw.panos.dst.mac", uppered)?;
-                }
+                map_strings(
+                    event,
+                    "panw.panos.dst.mac",
+                    "panw.panos.dst.mac",
+                    str::to_uppercase,
+                )?;
             }
 
             if event.has_value("host.mac") {
-                if let Some(s) = event.get_string("host.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("host.mac", replaced)?;
-                }
+                gsub_field(event, "host.mac", "host.mac", cached_regex!("[:.]"), "-")?;
             }
 
             if event.has_value("host.mac") {
-                if let Some(s) = event.get_string("host.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("host.mac", uppered)?;
-                }
+                map_strings(event, "host.mac", "host.mac", str::to_uppercase)?;
             }
 
             if event.has_value("panw.panos.machine.mac_address") {
-                if let Some(s) = event.get_string("panw.panos.machine.mac_address") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("panw.panos.machine.mac_address", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "panw.panos.machine.mac_address",
+                    "panw.panos.machine.mac_address",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("panw.panos.machine.mac_address") {
-                if let Some(s) = event.get_string("panw.panos.machine.mac_address") {
-                    let uppered = s.to_uppercase();
-                    event.set("panw.panos.machine.mac_address", uppered)?;
-                }
+                map_strings(
+                    event,
+                    "panw.panos.machine.mac_address",
+                    "panw.panos.machine.mac_address",
+                    str::to_uppercase,
+                )?;
             }
 
             if event.has_value("network.application") {
-                if let Some(s) = event.get_string("network.application") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.application", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.application",
+                    "network.application",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.get_str("panw.panos.network.pcap_id") == Some("0") };
@@ -10391,11 +10410,13 @@ impl Transform for Default {
             }
 
             if event.has_value("panw.panos.x_forwarded_for") {
-                if let Some(s) = event.get_string("panw.panos.x_forwarded_for") {
-                    let re = cached_regex!("x-fwd-for: ");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("panw.panos.x_forwarded_for", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "panw.panos.x_forwarded_for",
+                    "panw.panos.x_forwarded_for",
+                    cached_regex!("x-fwd-for: "),
+                    "",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.srcuser") };
@@ -10628,10 +10649,7 @@ impl Transform for Default {
             }
 
             if event.has_value("log.level") {
-                if let Some(s) = event.get_string("log.level") {
-                    let lowered = s.to_lowercase();
-                    event.set("log.level", lowered)?;
-                }
+                map_strings(event, "log.level", "log.level", str::to_lowercase)?;
             }
 
             let _cond = { event.get_str("log.level") == Some("critical") };

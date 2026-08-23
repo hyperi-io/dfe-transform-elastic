@@ -9003,11 +9003,13 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("_temp_.cisco.source_username") {
-                        let re = cached_regex!("\\\\{2,}");
-                        let replaced = re.replace_all(&s, "\\\\").into_owned();
-                        event.set("_temp_.cisco.source_username", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "_temp_.cisco.source_username",
+                        "_temp_.cisco.source_username",
+                        cached_regex!("\\\\{2,}"),
+                        "\\\\",
+                    )?;
                     Ok(())
                 })();
             }
@@ -9222,55 +9224,57 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("network.application") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.application", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.application",
+                    "network.application",
+                    str::to_lowercase,
+                )?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("file.type") {
-                    let lowered = s.to_lowercase();
-                    event.set("file.type", lowered)?;
-                }
+                map_strings(event, "file.type", "file.type", str::to_lowercase)?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("network.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.direction",
+                    "network.direction",
+                    str::to_lowercase,
+                )?;
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("network.type") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.type", lowered)?;
-                }
+                map_strings(event, "network.type", "network.type", str::to_lowercase)?;
                 Ok(())
             })();
 
@@ -9291,10 +9295,7 @@ impl Transform for Default {
             }
 
             if event.has_value("event.outcome") {
-                if let Some(s) = event.get_string("event.outcome") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.outcome", lowered)?;
-                }
+                map_strings(event, "event.outcome", "event.outcome", str::to_lowercase)?;
             }
 
             let _cond = { event.get_str("event.outcome") == Some("est-allowed") };
@@ -10146,47 +10147,57 @@ impl Transform for Default {
 
             let _cond = { event.has_value("_temp_.host.type") };
             if _cond {
-                if let Some(s) = event.get_string("_temp_.host.type") {
-                    let re = cached_regex!("Device");
-                    let replaced = re.replace_all(&s, " ").into_owned();
-                    event.set("_temp_.host.type", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.host.type",
+                    "_temp_.host.type",
+                    cached_regex!("Device"),
+                    " ",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.host.type") };
             if _cond {
-                if let Some(s) = event.get_string("_temp_.host.type") {
-                    let re = cached_regex!("^.*Macintosh-Workstation");
-                    let replaced = re.replace_all(&s, "Macintosh:Mac").into_owned();
-                    event.set("_temp_.host.type", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.host.type",
+                    "_temp_.host.type",
+                    cached_regex!("^.*Macintosh-Workstation"),
+                    "Macintosh:Mac",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.host.type") };
             if _cond {
-                if let Some(s) = event.get_string("_temp_.host.type") {
-                    let re = cached_regex!("^.*Microsoft-Workstation");
-                    let replaced = re.replace_all(&s, "Microsoft:Microsoft").into_owned();
-                    event.set("_temp_.host.type", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.host.type",
+                    "_temp_.host.type",
+                    cached_regex!("^.*Microsoft-Workstation"),
+                    "Microsoft:Microsoft",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.host.type") };
             if _cond {
-                if let Some(s) = event.get_string("_temp_.host.type") {
-                    let re = cached_regex!("^.*ChromeBook-Workstation");
-                    let replaced = re.replace_all(&s, "ChromeBook:ChromeBook").into_owned();
-                    event.set("_temp_.host.type", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.host.type",
+                    "_temp_.host.type",
+                    cached_regex!("^.*ChromeBook-Workstation"),
+                    "ChromeBook:ChromeBook",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.host.type") };
             if _cond {
-                if let Some(s) = event.get_string("_temp_.host.type") {
-                    let re = cached_regex!("(?:Workstation|[-_])");
-                    let replaced = re.replace_all(&s, " ").into_owned();
-                    event.set("_temp_.host.type", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.host.type",
+                    "_temp_.host.type",
+                    cached_regex!("(?:Workstation|[-_])"),
+                    " ",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.host.type") };
@@ -10225,34 +10236,28 @@ impl Transform for Default {
 
             let _cond = { event.has_value("device.manufacturer") };
             if _cond {
-                if let Some(s) = event.get_string("device.manufacturer") {
-                    let trimmed = s.trim().to_string();
-                    event.set("device.manufacturer", trimmed)?;
-                }
+                map_strings(event, "device.manufacturer", "device.manufacturer", |s| {
+                    s.trim().to_string()
+                })?;
             }
 
             let _cond = { event.has_value("device.model.name") };
             if _cond {
-                if let Some(s) = event.get_string("device.model.name") {
-                    let trimmed = s.trim().to_string();
-                    event.set("device.model.name", trimmed)?;
-                }
+                map_strings(event, "device.model.name", "device.model.name", |s| {
+                    s.trim().to_string()
+                })?;
             }
 
             let _cond = { event.has_value("host.type") };
             if _cond {
-                if let Some(s) = event.get_string("host.type") {
-                    let trimmed = s.trim().to_string();
-                    event.set("host.type", trimmed)?;
-                }
+                map_strings(event, "host.type", "host.type", |s| s.trim().to_string())?;
             }
 
             let _cond = { event.has_value("host.os.full") };
             if _cond {
-                if let Some(s) = event.get_string("host.os.full") {
-                    let trimmed = s.trim().to_string();
-                    event.set("host.os.full", trimmed)?;
-                }
+                map_strings(event, "host.os.full", "host.os.full", |s| {
+                    s.trim().to_string()
+                })?;
             }
 
             // ignore_failure: true

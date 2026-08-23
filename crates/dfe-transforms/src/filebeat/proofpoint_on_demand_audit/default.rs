@@ -113,10 +113,7 @@ impl Transform for Default {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             if event.has("json.guid") {

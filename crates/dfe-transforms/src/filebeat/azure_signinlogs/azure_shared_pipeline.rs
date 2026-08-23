@@ -252,10 +252,7 @@ impl Transform for AzureSharedPipeline {
             }
 
             if event.has_value("event.outcome") {
-                if let Some(s) = event.get_string("event.outcome") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.outcome", lowered)?;
-                }
+                map_strings(event, "event.outcome", "event.outcome", str::to_lowercase)?;
             }
 
             Ok(TransformResult::Continue)

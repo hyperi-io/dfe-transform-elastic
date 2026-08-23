@@ -1201,13 +1201,15 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "dns.answers", |event| {
-                        if let Some(s) = event.get_string("_ingest._value") {
-                            let re = cached_regex!(
+                        gsub_field(
+                            event,
+                            "_ingest._value",
+                            "_ingest._value",
+                            cached_regex!(
                                 "^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](?::[0-9]+)?)?$"
-                            );
-                            let replaced = re.replace_all(&s, "$1").into_owned();
-                            event.set("_ingest._value", replaced)?;
-                        }
+                            ),
+                            "$1",
+                        )?;
                         Ok(())
                     })?;
                     Ok(())
@@ -1219,13 +1221,15 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "dns.resolved_ip", |event| {
-                        if let Some(s) = event.get_string("_ingest._value") {
-                            let re = cached_regex!(
+                        gsub_field(
+                            event,
+                            "_ingest._value",
+                            "_ingest._value",
+                            cached_regex!(
                                 "^\\[?::ffff:([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)(?:\\](?::[0-9]+)?)?$"
-                            );
-                            let replaced = re.replace_all(&s, "$1").into_owned();
-                            event.set("_ingest._value", replaced)?;
-                        }
+                            ),
+                            "$1",
+                        )?;
                         Ok(())
                     })?;
                     Ok(())

@@ -686,10 +686,12 @@ impl Transform for Default {
             }
 
             if event.has_value("cisco_nexus.log.description") {
-                if let Some(s) = event.get_string("cisco_nexus.log.description") {
-                    let trimmed = s.trim().to_string();
-                    event.set("cisco_nexus.log.description", trimmed)?;
-                }
+                map_strings(
+                    event,
+                    "cisco_nexus.log.description",
+                    "cisco_nexus.log.description",
+                    |s| s.trim().to_string(),
+                )?;
             }
 
             if let Some(v) = event
@@ -953,11 +955,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("source.mac") {
-                        if let Some(s) = event.get_string("source.mac") {
-                            let re = cached_regex!("[.]");
-                            let replaced = re.replace_all(&s, "").into_owned();
-                            event.set("source.mac", replaced)?;
-                        }
+                        gsub_field(event, "source.mac", "source.mac", cached_regex!("[.]"), "")?;
                     }
                     Ok(())
                 })() {
@@ -995,11 +993,13 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("source.mac") {
-                        if let Some(s) = event.get_string("source.mac") {
-                            let re = cached_regex!("(..)(?!$)");
-                            let replaced = re.replace_all(&s, "$1-").into_owned();
-                            event.set("source.mac", replaced)?;
-                        }
+                        gsub_field(
+                            event,
+                            "source.mac",
+                            "source.mac",
+                            cached_regex!("(..)(?!$)"),
+                            "$1-",
+                        )?;
                     }
                     Ok(())
                 })() {
@@ -1035,10 +1035,7 @@ impl Transform for Default {
                     }
                 }
                 if event.has_value("source.mac") {
-                    if let Some(s) = event.get_string("source.mac") {
-                        let uppered = s.to_uppercase();
-                        event.set("source.mac", uppered)?;
-                    }
+                    map_strings(event, "source.mac", "source.mac", str::to_uppercase)?;
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -1122,10 +1119,12 @@ impl Transform for Default {
                     event.rename("temp.USER", "user.name")?;
                 }
                 if event.has_value("network.protocol") {
-                    if let Some(s) = event.get_string("network.protocol") {
-                        let lowered = s.to_lowercase();
-                        event.set("network.protocol", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "network.protocol",
+                        "network.protocol",
+                        str::to_lowercase,
+                    )?;
                 }
                 let _cond = {
                     event.has_value("cisco_nexus.log.interface.name")

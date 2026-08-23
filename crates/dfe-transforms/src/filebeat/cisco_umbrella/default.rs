@@ -133,11 +133,13 @@ impl Transform for Default {
             }
 
             if event.has_value("dns.question.name") {
-                if let Some(s) = event.get_string("dns.question.name") {
-                    let re = cached_regex!("\\.$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("dns.question.name", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "dns.question.name",
+                    "dns.question.name",
+                    cached_regex!("\\.$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -1550,10 +1552,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                if let Some(s) = event.get_string("host.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(event, "host.name", "host.name", str::to_lowercase)?;
             }
 
             let _cond = {
@@ -1736,18 +1735,22 @@ impl Transform for Default {
 
             let _cond = { event.has_value("network.application") };
             if _cond {
-                if let Some(s) = event.get_string("network.application") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.application", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.application",
+                    "network.application",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.has_value("cisco.umbrella.direction") };
             if _cond {
-                if let Some(s) = event.get_string("cisco.umbrella.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "cisco.umbrella.direction",
+                    "network.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.has_value("source.bytes") };
@@ -2093,11 +2096,13 @@ impl Transform for Default {
 
             let _cond = { event.has_value("cisco.umbrella.action") };
             if _cond {
-                if let Some(s) = event.get_string("cisco.umbrella.action") {
-                    let re = cached_regex!("\\s");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("cisco.umbrella.action", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "cisco.umbrella.action",
+                    "cisco.umbrella.action",
+                    cached_regex!("\\s"),
+                    "-",
+                )?;
             }
 
             let _cond = {

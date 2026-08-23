@@ -1193,10 +1193,7 @@ impl Transform for PipelineAppAndIdentity {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                if let Some(s) = event.get_string("host.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(event, "host.name", "host.name", str::to_lowercase)?;
             }
 
             let _cond = { event.has_value("m365_defender.event.ip_address") && event.get_str("m365_defender.event.ip_address") != Some("") };
@@ -1267,18 +1264,11 @@ impl Transform for PipelineAppAndIdentity {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let re = cached_regex!(" ");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("event.action", replaced)?;
-                }
+                gsub_field(event, "event.action", "event.action", cached_regex!(" "), "-")?;
             }
 
             let _cond = { (!event.has_value("m365_defender.event.failure_reason") || event.get_str("m365_defender.event.failure_reason") == Some("")) && event.get_str("m365_defender.event.category").is_some_and(|s| s.to_lowercase() == "advancedhunting-identitylogonevents") };
@@ -1300,10 +1290,7 @@ impl Transform for PipelineAppAndIdentity {
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(event, "network.protocol", "network.protocol", str::to_lowercase)?;
             }
 
             if let Some(v) = event.get("m365_defender.event.account.domain").filter(|v| !painless_is_empty_value(v)).cloned() {

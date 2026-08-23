@@ -316,10 +316,12 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.severity") {
-                    let lowered = s.to_lowercase();
-                    event.set("m365_defender.incident.severity", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "json.severity",
+                    "m365_defender.incident.severity",
+                    str::to_lowercase,
+                )?;
                 Ok(())
             })();
 
@@ -5678,10 +5680,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                if let Some(s) = event.get_string("host.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(event, "host.name", "host.name", str::to_lowercase)?;
             }
 
             if event.has("json.alerts.evidence") {

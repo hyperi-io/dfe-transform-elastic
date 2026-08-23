@@ -1601,10 +1601,12 @@ impl Transform for Default {
             }
 
             if event.has_value("sentinel_one.threat_event.protocol") {
-                if let Some(s) = event.get_string("sentinel_one.threat_event.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "sentinel_one.threat_event.protocol",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.get_str("sentinel_one.threat_event.file.size") != Some("") };

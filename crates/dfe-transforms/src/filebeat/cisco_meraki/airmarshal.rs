@@ -171,26 +171,32 @@ impl Transform for Airmarshal {
                 event.rename("_temp.kv.vap", "cisco_meraki.vap")?;
             }
 
-            if let Some(s) = event.get_string("_temp.kv.src") {
-                let re = cached_regex!("[-:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("source.mac", replaced)?;
-            }
+            gsub_field(
+                event,
+                "_temp.kv.src",
+                "source.mac",
+                cached_regex!("[-:.]"),
+                "-",
+            )?;
 
-            if let Some(s) = event.get_string("_temp.kv.dst") {
-                let re = cached_regex!("[-:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("destination.mac", replaced)?;
-            }
+            gsub_field(
+                event,
+                "_temp.kv.dst",
+                "destination.mac",
+                cached_regex!("[-:.]"),
+                "-",
+            )?;
 
             let _cond =
                 { event.get_str("cisco_meraki.event_subtype") == Some("rogue_ssid_detected") };
             if _cond {
-                if let Some(s) = event.get_string("_temp.kv.wired_mac") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("_temp.observer.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp.kv.wired_mac",
+                    "_temp.observer.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
             }
 
             let _cond = { event.has_value("_temp.observer.mac") };

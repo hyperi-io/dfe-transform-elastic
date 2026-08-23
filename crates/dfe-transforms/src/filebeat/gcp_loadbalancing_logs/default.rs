@@ -227,10 +227,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("json.httpRequest.userAgent") {

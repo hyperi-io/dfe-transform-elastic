@@ -938,10 +938,12 @@ impl Transform for Default {
             }
 
             if event.has_value("tls.version_protocol") {
-                if let Some(s) = event.get_string("tls.version_protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("tls.version_protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "tls.version_protocol",
+                    "tls.version_protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has("json.tlsDetails.cipherSuite") {

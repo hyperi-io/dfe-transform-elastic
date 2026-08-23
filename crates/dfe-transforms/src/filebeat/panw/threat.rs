@@ -1088,10 +1088,12 @@ impl Transform for Threat {
 
             let _cond = { event.has_value("panw.panos.url_category_list") };
             if _cond {
-                if let Some(s) = event.get_string("panw.panos.url_category_list") {
-                    let trimmed = s.trim().to_string();
-                    event.set("panw.panos.url_category_list", trimmed)?;
-                }
+                map_strings(
+                    event,
+                    "panw.panos.url_category_list",
+                    "panw.panos.url_category_list",
+                    |s| s.trim().to_string(),
+                )?;
             }
 
             let _cond = { event.has_value("panw.panos.url_category_list") };

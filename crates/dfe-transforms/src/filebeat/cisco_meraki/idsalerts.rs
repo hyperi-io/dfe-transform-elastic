@@ -176,10 +176,7 @@ impl Transform for Idsalerts {
 
             event.rename("direction", "network.direction")?;
 
-            if let Some(s) = event.get_string("protocol") {
-                let lowered = s.to_lowercase();
-                event.set("network.protocol", lowered)?;
-            }
+            map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
 
             let _cond = { event.has_value("src") };
             if _cond {

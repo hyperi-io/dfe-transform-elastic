@@ -2078,18 +2078,12 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                if let Some(s) = event.get_string("host.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(event, "host.name", "host.name", str::to_lowercase)?;
             }
 
             let _cond = { event.has_value("m365_defender.event.device.name") };
             if _cond {
-                if let Some(s) = event.get_string("m365_defender.event.device.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.hostname", lowered)?;
-                }
+                map_strings(event, "m365_defender.event.device.name", "host.hostname", str::to_lowercase)?;
             }
 
             if let Some(v) = event.get("m365_defender.event.device.id").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -2172,18 +2166,11 @@ impl Transform for PipelineDevice {
             }
 
             if event.has_value("m365_defender.event.mac_address") {
-                if let Some(s) = event.get_string("m365_defender.event.mac_address") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("m365_defender.event.mac_address", replaced)?;
-                }
+                gsub_field(event, "m365_defender.event.mac_address", "m365_defender.event.mac_address", cached_regex!("[:.]"), "-")?;
             }
 
             if event.has_value("m365_defender.event.mac_address") {
-                if let Some(s) = event.get_string("m365_defender.event.mac_address") {
-                    let uppered = s.to_uppercase();
-                    event.set("m365_defender.event.mac_address", uppered)?;
-                }
+                map_strings(event, "m365_defender.event.mac_address", "m365_defender.event.mac_address", str::to_uppercase)?;
             }
 
             if let Some(v) = event.get("m365_defender.event.mac_address").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -2193,11 +2180,7 @@ impl Transform for PipelineDevice {
             let _cond = { !(event.get("_tmp.mac").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("-")), serde_json::Value::String(s) => s.contains("-"), _ => false })) };
             if _cond {
             if event.has_value("_tmp.mac") {
-                if let Some(s) = event.get_string("_tmp.mac") {
-                    let re = cached_regex!("(..)(?!$)");
-                    let replaced = re.replace_all(&s, "$1-").into_owned();
-                    event.set("_tmp.mac", replaced)?;
-                }
+                gsub_field(event, "_tmp.mac", "_tmp.mac", cached_regex!("(..)(?!$)"), "$1-")?;
             }
             }
 
@@ -2482,10 +2465,7 @@ impl Transform for PipelineDevice {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(event, "network.transport", "network.transport", str::to_lowercase)?;
             }
 
             let _cond = { event.get_str("network.transport") == Some("ntlm") };
@@ -2515,10 +2495,7 @@ impl Transform for PipelineDevice {
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(event, "network.protocol", "network.protocol", str::to_lowercase)?;
             }
 
             let _cond = { event.has_value("m365_defender.event.action.type") && event.get_str("m365_defender.event.action.type").is_some_and(|s| s.to_lowercase().contains("dns")) };
@@ -2613,18 +2590,11 @@ impl Transform for PipelineDevice {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let re = cached_regex!(" ");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("event.action", replaced)?;
-                }
+                gsub_field(event, "event.action", "event.action", cached_regex!(" "), "-")?;
             }
 
             let _cond = { (!event.has_value("m365_defender.event.failure_reason") || event.get_str("m365_defender.event.failure_reason") == Some("")) && event.get_str("m365_defender.event.category").is_some_and(|s| s.to_lowercase().contains("devicelogonevents")) };

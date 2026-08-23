@@ -461,10 +461,7 @@ impl Transform for EppDetectionSummary {
             let _cond = { event.has_value("host.mac") };
             if _cond {
                 if event.has_value("host.mac") {
-                    if let Some(s) = event.get_string("host.mac") {
-                        let uppered = s.to_uppercase();
-                        event.set("host.mac", uppered)?;
-                    }
+                    map_strings(event, "host.mac", "host.mac", str::to_uppercase)?;
                 }
             }
             let _cond = { event.has_value("crowdstrike.event.Technique") };

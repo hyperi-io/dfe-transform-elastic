@@ -202,10 +202,7 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("checkpoint") {
                     foreach_array(event, "checkpoint", |event| {
-                        if let Some(s) = event.get_string("_ingest._key") {
-                            let lowered = s.to_lowercase();
-                            event.set("_ingest._key", lowered)?;
-                        }
+                        map_strings(event, "_ingest._key", "_ingest._key", str::to_lowercase)?;
                         Ok(())
                     })?;
                 }
@@ -260,19 +257,23 @@ impl Transform for Default {
             }
 
             if event.has_value("event.timezone") {
-                if let Some(s) = event.get_string("event.timezone") {
-                    let re = cached_regex!("([+-][0-9]{2})([0-9]{2})");
-                    let replaced = re.replace_all(&s, "$1:$2").into_owned();
-                    event.set("event.timezone", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "event.timezone",
+                    "event.timezone",
+                    cached_regex!("([+-][0-9]{2})([0-9]{2})"),
+                    "$1:$2",
+                )?;
             }
 
             if event.has_value("event.timezone") {
-                if let Some(s) = event.get_string("event.timezone") {
-                    let re = cached_regex!("([+-])([0-9]):?([0-9]{2})");
-                    let replaced = re.replace_all(&s, "$10$2:$3").into_owned();
-                    event.set("event.timezone", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "event.timezone",
+                    "event.timezone",
+                    cached_regex!("([+-])([0-9]):?([0-9]{2})"),
+                    "$10$2:$3",
+                )?;
             }
 
             let _cond = { !event.has_value("checkpoint.time") };
@@ -1498,52 +1499,46 @@ impl Transform for Default {
             }
 
             if event.has_value("user.name") {
-                if let Some(s) = event.get_string("user.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("user.name", lowered)?;
-                }
+                map_strings(event, "user.name", "user.name", str::to_lowercase)?;
             }
 
             if event.has_value("user.id") {
-                if let Some(s) = event.get_string("user.id") {
-                    let lowered = s.to_lowercase();
-                    event.set("user.id", lowered)?;
-                }
+                map_strings(event, "user.id", "user.id", str::to_lowercase)?;
             }
 
             if event.has_value("user.email") {
-                if let Some(s) = event.get_string("user.email") {
-                    let lowered = s.to_lowercase();
-                    event.set("user.email", lowered)?;
-                }
+                map_strings(event, "user.email", "user.email", str::to_lowercase)?;
             }
 
             if event.has_value("user.domain") {
-                if let Some(s) = event.get_string("user.domain") {
-                    let lowered = s.to_lowercase();
-                    event.set("user.domain", lowered)?;
-                }
+                map_strings(event, "user.domain", "user.domain", str::to_lowercase)?;
             }
 
             if event.has_value("user.group.name") {
-                if let Some(s) = event.get_string("user.group.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("user.group.name", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "user.group.name",
+                    "user.group.name",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("source.user.name") {
-                if let Some(s) = event.get_string("source.user.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("source.user.name", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "source.user.name",
+                    "source.user.name",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("destination.user.name") {
-                if let Some(s) = event.get_string("destination.user.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("destination.user.name", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "destination.user.name",
+                    "destination.user.name",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has("checkpoint.packet_capture") {
@@ -1948,18 +1943,22 @@ impl Transform for Default {
             }
 
             if event.has_value("_temp_.observer.mac") {
-                if let Some(s) = event.get_string("_temp_.observer.mac") {
-                    let re = cached_regex!("[:]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("_temp_.observer.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.observer.mac",
+                    "_temp_.observer.mac",
+                    cached_regex!("[:]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("_temp_.observer.mac") {
-                if let Some(s) = event.get_string("_temp_.observer.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("_temp_.observer.mac", uppered)?;
-                }
+                map_strings(
+                    event,
+                    "_temp_.observer.mac",
+                    "_temp_.observer.mac",
+                    str::to_uppercase,
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.observer.mac") };
@@ -2344,11 +2343,13 @@ impl Transform for Default {
 
             let _cond = { event.has_value("checkpoint.sys_message") };
             if _cond {
-                if let Some(s) = event.get_string("checkpoint.sys_message") {
-                    let re = cached_regex!("^:\"");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("checkpoint.sys_message", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "checkpoint.sys_message",
+                    "checkpoint.sys_message",
+                    cached_regex!("^:\""),
+                    "",
+                )?;
             }
 
             let _cond = { !event.has_value("user.name") };

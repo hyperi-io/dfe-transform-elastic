@@ -133,10 +133,7 @@ impl Transform for Default {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             let _cond = { event.get_str("event.action") != Some("") };
@@ -144,11 +141,13 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("event.action") {
-                        if let Some(s) = event.get_string("event.action") {
-                            let re = cached_regex!(" ");
-                            let replaced = re.replace_all(&s, "-").into_owned();
-                            event.set("event.action", replaced)?;
-                        }
+                        gsub_field(
+                            event,
+                            "event.action",
+                            "event.action",
+                            cached_regex!(" "),
+                            "-",
+                        )?;
                     }
                     Ok(())
                 })() {
@@ -391,12 +390,12 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("zscaler_zia.endpoint_dlp.device.hostname") {
-                        if let Some(s) =
-                            event.get_string("zscaler_zia.endpoint_dlp.device.hostname")
-                        {
-                            let lowered = s.to_lowercase();
-                            event.set("host.name", lowered)?;
-                        }
+                        map_strings(
+                            event,
+                            "zscaler_zia.endpoint_dlp.device.hostname",
+                            "host.name",
+                            str::to_lowercase,
+                        )?;
                     }
                     Ok(())
                 })() {

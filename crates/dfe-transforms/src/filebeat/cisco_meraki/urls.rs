@@ -262,11 +262,13 @@ impl Transform for Urls {
                 })();
             }
 
-            if let Some(s) = event.get_string("mac") {
-                let re = cached_regex!("[-:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("cisco_meraki.urls.mac", replaced)?;
-            }
+            gsub_field(
+                event,
+                "mac",
+                "cisco_meraki.urls.mac",
+                cached_regex!("[-:.]"),
+                "-",
+            )?;
 
             let _cond = {
                 !(event

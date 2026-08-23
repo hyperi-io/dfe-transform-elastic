@@ -906,10 +906,7 @@ impl Transform for Default {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
             if event.has_value("event.outcome") {
-                if let Some(s) = event.get_string("event.outcome") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.outcome", lowered)?;
-                }
+                map_strings(event, "event.outcome", "event.outcome", str::to_lowercase)?;
             }
             // End nested pipeline: "azure-shared-pipeline"
 

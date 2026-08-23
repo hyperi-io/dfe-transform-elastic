@@ -161,10 +161,12 @@ impl Transform for Default {
             })();
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.get_str("network.transport") == Some("tcp") };
@@ -197,11 +199,13 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("dns.question.name") {
-                    let re = cached_regex!("[.]$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("dns.question.name", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "dns.question.name",
+                    "dns.question.name",
+                    cached_regex!("[.]$"),
+                    "",
+                )?;
                 Ok(())
             })();
 
@@ -413,11 +417,13 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("cloud.instance.name") {
-                    let re = cached_regex!("^.*[.]");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("cloud.instance.name", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "cloud.instance.name",
+                    "cloud.instance.name",
+                    cached_regex!("^.*[.]"),
+                    "",
+                )?;
                 Ok(())
             })();
 

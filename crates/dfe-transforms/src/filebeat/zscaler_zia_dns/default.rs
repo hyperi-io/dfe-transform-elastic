@@ -322,10 +322,12 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("zscaler_zia.dns.device.hostname") {
-                        if let Some(s) = event.get_string("zscaler_zia.dns.device.hostname") {
-                            let lowered = s.to_lowercase();
-                            event.set("host.name", lowered)?;
-                        }
+                        map_strings(
+                            event,
+                            "zscaler_zia.dns.device.hostname",
+                            "host.name",
+                            str::to_lowercase,
+                        )?;
                     }
                     Ok(())
                 })() {
@@ -494,10 +496,12 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("zscaler_zia.dns.dns.type") {
-                        if let Some(s) = event.get_string("zscaler_zia.dns.dns.type") {
-                            let lowered = s.to_lowercase();
-                            event.set("network.application", lowered)?;
-                        }
+                        map_strings(
+                            event,
+                            "zscaler_zia.dns.dns.type",
+                            "network.application",
+                            str::to_lowercase,
+                        )?;
                     }
                     Ok(())
                 })() {
@@ -1043,10 +1047,7 @@ impl Transform for Default {
             if _cond {
                 foreach_array(event, "network.transport", |event| {
                     if event.has_value("_ingest._value") {
-                        if let Some(s) = event.get_string("_ingest._value") {
-                            let lowered = s.to_lowercase();
-                            event.set("_ingest._value", lowered)?;
-                        }
+                        map_strings(event, "_ingest._value", "_ingest._value", str::to_lowercase)?;
                     }
                     Ok(())
                 })?;

@@ -457,10 +457,12 @@ impl Transform for Default {
             })();
 
             if event.has_value("tls.version_protocol") {
-                if let Some(s) = event.get_string("tls.version_protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("tls.version_protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "tls.version_protocol",
+                    "tls.version_protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has("json.envelope.from") {
@@ -2056,10 +2058,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.direction") {
-                if let Some(s) = event.get_string("network.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.direction",
+                    "network.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has("json.filter.routes") {
@@ -2227,10 +2231,7 @@ impl Transform for Default {
             }
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             if event.has("json.final_module") {
@@ -2868,10 +2869,12 @@ impl Transform for Default {
             if _cond {
                 foreach_array(event, "email.attachments", |event| {
                     if event.has_value("_ingest._value.file.extension") {
-                        if let Some(s) = event.get_string("_ingest._value.file.extension") {
-                            let lowered = s.to_lowercase();
-                            event.set("_ingest._value.file.extension", lowered)?;
-                        }
+                        map_strings(
+                            event,
+                            "_ingest._value.file.extension",
+                            "_ingest._value.file.extension",
+                            str::to_lowercase,
+                        )?;
                     }
                     Ok(())
                 })?;

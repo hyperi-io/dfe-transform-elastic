@@ -1447,18 +1447,11 @@ impl Transform for Default {
             }
 
             if event.has_value("host.mac") {
-                if let Some(s) = event.get_string("host.mac") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("host.mac", replaced)?;
-                }
+                gsub_field(event, "host.mac", "host.mac", cached_regex!("[-:.]"), "-")?;
             }
 
             if event.has_value("host.mac") {
-                if let Some(s) = event.get_string("host.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("host.mac", uppered)?;
-                }
+                map_strings(event, "host.mac", "host.mac", str::to_uppercase)?;
             }
 
             if event.has("json.agentRealtimeInfo.operationalState") {

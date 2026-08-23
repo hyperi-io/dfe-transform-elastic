@@ -73,11 +73,13 @@ impl Transform for Default {
             }
 
             if event.has_value("json.query_name") {
-                if let Some(s) = event.get_string("json.query_name") {
-                    let re = cached_regex!("\\.$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("json.query_name", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "json.query_name",
+                    "json.query_name",
+                    cached_regex!("\\.$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -160,10 +162,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.get_str("network.transport") == Some("tcp") };

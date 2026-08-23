@@ -159,11 +159,13 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("email.from.address") {
-                    if let Some(s) = event.get_string("email.from.address") {
-                        let re = cached_regex!("<>");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("email.from.address", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "email.from.address",
+                        "email.from.address",
+                        cached_regex!("<>"),
+                        "",
+                    )?;
                 }
                 Ok(())
             })();
@@ -203,11 +205,13 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("email.to.address") {
-                    if let Some(s) = event.get_string("email.to.address") {
-                        let re = cached_regex!("<>");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("email.to.address", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "email.to.address",
+                        "email.to.address",
+                        cached_regex!("<>"),
+                        "",
+                    )?;
                 }
                 Ok(())
             })();
@@ -260,10 +264,12 @@ impl Transform for Default {
             }
 
             if event.has_value("email.direction") {
-                if let Some(s) = event.get_string("email.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("email.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "email.direction",
+                    "email.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             event.remove("mimecast");

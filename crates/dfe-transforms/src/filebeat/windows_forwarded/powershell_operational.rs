@@ -520,18 +520,11 @@ impl Transform for PowershellOperational {
             }
 
             if event.has_value("powershell.file.script_block_text") {
-                if let Some(s) = event.get_string("powershell.file.script_block_text") {
-                    let trimmed = s.trim().to_string();
-                    event.set("powershell.file.script_block_text", trimmed)?;
-                }
+                map_strings(event, "powershell.file.script_block_text", "powershell.file.script_block_text", |s| s.trim().to_string())?;
             }
 
             if event.has_value("powershell.file.script_block_text") {
-                if let Some(s) = event.get_string("powershell.file.script_block_text") {
-                    let re = cached_regex!("\\s");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("_temp.script_block_no_space", replaced)?;
-                }
+                gsub_field(event, "powershell.file.script_block_text", "_temp.script_block_no_space", cached_regex!("\\s"), "")?;
             }
 
                 {
@@ -545,11 +538,7 @@ impl Transform for PowershellOperational {
                 }
 
             if event.has_value("powershell.file.script_block_text") {
-                if let Some(s) = event.get_string("powershell.file.script_block_text") {
-                    let re = cached_regex!("(?s)# SIG # Begin signature block.+");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("_temp.script_block_no_signature", replaced)?;
-                }
+                gsub_field(event, "powershell.file.script_block_text", "_temp.script_block_no_signature", cached_regex!("(?s)# SIG # Begin signature block.+"), "")?;
             }
 
             let _cond = { event.has_value("_temp.script_block_no_signature") };

@@ -60,11 +60,13 @@ impl Transform for Flows {
             }
 
             if event.has_value("source.mac") {
-                if let Some(s) = event.get_string("source.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("source.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "source.mac",
+                    "source.mac",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             let _cond = { !event.has_value("cisco_meraki.flows.op") };

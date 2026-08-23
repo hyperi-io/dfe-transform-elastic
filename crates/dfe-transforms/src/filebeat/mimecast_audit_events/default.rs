@@ -94,18 +94,22 @@ impl Transform for Default {
             }
 
             if event.has_value("mimecast.auditType") {
-                if let Some(s) = event.get_string("mimecast.auditType") {
-                    let lowered = s.to_lowercase();
-                    event.set("mimecast.auditType", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "mimecast.auditType",
+                    "mimecast.auditType",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("mimecast.auditType") {
-                if let Some(s) = event.get_string("mimecast.auditType") {
-                    let re = cached_regex!(" ");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("mimecast.auditType", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "mimecast.auditType",
+                    "mimecast.auditType",
+                    cached_regex!(" "),
+                    "-",
+                )?;
             }
 
             if event.has("mimecast.auditType") {
@@ -1183,10 +1187,12 @@ impl Transform for Default {
             }
 
             if event.has_value("email.direction") {
-                if let Some(s) = event.get_string("email.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("email.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "email.direction",
+                    "email.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             event.remove("mimecast.eventTime");

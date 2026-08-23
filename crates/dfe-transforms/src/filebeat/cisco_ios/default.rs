@@ -224,11 +224,13 @@ impl Transform for Default {
             }
 
             if event.has_value("_temp_.cisco_timestamp") {
-                if let Some(s) = event.get_string("_temp_.cisco_timestamp") {
-                    let re = cached_regex!("\\s+");
-                    let replaced = re.replace_all(&s, " ").into_owned();
-                    event.set("_temp_.cisco_timestamp", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp_.cisco_timestamp",
+                    "_temp_.cisco_timestamp",
+                    cached_regex!("\\s+"),
+                    " ",
+                )?;
             }
 
             let _cond = { event.has_value("_temp_.cisco_timestamp") };
@@ -365,10 +367,7 @@ impl Transform for Default {
             }
 
             if event.has_value("event.code") {
-                if let Some(s) = event.get_string("event.code") {
-                    let trimmed = s.trim().to_string();
-                    event.set("event.code", trimmed)?;
-                }
+                map_strings(event, "event.code", "event.code", |s| s.trim().to_string())?;
             }
 
             let _cond = {
@@ -1578,18 +1577,11 @@ impl Transform for Default {
             }
 
             if event.has_value("source.mac") {
-                if let Some(s) = event.get_string("source.mac") {
-                    let re = cached_regex!(":");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("source.mac", replaced)?;
-                }
+                gsub_field(event, "source.mac", "source.mac", cached_regex!(":"), "-")?;
             }
 
             if event.has_value("source.mac") {
-                if let Some(s) = event.get_string("source.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("source.mac", uppered)?;
-                }
+                map_strings(event, "source.mac", "source.mac", str::to_uppercase)?;
             }
 
             let _cond = { event.has_value("source.ip") };

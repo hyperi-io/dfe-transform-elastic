@@ -402,10 +402,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.hostname") };
             if _cond {
-                if let Some(s) = event.get_string("host.hostname") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.name", lowered)?;
-                }
+                map_strings(event, "host.hostname", "host.name", str::to_lowercase)?;
             }
 
             let _cond = { event.has_value("cloud.instance.id") };

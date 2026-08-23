@@ -233,11 +233,7 @@ impl Transform for PipelineExtractMessage {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("source.mac") {
-                    if let Some(s) = event.get_string("source.mac") {
-                        let re = cached_regex!("[.]");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("source.mac", replaced)?;
-                    }
+                    gsub_field(event, "source.mac", "source.mac", cached_regex!("[.]"), "")?;
                 }
                 Ok(())
             })() {
@@ -276,11 +272,13 @@ impl Transform for PipelineExtractMessage {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("source.mac") {
-                    if let Some(s) = event.get_string("source.mac") {
-                        let re = cached_regex!("(..)(?!$)");
-                        let replaced = re.replace_all(&s, "$1-").into_owned();
-                        event.set("source.mac", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "source.mac",
+                        "source.mac",
+                        cached_regex!("(..)(?!$)"),
+                        "$1-",
+                    )?;
                 }
                 Ok(())
             })() {
@@ -317,10 +315,7 @@ impl Transform for PipelineExtractMessage {
             }
 
             if event.has_value("source.mac") {
-                if let Some(s) = event.get_string("source.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("source.mac", uppered)?;
-                }
+                map_strings(event, "source.mac", "source.mac", str::to_uppercase)?;
             }
 
             // ignore_failure: true
@@ -418,10 +413,12 @@ impl Transform for PipelineExtractMessage {
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = {

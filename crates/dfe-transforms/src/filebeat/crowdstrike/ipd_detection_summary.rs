@@ -194,11 +194,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.ContextTimeStamp",
+                    "crowdstrike.event.ContextTimeStamp",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -252,11 +254,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.AccountCreationTimeStamp",
+                    "crowdstrike.event.AccountCreationTimeStamp",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -314,11 +318,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.StartTime", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.StartTime",
+                    "crowdstrike.event.StartTime",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -372,11 +378,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.EndTime", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.EndTime",
+                    "crowdstrike.event.EndTime",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {

@@ -6132,12 +6132,12 @@ impl Transform for Default {
             if event.has_value(
                 "aws.guardduty.service.action.network_connection_action.connection_direction",
             ) {
-                if let Some(s) = event.get_string(
+                map_strings(
+                    event,
                     "aws.guardduty.service.action.network_connection_action.connection_direction",
-                ) {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                    "network.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = {
@@ -6168,10 +6168,12 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             if let Some(v) = event.get("aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.name_space").filter(|v| !painless_is_empty_value(v)).cloned() {

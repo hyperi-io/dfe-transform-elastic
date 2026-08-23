@@ -300,11 +300,13 @@ impl Transform for Default {
                 if event.has_value("mimecast.tagMap.DangerousFileExt") {
                     foreach_array(event, "mimecast.tagMap.DangerousFileExt", |event| {
                         if event.has_value("_ingest._key") {
-                            if let Some(s) = event.get_string("_ingest._key") {
-                                let re = cached_regex!(":");
-                                let replaced = re.replace_all(&s, "_").into_owned();
-                                event.set("_ingest._key", replaced)?;
-                            }
+                            gsub_field(
+                                event,
+                                "_ingest._key",
+                                "_ingest._key",
+                                cached_regex!(":"),
+                                "_",
+                            )?;
                         }
                         Ok(())
                     })?;

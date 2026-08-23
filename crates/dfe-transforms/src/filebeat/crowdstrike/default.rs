@@ -1818,10 +1818,12 @@ impl Transform for Default {
                     event.set("host.name", v)?;
                 }
                 if event.has_value("crowdstrike.event.Platform") {
-                    if let Some(s) = event.get_string("crowdstrike.event.Platform") {
-                        let lowered = s.to_lowercase();
-                        event.set("host.os.platform", lowered)?;
-                    }
+                    map_strings(
+                        event,
+                        "crowdstrike.event.Platform",
+                        "host.os.platform",
+                        str::to_lowercase,
+                    )?;
                 }
                 if let Some(v) = event
                     .get("crowdstrike.event.Policy.ID")
@@ -2083,10 +2085,7 @@ impl Transform for Default {
                 let _cond = { event.has_value("host.mac") };
                 if _cond {
                     if event.has_value("host.mac") {
-                        if let Some(s) = event.get_string("host.mac") {
-                            let uppered = s.to_uppercase();
-                            event.set("host.mac", uppered)?;
-                        }
+                        map_strings(event, "host.mac", "host.mac", str::to_uppercase)?;
                     }
                 }
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
@@ -2590,10 +2589,7 @@ impl Transform for Default {
                 let _cond = { event.has_value("host.mac") };
                 if _cond {
                     if event.has_value("host.mac") {
-                        if let Some(s) = event.get_string("host.mac") {
-                            let uppered = s.to_uppercase();
-                            event.set("host.mac", uppered)?;
-                        }
+                        map_strings(event, "host.mac", "host.mac", str::to_uppercase)?;
                     }
                 }
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
@@ -3356,11 +3352,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.StartTimeEpoch") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.StartTimeEpoch", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.StartTimeEpoch",
+                        "crowdstrike.event.StartTimeEpoch",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.StartTimeEpoch")
@@ -3421,11 +3419,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.EndTimeEpoch") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.EndTimeEpoch", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.EndTimeEpoch",
+                        "crowdstrike.event.EndTimeEpoch",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.EndTimeEpoch")
@@ -3646,11 +3646,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.ContextTimeStamp",
+                        "crowdstrike.event.ContextTimeStamp",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.ContextTimeStamp")
@@ -3707,12 +3709,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp")
-                    {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.AccountCreationTimeStamp",
+                        "crowdstrike.event.AccountCreationTimeStamp",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.AccountCreationTimeStamp")
@@ -3769,11 +3772,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.StartTime", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.StartTime",
+                        "crowdstrike.event.StartTime",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.StartTime")
@@ -3826,11 +3831,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.EndTime", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.EndTime",
+                        "crowdstrike.event.EndTime",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.EndTime")
@@ -4165,11 +4172,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.StartTime", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.StartTime",
+                        "crowdstrike.event.StartTime",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.StartTime")
@@ -4222,11 +4231,13 @@ impl Transform for Default {
                             .is_some_and(|s| s.len() > 18)
                 };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                        let re = cached_regex!("\\d{6}$");
-                        let replaced = re.replace_all(&s, "").into_owned();
-                        event.set("crowdstrike.event.EndTime", replaced)?;
-                    }
+                    gsub_field(
+                        event,
+                        "crowdstrike.event.EndTime",
+                        "crowdstrike.event.EndTime",
+                        cached_regex!("\\d{6}$"),
+                        "",
+                    )?;
                 }
                 let _cond = {
                     event.has_value("crowdstrike.event.EndTime")

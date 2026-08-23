@@ -243,11 +243,7 @@ impl Transform for SecurityStandard {
             }
 
             if event.has_value("winlog.event_data.SidList") {
-                if let Some(s) = event.get_string("winlog.event_data.SidList") {
-                    let re = cached_regex!("\\s+");
-                    let replaced = re.replace_all(&s, " ").into_owned();
-                    event.set("winlog.event_data.SidList", replaced)?;
-                }
+                gsub_field(event, "winlog.event_data.SidList", "winlog.event_data.SidList", cached_regex!("\\s+"), " ")?;
             }
 
                 // Painless script
@@ -284,10 +280,7 @@ impl Transform for SecurityStandard {
                 }
 
             if event.has_value("network.direction") {
-                if let Some(s) = event.get_string("network.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                map_strings(event, "network.direction", "network.direction", str::to_lowercase)?;
             }
 
             // ignore_failure: true

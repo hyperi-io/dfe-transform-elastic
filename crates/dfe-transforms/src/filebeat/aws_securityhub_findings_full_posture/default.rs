@@ -92,10 +92,7 @@ impl Transform for Default {
             })();
 
             if event.has_value("event.action") {
-                if let Some(s) = event.get_string("event.action") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.action", lowered)?;
-                }
+                map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
             if event.has("json.Action.AwsApiCallAction.AffectedResources") {
@@ -2582,10 +2579,12 @@ impl Transform for Default {
             })();
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has("json.Network.SourceDomain") {
@@ -2728,28 +2727,22 @@ impl Transform for Default {
             }
 
             if event.has_value("aws.securityhub_findings_full_posture.network.source.mac") {
-                if let Some(s) =
-                    event.get_string("aws.securityhub_findings_full_posture.network.source.mac")
-                {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set(
-                        "aws.securityhub_findings_full_posture.network.source.mac",
-                        replaced,
-                    )?;
-                }
+                gsub_field(
+                    event,
+                    "aws.securityhub_findings_full_posture.network.source.mac",
+                    "aws.securityhub_findings_full_posture.network.source.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("aws.securityhub_findings_full_posture.network.source.mac") {
-                if let Some(s) =
-                    event.get_string("aws.securityhub_findings_full_posture.network.source.mac")
-                {
-                    let uppered = s.to_uppercase();
-                    event.set(
-                        "aws.securityhub_findings_full_posture.network.source.mac",
-                        uppered,
-                    )?;
-                }
+                map_strings(
+                    event,
+                    "aws.securityhub_findings_full_posture.network.source.mac",
+                    "aws.securityhub_findings_full_posture.network.source.mac",
+                    str::to_uppercase,
+                )?;
             }
 
             // ignore_failure: true

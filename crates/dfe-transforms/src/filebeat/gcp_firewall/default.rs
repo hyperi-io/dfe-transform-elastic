@@ -104,10 +104,12 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.jsonPayload.disposition") };
             if _cond {
-                if let Some(s) = event.get_string("json.jsonPayload.disposition") {
-                    let lowered = s.to_lowercase();
-                    event.set("json.jsonPayload.disposition", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "json.jsonPayload.disposition",
+                    "json.jsonPayload.disposition",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.has_value("json.jsonPayload.disposition") };

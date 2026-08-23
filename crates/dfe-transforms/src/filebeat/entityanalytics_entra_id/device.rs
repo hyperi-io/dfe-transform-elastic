@@ -669,10 +669,7 @@ impl Transform for Device {
             }
 
             if event.has_value("host.os.type") {
-                if let Some(s) = event.get_string("host.os.type") {
-                    let lowered = s.to_lowercase();
-                    event.set("host.os.type", lowered)?;
-                }
+                map_strings(event, "host.os.type", "host.os.type", str::to_lowercase)?;
             }
 
             if let Some(v) = event

@@ -9278,45 +9278,47 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                if let Some(s) = event.get_string("network.transport") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.transport", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("network.application") {
-                if let Some(s) = event.get_string("network.application") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.application", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.application",
+                    "network.application",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("file.type") {
-                if let Some(s) = event.get_string("file.type") {
-                    let lowered = s.to_lowercase();
-                    event.set("file.type", lowered)?;
-                }
+                map_strings(event, "file.type", "file.type", str::to_lowercase)?;
             }
 
             if event.has_value("network.direction") {
-                if let Some(s) = event.get_string("network.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "network.direction",
+                    "network.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("network.type") {
-                if let Some(s) = event.get_string("network.type") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.type", lowered)?;
-                }
+                map_strings(event, "network.type", "network.type", str::to_lowercase)?;
             }
 
             let _cond = { event.has_value("network.transport") };
@@ -9341,17 +9343,11 @@ impl Transform for Default {
             }
 
             if event.has_value("_temp_.outcome") {
-                if let Some(s) = event.get_string("_temp_.outcome") {
-                    let lowered = s.to_lowercase();
-                    event.set("_temp_.outcome", lowered)?;
-                }
+                map_strings(event, "_temp_.outcome", "_temp_.outcome", str::to_lowercase)?;
             }
 
             if event.has_value("event.outcome") {
-                if let Some(s) = event.get_string("event.outcome") {
-                    let lowered = s.to_lowercase();
-                    event.set("event.outcome", lowered)?;
-                }
+                map_strings(event, "event.outcome", "event.outcome", str::to_lowercase)?;
             }
 
             if event.has_value("source.port") {
@@ -10059,10 +10055,12 @@ impl Transform for Default {
             }
 
             if event.has_value("tls.version_protocol") {
-                if let Some(s) = event.get_string("tls.version_protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("tls.version_protocol", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "tls.version_protocol",
+                    "tls.version_protocol",
+                    str::to_lowercase,
+                )?;
             }
 
             event.remove("_temp_.cisco.tls_version");
@@ -10148,11 +10146,13 @@ impl Transform for Default {
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                if let Some(s) = event.get_string("user.name") {
-                    let re = cached_regex!("^['\"]|['\"]$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("user.name", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "user.name",
+                    "user.name",
+                    cached_regex!("^['\"]|['\"]$"),
+                    "",
+                )?;
             }
 
             let v = json!(

@@ -115,11 +115,13 @@ impl Transform for Default {
             }
 
             if event.has_value("microsoft_dnsserver.audit.question_name") {
-                if let Some(s) = event.get_string("microsoft_dnsserver.audit.question_name") {
-                    let re = cached_regex!("\\.$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("_temp.question_name", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "microsoft_dnsserver.audit.question_name",
+                    "_temp.question_name",
+                    cached_regex!("\\.$"),
+                    "",
+                )?;
             }
 
             // on_failure: 1 handler(s)

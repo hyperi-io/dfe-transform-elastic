@@ -358,10 +358,12 @@ impl Transform for Default {
             if _cond {
                 foreach_array(event, "json.ipAddresses", |event| {
                     if event.has_value("_ingest._value.macAddress") {
-                        if let Some(s) = event.get_string("_ingest._value.macAddress") {
-                            let uppered = s.to_uppercase();
-                            event.set("_ingest._value.mac_address", uppered)?;
-                        }
+                        map_strings(
+                            event,
+                            "_ingest._value.macAddress",
+                            "_ingest._value.mac_address",
+                            str::to_uppercase,
+                        )?;
                     }
                     Ok(())
                 })?;
@@ -371,11 +373,13 @@ impl Transform for Default {
             if _cond {
                 foreach_array(event, "json.ipAddresses", |event| {
                     if event.has_value("_ingest._value.mac_address") {
-                        if let Some(s) = event.get_string("_ingest._value.mac_address") {
-                            let re = cached_regex!("(..)(?!$)");
-                            let replaced = re.replace_all(&s, "$1-").into_owned();
-                            event.set("_ingest._value.mac_address", replaced)?;
-                        }
+                        gsub_field(
+                            event,
+                            "_ingest._value.mac_address",
+                            "_ingest._value.mac_address",
+                            cached_regex!("(..)(?!$)"),
+                            "$1-",
+                        )?;
                     }
                     Ok(())
                 })?;

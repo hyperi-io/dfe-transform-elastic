@@ -1891,10 +1891,12 @@ impl Transform for Default {
             })();
 
             if event.has_value("okta.outcome.result") {
-                if let Some(s) = event.get_string("okta.outcome.result") {
-                    let lowered = s.to_lowercase();
-                    event.set("okta.outcome.result_lower", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "okta.outcome.result",
+                    "okta.outcome.result_lower",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = {

@@ -584,10 +584,12 @@ impl Transform for V2Pipeline {
             }
 
             if event.has_value("email.direction") {
-                if let Some(s) = event.get_string("email.direction") {
-                    let lowered = s.to_lowercase();
-                    event.set("email.direction", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "email.direction",
+                    "email.direction",
+                    str::to_lowercase,
+                )?;
             }
 
             if event.has_value("source.ip") {

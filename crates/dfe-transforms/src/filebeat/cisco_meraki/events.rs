@@ -454,18 +454,17 @@ impl Transform for Events {
             }
 
             if event.has_value("source.mac") {
-                if let Some(s) = event.get_string("source.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("source.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "source.mac",
+                    "source.mac",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("source.mac") {
-                if let Some(s) = event.get_string("source.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("source.mac", uppered)?;
-                }
+                map_strings(event, "source.mac", "source.mac", str::to_uppercase)?;
             }
 
             let _cond = { event.has_value("_temp.blocked_arp") };
@@ -501,10 +500,12 @@ impl Transform for Events {
             }
 
             if event.has_value("_temp.event_original_lower") {
-                if let Some(s) = event.get_string("_temp.event_original_lower") {
-                    let lowered = s.to_lowercase();
-                    event.set("_temp.event_original_lower", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "_temp.event_original_lower",
+                    "_temp.event_original_lower",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = {
@@ -540,18 +541,22 @@ impl Transform for Events {
             }
 
             if event.has_value("_temp.port_action") {
-                if let Some(s) = event.get_string("_temp.port_action") {
-                    let re = cached_regex!(" ");
-                    let replaced = re.replace_all(&s, "_").into_owned();
-                    event.set("_temp.port_action", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp.port_action",
+                    "_temp.port_action",
+                    cached_regex!(" "),
+                    "_",
+                )?;
             }
 
             if event.has_value("_temp.port_action") {
-                if let Some(s) = event.get_string("_temp.port_action") {
-                    let lowered = s.to_lowercase();
-                    event.set("_temp.port_action", lowered)?;
-                }
+                map_strings(
+                    event,
+                    "_temp.port_action",
+                    "_temp.port_action",
+                    str::to_lowercase,
+                )?;
             }
 
             let _cond = { event.has_value("_temp.port_action") };
@@ -1333,40 +1338,35 @@ impl Transform for Events {
             }
 
             if event.has_value("client.mac") {
-                if let Some(s) = event.get_string("client.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("client.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "client.mac",
+                    "client.mac",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("client.mac") {
-                if let Some(s) = event.get_string("client.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("client.mac", uppered)?;
-                }
+                map_strings(event, "client.mac", "client.mac", str::to_uppercase)?;
             }
 
             if event.has_value("server.mac") {
-                if let Some(s) = event.get_string("server.mac") {
-                    let re = cached_regex!("[:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("server.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "server.mac",
+                    "server.mac",
+                    cached_regex!("[:.]"),
+                    "-",
+                )?;
             }
 
             if event.has_value("server.mac") {
-                if let Some(s) = event.get_string("server.mac") {
-                    let uppered = s.to_uppercase();
-                    event.set("server.mac", uppered)?;
-                }
+                map_strings(event, "server.mac", "server.mac", str::to_uppercase)?;
             }
 
             if event.has_value("user.name") {
-                if let Some(s) = event.get_string("user.name") {
-                    let lowered = s.to_lowercase();
-                    event.set("user.name", lowered)?;
-                }
+                map_strings(event, "user.name", "user.name", str::to_lowercase)?;
             }
 
             let _cond = {

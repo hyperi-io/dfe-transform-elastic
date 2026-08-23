@@ -57,10 +57,12 @@ impl Transform for Audit {
             })();
 
             if event.has_value("panw.panos.type") {
-                if let Some(s) = event.get_string("panw.panos.type") {
-                    let uppered = s.to_uppercase();
-                    event.set("panw.panos.type", uppered)?;
-                }
+                map_strings(
+                    event,
+                    "panw.panos.type",
+                    "panw.panos.type",
+                    str::to_uppercase,
+                )?;
             }
 
             event.set("event.kind", json!("event"))?;
