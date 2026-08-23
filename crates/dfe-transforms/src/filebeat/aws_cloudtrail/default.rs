@@ -869,9 +869,8 @@ impl Transform for Default {
                 event.set("user.target.name", v)?;
             }
 
-            // SKIPPED: condition not transpiled: !ctx._conf.keep_flattened_duplicates
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { !(event.get_bool("_conf.keep_flattened_duplicates") == Some(true)) };
+            if _cond {
                 event.remove("aws.cloudtrail.digest");
                 event.remove("json.insightDetails");
             }

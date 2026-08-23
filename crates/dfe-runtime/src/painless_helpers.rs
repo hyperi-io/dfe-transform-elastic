@@ -151,9 +151,7 @@ pub fn java_to_string(v: &Value) -> String {
             let mut entries: Vec<(usize, usize, &String, &Value)> = map
                 .iter()
                 .enumerate()
-                .map(|(position, (key, value))| {
-                    (java_bucket(key, table), position, key, value)
-                })
+                .map(|(position, (key, value))| (java_bucket(key, table), position, key, value))
                 .collect();
             entries.sort_by_key(|(bucket, position, ..)| (*bucket, *position));
             let members: Vec<String> = entries

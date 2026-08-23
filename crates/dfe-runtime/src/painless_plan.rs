@@ -217,11 +217,9 @@ mod tests {
              ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
              return false; } drop(ctx);",
         );
-        assert!(
-            matches!(
-                plan.known.as_slice(),
-                [KnownShape::DropEmpty { policy, root: None }] if policy.empty_strings
-            )
-        );
+        assert!(matches!(
+            plan.known.as_slice(),
+            [KnownShape::DropEmpty { policy, root: None }] if policy.empty_strings
+        ));
     }
 }

@@ -139,9 +139,7 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
 
     // Pattern: mimecast's scored log-type classifier, keyed on its four
     // params tables.
-    if normalised.contains("params.definite_positive")
-        && normalised.contains("params.candidates")
-    {
+    if normalised.contains("params.definite_positive") && normalised.contains("params.candidates") {
         return Some(ParamsShape::MimecastLogType);
     }
 
@@ -499,7 +497,14 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
     let mut score: Vec<(usize, usize, String, i64)> = candidates
         .keys()
         .enumerate()
-        .map(|(position, name)| (java_bucket(name, candidate_table), position, name.clone(), 0))
+        .map(|(position, name)| {
+            (
+                java_bucket(name, candidate_table),
+                position,
+                name.clone(),
+                0,
+            )
+        })
         .collect();
     score.sort_by_key(|(bucket, position, ..)| (*bucket, *position));
 
@@ -528,7 +533,10 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
     }
     score.retain(|(_, _, _, points)| *points >= max);
 
-    let winners: Vec<Value> = score.into_iter().map(|(_, _, name, _)| json!(name)).collect();
+    let winners: Vec<Value> = score
+        .into_iter()
+        .map(|(_, _, name, _)| json!(name))
+        .collect();
     let _ = event.set("mimecast.log_type", Value::Array(winners));
     true
 }
