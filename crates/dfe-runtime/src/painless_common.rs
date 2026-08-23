@@ -668,6 +668,202 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
     true
 }
 
+/// m365's process and file fields off the alert evidence list, transliterated.
+///
+/// Every collection is a `HashSet` the script then SORTS, and an executable is
+/// the image file's path and name joined by whichever separator the path
+/// already uses. A one-member executable set is written as a scalar and a
+/// larger one as a list, which is the script's own distinction.
+fn run_m365_process_evidence(event: &mut Event) -> bool {
+    let Some(Value::Array(evidence)) = event.get("json.alerts.evidence").cloned() else {
+        return true;
+    };
+
+    let mut executables: Vec<String> = Vec::new();
+    let mut parent_executables: Vec<String> = Vec::new();
+    let mut file_sizes: Vec<Value> = Vec::new();
+    let mut pids: Vec<Value> = Vec::new();
+    let mut parent_pids: Vec<Value> = Vec::new();
+    let mut entity_ids: Vec<Value> = Vec::new();
+    let mut parent_entity_ids: Vec<Value> = Vec::new();
+
+    let add = |set: &mut Vec<Value>, value: Option<&Value>| {
+        if let Some(value) = value
+            && !set.contains(value)
+        {
+            set.push(value.clone());
+        }
+    };
+    let add_executable = |set: &mut Vec<String>, image: Option<&Value>| {
+        let Some(image) = image else { return };
+        let name = image.get("name").and_then(Value::as_str);
+        let Some(name) = name else { return };
+        let joined = match image.get("path").and_then(Value::as_str) {
+            Some(path) => {
+                let separator = if path.contains('\\') { '\\' } else { '/' };
+                let mut joined = path.to_string();
+                if !joined.ends_with(separator) {
+                    joined.push(separator);
+                }
+                joined.push_str(name);
+                joined
+            }
+            None => name.to_string(),
+        };
+        if !set.contains(&joined) {
+            set.push(joined);
+        }
+    };
+    // `<pid>|<creation time>|<device id>`, the three-part key the pipeline
+    // then fingerprints.
+    let entity_id = |item: &Value, process: &str| -> Option<Value> {
+        let pid = item.get(process)?.get("id")?;
+        let created = item.get(process)?.get("creation_datetime")?.as_str()?;
+        let device = item.get("mde_device_id")?.as_str()?;
+        Some(json!(format!(
+            "{}|{created}|{device}",
+            crate::painless_helpers::painless_to_string(pid)
+        )))
+    };
+
+    for item in &evidence {
+        add_executable(&mut executables, item.get("image_file"));
+        add_executable(
+            &mut parent_executables,
+            item.get("parent_process").and_then(|p| p.get("image_file")),
+        );
+
+        match item.get("odata_type").and_then(Value::as_str) {
+            Some("#microsoft.graph.security.fileEvidence") => add(
+                &mut file_sizes,
+                item.get("file_details").and_then(|d| d.get("size")),
+            ),
+            Some("#microsoft.graph.security.processEvidence") => {
+                add(&mut pids, item.get("process").and_then(|p| p.get("id")));
+                add(
+                    &mut parent_pids,
+                    item.get("parent_process").and_then(|p| p.get("id")),
+                );
+                add(&mut entity_ids, entity_id(item, "process").as_ref());
+                add(
+                    &mut parent_entity_ids,
+                    entity_id(item, "parent_process").as_ref(),
+                );
+            }
+            _ => {}
+        }
+    }
+
+    for (path, mut values) in [
+        ("file.size", file_sizes),
+        ("process.pid", pids),
+        ("process.parent.pid", parent_pids),
+        ("process.entity_id", entity_ids),
+        ("process.parent.entity_id", parent_entity_ids),
+    ] {
+        if values.is_empty() {
+            continue;
+        }
+        values.sort_by(|a, b| {
+            crate::painless_helpers::painless_to_string(a)
+                .cmp(&crate::painless_helpers::painless_to_string(b))
+        });
+        let _ = event.set(path, Value::Array(values));
+    }
+    for (path, mut values) in [
+        ("process.executable", executables),
+        ("process.parent.executable", parent_executables),
+    ] {
+        if values.is_empty() {
+            continue;
+        }
+        values.sort();
+        let _ = match values.len() {
+            1 => event.set(path, json!(values.remove(0))),
+            _ => event.set(path, json!(values)),
+        };
+    }
+    true
+}
+
+/// m365's identity fields off the same alert evidence list -- the sibling of
+/// [`run_m365_process_evidence`], keyed on the evidence `odata_type`.
+fn run_m365_identity_evidence(event: &mut Event) -> bool {
+    let Some(Value::Array(evidence)) = event.get("json.alerts.evidence").cloned() else {
+        return true;
+    };
+    // `ctx.process.user = new HashMap()` runs whatever the evidence holds.
+    if !event.has_value("process.user") {
+        let _ = event.set("process.user", json!({}));
+    }
+
+    let mut sets: Vec<(&str, Vec<String>)> = vec![
+        ("cloud.provider", Vec::new()),
+        ("group.name", Vec::new()),
+        ("host.id", Vec::new()),
+        ("user.domain", Vec::new()),
+        ("user.name", Vec::new()),
+        ("user.id", Vec::new()),
+        ("process.user.id", Vec::new()),
+        ("process.user.name", Vec::new()),
+    ];
+    let mut add = |index: usize, value: Option<&str>| {
+        if let Some(value) = value
+            && !sets[index].1.iter().any(|held| held == value)
+        {
+            sets[index].1.push(value.to_string());
+        }
+    };
+
+    for item in &evidence {
+        let account = |member: &str| {
+            item.get("user_account")
+                .and_then(|a| a.get(member))
+                .and_then(Value::as_str)
+        };
+        match item.get("odata_type").and_then(Value::as_str) {
+            Some("#microsoft.graph.security.securityGroupEvidence") => {
+                add(1, item.get("display_name").and_then(Value::as_str));
+            }
+            Some("#microsoft.graph.security.deviceEvidence") => {
+                add(2, item.get("mde_device_id").and_then(Value::as_str));
+            }
+            Some(
+                "#microsoft.graph.security.mailboxEvidence"
+                | "#microsoft.graph.security.userEvidence",
+            ) => {
+                add(3, account("domain_name"));
+                add(5, account("user_principal_name"));
+                add(4, account("account_name"));
+            }
+            Some("#microsoft.graph.security.processEvidence") => {
+                add(6, account("azure_ad_user_id"));
+                add(7, account("account_name"));
+            }
+            _ => {}
+        }
+        // The cloud provider is read off EVERY evidence entry, whatever its
+        // type, and only azure is recognised.
+        if item
+            .get("vm_metadata")
+            .and_then(|m| m.get("cloud_provider"))
+            .and_then(Value::as_str)
+            .is_some_and(|provider| provider.eq_ignore_ascii_case("azure"))
+        {
+            add(0, Some("azure"));
+        }
+    }
+
+    for (path, mut values) in sets {
+        if values.is_empty() {
+            continue;
+        }
+        values.sort();
+        let _ = event.set(path, json!(values));
+    }
+    true
+}
+
 /// `ctx.<f>.removeIf(v -> v == '<literal>')` as a
 /// [`KnownShape::RemoveListValue`].
 fn parse_remove_list_value(script: &str) -> Option<KnownShape> {
@@ -695,7 +891,10 @@ fn parse_remove_list_value(script: &str) -> Option<KnownShape> {
         return None;
     }
     let (_, rhs) = lambda.split_once("==")?;
-    let value = quoted_first(rhs)?;
+    // Painless's OWN escapes, which `normalise` does not touch -- it resolves
+    // the JSON layer only. `'\\'` in the script is one backslash, and m365
+    // removes exactly that from `file.path`.
+    let value = quoted_first(rhs)?.replace("\\\\", "\\");
     (!field.is_empty()).then_some(KnownShape::RemoveListValue { field, value })
 }
 
@@ -4954,6 +5153,8 @@ pub(crate) enum KnownShape {
         field: String,
         value: String,
     },
+    M365ProcessEvidence,
+    M365IdentityEvidence,
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -5200,6 +5401,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::SecurityhubResources);
             return shapes;
         }
+    }
+
+    // Pattern: m365's process and file fields off the alert evidence list,
+    // and its identity sibling over the same list.
+    if normalised.contains("void maybeAddExecutable(") {
+        shapes.push(KnownShape::M365ProcessEvidence);
+        return shapes;
+    }
+    if normalised.contains("def processUserName = new HashSet()") {
+        shapes.push(KnownShape::M365IdentityEvidence);
+        return shapes;
     }
 
     // Pattern: drop one literal out of a list -- m365's file.path, whose
@@ -5843,6 +6055,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MailRelated(script) => run_mail_related(event, script),
         KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
         KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
+        KnownShape::M365ProcessEvidence => run_m365_process_evidence(event),
+        KnownShape::M365IdentityEvidence => run_m365_identity_evidence(event),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()
