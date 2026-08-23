@@ -66,6 +66,7 @@ pub(crate) enum ParamsShape {
     SysmonQueryResults,
     SysmonRegistry,
     MessageTable,
+    FirstAsset,
     LookupPut {
         source: String,
         target: String,
@@ -188,6 +189,11 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::MessageTable);
     }
 
+    // Pattern: sentinel_one's first-asset extraction, the os list in params.
+    if normalised.contains("agent_uuid") && normalised.contains("params.os_type") {
+        return Some(ParamsShape::FirstAsset);
+    }
+
     // Pattern: look one field up in the table and `.put` the row somewhere
     // ELSE -- the security pipeline's logon type, dnsserver's QTYPE with its
     // trailing `.remove`. Ahead of the normalise shape, which writes back to
@@ -291,6 +297,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
         ParamsShape::MessageTable => crate::painless_windows::run_message_table(event, params),
+        ParamsShape::FirstAsset => try_first_asset(event, params),
         ParamsShape::LookupPut {
             source,
             target,
@@ -432,6 +439,169 @@ fn parse_lookup_wrap_list(script: &str) -> Option<(String, String)> {
     let before = &script[..store_at];
     let target = clean_path(before[before.rfind("ctx.")? + 4..].trim());
     Some((clean_path(source), target))
+}
+
+/// `sentinel_one`'s first-asset extraction, transliterated: the container
+/// defaults come first exactly as the script writes them -- WHICH is why the
+/// provider-details instance, machine-type and region fallbacks are dead,
+/// their `== null` guards seeing the empty defaults -- then the first asset,
+/// the first detection-time asset, its cloud and kubernetes blocks, and the
+/// params-listed os match that RETURNS from the whole script.
+#[allow(clippy::too_many_lines)] // A transliteration; splitting it would hide the script's order.
+fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
+    for (path, empty) in [
+        ("related", json!({})),
+        ("related.hosts", json!([])),
+        ("related.user", json!([])),
+        ("related.ip", json!([])),
+        ("host", json!({})),
+        ("host.ip", json!([])),
+        ("host.os", json!({})),
+        ("cloud", json!({})),
+        ("cloud.instance", json!({})),
+        ("cloud.machine", json!({})),
+        ("cloud.account", json!({})),
+        ("cloud.machine.type", json!([])),
+        ("cloud.region", json!([])),
+        ("cloud.instance.id", json!([])),
+        ("cloud.account.id", json!([])),
+        ("cloud.account.name", json!([])),
+        ("cloud.project", json!({})),
+        ("cloud.project.id", json!([])),
+        ("container", json!({})),
+        ("container.id", json!([])),
+        ("container.name", json!([])),
+        ("container.image", json!({})),
+        ("container.image.name", json!([])),
+        ("container.labels", json!([])),
+        ("orchestrator", json!({})),
+        ("orchestrator.cluster", json!({})),
+        ("orchestrator.namespace", json!([])),
+        ("orchestrator.resource", json!({})),
+        ("orchestrator.resource.parent", json!({})),
+        ("orchestrator.resource.parent.type", json!([])),
+        ("orchestrator.resource.label", json!([])),
+        ("orchestrator.resource.name", json!([])),
+        ("observer", json!({})),
+    ] {
+        if !event.has_value(path) {
+            let _ = event.set(path, empty);
+        }
+    }
+
+    if let Some(Value::Array(assets)) = event.get("sentinel_one.unified_alert.assets").cloned()
+        && let Some(asset) = assets.first()
+    {
+        let field = |k: &str| asset.get(k).cloned();
+        if let Some(v) = field("agent_uuid") {
+            let _ = event.set("observer.serial_number", v);
+        }
+        if let Some(v) = field("agent_version") {
+            let _ = event.set("observer.version", v);
+        }
+        if let Some(v) = field("id") {
+            let _ = event.append("related.hosts", v);
+        }
+        if let Some(v) = field("name") {
+            let _ = event.append("related.hosts", v.clone());
+            let _ = event.set("host.name", v);
+        }
+        if let Some(v) = field("subcategory") {
+            let _ = event.set("host.type", v);
+        }
+        if let Some(v) = field("last_logged_in_user") {
+            let _ = event.append("related.user", v);
+        }
+    }
+
+    let Some(Value::Array(dt_assets)) = event
+        .get("sentinel_one.unified_alert.detection_time.assets")
+        .cloned()
+    else {
+        return true;
+    };
+    let Some(first) = dt_assets.first() else {
+        return true;
+    };
+
+    if let Some(a) = first.get("asset") {
+        for key in ["console_ip_address", "ip_v4", "ip_v6"] {
+            if let Some(v) = a.get(key).cloned() {
+                let _ = event.append("host.ip", v.clone());
+                let _ = event.append("related.ip", v);
+            }
+        }
+        if let Some(v) = a.get("last_logged_in_user").cloned() {
+            let _ = event.append("related.user", v);
+        }
+        if let Some(v) = a.get("os_name").cloned() {
+            let _ = event.set("host.os.name", v);
+        }
+        if let Some(v) = a.get("os_revision").cloned() {
+            let _ = event.set("host.os.version", v);
+        }
+        if let Some(os_type) = a.get("os_type").and_then(Value::as_str) {
+            let lowered = os_type.to_lowercase();
+            if let Some(Value::Array(names)) = params.get("os_type") {
+                for os in names.iter().filter_map(Value::as_str) {
+                    if lowered.contains(os) {
+                        let _ = event.set("host.os.type", json!(os));
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    let cloud = first.get("cloud");
+    if let Some(c) = cloud {
+        for (key, target) in [
+            ("account_id", "cloud.account.name"),
+            ("cloud_provider", "cloud.provider"),
+            ("instance_id", "cloud.instance.id"),
+            ("instance_size", "cloud.machine.type"),
+            ("location", "cloud.region"),
+        ] {
+            if let Some(v) = c.get(key).cloned() {
+                let _ = event.set(target, v);
+            }
+        }
+        if let Some(pd) = c.get("provider_details") {
+            for (key, target, only_if_absent) in [
+                ("account_id", "cloud.account.id", false),
+                ("instance_id", "cloud.instance.id", true),
+                ("instance_type", "cloud.machine.type", true),
+                ("project_id", "cloud.project.id", false),
+                ("region", "cloud.region", true),
+                ("service_account", "cloud.account.id", false),
+                ("subscription_id", "cloud.account.id", false),
+            ] {
+                if let Some(v) = pd.get(key).cloned()
+                    && (!only_if_absent || !event.has_value(target))
+                {
+                    let _ = event.set(target, v);
+                }
+            }
+        }
+    }
+
+    if let Some(k) = first.get("kubernetes") {
+        for (key, target) in [
+            ("cluster_name", "orchestrator.cluster.name"),
+            ("container_id", "container.id"),
+            ("container_image_name", "container.image.name"),
+            ("container_name", "container.name"),
+            ("controller_type", "orchestrator.resource.parent.type"),
+            ("namespace_name", "orchestrator.namespace"),
+            ("pod_labels", "orchestrator.resource.label"),
+            ("pod_name", "orchestrator.resource.name"),
+        ] {
+            if let Some(v) = k.get(key).cloned() {
+                let _ = event.set(target, v);
+            }
+        }
+    }
+    true
 }
 
 /// mimecast's scored log-type classifier, tables from params.
