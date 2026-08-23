@@ -325,6 +325,55 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// cloudtrail's resources pass: ARN and accountId rename to their snake
+/// names (appended, as a Java put is), and duplicates of the
+/// `arn_account_type` composite collapse -- last one wins, keeping the first's
+/// position, and the survivors come out in the dedup map's own HASH order.
+fn run_resources_rename_dedup(event: &mut Event, source: &str) -> bool {
+    use crate::painless_helpers::{java_bucket, java_table_size, painless_to_string};
+
+    let Some(Value::Array(items)) = event.get(source).cloned() else {
+        return true;
+    };
+
+    let mut unique: Vec<(String, Value)> = Vec::new();
+    for item in items {
+        let Value::Object(original) = item else {
+            continue;
+        };
+        let mut resource = original;
+        if let Some(value) = resource.remove("ARN") {
+            resource.insert("arn".into(), value);
+        }
+        if let Some(value) = resource.remove("accountId") {
+            resource.insert("account_id".into(), value);
+        }
+        let part =
+            |k: &str| resource.get(k).map(painless_to_string).unwrap_or_default();
+        let key = format!("{}_{}_{}", part("arn"), part("account_id"), part("type"));
+        let value = Value::Object(resource);
+        if let Some(existing) = unique.iter_mut().find(|(k, _)| *k == key) {
+            existing.1 = value;
+        } else {
+            unique.push((key, value));
+        }
+    }
+
+    let table = java_table_size(unique.len());
+    let mut ordered: Vec<(usize, usize, Value)> = unique
+        .into_iter()
+        .enumerate()
+        .map(|(position, (key, value))| (java_bucket(&key, table), position, value))
+        .collect();
+    ordered.sort_by_key(|(bucket, position, _)| (*bucket, *position));
+
+    let _ = event.set(
+        source,
+        Value::Array(ordered.into_iter().map(|(_, _, v)| v).collect()),
+    );
+    true
+}
+
 /// Read `ctx.put("<t>", new HashMap()); for (<v> in ctx.<s>) {
 /// ctx.<t>.put(<v>.<k>, <v>.<val>); }` as a [`KnownShape::NameValueFold`].
 fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
@@ -3613,6 +3662,7 @@ pub(crate) enum KnownShape {
         array: String,
         target: String,
     },
+    ResourcesRenameDedup(String),
     NameValueFold {
         source: String,
         target: String,
@@ -3810,6 +3860,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_prepend_to_array(normalised)
     {
         shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: cloudtrail's resources -- ARN and accountId renamed per
+    // element, then deduplicated by the arn_account_type composite.
+    if normalised.contains("uniqueResources")
+        && let Some(at) = normalised.find(" instanceof List")
+        && let Some(source) = normalised[..at].rfind("ctx.").map(|s| &normalised[s + 4..at])
+    {
+        shapes.push(KnownShape::ResourcesRenameDedup(
+            crate::painless_params::clean_path(source),
+        ));
         return shapes;
     }
 
@@ -4304,6 +4366,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             array,
             target,
         } => try_prepend_to_array(event, scalar, array, target),
+        KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
         KnownShape::NameValueFold {
             source,
             target,
