@@ -1682,20 +1682,42 @@ fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>)
 /// Returns whether anything was written, so a caller can tell a script it
 /// read from one it walked past.
 pub(crate) fn run_guarded_literals(event: &mut Event, body: &str) -> bool {
+    walk_statements(event, body).0
+}
+
+/// As [`run_guarded_literals`], also reporting whether a `return` was reached.
+///
+/// The flag has to travel out of the recursion: a `return` inside a block ends
+/// the SCRIPT, and letting the enclosing walk carry on ran the whole body of
+/// every script that opens by returning on the wrong event code.
+fn walk_statements(event: &mut Event, body: &str) -> (bool, bool) {
     let mut wrote = false;
     let mut rest = body;
     while let Some(offset) = rest.find(|c: char| !c.is_whitespace()) {
         rest = &rest[offset..];
-        if let Some(after) = rest.strip_prefix("return") {
-            let _ = after;
-            return wrote;
+
+        // A comment is not a statement. Reading one as a statement swallowed
+        // everything up to the next `;` -- which is INSIDE the block after it,
+        // so the walk resumed mid-block and the vendor's commented scripts ran
+        // nothing.
+        if let Some(after) = rest.strip_prefix("//") {
+            rest = after.find('\n').map_or("", |at| &after[at + 1..]);
+            continue;
+        }
+        if let Some(after) = rest.strip_prefix("/*") {
+            rest = after.find("*/").map_or("", |at| &after[at + 2..]);
+            continue;
+        }
+
+        if rest.starts_with("return") {
+            return (wrote, true);
         }
         if let Some(after) = rest.strip_prefix("if") {
             let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
-                return wrote;
+                return (wrote, false);
             };
             let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
-                return wrote;
+                return (wrote, false);
             };
             // An `else` arm when there is one. `else if` has no braces of its
             // own, so the whole tail becomes the alternative and the recursion
@@ -1708,10 +1730,17 @@ pub(crate) fn run_guarded_literals(event: &mut Event, body: &str) -> bool {
                 None => (None, after),
             };
 
-            if guard_holds(event, test) {
-                wrote |= run_guarded_literals(event, block);
-            } else if let Some(body) = alternative {
-                wrote |= run_guarded_literals(event, body);
+            let taken = if guard_holds(event, test) {
+                Some(block)
+            } else {
+                alternative
+            };
+            if let Some(branch) = taken {
+                let (branch_wrote, returned) = walk_statements(event, branch);
+                wrote |= branch_wrote;
+                if returned {
+                    return (wrote, true);
+                }
             }
             rest = after;
             continue;
@@ -1721,7 +1750,7 @@ pub(crate) fn run_guarded_literals(event: &mut Event, body: &str) -> bool {
         wrote |= run_literal_statement(event, &rest[..end]);
         rest = &rest[(end + 1).min(rest.len())..];
     }
-    wrote
+    (wrote, false)
 }
 
 /// Split `text` at the region opened by `open` and closed by its match.
@@ -1777,6 +1806,27 @@ fn term_holds(event: &Event, term: &str) -> bool {
         // `!x.contains(y)` -- a bare `!ctx.field` is not a shape these use.
         return !term_holds(event, inner.trim());
     }
+    // A LITERAL list is the subject of every early-return gate these scripts
+    // open with -- `!["4778", "4779"].contains(ctx.event.code)`. It is read
+    // FIRST because the path rewriting below turns its `["` into a separator,
+    // and the wreckage matched nothing, so the gate always held and the script
+    // returned before doing any of its work.
+    if term.starts_with('[')
+        && let Some((list, argument)) = term.split_once(".contains(")
+        && let Some(Value::Array(members)) = literal_value(list)
+    {
+        let argument = argument.trim().trim_end_matches([')', ';']).trim();
+        let Some(wanted) = quoted_after(argument, "").or_else(|| {
+            let path = argument.strip_prefix("ctx.")?;
+            event.get_as_string(&clean_path(&subject_path(path)))
+        }) else {
+            return false;
+        };
+        return members
+            .iter()
+            .any(|member| member.as_str() == Some(&wanted));
+    }
+
     // `ctx['@timestamp']` and `ctx.event.action` name the same kind of thing.
     let term = &subject_path(term);
     if let Some((subject, literal)) = term.split_once(".contains(") {
@@ -1832,7 +1882,7 @@ fn run_literal_statement(event: &mut Event, statement: &str) -> bool {
         ) else {
             return false;
         };
-        append_or_create(event, &clean_path(path), value);
+        add_to_list(event, &clean_path(path), value);
         return true;
     }
     // `ctx.user.put("name", ctx.winlog.event_data.SubjectUserName)`. The
@@ -2028,6 +2078,26 @@ fn is_painless_empty(value: &Value) -> bool {
 }
 
 /// Write `value` at `path`, growing a list where one is already there.
+/// `.add()` on a list the script created above it, so the first member lands
+/// in a ONE-ELEMENT ARRAY.
+///
+/// Different from [`append_or_create`], which is cisco's own `appendOrCreate`
+/// helper and stores the first value BARE. Sharing one of them left
+/// `related.ip` and `related.user` a string wherever a logon event contributed
+/// exactly one of each.
+fn add_to_list(event: &mut Event, path: &str, value: Value) {
+    let grown = match event.get(path) {
+        Some(Value::Array(existing)) => {
+            let mut items = existing.clone();
+            items.push(value);
+            Value::Array(items)
+        }
+        Some(existing) => Value::Array(vec![existing.clone(), value]),
+        None => Value::Array(vec![value]),
+    };
+    let _ = event.set(path, grown);
+}
+
 fn append_or_create(event: &mut Event, path: &str, value: Value) {
     let grown = match event.get(path) {
         None => value,
@@ -2940,6 +3010,21 @@ mod tests {
             "AC_RuleName": { "target": "access_control_rule_name", "id": ["430002"] },
             "Protocol": { "target": "protocol", "ecs": ["network.transport"] },
         })
+    }
+
+    /// A script's `.add()` targets a List it created a line earlier, so one
+    /// member is a one-element ARRAY. cisco's own `appendOrCreate` helper is
+    /// the other rule and stores the first value bare, which is why the two
+    /// cannot share a writer.
+    #[test]
+    fn one_added_member_is_still_a_list() {
+        let script = "if (ctx.related == null) {\n  ctx.put(\"related\", new HashMap());\n}\n\
+            if (ctx.related.ip == null) {\n  ctx.related.put(\"ip\", new ArrayList());\n}\n\
+            ctx.related.ip.add(ctx.source.ip);";
+        let mut event = Event::new(json!({ "source": { "ip": "10.100.150.9" } }));
+
+        assert!(run_guarded_literals(&mut event, script));
+        assert_eq!(event.get("related.ip"), Some(&json!(["10.100.150.9"])));
     }
 
     /// Each key lands in the map its target's membership decides, and feeds

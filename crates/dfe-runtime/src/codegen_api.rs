@@ -1356,7 +1356,10 @@ mod tests {
     #[test]
     fn an_icann_suffix_is_honoured_whole() {
         let reverse = registered_domain_lookup("211.52.31.172.in-addr.arpa").expect("known");
-        assert_eq!(reverse.registered_domain.as_deref(), Some("172.in-addr.arpa"));
+        assert_eq!(
+            reverse.registered_domain.as_deref(),
+            Some("172.in-addr.arpa")
+        );
         assert_eq!(reverse.top_level_domain, "in-addr.arpa");
         assert_eq!(reverse.subdomain.as_deref(), Some("211.52.31"));
 
