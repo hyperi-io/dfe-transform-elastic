@@ -193,15 +193,25 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ['1', 'true', 'yes'].contains(((ctx.zscaler_zia?.saas_security_activity?.is_admin)?.toString())?.toLowerCase())
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("zscaler_zia.saas_security_activity.is_admin")
+                    .filter(|v| !v.is_null())
+                    .map(painless_to_string)
+                    .is_some_and(|s| ["1", "true", "yes"].contains(&s.to_lowercase().as_str()))
+            };
+            if _cond {
                 event.set("zscaler_zia.saas_security_activity.is_admin", json!(true))?;
             }
 
-            // SKIPPED: condition not transpiled: ['0', 'false', 'no'].contains(((ctx.zscaler_zia?.saas_security_activity?.is_admin)?.toString())?.toLowerCase())
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("zscaler_zia.saas_security_activity.is_admin")
+                    .filter(|v| !v.is_null())
+                    .map(painless_to_string)
+                    .is_some_and(|s| ["0", "false", "no"].contains(&s.to_lowercase().as_str()))
+            };
+            if _cond {
                 event.set("zscaler_zia.saas_security_activity.is_admin", json!(false))?;
             }
 

@@ -240,11 +240,21 @@ fn parse_split_token_field(script: &str) -> Option<KnownShape> {
         return None;
     }
 
+    // A SECOND split inside the loop, whose first piece is what the script
+    // keeps: zscaler's dictionary names arrive as `<name>: <description>`.
+    let head = script[at + call.len()..]
+        .split_once(".splitOnToken(")
+        .and_then(|(_, rest)| quoted_first(rest))
+        .filter(|_| script.contains("[0]"))
+        .and_then(|sep| (sep.chars().count() == 1).then(|| sep.chars().next()))
+        .flatten();
+
     Some(KnownShape::SplitTokenField {
         source,
         separator: separator.chars().next()?,
         parse_int: script.contains("Integer.parseInt("),
         target,
+        head,
     })
 }
 
@@ -275,12 +285,21 @@ fn run_split_token_field(
     separator: char,
     parse_int: bool,
     target: &str,
+    head: Option<char>,
 ) -> bool {
     if let Some(text) = event.get_str(source).map(str::to_string) {
         // Java's split drops trailing empty pieces.
         let mut pieces: Vec<&str> = text.split(separator).collect();
         while pieces.last() == Some(&"") {
             pieces.pop();
+        }
+        // A second split whose FIRST piece is what the script keeps --
+        // zscaler's `<name>: <description>` dictionary entries.
+        if let Some(head) = head {
+            pieces = pieces
+                .iter()
+                .map(|piece| piece.split(head).next().unwrap_or(piece))
+                .collect();
         }
         let values: Vec<Value> = if parse_int {
             pieces
@@ -4980,6 +4999,8 @@ pub(crate) enum KnownShape {
         separator: char,
         parse_int: bool,
         target: String,
+        /// A second separator whose FIRST piece is what each member keeps.
+        head: Option<char>,
     },
     DecodeBase64 {
         source: String,
@@ -5906,7 +5927,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             separator,
             parse_int,
             target,
-        } => run_split_token_field(event, source, *separator, *parse_int, target),
+            head,
+        } => run_split_token_field(event, source, *separator, *parse_int, target, *head),
         KnownShape::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
         KnownShape::TokenCount {
             source,
