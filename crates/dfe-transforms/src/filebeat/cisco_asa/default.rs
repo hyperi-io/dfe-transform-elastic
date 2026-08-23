@@ -8253,7 +8253,7 @@ impl Transform for Default {
                 event.has_value("_temp_.cisco.distinguished_name")
                     && event
                         .get("_temp_.cisco.distinguished_name")
-                        .is_none_or(|v| match v {
+                        .is_some_and(|v| match v {
                             serde_json::Value::String(s) => s.is_empty(),
                             serde_json::Value::Array(a) => a.is_empty(),
                             serde_json::Value::Object(o) => o.is_empty(),
@@ -8269,7 +8269,7 @@ impl Transform for Default {
                 event.has_value("_temp_.cisco.serial_number")
                     && event
                         .get("_temp_.cisco.serial_number")
-                        .is_none_or(|v| match v {
+                        .is_some_and(|v| match v {
                             serde_json::Value::String(s) => s.is_empty(),
                             serde_json::Value::Array(a) => a.is_empty(),
                             serde_json::Value::Object(o) => o.is_empty(),

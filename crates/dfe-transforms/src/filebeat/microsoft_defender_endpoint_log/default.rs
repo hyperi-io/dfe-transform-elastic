@@ -44,7 +44,7 @@ impl Transform for Default {
             parse_json_field(event, "event.original", "json")?;
 
             let _cond = {
-                event.get("json.value").is_none_or(|v| match v {
+                event.get("json.value").is_some_and(|v| match v {
                     serde_json::Value::String(s) => s.is_empty(),
                     serde_json::Value::Array(a) => a.is_empty(),
                     serde_json::Value::Object(o) => o.is_empty(),

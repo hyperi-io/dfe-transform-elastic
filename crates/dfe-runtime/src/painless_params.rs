@@ -162,8 +162,7 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: the security pipeline's msobjs message-table decode, keyed on
     // its two auxiliary tables. Ahead of the indexed lookup, whose `.put(`
     // trigger its writes also spell.
-    if normalised.contains("AccessMaskDescriptions")
-        && normalised.contains("reversed_descriptions")
+    if normalised.contains("AccessMaskDescriptions") && normalised.contains("reversed_descriptions")
     {
         return Some(ParamsShape::MessageTable);
     }

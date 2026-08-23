@@ -45,7 +45,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("json.value")
-                    && event.get("json.value").is_none_or(|v| match v {
+                    && event.get("json.value").is_some_and(|v| match v {
                         serde_json::Value::String(s) => s.is_empty(),
                         serde_json::Value::Array(a) => a.is_empty(),
                         serde_json::Value::Object(o) => o.is_empty(),
@@ -59,7 +59,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("json.alerts")
-                    && event.get("json.alerts").is_none_or(|v| match v {
+                    && event.get("json.alerts").is_some_and(|v| match v {
                         serde_json::Value::String(s) => s.is_empty(),
                         serde_json::Value::Array(a) => a.is_empty(),
                         serde_json::Value::Object(o) => o.is_empty(),

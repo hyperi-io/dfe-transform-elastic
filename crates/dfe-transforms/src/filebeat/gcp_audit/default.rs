@@ -670,15 +670,15 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("json.protoPayload.serviceData.policyDelta.bindingDeltas")
-                    && !(event
+                    && event
                         .get("json.protoPayload.serviceData.policyDelta.bindingDeltas")
-                        .is_none_or(|v| match v {
+                        .is_some_and(|v| !match v {
                             serde_json::Value::String(s) => s.is_empty(),
                             serde_json::Value::Array(a) => a.is_empty(),
                             serde_json::Value::Object(o) => o.is_empty(),
                             serde_json::Value::Null => true,
                             _ => false,
-                        }))
+                        })
             };
             if _cond {
                 if let Some(v) = event

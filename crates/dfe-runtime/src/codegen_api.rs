@@ -1213,10 +1213,7 @@ mod tests {
     fn a_query_is_percent_decoded_once() {
         let mut event = Event::new(json!({ "src": "http://h/p?Extra=%255b%2522x%2522%255d" }));
         assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
-        assert_eq!(
-            event.get("url.query"),
-            Some(&json!("Extra=%5b%22x%22%5d"))
-        );
+        assert_eq!(event.get("url.query"), Some(&json!("Extra=%5b%22x%22%5d")));
     }
 
     /// A malformed escape fails java.net.URI wholesale, so the raw text is

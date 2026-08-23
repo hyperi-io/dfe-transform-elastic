@@ -46,7 +46,7 @@ impl Transform for Default {
             let _cond = {
                 !event.has_value("mimecast.eventTime")
                     || (event.has_value("mimecast.data")
-                        && event.get("mimecast.data").is_none_or(|v| match v {
+                        && event.get("mimecast.data").is_some_and(|v| match v {
                             serde_json::Value::String(s) => s.is_empty(),
                             serde_json::Value::Array(a) => a.is_empty(),
                             serde_json::Value::Object(o) => o.is_empty(),

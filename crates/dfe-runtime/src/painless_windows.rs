@@ -56,8 +56,8 @@ impl ArgvScript {
                 None => local_binding(script, argument.trim())?,
             };
             let count = script.contains(&format!("ctx.{base}.args_count = "));
-            let executable = script
-                .contains(&format!("ctx.{base}.executable = ctx.{base}.args[0]"));
+            let executable =
+                script.contains(&format!("ctx.{base}.executable = ctx.{base}.args[0]"));
             sites.push(ArgvSite {
                 source,
                 base,
@@ -91,7 +91,10 @@ fn clean(path: &str) -> String {
 
 /// The ctx path a `def <local> = ctx.<path>;` binds, `?`s dropped.
 fn local_binding(script: &str, local: &str) -> Option<String> {
-    for opener in [format!("def {local} = ctx."), format!("String {local} = ctx.")] {
+    for opener in [
+        format!("def {local} = ctx."),
+        format!("String {local} = ctx."),
+    ] {
         if let Some(at) = script.find(&opener) {
             let rest = &script[at + opener.len()..];
             let end = rest.find(';')?;
@@ -416,8 +419,14 @@ pub(crate) fn run_message_table(event: &mut Event, params: &Map<String, Value>) 
 
     // Direction and LayerName: described only where the table has the code.
     for (source, target) in [
-        ("winlog.event_data.Direction", "winlog.event_data.DirectionDescription"),
-        ("winlog.event_data.LayerName", "winlog.event_data.LayerNameDescription"),
+        (
+            "winlog.event_data.Direction",
+            "winlog.event_data.DirectionDescription",
+        ),
+        (
+            "winlog.event_data.LayerName",
+            "winlog.event_data.LayerNameDescription",
+        ),
     ] {
         if let Some(text) = event.get_str(source).map(str::to_string) {
             let code = text.replace("%%", "").trim().to_string();
@@ -432,7 +441,9 @@ pub(crate) fn run_message_table(event: &mut Event, params: &Map<String, Value>) 
     // AccessMaskDescriptions table.
     if let Some(value) = event.get("winlog.event_data.AccessMask").cloned() {
         let elems = whitespace_or_array(&value);
-        let reversed = params.get("reversed_descriptions").and_then(Value::as_object);
+        let reversed = params
+            .get("reversed_descriptions")
+            .and_then(Value::as_object);
         let mut list: Vec<Value> = Vec::new();
         let mut mask: i64 = 0;
         for elem in &elems {
@@ -461,7 +472,9 @@ pub(crate) fn run_message_table(event: &mut Event, params: &Map<String, Value>) 
             let _ = event.set("winlog.event_data.AccessMask", Value::Array(list));
         }
 
-        let flags = params.get("AccessMaskDescriptions").and_then(Value::as_object);
+        let flags = params
+            .get("AccessMaskDescriptions")
+            .and_then(Value::as_object);
         let mut descs: Vec<Value> = Vec::new();
         for bit in 0..32u32 {
             let flag = 1i64 << bit;
@@ -532,7 +545,10 @@ pub(crate) fn event_code_list(script: &str) -> Option<Vec<String>> {
         .split(',')
         .filter_map(|piece| {
             let piece = piece.trim().trim_start_matches('[');
-            piece.strip_prefix('"')?.strip_suffix('"').map(str::to_string)
+            piece
+                .strip_prefix('"')?
+                .strip_suffix('"')
+                .map(str::to_string)
         })
         .collect();
     (!codes.is_empty()).then_some(codes)
@@ -678,7 +694,10 @@ mod tests {
     #[test]
     fn argv_splits_like_windows() {
         let cases: &[(&str, &[&str])] = &[
-            (r#"C:\a\b.exe -c "d e" f"#, &[r"C:\a\b.exe", "-c", "d e", "f"]),
+            (
+                r#"C:\a\b.exe -c "d e" f"#,
+                &[r"C:\a\b.exe", "-c", "d e", "f"],
+            ),
             // The pre-2008 rule: `""` inside quotes is a literal quote AND
             // leaves the quoted run, so the `c` sits bare and the space after
             // it splits.
@@ -737,9 +756,15 @@ mod tests {
         }));
         assert!(run_file_info(&mut event, "file.path"));
         assert_eq!(event.get("file.name"), Some(&json!("report")));
-        assert_eq!(event.get("file.directory"), Some(&json!(r"C:\Users\x.y\Desktop")));
+        assert_eq!(
+            event.get("file.directory"),
+            Some(&json!(r"C:\Users\x.y\Desktop"))
+        );
         // The extension comes off the WHOLE path, dotted directory included.
-        assert_eq!(event.get("file.extension"), Some(&json!(r"y\Desktop\report")));
+        assert_eq!(
+            event.get("file.extension"),
+            Some(&json!(r"y\Desktop\report"))
+        );
     }
 
     #[test]

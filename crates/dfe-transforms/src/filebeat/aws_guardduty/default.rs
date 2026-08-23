@@ -74,7 +74,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("json.findings")
-                    && event.get("json.findings").is_none_or(|v| match v {
+                    && event.get("json.findings").is_some_and(|v| match v {
                         serde_json::Value::String(s) => s.is_empty(),
                         serde_json::Value::Array(a) => a.is_empty(),
                         serde_json::Value::Object(o) => o.is_empty(),

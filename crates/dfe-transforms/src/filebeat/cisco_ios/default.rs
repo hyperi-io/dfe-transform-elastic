@@ -122,7 +122,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("log.syslog")
-                    && event.get("log.syslog").is_none_or(|v| match v {
+                    && event.get("log.syslog").is_some_and(|v| match v {
                         serde_json::Value::String(s) => s.is_empty(),
                         serde_json::Value::Array(a) => a.is_empty(),
                         serde_json::Value::Object(o) => o.is_empty(),
