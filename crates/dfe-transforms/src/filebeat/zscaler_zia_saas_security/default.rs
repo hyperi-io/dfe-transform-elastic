@@ -35,14 +35,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            if let Some(s) = event.get_string("event.original") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("zscaler_zia.saas_security", parsed)?;
-            }
+            parse_json_field(event, "event.original", "zscaler_zia.saas_security")?;
 
             let _cond = {
                 event.has_value("zscaler_zia.saas_security")

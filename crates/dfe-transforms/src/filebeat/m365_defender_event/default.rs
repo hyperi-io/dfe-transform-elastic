@@ -43,14 +43,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("event.original") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "event.original".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("json", parsed)?;
-                }
+                parse_json_field(event, "event.original", "json")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
@@ -358,15 +351,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.Categories") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.Categories".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.Categories", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.Categories",
+                            "json.properties.Categories",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -410,15 +399,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.AdditionalFields") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.AdditionalFields".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.AdditionalFields", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.AdditionalFields",
+                            "json.properties.AdditionalFields",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -462,15 +447,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.AttackTechniques") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.AttackTechniques".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.AttackTechniques", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.AttackTechniques",
+                            "json.properties.AttackTechniques",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2383,15 +2364,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.AdditionalFields") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.AdditionalFields".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.AdditionalFields", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.AdditionalFields",
+                            "json.properties.AdditionalFields",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2566,17 +2543,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) =
-                            event.get_string("m365_defender.event.additional_fields.answers")
-                        {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "m365_defender.event.additional_fields.answers".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("m365_defender.event.additional_fields.answers", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "m365_defender.event.additional_fields.answers",
+                            "m365_defender.event.additional_fields.answers",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2657,17 +2628,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) =
-                            event.get_string("m365_defender.event.additional_fields.TTLs")
-                        {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "m365_defender.event.additional_fields.TTLs".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("m365_defender.event.additional_fields.TTLs", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "m365_defender.event.additional_fields.TTLs",
+                            "m365_defender.event.additional_fields.TTLs",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2764,17 +2729,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) =
-                            event.get_string("json.properties.CrlDistributionPointUrls")
-                        {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.CrlDistributionPointUrls".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.CrlDistributionPointUrls", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.CrlDistributionPointUrls",
+                            "json.properties.CrlDistributionPointUrls",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2818,15 +2777,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.LoggedOnUsers") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.LoggedOnUsers".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.LoggedOnUsers", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.LoggedOnUsers",
+                            "json.properties.LoggedOnUsers",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2870,15 +2825,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.ConnectedNetworks") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.ConnectedNetworks".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.ConnectedNetworks", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.ConnectedNetworks",
+                            "json.properties.ConnectedNetworks",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2922,15 +2873,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.DefaultGateways") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.DefaultGateways".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.DefaultGateways", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.DefaultGateways",
+                            "json.properties.DefaultGateways",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2974,15 +2921,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.DnsAddresses") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.DnsAddresses".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.DnsAddresses", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.DnsAddresses",
+                            "json.properties.DnsAddresses",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -3026,15 +2969,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.IPAddresses") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.IPAddresses".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.IPAddresses", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.IPAddresses",
+                            "json.properties.IPAddresses",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -9307,15 +9246,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.DetectionMethods") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.DetectionMethods".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.DetectionMethods", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.DetectionMethods",
+                            "json.properties.DetectionMethods",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -9357,15 +9292,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.ConfidenceLevel") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.ConfidenceLevel".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.ConfidenceLevel", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.ConfidenceLevel",
+                            "json.properties.ConfidenceLevel",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -9407,15 +9338,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.AdditionalFields") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.AdditionalFields".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.AdditionalFields", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.AdditionalFields",
+                            "json.properties.AdditionalFields",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -10754,15 +10681,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.ActivityObjects") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.ActivityObjects".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.ActivityObjects", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.ActivityObjects",
+                            "json.properties.ActivityObjects",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -10806,15 +10729,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.RawEventData") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.RawEventData".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.RawEventData", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.RawEventData",
+                            "json.properties.RawEventData",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -10858,15 +10777,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("json.properties.AdditionalFields") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "json.properties.AdditionalFields".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("json.properties.AdditionalFields", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "json.properties.AdditionalFields",
+                            "json.properties.AdditionalFields",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;

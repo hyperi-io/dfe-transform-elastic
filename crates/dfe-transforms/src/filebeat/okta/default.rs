@@ -49,14 +49,7 @@ impl Transform for Default {
                 event.remove("message");
             }
 
-            if let Some(s) = event.get_string("event.original") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("json", parsed)?;
-            }
+            parse_json_field(event, "event.original", "json")?;
 
             // Painless script
             // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
@@ -444,14 +437,11 @@ impl Transform for Default {
 
             let _cond = { event.has_value("okta.device.device_integrator") };
             if _cond {
-                if let Some(s) = event.get_string("okta.device.device_integrator") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "okta.device.device_integrator".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("okta.device.device_integrator", parsed)?;
-                }
+                parse_json_field(
+                    event,
+                    "okta.device.device_integrator",
+                    "okta.device.device_integrator",
+                )?;
             }
 
             // ignore_failure: true
@@ -630,20 +620,11 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event
-                        .get_string("okta.debug_context.debug_data.flattened.logOnlySecurityData")
-                    {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "okta.debug_context.debug_data.flattened.logOnlySecurityData"
-                                    .into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set(
-                            "okta.debug_context.debug_data.flattened.logOnlySecurityData",
-                            parsed,
-                        )?;
-                    }
+                    parse_json_field(
+                        event,
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData",
+                        "okta.debug_context.debug_data.flattened.logOnlySecurityData",
+                    )?;
                     Ok(())
                 })();
                 // ignore_failure: true
@@ -1079,17 +1060,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) =
-                            event.get_string("okta.debug_context.debug_data.flattened.tunnels")
-                        {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "okta.debug_context.debug_data.flattened.tunnels".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("okta.debug_context.debug_data.flattened.tunnels", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "okta.debug_context.debug_data.flattened.tunnels",
+                            "okta.debug_context.debug_data.flattened.tunnels",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;
@@ -1149,16 +1124,11 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) =
-                        event.get_string("okta.debug_context.debug_data.logOnlySecurityData")
-                    {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "okta.debug_context.debug_data.logOnlySecurityData".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("okta.debug_context.debug_data.logOnlySecurityData", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "okta.debug_context.debug_data.logOnlySecurityData",
+                        "okta.debug_context.debug_data.logOnlySecurityData",
+                    )?;
                     Ok(())
                 })();
                 // ignore_failure: true
@@ -1481,15 +1451,11 @@ impl Transform for Default {
                 if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
-                        if let Some(s) = event.get_string("okta.debug_context.debug_data.tunnels") {
-                            let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                TransformError::ParseError {
-                                    path: "okta.debug_context.debug_data.tunnels".into(),
-                                    message: format!("failed to parse JSON: {}", e),
-                                }
-                            })?;
-                            event.set("okta.debug_context.debug_data.tunnels", parsed)?;
-                        }
+                        parse_json_field(
+                            event,
+                            "okta.debug_context.debug_data.tunnels",
+                            "okta.debug_context.debug_data.tunnels",
+                        )?;
                         Ok(())
                     })() {
                         event.set("_ingest.on_failure_message", err.to_string())?;

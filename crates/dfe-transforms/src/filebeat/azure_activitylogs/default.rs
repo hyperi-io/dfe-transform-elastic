@@ -51,14 +51,7 @@ impl Transform for Default {
                 event.remove("message");
             }
 
-            if let Some(s) = event.get_string("event.original") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("azure.activitylogs", parsed)?;
-            }
+            parse_json_field(event, "event.original", "azure.activitylogs")?;
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
@@ -194,14 +187,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("azure.activitylogs.identity") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "azure.activitylogs.identity".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("azure.activitylogs.identity", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "azure.activitylogs.identity",
+                        "azure.activitylogs.identity",
+                    )?;
                     Ok(())
                 })();
             }
@@ -214,14 +204,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("azure.activitylogs.properties") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "azure.activitylogs.properties".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("azure.activitylogs.properties", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "azure.activitylogs.properties",
+                        "azure.activitylogs.properties",
+                    )?;
                     Ok(())
                 })();
             }
@@ -234,15 +221,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("azure.activitylogs.properties.responseBody")
-                    {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "azure.activitylogs.properties.responseBody".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("azure.activitylogs.properties.responseBody", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "azure.activitylogs.properties.responseBody",
+                        "azure.activitylogs.properties.responseBody",
+                    )?;
                     Ok(())
                 })();
             }
@@ -255,14 +238,11 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("azure.activitylogs.properties.requestBody") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "azure.activitylogs.properties.requestBody".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("azure.activitylogs.properties.requestBody", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "azure.activitylogs.properties.requestBody",
+                        "azure.activitylogs.properties.requestBody",
+                    )?;
                     Ok(())
                 })();
             }

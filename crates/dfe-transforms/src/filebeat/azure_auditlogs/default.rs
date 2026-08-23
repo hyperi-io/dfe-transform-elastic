@@ -36,14 +36,7 @@ impl Transform for Default {
                 event.remove("message");
             }
 
-            if let Some(s) = event.get_string("event.original") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("azure.auditlogs", parsed)?;
-            }
+            parse_json_field(event, "event.original", "azure.auditlogs")?;
 
             let _cond = { event.get_str("azure.auditlogs.category") != Some("AuditLogs") };
             if _cond {

@@ -102,14 +102,7 @@ impl Transform for Default {
 
             // on_failure: 5 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("event.original") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "event.original".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("azure.platformlogs", parsed)?;
-                }
+                parse_json_field(event, "event.original", "azure.platformlogs")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
@@ -213,14 +206,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("temp_properties") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "temp_properties".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("azure.platformlogs.properties", parsed)?;
-                    }
+                    parse_json_field(event, "temp_properties", "azure.platformlogs.properties")?;
                     Ok(())
                 })();
             }
@@ -313,14 +299,11 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("azure.platformlogs.EventProperties") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "azure.platformlogs.EventProperties".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("azure.platformlogs.properties", parsed)?;
-                }
+                parse_json_field(
+                    event,
+                    "azure.platformlogs.EventProperties",
+                    "azure.platformlogs.properties",
+                )?;
                 Ok(())
             })();
 
@@ -331,14 +314,11 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("azure.platformlogs.properties.log") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "azure.platformlogs.properties.log".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("azure.platformlogs.properties.log", parsed)?;
-                }
+                parse_json_field(
+                    event,
+                    "azure.platformlogs.properties.log",
+                    "azure.platformlogs.properties.log",
+                )?;
                 Ok(())
             })();
 

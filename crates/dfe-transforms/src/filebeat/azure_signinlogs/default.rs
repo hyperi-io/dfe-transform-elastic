@@ -24,14 +24,7 @@ impl Transform for Default {
 
             event.remove("routing.category");
 
-            if let Some(s) = event.get_string("message") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "message".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("azure.signinlogs", parsed)?;
-            }
+            parse_json_field(event, "message", "azure.signinlogs")?;
 
             // Painless script
             // Source: Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n

@@ -114,6 +114,58 @@ pub fn painless_exec_params(
     Ok(())
 }
 
+/// Parse one field's JSON string into `target`, the way Elastic's `json`
+/// processor does.
+///
+/// An absent field is a no-op, exactly as the old inline `if let` was; a
+/// present one that will not parse is the processor's failure, worded the
+/// same way the inline `serde_json` block worded it so `on_failure` output
+/// does not shift.
+///
+/// # Errors
+///
+/// Returns [`crate::TransformError::ParseError`] naming the FIELD when the
+/// text is not JSON, or whatever `set` returns for an unwritable target.
+pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<()> {
+    let Some(text) = event.get_string(field) else {
+        return Ok(());
+    };
+    let parsed = parse_json_str(&text).map_err(|message| crate::TransformError::ParseError {
+        path: field.into(),
+        message,
+    })?;
+    event.set(target, parsed)?;
+    Ok(())
+}
+
+/// Parse a JSON string on the SIMD path.
+///
+/// simd-json parses in place, so the text is copied into a thread-local
+/// scratch buffer that grows to the largest payload the thread has seen and
+/// is reused from then on -- no allocation per event once warm, where
+/// `serde_json::from_str` walked the text byte by byte every time. The
+/// service runs one transform thread per partition, so thread-local is
+/// per-partition state, never contended.
+///
+/// # Errors
+///
+/// Returns the parser's message, prefixed the way the generated modules
+/// always worded it.
+pub fn parse_json_str(text: &str) -> std::result::Result<Value, String> {
+    use std::cell::RefCell;
+
+    thread_local! {
+        static SCRATCH: RefCell<Vec<u8>> = const { RefCell::new(Vec::new()) };
+    }
+    SCRATCH.with(|cell| {
+        let mut buffer = cell.borrow_mut();
+        buffer.clear();
+        buffer.extend_from_slice(text.as_bytes());
+        simd_json::serde::from_slice::<Value>(&mut buffer)
+            .map_err(|e| format!("failed to parse JSON: {e}"))
+    })
+}
+
 /// Turn keys whose NAME contains dots into the nested objects they describe.
 ///
 /// `path` names the object to work on, empty for the document root, and
@@ -1061,6 +1113,52 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- parse_json_field ---
+
+    /// The SIMD path and `serde_json` agree on what a document MEANS --
+    /// nesting, numbers at both integer extremes, floats, escapes, unicode.
+    #[test]
+    fn simd_parse_agrees_with_serde_json() {
+        for text in [
+            r#"{"a": {"b": [1, 2.5, -3, 18446744073709551615, -9223372036854775808]}}"#,
+            r#"{"s": "line\nbreak \"quoted\" é", "t": true, "n": null}"#,
+            r#"[{"k": "v"}, [], {}, ""]"#,
+            "42",
+            r#""bare string""#,
+        ] {
+            let via_simd = parse_json_str(text).unwrap();
+            let via_serde: Value = serde_json::from_str(text).unwrap();
+            assert_eq!(via_simd, via_serde, "input: {text}");
+        }
+    }
+
+    /// An absent field is a no-op, which is what the old inline `if let` did.
+    #[test]
+    fn parse_json_field_skips_an_absent_field() {
+        let mut event = Event::new(json!({ "other": 1 }));
+        parse_json_field(&mut event, "message", "json").unwrap();
+        assert_eq!(event.as_value(), &json!({ "other": 1 }));
+    }
+
+    /// A field that will not parse is the processor's failure, naming the
+    /// field and keeping the wording the generated `on_failure` blocks wrote.
+    #[test]
+    fn parse_json_field_fails_with_the_inline_blocks_wording() {
+        let mut event = Event::new(json!({ "message": "{not json" }));
+        let err = parse_json_field(&mut event, "message", "json").unwrap_err();
+        let text = err.to_string();
+        assert!(text.contains("message"), "{text}");
+        assert!(text.contains("failed to parse JSON:"), "{text}");
+    }
+
+    /// The parsed object lands whole on the target.
+    #[test]
+    fn parse_json_field_writes_the_target() {
+        let mut event = Event::new(json!({ "message": r#"{"a": [1, 2]}"# }));
+        parse_json_field(&mut event, "message", "json").unwrap();
+        assert_eq!(event.get("json"), Some(&json!({ "a": [1, 2] })));
+    }
 
     /// Verbatim from `proofpoint_on_demand/message`, which converts a LIST of
     /// suborg recipients to string. Rendering the array whole gave the string

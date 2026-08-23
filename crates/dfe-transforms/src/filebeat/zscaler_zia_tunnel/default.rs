@@ -45,14 +45,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("event.original") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "event.original".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("resp", parsed)?;
-                    }
+                    parse_json_field(event, "event.original", "resp")?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;

@@ -41,14 +41,7 @@ impl Transform for Default {
                 event.remove("message");
             }
 
-            if let Some(s) = event.get_string("event.original") {
-                let parsed: Value =
-                    serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                        path: "event.original".into(),
-                        message: format!("failed to parse JSON: {}", e),
-                    })?;
-                event.set("mimecast", parsed)?;
-            }
+            parse_json_field(event, "event.original", "mimecast")?;
 
             let _cond = {
                 !event.has_value("mimecast.date")

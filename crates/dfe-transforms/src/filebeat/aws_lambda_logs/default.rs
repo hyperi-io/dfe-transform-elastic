@@ -157,14 +157,7 @@ impl Transform for Default {
                 // Begin nested pipeline: "aws-lambda-json"
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("event.original") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "event.original".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("parsed", parsed)?;
-                    }
+                    parse_json_field(event, "event.original", "parsed")?;
                     Ok(())
                 })();
                 let _cond = { event.has_value("parsed.timestamp") };

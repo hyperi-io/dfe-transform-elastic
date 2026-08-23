@@ -27,16 +27,11 @@ impl Transform for NoUseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) =
-                    event.get_string("okta.debug_context.debug_data.logOnlySecurityData")
-                {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "okta.debug_context.debug_data.logOnlySecurityData".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("okta.debug_context.debug_data.logOnlySecurityData", parsed)?;
-                }
+                parse_json_field(
+                    event,
+                    "okta.debug_context.debug_data.logOnlySecurityData",
+                    "okta.debug_context.debug_data.logOnlySecurityData",
+                )?;
                 Ok(())
             })();
 
@@ -363,14 +358,11 @@ impl Transform for NoUseFlattenedDebug {
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("okta.debug_context.debug_data.tunnels") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "okta.debug_context.debug_data.tunnels".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("okta.debug_context.debug_data.tunnels", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "okta.debug_context.debug_data.tunnels",
+                        "okta.debug_context.debug_data.tunnels",
+                    )?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;

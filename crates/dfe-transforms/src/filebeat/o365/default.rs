@@ -211,15 +211,7 @@ impl Transform for Default {
                         event.set("_ingest._value", item)?;
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
-                            if let Some(s) = event.get_string("_ingest._value") {
-                                let parsed: Value = serde_json::from_str(&s).map_err(|e| {
-                                    TransformError::ParseError {
-                                        path: "_ingest._value".into(),
-                                        message: format!("failed to parse JSON: {}", e),
-                                    }
-                                })?;
-                                event.set("_ingest._value", parsed)?;
-                            }
+                            parse_json_field(event, "_ingest._value", "_ingest._value")?;
                             Ok(())
                         })() {
                             event.set("_ingest.on_failure_message", err.to_string())?;
@@ -343,14 +335,11 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("o365audit.AdditionalInfo") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "o365audit.AdditionalInfo".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("o365audit.AdditionalInfo", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "o365audit.AdditionalInfo",
+                        "o365audit.AdditionalInfo",
+                    )?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -399,14 +388,11 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("o365audit.OperationProperties") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "o365audit.OperationProperties".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("o365audit.OperationProperties", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "o365audit.OperationProperties",
+                        "o365audit.OperationProperties",
+                    )?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2466,14 +2452,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("o365audit.Data") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "o365audit.Data".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("o365audit.Data", parsed)?;
-                    }
+                    parse_json_field(event, "o365audit.Data", "o365audit.Data")?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -3023,16 +3002,11 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) =
-                        event.get_string("o365audit.ExtendedProperties.additionalDetails")
-                    {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "o365audit.ExtendedProperties.additionalDetails".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("o365audit.ExtendedProperties.additionalDetails", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "o365audit.ExtendedProperties.additionalDetails",
+                        "o365audit.ExtendedProperties.additionalDetails",
+                    )?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;

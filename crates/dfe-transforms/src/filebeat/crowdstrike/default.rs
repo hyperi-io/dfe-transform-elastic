@@ -43,14 +43,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("event.original") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "event.original".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("crowdstrike", parsed)?;
-                }
+                parse_json_field(event, "event.original", "crowdstrike")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
@@ -4369,14 +4362,11 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("crowdstrike.event.ResourceAttributes") };
                 if _cond {
-                    if let Some(s) = event.get_string("crowdstrike.event.ResourceAttributes") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "crowdstrike.event.ResourceAttributes".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("crowdstrike.event.ResourceAttributes", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "crowdstrike.event.ResourceAttributes",
+                        "crowdstrike.event.ResourceAttributes",
+                    )?;
                 }
                 if event.has("crowdstrike.event.EventSource") {
                     event.rename("crowdstrike.event.EventSource", "event.provider")?;

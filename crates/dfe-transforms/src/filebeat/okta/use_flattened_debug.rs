@@ -26,20 +26,11 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) =
-                    event.get_string("okta.debug_context.debug_data.flattened.logOnlySecurityData")
-                {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "okta.debug_context.debug_data.flattened.logOnlySecurityData"
-                                .into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set(
-                        "okta.debug_context.debug_data.flattened.logOnlySecurityData",
-                        parsed,
-                    )?;
-                }
+                parse_json_field(
+                    event,
+                    "okta.debug_context.debug_data.flattened.logOnlySecurityData",
+                    "okta.debug_context.debug_data.flattened.logOnlySecurityData",
+                )?;
                 Ok(())
             })();
 
@@ -498,16 +489,11 @@ impl Transform for UseFlattenedDebug {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) =
-                        event.get_string("okta.debug_context.debug_data.flattened.tunnels")
-                    {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "okta.debug_context.debug_data.flattened.tunnels".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("okta.debug_context.debug_data.flattened.tunnels", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "okta.debug_context.debug_data.flattened.tunnels",
+                        "okta.debug_context.debug_data.flattened.tunnels",
+                    )?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;

@@ -43,14 +43,11 @@ impl Transform for CspmEvents {
 
             let _cond = { event.has_value("crowdstrike.event.ResourceAttributes") };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.ResourceAttributes") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "crowdstrike.event.ResourceAttributes".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("crowdstrike.event.ResourceAttributes", parsed)?;
-                }
+                parse_json_field(
+                    event,
+                    "crowdstrike.event.ResourceAttributes",
+                    "crowdstrike.event.ResourceAttributes",
+                )?;
             }
 
             if event.has("crowdstrike.event.EventSource") {

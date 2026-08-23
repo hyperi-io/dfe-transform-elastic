@@ -67,14 +67,7 @@ impl Transform for PipelineAlert {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.Categories") {
-                    let parsed: Value = serde_json::from_str(&s)
-                        .map_err(|e| TransformError::ParseError {
-                            path: "json.properties.Categories".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("json.properties.Categories", parsed)?;
-                }
+                parse_json_field(event, "json.properties.Categories", "json.properties.Categories")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
@@ -94,14 +87,7 @@ impl Transform for PipelineAlert {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.AdditionalFields") {
-                    let parsed: Value = serde_json::from_str(&s)
-                        .map_err(|e| TransformError::ParseError {
-                            path: "json.properties.AdditionalFields".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("json.properties.AdditionalFields", parsed)?;
-                }
+                parse_json_field(event, "json.properties.AdditionalFields", "json.properties.AdditionalFields")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
@@ -121,14 +107,7 @@ impl Transform for PipelineAlert {
             if _cond {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("json.properties.AttackTechniques") {
-                    let parsed: Value = serde_json::from_str(&s)
-                        .map_err(|e| TransformError::ParseError {
-                            path: "json.properties.AttackTechniques".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("json.properties.AttackTechniques", parsed)?;
-                }
+                parse_json_field(event, "json.properties.AttackTechniques", "json.properties.AttackTechniques")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;

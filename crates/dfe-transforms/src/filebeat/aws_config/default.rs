@@ -52,14 +52,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if let Some(s) = event.get_string("event.original") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "event.original".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("json", parsed)?;
-                }
+                parse_json_field(event, "event.original", "json")?;
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
@@ -311,14 +304,11 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if let Some(s) = event.get_string("json.ConfigRuleInfo.InputParameters") {
-                        let parsed: Value =
-                            serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                                path: "json.ConfigRuleInfo.InputParameters".into(),
-                                message: format!("failed to parse JSON: {}", e),
-                            })?;
-                        event.set("aws.config.rule_info.input_parameters", parsed)?;
-                    }
+                    parse_json_field(
+                        event,
+                        "json.ConfigRuleInfo.InputParameters",
+                        "aws.config.rule_info.input_parameters",
+                    )?;
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
