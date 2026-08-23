@@ -911,8 +911,11 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // key-value line with it, on every airmarshal event.
         "QS" | "QUOTEDSTRING" => r#"(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)"#,
         "LOGLEVEL" => r"(?i:emerg|alert|crit|err|warn|notice|info|debug|trace)\w*",
+        // The fraction takes a comma as well as a dot: Elastic's SECOND does,
+        // and hadoop's log4j writes `05:04:53,776` -- one missing comma
+        // failed the whole emr grok on every event.
         "TIMESTAMP_ISO8601" => {
-            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
+            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
         }
         // Unknown name. `.+?` captures arbitrary text rather than failing, so
         // the field is populated with the wrong thing and nothing says so --
