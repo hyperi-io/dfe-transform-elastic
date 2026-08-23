@@ -18,7 +18,7 @@ use std::path::{Path, PathBuf};
 use dfe_runtime::event::Event;
 use dfe_runtime::testutil::diff::{DiffKind, JsonDiff, MatchMode};
 use dfe_runtime::testutil::{flatten_value, policy};
-use dfe_runtime::transform::Transform;
+use dfe_runtime::transform::{Transform, TransformResult};
 use dfe_transforms::filebeat;
 use serde_json::Value;
 
@@ -512,19 +512,60 @@ fn transforms_match_elastics_confirmed_output() {
             };
             // Elastic's own pipeline failed on this one, so the capture holds
             // its failure and no expectation of correct output. Scoring
-            // against it counts our CORRECT output as a miss.
-            if expected.pointer("/event/kind").and_then(Value::as_str) == Some("pipeline_error") {
+            // against it counts our CORRECT output as a miss. The bare
+            // `_compat_error` OBJECT is the same thing one layer down --
+            // simulate errored with no on_failure to shape a document.
+            if expected.pointer("/event/kind").and_then(Value::as_str) == Some("pipeline_error")
+                || expected.get("_compat_error").is_some_and(Value::is_object)
+            {
                 score.events_unanswered += 1;
                 continue;
             }
 
+            // Elasticsearch returned NOTHING for this document -- its
+            // pipeline dropped it, and the capture records the marker so the
+            // corpus stays aligned. The matching outcome is our transform
+            // dropping it too, scored as one whole-event field.
+            let expected_drop =
+                expected.get("_compat_error").and_then(Value::as_str) == Some("no result");
+
             score.events += 1;
-            score.fields += compared_field_count(expected);
+            score.fields += if expected_drop {
+                1
+            } else {
+                compared_field_count(expected)
+            };
 
             let mut event = Event::new(raw.clone());
-            if transform.transform(&mut event).is_err() {
-                score.events_errored += 1;
-                continue;
+            match transform.transform(&mut event) {
+                Err(_) => {
+                    score.events_errored += 1;
+                    continue;
+                }
+                Ok(TransformResult::Drop) if expected_drop => {
+                    score.events_matched += 1;
+                    continue;
+                }
+                Ok(TransformResult::Drop) => {
+                    // Dropped an event Elastic kept: every expected field is
+                    // gone, and the ranking hears about it under one name.
+                    score.fields_wrong += compared_field_count(expected);
+                    failures
+                        .entry(capture.source.clone())
+                        .or_default()
+                        .push(BTreeSet::from(["_dropped".to_string()]));
+                    continue;
+                }
+                Ok(_) if expected_drop => {
+                    // Kept an event Elastic dropped.
+                    score.fields_wrong += 1;
+                    failures
+                        .entry(capture.source.clone())
+                        .or_default()
+                        .push(BTreeSet::from(["_not_dropped".to_string()]));
+                    continue;
+                }
+                Ok(_) => {}
             }
 
             let diff = JsonDiff::compare(expected, event.as_value(), MatchMode::Semantic);

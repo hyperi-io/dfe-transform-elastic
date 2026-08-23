@@ -465,13 +465,12 @@ pub(crate) fn run_message_table(event: &mut Event, params: &Map<String, Value>) 
         let mut descs: Vec<Value> = Vec::new();
         for bit in 0..32u32 {
             let flag = 1i64 << bit;
-            if mask & flag == flag {
-                if let Some(desc) = flags
+            if mask & flag == flag
+                && let Some(desc) = flags
                     .and_then(|table| table.get(&format!("0x{flag:08X}")))
                     .and_then(Value::as_str)
-                {
-                    descs.push(Value::String(desc.to_string()));
-                }
+            {
+                descs.push(Value::String(desc.to_string()));
             }
         }
         if !descs.is_empty() {
