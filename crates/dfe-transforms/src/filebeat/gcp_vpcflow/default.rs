@@ -633,7 +633,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -647,7 +647,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -821,7 +821,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");

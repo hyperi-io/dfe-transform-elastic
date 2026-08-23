@@ -99,19 +99,19 @@ impl Transform for Default {
                             "Processor '{}'\n{}with tag '{}'\n{}failed with message '{}'\n",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("#_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("/_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -248,7 +248,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_tmp.session_name")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -301,7 +301,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_tmp.session_name_prefix")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -379,7 +379,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("json.eventName")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("event.action", v)?;
@@ -642,7 +642,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("json.requestParameters.userName")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -654,7 +654,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("json.requestParameters.newUserName")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -666,7 +666,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("json.responseElements.user.userId")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -725,7 +725,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("file.hash.sha256")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -978,7 +978,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("user.id")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -994,7 +994,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("user.name")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -1010,7 +1010,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("user.changes.name")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -1072,7 +1072,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("json");
                 event.remove("_conf");
                 event.remove("_tmp");

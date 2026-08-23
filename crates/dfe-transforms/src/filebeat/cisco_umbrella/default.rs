@@ -683,16 +683,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -740,16 +740,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1253,16 +1253,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1333,16 +1333,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1616,7 +1616,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("user.email")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -1795,16 +1795,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1848,16 +1848,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1901,16 +1901,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1947,16 +1947,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1992,16 +1992,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -2118,7 +2118,7 @@ impl Transform for Default {
                         "dns-request-{}",
                         event
                             .get("cisco.umbrella.action")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -2141,7 +2141,7 @@ impl Transform for Default {
                         "proxy-request-{}",
                         event
                             .get("http.request.method")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -2170,7 +2170,7 @@ impl Transform for Default {
                         "fw-connection-{}",
                         event
                             .get("cisco.umbrella.action")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -2193,7 +2193,7 @@ impl Transform for Default {
                         "ips-{}",
                         event
                             .get("cisco.umbrella.action")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -2216,7 +2216,7 @@ impl Transform for Default {
                         "dlp-{}",
                         event
                             .get("cisco.umbrella.action")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -2776,7 +2776,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2788,7 +2788,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2800,7 +2800,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.nat.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2812,7 +2812,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2824,7 +2824,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("host.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2836,7 +2836,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2848,7 +2848,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("dns.question.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2861,7 +2861,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest._value")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -2875,7 +2875,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("cisco.umbrella.sha_sha256")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2887,7 +2887,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("file.hash.sha256")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2912,7 +2912,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");

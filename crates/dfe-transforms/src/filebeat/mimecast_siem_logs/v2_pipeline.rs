@@ -112,7 +112,7 @@ impl Transform for V2Pipeline {
                         json!(
                             event
                                 .get("_ingest._value.value")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -131,7 +131,7 @@ impl Transform for V2Pipeline {
                     json!(
                         event
                             .get("mimecast.recipients")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -167,7 +167,7 @@ impl Transform for V2Pipeline {
                     json!(
                         event
                             .get("mimecast.senderHeader")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -199,7 +199,7 @@ impl Transform for V2Pipeline {
                     json!(
                         event
                             .get("mimecast.senderEnvelope")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -343,16 +343,16 @@ impl Transform for V2Pipeline {
                         "Processor {} with tag {} in pipeline {} failed with message: {}",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_pipeline")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -449,16 +449,16 @@ impl Transform for V2Pipeline {
                         "Processor {} with tag {} in pipeline {} failed with message: {}",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_pipeline")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -501,16 +501,16 @@ impl Transform for V2Pipeline {
                         "Processor {} with tag {} in pipeline {} failed with message: {}",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_pipeline")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -539,7 +539,7 @@ impl Transform for V2Pipeline {
                     json!(
                         event
                             .get("mimecast.sender")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -717,7 +717,7 @@ impl Transform for V2Pipeline {
                         json!(
                             event
                                 .get("_ingest._value")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -732,7 +732,7 @@ impl Transform for V2Pipeline {
                         json!(
                             event
                                 .get("_ingest._value")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -746,7 +746,7 @@ impl Transform for V2Pipeline {
                     json!(
                         event
                             .get("mimecast.Hostname")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -763,7 +763,7 @@ impl Transform for V2Pipeline {
                         json!(
                             event
                                 .get("_ingest._value")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -822,7 +822,7 @@ impl Transform for V2Pipeline {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");

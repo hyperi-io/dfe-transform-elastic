@@ -134,6 +134,32 @@ pub fn painless_to_string(v: &Value) -> String {
     }
 }
 
+/// Render one value the way Elasticsearch's ingest MUSTACHE does.
+///
+/// The same as Painless's `toString` but for an ARRAY: mustache reaches the
+/// document through a handler that presents a list as a map keyed by its
+/// indices, so `{{package.name}}` over `["python-requests"]` renders
+/// `{0=python-requests}` and not `[python-requests]`. Verbatim from
+/// inspector's `event.id`, which concatenates four such fields.
+#[must_use]
+pub fn template_to_string(v: &Value) -> String {
+    use std::fmt::Write as _;
+
+    let Value::Array(items) = v else {
+        return painless_to_string(v);
+    };
+    let mut out = String::from("{");
+    for (index, item) in items.iter().enumerate() {
+        if index > 0 {
+            out.push_str(", ");
+        }
+        // Cannot fail: writing to a String.
+        let _ = write!(out, "{index}={}", template_to_string(item));
+    }
+    out.push('}');
+    out
+}
+
 /// A value as Java's own `toString`, which is not JSON.
 ///
 /// `AbstractMap` writes `{key=value, key=value}` with no quotes anywhere, and
@@ -413,6 +439,27 @@ fn camel_to_snake(s: &str) -> String {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from the inspector corpus: mustache sees a list through a
+    /// handler that keys it by index, so a template over one renders
+    /// `{0=a, 1=b}` where Painless's own `toString` gives `[a, b]`.
+    #[test]
+    fn a_template_renders_a_list_keyed_by_index() {
+        assert_eq!(
+            template_to_string(&json!(["python-requests"])),
+            "{0=python-requests}"
+        );
+        assert_eq!(
+            template_to_string(&json!(["golang.org/x/net", "nerdctl"])),
+            "{0=golang.org/x/net, 1=nerdctl}"
+        );
+        assert_eq!(template_to_string(&json!([])), "{}");
+
+        // Everything else renders exactly as Painless does.
+        assert_eq!(template_to_string(&json!("plain")), "plain");
+        assert_eq!(template_to_string(&json!(11_111_111)), "11111111");
+        assert_eq!(template_to_string(&json!({ "a": 1 })), "{a=1}");
+    }
 
     /// `char::to_lowercase` yields an ITERATOR because some codepoints
     /// lowercase to more than one character. Taking only the first silently

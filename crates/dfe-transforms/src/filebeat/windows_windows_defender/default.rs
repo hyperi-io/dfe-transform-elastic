@@ -62,7 +62,7 @@ impl Transform for Default {
                             "fail-{}",
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     return Err(TransformError::ParseError {
@@ -71,16 +71,16 @@ impl Transform for Default {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ))
                         .to_string(),
                     });
@@ -104,7 +104,7 @@ impl Transform for Default {
                 json!(
                     event
                         .get("winlog.event_id")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 ),
             )?;
 
@@ -250,7 +250,7 @@ impl Transform for Default {
                     let v = json!(
                         event
                             .get("_temp.user_parts.0")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     );
                     if !painless_is_empty_value(&v) {
                         event.set("user.domain", v)?;
@@ -268,7 +268,7 @@ impl Transform for Default {
                     let v = json!(
                         event
                             .get("_temp.user_parts.1")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     );
                     if !painless_is_empty_value(&v) {
                         event.set("user.name", v)?;
@@ -510,7 +510,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");

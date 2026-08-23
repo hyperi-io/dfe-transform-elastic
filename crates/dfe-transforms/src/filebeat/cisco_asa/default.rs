@@ -3236,7 +3236,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -3422,7 +3422,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -4008,7 +4008,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -4212,7 +4212,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -4780,7 +4780,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -4966,7 +4966,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -5516,7 +5516,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -5720,7 +5720,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -5924,7 +5924,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -6128,7 +6128,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.domain")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.domain", v)?;
@@ -6231,7 +6231,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.address")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("client.address", v)?;
@@ -6243,7 +6243,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.port")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("client.port", v)?;
@@ -6255,7 +6255,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.address")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.address", v)?;
@@ -6267,7 +6267,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("source.port")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("server.port", v)?;
@@ -9048,7 +9048,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("event.duration")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("_temp_.duration_hms", v)?;
@@ -9203,7 +9203,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_temp_.cisco.source_username")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -9218,7 +9218,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_temp_.cisco.destination_username")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -9748,7 +9748,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("_temp_.cisco.mapped_source_ip")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("source.nat.ip", v)?;
@@ -9776,7 +9776,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("_temp_.cisco.mapped_source_port")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("source.nat.port", v)?;
@@ -9805,7 +9805,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("_temp_.cisco.mapped_destination_ip")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("destination.nat.ip", v)?;
@@ -9833,7 +9833,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("_temp_.cisco.mapped_destination_port")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("destination.nat.port", v)?;
@@ -10014,7 +10014,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("url.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10031,7 +10031,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_temp_.url_domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10139,7 +10139,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("destination.user.name")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("user.name", v)?;
@@ -10158,7 +10158,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("host.hostname")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("observer.hostname", v)?;
@@ -10173,7 +10173,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("cisco.asa.destination_interface")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("observer.egress.interface.name", v)?;
@@ -10182,7 +10182,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("cisco.asa.source_interface")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("observer.ingress.interface.name", v)?;
@@ -10195,7 +10195,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10207,7 +10207,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.nat.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10219,7 +10219,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10231,7 +10231,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.nat.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10243,7 +10243,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("cisco.asa.pool_address")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10259,7 +10259,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10275,7 +10275,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("server.user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10291,7 +10291,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10307,7 +10307,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10319,7 +10319,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("file.hash.sha256")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10332,7 +10332,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("host.hostname")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10347,7 +10347,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("observer.hostname")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10362,7 +10362,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10375,7 +10375,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10390,7 +10390,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.user.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10405,7 +10405,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.user.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -10510,7 +10510,7 @@ impl Transform for Default {
                 event.remove("_temp_");
                 event.remove("_conf");
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }

@@ -178,12 +178,12 @@ impl Transform for SecurityStandard {
 
             let _cond = { event.has_value("event.code") && ["4624", "4648", "4797", "5379", "5380", "5381", "5382"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.SubjectUserName") && event.get_str("winlog.event_data.SubjectUserName") != Some("-") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.SubjectUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.SubjectUserName").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("event.code") && ["4688", "4720", "4722", "4723", "4724", "4725", "4726", "4738", "4740", "4767", "4797", "4798"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.TargetUserName") && event.get_str("winlog.event_data.TargetUserName") != Some("-") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.TargetUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.TargetUserName").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("event.code") && ["4672", "4673", "4674", "4741", "4742", "4743"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.PrivilegeList") };
@@ -208,12 +208,12 @@ impl Transform for SecurityStandard {
 
             let _cond = { event.has_value("winlog.event_data.NewTargetUserName") && event.get_str("winlog.event_data.NewTargetUserName") != Some("-") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.NewTargetUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.NewTargetUserName").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("winlog.event_data.OldTargetUserName") && event.get_str("winlog.event_data.OldTargetUserName") != Some("-") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.OldTargetUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.OldTargetUserName").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.get_str("event.code") == Some("5136") && event.has_value("winlog.event_data.OperationType") };
@@ -333,7 +333,7 @@ impl Transform for SecurityStandard {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.set("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -41,12 +41,12 @@ impl Transform for PipelineProcessIp {
 
             let _cond = { event.has_value("_tmp.valid_ip") && event.get_str("_tmp.valid_ip") != Some("") };
             if _cond {
-                event.append_unique("network.forwarded_ip", json!(event.get("_tmp.valid_ip").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("network.forwarded_ip", json!(event.get("_tmp.valid_ip").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("_tmp.invalid_ip") && event.get_str("_tmp.invalid_ip") != Some("") };
             if _cond {
-                event.append_unique("_tmp.invalid_ips", json!(event.get("_tmp.invalid_ip").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("_tmp.invalid_ips", json!(event.get("_tmp.invalid_ip").map_or_else(String::new, template_to_string)))?;
             }
 
             Ok(TransformResult::Continue)
@@ -58,7 +58,7 @@ impl Transform for PipelineProcessIp {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                    event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                    event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

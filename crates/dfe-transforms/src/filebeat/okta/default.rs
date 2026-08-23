@@ -979,7 +979,7 @@ impl Transform for Default {
                     ) != Some("")
                 };
                 if _cond {
-                    event.set("okta.debug_context.debug_data.risk_level", json!(event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").map_or_else(String::new, painless_to_string)))?;
+                    event.set("okta.debug_context.debug_data.risk_level", json!(event.get("okta.debug_context.debug_data.flattened.logOnlySecurityData.risk.level").map_or_else(String::new, template_to_string)))?;
                 }
                 let _cond = {
                     event.has_value(
@@ -1015,7 +1015,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("okta.debug_context.debug_data.flattened.risk.level")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                 }
@@ -1031,7 +1031,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("okta.debug_context.debug_data.flattened.factor")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                 }
@@ -1079,16 +1079,16 @@ impl Transform for Default {
                                 "Processor {} with tag {} in pipeline {} failed with message: {}",
                                 event
                                     .get("_ingest.on_failure_processor_type")
-                                    .map_or_else(String::new, painless_to_string),
+                                    .map_or_else(String::new, template_to_string),
                                 event
                                     .get("_ingest.on_failure_processor_tag")
-                                    .map_or_else(String::new, painless_to_string),
+                                    .map_or_else(String::new, template_to_string),
                                 event
                                     .get("_ingest.on_failure_pipeline")
-                                    .map_or_else(String::new, painless_to_string),
+                                    .map_or_else(String::new, template_to_string),
                                 event
                                     .get("_ingest.on_failure_message")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             )),
                         )?;
                         event.remove("_ingest.on_failure_message");
@@ -1372,7 +1372,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("okta.debug_context.debug_data.logOnlySecurityData.risk.level")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                 }
@@ -1409,7 +1409,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("okta.debug_context.debug_data.risk.level")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                 }
@@ -1424,7 +1424,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("okta.debug_context.debug_data.factor")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                 }
@@ -1470,16 +1470,16 @@ impl Transform for Default {
                                 "Processor {} with tag {} in pipeline {} failed with message: {}",
                                 event
                                     .get("_ingest.on_failure_processor_type")
-                                    .map_or_else(String::new, painless_to_string),
+                                    .map_or_else(String::new, template_to_string),
                                 event
                                     .get("_ingest.on_failure_processor_tag")
-                                    .map_or_else(String::new, painless_to_string),
+                                    .map_or_else(String::new, template_to_string),
                                 event
                                     .get("_ingest.on_failure_pipeline")
-                                    .map_or_else(String::new, painless_to_string),
+                                    .map_or_else(String::new, template_to_string),
                                 event
                                     .get("_ingest.on_failure_message")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             )),
                         )?;
                         // ignore_failure: true
@@ -1975,7 +1975,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("okta.actor.id")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("client.user.id", v)?;
@@ -1987,7 +1987,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("okta.actor.id")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("source.user.id", v)?;
@@ -1999,7 +1999,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("okta.actor.display_name")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("client.user.full_name", v)?;
@@ -2011,7 +2011,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("okta.actor.display_name")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("source.user.full_name", v)?;
@@ -2023,7 +2023,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("okta.actor.display_name")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("user.full_name", v)?;
@@ -2037,7 +2037,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("okta.actor.display_name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2049,7 +2049,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("user.target.full_name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2061,7 +2061,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2073,7 +2073,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2085,7 +2085,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("destination.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2291,7 +2291,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }

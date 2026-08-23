@@ -125,7 +125,7 @@ impl Transform for Default {
                     Value::Array(vec![json!(
                         event
                             .get("mimecast.fromUserEmailAddress")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )]),
                 )?;
             }
@@ -139,7 +139,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("mimecast.fromUserEmailAddress")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -153,7 +153,7 @@ impl Transform for Default {
                     Value::Array(vec![json!(
                         event
                             .get("mimecast.userEmailAddress")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )]),
                 )?;
             }
@@ -165,7 +165,7 @@ impl Transform for Default {
                     Value::Array(vec![json!(
                         event
                             .get("mimecast.userEmailAddress")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )]),
                 )?;
             }
@@ -179,7 +179,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("mimecast.userEmailAddress")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -214,7 +214,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("mimecast.date")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -226,7 +226,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -346,19 +346,19 @@ impl Transform for Default {
                         "Processor '{}' {}with tag '{}' {}failed with message '{}'",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");

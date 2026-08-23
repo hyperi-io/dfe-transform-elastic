@@ -112,7 +112,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.Rcpt")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -124,7 +124,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.headerFrom")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -155,7 +155,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.Sender")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -240,7 +240,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.Recipient")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -318,7 +318,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.recipient")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -334,7 +334,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.sender")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -366,7 +366,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("mimecast.datetime")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -489,7 +489,7 @@ impl Transform for V1Pipeline {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");

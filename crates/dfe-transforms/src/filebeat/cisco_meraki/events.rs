@@ -495,7 +495,7 @@ impl Transform for Events {
                     json!(
                         event
                             .get("event.original")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -562,7 +562,7 @@ impl Transform for Events {
                         "port_{}",
                         event
                             .get("_temp.port_action")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -933,7 +933,7 @@ impl Transform for Events {
                     json!(
                         event
                             .get("server.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -993,7 +993,7 @@ impl Transform for Events {
                     json!(
                         event
                             .get("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -1461,7 +1461,7 @@ impl Transform for Events {
                         json!(
                             event
                                 .get("user.name")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -1477,7 +1477,7 @@ impl Transform for Events {
                         json!(
                             event
                                 .get("user.email")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -1491,7 +1491,7 @@ impl Transform for Events {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -1503,7 +1503,7 @@ impl Transform for Events {
                     json!(
                         event
                             .get("client.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -1522,7 +1522,7 @@ impl Transform for Events {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");

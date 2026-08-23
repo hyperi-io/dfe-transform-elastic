@@ -61,7 +61,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -147,7 +147,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -204,7 +204,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.resource.access_key_details.principal_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -223,7 +223,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.resource.access_key_details.user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -292,7 +292,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -471,7 +471,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -664,7 +664,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -751,7 +751,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -802,7 +802,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -841,7 +841,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -972,7 +972,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -1098,7 +1098,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1151,7 +1151,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1231,7 +1231,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1349,7 +1349,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -1415,7 +1415,7 @@ impl Transform for Default {
                                             json!(
                                                 event
                                                     .get("_ingest.on_failure_message")
-                                                    .map_or_else(String::new, painless_to_string)
+                                                    .map_or_else(String::new, template_to_string)
                                             ),
                                         )?;
                                         event.remove("_ingest.on_failure_message");
@@ -1473,7 +1473,7 @@ impl Transform for Default {
                                     json!(
                                         event
                                             .get("_ingest._value")
-                                            .map_or_else(String::new, painless_to_string)
+                                            .map_or_else(String::new, template_to_string)
                                     ),
                                 )?;
                                 Ok(())
@@ -1580,7 +1580,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -1610,7 +1610,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.private.ip_address")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -1659,7 +1659,7 @@ impl Transform for Default {
                                         json!(
                                             event
                                                 .get("_ingest.on_failure_message")
-                                                .map_or_else(String::new, painless_to_string)
+                                                .map_or_else(String::new, template_to_string)
                                         ),
                                     )?;
                                     event.remove("_ingest.on_failure_message");
@@ -1694,7 +1694,7 @@ impl Transform for Default {
                                     json!(
                                         event
                                             .get("_ingest._value.private.ip_address")
-                                            .map_or_else(String::new, painless_to_string)
+                                            .map_or_else(String::new, template_to_string)
                                     ),
                                 )?;
                                 Ok(())
@@ -1827,7 +1827,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -1857,7 +1857,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.public.ip")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -2081,7 +2081,7 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                event.append_unique("related.user", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.uid").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.uid").map_or_else(String::new, template_to_string)))?;
             }
 
             if event.has("json.resource.kubernetesDetails.kubernetesUserDetails.username") {
@@ -2097,7 +2097,7 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                event.append_unique("related.user", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.user_name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.user_name").map_or_else(String::new, template_to_string)))?;
             }
 
             if event.has("json.resource.kubernetesDetails.kubernetesUserDetails.groups") {
@@ -2206,7 +2206,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -2314,7 +2314,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2416,7 +2416,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2455,7 +2455,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.resource.rdsdb_user_details.user")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2580,7 +2580,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest._value.owner.id")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -2632,7 +2632,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2684,7 +2684,7 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("aws.guardduty.service.action.aws_api_call_action.domain_details.domain").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("aws.guardduty.service.action.aws_api_call_action.domain_details.domain").map_or_else(String::new, template_to_string)))?;
             }
 
             if event.has("json.service.action.awsApiCallAction.errorCode") {
@@ -2724,7 +2724,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2782,7 +2782,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2797,7 +2797,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             if event.has("json.service.action.awsApiCallAction.remoteIpDetails.organization.asn") {
@@ -2857,7 +2857,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2883,7 +2883,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.service.action.dns_request_action.domain")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -2951,7 +2951,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -2966,7 +2966,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             if event
@@ -3044,7 +3044,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -3086,7 +3086,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -3130,7 +3130,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3183,7 +3183,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3227,7 +3227,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3242,7 +3242,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             // on_failure: 1 handler(s)
@@ -3271,7 +3271,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3342,7 +3342,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3357,7 +3357,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             if event
@@ -3410,7 +3410,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3451,7 +3451,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3501,7 +3501,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -3531,7 +3531,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.local_ip_details.ip_address_v4")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -3576,7 +3576,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -3735,7 +3735,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -3765,7 +3765,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.ip_address_v4")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -3929,7 +3929,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -3944,7 +3944,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             if event
@@ -4004,7 +4004,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4041,7 +4041,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4088,7 +4088,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -4122,7 +4122,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4167,7 +4167,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4204,7 +4204,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4241,7 +4241,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4274,7 +4274,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4307,7 +4307,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4381,7 +4381,7 @@ impl Transform for Default {
                                     json!(
                                         event
                                             .get("_ingest._value.hash")
-                                            .map_or_else(String::new, painless_to_string)
+                                            .map_or_else(String::new, template_to_string)
                                     ),
                                 )?;
                                 Ok(())
@@ -4464,7 +4464,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -4521,7 +4521,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4554,7 +4554,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4601,7 +4601,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -4651,7 +4651,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -4687,7 +4687,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -4819,7 +4819,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -4880,7 +4880,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -4928,7 +4928,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.service.runtime_details.context.module_sha256")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -5043,7 +5043,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -5077,7 +5077,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.service.runtime_details.process.executable_sha256")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -5123,7 +5123,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -5167,7 +5167,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -5214,7 +5214,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -5259,7 +5259,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -5317,7 +5317,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -5381,7 +5381,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -5456,7 +5456,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.id")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5479,7 +5479,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.name")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5502,7 +5502,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.container_runtime")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5514,42 +5514,42 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.connection_direction") && event.get_str("aws.guardduty.service.action.network_connection_action.connection_direction").is_some_and(|s| s.to_lowercase() == "inbound")
             };
             if _cond {
-                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.connection_direction") && event.get_str("aws.guardduty.service.action.network_connection_action.connection_direction").is_some_and(|s| s.to_lowercase() == "outbound")
             };
             if _cond {
-                event.append_unique("destination.address", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("destination.address", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.connection_direction") && event.get_str("aws.guardduty.service.action.network_connection_action.connection_direction").is_some_and(|s| s.to_lowercase() == "outbound")
             };
             if _cond {
-                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.connection_direction") && event.get_str("aws.guardduty.service.action.network_connection_action.connection_direction").is_some_and(|s| s.to_lowercase() == "inbound")
             };
             if _cond {
-                event.append_unique("destination.address", json!(event.get("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("destination.address", json!(event.get("aws.guardduty.service.action.network_connection_action.local_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5567,7 +5567,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.ip_address_v4")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5579,28 +5579,28 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4")
             };
             if _cond {
-                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.address", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asn")
             };
             if _cond {
-                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asn").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asn").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asn")
             };
             if _cond {
-                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asn").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asn").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asn")
             };
             if _cond {
-                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asn").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asn").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5618,7 +5618,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.organization.asn")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5630,7 +5630,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asn")
             };
             if _cond {
-                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asn").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.number", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asn").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.get("source.as.number").is_some_and(|v| v.is_array()) };
@@ -5670,7 +5670,7 @@ impl Transform for Default {
                                 json!(
                                     event
                                         .get("_ingest.on_failure_message")
-                                        .map_or_else(String::new, painless_to_string)
+                                        .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
                             event.remove("_ingest.on_failure_message");
@@ -5698,21 +5698,21 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asnorg")
             };
             if _cond {
-                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asnorg").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asnorg").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asnorg")
             };
             if _cond {
-                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asnorg").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asnorg").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asnorg")
             };
             if _cond {
-                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asnorg").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asnorg").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5730,7 +5730,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.organization.asnorg")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5742,7 +5742,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asnorg")
             };
             if _cond {
-                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asnorg").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.as.organization.name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asnorg").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5751,21 +5751,21 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.city.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.city.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.city.name")
             };
             if _cond {
-                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.city.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.city.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.remote_ip_details.city.name")
             };
             if _cond {
-                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.city.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.city.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5783,7 +5783,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.city.name")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5795,28 +5795,28 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.city.name")
             };
             if _cond {
-                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.city.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.city_name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.city.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.code")
             };
             if _cond {
-                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.code").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.code").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.code")
             };
             if _cond {
-                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.code").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.code").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.remote_ip_details.country.code")
             };
             if _cond {
-                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.country.code").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.country.code").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5834,7 +5834,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.country.code")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5846,28 +5846,28 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.code")
             };
             if _cond {
-                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.code").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_iso_code", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.code").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.name")
             };
             if _cond {
-                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.name")
             };
             if _cond {
-                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
                 event.has_value("aws.guardduty.service.action.network_connection_action.remote_ip_details.country.name")
             };
             if _cond {
-                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.country.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.country.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -5885,7 +5885,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.remote_ip_details.country.name")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -5897,7 +5897,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.name")
             };
             if _cond {
-                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.geo.country_name", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.name").map_or_else(String::new, template_to_string)))?;
             }
 
             // Painless script
@@ -5984,7 +5984,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
                 event.remove("_ingest.on_failure_message");
@@ -6018,7 +6018,7 @@ impl Transform for Default {
                                     json!(
                                         event
                                             .get("_ingest._value.hash")
-                                            .map_or_else(String::new, painless_to_string)
+                                            .map_or_else(String::new, template_to_string)
                                     ),
                                 )?;
                                 Ok(())
@@ -6044,7 +6044,7 @@ impl Transform for Default {
                                     json!(
                                         event
                                             .get("_ingest._value.file.name")
-                                            .map_or_else(String::new, painless_to_string)
+                                            .map_or_else(String::new, template_to_string)
                                     ),
                                 )?;
                                 Ok(())
@@ -6070,7 +6070,7 @@ impl Transform for Default {
                                     json!(
                                         event
                                             .get("_ingest._value.file.path")
-                                            .map_or_else(String::new, painless_to_string)
+                                            .map_or_else(String::new, template_to_string)
                                     ),
                                 )?;
                                 Ok(())
@@ -6149,7 +6149,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.service.action.network_connection_action.transport")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -6162,7 +6162,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.service.action.dns_request_action.protocol")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -6268,7 +6268,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.local_ip_details.ip_address_v4")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -6291,7 +6291,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -6303,7 +6303,7 @@ impl Transform for Default {
                 event.has_value("aws.guardduty.service.action.network_connection_action.local_port_details.port.value")
             };
             if _cond {
-                event.append_unique("source.port", json!(event.get("aws.guardduty.service.action.network_connection_action.local_port_details.port.value").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.port", json!(event.get("aws.guardduty.service.action.network_connection_action.local_port_details.port.value").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = {
@@ -6321,7 +6321,7 @@ impl Transform for Default {
                             json!(
                                 event
                                     .get("_ingest._value.local_port_details.port.value")
-                                    .map_or_else(String::new, painless_to_string)
+                                    .map_or_else(String::new, template_to_string)
                             ),
                         )?;
                         Ok(())
@@ -6373,7 +6373,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.resource.access_key_details.principal_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -6384,7 +6384,7 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                event.append_unique("user.id", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.uid").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("user.id", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.uid").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("aws.guardduty.resource.access_key_details.user.name") };
@@ -6394,7 +6394,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.resource.access_key_details.user.name")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -6405,7 +6405,7 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                event.append_unique("user.name", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.user_name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("user.name", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.user_name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("aws.guardduty.resource.rdsdb_user_details.user") };
@@ -6415,7 +6415,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.guardduty.resource.rdsdb_user_details.user")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -6634,7 +6634,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -166,7 +166,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_AdditionalFields")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -225,7 +225,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_m365_defender_event_additional_fields_answers")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -252,7 +252,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_m365_defender_event_additional_fields_ttls")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -287,7 +287,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_CrlDistributionPointUrls")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -307,7 +307,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_LoggedOnUsers")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -327,7 +327,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_ConnectedNetworks")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -347,7 +347,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_DefaultGateways")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -367,7 +367,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_DnsAddresses")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -387,7 +387,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_json_properties_IPAddresses")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -413,7 +413,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
                 event.set("_ingest.on_failure_processor_tag", "date_json_properties_CertificateExpirationTime")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -439,7 +439,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
                 event.set("_ingest.on_failure_processor_tag", "date_json_properties_InitiatingProcessCreationTime")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -465,7 +465,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
                 event.set("_ingest.on_failure_processor_tag", "date_json_properties_InitiatingProcessParentCreationTime")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -491,7 +491,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
                 event.set("_ingest.on_failure_processor_tag", "date_json_properties_ProcessCreationTime")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -517,7 +517,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
                 event.set("_ingest.on_failure_processor_tag", "date_json_properties_CertificateCountersignatureTime")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -543,7 +543,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
                 event.set("_ingest.on_failure_processor_tag", "date_json_properties_CertificateCreationTime")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -572,7 +572,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_json_properties_InitiatingProcessFileSize")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -629,7 +629,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_json_properties_ProcessId")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -672,7 +672,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_json_properties_IPv4Dhcp")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -701,7 +701,7 @@ impl Transform for PipelineDevice {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_json_properties_IPv6Dhcp")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -1481,7 +1481,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("m365_defender.event.issuer") };
             if _cond {
-                event.append("file.x509.issuer.common_name", json!(event.get("m365_defender.event.issuer").map_or_else(String::new, painless_to_string)))?;
+                event.append("file.x509.issuer.common_name", json!(event.get("m365_defender.event.issuer").map_or_else(String::new, template_to_string)))?;
             }
 
             if let Some(v) = event.get("m365_defender.event.signer").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -1505,7 +1505,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("event.category") && event.get("event.category").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("driver")), serde_json::Value::String(s) => s.contains("driver"), _ => false }) };
             if _cond {
-            let v = json!(format!("{}\\{}", event.get("m365_defender.event.folder_path").map_or_else(String::new, painless_to_string), event.get("m365_defender.event.file.name").map_or_else(String::new, painless_to_string)));
+            let v = json!(format!("{}\\{}", event.get("m365_defender.event.folder_path").map_or_else(String::new, template_to_string), event.get("m365_defender.event.file.name").map_or_else(String::new, template_to_string)));
             if !painless_is_empty_value(&v) {
                     event.set("dll.path", v)?;
             }
@@ -1863,7 +1863,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("event.category") && event.get("event.category").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("api")), serde_json::Value::String(s) => s.contains("api"), _ => false }) && (event.has_value("m365_defender.event.action.type") && event.get_str("m365_defender.event.action.type").is_some_and(|s| ["createremotethreadapicall", "readprocessmemoryapicall", "ntallocatevirtualmemoryremoteapicall", "openprocessapicall"].contains(&s.to_lowercase().as_str()))) && !event.has_value("Target.process.executable") };
             if _cond {
-            let v = json!(format!("{}\\{}", event.get("m365_defender.event.folder_path").map_or_else(String::new, painless_to_string), event.get("m365_defender.event.file.name").map_or_else(String::new, painless_to_string)));
+            let v = json!(format!("{}\\{}", event.get("m365_defender.event.folder_path").map_or_else(String::new, template_to_string), event.get("m365_defender.event.file.name").map_or_else(String::new, template_to_string)));
             if !painless_is_empty_value(&v) {
                     event.set("Target.process.executable", v)?;
             }
@@ -1941,7 +1941,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("event.category") && (event.get("event.category").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("api")), serde_json::Value::String(s) => s.contains("api"), _ => false }) || event.get("event.category").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("driver")), serde_json::Value::String(s) => s.contains("driver"), _ => false })) && !event.has_value("process.executable") };
             if _cond {
-            let v = json!(format!("{}\\{}", event.get("m365_defender.event.initiating_process.folder_path").map_or_else(String::new, painless_to_string), event.get("m365_defender.event.initiating_process.file_name").map_or_else(String::new, painless_to_string)));
+            let v = json!(format!("{}\\{}", event.get("m365_defender.event.initiating_process.folder_path").map_or_else(String::new, template_to_string), event.get("m365_defender.event.initiating_process.file_name").map_or_else(String::new, template_to_string)));
             if !painless_is_empty_value(&v) {
                     event.set("process.executable", v)?;
             }
@@ -2098,7 +2098,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("m365_defender.event.public_ip.value") && event.get_str("m365_defender.event.public_ip.value") != Some("") };
             if _cond {
-                event.append("host.ip", json!(event.get("m365_defender.event.public_ip.value").map_or_else(String::new, painless_to_string)))?;
+                event.append("host.ip", json!(event.get("m365_defender.event.public_ip.value").map_or_else(String::new, template_to_string)))?;
             }
 
             if let Some(v) = event.get("m365_defender.event.os.architecture").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -2203,7 +2203,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("_tmp.mac") };
             if _cond {
-                event.append_unique("host.mac", json!(event.get("_tmp.mac").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("host.mac", json!(event.get("_tmp.mac").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.registry.key") && event.get_str("m365_defender.event.registry.key") != Some("") };
@@ -2243,7 +2243,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("registry.key") && event.get_str("registry.key") != Some("") && event.has_value("registry.value") };
             if _cond {
-            let v = json!(format!("{}{}{}\\{}\\{}", event.get("#registry.hive").map_or_else(String::new, painless_to_string), event.get("registry.hive").map_or_else(String::new, painless_to_string), event.get("/registry.hive").map_or_else(String::new, painless_to_string), event.get("registry.key").map_or_else(String::new, painless_to_string), event.get("registry.value").map_or_else(String::new, painless_to_string)));
+            let v = json!(format!("{}{}{}\\{}\\{}", event.get("#registry.hive").map_or_else(String::new, template_to_string), event.get("registry.hive").map_or_else(String::new, template_to_string), event.get("/registry.hive").map_or_else(String::new, template_to_string), event.get("registry.key").map_or_else(String::new, template_to_string), event.get("registry.value").map_or_else(String::new, template_to_string)));
             if !painless_is_empty_value(&v) {
                     event.set("registry.path", v)?;
             }
@@ -2251,12 +2251,12 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("m365_defender.event.registry.value_data") };
             if _cond {
-                event.append_unique("registry.data.strings", json!(event.get("m365_defender.event.registry.value_data").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("registry.data.strings", json!(event.get("m365_defender.event.registry.value_data").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.previous.registry_value_data") };
             if _cond {
-                event.append_unique("registry.data.strings", json!(event.get("m365_defender.event.previous.registry_value_data").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("registry.data.strings", json!(event.get("m365_defender.event.previous.registry_value_data").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.registry.value_type") };
@@ -2710,7 +2710,7 @@ impl Transform for PipelineDevice {
             let _cond = { event.get("json.properties.LoggedOnUsers").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.properties.LoggedOnUsers", |event| {
-                    event.append("m365_defender.event.active_users", json!(event.get("_ingest._value.UserName").map_or_else(String::new, painless_to_string)))?;
+                    event.append("m365_defender.event.active_users", json!(event.get("_ingest._value.UserName").map_or_else(String::new, template_to_string)))?;
                     Ok(())
                 })?;
             }
@@ -2718,7 +2718,7 @@ impl Transform for PipelineDevice {
             let _cond = { event.get("m365_defender.event.active_users").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "m365_defender.event.active_users", |event| {
-                    event.append("related.user", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
+                    event.append("related.user", json!(event.get("_ingest._value").map_or_else(String::new, template_to_string)))?;
                     Ok(())
                 })?;
             }
@@ -2881,47 +2881,47 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("host.id") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("host.id").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("host.id").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("host.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("host.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("user.domain") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("user.domain").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("user.domain").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.initiating_process.account_domain") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("m365_defender.event.initiating_process.account_domain").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("m365_defender.event.initiating_process.account_domain").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("user.name") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("user.name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("user.name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.initiating_process.account_name") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("m365_defender.event.initiating_process.account_name").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("m365_defender.event.initiating_process.account_name").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.file.origin_ip") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("m365_defender.event.file.origin_ip").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("m365_defender.event.file.origin_ip").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("source.ip").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("source.ip").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("destination.ip").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("destination.ip").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.get("host.ip").is_some_and(|v| v.is_array()) };
@@ -2929,7 +2929,7 @@ impl Transform for PipelineDevice {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 foreach_array(event, "host.ip", |event| {
-                    event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, painless_to_string)))?;
+                    event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, template_to_string)))?;
                     Ok(())
                 })?;
                 Ok(())
@@ -2938,67 +2938,67 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("m365_defender.event.ipv4_dhcp") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("m365_defender.event.ipv4_dhcp").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("m365_defender.event.ipv4_dhcp").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.ipv6_dhcp") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("m365_defender.event.ipv6_dhcp").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("m365_defender.event.ipv6_dhcp").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("file.hash.md5") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("file.hash.md5").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("file.hash.md5").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("file.hash.sha1") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("file.hash.sha1").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("file.hash.sha1").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("file.hash.sha256") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("file.hash.sha256").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("file.hash.sha256").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("process.hash.md5") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("process.hash.md5").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("process.hash.md5").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("process.hash.sha1") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("process.hash.sha1").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("process.hash.sha1").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("process.hash.sha256") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("process.hash.sha256").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("process.hash.sha256").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("process.hash.md5") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("process.parent.hash.md5").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("process.parent.hash.md5").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("process.hash.sha1") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("process.parent.hash.sha1").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("process.parent.hash.sha1").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("process.hash.sha256") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("process.parent.hash.sha256").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("process.parent.hash.sha256").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.issuer_hash") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("m365_defender.event.issuer_hash").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("m365_defender.event.issuer_hash").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.signer_hash") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("m365_defender.event.signer_hash").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("m365_defender.event.signer_hash").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { !event.has_value("tags") || !(event.get("tags").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")), serde_json::Value::String(s) => s.contains("preserve_duplicate_custom_fields"), _ => false })) };
@@ -3093,7 +3093,7 @@ impl Transform for PipelineDevice {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                    event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.remove("_ingest.on_failure_message");
             }

@@ -56,7 +56,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_detection_methods")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -76,7 +76,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_confidence_level")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -96,7 +96,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "json")?;
                 event.set("_ingest.on_failure_processor_tag", "json_additional_fields")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -130,7 +130,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_email_cluster_id")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -159,7 +159,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_ip_address")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -188,7 +188,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_file_size")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -217,7 +217,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_sender_ipv4")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -246,7 +246,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_sender_ipv6")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -275,7 +275,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_attachment_count")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -304,7 +304,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_bulk_complaint_level")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -333,7 +333,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_json_properties_ReportId")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -362,7 +362,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_url_count")?;
-                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string)))?;
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -389,7 +389,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_IsExternalThread_to_boolean")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -415,7 +415,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 event.set("_ingest.on_failure_processor_tag", "convert_IsOwnedThread_to_boolean")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -451,7 +451,7 @@ impl Transform for PipelineEmail {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "dissect")?;
                 event.set("_ingest.on_failure_processor_tag", "dissect_json_properties_SenderEmailAddress_70aca97e")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -729,12 +729,12 @@ impl Transform for PipelineEmail {
 
             let _cond = { event.has_value("m365_defender.event.sender.from_address") };
             if _cond {
-                event.append_unique("email.from.address", json!(event.get("m365_defender.event.sender.from_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("email.from.address", json!(event.get("m365_defender.event.sender.from_address").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.recipient.email_address") };
             if _cond {
-                event.append_unique("email.to.address", json!(event.get("m365_defender.event.recipient.email_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("email.to.address", json!(event.get("m365_defender.event.recipient.email_address").map_or_else(String::new, template_to_string)))?;
             }
 
             if let Some(v) = event.get("m365_defender.event.network.message_id").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -763,17 +763,17 @@ impl Transform for PipelineEmail {
 
             let _cond = { event.has_value("m365_defender.event.sender_email_address") };
             if _cond {
-                event.append_unique("email.from.address", json!(event.get("m365_defender.event.sender_email_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("email.from.address", json!(event.get("m365_defender.event.sender_email_address").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.ipv4") };
             if _cond {
-                event.append_unique("source.ip", json!(event.get("m365_defender.event.sender.ipv4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.ip", json!(event.get("m365_defender.event.sender.ipv4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.ipv6") };
             if _cond {
-                event.append_unique("source.ip", json!(event.get("m365_defender.event.sender.ipv6").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("source.ip", json!(event.get("m365_defender.event.sender.ipv6").map_or_else(String::new, template_to_string)))?;
             }
 
             if let Some(v) = event.get("m365_defender.event.ip_address").filter(|v| !painless_is_empty_value(v)).cloned() {
@@ -799,52 +799,52 @@ impl Transform for PipelineEmail {
 
             let _cond = { event.has_value("m365_defender.event.sender.from_address") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("m365_defender.event.sender.from_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("m365_defender.event.sender.from_address").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.recipient.email_address") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("m365_defender.event.recipient.email_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("m365_defender.event.recipient.email_address").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("file.hash.sha256") };
             if _cond {
-                event.append_unique("related.hash", json!(event.get("file.hash.sha256").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hash", json!(event.get("file.hash.sha256").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.ipv4") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("m365_defender.event.sender.ipv4").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("m365_defender.event.sender.ipv4").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.ipv6") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("m365_defender.event.sender.ipv6").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("m365_defender.event.sender.ipv6").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.ip_address") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("m365_defender.event.ip_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("m365_defender.event.ip_address").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.from_domain") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("m365_defender.event.sender.from_domain").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("m365_defender.event.sender.from_domain").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender.mail_from_domain") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("m365_defender.event.sender.mail_from_domain").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("m365_defender.event.sender.mail_from_domain").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.url_domain") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("m365_defender.event.url_domain").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.hosts", json!(event.get("m365_defender.event.url_domain").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { event.has_value("m365_defender.event.sender_email_address") };
             if _cond {
-                event.append_unique("related.user", json!(event.get("m365_defender.event.sender_email_address").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("m365_defender.event.sender_email_address").map_or_else(String::new, template_to_string)))?;
             }
 
             let _cond = { !event.has_value("tags") || !(event.get("tags").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")), serde_json::Value::String(s) => s.contains("preserve_duplicate_custom_fields"), _ => false })) };
@@ -878,7 +878,7 @@ impl Transform for PipelineEmail {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                    event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.remove("_ingest.on_failure_message");
             }

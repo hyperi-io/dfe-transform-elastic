@@ -86,7 +86,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("mimecast.fromEnv.emailAddress")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -98,7 +98,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("mimecast.fromHdr.emailAddress")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -111,7 +111,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest._value.emailAddress")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -163,7 +163,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("mimecast.fromEnv.displayableName")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -190,7 +190,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("_ingest._value.displayableName")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -296,19 +296,19 @@ impl Transform for Default {
                         "Processor '{}' {}with tag '{}' {}failed with message '{}'",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");

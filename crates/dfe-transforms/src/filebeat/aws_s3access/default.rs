@@ -86,7 +86,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.s3access.bucket_owner")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -106,7 +106,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.remote_ip")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("client.ip", v)?;
@@ -119,7 +119,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("aws.s3access.remote_ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -127,7 +127,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.remote_ip")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("client.address", v)?;
@@ -178,7 +178,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.requester")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("client.user.id", v)?;
@@ -187,7 +187,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.request_id")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("event.id", v)?;
@@ -196,7 +196,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.operation")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("event.action", v)?;
@@ -205,7 +205,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.http_status")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("http.response.status_code", v)?;
@@ -232,7 +232,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.error_code")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("event.code", v)?;
@@ -286,7 +286,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.referrer")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("http.request.referrer", v)?;
@@ -325,7 +325,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.cipher_suite")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("tls.cipher", v)?;
@@ -347,7 +347,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.access_point_arn")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("aws.s3access.access_point_arn", v)?;
@@ -356,7 +356,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.aclrequired")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("aws.s3access.aclrequired", v)?;
@@ -365,7 +365,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("aws.s3access.source_region")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("aws.s3access.source_region", v)?;
@@ -396,7 +396,7 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

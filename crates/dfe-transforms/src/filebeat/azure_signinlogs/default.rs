@@ -100,7 +100,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("azure.signinlogs.properties.ipaddress")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("source.address", v)?;
@@ -112,7 +112,7 @@ impl Transform for Default {
                 let v = json!(
                     event
                         .get("azure.signinlogs.properties.ip_address")
-                        .map_or_else(String::new, painless_to_string)
+                        .map_or_else(String::new, template_to_string)
                 );
                 if !painless_is_empty_value(&v) {
                     event.set("source.address", v)?;
@@ -161,7 +161,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("source.ip")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -169,7 +169,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("source.ip")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("client.ip", v)?;
@@ -372,7 +372,7 @@ impl Transform for Default {
             let v = json!(
                 event
                     .get("azure.signinlogs.properties.id")
-                    .map_or_else(String::new, painless_to_string)
+                    .map_or_else(String::new, template_to_string)
             );
             if !painless_is_empty_value(&v) {
                 event.set("event.id", v)?;
@@ -438,7 +438,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("user.id")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -454,7 +454,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("user.name")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -470,7 +470,7 @@ impl Transform for Default {
                         json!(
                             event
                                 .get("user.full_name")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         ),
                     )?;
                     Ok(())
@@ -587,7 +587,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("azure.signinlogs.properties.app_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -602,7 +602,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("azure.signinlogs.properties.resource_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -625,7 +625,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("azure.signinlogs.properties.service_principal_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -642,7 +642,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("azure.signinlogs.properties.service_principal_credential_key_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -657,7 +657,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("azure.signinlogs.properties.user_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -673,7 +673,7 @@ impl Transform for Default {
                     json!(
                         event
                             .get("azure.signinlogs.properties.device_detail.device_id")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     ),
                 )?;
             }
@@ -939,19 +939,19 @@ impl Transform for Default {
                         "Processor '{}' {}with tag '{}' {}failed with message '{}'",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
                 event.remove("_ingest.on_failure_message");

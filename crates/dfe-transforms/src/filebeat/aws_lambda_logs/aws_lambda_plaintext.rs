@@ -83,7 +83,7 @@ impl Transform for AwsLambdaPlaintext {
             if false {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            event.set("@timestamp", json!(event.get("_ingest.timestamp").map_or_else(String::new, painless_to_string)))?;
+            event.set("@timestamp", json!(event.get("_ingest.timestamp").map_or_else(String::new, template_to_string)))?;
                 Ok(())
             })();
             }
@@ -114,7 +114,7 @@ impl Transform for AwsLambdaPlaintext {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.set("error.message", json!(format!("Processor '{}'\n  {}with tag '{}'\n  {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.set("error.message", json!(format!("Processor '{}'\n  {}with tag '{}'\n  {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

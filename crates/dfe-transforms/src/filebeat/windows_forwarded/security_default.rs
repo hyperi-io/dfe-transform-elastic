@@ -172,11 +172,11 @@ impl Transform for SecurityDefault {
                 painless_exec_plan(event, cached_painless!(r#"if (ctx.event?.code == null ||\n    ![\"4688\"].contains(ctx.event.code)) {\n  return;\n}\nif (ctx.winlog?.event_data?.NewProcessId != null) {\n  if (ctx.process == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"process\", hm);\n  }\n  if (ctx.winlog.event_data.NewProcessId instanceof String) {\n    Long pid = Long.decode(ctx.winlog.event_data.NewProcessId);\n    ctx.process.put(\"pid\", pid.longValue());\n  } else {\n    ctx.process.put(\"pid\", ctx.winlog.event_data.NewProcessId);\n  }\n  ctx.winlog.event_data.remove(\"NewProcessId\");\n}\nif (ctx.winlog?.event_data?.NewProcessName != null) {\n  if (ctx.process == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"process\", hm);\n  }\n  ctx.process.put(\"executable\", ctx.winlog.event_data.NewProcessName);\n  ctx.winlog.event_data.remove(\"NewProcessName\");\n}\nif (ctx.winlog?.event_data?.ParentProcessName != null) {\n  if (ctx.process == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"process\", hm);\n  }\n  if (ctx.process?.parent == null) {\n    HashMap hm = new HashMap();\n    ctx.process.put(\"parent\", hm);\n  }\n  ctx.process.parent.put(\"executable\", ctx.winlog.event_data.ParentProcessName);\n  ctx.winlog.event_data.remove(\"ParentProcessName\");\n}\nif (ctx.process?.name == null && ctx.process?.executable != null) {\n  def parts = ctx.process.executable.splitOnToken(\"\\\\\");\n  ctx.process.put(\"name\", parts[-1]);\n}\nif (ctx.process?.parent?.name == null && ctx.process?.parent?.executable != null) {\n  def parts = ctx.process.parent.executable.splitOnToken(\"\\\\\");\n  ctx.process.parent.put(\"name\", parts[-1]);\n}\nif (ctx.winlog?.event_data?.ProcessId != null) {\n  if (ctx.process == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"process\", hm);\n  }\n  if (ctx.process?.parent == null) {\n    HashMap hm = new HashMap();\n    ctx.process.put(\"parent\", hm);\n  }\n  if (ctx.winlog.event_data.ProcessId instanceof String) {\n    Long pid = Long.decode(ctx.winlog.event_data.ProcessId);\n    ctx.process.parent.put(\"pid\", pid.longValue());\n  } else {\n    ctx.process.parent.put(\"pid\", ctx.winlog.event_data.ProcessId);\n  }\n}\nif (ctx.winlog?.event_data?.CommandLine != null) {\n  int start = 0;\n  int end = 0;\n  boolean in_quote = false;\n  ArrayList al = new ArrayList();\n  for (int i = 0; i < ctx.winlog.event_data.CommandLine.length(); i++) {\n    end = i;\n    if (Character.compare(ctx.winlog.event_data.CommandLine.charAt(i), \"\\\"\".charAt(0)) == 0) {\n      if (in_quote) {\n        in_quote = false;\n      } else {\n        in_quote = true;\n      }\n    }\n    if (Character.isWhitespace(ctx.winlog.event_data.CommandLine.charAt(i)) && !in_quote) {\n      al.add(ctx.winlog.event_data.CommandLine.substring(start, end));\n      start = i + 1;\n    }\n    if (i == ctx.winlog.event_data.CommandLine.length() - 1) {\n      al.add(ctx.winlog.event_data.CommandLine.substring(start, end + 1));\n    }\n  }\n  if (ctx.process == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"process\", hm);\n  }\n  ctx.process.put(\"args\", al);\n  ctx.process.put(\"command_line\", ctx.winlog.event_data.CommandLine);\n  ctx.process.put(\"args_count\", al.size());\n}\nif ((ctx.winlog?.event_data?.TargetUserName != null) &&\n    (!ctx.winlog.event_data.TargetUserName.equals(\"-\"))) {\n  if (ctx.related == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"related\", hm);\n  }\n  if (ctx.related?.user == null) {\n    ArrayList al = new ArrayList();\n    ctx.related.put(\"user\", al);\n  }\n  if (!ctx.related.user.contains(ctx.winlog.event_data.TargetUserName)) {\n    ctx.related.user.add(ctx.winlog.event_data.TargetUserName);\n  }\n}"#))?;
                 let _cond = { event.has_value("event.code") && ["4624", "4648", "4797", "5379", "5380", "5381", "5382"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.SubjectUserName") && event.get_str("winlog.event_data.SubjectUserName") != Some("-") };
                 if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.SubjectUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.SubjectUserName").map_or_else(String::new, template_to_string)))?;
                 }
                 let _cond = { event.has_value("event.code") && ["4688", "4720", "4722", "4723", "4724", "4725", "4726", "4738", "4740", "4767", "4797", "4798"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.TargetUserName") && event.get_str("winlog.event_data.TargetUserName") != Some("-") };
                 if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.TargetUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.TargetUserName").map_or_else(String::new, template_to_string)))?;
                 }
                 let _cond = { event.has_value("event.code") && ["4672", "4673", "4674", "4741", "4742", "4743"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.PrivilegeList") };
                 if _cond {
@@ -197,11 +197,11 @@ impl Transform for SecurityDefault {
                 }
                 let _cond = { event.has_value("winlog.event_data.NewTargetUserName") && event.get_str("winlog.event_data.NewTargetUserName") != Some("-") };
                 if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.NewTargetUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.NewTargetUserName").map_or_else(String::new, template_to_string)))?;
                 }
                 let _cond = { event.has_value("winlog.event_data.OldTargetUserName") && event.get_str("winlog.event_data.OldTargetUserName") != Some("-") };
                 if _cond {
-                event.append_unique("related.user", json!(event.get("winlog.event_data.OldTargetUserName").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.user", json!(event.get("winlog.event_data.OldTargetUserName").map_or_else(String::new, template_to_string)))?;
                 }
                 let _cond = { event.get_str("event.code") == Some("5136") && event.has_value("winlog.event_data.OperationType") };
                 if _cond {
@@ -420,7 +420,7 @@ impl Transform for SecurityDefault {
 
             let _cond = { event.has_value("source.ip") && event.get_str("source.ip") != Some("-") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("source.ip").map_or_else(String::new, painless_to_string)))?;
+                event.append_unique("related.ip", json!(event.get("source.ip").map_or_else(String::new, template_to_string)))?;
             }
 
             if event.has_value("winlog.record_id") {
@@ -481,10 +481,10 @@ impl Transform for SecurityDefault {
                         }
                         Ok(())
                     })();
-                        event.append("error.message", json!(format!("fail-{}", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string))))?;
+                        event.append("error.message", json!(format!("fail-{}", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string))))?;
                         return Err(TransformError::ParseError {
                             path: "_fail".into(),
-                            message: (format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))).to_string(),
+                            message: (format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))).to_string(),
                         });
             }
             }
@@ -518,7 +518,7 @@ impl Transform for SecurityDefault {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                    event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string)))?;
+                    event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
