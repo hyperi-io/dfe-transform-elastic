@@ -84,6 +84,7 @@ pub(crate) enum ParamsShape {
         target: String,
     },
     MimecastLogType,
+    InvocationDetails,
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -137,6 +138,12 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return Some(ParamsShape::SentinelRemoval);
+    }
+
+    // Pattern: powershell's raw invocation details, one structured map per
+    // line of the named event_data field.
+    if normalised.contains("def parseRawDetail(String raw)") {
+        return Some(ParamsShape::InvocationDetails);
     }
 
     // Pattern: mimecast's scored log-type classifier, keyed on its four
@@ -336,6 +343,7 @@ pub(crate) fn run_params_shape(
             true
         }
         ParamsShape::MimecastLogType => try_mimecast_log_type(event, params),
+        ParamsShape::InvocationDetails => try_invocation_details(event, params),
         ParamsShape::ProtocolPrefix {
             list,
             fallback,
@@ -662,6 +670,64 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 /// co-equal winner is listed. Iteration orders are Java's hash orders, which
 /// [`crate::painless_helpers::java_bucket`] reproduces -- the corpus's own
 /// single-winner strings depend on them.
+/// powershell's `parseRawDetail`: one structured map per raw detail line.
+///
+/// `<type>(<related command>): <value>`, and a `ParameterBinding` type splits
+/// its value again into `name=<n>; value=<v>`. A line that fits neither shape
+/// keeps its whole text under `value`, which is the script's own fallback.
+fn try_invocation_details(event: &mut Event, params: &Map<String, Value>) -> bool {
+    // Site-local cells: the two patterns are literals, so they compile once
+    // per process and never touch a shared map on the hot path.
+    static DETAIL: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+        regex::Regex::new(r"^([^(]+)\(([^)]+)\):\s*(.+)$").expect("detail regex")
+    });
+    static BINDING: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+        regex::Regex::new(r"^name=(.+);\s*value=(.+)$").expect("binding regex")
+    });
+
+    let Some(field) = params.get("field").and_then(Value::as_str) else {
+        return true;
+    };
+    let Some(Value::Array(values)) = event.get(&format!("winlog.event_data.{field}")).cloned()
+    else {
+        return true;
+    };
+
+    let mut details: Vec<Value> = match event.get("_temp.details") {
+        Some(Value::Array(existing)) => existing.clone(),
+        _ => Vec::new(),
+    };
+    for raw in values.iter().filter_map(Value::as_str) {
+        let Some(caps) = DETAIL.captures(raw) else {
+            details.push(json!({ "value": raw }));
+            continue;
+        };
+        let (kind, command, value) = (&caps[1], &caps[2], &caps[3]);
+        if kind != "ParameterBinding" {
+            details.push(json!({
+                "type": kind,
+                "related_command": command,
+                "value": value,
+            }));
+            continue;
+        }
+        match BINDING.captures(value) {
+            Some(pair) => details.push(json!({
+                "type": kind,
+                "related_command": command,
+                "name": &pair[1],
+                "value": &pair[2],
+            })),
+            None => details.push(json!({ "value": value })),
+        }
+    }
+
+    if !details.is_empty() {
+        let _ = event.set("_temp.details", Value::Array(details));
+    }
+    true
+}
+
 fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool {
     use crate::painless_helpers::{java_bucket, java_table_size};
 
