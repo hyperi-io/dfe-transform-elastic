@@ -164,10 +164,30 @@ fn parse_java_exact(
 ) -> Option<DateTime<FixedOffset>> {
     let mut chrono = java_to_chrono(java);
 
+    // The date processor resolves the date from its numeric fields and
+    // IGNORES a day name that disagrees -- zscaler's fixtures carry a "Tue"
+    // on a Wednesday and Elasticsearch parses them. chrono cross-checks and
+    // rejects, so a LEADING day name is dropped from both sides; the
+    // separators that follow it sit in both and keep the parse aligned.
+    let input = if let Some(rest) = chrono
+        .strip_prefix("%a")
+        .or_else(|| chrono.strip_prefix("%A"))
+    {
+        let rest = rest.to_string();
+        chrono = Cow::Owned(rest);
+        Cow::Owned(
+            input
+                .trim_start_matches(|c: char| c.is_ascii_alphabetic())
+                .to_string(),
+        )
+    } else {
+        Cow::Borrowed(input)
+    };
+
     // A BSD syslog date carries no year. Java fills in the ingesting node's
     // current one, so the text is prefixed rather than the parse failing.
     let input = if chrono.contains("%Y") || chrono.contains("%y") {
-        Cow::Borrowed(input)
+        input
     } else {
         chrono = Cow::Owned(format!("%Y {chrono}"));
         Cow::Owned(format!("{} {input}", Utc::now().year()))
@@ -192,17 +212,29 @@ fn parse_java_exact(
 
 /// A naive datetime plus the zone name the pattern asked for, if any.
 ///
-/// chrono accepts `%Z` and then DISCARDS what it matched, so a pattern
-/// ending in one is split off by hand first -- otherwise the parse succeeds
-/// and the only offset the text carries is silently dropped.
+/// chrono's `%Z` parse consumes far more than a zone name -- digits and
+/// punctuation included -- so `HH:mm` + `%Z` swallowed `:26.653Z` whole and
+/// a minute-precision format beat the full one, truncating every mimecast
+/// indicator timestamp. A pattern ending in `%Z` is split by hand instead:
+/// the zone is the TRAILING ALPHABETIC run, abutting or space-separated, and
+/// the rest must parse EXACTLY. A `%Z` pattern with no zone tail does not
+/// match at all, which is Java's own reading of a mandatory `z`.
 fn parse_naive(input: &str, chrono: &str) -> Option<(NaiveDateTime, Option<String>)> {
     if let Some(stripped) = chrono
         .strip_suffix(" %Z")
         .or_else(|| chrono.strip_suffix("%Z"))
-        && let Some((head, zone)) = input.rsplit_once(' ')
-        && let Ok(naive) = NaiveDateTime::parse_from_str(head.trim(), stripped.trim())
     {
-        return Some((naive, Some(zone.to_string())));
+        let trimmed = input.trim_end();
+        let zone_start = trimmed
+            .rfind(|c: char| !c.is_ascii_alphabetic())
+            .map_or(0, |at| at + 1);
+        let (head, zone) = trimmed.split_at(zone_start);
+        if !zone.is_empty()
+            && let Ok(naive) = NaiveDateTime::parse_from_str(head.trim_end(), stripped.trim_end())
+        {
+            return Some((naive, Some(zone.to_string())));
+        }
+        return None;
     }
     NaiveDateTime::parse_from_str(input, chrono)
         .ok()
