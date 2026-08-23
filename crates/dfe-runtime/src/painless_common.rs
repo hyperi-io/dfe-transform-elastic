@@ -3063,6 +3063,9 @@ pub(crate) struct LadderArm {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Ladder {
     subject: String,
+    /// The local the subject was bound through carried `.toLowerCase()`, so
+    /// every comparison folds case -- inspector maps `HIGH` and `high` alike.
+    fold_case: bool,
     arms: Vec<LadderArm>,
 }
 
@@ -3070,16 +3073,19 @@ pub(crate) struct Ladder {
 fn parse_ladder(script: &str) -> Option<Ladder> {
     use crate::painless_params::clean_path;
 
+    // A ladder is the WHOLE of its script. One that loops is doing something
+    // else entirely -- powershell's entropy pass walks the script block
+    // character by character -- and claiming it runs the ladder instead of the
+    // real work.
+    if script.contains("for (") {
+        return None;
+    }
+
     // The subject is whatever the FIRST `if (... == ...)` compares against.
     let first = script.find("if (")? + 4;
     let (lhs, _) = script[first..].split_once("==")?;
     let lhs = lhs.trim();
-
-    // A local binding resolves back to the ctx path it was read from.
-    let subject = match ctx_path_bound_to(script, lhs) {
-        Some(path) => path,
-        None => clean_path(lhs.strip_prefix("ctx.")?),
-    };
+    let mut through_put = false;
 
     let mut arms = Vec::new();
     for segment in script.split("if (").skip(1) {
@@ -3089,28 +3095,81 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         let Some((_, rhs)) = cond.split_once("==") else {
             continue;
         };
-        let (Some(literal), Some(value)) = (quoted_first(rhs), quoted_first(body)) else {
+        let Some(literal) = quoted_first(rhs) else {
             continue;
         };
-        let Some(assign) = body.find('=') else {
-            continue;
+        // `ctx.<parent>.put('<key>', '<value>')` writes the same thing an
+        // assignment does, and inspector's severity map is written that way.
+        let arm = if let Some((subject, arguments)) = body.split_once(".put(") {
+            let (Some(parent), Some((key, value))) = (
+                subject
+                    .trim()
+                    .trim_start_matches('{')
+                    .trim()
+                    .strip_prefix("ctx."),
+                quoted_first(arguments).zip(
+                    arguments
+                        .split_once(',')
+                        .and_then(|(_, rest)| quoted_first(rest)),
+                ),
+            ) else {
+                continue;
+            };
+            through_put = true;
+            LadderArm {
+                literal,
+                target: format!("{}.{key}", clean_path(parent.trim())),
+                value,
+            }
+        } else {
+            let (Some(value), Some(assign)) = (quoted_first(body), body.find('=')) else {
+                continue;
+            };
+            let Some(target) = body[..assign]
+                .trim()
+                .trim_start_matches('{')
+                .trim()
+                .strip_prefix("ctx.")
+            else {
+                continue;
+            };
+            LadderArm {
+                literal,
+                target: clean_path(target.trim()),
+                value,
+            }
         };
-        let Some(target) = body[..assign]
-            .trim()
-            .trim_start_matches('{')
-            .trim()
-            .strip_prefix("ctx.")
-        else {
-            continue;
-        };
-        arms.push(LadderArm {
-            literal,
-            target: clean_path(target.trim()),
-            value,
-        });
+        arms.push(arm);
+    }
+    if arms.len() < 2 {
+        return None;
+    }
+    // A `.put()` arm is also how a script BUILDS a map, so the shape only
+    // claims one where every `if` in it is an arm -- nothing else going on.
+    if through_put && arms.len() != script.matches("if (").count() {
+        return None;
     }
 
-    (arms.len() >= 2).then_some(Ladder { subject, arms })
+    // A local binding resolves back to the ctx path it was read from, with any
+    // case fold the binding applied travelling with it.
+    let bound = ctx_path_bound_to(script, lhs);
+    let fold_case = bound
+        .as_deref()
+        .is_some_and(|path| path.ends_with(".toLowerCase()") || path.ends_with(".toUpperCase()"));
+    let subject = match bound {
+        Some(path) => path
+            .strip_suffix(".toLowerCase()")
+            .or_else(|| path.strip_suffix(".toUpperCase()"))
+            .unwrap_or(&path)
+            .to_string(),
+        None => clean_path(lhs.strip_prefix("ctx.")?),
+    };
+
+    Some(Ladder {
+        subject,
+        fold_case,
+        arms,
+    })
 }
 
 /// A version string split at its first digit -- `tls1.3` into the protocol
@@ -3841,7 +3900,14 @@ fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
     let Some(subject) = subject else {
         return true;
     };
-    if let Some(arm) = ladder.arms.iter().find(|a| a.literal == subject) {
+    let matches = |arm: &&LadderArm| {
+        if ladder.fold_case {
+            arm.literal.eq_ignore_ascii_case(&subject)
+        } else {
+            arm.literal == subject
+        }
+    };
+    if let Some(arm) = ladder.arms.iter().find(matches) {
         let _ = event.set(&arm.target, json!(arm.value));
     }
     true
@@ -6159,6 +6225,27 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/aws/inspector/default.yml`: the ladder writes
+    /// through `.put()` and compares a local the script LOWER-CASED, so the
+    /// fold has to travel with the subject.
+    #[test]
+    fn a_case_folded_ladder_writes_through_put() {
+        let script = "String severity = ctx.aws.inspector.severity.toLowerCase();\n\
+            if (severity == 'untriaged') {\n  ctx.vulnerability.put('severity', 'Unknown');\n\
+            } else if (severity == 'informational') {\n\
+            ctx.vulnerability.put('severity', 'Low');\n\
+            } else if (severity == 'high') {\n  ctx.vulnerability.put('severity', 'High');\n}";
+
+        let mut event = Event::new(json!({ "aws": { "inspector": { "severity": "HIGH" }}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("vulnerability.severity"), Some("High"));
+
+        // A value no arm names writes nothing.
+        let mut other = Event::new(json!({ "aws": { "inspector": { "severity": "none" }}}));
+        assert!(try_known_painless(&mut other, script));
+        assert!(other.get("vulnerability.severity").is_none());
+    }
 
     /// Verbatim from `pipelines/mimecast/message_release_logs/default.yml`:
     /// every display name and address the script names, split at the `@` and
