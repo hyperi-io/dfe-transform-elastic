@@ -325,6 +325,179 @@ fn run_token_count(event: &mut Event, source: &str, separator: &str, target: &st
     true
 }
 
+/// securityhub's single-resource extraction, transliterated. Only the
+/// one-resource case is handled here, as the script itself says; the
+/// multi-resource sibling is a separate script.
+#[allow(clippy::too_many_lines)] // A transliteration; splitting it would hide the script's order.
+fn run_securityhub_resource(event: &mut Event) -> bool {
+    let Some(Value::Array(resources)) = event.get("aws.securityhub_findings.resources").cloned()
+    else {
+        return true;
+    };
+
+    for (path, empty) in [
+        ("resource", json!({})),
+        ("user", json!({})),
+        ("host", json!({})),
+        ("host.ip", json!([])),
+        ("orchestrator", json!({})),
+        ("orchestrator.cluster", json!({})),
+        ("orchestrator.resource", json!({})),
+        ("cloud", json!({})),
+        ("cloud.instance", json!({})),
+        ("cloud.service", json!({})),
+    ] {
+        if !event.has_value(path) {
+            let _ = event.set(path, empty);
+        }
+    }
+
+    if resources.len() != 1 {
+        return true;
+    }
+    let res = &resources[0];
+    let kind = res.get("Type").and_then(Value::as_str).unwrap_or_default().to_string();
+    if let Some(v) = res.get("Type").cloned() {
+        let _ = event.set("resource.type", v);
+    }
+    if let Some(v) = res.get("Id").cloned() {
+        let _ = event.set("resource.id", v);
+    }
+    let Some(id) = res.get("Id").and_then(Value::as_str).map(str::to_string) else {
+        return true;
+    };
+    let tokens: Vec<&str> = id.split(':').collect();
+
+    let details = res.get("Details");
+    let detail = |member: &str| -> Option<&Value> {
+        details.and_then(|d| d.get(&kind)).and_then(|t| t.get(member))
+    };
+    let res_name = detail("Name")
+        .and_then(Value::as_str)
+        .map_or_else(|| (*tokens.last().unwrap_or(&"")).to_string(), str::to_string);
+    let _ = event.set("resource.name", json!(res_name.clone()));
+
+    if details.is_some() {
+        for (wanted, member, target) in [
+            ("AwsIamUser", "UserName", "user.name"),
+            ("AwsIamAccessKey", "UserName", "user.name"),
+            ("AwsS3Bucket", "OwnerName", "user.name"),
+            ("AwsIamUser", "UserId", "user.id"),
+            ("AwsS3Bucket", "OwnerId", "user.id"),
+            ("AwsEcsContainer", "Name", "host.name"),
+        ] {
+            if kind == wanted
+                && let Some(v) = detail(member).cloned()
+            {
+                let _ = event.set(target, v);
+            }
+        }
+
+        if kind == "AwsEc2Instance" {
+            for member in ["IpV4Addresses", "IpV6Addresses"] {
+                if let Some(Value::Array(addresses)) = detail(member) {
+                    for address in addresses.clone() {
+                        if address.is_string() {
+                            let _ = event.append("host.ip", address);
+                        }
+                    }
+                }
+            }
+        }
+
+        // The ECS arm reads AwsEcsCluster's details whatever the type says.
+        if matches!(kind.as_str(), "AwsEcsCluster" | "AwsEcsTask")
+            && let Some(v) = details
+                .and_then(|d| d.get("AwsEcsCluster"))
+                .and_then(|t| t.get("ClusterArn"))
+                .cloned()
+        {
+            let _ = event.set("orchestrator.cluster.id", v);
+        }
+        for (member, target) in [
+            ("Arn", "orchestrator.cluster.id"),
+            ("Name", "orchestrator.cluster.name"),
+            ("Version", "orchestrator.cluster.version"),
+            ("Endpoint", "orchestrator.cluster.url"),
+        ] {
+            if kind == "AwsEksCluster"
+                && let Some(v) = detail(member).cloned()
+            {
+                let _ = event.set(target, v);
+            }
+        }
+        if kind == "AwsEcsCluster"
+            && let Some(v) = detail("ClusterName").cloned()
+        {
+            let _ = event.set("orchestrator.cluster.name", v);
+        }
+
+        if matches!(
+            kind.as_str(),
+            "AwsEc2Subnet" | "AwsRedshiftCluster" | "AwsDmsReplicationInstance"
+        ) && let Some(v) = detail("AvailabilityZone").cloned()
+        {
+            let _ = event.set("cloud.availability_zone", v);
+        }
+        if matches!(
+            kind.as_str(),
+            "AwsEc2VpcEndpointService" | "AwsElbLoadBalancer" | "AwsRdsDbCluster"
+        ) && let Some(Value::Array(zones)) = detail("AvailabilityZones")
+        {
+            for zone in zones.clone() {
+                let _ = event.set("cloud.availability_zone", zone);
+            }
+        }
+        if kind == "AwsAutoScalingAutoScalingGroup"
+            && let Some(Value::Array(zones)) = detail("AvailabilityZones")
+        {
+            for zone in zones.clone() {
+                if let Some(v) = zone.get("Value").cloned() {
+                    let _ = event.set("cloud.availability_zone", v);
+                }
+            }
+        }
+        if kind == "AwsEc2LaunchTemplate"
+            && let Some(v) = detail("LaunchTemplateData")
+                .and_then(|d| d.get("Placement"))
+                .and_then(|p| p.get("AvailabilityZone"))
+                .cloned()
+        {
+            let _ = event.set("cloud.availability_zone", v);
+        }
+        if kind == "AwsElbv2LoadBalancer"
+            && let Some(Value::Array(zones)) = detail("AvailabilityZones")
+        {
+            for zone in zones.clone() {
+                if let Some(v) = zone.get("ZoneName").cloned() {
+                    let _ = event.set("cloud.availability_zone", v);
+                }
+            }
+        }
+    }
+
+    if kind == "AwsEc2Instance" {
+        let _ = event.set("host.id", json!(id.clone()));
+        let _ = event.set("cloud.instance.id", json!(id.clone()));
+        let _ = event.set("cloud.instance.name", json!(res_name.clone()));
+    }
+    if kind.starts_with("AwsEks") || kind.starts_with("AwsEcs") {
+        let _ = event.set("orchestrator.resource.id", json!(id.clone()));
+        let _ = event.set("orchestrator.resource.name", json!(res_name));
+        let _ = event.set("orchestrator.resource.type", json!(kind.clone()));
+        let orchestrator = if kind.starts_with("AwsEks") {
+            "kubernetes"
+        } else {
+            "ecs"
+        };
+        let _ = event.set("orchestrator.type", json!(orchestrator));
+    }
+    if tokens.len() > 2 {
+        let _ = event.set("cloud.service.name", json!(tokens[2]));
+    }
+    true
+}
+
 /// One arm of a loop-over-category ladder: the members it matches, any extra
 /// ctx equality it requires, the LIST literal it assigns, and whether it
 /// only fires while the target is still unset.
@@ -3803,6 +3976,7 @@ pub(crate) enum KnownShape {
         target: String,
     },
     ResourcesRenameDedup(String),
+    SecurityhubResource,
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
     StripAnglePairs {
@@ -4019,6 +4193,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         shapes.push(KnownShape::ResourcesRenameDedup(
             crate::painless_params::clean_path(source),
         ));
+        return shapes;
+    }
+
+    // Pattern: securityhub's single-resource entity extraction.
+    if normalised.contains("securityhub_findings.resources")
+        && normalised.contains("resources.size() == 1")
+    {
+        shapes.push(KnownShape::SecurityhubResource);
         return shapes;
     }
 
@@ -4557,6 +4739,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => try_prepend_to_array(event, scalar, array, target),
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
+        KnownShape::SecurityhubResource => run_securityhub_resource(event),
         KnownShape::CategoryTypeLadder(arms) => run_category_type_ladder(event, arms),
         KnownShape::KeysStripWhitespace(source) => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
