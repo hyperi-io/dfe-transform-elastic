@@ -36,8 +36,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)|(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)))):?\\s+)?(?:(?:(?:(?P<process_name>(?:(?:[^%\\s:\\[]+))):\\s%{SYSLOGHOST:host.name}))|(?:(?:%{SYSLOGHOST:host.hostname}:?\\s+)?(?:(?P<process_name>(?:(?:[^%\\s:\\[]+)))?(?:\\[%{POSINT:process.pid:long}\\])?)?))(?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}
-                    if !cached_grok_mapped!("(?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)|(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)))):?\\s+)?(?:(?:(?:(?P<process_name>(?:(?:[^%\\s:\\[]+))):\\s%{SYSLOGHOST:host.name}))|(?:(?:%{SYSLOGHOST:host.hostname}:?\\s+)?(?:(?P<process_name>(?:(?:[^%\\s:\\[]+)))?(?:\\[%{POSINT:process.pid:long}\\])?)?))(?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}", [("_temp__raw_date", "_temp_.raw_date"), ("process_name", "process.name"), ("process_name", "process.name"), ("_temp__tz", "_temp_.tz"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("(?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)|(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)))):?\\s+)?(?:(?:(?:(?P<process_name>(?:(?:[^%\\s:\\[]+))):\\s%{SYSLOGHOST:host.name}))|(?:(?:%{SYSLOGHOST:host.hostname}:?\\s+)?(?:(?P<process_name>(?:(?:[^%\\s:\\[]+)))?(?:\\[%{POSINT:process.pid:long}\\])?)?))(?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}", [("_temp__raw_date", "_temp_.raw_date"), ("process_name", "process.name"), ("process_name", "process.name"), ("_temp__tz", "_temp_.tz"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)?;
                 }
             }
 
@@ -45,11 +44,21 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: ^(?P<_temp__raw_date>(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{DATA:_temp_.full_message}$
-                    if !cached_grok_mapped!("^(?P<_temp__raw_date>(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{DATA:_temp_.full_message}$", [("_temp__raw_date", "_temp_.raw_date"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                        // Grok pattern: %{GREEDYDATA:_temp_.full_message}
-                        if !cached_grok!("%{GREEDYDATA:_temp_.full_message}").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: %{GREEDYDATA:_temp_.full_message}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^(?P<_temp__raw_date>(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{DATA:_temp_.full_message}$",
+                                [
+                                    ("_temp__raw_date", "_temp_.raw_date"),
+                                    ("_temp__tz", "_temp_.tz")
+                                ]
+                            ),
+                            cached_grok!("%{GREEDYDATA:_temp_.full_message}"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -76,8 +85,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: (?P<_temp__message_prefix>.*)message repeated (?P<INT:_temp__cisco_message_repeats:int>\\d+) times: \\[\\s(?P<_temp__extracted_message>.*)\\]
-                    if !cached_grok_mapped!("(?P<_temp__message_prefix>.*)message repeated (?P<INT:_temp__cisco_message_repeats:int>\\d+) times: \\[\\s(?P<_temp__extracted_message>.*)\\]", [("_temp__message_prefix", "_temp_.message_prefix"), ("INT:_temp__cisco_message_repeats:int", "INT:_temp_.cisco.message_repeats:int"), ("_temp__extracted_message", "_temp_.extracted_message")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("(?P<_temp__message_prefix>.*)message repeated (?P<INT:_temp__cisco_message_repeats:int>\\d+) times: \\[\\s(?P<_temp__extracted_message>.*)\\]", [("_temp__message_prefix", "_temp_.message_prefix"), ("INT:_temp__cisco_message_repeats:int", "INT:_temp_.cisco.message_repeats:int"), ("_temp__extracted_message", "_temp_.extracted_message")]).extract_into(&input, event)?;
                 }
             }
 
@@ -101,11 +109,18 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: (?:%{DATA}%(?:[A-Z]+))-(?:(?P<_temp__cisco_suffix>(?:[^0-9-]+))-)?%{NONNEGINT:event.severity:int}-%{POSINT:_temp_.cisco.message_id}?:?\\s*%{GREEDYDATA:message}
-                    if !cached_grok_mapped!("(?:%{DATA}%(?:[A-Z]+))-(?:(?P<_temp__cisco_suffix>(?:[^0-9-]+))-)?%{NONNEGINT:event.severity:int}-%{POSINT:_temp_.cisco.message_id}?:?\\s*%{GREEDYDATA:message}", [("_temp__cisco_suffix", "_temp_.cisco.suffix")]).extract_into(&input, event)? {
-                        // Grok pattern: %{GREEDYDATA:message}
-                        if !cached_grok!("%{GREEDYDATA:message}").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: %{GREEDYDATA:message}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "(?:%{DATA}%(?:[A-Z]+))-(?:(?P<_temp__cisco_suffix>(?:[^0-9-]+))-)?%{NONNEGINT:event.severity:int}-%{POSINT:_temp_.cisco.message_id}?:?\\s*%{GREEDYDATA:message}",
+                                [("_temp__cisco_suffix", "_temp_.cisco.suffix")]
+                            ),
+                            cached_grok!("%{GREEDYDATA:message}"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -576,11 +591,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{POSINT:source.port} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}/%{POSINT:destination.port}(%{GREEDYDATA})?
-                    if !cached_grok!("Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{POSINT:source.port} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}/%{POSINT:destination.port}(%{GREEDYDATA})?").extract_into(&input, event)? {
-                        // Grok pattern: Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}(/%{POSINT:source.port})? (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}(/%{POSINT:destination.port})?(%{GREEDYDATA})?
-                        if !cached_grok!("Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}(/%{POSINT:source.port})? (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}(/%{POSINT:destination.port})?(%{GREEDYDATA})?").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}(/%{POSINT:source.port})? (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}(/%{POSINT:destination.port})?(%{GREEDYDATA})?
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{POSINT:source.port} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}/%{POSINT:destination.port}(%{GREEDYDATA})?"
+                            ),
+                            cached_grok!(
+                                "Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}(/%{POSINT:source.port})? (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}(/%{POSINT:destination.port})?(%{GREEDYDATA})?"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -678,8 +701,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Deny %{NOTSPACE:network.direction} %{NOTSPACE:network.transport} src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:(?P<destination_address>[^ (]*)(%{GREEDYDATA})?
-                    if !cached_grok_mapped!("Deny %{NOTSPACE:network.direction} %{NOTSPACE:network.transport} src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:(?P<destination_address>[^ (]*)(%{GREEDYDATA})?", [("destination_address", "destination.address")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("Deny %{NOTSPACE:network.direction} %{NOTSPACE:network.transport} src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:(?P<destination_address>[^ (]*)(%{GREEDYDATA})?", [("destination_address", "destination.address")]).extract_into(&input, event)?;
                 }
             }
 
@@ -687,8 +709,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Deny %{NOTSPACE:network.transport} %{NOTSPACE} %{NOTSPACE} from %{IPORHOST:source.address}/%{POSINT:source.port} to %{IPORHOST:destination.address}/%{POSINT:destination.port} flags %{DATA} on interface %{NOTSPACE:_temp_.cisco.source_interface}
-                    if !cached_grok!("Deny %{NOTSPACE:network.transport} %{NOTSPACE} %{NOTSPACE} from %{IPORHOST:source.address}/%{POSINT:source.port} to %{IPORHOST:destination.address}/%{POSINT:destination.port} flags %{DATA} on interface %{NOTSPACE:_temp_.cisco.source_interface}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("Deny %{NOTSPACE:network.transport} %{NOTSPACE} %{NOTSPACE} from %{IPORHOST:source.address}/%{POSINT:source.port} to %{IPORHOST:destination.address}/%{POSINT:destination.port} flags %{DATA} on interface %{NOTSPACE:_temp_.cisco.source_interface}").extract_into(&input, event)?;
                 }
             }
 
@@ -1002,8 +1023,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Deny ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{DATA:_temp_.cisco.source_interface}:(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})?\\s*(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?dst %{DATA:_temp_.cisco.destination_interface}:(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[(\\s]+%{DATA}by access-group \"%{NOTSPACE:_temp_.cisco.list_id}?\"
-                    if !cached_grok_mapped!("^Deny ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{DATA:_temp_.cisco.source_interface}:(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})?\\s*(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?dst %{DATA:_temp_.cisco.destination_interface}:(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[(\\s]+%{DATA}by access-group \"%{NOTSPACE:_temp_.cisco.list_id}?\"", [("source_address", "source.address"), ("destination_address", "destination.address"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("^Deny ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{DATA:_temp_.cisco.source_interface}:(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})?\\s*(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?dst %{DATA:_temp_.cisco.destination_interface}:(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[(\\s]+%{DATA}by access-group \"%{NOTSPACE:_temp_.cisco.list_id}?\"", [("source_address", "source.address"), ("destination_address", "destination.address"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)?;
                 }
             }
 
@@ -1483,8 +1503,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{NOTSPACE} '%{NOTSPACE:server.user.name}' executed %{NOTSPACE} %{GREEDYDATA:_temp_.cisco.command_line_arguments}
-                    if !cached_grok!("^%{NOTSPACE} '%{NOTSPACE:server.user.name}' executed %{NOTSPACE} %{GREEDYDATA:_temp_.cisco.command_line_arguments}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^%{NOTSPACE} '%{NOTSPACE:server.user.name}' executed %{NOTSPACE} %{GREEDYDATA:_temp_.cisco.command_line_arguments}").extract_into(&input, event)?;
                 }
             }
 
@@ -1492,8 +1511,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: User '%{NOTSPACE:server.user.name}', running %{QUOTEDSTRING} from IP %{IP:source.address}, executed %{QUOTEDSTRING:_temp_.cisco.command_line_arguments}
-                    if !cached_grok!("User '%{NOTSPACE:server.user.name}', running %{QUOTEDSTRING} from IP %{IP:source.address}, executed %{QUOTEDSTRING:_temp_.cisco.command_line_arguments}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("User '%{NOTSPACE:server.user.name}', running %{QUOTEDSTRING} from IP %{IP:source.address}, executed %{QUOTEDSTRING:_temp_.cisco.command_line_arguments}").extract_into(&input, event)?;
                 }
             }
 
@@ -1501,8 +1519,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA user %{DATA:_temp_.cisco.aaa_type} Successful(%{SPACE})?: server =(%{SPACE})?%{IPORHOST:destination.address} [:,] [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))
-                    if !cached_grok_mapped!("AAA user %{DATA:_temp_.cisco.aaa_type} Successful(%{SPACE})?: server =(%{SPACE})?%{IPORHOST:destination.address} [:,] [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("AAA user %{DATA:_temp_.cisco.aaa_type} Successful(%{SPACE})?: server =(%{SPACE})?%{IPORHOST:destination.address} [:,] [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)?;
                 }
             }
 
@@ -1510,8 +1527,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA user (?:(authentication|authorization)) Rejected(%{SPACE})?: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|Account has been locked out|Users account has expired|User was not found)))(%{SPACE})?: server = %{IPORHOST:destination.address}(%{SPACE})?: user = ?((?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))|)(%{SPACE})?: user IP = (?:(%{IP:source.address}|None))
-                    if !cached_grok_mapped!("AAA user (?:(authentication|authorization)) Rejected(%{SPACE})?: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|Account has been locked out|Users account has expired|User was not found)))(%{SPACE})?: server = %{IPORHOST:destination.address}(%{SPACE})?: user = ?((?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))|)(%{SPACE})?: user IP = (?:(%{IP:source.address}|None))", [("_temp__cisco_rejection_reason", "_temp_.cisco.rejection_reason"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("AAA user (?:(authentication|authorization)) Rejected(%{SPACE})?: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|Account has been locked out|Users account has expired|User was not found)))(%{SPACE})?: server = %{IPORHOST:destination.address}(%{SPACE})?: user = ?((?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))|)(%{SPACE})?: user IP = (?:(%{IP:source.address}|None))", [("_temp__cisco_rejection_reason", "_temp_.cisco.rejection_reason"), ("source_user_name", "source.user.name")]).extract_into(&input, event)?;
                 }
             }
 
@@ -1519,8 +1535,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA transaction status ACCEPT(%{SPACE})?: user = %{GREEDYDATA:source.user.name}
-                    if !cached_grok!("AAA transaction status ACCEPT(%{SPACE})?: user = %{GREEDYDATA:source.user.name}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("AAA transaction status ACCEPT(%{SPACE})?: user = %{GREEDYDATA:source.user.name}").extract_into(&input, event)?;
                 }
             }
 
@@ -1602,8 +1617,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA user authentication Successful(%{SPACE})?: local database(%{SPACE})?: [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))
-                    if !cached_grok_mapped!("AAA user authentication Successful(%{SPACE})?: local database(%{SPACE})?: [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("AAA user authentication Successful(%{SPACE})?: local database(%{SPACE})?: [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)?;
                 }
             }
 
@@ -1611,11 +1625,30 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = %{DATA:source.user.name}%{SPACE}: [Uu]ser IP = (?:(%{IP:source.address}|None))%{SPACE}$
-                    if !cached_grok_mapped!("^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = %{DATA:source.user.name}%{SPACE}: [Uu]ser IP = (?:(%{IP:source.address}|None))%{SPACE}$", [("_temp__cisco_rejection_reason", "_temp_.cisco.rejection_reason")]).extract_into(&input, event)? {
-                        // Grok pattern: ^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = (?P<source_user_name>(?:[^:]+?))%{SPACE}$
-                        if !cached_grok_mapped!("^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = (?P<source_user_name>(?:[^:]+?))%{SPACE}$", [("_temp__cisco_rejection_reason", "_temp_.cisco.rejection_reason"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = (?P<source_user_name>(?:[^:]+?))%{SPACE}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = %{DATA:source.user.name}%{SPACE}: [Uu]ser IP = (?:(%{IP:source.address}|None))%{SPACE}$",
+                                [(
+                                    "_temp__cisco_rejection_reason",
+                                    "_temp_.cisco.rejection_reason"
+                                )]
+                            ),
+                            cached_grok_mapped!(
+                                "^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = (?P<source_user_name>(?:[^:]+?))%{SPACE}$",
+                                [
+                                    (
+                                        "_temp__cisco_rejection_reason",
+                                        "_temp_.cisco.rejection_reason"
+                                    ),
+                                    ("source_user_name", "source.user.name")
+                                ]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -1981,11 +2014,20 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}>
-                    if !cached_grok!("Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}>").extract_into(&input, event)? {
-                        // Grok pattern: Group %{NOTSPACE:source.user.group.name} User (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?)))) IP %{IP:source.address}
-                        if !cached_grok_mapped!("Group %{NOTSPACE:source.user.group.name} User (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?)))) IP %{IP:source.address}", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: Group %{NOTSPACE:source.user.group.name} User (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?)))) IP %{IP:source.address}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}>"
+                            ),
+                            cached_grok_mapped!(
+                                "Group %{NOTSPACE:source.user.group.name} User (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?)))) IP %{IP:source.address}",
+                                [("source_user_name", "source.user.name")]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -2035,11 +2077,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Built %{NOTSPACE:network.direction} %{GREEDYDATA:_temp_.var_302013_302015}
-                    if !cached_grok!(
+                    let _ = cached_grok!(
                         "Built %{NOTSPACE:network.direction} %{GREEDYDATA:_temp_.var_302013_302015}"
                     )
-                    .extract_into(&input, event)?
-                    {}
+                    .extract_into(&input, event)?;
                 }
             }
 
@@ -2051,8 +2092,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.var_302013_302015") {
                     // Grok pattern: ^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_source_interface>(?:[^:]*)):(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:source.port} \\((?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{NOTSPACE:destination.address}/%{NUMBER:destination.port} \\(%{NOTSPACE:_temp_.natdstip}/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}
-                    if !cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_source_interface>(?:[^:]*)):(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:source.port} \\((?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{NOTSPACE:destination.address}/%{NUMBER:destination.port} \\(%{NOTSPACE:_temp_.natdstip}/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("source_address", "source.address"), ("_temp__natsrcip", "_temp_.natsrcip"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_source_interface>(?:[^:]*)):(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:source.port} \\((?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{NOTSPACE:destination.address}/%{NUMBER:destination.port} \\(%{NOTSPACE:_temp_.natdstip}/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("source_address", "source.address"), ("_temp__natsrcip", "_temp_.natsrcip"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)?;
                 }
             }
 
@@ -2064,8 +2104,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.var_302013_302015") {
                     // Grok pattern: ^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:destination.port} \\((?P<_temp__natdstip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_source_interface>(?:[^:]*)):%{NOTSPACE:source.address}/%{NUMBER:source.port} \\(%{NOTSPACE:_temp_.natsrcip}/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}
-                    if !cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:destination.port} \\((?P<_temp__natdstip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_source_interface>(?:[^:]*)):%{NOTSPACE:source.address}/%{NUMBER:source.port} \\(%{NOTSPACE:_temp_.natsrcip}/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("destination_address", "destination.address"), ("_temp__natdstip", "_temp_.natdstip"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:destination.port} \\((?P<_temp__natdstip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_source_interface>(?:[^:]*)):%{NOTSPACE:source.address}/%{NUMBER:source.port} \\(%{NOTSPACE:_temp_.natsrcip}/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("destination_address", "destination.address"), ("_temp__natdstip", "_temp_.natdstip"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)?;
                 }
             }
 
@@ -2175,8 +2214,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Teardown %{DATA} %{NOTSPACE:network.transport} translation from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port}(\\s*\\((?P<_temp__cisco_source_username>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?((?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:(?:[^@$]*))\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?(?:%{NUMBER}:%{DATA})?))))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND}))
-                    if !cached_grok_mapped!("Teardown %{DATA} %{NOTSPACE:network.transport} translation from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port}(\\s*\\((?P<_temp__cisco_source_username>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?((?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:(?:[^@$]*))\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?(?:%{NUMBER}:%{DATA})?))))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND}))", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_username", "_temp_.cisco.source_username"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("Teardown %{DATA} %{NOTSPACE:network.transport} translation from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port}(\\s*\\((?P<_temp__cisco_source_username>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?((?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:(?:[^@$]*))\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?(?:%{NUMBER}:%{DATA})?))))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND}))", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_username", "_temp_.cisco.source_username"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms")]).extract_into(&input, event)?;
                 }
             }
 
@@ -2184,8 +2222,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Built %{NOTSPACE:network.direction} %{NOTSPACE:network.type} connection for faddr (?:(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?gaddr (?:(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))|(?:[^:]*):(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER} laddr (?:(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?(type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?
-                    if !cached_grok_mapped!("Built %{NOTSPACE:network.direction} %{NOTSPACE:network.type} connection for faddr (?:(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?gaddr (?:(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))|(?:[^:]*):(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER} laddr (?:(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?(type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("destination_domain", "destination.domain"), ("destination_domain", "destination.domain"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("source_domain", "source.domain"), ("source_domain", "source.domain"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("Built %{NOTSPACE:network.direction} %{NOTSPACE:network.type} connection for faddr (?:(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?gaddr (?:(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))|(?:[^:]*):(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER} laddr (?:(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?(type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("destination_domain", "destination.domain"), ("destination_domain", "destination.domain"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("source_domain", "source.domain"), ("source_domain", "source.domain"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)?;
                 }
             }
 
@@ -2404,8 +2441,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (%{NOTSPACE:source.user.name}@)?%{IP:source.address}(\\(%{DATA}\\))? %{DATA} (%{NOTSPACE}@)?%{IPORHOST:destination.address}:%{GREEDYDATA:url.original}
-                    if !cached_grok!("(%{NOTSPACE:source.user.name}@)?%{IP:source.address}(\\(%{DATA}\\))? %{DATA} (%{NOTSPACE}@)?%{IPORHOST:destination.address}:%{GREEDYDATA:url.original}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("(%{NOTSPACE:source.user.name}@)?%{IP:source.address}(\\(%{DATA}\\))? %{DATA} (%{NOTSPACE}@)?%{IPORHOST:destination.address}:%{GREEDYDATA:url.original}").extract_into(&input, event)?;
                 }
             }
 
@@ -2474,8 +2510,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Built %{NOTSPACE} %{NOTSPACE:network.transport} translation from %{NOTSPACE:_temp_.cisco.source_interface}:%{DATA:source.address}/%{NUMBER:source.port}(\\(%{NOTSPACE:source.user.name}\\))? to %{NOTSPACE:_temp_.cisco.destination_interface}:%{DATA:destination.address}/%{NUMBER:destination.port}
-                    if !cached_grok!("Built %{NOTSPACE} %{NOTSPACE:network.transport} translation from %{NOTSPACE:_temp_.cisco.source_interface}:%{DATA:source.address}/%{NUMBER:source.port}(\\(%{NOTSPACE:source.user.name}\\))? to %{NOTSPACE:_temp_.cisco.destination_interface}:%{DATA:destination.address}/%{NUMBER:destination.port}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("Built %{NOTSPACE} %{NOTSPACE:network.transport} translation from %{NOTSPACE:_temp_.cisco.source_interface}:%{DATA:source.address}/%{NUMBER:source.port}(\\(%{NOTSPACE:source.user.name}\\))? to %{NOTSPACE:_temp_.cisco.destination_interface}:%{DATA:destination.address}/%{NUMBER:destination.port}").extract_into(&input, event)?;
                 }
             }
 
@@ -2623,23 +2658,139 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
-                    if !cached_grok_mapped!("No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("source_address", "source.address"), ("destination_address", "destination.address")]).extract_into(&input, event)? {
-                        // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: protocol %{NUMBER:_temp_.cisco.original_iana_number} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
-                        if !cached_grok_mapped!("No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: protocol %{NUMBER:_temp_.cisco.original_iana_number} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("source_address", "source.address"), ("destination_address", "destination.address")]).extract_into(&input, event)? {
-                            // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.group.name}\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
-                            if !cached_grok_mapped!("No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.group.name}\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("source_user_domain", "source.user.domain"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("source_address", "source.address"), ("destination_address", "destination.address")]).extract_into(&input, event)? {
-                                // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
-                                if !cached_grok_mapped!("No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("source_user_domain", "source.user.domain"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("source_address", "source.address"), ("destination_address", "destination.address")]).extract_into(&input, event)? {
-                                    // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
-                                    if !cached_grok_mapped!("No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("source_address", "source.address"), ("destination_address", "destination.address"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                                        // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: <unknown>[.]?
-                                        if !cached_grok_mapped!("No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: <unknown>[.]?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface")]).extract_into(&input, event)? {
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: protocol %{NUMBER:_temp_.cisco.original_iana_number} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
+                    // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.group.name}\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
+                    // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
+                    // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
+                    // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: <unknown>[.]?
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("source_address", "source.address"),
+                                    ("destination_address", "destination.address")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: protocol %{NUMBER:_temp_.cisco.original_iana_number} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("source_address", "source.address"),
+                                    ("destination_address", "destination.address")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.group.name}\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    ("source_user_domain", "source.user.domain"),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("source_address", "source.address"),
+                                    ("destination_address", "destination.address")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    ("source_user_domain", "source.user.domain"),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("source_address", "source.address"),
+                                    ("destination_address", "destination.address")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("source_address", "source.address"),
+                                    ("destination_address", "destination.address"),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: <unknown>[.]?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    )
+                                ]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -2842,11 +2993,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) disconnected by SSH server, reason: %{GREEDYDATA:event.reason}
-                    if !cached_grok!("SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) disconnected by SSH server, reason: %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
-                        // Grok pattern: SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) terminated normally
-                        if !cached_grok!("SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) terminated normally").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) terminated normally
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) disconnected by SSH server, reason: %{GREEDYDATA:event.reason}"
+                            ),
+                            cached_grok!(
+                                "SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) terminated normally"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6466,8 +6625,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.connection_type") {
                     // Grok pattern: (?:(?:(?P<network_transport>(?:(?:UDP|TCP)))|(?P<network_protocol>(?:(?:RTP|RTCP)))))
-                    if !cached_grok_mapped!("(?:(?:(?P<network_transport>(?:(?:UDP|TCP)))|(?P<network_protocol>(?:(?:RTP|RTCP)))))", [("network_transport", "network.transport"), ("network_protocol", "network.protocol")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("(?:(?:(?P<network_transport>(?:(?:UDP|TCP)))|(?P<network_protocol>(?:(?:RTP|RTCP)))))", [("network_transport", "network.transport"), ("network_protocol", "network.protocol")]).extract_into(&input, event)?;
                 }
             }
 
@@ -6522,8 +6680,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User authentication %{DATA}:(?:\\s*IP address: %{IP:source.address},)? Uname: %{DATA:server.user.name}$
-                    if !cached_grok!("^User authentication %{DATA}:(?:\\s*IP address: %{IP:source.address},)? Uname: %{DATA:server.user.name}$").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^User authentication %{DATA}:(?:\\s*IP address: %{IP:source.address},)? Uname: %{DATA:server.user.name}$").extract_into(&input, event)?;
                 }
             }
 
@@ -6666,11 +6823,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Group = %{NOTSPACE}, Username = %{NOTSPACE:user.name}, IP = %{IP:source.address}, Security negotiation complete for User (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}
-                    if !cached_grok!("Group = %{NOTSPACE}, Username = %{NOTSPACE:user.name}, IP = %{IP:source.address}, Security negotiation complete for User (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}").extract_into(&input, event)? {
-                        // Grok pattern: Group = %{NOTSPACE}, IP = %{IP:source.address}, Security negotiation complete [a-z\\s]+ (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}
-                        if !cached_grok!("Group = %{NOTSPACE}, IP = %{IP:source.address}, Security negotiation complete [a-z\\s]+ (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: Group = %{NOTSPACE}, IP = %{IP:source.address}, Security negotiation complete [a-z\\s]+ (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "Group = %{NOTSPACE}, Username = %{NOTSPACE:user.name}, IP = %{IP:source.address}, Security negotiation complete for User (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}"
+                            ),
+                            cached_grok!(
+                                "Group = %{NOTSPACE}, IP = %{IP:source.address}, Security negotiation complete [a-z\\s]+ (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6678,11 +6843,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Group <%{DATA:_temp_.cisco.webvpn.group_name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> WebVPN session terminated: %{GREEDYDATA:event.reason}.
-                    if !cached_grok!("Group <%{DATA:_temp_.cisco.webvpn.group_name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> WebVPN session terminated: %{GREEDYDATA:event.reason}.").extract_into(&input, event)? {
-                        // Grok pattern: Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{IP:source.address} WebVPN session terminated: %{GREEDYDATA:event.reason}.
-                        if !cached_grok!("Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{IP:source.address} WebVPN session terminated: %{GREEDYDATA:event.reason}.").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{IP:source.address} WebVPN session terminated: %{GREEDYDATA:event.reason}.
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "Group <%{DATA:_temp_.cisco.webvpn.group_name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> WebVPN session terminated: %{GREEDYDATA:event.reason}."
+                            ),
+                            cached_grok!(
+                                "Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{IP:source.address} WebVPN session terminated: %{GREEDYDATA:event.reason}."
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6690,11 +6863,27 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> WebVPN access GRANTED: \"?%{DATA:url.original}\"?$
-                    if !cached_grok_mapped!("^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> WebVPN access GRANTED: \"?%{DATA:url.original}\"?$", [("_temp__cisco_webvpn_group_name", "_temp_.cisco.webvpn.group_name"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)? {
-                        // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} WebVPN access GRANTED: \"?%{DATA:url.original}\"?$
-                        if !cached_grok!("^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} WebVPN access GRANTED: \"?%{DATA:url.original}\"?$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} WebVPN access GRANTED: \"?%{DATA:url.original}\"?$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> WebVPN access GRANTED: \"?%{DATA:url.original}\"?$",
+                                [
+                                    (
+                                        "_temp__cisco_webvpn_group_name",
+                                        "_temp_.cisco.webvpn.group_name"
+                                    ),
+                                    ("source_user_name", "source.user.name"),
+                                    ("source_address", "source.address")
+                                ]
+                            ),
+                            cached_grok!(
+                                "^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} WebVPN access GRANTED: \"?%{DATA:url.original}\"?$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6702,11 +6891,27 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))>
-                    if !cached_grok_mapped!("^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))>", [("_temp__cisco_webvpn_group_name", "_temp_.cisco.webvpn.group_name"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)? {
-                        // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address}
-                        if !cached_grok!("^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address}").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))>",
+                                [
+                                    (
+                                        "_temp__cisco_webvpn_group_name",
+                                        "_temp_.cisco.webvpn.group_name"
+                                    ),
+                                    ("source_user_name", "source.user.name"),
+                                    ("source_address", "source.address")
+                                ]
+                            ),
+                            cached_grok!(
+                                "^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address}"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6714,11 +6919,27 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User( <(?P<source_user_name>(?:[^<>]+))>)? IP <(?P<destination_address>(?:[^<>]+))> AnyConnect session (resumed connection|resumed. Connection) from( IP)? <%{NOTSPACE:source.address}>\\.$
-                    if !cached_grok_mapped!("^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User( <(?P<source_user_name>(?:[^<>]+))>)? IP <(?P<destination_address>(?:[^<>]+))> AnyConnect session (resumed connection|resumed. Connection) from( IP)? <%{NOTSPACE:source.address}>\\.$", [("_temp__cisco_webvpn_group_name", "_temp_.cisco.webvpn.group_name"), ("source_user_name", "source.user.name"), ("destination_address", "destination.address")]).extract_into(&input, event)? {
-                        // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User( %{NOTSPACE:source.user.name})? IP %{NOTSPACE:destination.address} AnyConnect session (resumed connection|resumed. Connection) from( IP)? %{NOTSPACE:source.address}\\.$
-                        if !cached_grok!("^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User( %{NOTSPACE:source.user.name})? IP %{NOTSPACE:destination.address} AnyConnect session (resumed connection|resumed. Connection) from( IP)? %{NOTSPACE:source.address}\\.$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User( %{NOTSPACE:source.user.name})? IP %{NOTSPACE:destination.address} AnyConnect session (resumed connection|resumed. Connection) from( IP)? %{NOTSPACE:source.address}\\.$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User( <(?P<source_user_name>(?:[^<>]+))>)? IP <(?P<destination_address>(?:[^<>]+))> AnyConnect session (resumed connection|resumed. Connection) from( IP)? <%{NOTSPACE:source.address}>\\.$",
+                                [
+                                    (
+                                        "_temp__cisco_webvpn_group_name",
+                                        "_temp_.cisco.webvpn.group_name"
+                                    ),
+                                    ("source_user_name", "source.user.name"),
+                                    ("destination_address", "destination.address")
+                                ]
+                            ),
+                            cached_grok!(
+                                "^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User( %{NOTSPACE:source.user.name})? IP %{NOTSPACE:destination.address} AnyConnect session (resumed connection|resumed. Connection) from( IP)? %{NOTSPACE:source.address}\\.$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6726,8 +6947,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Certificate was successfully validated. serial number:%{SPACE}%{DATA:_temp_.cisco.serial_number}, subject name:%{SPACE}%{DATA:_temp_.cisco.distinguished_name}\\.
-                    if !cached_grok!("Certificate was successfully validated. serial number:%{SPACE}%{DATA:_temp_.cisco.serial_number}, subject name:%{SPACE}%{DATA:_temp_.cisco.distinguished_name}\\.").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("Certificate was successfully validated. serial number:%{SPACE}%{DATA:_temp_.cisco.serial_number}, subject name:%{SPACE}%{DATA:_temp_.cisco.distinguished_name}\\.").extract_into(&input, event)?;
                 }
             }
 
@@ -6867,11 +7087,24 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$
-                    if !cached_grok_mapped!("^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$", [("source_user_group_name", "source.user.group.name"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)? {
-                        // Grok pattern: ^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} %{GREEDYDATA:event.reason}$
-                        if !cached_grok!("^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} %{GREEDYDATA:event.reason}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} %{GREEDYDATA:event.reason}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$",
+                                [
+                                    ("source_user_group_name", "source.user.group.name"),
+                                    ("source_user_name", "source.user.name"),
+                                    ("source_address", "source.address")
+                                ]
+                            ),
+                            cached_grok!(
+                                "^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} %{GREEDYDATA:event.reason}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -6954,8 +7187,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^TunnelGroup <(?P<_temp__cisco_tunnel_group>(?:[^<>]+))> GroupPolicy <(?P<_temp__cisco_group_policy>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$
-                    if !cached_grok_mapped!("^TunnelGroup <(?P<_temp__cisco_tunnel_group>(?:[^<>]+))> GroupPolicy <(?P<_temp__cisco_group_policy>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$", [("_temp__cisco_tunnel_group", "_temp_.cisco.tunnel_group"), ("_temp__cisco_group_policy", "_temp_.cisco.group_policy"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("^TunnelGroup <(?P<_temp__cisco_tunnel_group>(?:[^<>]+))> GroupPolicy <(?P<_temp__cisco_group_policy>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$", [("_temp__cisco_tunnel_group", "_temp_.cisco.tunnel_group"), ("_temp__cisco_group_policy", "_temp_.cisco.group_policy"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)?;
                 }
             }
 
@@ -6997,11 +7229,24 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> Client Type: %{GREEDYDATA:user_agent.original}$
-                    if !cached_grok_mapped!("^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> Client Type: %{GREEDYDATA:user_agent.original}$", [("source_user_group_name", "source.user.group.name"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)? {
-                        // Grok pattern: ^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} Client Type: %{GREEDYDATA:user_agent.original}$
-                        if !cached_grok!("^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} Client Type: %{GREEDYDATA:user_agent.original}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} Client Type: %{GREEDYDATA:user_agent.original}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> Client Type: %{GREEDYDATA:user_agent.original}$",
+                                [
+                                    ("source_user_group_name", "source.user.group.name"),
+                                    ("source_user_name", "source.user.name"),
+                                    ("source_address", "source.address")
+                                ]
+                            ),
+                            cached_grok!(
+                                "^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} Client Type: %{GREEDYDATA:user_agent.original}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7009,11 +7254,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version} session
-                    if !cached_grok!("^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version} session").extract_into(&input, event)? {
-                        // Grok pattern: ^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} for %{NOTSPACE:_temp_.cisco.tls_version} session
-                        if !cached_grok!("^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} for %{NOTSPACE:_temp_.cisco.tls_version} session").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} for %{NOTSPACE:_temp_.cisco.tls_version} session
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version} session"
+                            ),
+                            cached_grok!(
+                                "^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} for %{NOTSPACE:_temp_.cisco.tls_version} session"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7021,11 +7274,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version}
-                    if !cached_grok!("^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version}").extract_into(&input, event)? {
-                        // Grok pattern: ^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port}$
-                        if !cached_grok!("^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version}"
+                            ),
+                            cached_grok!(
+                                "^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7033,8 +7294,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SSL session with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} terminated
-                    if !cached_grok!("^SSL session with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} terminated").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^SSL session with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} terminated").extract_into(&input, event)?;
                 }
             }
 
@@ -7042,8 +7302,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Device selects trust-point %{DATA:_temp_.cisco.trustpoint} for %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port}$
-                    if !cached_grok!("^Device selects trust-point %{DATA:_temp_.cisco.trustpoint} for %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port}$").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^Device selects trust-point %{DATA:_temp_.cisco.trustpoint} for %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port}$").extract_into(&input, event)?;
                 }
             }
 
@@ -7051,8 +7310,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: \\[(%{SPACE})?%{DATA:_temp_.cisco.burst.object}\\] drop %{NOTSPACE:_temp_.cisco.burst.id} exceeded. Current burst rate is %{INT:_temp_.cisco.burst.current_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_rate}; Current average rate is %{INT:_temp_.cisco.burst.avg_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_avg_rate}; Cumulative total count is %{INT:_temp_.cisco.burst.cumulative_count}
-                    if !cached_grok!("\\[(%{SPACE})?%{DATA:_temp_.cisco.burst.object}\\] drop %{NOTSPACE:_temp_.cisco.burst.id} exceeded. Current burst rate is %{INT:_temp_.cisco.burst.current_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_rate}; Current average rate is %{INT:_temp_.cisco.burst.avg_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_avg_rate}; Cumulative total count is %{INT:_temp_.cisco.burst.cumulative_count}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("\\[(%{SPACE})?%{DATA:_temp_.cisco.burst.object}\\] drop %{NOTSPACE:_temp_.cisco.burst.id} exceeded. Current burst rate is %{INT:_temp_.cisco.burst.current_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_rate}; Current average rate is %{INT:_temp_.cisco.burst.avg_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_avg_rate}; Cumulative total count is %{INT:_temp_.cisco.burst.cumulative_count}").extract_into(&input, event)?;
                 }
             }
 
@@ -7117,11 +7375,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
-                    if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$").extract_into(&input, event)? {
-                        // Grok pattern: ^IPAA: DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
-                        if !cached_grok!("^IPAA: DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^IPAA: DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7129,11 +7395,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
-                    if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$").extract_into(&input, event)? {
-                        // Grok pattern: ^IPAA: Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
-                        if !cached_grok!("^IPAA: Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^IPAA: Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7141,14 +7415,23 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$
-                    if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$").extract_into(&input, event)? {
-                        // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool address %{NOTSPACE:_temp_.cisco.pool_address}$
-                        if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool address %{NOTSPACE:_temp_.cisco.pool_address}$").extract_into(&input, event)? {
-                            // Grok pattern: ^IPAA: Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$
-                            if !cached_grok!("^IPAA: Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$").extract_into(&input, event)? {
-                            }
-                        }
-                    }
+                    // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool address %{NOTSPACE:_temp_.cisco.pool_address}$
+                    // Grok pattern: ^IPAA: Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool address %{NOTSPACE:_temp_.cisco.pool_address}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7156,20 +7439,31 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned from local pool %{IP:_temp_.cisco.pool_address}$
-                    if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned from local pool %{IP:_temp_.cisco.pool_address}$").extract_into(&input, event)? {
-                        // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$
-                        if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$").extract_into(&input, event)? {
-                            // Grok pattern: ^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$
-                            if !cached_grok!("^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$").extract_into(&input, event)? {
-                                // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$
-                                if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$").extract_into(&input, event)? {
-                                    // Grok pattern: ^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$
-                                    if !cached_grok!("^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$").extract_into(&input, event)? {
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$
+                    // Grok pattern: ^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$
+                    // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$
+                    // Grok pattern: ^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned from local pool %{IP:_temp_.cisco.pool_address}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$"
+                            ),
+                            cached_grok!(
+                                "^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7177,11 +7471,17 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, %{GREEDYDATA:event.reason}$
-                    if !cached_grok!("^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, %{GREEDYDATA:event.reason}$").extract_into(&input, event)? {
-                        // Grok pattern: ^IPAA: %{GREEDYDATA:event.reason}$
-                        if !cached_grok!("^IPAA: %{GREEDYDATA:event.reason}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^IPAA: %{GREEDYDATA:event.reason}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, %{GREEDYDATA:event.reason}$"
+                            ),
+                            cached_grok!("^IPAA: %{GREEDYDATA:event.reason}$"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -7189,9 +7489,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA} Username:%{USER:source.user.name}\\s+%{GREEDYDATA}$
-                    if !cached_grok!("^%{DATA} Username:%{USER:source.user.name}\\s+%{GREEDYDATA}$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!(
+                        "^%{DATA} Username:%{USER:source.user.name}\\s+%{GREEDYDATA}$"
+                    )
+                    .extract_into(&input, event)?;
                 }
             }
 
@@ -7975,8 +8276,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}
-                    if !cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
                 }
             }
 
@@ -8095,11 +8395,19 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Authentication: rejected, group = %{NOTSPACE:source.user.group.name} user = %{USER:source.user.name} , Session Type: %{NOTSPACE:_temp_.cisco.session_type}
-                    if !cached_grok!("Authentication: rejected, group = %{NOTSPACE:source.user.group.name} user = %{USER:source.user.name} , Session Type: %{NOTSPACE:_temp_.cisco.session_type}").extract_into(&input, event)? {
-                        // Grok pattern: Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> Authentication: rejected, Session Type: %{NOTSPACE:_temp_.cisco.session_type}\\.
-                        if !cached_grok!("Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> Authentication: rejected, Session Type: %{NOTSPACE:_temp_.cisco.session_type}\\.").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> Authentication: rejected, Session Type: %{NOTSPACE:_temp_.cisco.session_type}\\.
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "Authentication: rejected, group = %{NOTSPACE:source.user.group.name} user = %{USER:source.user.name} , Session Type: %{NOTSPACE:_temp_.cisco.session_type}"
+                            ),
+                            cached_grok!(
+                                "Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> Authentication: rejected, Session Type: %{NOTSPACE:_temp_.cisco.session_type}\\."
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -8107,8 +8415,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}
-                    if !cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
                 }
             }
 
@@ -8119,8 +8426,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Group = %{IP}, )?(IP = %{IP:source.address}, )?%{GREEDYDATA:event.reason}$
-                    if !cached_grok!("^(Group = %{IP}, )?(IP = %{IP:source.address}, )?%{GREEDYDATA:event.reason}$").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^(Group = %{IP}, )?(IP = %{IP:source.address}, )?%{GREEDYDATA:event.reason}$").extract_into(&input, event)?;
                 }
             }
 
@@ -8139,29 +8445,388 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)
-                    if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms"), ("event_reason", "event.reason"), ("_temp__cisco_termination_initiator", "_temp_.cisco.termination_initiator"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                        // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*))
-                        if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*))", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms"), ("event_reason", "event.reason"), ("_temp__cisco_termination_initiator", "_temp_.cisco.termination_initiator"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                            // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)
-                            if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms"), ("event_reason", "event.reason"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                                // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)
-                                if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*))
-                                    if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*))", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms"), ("event_reason", "event.reason"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                                        // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes})
-                                        if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes})", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
-                                            // Grok pattern: ^Teardown %{NOTSPACE:network.transport} connection for faddr (?:(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?gaddr (?:(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))))|(?P<_temp__cisco_gaddr_interface>(?:[^:]*)):(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))))/%{NUMBER} laddr (?:(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?(\\s*type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?
-                                            if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} connection for faddr (?:(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?gaddr (?:(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))))|(?P<_temp__cisco_gaddr_interface>(?:[^:]*)):(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))))/%{NUMBER} laddr (?:(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?(\\s*type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_gaddr_interface", "_temp_.cisco.gaddr_interface"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("destination_domain", "destination.domain"), ("destination_domain", "destination.domain"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__natsrcip", "_temp_.natsrcip"), ("_temp__natsrcip", "_temp_.natsrcip"), ("source_domain", "source.domain"), ("source_domain", "source.domain"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)? {
-                                                // Grok pattern: ^Teardown %{NOTSPACE:network.transport} connection %{NOTSPACE:_temp_.cisco.connection_id} from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address} to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}(?:%{NUMBER} %{NUMBER})?
-                                                if !cached_grok_mapped!("^Teardown %{NOTSPACE:network.transport} connection %{NOTSPACE:_temp_.cisco.connection_id} from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address} to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}(?:%{NUMBER} %{NUMBER})?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms")]).extract_into(&input, event)? {
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*))
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*))
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes})
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} connection for faddr (?:(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?gaddr (?:(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))))|(?P<_temp__cisco_gaddr_interface>(?:[^:]*)):(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))))/%{NUMBER} laddr (?:(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?(\\s*type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?
+                    // Grok pattern: ^Teardown %{NOTSPACE:network.transport} connection %{NOTSPACE:_temp_.cisco.connection_id} from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address} to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}(?:%{NUMBER} %{NUMBER})?
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms"),
+                                    ("event_reason", "event.reason"),
+                                    (
+                                        "_temp__cisco_termination_initiator",
+                                        "_temp_.cisco.termination_initiator"
+                                    ),
+                                    (
+                                        "_temp__cisco_termination_user",
+                                        "_temp_.cisco.termination_user"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*))",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms"),
+                                    ("event_reason", "event.reason"),
+                                    (
+                                        "_temp__cisco_termination_initiator",
+                                        "_temp_.cisco.termination_initiator"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms"),
+                                    ("event_reason", "event.reason"),
+                                    (
+                                        "_temp__cisco_termination_user",
+                                        "_temp_.cisco.termination_user"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms"),
+                                    (
+                                        "_temp__cisco_termination_user",
+                                        "_temp_.cisco.termination_user"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*))",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms"),
+                                    ("event_reason", "event.reason"),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes})",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms"),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} connection for faddr (?:(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?gaddr (?:(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))))|(?P<_temp__cisco_gaddr_interface>(?:[^:]*)):(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))))/%{NUMBER} laddr (?:(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?(\\s*type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_gaddr_interface",
+                                        "_temp_.cisco.gaddr_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    ("destination_domain", "destination.domain"),
+                                    ("destination_domain", "destination.domain"),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_user_or_sgt",
+                                        "_temp_.cisco.destination_user_or_sgt"
+                                    ),
+                                    ("_temp__natsrcip", "_temp_.natsrcip"),
+                                    ("_temp__natsrcip", "_temp_.natsrcip"),
+                                    ("source_domain", "source.domain"),
+                                    ("source_domain", "source.domain"),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    ),
+                                    (
+                                        "_temp__cisco_source_user_or_sgt",
+                                        "_temp_.cisco.source_user_or_sgt"
+                                    )
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "^Teardown %{NOTSPACE:network.transport} connection %{NOTSPACE:_temp_.cisco.connection_id} from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address} to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}(?:%{NUMBER} %{NUMBER})?",
+                                [
+                                    (
+                                        "_temp__cisco_source_interface",
+                                        "_temp_.cisco.source_interface"
+                                    ),
+                                    (
+                                        "_temp__cisco_destination_interface",
+                                        "_temp_.cisco.destination_interface"
+                                    ),
+                                    ("_temp__duration_hms", "_temp_.duration_hms")
+                                ]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -8406,11 +9071,27 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.source_user_or_sgt") {
                     // Grok pattern: (?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))))
-                    if !cached_grok_mapped!("(?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))))", [("_temp__cisco_source_username", "_temp_.cisco.source_username")]).extract_into(&input, event)? {
-                        // Grok pattern: (?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?
-                        if !cached_grok_mapped!("(?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?", [("_temp__cisco_source_username", "_temp_.cisco.source_username")]).extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: (?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "(?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))))",
+                                [(
+                                    "_temp__cisco_source_username",
+                                    "_temp_.cisco.source_username"
+                                )]
+                            ),
+                            cached_grok_mapped!(
+                                "(?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?",
+                                [(
+                                    "_temp__cisco_source_username",
+                                    "_temp_.cisco.source_username"
+                                )]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -8418,8 +9099,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.source_sgt") {
                     // Grok pattern: (?:(, *)?(%{NUMBER:_temp_.cisco.source_user_security_group_tag})?:?%{WORD:_temp_.cisco.source_user_security_group_tag_name}?)
-                    if !cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.source_user_security_group_tag})?:?%{WORD:_temp_.cisco.source_user_security_group_tag_name}?)").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.source_user_security_group_tag})?:?%{WORD:_temp_.cisco.source_user_security_group_tag_name}?)").extract_into(&input, event)?;
                 }
             }
 
@@ -8439,11 +9119,27 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.destination_user_or_sgt") {
                     // Grok pattern: (?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))))
-                    if !cached_grok_mapped!("(?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))))", [("_temp__cisco_destination_username", "_temp_.cisco.destination_username")]).extract_into(&input, event)? {
-                        // Grok pattern: (?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?
-                        if !cached_grok_mapped!("(?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?", [("_temp__cisco_destination_username", "_temp_.cisco.destination_username")]).extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: (?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "(?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))))",
+                                [(
+                                    "_temp__cisco_destination_username",
+                                    "_temp_.cisco.destination_username"
+                                )]
+                            ),
+                            cached_grok_mapped!(
+                                "(?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?",
+                                [(
+                                    "_temp__cisco_destination_username",
+                                    "_temp_.cisco.destination_username"
+                                )]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -8451,8 +9147,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.destination_sgt") {
                     // Grok pattern: (?:(, *)?(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})?:?%{WORD:_temp_.cisco.destination_user_security_group_tag_name}?)
-                    if !cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})?:?%{WORD:_temp_.cisco.destination_user_security_group_tag_name}?)").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})?:?%{WORD:_temp_.cisco.destination_user_security_group_tag_name}?)").extract_into(&input, event)?;
                 }
             }
 
@@ -8534,14 +9229,26 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("source.user.name") {
                     // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?P<source_user_email>(?:(?:(?P<source_user_name>(?:[^@$]+)))@%{HOSTNAME:source.user.domain}))
-                    if !cached_grok_mapped!("((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?P<source_user_email>(?:(?:(?P<source_user_name>(?:[^@$]+)))@%{HOSTNAME:source.user.domain}))", [("source_user_email", "source.user.email"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                        // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?:(?P<source_user_name>(?:[^@$]+)))
-                        if !cached_grok_mapped!("((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?:(?P<source_user_name>(?:[^@$]+)))", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                            // Grok pattern: \\*+
-                            if !cached_grok!("\\*+").extract_into(&input, event)? {
-                            }
-                        }
-                    }
+                    // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?:(?P<source_user_name>(?:[^@$]+)))
+                    // Grok pattern: \\*+
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?P<source_user_email>(?:(?:(?P<source_user_name>(?:[^@$]+)))@%{HOSTNAME:source.user.domain}))",
+                                [
+                                    ("source_user_email", "source.user.email"),
+                                    ("source_user_name", "source.user.name")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?:(?P<source_user_name>(?:[^@$]+)))",
+                                [("source_user_name", "source.user.name")]
+                            ),
+                            cached_grok!("\\*+"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -8549,11 +9256,24 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("destination.user.name") {
                     // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?P<destination_user_email>(?:(?:(?P<destination_user_name>(?:[^@$]+)))@%{HOSTNAME:destination.user.domain}))
-                    if !cached_grok_mapped!("((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?P<destination_user_email>(?:(?:(?P<destination_user_name>(?:[^@$]+)))@%{HOSTNAME:destination.user.domain}))", [("destination_user_email", "destination.user.email"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
-                        // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?:(?P<destination_user_name>(?:[^@$]+)))
-                        if !cached_grok_mapped!("((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?:(?P<destination_user_name>(?:[^@$]+)))", [("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?:(?P<destination_user_name>(?:[^@$]+)))
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?P<destination_user_email>(?:(?:(?P<destination_user_name>(?:[^@$]+)))@%{HOSTNAME:destination.user.domain}))",
+                                [
+                                    ("destination_user_email", "destination.user.email"),
+                                    ("destination_user_name", "destination.user.name")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?:(?P<destination_user_name>(?:[^@$]+)))",
+                                [("destination_user_name", "destination.user.name")]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -8854,9 +9574,8 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^(?:%{IP:source.ip}|%{GREEDYDATA:source.domain})$
-                    if !cached_grok!("^(?:%{IP:source.ip}|%{GREEDYDATA:source.domain})$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("^(?:%{IP:source.ip}|%{GREEDYDATA:source.domain})$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -8864,9 +9583,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("destination.address") {
                     // Grok pattern: ^(?:%{IP:destination.ip}|%{GREEDYDATA:destination.domain})$
-                    if !cached_grok!("^(?:%{IP:destination.ip}|%{GREEDYDATA:destination.domain})$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ =
+                        cached_grok!("^(?:%{IP:destination.ip}|%{GREEDYDATA:destination.domain})$")
+                            .extract_into(&input, event)?;
                 }
             }
 
@@ -8874,9 +9593,8 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("client.address") {
                     // Grok pattern: ^(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})$
-                    if !cached_grok!("^(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("^(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -8884,9 +9602,8 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("server.address") {
                     // Grok pattern: ^(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})$
-                    if !cached_grok!("^(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("^(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -9009,8 +9726,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.natsrcip") {
                     // Grok pattern: ^(?:%{IP:_temp_.cisco.mapped_source_ip}|%{GREEDYDATA:_temp_.cisco.mapped_source_host})$
-                    if !cached_grok!("^(?:%{IP:_temp_.cisco.mapped_source_ip}|%{GREEDYDATA:_temp_.cisco.mapped_source_host})$").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^(?:%{IP:_temp_.cisco.mapped_source_ip}|%{GREEDYDATA:_temp_.cisco.mapped_source_host})$").extract_into(&input, event)?;
                 }
             }
 
@@ -9018,8 +9734,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.natdstip") {
                     // Grok pattern: ^(?:%{IP:_temp_.cisco.mapped_destination_ip}|%{GREEDYDATA:_temp_.cisco.mapped_destination_host})$
-                    if !cached_grok!("^(?:%{IP:_temp_.cisco.mapped_destination_ip}|%{GREEDYDATA:_temp_.cisco.mapped_destination_host})$").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^(?:%{IP:_temp_.cisco.mapped_destination_ip}|%{GREEDYDATA:_temp_.cisco.mapped_destination_host})$").extract_into(&input, event)?;
                 }
             }
 
@@ -9325,20 +10040,21 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.tls_version") {
                     // Grok pattern: (?P<tls_version_protocol>(?:[A-Z]+))v%{NUMBER:tls.version}
-                    if !cached_grok_mapped!(
-                        "(?P<tls_version_protocol>(?:[A-Z]+))v%{NUMBER:tls.version}",
-                        [("tls_version_protocol", "tls.version_protocol")]
-                    )
-                    .extract_into(&input, event)?
-                    {
-                        // Grok pattern: (?P<tls_version_protocol>(?:[A-Z]+))
-                        if !cached_grok_mapped!(
-                            "(?P<tls_version_protocol>(?:[A-Z]+))",
-                            [("tls_version_protocol", "tls.version_protocol")]
-                        )
-                        .extract_into(&input, event)?
-                        {}
-                    }
+                    // Grok pattern: (?P<tls_version_protocol>(?:[A-Z]+))
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "(?P<tls_version_protocol>(?:[A-Z]+))v%{NUMBER:tls.version}",
+                                [("tls_version_protocol", "tls.version_protocol")]
+                            ),
+                            cached_grok_mapped!(
+                                "(?P<tls_version_protocol>(?:[A-Z]+))",
+                                [("tls_version_protocol", "tls.version_protocol")]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 

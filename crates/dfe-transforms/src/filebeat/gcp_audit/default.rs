@@ -189,20 +189,45 @@ impl Transform for Default {
             if event.has_value("_temp.type") {
                 if let Some(input) = event.get_string("_temp.type") {
                     // Grok pattern: %{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/namespaces/%{DATA:orchestrator.namespace}/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))(/%{HOSTNAME:orchestrator.resource.name})?
-                    if !cached_grok_mapped!("%{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/namespaces/%{DATA:orchestrator.namespace}/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))(/%{HOSTNAME:orchestrator.resource.name})?", [("orchestrator_api_version", "orchestrator.api_version"), ("orchestrator_resource_type", "orchestrator.resource.type")]).extract_into(&input, event)? {
-                        // Grok pattern: %{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))
-                        if !cached_grok_mapped!("%{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))", [("orchestrator_api_version", "orchestrator.api_version"), ("orchestrator_resource_type", "orchestrator.resource.type")]).extract_into(&input, event)? {
-                            // Grok pattern: apis/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))
-                            if !cached_grok_mapped!("apis/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))", [("orchestrator_resource_type", "orchestrator.resource.type"), ("orchestrator_api_version", "orchestrator.api_version")]).extract_into(&input, event)? {
-                                // Grok pattern: api/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))
-                                if !cached_grok_mapped!("api/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))", [("orchestrator_api_version", "orchestrator.api_version")]).extract_into(&input, event)? {
-                                    // Grok pattern: (?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))
-                                    if !cached_grok_mapped!("(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))", [("orchestrator_resource_type", "orchestrator.resource.type")]).extract_into(&input, event)? {
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: %{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))
+                    // Grok pattern: apis/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))
+                    // Grok pattern: api/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))
+                    // Grok pattern: (?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "%{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/namespaces/%{DATA:orchestrator.namespace}/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))(/%{HOSTNAME:orchestrator.resource.name})?",
+                                [
+                                    ("orchestrator_api_version", "orchestrator.api_version"),
+                                    ("orchestrator_resource_type", "orchestrator.resource.type")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "%{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))",
+                                [
+                                    ("orchestrator_api_version", "orchestrator.api_version"),
+                                    ("orchestrator_resource_type", "orchestrator.resource.type")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "apis/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))",
+                                [
+                                    ("orchestrator_resource_type", "orchestrator.resource.type"),
+                                    ("orchestrator_api_version", "orchestrator.api_version")
+                                ]
+                            ),
+                            cached_grok_mapped!(
+                                "api/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))",
+                                [("orchestrator_api_version", "orchestrator.api_version")]
+                            ),
+                            cached_grok_mapped!(
+                                "(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))",
+                                [("orchestrator_resource_type", "orchestrator.resource.type")]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 

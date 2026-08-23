@@ -81,8 +81,7 @@ impl Transform for Security {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^%{DATA} (security_event|ids-alerts) (%{WORD}\\s)?%{DATA:_temp.kvs}(\\smessage:\\s?%{DATA:message})?$
-                if !cached_grok!("^%{DATA} (security_event|ids-alerts) (%{WORD}\\s)?%{DATA:_temp.kvs}(\\smessage:\\s?%{DATA:message})?$").extract_into(&input, event)? {
-                    }
+                let _ = cached_grok!("^%{DATA} (security_event|ids-alerts) (%{WORD}\\s)?%{DATA:_temp.kvs}(\\smessage:\\s?%{DATA:message})?$").extract_into(&input, event)?;
             }
 
             if let Some(kv_str) = event.get_string("_temp.kvs") {
@@ -177,21 +176,24 @@ impl Transform for Security {
             if _cond {
                 if let Some(input) = event.get_string("src") {
                     // Grok pattern: ^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$
-                    if !cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
-                        if !cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$")
-                            .extract_into(&input, event)?
-                        {
-                            // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
-                            if !cached_grok_mapped!("^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$", [("_temp_src_ip", "_temp.src_ip")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
-                                if !cached_grok!("^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
+                    // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
+                    // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$"),
+                            cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$"),
+                            cached_grok_mapped!(
+                                "^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$",
+                                [("_temp_src_ip", "_temp.src_ip")]
+                            ),
+                            cached_grok!(
+                                "^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -233,21 +235,24 @@ impl Transform for Security {
             if _cond {
                 if let Some(input) = event.get_string("dst") {
                     // Grok pattern: ^%{IPV4:_temp.dst_ip}:(?P<dport>(?:[0-9]+))$
-                    if !cached_grok!("^%{IPV4:_temp.dst_ip}:(?P<dport>(?:[0-9]+))$")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$
-                        if !cached_grok!("^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$")
-                            .extract_into(&input, event)?
-                        {
-                            // Grok pattern: ^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$
-                            if !cached_grok_mapped!("^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$", [("_temp_dst_ip", "_temp.dst_ip")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$
-                                if !cached_grok!("^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: ^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$
+                    // Grok pattern: ^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$
+                    // Grok pattern: ^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!("^%{IPV4:_temp.dst_ip}:(?P<dport>(?:[0-9]+))$"),
+                            cached_grok!("^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$"),
+                            cached_grok_mapped!(
+                                "^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$",
+                                [("_temp_dst_ip", "_temp.dst_ip")]
+                            ),
+                            cached_grok!(
+                                "^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 

@@ -480,14 +480,87 @@ impl Transform for Default {
                 if event.has_value("winlog.user_data.Fqbn") {
                     if let Some(input) = event.get_string("winlog.user_data.Fqbn") {
                         // Grok pattern: ^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<tmp_file_x509_subject_locality>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
-                        if !cached_grok_mapped!("^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<tmp_file_x509_subject_locality>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$", [("tmp_file_x509_subject_organization", "tmp.file.x509.subject.organization"), ("tmp_file_x509_subject_locality", "tmp.file.x509.subject.locality"), ("tmp_file_x509_subject_state_or_province", "tmp.file.x509.subject.state_or_province"), ("tmp_file_x509_subject_country", "tmp.file.x509.subject.country"), ("file_pe_product", "file.pe.product"), ("file_pe_original_file_name", "file.pe.original_file_name"), ("file_pe_file_version", "file.pe.file_version")]).extract_into(&input, event)? {
                         // Grok pattern: ^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<tmp_file_x509_subject_locality>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
-                        if !cached_grok_mapped!("^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<tmp_file_x509_subject_locality>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$", [("tmp_file_x509_subject_organization", "tmp.file.x509.subject.organization"), ("tmp_file_x509_subject_locality", "tmp.file.x509.subject.locality"), ("tmp_file_x509_subject_country", "tmp.file.x509.subject.country"), ("file_pe_product", "file.pe.product"), ("file_pe_original_file_name", "file.pe.original_file_name"), ("file_pe_file_version", "file.pe.file_version")]).extract_into(&input, event)? {
-                            // Grok pattern: ^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
-                            if !cached_grok_mapped!("^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$", [("tmp_file_x509_subject_organization", "tmp.file.x509.subject.organization"), ("tmp_file_x509_subject_state_or_province", "tmp.file.x509.subject.state_or_province"), ("tmp_file_x509_subject_country", "tmp.file.x509.subject.country"), ("file_pe_product", "file.pe.product"), ("file_pe_original_file_name", "file.pe.original_file_name"), ("file_pe_file_version", "file.pe.file_version")]).extract_into(&input, event)? {
-                            }
-                        }
-                    }
+                        // Grok pattern: ^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok_mapped!(
+                                    "^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<tmp_file_x509_subject_locality>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$",
+                                    [
+                                        (
+                                            "tmp_file_x509_subject_organization",
+                                            "tmp.file.x509.subject.organization"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_locality",
+                                            "tmp.file.x509.subject.locality"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_state_or_province",
+                                            "tmp.file.x509.subject.state_or_province"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_country",
+                                            "tmp.file.x509.subject.country"
+                                        ),
+                                        ("file_pe_product", "file.pe.product"),
+                                        (
+                                            "file_pe_original_file_name",
+                                            "file.pe.original_file_name"
+                                        ),
+                                        ("file_pe_file_version", "file.pe.file_version")
+                                    ]
+                                ),
+                                cached_grok_mapped!(
+                                    "^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<tmp_file_x509_subject_locality>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$",
+                                    [
+                                        (
+                                            "tmp_file_x509_subject_organization",
+                                            "tmp.file.x509.subject.organization"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_locality",
+                                            "tmp.file.x509.subject.locality"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_country",
+                                            "tmp.file.x509.subject.country"
+                                        ),
+                                        ("file_pe_product", "file.pe.product"),
+                                        (
+                                            "file_pe_original_file_name",
+                                            "file.pe.original_file_name"
+                                        ),
+                                        ("file_pe_file_version", "file.pe.file_version")
+                                    ]
+                                ),
+                                cached_grok_mapped!(
+                                    "^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$",
+                                    [
+                                        (
+                                            "tmp_file_x509_subject_organization",
+                                            "tmp.file.x509.subject.organization"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_state_or_province",
+                                            "tmp.file.x509.subject.state_or_province"
+                                        ),
+                                        (
+                                            "tmp_file_x509_subject_country",
+                                            "tmp.file.x509.subject.country"
+                                        ),
+                                        ("file_pe_product", "file.pe.product"),
+                                        (
+                                            "file_pe_original_file_name",
+                                            "file.pe.original_file_name"
+                                        ),
+                                        ("file_pe_file_version", "file.pe.file_version")
+                                    ]
+                                ),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                 }
             }
@@ -547,12 +620,11 @@ impl Transform for Default {
                 if event.has_value("winlog.user_data.FullFilePath") {
                     if let Some(input) = event.get_string("winlog.user_data.FullFilePath") {
                         // Grok pattern: (?P<file_name>([^\\\\]*$))
-                        if !cached_grok_mapped!(
+                        let _ = cached_grok_mapped!(
                             "(?P<file_name>([^\\\\]*$))",
                             [("file_name", "file.name")]
                         )
-                        .extract_into(&input, event)?
-                        {}
+                        .extract_into(&input, event)?;
                     }
                 }
             }

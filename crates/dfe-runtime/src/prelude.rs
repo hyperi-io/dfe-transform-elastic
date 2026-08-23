@@ -19,6 +19,8 @@ pub use crate::{
     cached_grok, cached_grok_mapped, cached_painless, cached_params, cached_regex, cached_script,
 };
 
+pub use crate::grok_cache::extract_first_match;
+
 pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_plan_params};
 
 pub use crate::date_formats::{parse_date, parse_date_out};

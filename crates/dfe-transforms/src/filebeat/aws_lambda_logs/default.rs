@@ -34,7 +34,7 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {}
+                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -45,53 +45,148 @@ impl Transform for Default {
                     if event.has_value("event.original") {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: ^(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Version:\\s+(?P<aws_lambda_version>\\$LATEST|[^\\s]+)\\s+(?P<message>(?:(.|\n|\t)*))
-                            if !cached_grok_mapped!("^(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Version:\\s+(?P<aws_lambda_version>\\$LATEST|[^\\s]+)\\s+(?P<message>(?:(.|\n|\t)*))", [("aws_lambda_event_type", "aws.lambda.event_type"), ("aws_lambda_version", "aws.lambda.version")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version: %{DATA:aws.lambda.runtime_version}\\s+Runtime Version ARN: %{GREEDYDATA:aws.lambda.arn}
-                if !cached_grok_mapped!("^(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version: %{DATA:aws.lambda.runtime_version}\\s+Runtime Version ARN: %{GREEDYDATA:aws.lambda.arn}", [("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_event_type>LOGS)\\s+Name: %{DATA:aws.lambda.log_extension.name}\\s+State: %{DATA:aws.lambda.log_extension.state}\\s+Types: \\[%{DATA:aws.lambda.log_extension.types}\\]
-                if !cached_grok_mapped!("^(?P<aws_lambda_event_type>LOGS)\\s+Name: %{DATA:aws.lambda.log_extension.name}\\s+State: %{DATA:aws.lambda.log_extension.state}\\s+Types: \\[%{DATA:aws.lambda.log_extension.types}\\]", [("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_event_type>EXTENSION)\\s+Name: %{DATA:aws.lambda.extension.name}\\s+State: %{DATA:aws.lambda.extension.state}\\s+Events: \\[%{DATA:aws.lambda.extension.events}\\]
-                if !cached_grok_mapped!("^(?P<aws_lambda_event_type>EXTENSION)\\s+Name: %{DATA:aws.lambda.extension.name}\\s+State: %{DATA:aws.lambda.extension.state}\\s+Events: \\[%{DATA:aws.lambda.extension.events}\\]", [("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?
-                if !cached_grok_mapped!("^(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?", [("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_event_type>XRAY)\\s+TraceId:\\s+(?P<aws_lambda_tracing_xray_trace_id>(?:[^\\s]+))\\s+SegmentId:\\s+(?P<aws_lambda_tracing_segment_id>(?:[^\\s]+))(?:\\s+Sampled:\\s+(?P<aws_lambda_tracing_sampled>(?:[^\\s]+)))?
-                if !cached_grok_mapped!("^(?P<aws_lambda_event_type>XRAY)\\s+TraceId:\\s+(?P<aws_lambda_tracing_xray_trace_id>(?:[^\\s]+))\\s+SegmentId:\\s+(?P<aws_lambda_tracing_segment_id>(?:[^\\s]+))(?:\\s+Sampled:\\s+(?P<aws_lambda_tracing_sampled>(?:[^\\s]+)))?", [("aws_lambda_tracing_xray_trace_id", "aws.lambda.tracing.xray_trace_id"), ("aws_lambda_tracing_segment_id", "aws.lambda.tracing.segment_id"), ("aws_lambda_tracing_sampled", "aws.lambda.tracing.sampled"), ("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+%{GREEDYDATA:aws.lambda.request_id}
-                if !cached_grok_mapped!("^(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+%{GREEDYDATA:aws.lambda.request_id}", [("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^\\[%{WORD:log.level}\\]\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))
-                if !cached_grok_mapped!("^\\[%{WORD:log.level}\\]\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))", [("aws_lambda_request_id", "aws.lambda.request_id")]).extract_into(&input, event)? {
-                // Grok pattern: ^%{TIMESTAMP_ISO8601:timestamp}\\s+%{DATA:aws.lambda.request_id}\\s+%{LOGLEVEL:log.level}\\s+(?P<message>(?:(.|\n|\t)*))
-                if !cached_grok!("^%{TIMESTAMP_ISO8601:timestamp}\\s+%{DATA:aws.lambda.request_id}\\s+%{LOGLEVEL:log.level}\\s+(?P<message>(?:(.|\n|\t)*))").extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version:\\s+(?P<aws_lambda_runtime_version>(?:[^\\s]+))\\s+Runtime Version ARN:\\s+(?P<aws_lambda_runtime_version_arn>(?:[^\\s]+))
-                if !cached_grok_mapped!("^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version:\\s+(?P<aws_lambda_runtime_version>(?:[^\\s]+))\\s+Runtime Version ARN:\\s+(?P<aws_lambda_runtime_version_arn>(?:[^\\s]+))", [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id"), ("aws_lambda_runtime_version", "aws.lambda.runtime_version"), ("aws_lambda_runtime_version_arn", "aws.lambda.runtime_version_arn"), ("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Version:\\s+(?P<aws_lambda_version>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))
-                if !cached_grok_mapped!("^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Version:\\s+(?P<aws_lambda_version>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))", [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id"), ("aws_lambda_request_id", "aws.lambda.request_id"), ("aws_lambda_version", "aws.lambda.version"), ("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?
-                if !cached_grok_mapped!("^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?", [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id"), ("aws_lambda_request_id", "aws.lambda.request_id"), ("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))
-                if !cached_grok_mapped!("^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))", [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id"), ("aws_lambda_request_id", "aws.lambda.request_id"), ("aws_lambda_event_type", "aws.lambda.event_type")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+%{WORD:aws.lambda.event_type}\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))
-                if !cached_grok_mapped!("^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+%{WORD:aws.lambda.event_type}\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))", [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id"), ("aws_lambda_request_id", "aws.lambda.request_id")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<message>(?:(.|\n|\t)*))
-                if !cached_grok_mapped!("^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<message>(?:(.|\n|\t)*))", [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id")]).extract_into(&input, event)? {
-                // Grok pattern: ^(?i)(?:%{LOGLEVEL:log.level}:?\\s*)?(?P<message>(?:(.|\n|\t)*))
-                if !cached_grok!("^(?i)(?:%{LOGLEVEL:log.level}:?\\s*)?(?P<message>(?:(.|\n|\t)*))").extract_into(&input, event)? {
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
-                }
+                            // Grok pattern: ^(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version: %{DATA:aws.lambda.runtime_version}\\s+Runtime Version ARN: %{GREEDYDATA:aws.lambda.arn}
+                            // Grok pattern: ^(?P<aws_lambda_event_type>LOGS)\\s+Name: %{DATA:aws.lambda.log_extension.name}\\s+State: %{DATA:aws.lambda.log_extension.state}\\s+Types: \\[%{DATA:aws.lambda.log_extension.types}\\]
+                            // Grok pattern: ^(?P<aws_lambda_event_type>EXTENSION)\\s+Name: %{DATA:aws.lambda.extension.name}\\s+State: %{DATA:aws.lambda.extension.state}\\s+Events: \\[%{DATA:aws.lambda.extension.events}\\]
+                            // Grok pattern: ^(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?
+                            // Grok pattern: ^(?P<aws_lambda_event_type>XRAY)\\s+TraceId:\\s+(?P<aws_lambda_tracing_xray_trace_id>(?:[^\\s]+))\\s+SegmentId:\\s+(?P<aws_lambda_tracing_segment_id>(?:[^\\s]+))(?:\\s+Sampled:\\s+(?P<aws_lambda_tracing_sampled>(?:[^\\s]+)))?
+                            // Grok pattern: ^(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+%{GREEDYDATA:aws.lambda.request_id}
+                            // Grok pattern: ^\\[%{WORD:log.level}\\]\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))
+                            // Grok pattern: ^%{TIMESTAMP_ISO8601:timestamp}\\s+%{DATA:aws.lambda.request_id}\\s+%{LOGLEVEL:log.level}\\s+(?P<message>(?:(.|\n|\t)*))
+                            // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version:\\s+(?P<aws_lambda_runtime_version>(?:[^\\s]+))\\s+Runtime Version ARN:\\s+(?P<aws_lambda_runtime_version_arn>(?:[^\\s]+))
+                            // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Version:\\s+(?P<aws_lambda_version>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))
+                            // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?
+                            // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))
+                            // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+%{WORD:aws.lambda.event_type}\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))
+                            // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<message>(?:(.|\n|\t)*))
+                            // Grok pattern: ^(?i)(?:%{LOGLEVEL:log.level}:?\\s*)?(?P<message>(?:(.|\n|\t)*))
+                            let _ = extract_first_match(
+                                &[
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Version:\\s+(?P<aws_lambda_version>\\$LATEST|[^\\s]+)\\s+(?P<message>(?:(.|\n|\t)*))",
+                                        [
+                                            ("aws_lambda_event_type", "aws.lambda.event_type"),
+                                            ("aws_lambda_version", "aws.lambda.version")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version: %{DATA:aws.lambda.runtime_version}\\s+Runtime Version ARN: %{GREEDYDATA:aws.lambda.arn}",
+                                        [("aws_lambda_event_type", "aws.lambda.event_type")]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>LOGS)\\s+Name: %{DATA:aws.lambda.log_extension.name}\\s+State: %{DATA:aws.lambda.log_extension.state}\\s+Types: \\[%{DATA:aws.lambda.log_extension.types}\\]",
+                                        [("aws_lambda_event_type", "aws.lambda.event_type")]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>EXTENSION)\\s+Name: %{DATA:aws.lambda.extension.name}\\s+State: %{DATA:aws.lambda.extension.state}\\s+Events: \\[%{DATA:aws.lambda.extension.events}\\]",
+                                        [("aws_lambda_event_type", "aws.lambda.event_type")]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?",
+                                        [("aws_lambda_event_type", "aws.lambda.event_type")]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>XRAY)\\s+TraceId:\\s+(?P<aws_lambda_tracing_xray_trace_id>(?:[^\\s]+))\\s+SegmentId:\\s+(?P<aws_lambda_tracing_segment_id>(?:[^\\s]+))(?:\\s+Sampled:\\s+(?P<aws_lambda_tracing_sampled>(?:[^\\s]+)))?",
+                                        [
+                                            (
+                                                "aws_lambda_tracing_xray_trace_id",
+                                                "aws.lambda.tracing.xray_trace_id"
+                                            ),
+                                            (
+                                                "aws_lambda_tracing_segment_id",
+                                                "aws.lambda.tracing.segment_id"
+                                            ),
+                                            (
+                                                "aws_lambda_tracing_sampled",
+                                                "aws.lambda.tracing.sampled"
+                                            ),
+                                            ("aws_lambda_event_type", "aws.lambda.event_type")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+%{GREEDYDATA:aws.lambda.request_id}",
+                                        [("aws_lambda_event_type", "aws.lambda.event_type")]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^\\[%{WORD:log.level}\\]\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))",
+                                        [("aws_lambda_request_id", "aws.lambda.request_id")]
+                                    ),
+                                    cached_grok!(
+                                        "^%{TIMESTAMP_ISO8601:timestamp}\\s+%{DATA:aws.lambda.request_id}\\s+%{LOGLEVEL:log.level}\\s+(?P<message>(?:(.|\n|\t)*))"
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version:\\s+(?P<aws_lambda_runtime_version>(?:[^\\s]+))\\s+Runtime Version ARN:\\s+(?P<aws_lambda_runtime_version_arn>(?:[^\\s]+))",
+                                        [
+                                            (
+                                                "aws_lambda_log_stream_id",
+                                                "aws.lambda.log_stream_id"
+                                            ),
+                                            (
+                                                "aws_lambda_runtime_version",
+                                                "aws.lambda.runtime_version"
+                                            ),
+                                            (
+                                                "aws_lambda_runtime_version_arn",
+                                                "aws.lambda.runtime_version_arn"
+                                            ),
+                                            ("aws_lambda_event_type", "aws.lambda.event_type")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Version:\\s+(?P<aws_lambda_version>(?:[^\\s]+))\\s+(?P<message>(?:(.|\n|\t)*))",
+                                        [
+                                            (
+                                                "aws_lambda_log_stream_id",
+                                                "aws.lambda.log_stream_id"
+                                            ),
+                                            ("aws_lambda_request_id", "aws.lambda.request_id"),
+                                            ("aws_lambda_version", "aws.lambda.version"),
+                                            ("aws_lambda_event_type", "aws.lambda.event_type")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>REPORT)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))\\s+Duration:\\s+%{NUMBER:aws.lambda.metrics.duration_ms:float} ms\\s+Billed Duration:\\s+%{NUMBER:aws.lambda.metrics.billed_duration_ms:float} ms\\s+Memory Size:\\s+%{NUMBER:aws.lambda.metrics.memory_size_mb:float} MB\\s+Max Memory Used:\\s+%{NUMBER:aws.lambda.metrics.max_memory_used_mb:float} MB(?:\\s+Init Duration:\\s+%{NUMBER:aws.lambda.metrics.init_duration_ms:float} ms)?",
+                                        [
+                                            (
+                                                "aws_lambda_log_stream_id",
+                                                "aws.lambda.log_stream_id"
+                                            ),
+                                            ("aws_lambda_request_id", "aws.lambda.request_id"),
+                                            ("aws_lambda_event_type", "aws.lambda.event_type")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<aws_lambda_event_type>END)\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))",
+                                        [
+                                            (
+                                                "aws_lambda_log_stream_id",
+                                                "aws.lambda.log_stream_id"
+                                            ),
+                                            ("aws_lambda_request_id", "aws.lambda.request_id"),
+                                            ("aws_lambda_event_type", "aws.lambda.event_type")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+%{WORD:aws.lambda.event_type}\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))",
+                                        [
+                                            (
+                                                "aws_lambda_log_stream_id",
+                                                "aws.lambda.log_stream_id"
+                                            ),
+                                            ("aws_lambda_request_id", "aws.lambda.request_id")
+                                        ]
+                                    ),
+                                    cached_grok_mapped!(
+                                        "^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<message>(?:(.|\n|\t)*))",
+                                        [("aws_lambda_log_stream_id", "aws.lambda.log_stream_id")]
+                                    ),
+                                    cached_grok!(
+                                        "^(?i)(?:%{LOGLEVEL:log.level}:?\\s*)?(?P<message>(?:(.|\n|\t)*))"
+                                    ),
+                                ],
+                                &input,
+                                event,
+                            )?;
                         }
                     }
                     Ok(())

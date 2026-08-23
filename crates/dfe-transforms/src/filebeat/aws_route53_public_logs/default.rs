@@ -40,8 +40,7 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: %{BASE10NUM} %{TIMESTAMP_ISO8601:_tmp.timestamp} %{DATA:aws.route53.hosted_zone_id} %{DATA:_tmp.question} %{WORD:dns.question.type} %{WORD:dns.response_code} %{WORD:network.transport} (?P<aws_route53_edge_location>(?:[A-Z]{3}\\d+(-[A-Z]+\\d+)?)) %{IP:source.address} ((?P<aws_route53_edns_client_subnet>(?:%{IP}/[0-9]+))|-)
-                if !cached_grok_mapped!("%{BASE10NUM} %{TIMESTAMP_ISO8601:_tmp.timestamp} %{DATA:aws.route53.hosted_zone_id} %{DATA:_tmp.question} %{WORD:dns.question.type} %{WORD:dns.response_code} %{WORD:network.transport} (?P<aws_route53_edge_location>(?:[A-Z]{3}\\d+(-[A-Z]+\\d+)?)) %{IP:source.address} ((?P<aws_route53_edns_client_subnet>(?:%{IP}/[0-9]+))|-)", [("aws_route53_edge_location", "aws.route53.edge_location"), ("aws_route53_edns_client_subnet", "aws.route53.edns_client_subnet")]).extract_into(&input, event)? {
-                    }
+                let _ = cached_grok_mapped!("%{BASE10NUM} %{TIMESTAMP_ISO8601:_tmp.timestamp} %{DATA:aws.route53.hosted_zone_id} %{DATA:_tmp.question} %{WORD:dns.question.type} %{WORD:dns.response_code} %{WORD:network.transport} (?P<aws_route53_edge_location>(?:[A-Z]{3}\\d+(-[A-Z]+\\d+)?)) %{IP:source.address} ((?P<aws_route53_edns_client_subnet>(?:%{IP}/[0-9]+))|-)", [("aws_route53_edge_location", "aws.route53.edge_location"), ("aws_route53_edns_client_subnet", "aws.route53.edns_client_subnet")]).extract_into(&input, event)?;
             }
 
             // ignore_failure: true

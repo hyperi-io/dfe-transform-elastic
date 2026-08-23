@@ -403,16 +403,17 @@ impl Transform for Default {
                 if event.has_value("m365_defender.incident.assigned_to") {
                     if let Some(input) = event.get_string("m365_defender.incident.assigned_to") {
                         // Grok pattern: %{USERNAME:source.user.name}@%{HOSTNAME:source.user.domain}
-                        if !cached_grok!(
-                            "%{USERNAME:source.user.name}@%{HOSTNAME:source.user.domain}"
-                        )
-                        .extract_into(&input, event)?
-                        {
-                            // Grok pattern: %{GREEDYDATA:source.user.name}
-                            if !cached_grok!("%{GREEDYDATA:source.user.name}")
-                                .extract_into(&input, event)?
-                            {}
-                        }
+                        // Grok pattern: %{GREEDYDATA:source.user.name}
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok!(
+                                    "%{USERNAME:source.user.name}@%{HOSTNAME:source.user.domain}"
+                                ),
+                                cached_grok!("%{GREEDYDATA:source.user.name}"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                 }
                 Ok(())

@@ -47,11 +47,31 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("_temp_.message") {
                 // Grok pattern: ^%{DATA},(?P<_temp__received_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$
-                if !cached_grok_mapped!("^%{DATA},(?P<_temp__received_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$", [("_temp__received_time", "_temp_.received_time"), ("observer_serial_number", "observer.serial_number"), ("panw_panos_type", "panw.panos.type"), ("panw_panos_sub_type", "panw.panos.sub_type"), ("_temp__config_version", "_temp_.config_version"), ("_temp__generated_time", "_temp_.generated_time")]).extract_into(&input, event)? {
-                        // Grok pattern: ^(?:<\\d+>)?%{SYSLOGTIMESTAMP:_temp_.syslog_time} %{IPORHOST:observer.hostname} %{NOTSPACE:observer.serial_number},(?P<_temp__generated_time>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})),(?P<panw_panos_type>(?:[^,]*)),%{GREEDYDATA:message}$
-                        if !cached_grok_mapped!("^(?:<\\d+>)?%{SYSLOGTIMESTAMP:_temp_.syslog_time} %{IPORHOST:observer.hostname} %{NOTSPACE:observer.serial_number},(?P<_temp__generated_time>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})),(?P<panw_panos_type>(?:[^,]*)),%{GREEDYDATA:message}$", [("_temp__generated_time", "_temp_.generated_time"), ("panw_panos_type", "panw.panos.type")]).extract_into(&input, event)? {
-                        }
-                    }
+                // Grok pattern: ^(?:<\\d+>)?%{SYSLOGTIMESTAMP:_temp_.syslog_time} %{IPORHOST:observer.hostname} %{NOTSPACE:observer.serial_number},(?P<_temp__generated_time>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})),(?P<panw_panos_type>(?:[^,]*)),%{GREEDYDATA:message}$
+                let _ = extract_first_match(
+                    &[
+                        cached_grok_mapped!(
+                            "^%{DATA},(?P<_temp__received_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),(?P<observer_serial_number>(?:[^,]*)),(?P<panw_panos_type>(?:[^,]*)),(?:(?P<panw_panos_sub_type>(?:[^,]*)))?,(?P<_temp__config_version>(?:[^,]*)),(?P<_temp__generated_time>(?:(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})|%{TIMESTAMP_ISO8601})),%{GREEDYDATA:message}$",
+                            [
+                                ("_temp__received_time", "_temp_.received_time"),
+                                ("observer_serial_number", "observer.serial_number"),
+                                ("panw_panos_type", "panw.panos.type"),
+                                ("panw_panos_sub_type", "panw.panos.sub_type"),
+                                ("_temp__config_version", "_temp_.config_version"),
+                                ("_temp__generated_time", "_temp_.generated_time")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<\\d+>)?%{SYSLOGTIMESTAMP:_temp_.syslog_time} %{IPORHOST:observer.hostname} %{NOTSPACE:observer.serial_number},(?P<_temp__generated_time>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})),(?P<panw_panos_type>(?:[^,]*)),%{GREEDYDATA:message}$",
+                            [
+                                ("_temp__generated_time", "_temp_.generated_time"),
+                                ("panw_panos_type", "panw.panos.type")
+                            ]
+                        ),
+                    ],
+                    &input,
+                    event,
+                )?;
             }
 
             let _cond = { event.get_str("panw.panos.type") == Some("TRAFFIC") };
@@ -10383,17 +10403,37 @@ impl Transform for Default {
                 if event.has_value("_temp_.srcuser") {
                     if let Some(input) = event.get_string("_temp_.srcuser") {
                         // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
                         // Grok pattern: ^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("source_user_domain", "source.user.domain"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
-                            if !cached_grok_mapped!("^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$", [("source_user_name", "source.user.name"), ("source_user_domain", "source.user.domain")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{GREEDYDATA:source.user.name}$
-                                if !cached_grok!("^%{GREEDYDATA:source.user.name}$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
+                        // Grok pattern: ^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
+                        // Grok pattern: ^%{GREEDYDATA:source.user.name}$
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok_mapped!(
+                                    "^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$",
+                                    [
+                                        ("source_user_domain", "source.user.domain"),
+                                        ("source_user_name", "source.user.name")
+                                    ]
+                                ),
+                                cached_grok_mapped!(
+                                    "^(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$",
+                                    [
+                                        ("source_user_domain", "source.user.domain"),
+                                        ("source_user_name", "source.user.name")
+                                    ]
+                                ),
+                                cached_grok_mapped!(
+                                    "^(?P<source_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<source_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$",
+                                    [
+                                        ("source_user_name", "source.user.name"),
+                                        ("source_user_domain", "source.user.domain")
+                                    ]
+                                ),
+                                cached_grok!("^%{GREEDYDATA:source.user.name}$"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                 }
             }
@@ -10403,17 +10443,37 @@ impl Transform for Default {
                 if event.has_value("_temp_.dstuser") {
                     if let Some(input) = event.get_string("_temp_.dstuser") {
                         // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
                         // Grok pattern: ^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$
-                        if !cached_grok_mapped!("^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$", [("destination_user_domain", "destination.user.domain"), ("destination_user_name", "destination.user.name")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
-                            if !cached_grok_mapped!("^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$", [("destination_user_name", "destination.user.name"), ("destination_user_domain", "destination.user.domain")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{GREEDYDATA:destination.user.name}$
-                                if !cached_grok!("^%{GREEDYDATA:destination.user.name}$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
+                        // Grok pattern: ^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$
+                        // Grok pattern: ^%{GREEDYDATA:destination.user.name}$
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok_mapped!(
+                                    "^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$",
+                                    [
+                                        ("destination_user_domain", "destination.user.domain"),
+                                        ("destination_user_name", "destination.user.name")
+                                    ]
+                                ),
+                                cached_grok_mapped!(
+                                    "^(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))\\\\\\\\(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))$",
+                                    [
+                                        ("destination_user_domain", "destination.user.domain"),
+                                        ("destination_user_name", "destination.user.name")
+                                    ]
+                                ),
+                                cached_grok_mapped!(
+                                    "^(?P<destination_user_name>(?:[ a-zA-Z0-9#.:_'-]+[$]?))@(?P<destination_user_domain>(?:(?:\\.{0,1}|\\b(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62})(?:\\.{1,2}(?:[0-9A-Za-z_][0-9A-Za-z_\\-]{0,62}))*(\\.?|\\b))))$",
+                                    [
+                                        ("destination_user_name", "destination.user.name"),
+                                        ("destination_user_domain", "destination.user.domain")
+                                    ]
+                                ),
+                                cached_grok!("^%{GREEDYDATA:destination.user.name}$"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                 }
             }
@@ -11217,8 +11277,7 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("panw.panos.threat.name") {
                         // Grok pattern: ^%{GREEDYDATA:panw.panos.threat.name}\\(\\s*%{NUMBER:panw.panos.threat.id}\\s*\\)$
-                        if !cached_grok!("^%{GREEDYDATA:panw.panos.threat.name}\\(\\s*%{NUMBER:panw.panos.threat.id}\\s*\\)$").extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok!("^%{GREEDYDATA:panw.panos.threat.name}\\(\\s*%{NUMBER:panw.panos.threat.id}\\s*\\)$").extract_into(&input, event)?;
                     }
                     Ok(())
                 })();

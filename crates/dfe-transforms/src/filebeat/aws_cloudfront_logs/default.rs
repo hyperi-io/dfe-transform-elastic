@@ -549,12 +549,11 @@ impl Transform for Default {
             if event.has_value("_tmp.ssl_protocol") {
                 if let Some(input) = event.get_string("_tmp.ssl_protocol") {
                     // Grok pattern: (-|(?P<tls_version_protocol>(?:(TLS|SSL)))v%{NUMBER:tls.version})
-                    if !cached_grok_mapped!(
+                    let _ = cached_grok_mapped!(
                         "(-|(?P<tls_version_protocol>(?:(TLS|SSL)))v%{NUMBER:tls.version})",
                         [("tls_version_protocol", "tls.version_protocol")]
                     )
-                    .extract_into(&input, event)?
-                    {}
+                    .extract_into(&input, event)?;
                 }
             }
 

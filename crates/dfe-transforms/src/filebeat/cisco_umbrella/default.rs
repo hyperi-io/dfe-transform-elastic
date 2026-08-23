@@ -1569,9 +1569,8 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("host.name") {
                         // Grok pattern: ^%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}$
-                        if !cached_grok!("^%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}$")
-                            .extract_into(&input, event)?
-                        {}
+                        let _ = cached_grok!("^%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}$")
+                            .extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -1590,11 +1589,21 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("user.name") {
                         // Grok pattern: ^%{GREEDYDATA:user.full_name} (\\(\\[%{GREEDYDATA}\\]\\(mailto:(?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\)\\))?$
-                        if !cached_grok_mapped!("^%{GREEDYDATA:user.full_name} (\\(\\[%{GREEDYDATA}\\]\\(mailto:(?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\)\\))?$", [("user_email", "user.email")]).extract_into(&input, event)? {
                         // Grok pattern: ^%{GREEDYDATA:user.full_name} (\\((?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\))?$
-                        if !cached_grok_mapped!("^%{GREEDYDATA:user.full_name} (\\((?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\))?$", [("user_email", "user.email")]).extract_into(&input, event)? {
-                        }
-                    }
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok_mapped!(
+                                    "^%{GREEDYDATA:user.full_name} (\\(\\[%{GREEDYDATA}\\]\\(mailto:(?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\)\\))?$",
+                                    [("user_email", "user.email")]
+                                ),
+                                cached_grok_mapped!(
+                                    "^%{GREEDYDATA:user.full_name} (\\((?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\))?$",
+                                    [("user_email", "user.email")]
+                                ),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                     Ok(())
                 })();

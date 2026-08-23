@@ -528,11 +528,10 @@ impl Transform for Default {
                     if event.has_value("o365audit.Parameters._raw") {
                         if let Some(input) = event.get_string("o365audit.Parameters._raw") {
                             // Grok pattern: ^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$
-                            if !cached_grok!(
+                            let _ = cached_grok!(
                                 "^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$"
                             )
-                            .extract_into(&input, event)?
-                            {}
+                            .extract_into(&input, event)?;
                         }
                     }
                     Ok(())
@@ -1757,43 +1756,39 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("client._temp") {
                     // Grok pattern: (?:^\\[%{IP:client.address}\\]:%{POSINT:client._port})
-                    if !cached_grok!("(?:^\\[%{IP:client.address}\\]:%{POSINT:client._port})")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^%{IP:client.address}$
-                        if !cached_grok!("^%{IP:client.address}$").extract_into(&input, event)? {
-                            // Grok pattern: ^\\[%{IP:client.address}\\]$
-                            if !cached_grok!("^\\[%{IP:client.address}\\]$")
-                                .extract_into(&input, event)?
-                            {
-                                // Grok pattern: (?:^%{IP:client.address}:%{POSINT:client._port})
-                                if !cached_grok!("(?:^%{IP:client.address}:%{POSINT:client._port})")
-                                    .extract_into(&input, event)?
-                                {
-                                    // Grok pattern: ^%{NOTSPACE:client.domain}$
-                                    if !cached_grok!("^%{NOTSPACE:client.domain}$")
-                                        .extract_into(&input, event)?
-                                    {
-                                        // Grok pattern: (?:^\\[%{NOTSPACE:client.domain}\\]:%{POSINT:client._port})
-                                        if !cached_grok!("(?:^\\[%{NOTSPACE:client.domain}\\]:%{POSINT:client._port})").extract_into(&input, event)? {
-                                            // Grok pattern: (?:^%{NOTSPACE:client.domain}:%{POSINT:client._port})
-                                            if !cached_grok!("(?:^%{NOTSPACE:client.domain}:%{POSINT:client._port})").extract_into(&input, event)? {
-                                                // Grok pattern: ^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$
-                                                if !cached_grok_mapped!("^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$", [("client_address", "client.address")]).extract_into(&input, event)? {
-                                                    // Grok pattern: ^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$
-                                                    if !cached_grok_mapped!("^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$", [("client_address", "client.address")]).extract_into(&input, event)? {
-                                                        // Grok pattern: %{GREEDYDATA:client.address}
-                                                        if !cached_grok!("%{GREEDYDATA:client.address}").extract_into(&input, event)? {
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: ^%{IP:client.address}$
+                    // Grok pattern: ^\\[%{IP:client.address}\\]$
+                    // Grok pattern: (?:^%{IP:client.address}:%{POSINT:client._port})
+                    // Grok pattern: ^%{NOTSPACE:client.domain}$
+                    // Grok pattern: (?:^\\[%{NOTSPACE:client.domain}\\]:%{POSINT:client._port})
+                    // Grok pattern: (?:^%{NOTSPACE:client.domain}:%{POSINT:client._port})
+                    // Grok pattern: ^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$
+                    // Grok pattern: ^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$
+                    // Grok pattern: %{GREEDYDATA:client.address}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!("(?:^\\[%{IP:client.address}\\]:%{POSINT:client._port})"),
+                            cached_grok!("^%{IP:client.address}$"),
+                            cached_grok!("^\\[%{IP:client.address}\\]$"),
+                            cached_grok!("(?:^%{IP:client.address}:%{POSINT:client._port})"),
+                            cached_grok!("^%{NOTSPACE:client.domain}$"),
+                            cached_grok!(
+                                "(?:^\\[%{NOTSPACE:client.domain}\\]:%{POSINT:client._port})"
+                            ),
+                            cached_grok!("(?:^%{NOTSPACE:client.domain}:%{POSINT:client._port})"),
+                            cached_grok_mapped!(
+                                "^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$",
+                                [("client_address", "client.address")]
+                            ),
+                            cached_grok_mapped!(
+                                "^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$",
+                                [("client_address", "client.address")]
+                            ),
+                            cached_grok!("%{GREEDYDATA:client.address}"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -1820,14 +1815,23 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("server._temp") {
                         // Grok pattern: ^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$
-                        if !cached_grok_mapped!("^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$", [("server_address", "server.address")]).extract_into(&input, event)? {
                         // Grok pattern: (?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))
-                        if !cached_grok_mapped!("(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))", [("server_address", "server.address")]).extract_into(&input, event)? {
-                            // Grok pattern: %{GREEDYDATA:server.address}
-                            if !cached_grok!("%{GREEDYDATA:server.address}").extract_into(&input, event)? {
-                            }
-                        }
-                    }
+                        // Grok pattern: %{GREEDYDATA:server.address}
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok_mapped!(
+                                    "^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$",
+                                    [("server_address", "server.address")]
+                                ),
+                                cached_grok_mapped!(
+                                    "(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))",
+                                    [("server_address", "server.address")]
+                                ),
+                                cached_grok!("%{GREEDYDATA:server.address}"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                     Ok(())
                 })();

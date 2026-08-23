@@ -218,9 +218,8 @@ impl Transform for NoUseFlattenedDebug {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("okta.debug_context.debug_data.risk") {
                         // Grok pattern: level=%{NOTSPACE:_risk_object.level}
-                        if !cached_grok!("level=%{NOTSPACE:_risk_object.level}")
-                            .extract_into(&input, event)?
-                        {}
+                        let _ = cached_grok!("level=%{NOTSPACE:_risk_object.level}")
+                            .extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -235,14 +234,17 @@ impl Transform for NoUseFlattenedDebug {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("okta.debug_context.debug_data.risk") {
                         // Grok pattern: reasons=%{DATA:_risk_object.reasons}, (?:%{NOTSPACE}=)
-                        if !cached_grok!("reasons=%{DATA:_risk_object.reasons}, (?:%{NOTSPACE}=)")
-                            .extract_into(&input, event)?
-                        {
-                            // Grok pattern: reasons=%{DATA:_risk_object.reasons}$
-                            if !cached_grok!("reasons=%{DATA:_risk_object.reasons}$")
-                                .extract_into(&input, event)?
-                            {}
-                        }
+                        // Grok pattern: reasons=%{DATA:_risk_object.reasons}$
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok!(
+                                    "reasons=%{DATA:_risk_object.reasons}, (?:%{NOTSPACE}=)"
+                                ),
+                                cached_grok!("reasons=%{DATA:_risk_object.reasons}$"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                     Ok(())
                 })();

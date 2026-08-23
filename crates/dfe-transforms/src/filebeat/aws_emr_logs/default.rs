@@ -33,8 +33,7 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{TIMESTAMP_ISO8601:_tmp.timestamp}%{SPACE}%{LOGLEVEL:log.level}%{SPACE}%{DATA:process.name}(?:\\\\[%{GREEDYDATA:process.entrypoint}\\\\])?:%{SPACE}%{GREEDYDATA:message}%{SPACE}(?P<process_message>(?:(.|\\n)*))
-                    if !cached_grok_mapped!("%{TIMESTAMP_ISO8601:_tmp.timestamp}%{SPACE}%{LOGLEVEL:log.level}%{SPACE}%{DATA:process.name}(?:\\\\[%{GREEDYDATA:process.entrypoint}\\\\])?:%{SPACE}%{GREEDYDATA:message}%{SPACE}(?P<process_message>(?:(.|\\n)*))", [("process_message", "process.message")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("%{TIMESTAMP_ISO8601:_tmp.timestamp}%{SPACE}%{LOGLEVEL:log.level}%{SPACE}%{DATA:process.name}(?:\\\\[%{GREEDYDATA:process.entrypoint}\\\\])?:%{SPACE}%{GREEDYDATA:message}%{SPACE}(?P<process_message>(?:(.|\\n)*))", [("process_message", "process.message")]).extract_into(&input, event)?;
                 }
             }
 

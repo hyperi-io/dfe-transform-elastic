@@ -21,17 +21,19 @@ impl Transform for PipelineProcessIp {
             if event.has_value("_ingest._value") {
                 if let Some(input) = event.get_string("_ingest._value") {
                     // Grok pattern: ^%{IPV4:_tmp.valid_ip}$
-                    if !cached_grok!("^%{IPV4:_tmp.valid_ip}$").extract_into(&input, event)? {
-                        // Grok pattern: ^%{IPV6:_tmp.valid_ip}$
-                        if !cached_grok!("^%{IPV6:_tmp.valid_ip}$").extract_into(&input, event)? {
-                            // Grok pattern: ^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$
-                            if !cached_grok_mapped!("^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$", [("_tmp_valid_ip", "_tmp.valid_ip")]).extract_into(&input, event)? {
-                                // Grok pattern: ^\\[%{IPV6:_tmp.valid_ip}\\]$
-                                if !cached_grok!("^\\[%{IPV6:_tmp.valid_ip}\\]$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
-                    }
+                    // Grok pattern: ^%{IPV6:_tmp.valid_ip}$
+                    // Grok pattern: ^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$
+                    // Grok pattern: ^\\[%{IPV6:_tmp.valid_ip}\\]$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!("^%{IPV4:_tmp.valid_ip}$"),
+                            cached_grok!("^%{IPV6:_tmp.valid_ip}$"),
+                            cached_grok_mapped!("^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$", [("_tmp_valid_ip", "_tmp.valid_ip")]),
+                            cached_grok!("^\\[%{IPV6:_tmp.valid_ip}\\]$"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
                 Ok(())

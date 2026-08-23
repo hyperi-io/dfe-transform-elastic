@@ -38,56 +38,117 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$
-                if !cached_grok!("^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$").extract_into(&input, event)? {
-                        // Grok pattern: ^%{GREEDYDATA:_temp_.message}$
-                        if !cached_grok!("^%{GREEDYDATA:_temp_.message}$").extract_into(&input, event)? {
-                        }
-                    }
+                // Grok pattern: ^%{GREEDYDATA:_temp_.message}$
+                let _ = extract_first_match(
+                    &[
+                        cached_grok!(
+                            "^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$"
+                        ),
+                        cached_grok!("^%{GREEDYDATA:_temp_.message}$"),
+                    ],
+                    &input,
+                    event,
+                )?;
             }
 
             if let Some(input) = event.get_string("_temp_.message") {
                 // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__cisco_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)) (?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)) %{GREEDYDATA:_temp_.message}$
-                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__cisco_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)) (?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)) %{GREEDYDATA:_temp_.message}$", [("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("log_syslog_hostname", "log.syslog.hostname"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                        // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
-                        if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
-                            if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
-                                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$", [("_temp__timestamp", "_temp_.timestamp"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                                    // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{SYSLOGTIMESTAMP} )?(%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{DATA}:(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)%{GREEDYDATA}%%{GREEDYDATA:message}$
-                                    if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{SYSLOGTIMESTAMP} )?(%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{DATA}:(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)%{GREEDYDATA}%%{GREEDYDATA:message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                                        // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \\*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$
-                                        if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \\*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname"), ("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__timestamp", "_temp_.timestamp"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                                            // Grok pattern: ^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$
-                                            if !cached_grok_mapped!("^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$", [("cisco_ios_uptime", "cisco.ios.uptime"), ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
-                                                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$
-                                                if !cached_grok_mapped!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$", [("log_syslog_hostname", "log.syslog.hostname")]).extract_into(&input, event)? {
-                                                    // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$
-                                                    if !cached_grok!("^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$").extract_into(&input, event)? {
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{SYSLOGTIMESTAMP} )?(%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{DATA}:(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)%{GREEDYDATA}%%{GREEDYDATA:message}$
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \\*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$
+                // Grok pattern: ^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$
+                // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$
+                let _ = extract_first_match(
+                    &[
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__cisco_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)) (?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)) %{GREEDYDATA:_temp_.message}$",
+                            [
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("log_syslog_hostname", "log.syslog.hostname"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} %{IP} (?:(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)): )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$",
+                            [
+                                ("log_syslog_hostname", "log.syslog.hostname"),
+                                ("cisco_ios_uptime", "cisco.ios.uptime"),
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{NUMBER:cisco.ios.sequence}: (?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$",
+                            [
+                                ("log_syslog_hostname", "log.syslog.hostname"),
+                                ("cisco_ios_uptime", "cisco.ios.uptime"),
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{GREEDYDATA:_temp_.message}$",
+                            [
+                                ("_temp__timestamp", "_temp_.timestamp"),
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{SYSLOGTIMESTAMP} )?(%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{DATA}:(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)%{GREEDYDATA}%%{GREEDYDATA:message}$",
+                            [
+                                ("log_syslog_hostname", "log.syslog.hostname"),
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:(?:%{IP}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)))(?:: \\*%{DATA}:|:?)? )?(?:%{NUMBER:cisco.ios.sequence}: )?(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?P<_temp__timestamp>(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?))): %{GREEDYDATA:_temp_.message}$",
+                            [
+                                ("log_syslog_hostname", "log.syslog.hostname"),
+                                ("cisco_ios_uptime", "cisco.ios.uptime"),
+                                ("_temp__timestamp", "_temp_.timestamp"),
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$",
+                            [
+                                ("cisco_ios_uptime", "cisco.ios.uptime"),
+                                ("_temp__cisco_timestamp", "_temp_.cisco_timestamp"),
+                                ("_temp__tz", "_temp_.tz")
+                            ]
+                        ),
+                        cached_grok_mapped!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$",
+                            [("log_syslog_hostname", "log.syslog.hostname")]
+                        ),
+                        cached_grok!(
+                            "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$"
+                        ),
+                    ],
+                    &input,
+                    event,
+                )?;
             }
 
             if let Some(input) = event.get_string("_temp_.message") {
                 // Grok pattern: ^%%{GREEDYDATA:message}$
-                if !cached_grok!("^%%{GREEDYDATA:message}$").extract_into(&input, event)? {
-                    // Grok pattern: ^%{GREEDYDATA}%%{GREEDYDATA:message}$
-                    if !cached_grok!("^%{GREEDYDATA}%%{GREEDYDATA:message}$")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^%{GREEDYDATA:_temp_.generic_message}$
-                        if !cached_grok!("^%{GREEDYDATA:_temp_.generic_message}$")
-                            .extract_into(&input, event)?
-                        {}
-                    }
-                }
+                // Grok pattern: ^%{GREEDYDATA}%%{GREEDYDATA:message}$
+                // Grok pattern: ^%{GREEDYDATA:_temp_.generic_message}$
+                let _ = extract_first_match(
+                    &[
+                        cached_grok!("^%%{GREEDYDATA:message}$"),
+                        cached_grok!("^%{GREEDYDATA}%%{GREEDYDATA:message}$"),
+                        cached_grok!("^%{GREEDYDATA:_temp_.generic_message}$"),
+                    ],
+                    &input,
+                    event,
+                )?;
             }
 
             // ignore_failure: true
@@ -95,9 +156,8 @@ impl Transform for Default {
                 if event.has_value("log.syslog.hostname") {
                     if let Some(input) = event.get_string("log.syslog.hostname") {
                         // Grok pattern: ^%{NUMBER:_temp_.sequence}$
-                        if !cached_grok!("^%{NUMBER:_temp_.sequence}$")
-                            .extract_into(&input, event)?
-                        {}
+                        let _ = cached_grok!("^%{NUMBER:_temp_.sequence}$")
+                            .extract_into(&input, event)?;
                     }
                 }
                 Ok(())
@@ -215,11 +275,20 @@ impl Transform for Default {
             if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                    if !cached_grok!("%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)? {
-                        // Grok pattern: %{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                        if !cached_grok_mapped!("%{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}", [("cisco_ios_mnemonic", "cisco.ios.mnemonic")]).extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: %{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}"
+                            ),
+                            cached_grok_mapped!(
+                                "%{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}",
+                                [("cisco_ios_mnemonic", "cisco.ios.mnemonic")]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -235,8 +304,7 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                        if !cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)?;
                     }
                 }
             }
@@ -249,8 +317,7 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}
-                        if !cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(&input, event)?;
                     }
                 }
             }
@@ -263,8 +330,7 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}
-                        if !cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(&input, event)?;
                     }
                 }
             }
@@ -991,8 +1057,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]
-                    if !cached_grok!("%{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("%{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]").extract_into(&input, event)?;
                 }
             }
 
@@ -1120,8 +1185,7 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$
-                        if !cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(&input, event)?;
                     }
                 }
             }
@@ -1173,8 +1237,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Received \\((?:(%{IP:cisco.ios.pim.source.ip}|%{DATA})), %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}
-                    if !cached_grok!("Received \\((?:(%{IP:cisco.ios.pim.source.ip}|%{DATA})), %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("Received \\((?:(%{IP:cisco.ios.pim.source.ip}|%{DATA})), %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}").extract_into(&input, event)?;
                 }
             }
 

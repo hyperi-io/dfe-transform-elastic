@@ -32,8 +32,7 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: %{TIMESTAMP_ISO8601:_tmp.timestamp} %{SYSLOGTIMESTAMP:_tmp.syslog_timestamp} %{IPORHOST:aws.ec2.ip_address} %{DATA:process.name}(?:\\\\[%{POSINT:process.pid}\\\\])?: %{GREEDYDATA:message}
-                if !cached_grok!("%{TIMESTAMP_ISO8601:_tmp.timestamp} %{SYSLOGTIMESTAMP:_tmp.syslog_timestamp} %{IPORHOST:aws.ec2.ip_address} %{DATA:process.name}(?:\\\\[%{POSINT:process.pid}\\\\])?: %{GREEDYDATA:message}").extract_into(&input, event)? {
-                    }
+                let _ = cached_grok!("%{TIMESTAMP_ISO8601:_tmp.timestamp} %{SYSLOGTIMESTAMP:_tmp.syslog_timestamp} %{IPORHOST:aws.ec2.ip_address} %{DATA:process.name}(?:\\\\[%{POSINT:process.pid}\\\\])?: %{GREEDYDATA:message}").extract_into(&input, event)?;
             }
 
             // ignore_failure: true

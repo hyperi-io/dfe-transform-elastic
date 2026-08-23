@@ -294,6 +294,19 @@ impl CompiledGrok {
         Ok(true)
     }
 
+    /// Where this pattern's leftmost match begins in `input`, if it matches.
+    ///
+    /// Always asks the regex, never the native parser: the native forms are
+    /// anchored, so the two agree on whether there is a match, and the regex is
+    /// the one that can say WHERE.
+    #[must_use]
+    pub fn match_start(&self, input: &str) -> Option<usize> {
+        match &self.regex {
+            Pattern::Fast(re) => re.find(input).map(|m| m.start()),
+            Pattern::Backtracking(re) => re.find(input).ok().flatten().map(|m| m.start()),
+        }
+    }
+
     /// Write one capture to the field it names, typed as Elastic types it.
     fn write_capture(
         &self,
@@ -363,6 +376,45 @@ impl CompiledGrok {
             }
         }
     }
+}
+
+/// Extract the captures of whichever of `patterns` Elastic would have used.
+///
+/// A grok processor's several patterns are ONE regex there -- `(?:P1)|(?:P2)|`
+/// ... searched unanchored -- so the winner is the pattern whose match starts
+/// EARLIEST, and only a tie is broken by list order. Trying them in sequence
+/// instead hands the win to a pattern that matches further along the line: an
+/// ALB access log's classic-ELB prefix matches from column 5, while the ALB
+/// pattern that also names the load-balancer type matches from column 0.
+///
+/// Returns whether anything matched.
+///
+/// # Errors
+///
+/// Propagates a failure to set a field on the event.
+pub fn extract_first_match(
+    patterns: &[&CompiledGrok],
+    input: &str,
+    event: &mut crate::Event,
+) -> crate::Result<bool> {
+    let mut best: Option<(usize, usize)> = None;
+    for (index, pattern) in patterns.iter().enumerate() {
+        let Some(start) = pattern.match_start(input) else {
+            continue;
+        };
+        if best.is_none_or(|(best_start, _)| start < best_start) {
+            best = Some((start, index));
+        }
+        // Nothing later can start earlier than the front of the line, so the
+        // common case still costs one probe.
+        if start == 0 {
+            break;
+        }
+    }
+    let Some((_, index)) = best else {
+        return Ok(false);
+    };
+    patterns[index].extract_into(input, event)
 }
 
 /// Let a trailing `$` match before a final line terminator, as Java's does.
@@ -557,6 +609,42 @@ mod tests {
         );
         assert_eq!(tolerate_trailing_terminator("^a\\$"), "^a\\$");
         assert_eq!(tolerate_trailing_terminator("^a"), "^a");
+    }
+
+    /// The shape that made this necessary: an ALB access log begins with the
+    /// load-balancer type, so the classic-ELB pattern matches from column 5
+    /// while the ALB pattern matches from column 0 -- and Elastic, matching one
+    /// alternation, takes the earlier start rather than the earlier pattern.
+    #[test]
+    fn the_earliest_match_wins_over_the_earliest_pattern() {
+        let classic = grok("%{TIMESTAMP_ISO8601:ts} %{NOTSPACE:name}");
+        let v2 = grok("%{WORD:kind} %{TIMESTAMP_ISO8601:ts} %{NOTSPACE:name}");
+        let mut event = crate::Event::new(serde_json::json!({}));
+
+        assert!(
+            extract_first_match(
+                &[classic, v2],
+                "http 2018-07-02T22:23:00.186641Z app/my-loadbalancer",
+                &mut event,
+            )
+            .expect("extraction")
+        );
+        assert_eq!(event.get_str("kind"), Some("http"));
+    }
+
+    /// Order still decides a tie, and a line no pattern matches says so.
+    #[test]
+    fn a_tie_goes_to_the_earlier_pattern() {
+        let first = grok("%{WORD:first_hit}");
+        let second = grok("%{NOTSPACE:second_hit}");
+        let mut event = crate::Event::new(serde_json::json!({}));
+
+        assert!(extract_first_match(&[first, second], "alpha", &mut event).expect("extraction"));
+        assert_eq!(event.get_str("first_hit"), Some("alpha"));
+        assert!(event.get_str("second_hit").is_none());
+
+        let mut empty = crate::Event::new(serde_json::json!({}));
+        assert!(!extract_first_match(&[grok("^%{IP:ip}$")], "not-an-ip", &mut empty).unwrap());
     }
 
     #[test]

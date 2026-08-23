@@ -6205,12 +6205,11 @@ impl Transform for Default {
             if event.has_value("rule.name") {
                 if let Some(input) = event.get_string("rule.name") {
                     // Grok pattern: (?P<rule_ruleset>(?:%{WORD:rule.category}:%{WORD}))
-                    if !cached_grok_mapped!(
+                    let _ = cached_grok_mapped!(
                         "(?P<rule_ruleset>(?:%{WORD:rule.category}:%{WORD}))",
                         [("rule_ruleset", "rule.ruleset")]
                     )
-                    .extract_into(&input, event)?
-                    {}
+                    .extract_into(&input, event)?;
                 }
             }
 

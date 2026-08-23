@@ -111,14 +111,15 @@ impl Transform for AuthActivityAudit {
                 if event.has_value("crowdstrike.event.UserId") {
                     if let Some(input) = event.get_string("crowdstrike.event.UserId") {
                         // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
-                        if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
-                            .extract_into(&input, event)?
-                        {
-                            // Grok pattern: %{GREEDYDATA:user.name}
-                            if !cached_grok!("%{GREEDYDATA:user.name}")
-                                .extract_into(&input, event)?
-                            {}
-                        }
+                        // Grok pattern: %{GREEDYDATA:user.name}
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}"),
+                                cached_grok!("%{GREEDYDATA:user.name}"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                 }
                 Ok(())

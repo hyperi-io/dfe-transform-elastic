@@ -383,8 +383,7 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)
-                        if !cached_grok!("%{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)").extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok!("%{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)").extract_into(&input, event)?;
                     }
                     Ok(())
                 })() {

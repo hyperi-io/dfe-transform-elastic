@@ -20,9 +20,8 @@ impl Transform for Ipflows {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}
-                    if !cached_grok!("(?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("(?:ip_flow_start|ip_flow_end) %{GREEDYDATA:message}")
+                        .extract_into(&input, event)?;
                 }
                 Ok(())
             })();

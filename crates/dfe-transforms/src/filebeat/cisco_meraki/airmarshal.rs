@@ -90,11 +90,10 @@ impl Transform for Airmarshal {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: %{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}
-                if !cached_grok!(
+                let _ = cached_grok!(
                     "%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}"
                 )
-                .extract_into(&input, event)?
-                {}
+                .extract_into(&input, event)?;
             }
 
             if let Some(input) = event.get_string("_temp.ssid") {

@@ -93,9 +93,8 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("aws.apigateway.ip_address") {
                     // Grok pattern: %{IPORHOST:aws.apigateway.ip_address}
-                    if !cached_grok!("%{IPORHOST:aws.apigateway.ip_address}")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("%{IPORHOST:aws.apigateway.ip_address}")
+                        .extract_into(&input, event)?;
                 }
                 Ok(())
             })();

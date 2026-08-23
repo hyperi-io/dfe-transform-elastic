@@ -7412,8 +7412,7 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("m365_defender.event.registry.key") {
                         // Grok pattern: ^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:registry.key}$
-                        if !cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:registry.key}$", [("_tmp_registry_hive", "_tmp.registry.hive")]).extract_into(&input, event)? {
-                }
+                        let _ = cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:registry.key}$", [("_tmp_registry_hive", "_tmp.registry.hive")]).extract_into(&input, event)?;
                     }
                 }
                 let _cond = {
@@ -7426,8 +7425,7 @@ impl Transform for Default {
                         event.get_string("m365_defender.event.previous.registry_key")
                     {
                         // Grok pattern: ^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:registry.key}$
-                        if !cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:registry.key}$", [("_tmp_registry_hive", "_tmp.registry.hive")]).extract_into(&input, event)? {
-                }
+                        let _ = cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:registry.key}$", [("_tmp_registry_hive", "_tmp.registry.hive")]).extract_into(&input, event)?;
                     }
                 }
                 let _cond = { event.has_value("_tmp.registry.hive") };
@@ -8584,9 +8582,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("json.properties.NetworkAdapterName") {
                         // Grok pattern: ^{%{DATA:m365_defender.event.network.adapter_name}}$
-                        if !cached_grok!("^{%{DATA:m365_defender.event.network.adapter_name}}$")
-                            .extract_into(&input, event)?
-                        {}
+                        let _ =
+                            cached_grok!("^{%{DATA:m365_defender.event.network.adapter_name}}$")
+                                .extract_into(&input, event)?;
                     }
                 }
                 let _cond = {

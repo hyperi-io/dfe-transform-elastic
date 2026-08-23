@@ -280,9 +280,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("proofpoint_on_demand.mail.sm.ctladdr") {
                     // Grok pattern: ^<%{EMAILADDRESS:_temp.address}> \\(%{NUMBER}/%{NUMBER}\\)$
-                    if !cached_grok!("^<%{EMAILADDRESS:_temp.address}> \\(%{NUMBER}/%{NUMBER}\\)$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ =
+                        cached_grok!("^<%{EMAILADDRESS:_temp.address}> \\(%{NUMBER}/%{NUMBER}\\)$")
+                            .extract_into(&input, event)?;
                 }
                 Ok(())
             })();

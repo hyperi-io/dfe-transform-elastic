@@ -365,9 +365,8 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: events dhcp no offers for mac %{MAC:client.mac}
-                    if !cached_grok!("events dhcp no offers for mac %{MAC:client.mac}")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("events dhcp no offers for mac %{MAC:client.mac}")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -404,9 +403,8 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: events dhcp %{GREEDYDATA:message}$
-                    if !cached_grok!("events dhcp %{GREEDYDATA:message}$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("events dhcp %{GREEDYDATA:message}$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -419,8 +417,7 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}
-                    if !cached_grok!("(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?i)Site-to-Site VPN:%{GREEDYDATA:cisco_meraki.site_to_site_vpn.raw}").extract_into(&input, event)?;
                 }
             }
 
@@ -433,14 +430,26 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$
-                    if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$", [("_temp_blocked_arp", "_temp.blocked_arp")]).extract_into(&input, event)? {
-                        // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_ra>(?:Blocked RA Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$
-                        if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_ra>(?:Blocked RA Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$", [("_temp_blocked_ra", "_temp.blocked_ra")]).extract_into(&input, event)? {
-                            // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_dhcp>(?:Blocked DHCP Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$
-                            if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_dhcp>(?:Blocked DHCP Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$", [("_temp_blocked_dhcp", "_temp.blocked_dhcp")]).extract_into(&input, event)? {
-                            }
-                        }
-                    }
+                    // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_ra>(?:Blocked RA Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$
+                    // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_dhcp>(?:Blocked DHCP Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok_mapped!(
+                                "^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_arp>(?:Blocked ARP Packet)) from %{MAC:source.mac} with IP %{IP:source.ip} on %{NOTSPACE} %{GREEDYDATA:observer.ingress.vlan.id})$",
+                                [("_temp_blocked_arp", "_temp.blocked_arp")]
+                            ),
+                            cached_grok_mapped!(
+                                "^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_ra>(?:Blocked RA Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$",
+                                [("_temp_blocked_ra", "_temp.blocked_ra")]
+                            ),
+                            cached_grok_mapped!(
+                                "^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>(?P<_temp_blocked_dhcp>(?:Blocked DHCP Packet)) from %{MAC:source.mac} \\(%{IP:source.ip}\\) on VLAN %{WORD:observer.ingress.vlan.id}(?: by default)?)$",
+                                [("_temp_blocked_dhcp", "_temp.blocked_dhcp")]
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -526,8 +535,7 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>port %{NOTSPACE:cisco_meraki.port} (?P<_temp_port_action>(?:(?:changed stp role|status changed)))(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$
-                    if !cached_grok_mapped!("^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>port %{NOTSPACE:cisco_meraki.port} (?P<_temp_port_action>(?:(?:changed stp role|status changed)))(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$", [("_temp_port_action", "_temp.port_action")]).extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok_mapped!("^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}(?P<message>port %{NOTSPACE:cisco_meraki.port} (?P<_temp_port_action>(?:(?:changed stp role|status changed)))(?: from %{NOTSPACE:cisco_meraki.old_port_status} to %{NOTSPACE:cisco_meraki.new_port_status}|.*))$", [("_temp_port_action", "_temp.port_action")]).extract_into(&input, event)?;
                 }
             }
 
@@ -568,8 +576,7 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$
-                    if !cached_grok!("^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("^(?i)(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events carrier_change device%{SPACE}%{NOTSPACE:cisco_meraki.mxport} up %{NOTSPACE:_temp.up}.*$").extract_into(&input, event)?;
                 }
             }
 
@@ -609,8 +616,7 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}
-                    if !cached_grok!("(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").extract_into(&input, event)? {
-                    }
+                    let _ = cached_grok!("(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:\\b(?:\\d{1,2})\\b))%{SPACE}%{NUMBER}%{SPACE}(?:(?:%{WORD}|%{HOSTNAME}))%{SPACE}events%{SPACE}%{GREEDYDATA:_temp.rest}").extract_into(&input, event)?;
                 }
             }
 
@@ -862,11 +868,19 @@ impl Transform for Events {
                         "cisco_meraki.multiple_dhcp_servers_detected.original_server_ip",
                     ) {
                         // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
-                        if !cached_grok!("^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$").extract_into(&input, event)? {
                         // Grok pattern: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$
-                        if !cached_grok!("^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$").extract_into(&input, event)? {
-                        }
-                    }
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok!(
+                                    "^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$"
+                                ),
+                                cached_grok!(
+                                    "^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.original_server_ip}$"
+                                ),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                     Ok(())
                 })();
@@ -933,18 +947,19 @@ impl Transform for Events {
                     event.get_string("cisco_meraki.multiple_dhcp_servers_detected.server_ip")
                 {
                     // Grok pattern: ^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
-                    if !cached_grok!(
-                        "^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$"
-                    )
-                    .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
-                        if !cached_grok!(
-                            "^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$"
-                        )
-                        .extract_into(&input, event)?
-                        {}
-                    }
+                    // Grok pattern: ^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^%{IPV4:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$"
+                            ),
+                            cached_grok!(
+                                "^%{IPV6:cisco_meraki.multiple_dhcp_servers_detected.server_ip}$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -988,11 +1003,17 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^%{DATA} events client_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$
-                    if !cached_grok!("^%{DATA} events client_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$").extract_into(&input, event)? {
-                        // Grok pattern: ^%{GREEDYDATA}$
-                        if !cached_grok!("^%{GREEDYDATA}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^%{GREEDYDATA}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^%{DATA} events client_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$"
+                            ),
+                            cached_grok!("^%{GREEDYDATA}$"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -1001,9 +1022,8 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: events client_vpn_connect %{GREEDYDATA:message}$
-                    if !cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("events client_vpn_connect %{GREEDYDATA:message}$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -1016,8 +1036,7 @@ impl Transform for Events {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: msg= ?'(?P<_temp_left>(?:[^:]*)): %{DATA:_temp.right}(?: Reason: %{DATA:cisco_meraki.anyconnect_vpn_session_manager.reason})? ?'
-                        if !cached_grok_mapped!("msg= ?'(?P<_temp_left>(?:[^:]*)): %{DATA:_temp.right}(?: Reason: %{DATA:cisco_meraki.anyconnect_vpn_session_manager.reason})? ?'", [("_temp_left", "_temp.left")]).extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok_mapped!("msg= ?'(?P<_temp_left>(?:[^:]*)): %{DATA:_temp.right}(?: Reason: %{DATA:cisco_meraki.anyconnect_vpn_session_manager.reason})? ?'", [("_temp_left", "_temp.left")]).extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -1029,8 +1048,7 @@ impl Transform for Events {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp.left") {
                         // Grok pattern: (?:Sess-ID\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_session_id>(?:[^\\]]*))\\])
-                        if !cached_grok_mapped!("(?:Sess-ID\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_session_id>(?:[^\\]]*))\\])", [("cisco_meraki_anyconnect_vpn_session_manager_session_id", "cisco_meraki.anyconnect_vpn_session_manager.session_id")]).extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok_mapped!("(?:Sess-ID\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_session_id>(?:[^\\]]*))\\])", [("cisco_meraki_anyconnect_vpn_session_manager_session_id", "cisco_meraki.anyconnect_vpn_session_manager.session_id")]).extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -1042,8 +1060,7 @@ impl Transform for Events {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp.left") {
                         // Grok pattern: (?:User\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_user_name>(?:[^\\]]*))\\])
-                        if !cached_grok_mapped!("(?:User\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_user_name>(?:[^\\]]*))\\])", [("cisco_meraki_anyconnect_vpn_session_manager_user_name", "cisco_meraki.anyconnect_vpn_session_manager.user_name")]).extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok_mapped!("(?:User\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_user_name>(?:[^\\]]*))\\])", [("cisco_meraki_anyconnect_vpn_session_manager_user_name", "cisco_meraki.anyconnect_vpn_session_manager.user_name")]).extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -1055,11 +1072,10 @@ impl Transform for Events {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp.left") {
                         // Grok pattern: Peer IP=%{IP:cisco_meraki.anyconnect_vpn_session_manager.peer_ip}
-                        if !cached_grok!(
+                        let _ = cached_grok!(
                             "Peer IP=%{IP:cisco_meraki.anyconnect_vpn_session_manager.peer_ip}"
                         )
-                        .extract_into(&input, event)?
-                        {}
+                        .extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -1071,8 +1087,7 @@ impl Transform for Events {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp.right") {
                         // Grok pattern: ^(?:(?:(?:conn_id\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_conn_id>(?:[^\\]]*))\\]) (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Added)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) to DB)|(?:(?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Deleted)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) from DB\\.)|(?:Applied VPN (?:filter\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_filter>(?:[^\\]]*))\\]) for assigned IP %{IP:cisco_meraki.anyconnect_vpn_session_manager.ip})|(?:Session (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:disconnected))\\. Session Type: %{WORD:cisco_meraki.anyconnect_vpn_session_manager.session_type}, Duration: %{NOTSPACE:cisco_meraki.anyconnect_vpn_session_manager.duration}, Bytes xmt: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_out}, Bytes rcv: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_in},?))$
-                        if !cached_grok_mapped!("^(?:(?:(?:conn_id\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_conn_id>(?:[^\\]]*))\\]) (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Added)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) to DB)|(?:(?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Deleted)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) from DB\\.)|(?:Applied VPN (?:filter\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_filter>(?:[^\\]]*))\\]) for assigned IP %{IP:cisco_meraki.anyconnect_vpn_session_manager.ip})|(?:Session (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:disconnected))\\. Session Type: %{WORD:cisco_meraki.anyconnect_vpn_session_manager.session_type}, Duration: %{NOTSPACE:cisco_meraki.anyconnect_vpn_session_manager.duration}, Bytes xmt: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_out}, Bytes rcv: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_in},?))$", [("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_conn_id", "cisco_meraki.anyconnect_vpn_session_manager.conn_id"), ("cisco_meraki_anyconnect_vpn_session_manager_tunnel_id", "cisco_meraki.anyconnect_vpn_session_manager.tunnel_id"), ("cisco_meraki_anyconnect_vpn_session_manager_tunnel_id", "cisco_meraki.anyconnect_vpn_session_manager.tunnel_id"), ("cisco_meraki_anyconnect_vpn_session_manager_filter", "cisco_meraki.anyconnect_vpn_session_manager.filter")]).extract_into(&input, event)? {
-                    }
+                        let _ = cached_grok_mapped!("^(?:(?:(?:conn_id\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_conn_id>(?:[^\\]]*))\\]) (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Added)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) to DB)|(?:(?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:Deleted)) (?:%{WORD:cisco_meraki.anyconnect_vpn_session_manager.tunnel_type} tunnel\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_tunnel_id>(?:[^\\]]*))\\]) from DB\\.)|(?:Applied VPN (?:filter\\[(?P<cisco_meraki_anyconnect_vpn_session_manager_filter>(?:[^\\]]*))\\]) for assigned IP %{IP:cisco_meraki.anyconnect_vpn_session_manager.ip})|(?:Session (?P<cisco_meraki_anyconnect_vpn_session_manager_action>(?:disconnected))\\. Session Type: %{WORD:cisco_meraki.anyconnect_vpn_session_manager.session_type}, Duration: %{NOTSPACE:cisco_meraki.anyconnect_vpn_session_manager.duration}, Bytes xmt: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_out}, Bytes rcv: %{NUMBER:cisco_meraki.anyconnect_vpn_session_manager.bytes_in},?))$", [("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_action", "cisco_meraki.anyconnect_vpn_session_manager.action"), ("cisco_meraki_anyconnect_vpn_session_manager_conn_id", "cisco_meraki.anyconnect_vpn_session_manager.conn_id"), ("cisco_meraki_anyconnect_vpn_session_manager_tunnel_id", "cisco_meraki.anyconnect_vpn_session_manager.tunnel_id"), ("cisco_meraki_anyconnect_vpn_session_manager_tunnel_id", "cisco_meraki.anyconnect_vpn_session_manager.tunnel_id"), ("cisco_meraki_anyconnect_vpn_session_manager_filter", "cisco_meraki.anyconnect_vpn_session_manager.filter")]).extract_into(&input, event)?;
                     }
                     Ok(())
                 })();
@@ -1115,11 +1130,17 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^%{DATA} events anyconnect_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$
-                    if !cached_grok!("^%{DATA} events anyconnect_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$").extract_into(&input, event)? {
-                        // Grok pattern: ^%{GREEDYDATA}$
-                        if !cached_grok!("^%{GREEDYDATA}$").extract_into(&input, event)? {
-                        }
-                    }
+                    // Grok pattern: ^%{GREEDYDATA}$
+                    let _ = extract_first_match(
+                        &[
+                            cached_grok!(
+                                "^%{DATA} events anyconnect_vpn_connect user id '%{DATA:user.name}' local ip %{IP:network.forwarded_ip} (reconnected from|connected from) %{IP:_temp.client_ip}$"
+                            ),
+                            cached_grok!("^%{GREEDYDATA}$"),
+                        ],
+                        &input,
+                        event,
+                    )?;
                 }
             }
 
@@ -1128,9 +1149,8 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: events anyconnect_vpn_connect %{GREEDYDATA:message}$
-                    if !cached_grok!("events anyconnect_vpn_connect %{GREEDYDATA:message}$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("events anyconnect_vpn_connect %{GREEDYDATA:message}$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -1194,9 +1214,8 @@ impl Transform for Events {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: events anyconnect_vpn_disconnect %{GREEDYDATA:message}$
-                    if !cached_grok!("events anyconnect_vpn_disconnect %{GREEDYDATA:message}$")
-                        .extract_into(&input, event)?
-                    {}
+                    let _ = cached_grok!("events anyconnect_vpn_disconnect %{GREEDYDATA:message}$")
+                        .extract_into(&input, event)?;
                 }
             }
 
@@ -1282,12 +1301,15 @@ impl Transform for Events {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp.client_ip") {
                         // Grok pattern: ^%{IPV4:_temp.client_ip}$
-                        if !cached_grok!("^%{IPV4:_temp.client_ip}$").extract_into(&input, event)? {
-                            // Grok pattern: ^%{IPV6:_temp.client_ip}$
-                            if !cached_grok!("^%{IPV6:_temp.client_ip}$")
-                                .extract_into(&input, event)?
-                            {}
-                        }
+                        // Grok pattern: ^%{IPV6:_temp.client_ip}$
+                        let _ = extract_first_match(
+                            &[
+                                cached_grok!("^%{IPV4:_temp.client_ip}$"),
+                                cached_grok!("^%{IPV6:_temp.client_ip}$"),
+                            ],
+                            &input,
+                            event,
+                        )?;
                     }
                     Ok(())
                 })();
