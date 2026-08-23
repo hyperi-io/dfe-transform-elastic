@@ -137,15 +137,28 @@ pub fn painless_to_string(v: &Value) -> String {
 /// A value as Java's own `toString`, which is not JSON.
 ///
 /// `AbstractMap` writes `{key=value, key=value}` with no quotes anywhere, and
-/// `AbstractCollection` writes `[a, b]`. Insertion order is kept, which is
-/// what `serde_json`'s preserve-order map gives.
+/// `AbstractCollection` writes `[a, b]`. The MEMBER ORDER is a plain
+/// `HashMap`'s -- Elasticsearch parses an ingest document's maps with
+/// `XContentParser.map()`, not the ordered variant -- so the entries walk the
+/// hash table: bucket index ascending, insertion order within a bucket. The
+/// corpus's rendered cloudtrail copies are the proof, sorted keys and
+/// document order both diverging from it.
 #[must_use]
 pub fn java_to_string(v: &Value) -> String {
     match v {
         Value::Object(map) => {
-            let members: Vec<String> = map
+            let table = java_table_size(map.len());
+            let mut entries: Vec<(usize, usize, &String, &Value)> = map
                 .iter()
-                .map(|(key, value)| format!("{key}={}", painless_to_string(value)))
+                .enumerate()
+                .map(|(position, (key, value))| {
+                    (java_bucket(key, table), position, key, value)
+                })
+                .collect();
+            entries.sort_by_key(|(bucket, position, ..)| (*bucket, *position));
+            let members: Vec<String> = entries
+                .into_iter()
+                .map(|(_, _, key, value)| format!("{key}={}", painless_to_string(value)))
                 .collect();
             format!("{{{}}}", members.join(", "))
         }
@@ -155,6 +168,28 @@ pub fn java_to_string(v: &Value) -> String {
         }
         other => painless_to_string(other),
     }
+}
+
+/// The table size a default-capacity Java `HashMap` holds `entries` in:
+/// 16 doubling whenever the count crosses three quarters of it.
+fn java_table_size(entries: usize) -> usize {
+    let mut capacity = 16usize;
+    while entries > capacity * 3 / 4 {
+        capacity *= 2;
+    }
+    capacity
+}
+
+/// The bucket a key lands in: Java's `String.hashCode` over UTF-16 units,
+/// spread by `h ^ (h >>> 16)` and masked to the table.
+#[allow(clippy::cast_possible_wrap, clippy::cast_sign_loss)] // Java's own int arithmetic, wrap included.
+fn java_bucket(key: &str, table: usize) -> usize {
+    let mut hash: i32 = 0;
+    for unit in key.encode_utf16() {
+        hash = hash.wrapping_mul(31).wrapping_add(i32::from(unit));
+    }
+    let spread = hash ^ ((hash as u32) >> 16) as i32;
+    (spread as u32 as usize) & (table - 1)
 }
 
 /// Painless equality — null-safe, with type coercion for numbers.

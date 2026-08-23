@@ -1137,15 +1137,17 @@ impl Transform for Default {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx?.gcp?.audit?.status?.code == null && ctx?.gcp?.audit?.authorization_info != null && ctx?.gcp?.audit?.authorization_info instanceof List && ctx?.gcp?.audit?.authorization_info.size() == 1 && ctx?.g ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("gcp.audit.status.code") && event.has_value("gcp.audit.authorization_info") && event.get("gcp.audit.authorization_info").is_some_and(|v| v.is_array()) && event.get("gcp.audit.authorization_info").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 1) && event.get_bool("gcp.audit.authorization_info.0.granted") == Some(true)
+            };
+            if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx?.gcp?.audit?.status?.code == null && ctx?.gcp?.audit?.authorization_info != null && ctx?.gcp?.audit?.authorization_info instanceof List && ctx?.gcp?.audit?.authorization_info.size() == 1 && ctx?.g ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("gcp.audit.status.code") && event.has_value("gcp.audit.authorization_info") && event.get("gcp.audit.authorization_info").is_some_and(|v| v.is_array()) && event.get("gcp.audit.authorization_info").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 1) && event.get_bool("gcp.audit.authorization_info.0.granted") == Some(false)
+            };
+            if _cond {
                 event.set("event.outcome", json!("failure"))?;
             }
 
