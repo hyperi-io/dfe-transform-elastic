@@ -84,9 +84,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: // Canonicalise keys to lowercase. If this causes issues in future\n// because case becomes significant, this table space optimisation\n// will need to be reverted.\ndef keys = new HashSet();\nfor (def k: ctx.mimecast.keySet()) {\n  keys.add(k.toLowerCase());\n}        \nfor (def k: keys) {\n  def typ = params.definite_positive.get(k);\n  if (typ != null) {\n    // We have a definitive known log_type.\n    ctx.mimecast.log_type = typ;\n    return;\n  }\n}\ndef score = params.candidates.clone();\nfor (def k: keys) {\n  def typ = params.negative.get(k);\n  if (typ == null) {\n    continue;\n  }\n  for (String e: typ) {\n    score.remove(e);\n  }\n}\nif (score.size() == 1) {\n  // We have removed all but one of the candidates.\n  ctx.mimecast.log_type = score.keySet().toArray()[0];\n  return;\n}\n// Find best remaining and list all co-equal winners.\nint max = 0;\nfor (def k: keys) {\n  def typ = params.positive.get(k);\n  if (typ == null) {\n    continue;\n  }\n  for (String e: typ) {\n    def s = score.get(e);\n    if (s == null) {\n      continue;\n    }\n    s++;\n    if (s > max) {\n      max = s;\n    }\n    score.put(e, s);\n  }\n}\nfor (def e: score.entrySet()) {\n  if (e.getValue() < max) {\n    score.remove(e.getKey());\n  }\n}\nctx.mimecast.log_type = score.keySet();\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"// Canonicalise keys to lowercase. If this causes issues in future\n// because case becomes significant, this table space optimisation\n// will need to be reverted.\ndef keys = new HashSet();\nfor (def k: ctx.mimecast.keySet()) {\n  keys.add(k.toLowerCase());\n}        \nfor (def k: keys) {\n  def typ = params.definite_positive.get(k);\n  if (typ != null) {\n    // We have a definitive known log_type.\n    ctx.mimecast.log_type = typ;\n    return;\n  }\n}\ndef score = params.candidates.clone();\nfor (def k: keys) {\n  def typ = params.negative.get(k);\n  if (typ == null) {\n    continue;\n  }\n  for (String e: typ) {\n    score.remove(e);\n  }\n}\nif (score.size() == 1) {\n  // We have removed all but one of the candidates.\n  ctx.mimecast.log_type = score.keySet().toArray()[0];\n  return;\n}\n// Find best remaining and list all co-equal winners.\nint max = 0;\nfor (def k: keys) {\n  def typ = params.positive.get(k);\n  if (typ == null) {\n    continue;\n  }\n  for (String e: typ) {\n    def s = score.get(e);\n    if (s == null) {\n      continue;\n    }\n    s++;\n    if (s > max) {\n      max = s;\n    }\n    score.put(e, s);\n  }\n}\nfor (def e: score.entrySet()) {\n  if (e.getValue() < max) {\n    score.remove(e.getKey());\n  }\n}\nctx.mimecast.log_type = score.keySet();\n"#
                         ),
                         cached_params!(
@@ -493,9 +493,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n"#
                         ),
                         cached_params!(
@@ -1188,9 +1188,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n"#
                         ),
                     )?;
@@ -1223,9 +1223,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

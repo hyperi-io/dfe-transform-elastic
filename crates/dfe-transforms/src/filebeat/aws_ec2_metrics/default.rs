@@ -35,9 +35,9 @@ impl Transform for Default {
             // Painless script
             // Source: if(ctx.aws?.ec2?.metrics?.CPUUtilization?.avg != null && ctx.host?.cpu?.usage == null) {\n    ctx.aws.ec2.metrics.CPUUtilization.avg = ctx.aws.ec2.metrics.CPUUtilization.avg / 100;\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"if(ctx.aws?.ec2?.metrics?.CPUUtilization?.avg != null && ctx.host?.cpu?.usage == null) {\n    ctx.aws.ec2.metrics.CPUUtilization.avg = ctx.aws.ec2.metrics.CPUUtilization.avg / 100;\n}\n"#
                 ),
             )?;

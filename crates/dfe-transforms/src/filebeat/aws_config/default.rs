@@ -770,9 +770,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (ctx.aws.config.compliance_type == 'NON_COMPLIANT') {\n  ctx.event.outcome = 'failure';\n} else if (ctx.aws.config.compliance_type == 'COMPLIANT') {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'unknown';\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (ctx.aws.config.compliance_type == 'NON_COMPLIANT') {\n  ctx.event.outcome = 'failure';\n} else if (ctx.aws.config.compliance_type == 'COMPLIANT') {\n  ctx.event.outcome = 'success';\n} else {\n  ctx.event.outcome = 'unknown';\n}"#
                     ),
                 )?;
@@ -843,9 +843,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

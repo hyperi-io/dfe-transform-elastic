@@ -47,112 +47,180 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return false;
     };
     let normalised = crate::painless_common::normalise(script);
+    match params_shape(&normalised) {
+        Some(shape) => run_params_shape(event, &normalised, params, shape),
+        None => false,
+    }
+}
 
+/// The matcher a params script's text routes to.
+///
+/// Every branch of the params dispatch is terminal -- the first trigger that
+/// holds names the matcher, whatever that matcher then returns -- so the whole
+/// decision is a property of the script TEXT and is made once per call site by
+/// [`crate::painless_plan::PainlessPlan`] rather than once per event.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum ParamsShape {
+    SysmonQueryResults,
+    SentinelRemoval,
+    FiletimeFieldList,
+    BitFlags,
+    FirstContainedMember,
+    RenameKeys,
+    ValueMaps,
+    RowColumns,
+    KeyedMessageTable,
+    ReversibleLookup,
+    LookupMerge,
+    LookupColumns,
+    LookupNormalise,
+    IndexedLookup,
+    Scale,
+    Replace,
+    AddUniqueRow,
+    FrameworkPreference,
+}
+
+/// The one matcher this script's text triggers, or `None`.
+///
+/// The trigger order is load-bearing and each comment says why a branch sits
+/// where it does; a script can spell several triggers and the FIRST wins,
+/// exactly as the old inline dispatch behaved.
+pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: sysmon's semicolon-separated DNS QueryResults, where params is
     // the RR-number-to-name table. Checked first: the script also spells
     // `.put(` and `params`, which a later matcher reads as an indexed lookup.
     if normalised.contains("QueryResults") && normalised.contains("startsWith(\"type:\")") {
-        return try_sysmon_query_results(event, &normalised, params);
+        return Some(ParamsShape::SysmonQueryResults);
     }
 
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
-        return try_sentinel_removal(event, &normalised, params);
+        return Some(ParamsShape::SentinelRemoval);
     }
 
     // Pattern: convert every named field from Windows FILETIME to UNIX ms.
     if normalised.contains(FILETIME_LITERAL) && normalised.contains("for (def field : params.") {
-        return try_filetime_field_list(event, &normalised, params);
+        return Some(ParamsShape::FiletimeFieldList);
     }
 
     // Pattern: decode a bitfield into one boolean label per set bit.
     if normalised.contains("params.entrySet()") && normalised.contains("& flag") {
-        return try_bit_flags(event, &normalised, params);
+        return Some(ParamsShape::BitFlags);
     }
 
     // Pattern: the first member of a params list the subject contains.
     if normalised.contains("for (String ") && normalised.contains(".put(") {
-        return try_first_contained_member(event, &normalised, params);
+        return Some(ParamsShape::FirstContainedMember);
     }
 
     // Pattern: rename an object's keys, recursively, through a name map.
     if normalised.contains("keyMap.containsKey(key)") {
-        return try_rename_keys(event, &normalised, params);
+        return Some(ParamsShape::RenameKeys);
     }
 
     // Pattern: several fields each normalised through their own value map.
     // Ahead of the reversible lookup, whose trigger this shape also matches.
     if normalised.contains(".map?.getOrDefault(") || normalised.contains("param.map.") {
-        return try_value_maps(event, &normalised, params);
+        return Some(ParamsShape::ValueMaps);
     }
 
     // Pattern: params IS the table, and one row's columns are written straight
     // onto ctx, then refined by the event's outcome.
     if normalised.contains("params.get(ctx.") && normalised.contains(").get('") {
-        return try_row_columns(event, &normalised, params);
+        return Some(ParamsShape::RowColumns);
     }
 
     // Pattern: fan a parsed key/value message out through a params table.
     if normalised.contains("appendOrCreate(") && normalised.contains("params.get(entry.getKey())") {
-        return try_keyed_message_table(event, &normalised, params);
+        return Some(ParamsShape::KeyedMessageTable);
     }
 
     // Pattern: map a field through a params table in whichever direction it
     // was written -- name to number, or a number already there back to a name.
     if normalised.contains("params.entrySet()") && normalised.contains("entry.getKey()") {
-        return try_reversible_lookup(event, &normalised, params);
+        return Some(ParamsShape::ReversibleLookup);
     }
 
     // Pattern: look a field up in a static table and merge the row into ctx.
     if normalised.contains("params.get(") && normalised.contains("forEach((k, v) ->") {
-        return try_lookup_merge(event, &normalised, params);
+        return Some(ParamsShape::LookupMerge);
     }
 
     // Pattern: look a row up in a nested table and fan its columns out,
     // appending the list-valued ones rather than replacing them.
     if normalised.contains("params.get(") && normalised.matches(".get(").count() >= 3 {
-        return try_lookup_columns(event, &normalised, params);
+        return Some(ParamsShape::LookupColumns);
     }
 
     // Pattern: normalise a field through a params table, keeping the input
     // when the table has no row for it.
     if normalised.contains("params.get(") {
-        return try_lookup_normalise(event, &normalised, params);
+        return Some(ParamsShape::LookupNormalise);
     }
 
     // Pattern: index a params array by a numeric field.
     if normalised.contains(".put(") && normalised.contains("params") {
-        return try_indexed_lookup(event, &normalised, params);
+        return Some(ParamsShape::IndexedLookup);
     }
 
     // Pattern: scale a numeric field by a params constant.
     if normalised.contains("* params.") {
-        return try_scale(event, &normalised, params);
+        return Some(ParamsShape::Scale);
     }
 
     // Pattern: strip a params-named marker out of a string field.
     if normalised.contains(".replace(params.") {
-        return try_replace(event, &normalised, params);
+        return Some(ParamsShape::Replace);
     }
 
     // Pattern: union a table row's list columns into the ECS arrays.
     if normalised.contains("addUnique(") && normalised.contains("params[ctx.") {
-        return try_add_unique_row(event, &normalised, params);
+        return Some(ParamsShape::AddUniqueRow);
     }
 
     // Pattern: pick one framework name from the prefixes of several ID lists.
     if normalised.contains("new HashSet()") && normalised.contains("params.framework_preference") {
-        return try_framework_preference(event, &normalised, params);
+        return Some(ParamsShape::FrameworkPreference);
     }
 
     // Pattern: the same normalise-through-a-table written with the bracket
     // form. LAST, so nothing that reads the brackets for its own shape --
     // `addUnique` over a row, for one -- is claimed by the general case.
     if normalised.contains("params[ctx.") {
-        return try_lookup_normalise(event, &normalised, params);
+        return Some(ParamsShape::LookupNormalise);
     }
 
-    false
+    None
+}
+
+/// Run the matcher a shape names, against one event.
+pub(crate) fn run_params_shape(
+    event: &mut Event,
+    normalised: &str,
+    params: &Map<String, Value>,
+    shape: ParamsShape,
+) -> bool {
+    match shape {
+        ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
+        ParamsShape::SentinelRemoval => try_sentinel_removal(event, normalised, params),
+        ParamsShape::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
+        ParamsShape::BitFlags => try_bit_flags(event, normalised, params),
+        ParamsShape::FirstContainedMember => try_first_contained_member(event, normalised, params),
+        ParamsShape::RenameKeys => try_rename_keys(event, normalised, params),
+        ParamsShape::ValueMaps => try_value_maps(event, normalised, params),
+        ParamsShape::RowColumns => try_row_columns(event, normalised, params),
+        ParamsShape::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
+        ParamsShape::ReversibleLookup => try_reversible_lookup(event, normalised, params),
+        ParamsShape::LookupMerge => try_lookup_merge(event, normalised, params),
+        ParamsShape::LookupColumns => try_lookup_columns(event, normalised, params),
+        ParamsShape::LookupNormalise => try_lookup_normalise(event, normalised, params),
+        ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
+        ParamsShape::Scale => try_scale(event, normalised, params),
+        ParamsShape::Replace => try_replace(event, normalised, params),
+        ParamsShape::AddUniqueRow => try_add_unique_row(event, normalised, params),
+        ParamsShape::FrameworkPreference => try_framework_preference(event, normalised, params),
+    }
 }
 
 /// Split sysmon's `QueryResults` into `dns.answers`, `dns.resolved_ip` and

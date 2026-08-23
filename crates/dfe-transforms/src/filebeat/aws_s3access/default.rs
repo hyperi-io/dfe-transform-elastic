@@ -56,9 +56,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#
                 ),
             )?;
@@ -279,9 +279,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.event.duration *= params.MS_TO_NS;
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(r#"ctx.event.duration *= params.MS_TO_NS;"#),
+                    cached_painless!(r#"ctx.event.duration *= params.MS_TO_NS;"#),
                     cached_params!("{\"MS_TO_NS\":1000000}"),
                 )?;
             }
@@ -339,9 +339,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def parts = ctx.aws.s3access.tls_version.toLowerCase().splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} ctx.tls.version = parts[1]; ctx.tls.version_protocol = parts[0]
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def parts = ctx.aws.s3access.tls_version.toLowerCase().splitOnToken(\"v\"); if (parts.length != 2) {\n  return;\n} ctx.tls.version = parts[1]; ctx.tls.version_protocol = parts[0]"#
                     ),
                 )?;
@@ -383,9 +383,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

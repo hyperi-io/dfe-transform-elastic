@@ -100,9 +100,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}"#
                     ),
                     cached_params!(
@@ -120,9 +120,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'NA' || object == 'None') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'NA' || object == 'None') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);"#
                 ),
             )?;
@@ -254,9 +254,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def dlpdictcount = ctx.json.dlpdictcount;\nString[] parts = dlpdictcount.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    numbersList.add(Integer.parseInt(part));\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpdictcount = numbersList;
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def dlpdictcount = ctx.json.dlpdictcount;\nString[] parts = dlpdictcount.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    numbersList.add(Integer.parseInt(part));\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpdictcount = numbersList;"#
                         ),
                     )?;
@@ -609,9 +609,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def dlpdictnames = ctx.json.dlpdictnames;\nString[] parts = dlpdictnames.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    String[] subParts = part.splitOnToken(':');\n    numbersList.add(subParts[0]);\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpdictnames = numbersList;
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def dlpdictnames = ctx.json.dlpdictnames;\nString[] parts = dlpdictnames.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    String[] subParts = part.splitOnToken(':');\n    numbersList.add(subParts[0]);\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpdictnames = numbersList;"#
                         ),
                     )?;
@@ -717,9 +717,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def dlpenginenames = ctx.json.dlpenginenames;\nString[] parts = dlpenginenames.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    numbersList.add(part);\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpenginenames = numbersList;
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def dlpenginenames = ctx.json.dlpenginenames;\nString[] parts = dlpenginenames.splitOnToken('|');\nArrayList numbersList = new ArrayList();\nfor (String part: parts) {\n  try {\n    numbersList.add(part);\n  } catch (NumberFormatException e) {}\n}\nctx.json.dlpenginenames = numbersList;"#
                         ),
                     )?;
@@ -1702,9 +1702,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
                 ),
             )?;

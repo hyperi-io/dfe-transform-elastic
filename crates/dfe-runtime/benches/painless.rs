@@ -15,6 +15,7 @@ use criterion::{BatchSize, Criterion, black_box, criterion_group, criterion_main
 use dfe_runtime::codegen_api::{painless_exec, painless_exec_params};
 use dfe_runtime::event::Event;
 use dfe_runtime::painless_common::normalise;
+use dfe_runtime::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_plan_params};
 use serde_json::json;
 
 /// Verbatim from `pipelines/crowdstrike/default.yml`, escapes and all -- the
@@ -105,11 +106,44 @@ fn bench_cached(c: &mut Criterion) {
     });
 }
 
+/// The same three through a [`PainlessPlan`], which is what `cached_painless!`
+/// hands the runtime: dispatch decided once, so per event only the matchers
+/// the text triggers run -- and for an unhandled script, nothing at all.
+fn bench_planned(c: &mut Criterion) {
+    let params = json!({ "values": [null, "", "-", "N/A", "NA", 0] });
+    let sentinel = PainlessPlan::new(SENTINEL);
+    let okta = PainlessPlan::new(OKTA_TARGET);
+    let unhandled = PainlessPlan::new(UNHANDLED);
+
+    c.bench_function("painless_exec/params_first_match_planned", |b| {
+        b.iter_batched_ref(
+            sentinel_event,
+            |event| painless_exec_plan_params(event, black_box(&sentinel), black_box(&params)),
+            BatchSize::SmallInput,
+        );
+    });
+    c.bench_function("painless_exec/text_last_match_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(json!({ "okta": { "target": [] } })),
+            |event| painless_exec_plan(event, black_box(&okta)),
+            BatchSize::SmallInput,
+        );
+    });
+    c.bench_function("painless_exec/unhandled_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(json!({ "message": "x" })),
+            |event| painless_exec_plan(event, black_box(&unhandled)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
     bench_text_matcher,
     bench_unhandled,
-    bench_cached
+    bench_cached,
+    bench_planned
 );
 criterion_main!(benches);

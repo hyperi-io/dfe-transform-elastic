@@ -602,9 +602,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (ctx.json.httpRequest.headers != null) {\n  ctx.aws.waf.request = new HashMap();\n  ctx.aws.waf.request.headers = new HashMap();\n  for (def i = 0; i < ctx.json.httpRequest.headers.length; i++) {\n    ctx.aws.waf.request.headers[ctx.json.httpRequest.headers[i].name] = ctx.json.httpRequest.headers[i].value;\n  }\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (ctx.json.httpRequest.headers != null) {\n  ctx.aws.waf.request = new HashMap();\n  ctx.aws.waf.request.headers = new HashMap();\n  for (def i = 0; i < ctx.json.httpRequest.headers.length; i++) {\n    ctx.aws.waf.request.headers[ctx.json.httpRequest.headers[i].name] = ctx.json.httpRequest.headers[i].value;\n  }\n}"#
                     ),
                 )?;
@@ -624,9 +624,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.aws.waf.request_headers_inserted = new HashMap(); for (def i = 0; i < ctx.json.requestHeadersInserted.length; i++) {\n  ctx.aws.waf.request_headers_inserted[ctx.json.requestHeadersInserted[i].name] = ctx.json.requestHeadersInserted[i].value;\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.aws.waf.request_headers_inserted = new HashMap(); for (def i = 0; i < ctx.json.requestHeadersInserted.length; i++) {\n  ctx.aws.waf.request_headers_inserted[ctx.json.requestHeadersInserted[i].name] = ctx.json.requestHeadersInserted[i].value;\n}"#
                         ),
                     )?;
@@ -779,9 +779,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n    for (def x : map.values()) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n    map.values().removeIf(v -> v == null || v == \"\" || v == \"-\" || ((v instanceof List || v instanceof Map) && v.isEmpty()));\n}\nvoid handleList(List list) {\n    for (def x : list) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n    for (def x : map.values()) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n    map.values().removeIf(v -> v == null || v == \"\" || v == \"-\" || ((v instanceof List || v instanceof Map) && v.isEmpty()));\n}\nvoid handleList(List list) {\n    for (def x : list) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

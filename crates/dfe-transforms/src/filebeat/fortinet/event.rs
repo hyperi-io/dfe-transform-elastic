@@ -441,9 +441,9 @@ impl Transform for Event {
             // Painless script
             // Source: if (ctx.fortinet?.firewall?.advpnsc != null) {\n  ctx.fortinet.firewall.advpnsc = ctx.fortinet.firewall.advpnsc != '0';\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"if (ctx.fortinet?.firewall?.advpnsc != null) {\n  ctx.fortinet.firewall.advpnsc = ctx.fortinet.firewall.advpnsc != '0';\n}\n"#
                 ),
             )?;
@@ -462,9 +462,9 @@ impl Transform for Event {
                 // Painless script
                 // Source: def tmp = ctx.source;\nctx.source = ctx.destination;\nif (ctx.source == null) { ctx.source = [:]; }\nif ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    tmp.remove(\"user\");\n}\nctx.destination = tmp;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def tmp = ctx.source;\nctx.source = ctx.destination;\nif (ctx.source == null) { ctx.source = [:]; }\nif ( tmp?.user != null ) {\n    ctx.source.user = tmp.user;\n    tmp.remove(\"user\");\n}\nctx.destination = tmp;\n"#
                     ),
                 )?;

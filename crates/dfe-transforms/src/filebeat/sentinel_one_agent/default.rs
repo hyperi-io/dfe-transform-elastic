@@ -1917,9 +1917,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString os_type = ctx.json.osType.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_type.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString os_type = ctx.json.osType.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_type.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#
                     ),
                     cached_params!(
@@ -2519,9 +2519,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
                 ),
             )?;

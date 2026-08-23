@@ -36,9 +36,9 @@ impl Transform for Default {
             // Painless script
             // Source: Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n"#
                 ),
             )?;
@@ -239,9 +239,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.event.duration = ctx.event.duration * 1000000
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(r#"ctx.event.duration = ctx.event.duration * 1000000"#),
+                    cached_painless!(r#"ctx.event.duration = ctx.event.duration * 1000000"#),
                 )?;
             }
 
@@ -293,9 +293,9 @@ impl Transform for Default {
             // Painless script
             // Source: String reason = ctx?.azure?.signinlogs?.properties?.status?.failure_reason; String details = ctx?.azure?.signinlogs?.properties?.status?.additional_details; if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; } else if (reason != null) { ctx['message'] = reason; } else if (details != null) { ctx['message'] = details; }
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"String reason = ctx?.azure?.signinlogs?.properties?.status?.failure_reason; String details = ctx?.azure?.signinlogs?.properties?.status?.additional_details; if (reason != null && details != null) { ctx['message'] = reason + ' (' + details + ')'; } else if (reason != null) { ctx['message'] = reason; } else if (details != null) { ctx['message'] = details; }"#
                 ),
             )?;
@@ -341,9 +341,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n"#
                     ),
                 )?;
@@ -812,9 +812,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
                 ),
             )?;

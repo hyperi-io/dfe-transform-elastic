@@ -1493,6 +1493,7 @@ mod tests {
 
     #[test]
     fn painless_exec_unknown_script_noop() {
+        let _guard = crate::painless_stats::serialised();
         let mut event = Event::new(json!({"field": "value"}));
         let result = painless_exec(&mut event, "unknown_script_that_does_nothing();");
         assert!(result.is_ok());
@@ -1502,6 +1503,7 @@ mod tests {
 
     #[test]
     fn painless_exec_drop_empty_known() {
+        let _guard = crate::painless_stats::serialised();
         let mut event = Event::new(json!({"a": "", "b": "keep", "c": null}));
         let result = painless_exec(
             &mut event,

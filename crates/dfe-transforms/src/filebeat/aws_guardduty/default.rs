@@ -6664,9 +6664,9 @@ impl Transform for Default {
             // Painless script
             // Source: def locationList = new ArrayList();\nif (ctx.aws?.guardduty?.service?.action?.aws_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.aws_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.kubernetes_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.network_connection_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.network_connection_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.port_probe_action?.port_probe_details instanceof List) {\n  for (list in ctx.aws.guardduty.service.action.port_probe_action.port_probe_details) {\n    locationList.add(list.remote_ip_details.geo_location);\n  }\n}\nif (ctx.aws?.guardduty?.service?.action?.rds_login_attempt_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.geo_location);\n}\nif (!(ctx.source instanceof HashMap)) {\n  ctx.source = new HashMap();\n}\nif (!(ctx.source.geo instanceof HashMap)) {\n  ctx.source.geo = new HashMap();\n}\nctx.source.geo.location = locationList;\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"def locationList = new ArrayList();\nif (ctx.aws?.guardduty?.service?.action?.aws_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.aws_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.kubernetes_api_call_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.network_connection_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.network_connection_action.remote_ip_details.geo_location);\n}\nif (ctx.aws?.guardduty?.service?.action?.port_probe_action?.port_probe_details instanceof List) {\n  for (list in ctx.aws.guardduty.service.action.port_probe_action.port_probe_details) {\n    locationList.add(list.remote_ip_details.geo_location);\n  }\n}\nif (ctx.aws?.guardduty?.service?.action?.rds_login_attempt_action?.remote_ip_details?.geo_location != null) {\n  locationList.add(ctx.aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.geo_location);\n}\nif (!(ctx.source instanceof HashMap)) {\n  ctx.source = new HashMap();\n}\nif (!(ctx.source.geo instanceof HashMap)) {\n  ctx.source.geo = new HashMap();\n}\nctx.source.geo.location = locationList;\n"#
                 ),
             )?;
@@ -7432,9 +7432,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
                 ),
             )?;

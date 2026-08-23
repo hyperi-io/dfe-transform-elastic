@@ -25,9 +25,9 @@ impl Transform for Default {
             // Painless script
             // Source: if(ctx.agent?.type == \"firehose\" && ctx.aws?.rds?.metrics?.CPUUtilization?.avg != null && ctx.aws?.rds?.cpu?.total?.pct == null) {\n    ctx.aws.rds.metrics.CPUUtilization.avg = ctx.aws.rds.metrics.CPUUtilization.avg / 100;\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"if(ctx.agent?.type == \"firehose\" && ctx.aws?.rds?.metrics?.CPUUtilization?.avg != null && ctx.aws?.rds?.cpu?.total?.pct == null) {\n    ctx.aws.rds.metrics.CPUUtilization.avg = ctx.aws.rds.metrics.CPUUtilization.avg / 100;\n}\n"#
                 ),
             )?;

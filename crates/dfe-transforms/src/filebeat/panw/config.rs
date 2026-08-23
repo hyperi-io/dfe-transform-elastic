@@ -366,9 +366,9 @@ impl Transform for Config {
                     // Painless script
                     // Source: ctx.event.action = params.get(ctx.panw.panos.cmd);
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(r#"ctx.event.action = params.get(ctx.panw.panos.cmd);"#),
+                        cached_painless!(r#"ctx.event.action = params.get(ctx.panw.panos.cmd);"#),
                         cached_params!(
                             "{\"add\":\"cmd-add\",\"clone\":\"cmd-clone\",\"commit\":\"cmd-commit\",\"delete\":\"cmd-delete\",\"edit\":\"cmd-edit\",\"move\":\"cmd-move\",\"rename\":\"cmd-rename\",\"set\":\"cmd-set\"}"
                         ),

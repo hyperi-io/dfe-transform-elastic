@@ -790,9 +790,9 @@ impl Transform for Utm {
                 // Painless script
                 // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}"#
                     ),
                 )?;

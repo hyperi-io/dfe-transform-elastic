@@ -996,9 +996,9 @@ impl Transform for Decryption {
                 // Painless script
                 // Source: ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#
                     ),
                 )?;
@@ -1009,9 +1009,9 @@ impl Transform for Decryption {
                 // Painless script
                 // Source: ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#
                     ),
                 )?;

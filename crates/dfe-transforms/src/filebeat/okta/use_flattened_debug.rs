@@ -546,9 +546,9 @@ impl Transform for UseFlattenedDebug {
             // Painless script
             // Source: def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"def src = ctx.okta?.debug_context?.debug_data?.flattened?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#
                 ),
             )?;

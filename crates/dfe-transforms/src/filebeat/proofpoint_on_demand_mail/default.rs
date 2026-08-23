@@ -362,9 +362,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def removeUnwantedCharacters(def input) {\n  if (input.startsWith(\"<\") && input.endsWith(\">\")) {\n    String trimmed = input.substring(1, input.length() - 1);\n    return trimmed;\n  } else {\n    return input;\n  }\n}\nif (ctx.proofpoint_on_demand?.mail?.sm?.from != null) {\n  ctx.proofpoint_on_demand.mail.sm.from = removeUnwantedCharacters(ctx.proofpoint_on_demand.mail.sm.from);\n}\nif (ctx.proofpoint_on_demand?.mail?.sm?.msgid != null) {\n  ctx.proofpoint_on_demand.mail.sm.msgid = removeUnwantedCharacters(ctx.proofpoint_on_demand.mail.sm.msgid);\n}\nList toAddresses = new ArrayList();\nif (ctx.proofpoint_on_demand?.mail?.sm?.to instanceof List) {\n  for (address in ctx.proofpoint_on_demand.mail.sm.to) {\n    toAddresses.add(removeUnwantedCharacters(address));\n  }\n  ctx.proofpoint_on_demand.mail.sm.to = toAddresses;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def removeUnwantedCharacters(def input) {\n  if (input.startsWith(\"<\") && input.endsWith(\">\")) {\n    String trimmed = input.substring(1, input.length() - 1);\n    return trimmed;\n  } else {\n    return input;\n  }\n}\nif (ctx.proofpoint_on_demand?.mail?.sm?.from != null) {\n  ctx.proofpoint_on_demand.mail.sm.from = removeUnwantedCharacters(ctx.proofpoint_on_demand.mail.sm.from);\n}\nif (ctx.proofpoint_on_demand?.mail?.sm?.msgid != null) {\n  ctx.proofpoint_on_demand.mail.sm.msgid = removeUnwantedCharacters(ctx.proofpoint_on_demand.mail.sm.msgid);\n}\nList toAddresses = new ArrayList();\nif (ctx.proofpoint_on_demand?.mail?.sm?.to instanceof List) {\n  for (address in ctx.proofpoint_on_demand.mail.sm.to) {\n    toAddresses.add(removeUnwantedCharacters(address));\n  }\n  ctx.proofpoint_on_demand.mail.sm.to = toAddresses;\n}\n"#
                     ),
                 )?;
@@ -818,9 +818,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
                 ),
             )?;

@@ -57,9 +57,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: if (ctx.zscaler_zia.saas_security_activity.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.saas_security_activity.version == null ? 'null' : ctx.zscaler_zia.saas_security_activity.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"if (ctx.zscaler_zia.saas_security_activity.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.saas_security_activity.version == null ? 'null' : ctx.zscaler_zia.saas_security_activity.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
                         ),
                         cached_params!(
@@ -347,9 +347,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def at = ctx.zscaler_zia?.saas_security_activity?.activity?.type;\ndef m = at != null ? params.mapping.get(at) : null;\nctx.event = ctx.event ?: [:];\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.outcome != null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def at = ctx.zscaler_zia?.saas_security_activity?.activity?.type;\ndef m = at != null ? params.mapping.get(at) : null;\nctx.event = ctx.event ?: [:];\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.outcome != null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n}"#
                     ),
                     cached_params!(
@@ -635,9 +635,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropScalar(Object v) {\n  return v == null || v == '' || v == '0' || v == 'N/A'\n    || v == 'None' || v == 'Unknown' || v == 'Unknown Host' || v == 'Unknown URL';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropScalar(Object v) {\n  return v == null || v == '' || v == '0' || v == 'N/A'\n    || v == 'None' || v == 'Unknown' || v == 'Unknown Host' || v == 'Unknown URL';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);"#
                 ),
             )?;

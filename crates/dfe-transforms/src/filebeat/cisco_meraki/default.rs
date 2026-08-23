@@ -2800,9 +2800,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(ctx.cisco_meraki.event_subtype);\nif (eventData == null) {\n  ctx.event.action = ctx.cisco_meraki.event_subtype;\n  return;\n}\ndef eventCategory = eventData.get('category');\ndef eventType = eventData.get('type');\ndef eventAction = eventData.get('action');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\nif (eventAction != null) {\n  ctx.event.action = eventAction;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(ctx.cisco_meraki.event_subtype);\nif (eventData == null) {\n  ctx.event.action = ctx.cisco_meraki.event_subtype;\n  return;\n}\ndef eventCategory = eventData.get('category');\ndef eventType = eventData.get('type');\ndef eventAction = eventData.get('action');\nif (eventType != null) {\n  for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}\nif (eventCategory != null) {\n  for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\nif (eventAction != null) {\n  ctx.event.action = eventAction;\n}"#
                     ),
                     cached_params!(
@@ -3024,9 +3024,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

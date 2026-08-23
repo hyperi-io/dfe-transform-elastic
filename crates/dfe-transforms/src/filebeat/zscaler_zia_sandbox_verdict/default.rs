@@ -57,9 +57,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: if (ctx.zscaler_zia.sandbox_verdict.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.sandbox_verdict.version == null ? 'null' : ctx.zscaler_zia.sandbox_verdict.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"if (ctx.zscaler_zia.sandbox_verdict.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.sandbox_verdict.version == null ? 'null' : ctx.zscaler_zia.sandbox_verdict.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
                         ),
                         cached_params!(
@@ -115,9 +115,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  if (s.length() == 0) return;\n  List out = new ArrayList();\n  int from = 0;\n  int n = s.length();\n  for (int i = 0; i < n; i++) {\n    if (s.charAt(i) == (char)'|') {\n      out.add(s.substring(from, i));\n      from = i + 1;\n    }\n  }\n  out.add(s.substring(from, n));\n  m.put(key, out);\n}\ndef sv = ctx.zscaler_zia?.sandbox_verdict;\nif (sv == null) return;\nif (sv.threat instanceof Map) {\n  if (sv.threat.tactic instanceof Map) {\n    splitStr(sv.threat.tactic, 'id');\n  }\n  if (sv.threat.technique instanceof Map) {\n    splitStr(sv.threat.technique, 'id');\n  }\n}\nif (sv.file instanceof Map && sv.file.hash instanceof Map) {\n  splitStr(sv.file.hash, 'children_md5');\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  if (s.length() == 0) return;\n  List out = new ArrayList();\n  int from = 0;\n  int n = s.length();\n  for (int i = 0; i < n; i++) {\n    if (s.charAt(i) == (char)'|') {\n      out.add(s.substring(from, i));\n      from = i + 1;\n    }\n  }\n  out.add(s.substring(from, n));\n  m.put(key, out);\n}\ndef sv = ctx.zscaler_zia?.sandbox_verdict;\nif (sv == null) return;\nif (sv.threat instanceof Map) {\n  if (sv.threat.tactic instanceof Map) {\n    splitStr(sv.threat.tactic, 'id');\n  }\n  if (sv.threat.technique instanceof Map) {\n    splitStr(sv.threat.technique, 'id');\n  }\n}\nif (sv.file instanceof Map && sv.file.hash instanceof Map) {\n  splitStr(sv.file.hash, 'children_md5');\n}"#
                     ),
                 )?;
@@ -616,9 +616,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropScalar(Object v) {\n  return v == null || v == '' || v == 'None' || v == 'Null';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropScalar(Object v) {\n  return v == null || v == '' || v == 'None' || v == 'Null';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);"#
                 ),
             )?;

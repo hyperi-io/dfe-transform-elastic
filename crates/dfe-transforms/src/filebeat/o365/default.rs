@@ -54,9 +54,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.event = ctx.event ?: [:];\nctx.event.original = Json.dump(ctx.o365audit)
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.event = ctx.event ?: [:];\nctx.event.original = Json.dump(ctx.o365audit)"#
                     ),
                 )?;
@@ -75,9 +75,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: for (def field : params.fields) {\n  def value = ctx.o365audit[field];\n  if (value instanceof Number) {\n    ctx.o365audit[field] = ((Number)value).longValue().toString();\n  } else if (value instanceof String && (value.indexOf('e') >= 0 || value.indexOf('E') >= 0)) {\n    ctx.o365audit[field] = new BigDecimal(value).toBigIntegerExact().toString();\n  }\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"for (def field : params.fields) {\n  def value = ctx.o365audit[field];\n  if (value instanceof Number) {\n    ctx.o365audit[field] = ((Number)value).longValue().toString();\n  } else if (value instanceof String && (value.indexOf('e') >= 0 || value.indexOf('E') >= 0)) {\n    ctx.o365audit[field] = new BigDecimal(value).toBigIntegerExact().toString();\n  }\n}"#
                     ),
                     cached_params!(
@@ -195,9 +195,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx._tmp = [:];\ndef actions = [];\nctx._tmp.action_strings = [];\nif (!(ctx.o365audit.Actions instanceof List)) {\n  ctx.o365audit.Actions = [ctx.o365audit.Actions];\n}\n\n// Actions contains both a human readable `QueryTime` using AM/PM and an ISO8601 format `QueryTime`\n// We remove the AM/PM containing `QueryTime` to avoid duplicate field errors on flattening.\ndef queryTimePattern = /,\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\"|\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\",/;\nfor (def e: ctx.o365audit.Actions) {\n  if (e instanceof Map) {\n    actions.add(e);\n  } else if (e instanceof String) {\n    ctx._tmp.action_strings.add(queryTimePattern.matcher(e).replaceAll(''));\n  }\n}\nif (actions.length == ctx.o365audit.Actions.length) {\n  ctx._tmp.remove(\"action_strings\");\n  return\n}\nctx.o365audit.Actions = actions;
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx._tmp = [:];\ndef actions = [];\nctx._tmp.action_strings = [];\nif (!(ctx.o365audit.Actions instanceof List)) {\n  ctx.o365audit.Actions = [ctx.o365audit.Actions];\n}\n\n// Actions contains both a human readable `QueryTime` using AM/PM and an ISO8601 format `QueryTime`\n// We remove the AM/PM containing `QueryTime` to avoid duplicate field errors on flattening.\ndef queryTimePattern = /,\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\"|\"QueryTime\":\"[0-9\\/]+\\s[0-9]+:[0-9]+:[0-9]+\\s[AP]M\",/;\nfor (def e: ctx.o365audit.Actions) {\n  if (e instanceof Map) {\n    actions.add(e);\n  } else if (e instanceof String) {\n    ctx._tmp.action_strings.add(queryTimePattern.matcher(e).replaceAll(''));\n  }\n}\nif (actions.length == ctx.o365audit.Actions.length) {\n  ctx._tmp.remove(\"action_strings\");\n  return\n}\nctx.o365audit.Actions = actions;"#
                     ),
                 )?;
@@ -244,9 +244,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: // To reach here, ctx._tmp.action_strings must be non-null\n// and for this to be true, script_select_string_actions\n// must have run, requiring that ctx.o365audit.Actions is\n// non-null, so we do not need to check again.\nctx.o365audit.Actions.addAll(ctx._tmp.action_strings);
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"// To reach here, ctx._tmp.action_strings must be non-null\n// and for this to be true, script_select_string_actions\n// must have run, requiring that ctx.o365audit.Actions is\n// non-null, so we do not need to check again.\nctx.o365audit.Actions.addAll(ctx._tmp.action_strings);"#
                     ),
                 )?;
@@ -456,9 +456,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def schemaId = ctx.o365audit.RecordType.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.code = schema;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def schemaId = ctx.o365audit.RecordType.toString(); def schema = params[schemaId]; if (schema != null) {\n  if (ctx.event == null) {\n    ctx.event = new HashMap();\n  }\n  ctx.event.code = schema;\n}\n"#
                     ),
                     cached_params!(
@@ -503,9 +503,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def newparams = new HashMap();  def oldparams = ctx.o365audit.Parameters; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.Parameters = newparams;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.Parameters; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.Parameters = newparams;\n"#
                     ),
                 )?;
@@ -545,9 +545,9 @@ impl Transform for Default {
             // Painless script
             // Source: void splitTrimAdd(Set acc, String str) {\n    if (str != null && str != '') {\n        String[] parts = str.splitOnToken(';');\n        for (int i = 0; i < parts.length; i++) {\n            acc.add(parts[i].trim());\n        }\n    }\n}\ndef addressSet = new HashSet(ctx.email?.to?.address ?: []);\nsplitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);\nif (!addressSet.isEmpty()) {\n  ctx.email = ctx.email ?: [:];\n  ctx.email.to = ctx.email.to ?: [:];\n  ctx.email.to.address = addressSet.asList();\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void splitTrimAdd(Set acc, String str) {\n    if (str != null && str != '') {\n        String[] parts = str.splitOnToken(';');\n        for (int i = 0; i < parts.length; i++) {\n            acc.add(parts[i].trim());\n        }\n    }\n}\ndef addressSet = new HashSet(ctx.email?.to?.address ?: []);\nsplitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardAsAttachmentTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.ForwardTo); splitTrimAdd(addressSet, ctx.o365audit?.Parameters?.RedirectTo);\nif (!addressSet.isEmpty()) {\n  ctx.email = ctx.email ?: [:];\n  ctx.email.to = ctx.email.to ?: [:];\n  ctx.email.to.address = addressSet.asList();\n}\n"#
                 ),
             )?;
@@ -565,9 +565,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def value = ctx.o365audit.Platform.toString(); def name = params[value]; if (name != null) {\n  ctx.o365audit.Platform = name;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def value = ctx.o365audit.Platform.toString(); def name = params[value]; if (name != null) {\n  ctx.o365audit.Platform = name;\n}\n"#
                     ),
                     cached_params!(
@@ -581,9 +581,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString lcPlatform = ctx.o365audit.Platform.toLowerCase();\nif (lcPlatform.contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (lcPlatform.contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (lcPlatform.contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (lcPlatform.contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (lcPlatform.contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (lcPlatform.contains('android')) {\n    ctx.host.os.type = 'android';\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\nString lcPlatform = ctx.o365audit.Platform.toLowerCase();\nif (lcPlatform.contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (lcPlatform.contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (lcPlatform.contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (lcPlatform.contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (lcPlatform.contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (lcPlatform.contains('android')) {\n    ctx.host.os.type = 'android';\n}\n"#
                     ),
                 )?;
@@ -614,9 +614,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def newparams = new HashMap();  def oldparams = ctx.o365audit.ExtendedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.ExtendedProperties = newparams;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ExtendedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i][\"Value\"] != null) {\n    newparams[oldparams[i][\"Name\"]] = oldparams[i][\"Value\"];\n  }\n} ctx.o365audit.ExtendedProperties = newparams;\n"#
                     ),
                 )?;
@@ -645,9 +645,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def newparams = new HashMap();  def oldparams = ctx.o365audit.ModifiedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i] instanceof Map && oldparams[i][\"OldValue\"] != null && oldparams[i][\"NewValue\"] != null) {\n    def validname = oldparams[i][\"Name\"].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n    newparams[validname][\"NewValue\"] = oldparams[i][\"NewValue\"];\n    newparams[validname][\"OldValue\"] = oldparams[i][\"OldValue\"];\n  }\n  if (oldparams[i] instanceof String) {\n    def validname = oldparams[i].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n  }\n} if (newparams.isEmpty()) {\n  ctx.o365audit.remove(\"ModifiedProperties\");\n  return;\n} ctx.o365audit.ModifiedProperties = newparams;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def newparams = new HashMap();  def oldparams = ctx.o365audit.ModifiedProperties; for (int i = 0; i < oldparams.length; ++i) {\n  if (oldparams[i] instanceof Map && oldparams[i][\"OldValue\"] != null && oldparams[i][\"NewValue\"] != null) {\n    def validname = oldparams[i][\"Name\"].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n    newparams[validname][\"NewValue\"] = oldparams[i][\"NewValue\"];\n    newparams[validname][\"OldValue\"] = oldparams[i][\"OldValue\"];\n  }\n  if (oldparams[i] instanceof String) {\n    def validname = oldparams[i].replace(\" \",\"_\").replace(\".\",\"_\");\n    newparams[validname] = new HashMap();\n  }\n} if (newparams.isEmpty()) {\n  ctx.o365audit.remove(\"ModifiedProperties\");\n  return;\n} ctx.o365audit.ModifiedProperties = newparams;\n"#
                     ),
                 )?;
@@ -676,9 +676,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def list = ctx.o365audit.AlertLinks; def links = new ArrayList(); for (int i = 0; i < list.length; ++i) {\n  if (list[i] instanceof Map && list[i].containsKey(\"AlertLinkHref\") && list[i][\"AlertLinkHref\"] != null && list[i][\"AlertLinkHref\"] instanceof String) {\n    links.add(list[i][\"AlertLinkHref\"]);\n  }\n} if (links.length == 0) {\n  ctx.o365audit.remove(\"AlertLinks\");\n  return;\n} ctx.o365audit.AlertLinks = links;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def list = ctx.o365audit.AlertLinks; def links = new ArrayList(); for (int i = 0; i < list.length; ++i) {\n  if (list[i] instanceof Map && list[i].containsKey(\"AlertLinkHref\") && list[i][\"AlertLinkHref\"] != null && list[i][\"AlertLinkHref\"] instanceof String) {\n    links.add(list[i][\"AlertLinkHref\"]);\n  }\n} if (links.length == 0) {\n  ctx.o365audit.remove(\"AlertLinks\");\n  return;\n} ctx.o365audit.AlertLinks = links;\n"#
                     ),
                 )?;
@@ -1235,9 +1235,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def operation = ctx.event?.action ?: ''; def user = ctx.user?.id ?: ''; def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';\nif (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {\n  ctx.message = \"Office365 Alert\";\n} else {\n  ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + user + \" with subject '\" + subject + \"'\";\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def operation = ctx.event?.action ?: ''; def user = ctx.user?.id ?: ''; def subject = ctx.o365audit?.ExchangeMetaData?.Subject ?: ctx.email?.subject ?: '';\nif (operation.isEmpty() && user.isEmpty() && subject.isEmpty()) {\n  ctx.message = \"Office365 Alert\";\n} else {\n  ctx.message = \"Office365 Alert: \" + operation + \" detected in email sent by \" + user + \" with subject '\" + subject + \"'\";\n}\n"#
                     ),
                 )?;
@@ -1396,9 +1396,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def fields = new def[] {\"To\", \"CC\", \"BCC\"}; if (ctx.destination == null) {\n  ctx.destination = new HashMap();\n} if (ctx.destination.user == null) {\n  ctx.destination.user = new HashMap();\n} ctx.destination.user.email = new ArrayList(); for (int i = 0; i < fields.length; ++i) {\n  if (ctx.o365audit.ExchangeMetaData instanceof Map && ctx.o365audit.ExchangeMetaData.containsKey(fields[i])) {\n    def emails = ctx.o365audit.ExchangeMetaData[fields[i]];\n    if (emails instanceof List){\n      for (int e = 0; e < emails.length; ++e) {\n        ctx.destination.user.email.add(emails[e]);\n      }\n    }\n    if (emails instanceof String){\n      ctx.destination.user.email.add(emails);\n    }\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def fields = new def[] {\"To\", \"CC\", \"BCC\"}; if (ctx.destination == null) {\n  ctx.destination = new HashMap();\n} if (ctx.destination.user == null) {\n  ctx.destination.user = new HashMap();\n} ctx.destination.user.email = new ArrayList(); for (int i = 0; i < fields.length; ++i) {\n  if (ctx.o365audit.ExchangeMetaData instanceof Map && ctx.o365audit.ExchangeMetaData.containsKey(fields[i])) {\n    def emails = ctx.o365audit.ExchangeMetaData[fields[i]];\n    if (emails instanceof List){\n      for (int e = 0; e < emails.length; ++e) {\n        ctx.destination.user.email.add(emails[e]);\n      }\n    }\n    if (emails instanceof String){\n      ctx.destination.user.email.add(emails);\n    }\n  }\n}\n"#
                     ),
                 )?;
@@ -1429,9 +1429,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: int severityToCode(def x) { \n  if (x.toLowerCase() == \"informational\") {\n    return 1;\n  }\n  if (x.toLowerCase() == \"low\") {\n    return 2;\n  }\n  if (x.toLowerCase() == \"medium\") {\n    return 3;\n  }\n  if (x.toLowerCase() == \"high\") {\n    return 4;\n  }\n  return 0;\n} def policies = ctx.o365audit.PolicyDetails; if (policies == null) {\n  return;\n} if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n} if (ctx.rule.id == null) {\n  ctx.rule.id = new ArrayList();\n} if (ctx.rule.name == null) {\n  ctx.rule.name = new ArrayList();\n} def maxSeverity = 0; def allowed = true; for (int i = 0; i < policies.length && policies instanceof List; ++i) {\n  def rules = policies[i].Rules;\n  if (rules == null) {\n    continue;\n  }\n  for (int j = 0; j < rules.length; ++j) {\n    def rule = rules[j];\n    def id = rule.RuleId;\n    def name = rule.RuleName;\n    def sev = severityToCode(rule.Severity);\n    if (id != null && name != null) {\n      ctx.rule.id.add(id);\n      ctx.rule.name.add(name);\n    }\n    if (sev > maxSeverity) {\n      maxSeverity = sev;\n    }\n    if (allowed) {\n      if (rule.Actions != null && rule.Actions.contains(\"BlockAccess\")) {\n        allowed = false;\n      }\n    }\n  }\n} if (maxSeverity > -1) {\n  ctx.event.severity = maxSeverity;\n} if (allowed) {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpRuleUndo\") {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpInfo\") {\n  ctx.event.outcome = \"failure\";\n  return;\n} if (ctx.o365audit?.ExceptionInfo != null && !ctx.o365audit?.ExceptionInfo.isEmpty()) {\n  ctx.event.outcome = \"success\";\n  return;\n} ctx.event.outcome = \"failure\";\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"int severityToCode(def x) { \n  if (x.toLowerCase() == \"informational\") {\n    return 1;\n  }\n  if (x.toLowerCase() == \"low\") {\n    return 2;\n  }\n  if (x.toLowerCase() == \"medium\") {\n    return 3;\n  }\n  if (x.toLowerCase() == \"high\") {\n    return 4;\n  }\n  return 0;\n} def policies = ctx.o365audit.PolicyDetails; if (policies == null) {\n  return;\n} if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n} if (ctx.rule.id == null) {\n  ctx.rule.id = new ArrayList();\n} if (ctx.rule.name == null) {\n  ctx.rule.name = new ArrayList();\n} def maxSeverity = 0; def allowed = true; for (int i = 0; i < policies.length && policies instanceof List; ++i) {\n  def rules = policies[i].Rules;\n  if (rules == null) {\n    continue;\n  }\n  for (int j = 0; j < rules.length; ++j) {\n    def rule = rules[j];\n    def id = rule.RuleId;\n    def name = rule.RuleName;\n    def sev = severityToCode(rule.Severity);\n    if (id != null && name != null) {\n      ctx.rule.id.add(id);\n      ctx.rule.name.add(name);\n    }\n    if (sev > maxSeverity) {\n      maxSeverity = sev;\n    }\n    if (allowed) {\n      if (rule.Actions != null && rule.Actions.contains(\"BlockAccess\")) {\n        allowed = false;\n      }\n    }\n  }\n} if (maxSeverity > -1) {\n  ctx.event.severity = maxSeverity;\n} if (allowed) {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpRuleUndo\") {\n  ctx.event.outcome = \"success\";\n  return;\n} if (ctx.event?.action == \"DlpInfo\") {\n  ctx.event.outcome = \"failure\";\n  return;\n} if (ctx.o365audit?.ExceptionInfo != null && !ctx.o365audit?.ExceptionInfo.isEmpty()) {\n  ctx.event.outcome = \"success\";\n  return;\n} ctx.event.outcome = \"failure\";\n"#
                     ),
                 )?;
@@ -1729,9 +1729,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def members = ctx.o365audit?.Members; if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} for (int i = 0; i < members.length; ++i) {\n  if (members[i] instanceof Map && members[i].containsKey(\"UPN\") && !members[i][\"UPN\"].isEmpty()) {\n    ctx.related.user.add(members[i][\"UPN\"]);\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def members = ctx.o365audit?.Members; if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} for (int i = 0; i < members.length; ++i) {\n  if (members[i] instanceof Map && members[i].containsKey(\"UPN\") && !members[i][\"UPN\"].isEmpty()) {\n    ctx.related.user.add(members[i][\"UPN\"]);\n  }\n}\n"#
                     ),
                 )?;
@@ -1911,9 +1911,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: String[] splitmail = ctx.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.email = ctx.user.id; ctx.user.domain = splitmail[1]; ctx.user.name = splitmail[0];\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"String[] splitmail = ctx.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.email = ctx.user.id; ctx.user.domain = splitmail[1]; ctx.user.name = splitmail[0];\n"#
                     ),
                 )?;
@@ -1931,9 +1931,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: String[] splitmail = ctx.user.target.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.target.email = ctx.user.target.id; ctx.user.target.domain = splitmail[1]; ctx.user.target.name = splitmail[0];\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"String[] splitmail = ctx.user.target.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.user.target.email = ctx.user.target.id; ctx.user.target.domain = splitmail[1]; ctx.user.target.name = splitmail[0];\n"#
                     ),
                 )?;
@@ -1951,9 +1951,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: String[] splitmail = ctx.source.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.source.user.email = ctx.source.user.id; ctx.source.user.domain = splitmail[1]; ctx.source.user.name = splitmail[0];\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"String[] splitmail = ctx.source.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.source.user.email = ctx.source.user.id; ctx.source.user.domain = splitmail[1]; ctx.source.user.name = splitmail[0];\n"#
                     ),
                 )?;
@@ -1973,9 +1973,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: String[] splitmail = ctx.destination.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.destination.user.email = ctx.destination.user.id; ctx.destination.user.domain = splitmail[1]; ctx.destination.user.name = splitmail[0];\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"String[] splitmail = ctx.destination.user.id.splitOnToken(\"@\"); if (splitmail.length != 2) {\n  return;\n} ctx.destination.user.email = ctx.destination.user.id; ctx.destination.user.domain = splitmail[1]; ctx.destination.user.name = splitmail[0];\n"#
                     ),
                 )?;
@@ -2110,9 +2110,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def conftenants = ctx._conf.tenants; def orgid = ctx.organization.id; if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n  ctx.organization.name = conftenants[orgid];\n}\n"#
                     ),
                 )?;
@@ -2353,9 +2353,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.email = ctx.email ?: [:];\nctx.email.attachments = [];\n\ndef attachmentList = ctx.o365audit.Item.Attachments.splitOnToken(';');\n\nfor (def attachment : attachmentList) {\n  def att = attachment.trim();\n  if (att.isEmpty() || !att.endsWith(')')) continue;\n\n  // Find the size marker at the end: \" (<digits>b)\"\n  int lastSep = att.lastIndexOf(' (');\n  if (lastSep < 0) continue;\n\n  def maybeSize = att.substring(lastSep + 2, att.length() - 1);\n  if (!maybeSize.endsWith('b')) continue;\n\n  def sizeStr = maybeSize.substring(0, maybeSize.length() - 1);\n  long sizeVal;\n  try { sizeVal = Long.parseLong(sizeStr); } catch (Exception e) { continue; }\n\n  def filename = att.substring(0, lastSep).trim();\n  if (filename.isEmpty()) continue;\n\n  int dotIdx = filename.lastIndexOf('.');\n  if (dotIdx < 0) continue;\n\n  def attachmentObj = [:];\n  attachmentObj.file = [:];\n  attachmentObj.file.extension = filename.substring(dotIdx + 1);\n  attachmentObj.file.name = filename;\n  attachmentObj.file.size = sizeVal;\n  ctx.email.attachments.add(attachmentObj);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.email = ctx.email ?: [:];\nctx.email.attachments = [];\n\ndef attachmentList = ctx.o365audit.Item.Attachments.splitOnToken(';');\n\nfor (def attachment : attachmentList) {\n  def att = attachment.trim();\n  if (att.isEmpty() || !att.endsWith(')')) continue;\n\n  // Find the size marker at the end: \" (<digits>b)\"\n  int lastSep = att.lastIndexOf(' (');\n  if (lastSep < 0) continue;\n\n  def maybeSize = att.substring(lastSep + 2, att.length() - 1);\n  if (!maybeSize.endsWith('b')) continue;\n\n  def sizeStr = maybeSize.substring(0, maybeSize.length() - 1);\n  long sizeVal;\n  try { sizeVal = Long.parseLong(sizeStr); } catch (Exception e) { continue; }\n\n  def filename = att.substring(0, lastSep).trim();\n  if (filename.isEmpty()) continue;\n\n  int dotIdx = filename.lastIndexOf('.');\n  if (dotIdx < 0) continue;\n\n  def attachmentObj = [:];\n  attachmentObj.file = [:];\n  attachmentObj.file.extension = filename.substring(dotIdx + 1);\n  attachmentObj.file.name = filename;\n  attachmentObj.file.size = sizeVal;\n  ctx.email.attachments.add(attachmentObj);\n}"#
                         ),
                     )?;
@@ -2505,9 +2505,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: for (def key : params.knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"for (def key : params.knownKeys) {\n  if (ctx.o365audit.Data.flattened.containsKey(key)) {\n    ctx.o365audit.Data[key] = ctx.o365audit.Data.flattened[key];\n  }\n}\n"#
                     ),
                     cached_params!(
@@ -2769,9 +2769,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx._tmp = ctx._tmp ?: [:]; ctx._tmp.entities = [:]; for (def entity: ctx.o365audit.Data.flattened.Entities) {\n  if (entity instanceof Map) {\n    for (def key : params.knownEntityKeys) {\n      if (! ctx._tmp.entities.containsKey(key)) {\n        ctx._tmp.entities[key] = [];\n      }\n      if (entity.containsKey(key)) {\n        ctx._tmp.entities[key].add(entity[key]);\n      }\n    }\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx._tmp = ctx._tmp ?: [:]; ctx._tmp.entities = [:]; for (def entity: ctx.o365audit.Data.flattened.Entities) {\n  if (entity instanceof Map) {\n    for (def key : params.knownEntityKeys) {\n      if (! ctx._tmp.entities.containsKey(key)) {\n        ctx._tmp.entities[key] = [];\n      }\n      if (entity.containsKey(key)) {\n        ctx._tmp.entities[key].add(entity[key]);\n      }\n    }\n  }\n}\n"#
                     ),
                     cached_params!(
@@ -3172,9 +3172,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def methods = ctx._tmp.entities.ThreatDetectionMethods; def result = []; for (def method: methods){\n  if (method instanceof List) {\n    for (def m: method) {\n      result.add(m);\n    }\n  } else if (method instanceof String) {\n    result.add(method);\n  }\n} ctx.o365audit.ThreatDetectionMethods = result;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def methods = ctx._tmp.entities.ThreatDetectionMethods; def result = []; for (def method: methods){\n  if (method instanceof List) {\n    for (def m: method) {\n      result.add(m);\n    }\n  } else if (method instanceof String) {\n    result.add(method);\n  }\n} ctx.o365audit.ThreatDetectionMethods = result;\n"#
                     ),
                 )?;
@@ -3487,9 +3487,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
                 ),
             )?;

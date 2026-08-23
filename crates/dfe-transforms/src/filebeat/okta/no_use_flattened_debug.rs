@@ -421,9 +421,9 @@ impl Transform for NoUseFlattenedDebug {
             // Painless script
             // Source: def src = ctx.okta?.debug_context?.debug_data?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"def src = ctx.okta?.debug_context?.debug_data?.behaviors;\nif (src == null) {\n  return;\n}\ndef dst = new ArrayList();\nfor (e in src.entrySet()) {\n  if (e != null && e.getValue() == \"POSITIVE\") {\n    dst.add(e.getKey());\n  }\n}\nif (dst.length != 0) {\n  ctx.okta.debug_context.debug_data['risk_behaviors'] = dst;\n}\n"#
                 ),
             )?;
@@ -532,9 +532,9 @@ impl Transform for NoUseFlattenedDebug {
                 // Painless script
                 // Source: String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\ndef renameKeys(Map src) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      dst[underscore(key)] = renameKeys(value);\n    } else if (value instanceof List) {\n      for (int i = 0; i < value.length; i++) {\n        if (value[i] instanceof Map) {\n          value[i] = renameKeys(value[i]);\n        }\n      }\n      dst[underscore(key)] = value;\n    } else {\n      dst[underscore(key)] = value;\n    }\n  }\n  return dst;\n}\nctx.okta.debug_context.debug_data = renameKeys(ctx.okta.debug_context.debug_data)\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\ndef renameKeys(Map src) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      dst[underscore(key)] = renameKeys(value);\n    } else if (value instanceof List) {\n      for (int i = 0; i < value.length; i++) {\n        if (value[i] instanceof Map) {\n          value[i] = renameKeys(value[i]);\n        }\n      }\n      dst[underscore(key)] = value;\n    } else {\n      dst[underscore(key)] = value;\n    }\n  }\n  return dst;\n}\nctx.okta.debug_context.debug_data = renameKeys(ctx.okta.debug_context.debug_data)\n"#
                     ),
                 )?;

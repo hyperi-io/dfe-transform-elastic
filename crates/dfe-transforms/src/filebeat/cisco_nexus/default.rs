@@ -104,9 +104,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx.temp.timezone) {\n    ctx.temp.timezone = item.tz_long;\n    break;\n  }\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"for (def item : ctx._conf.tz_map) {\n  if (item.tz_short == ctx.temp.timezone) {\n    ctx.temp.timezone = item.tz_long;\n    break;\n  }\n}"#
                     ),
                 )?;
@@ -573,9 +573,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def LogLevelValue = (int) ctx.event.severity;\nif (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}"#
                         ),
                         cached_params!(
@@ -627,9 +627,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.log.syslog.facility = new HashMap();\nctx.log.syslog.facility.code = (ctx.cisco_nexus.log.priority_number - ctx.event.severity)/8;\n"#
                         ),
                     )?;
@@ -1622,9 +1622,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
                 ),
             )?;

@@ -248,9 +248,9 @@ impl Transform for AutomatedLeadSummary {
                 // Painless script
                 // Source: long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"long score = ctx.crowdstrike.event.Score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}"#
                     ),
                 )?;
@@ -532,9 +532,9 @@ impl Transform for AutomatedLeadSummary {
                 // Painless script
                 // Source: def indicator = ctx.crowdstrike.event.ThreatgraphIndicators[0];\nif (indicator.HostId != null && indicator.HostId != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.HostId;\n}\nif (indicator.Hostname != null && indicator.Hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.Hostname;\n}\nif (indicator.ProcessId != null && indicator.ProcessId != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.ProcessId;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def indicator = ctx.crowdstrike.event.ThreatgraphIndicators[0];\nif (indicator.HostId != null && indicator.HostId != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.HostId;\n}\nif (indicator.Hostname != null && indicator.Hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.Hostname;\n}\nif (indicator.ProcessId != null && indicator.ProcessId != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.ProcessId;\n}"#
                     ),
                 )?;

@@ -100,9 +100,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (ctx.resp?.version == null) {\n  def fields = [];\n  for (e in ctx.json.entrySet()) {\n    fields.add(e.getKey());\n  }\n  Collections.sort(fields);\n  String signature = String.join(\"|\", fields);\n  if (signature != params.expect.fields) {\n    ctx.error = ctx.error ?: [:];\n    ctx.error.message = ctx.error.message ?: [];\n    ctx.error.message.add(\"field set mismatch: \"+signature+\" is not expected set of templated fields (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n  }\n} else if (ctx.resp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add(\"template version mismatch: \"+ctx.resp.version.toString()+\" is not expected version (see \"+params.data_stream+\" https://epr.elastic.co/package/zscaler_zia/\"+params.pkg_version+\"/docs/README.md)\");\n}"#
                     ),
                     cached_params!(
@@ -118,9 +118,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: // Zscaler hex-encoded data is similar to URL encoded data, but it doesn't encode `%`.\n// This pre-processing allows the URL decode processor's strict logic to run successfully.\ndef pattern = /(%)(?![0-9A-Fa-f]{2})/;\nfor (String k: params.fields) {\n    String v = ctx.json[k];\n    if (v == null) {\n        continue;\n    }\n    ctx.json[k] = pattern.matcher(v).replaceAll('%25');\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"// Zscaler hex-encoded data is similar to URL encoded data, but it doesn't encode `%`.\n// This pre-processing allows the URL decode processor's strict logic to run successfully.\ndef pattern = /(%)(?![0-9A-Fa-f]{2})/;\nfor (String k: params.fields) {\n    String v = ctx.json[k];\n    if (v == null) {\n        continue;\n    }\n    ctx.json[k] = pattern.matcher(v).replaceAll('%25');\n}"#
                     ),
                     cached_params!(
@@ -138,9 +138,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'NA' || object == 'None' || object == 'NotFound') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'NA' || object == 'None' || object == 'NotFound') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);"#
                 ),
             )?;
@@ -1402,9 +1402,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: String osType = ctx.zscaler_zia.web.device.os.type;\nif (ctx.host == null) {\n    Map map = new HashMap();\n    ctx.put('host', map);\n}\nif (ctx.host?.os == null) {\n    Map map = new HashMap();\n    ctx.host.put('os', map);\n}\nif (osType == 'iOS') {\n   ctx.host.os.put('type', 'ios');\n}\nelse if (osType == 'Android OS') {\n   ctx.host.os.put('type', 'android');\n}\nelse if (osType == 'Windows OS') {\n   ctx.host.os.put('type', 'windows');\n}\nelse if (osType == 'MAC OS') {\n   ctx.host.os.put('type', 'macos');\n}\nelse if (osType == 'Other OS') {\n   ctx.host.os.put('type', 'other');\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"String osType = ctx.zscaler_zia.web.device.os.type;\nif (ctx.host == null) {\n    Map map = new HashMap();\n    ctx.put('host', map);\n}\nif (ctx.host?.os == null) {\n    Map map = new HashMap();\n    ctx.host.put('os', map);\n}\nif (osType == 'iOS') {\n   ctx.host.os.put('type', 'ios');\n}\nelse if (osType == 'Android OS') {\n   ctx.host.os.put('type', 'android');\n}\nelse if (osType == 'Windows OS') {\n   ctx.host.os.put('type', 'windows');\n}\nelse if (osType == 'MAC OS') {\n   ctx.host.os.put('type', 'macos');\n}\nelse if (osType == 'Other OS') {\n   ctx.host.os.put('type', 'other');\n}"#
                         ),
                     )?;
@@ -2599,9 +2599,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.json.referer = ctx.json.b64referer.decodeBase64();
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(r#"ctx.json.referer = ctx.json.b64referer.decodeBase64();"#),
+                    cached_painless!(r#"ctx.json.referer = ctx.json.b64referer.decodeBase64();"#),
                 )?;
             }
 
@@ -3823,9 +3823,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.json.url = ctx.json.b64url.decodeBase64();
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(r#"ctx.json.url = ctx.json.b64url.decodeBase64();"#),
+                    cached_painless!(r#"ctx.json.url = ctx.json.b64url.decodeBase64();"#),
                 )?;
             }
 
@@ -3842,9 +3842,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: // Remap network.protocol to a valid value, if necessary.\nif (params.valid_protocols.contains(ctx.network.protocol)) {\n  ctx.json['url'] = ctx.network.protocol + '://' + ctx.json.url;\n} else {\n  ctx.json['url'] = params.default_protocol + '://' + ctx.json.url;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"// Remap network.protocol to a valid value, if necessary.\nif (params.valid_protocols.contains(ctx.network.protocol)) {\n  ctx.json['url'] = ctx.network.protocol + '://' + ctx.json.url;\n} else {\n  ctx.json['url'] = params.default_protocol + '://' + ctx.json.url;\n}\n"#
                     ),
                     cached_params!(
@@ -4104,9 +4104,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
                 ),
             )?;

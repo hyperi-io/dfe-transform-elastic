@@ -23,9 +23,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.winlog?.event_data?.entrySet().removeIf(entry -> [null, \"\", \"-\", \"{00000000-0000-0000-0000-000000000000}\"].contains(entry.getValue()))
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.winlog?.event_data?.entrySet().removeIf(entry -> [null, \"\", \"-\", \"{00000000-0000-0000-0000-000000000000}\"].contains(entry.getValue()))"#
                     ),
                 )?;
@@ -128,9 +128,9 @@ impl Transform for Default {
             // Painless script
             // Source: if (ctx.event?.code == null || params.get(ctx.event.code) == null) {\n  return;\n}\ndef hm = new HashMap(params[ctx.event.code]);\nhm.forEach((k, v) -> ctx.event[k] = v);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_params(
+            painless_exec_plan_params(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"if (ctx.event?.code == null || params.get(ctx.event.code) == null) {\n  return;\n}\ndef hm = new HashMap(params[ctx.event.code]);\nhm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(
@@ -244,9 +244,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def hashIsEmpty(String hash) {\n  if (hash == \"\") {\n    return true;\n  }\n  \n  Pattern emptyHashRegex = /^0*$/;\n  def matcher = emptyHashRegex.matcher(hash);\n  \n  return matcher.matches(); \n}\n\ndef hashes = new HashMap();\ndef related = [\n  \"hash\": new ArrayList()\n];\nfor (entry in ctx._temp.hashes.entrySet()) {\n  def key = entry.getKey().toString().toLowerCase();\n  def value = entry.getValue().toString().toLowerCase();\n\n  if (hashIsEmpty(value)) {\n    continue;\n  }\n\n  hashes[key] = value;\n  related.hash.add(value);\n}\n\nctx._temp.hashes = hashes;\nif (related.hash.length > 0) {\n  ctx.related = related;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def hashIsEmpty(String hash) {\n  if (hash == \"\") {\n    return true;\n  }\n  \n  Pattern emptyHashRegex = /^0*$/;\n  def matcher = emptyHashRegex.matcher(hash);\n  \n  return matcher.matches(); \n}\n\ndef hashes = new HashMap();\ndef related = [\n  \"hash\": new ArrayList()\n];\nfor (entry in ctx._temp.hashes.entrySet()) {\n  def key = entry.getKey().toString().toLowerCase();\n  def value = entry.getValue().toString().toLowerCase();\n\n  if (hashIsEmpty(value)) {\n    continue;\n  }\n\n  hashes[key] = value;\n  related.hash.add(value);\n}\n\nctx._temp.hashes = hashes;\nif (related.hash.length > 0) {\n  ctx.related = related;\n}"#
                     ),
                 )?;
@@ -608,9 +608,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: // appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string cmd into next\n// argument and command line remainder.\ndef readNextArg(String cmd) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; cmd.length() > 0; cmd = cmd.substring(1)) {\n        def c = cmd.charAt(0);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"rest\": cmd.substring(1)\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && cmd.length() > 1 && cmd.charAt(1) == (char)'\"') {\n                    b.append(c);\n                    cmd = cmd.substring(1);\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"rest\": ''\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String cmd) {\n    def args = new ArrayList();\n    while (cmd.length() > 0) {\n        if (cmd.charAt(0) == (char)' ' || cmd.charAt(0) == (char)0x09) {\n            cmd = cmd.substring(1);\n            continue;\n        }\n        def next = readNextArg(cmd);\n        cmd = next.rest;\n        args.add(next.arg);\n    }\n    return args;\n}\n\ndef cmd = ctx.process?.command_line;\nif (cmd != null && cmd != \"\") {\n  ctx.process.args = commandLineToArgv(cmd);\n  ctx.process.args_count = ctx.process.args.length;\n}\n\ndef parentCmd = ctx.process?.parent?.command_line;\nif (parentCmd != null && parentCmd != \"\") {\n  ctx.process.parent.args = commandLineToArgv(parentCmd);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"// appendBSBytes appends n '\\\\' bytes to b and returns the resulting slice.\ndef appendBSBytes(StringBuilder b, int n) {\n    for (; n > 0; n--) {\n        b.append('\\\\');\n    }\n    return b;\n}\n\n// readNextArg splits command line string cmd into next\n// argument and command line remainder.\ndef readNextArg(String cmd) {\n    def b = new StringBuilder();\n    boolean inquote;\n    int nslash;\n    for (; cmd.length() > 0; cmd = cmd.substring(1)) {\n        def c = cmd.charAt(0);\n        if (c == (char)' ' || c == (char)0x09) {\n            if (!inquote) {\n                return [\n                    \"arg\":  appendBSBytes(b, nslash).toString(),\n                    \"rest\": cmd.substring(1)\n                ];\n            }\n        } else if (c == (char)'\"') {\n            b = appendBSBytes(b, nslash/2);\n            if (nslash%2 == 0) {\n                // use \"Prior to 2008\" rule from\n                // http://daviddeley.com/autohotkey/parameters/parameters.htm\n                // section 5.2 to deal with double double quotes\n                if (inquote && cmd.length() > 1 && cmd.charAt(1) == (char)'\"') {\n                    b.append(c);\n                    cmd = cmd.substring(1);\n                }\n                inquote = !inquote;\n            } else {\n                b.append(c);\n            }\n            nslash = 0;\n            continue;\n        } else if (c == (char)'\\\\') {\n            nslash++;\n            continue;\n        }\n        b = appendBSBytes(b, nslash);\n        nslash = 0;\n        b.append(c);\n    }\n    return [\n        \"arg\":  appendBSBytes(b, nslash).toString(), \n        \"rest\": ''\n    ];\n}\n\n// commandLineToArgv splits a command line into individual argument\n// strings, following the Windows conventions documented\n// at http://daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV\n// Original implementation found at: https://github.com/golang/go/commit/39c8d2b7faed06b0e91a1ad7906231f53aab45d1\ndef commandLineToArgv(String cmd) {\n    def args = new ArrayList();\n    while (cmd.length() > 0) {\n        if (cmd.charAt(0) == (char)' ' || cmd.charAt(0) == (char)0x09) {\n            cmd = cmd.substring(1);\n            continue;\n        }\n        def next = readNextArg(cmd);\n        cmd = next.rest;\n        args.add(next.arg);\n    }\n    return args;\n}\n\ndef cmd = ctx.process?.command_line;\nif (cmd != null && cmd != \"\") {\n  ctx.process.args = commandLineToArgv(cmd);\n  ctx.process.args_count = ctx.process.args.length;\n}\n\ndef parentCmd = ctx.process?.parent?.command_line;\nif (parentCmd != null && parentCmd != \"\") {\n  ctx.process.parent.args = commandLineToArgv(parentCmd);\n  ctx.process.parent.args_count = ctx.process.parent.args.length;\n}"#
                     ),
                 )?;
@@ -630,9 +630,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def getProcessName(def path) {\n  def idx = path.lastIndexOf(\"\\\\\");\n  if (idx > -1) {\n      return path.substring(idx+1);\n  }\n  return \"\";\n}\n\ndef cmd = ctx.process?.executable;\nif (cmd != null && cmd != \"\" && ctx.process?.name == null) {\n  def name = getProcessName(cmd);\n  if (name != \"\") {\n    ctx.process.name = name;\n  }\n}\n\ndef parentCmd = ctx.process?.parent?.executable;\nif (parentCmd != null && parentCmd != \"\" && ctx.process?.parent?.name == null) {\n  def name = getProcessName(parentCmd);\n  if (name != \"\") {\n    ctx.process.parent.name = name;\n  }\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def getProcessName(def path) {\n  def idx = path.lastIndexOf(\"\\\\\");\n  if (idx > -1) {\n      return path.substring(idx+1);\n  }\n  return \"\";\n}\n\ndef cmd = ctx.process?.executable;\nif (cmd != null && cmd != \"\" && ctx.process?.name == null) {\n  def name = getProcessName(cmd);\n  if (name != \"\") {\n    ctx.process.name = name;\n  }\n}\n\ndef parentCmd = ctx.process?.parent?.executable;\nif (parentCmd != null && parentCmd != \"\" && ctx.process?.parent?.name == null) {\n  def name = getProcessName(parentCmd);\n  if (name != \"\") {\n    ctx.process.parent.name = name;\n  }\n}"#
                     ),
                 )?;
@@ -849,9 +849,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def path = ctx.file.path;\ndef idx = path.lastIndexOf(\"\\\\\");\nif (idx > -1) {\n    if (ctx.file == null) {\n        ctx.file = new HashMap();\n    }\n    ctx.file.name = path.substring(idx+1);\n    ctx.file.directory = path.substring(0, idx);\n\n    def extIdx = path.lastIndexOf(\".\");\n    if (extIdx > -1) {\n        ctx.file.extension = path.substring(extIdx+1);\n    }\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def path = ctx.file.path;\ndef idx = path.lastIndexOf(\"\\\\\");\nif (idx > -1) {\n    if (ctx.file == null) {\n        ctx.file = new HashMap();\n    }\n    ctx.file.name = path.substring(idx+1);\n    ctx.file.directory = path.substring(0, idx);\n\n    def extIdx = path.lastIndexOf(\".\");\n    if (extIdx > -1) {\n        ctx.file.extension = path.substring(extIdx+1);\n    }\n}"#
                     ),
                 )?;
@@ -924,9 +924,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (ctx.winlog?.event_data?.Signed == 'true') {\n  ctx.dll.code_signature.status = \"trusted\";\n} else if (ctx.winlog?.event_data?.SignatureStatus == \"Unavailable\") {\n  ctx.dll.code_signature.status = \"Unavailable\";\n} else if (ctx.winlog?.event_data?.Signed instanceof String && ctx.winlog.event_data.Signed.startsWith(\"failed:\")) {\n  ctx.dll.code_signature.status = ctx.winlog.event_data.Signed;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (ctx.winlog?.event_data?.Signed == 'true') {\n  ctx.dll.code_signature.status = \"trusted\";\n} else if (ctx.winlog?.event_data?.SignatureStatus == \"Unavailable\") {\n  ctx.dll.code_signature.status = \"Unavailable\";\n} else if (ctx.winlog?.event_data?.Signed instanceof String && ctx.winlog.event_data.Signed.startsWith(\"failed:\")) {\n  ctx.dll.code_signature.status = ctx.winlog.event_data.Signed;\n}"#
                     ),
                 )?;
@@ -1185,9 +1185,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def results = /;/.split(ctx.winlog.event_data.QueryResults);\ndef answers = new ArrayList();\ndef ips = new ArrayList();\ndef relatedHosts = new ArrayList();\nfor (def i = 0; i < results.length; i++) {\n  def answer = results[i];\n  if (answer == \"\") {\n    continue;\n  }\n\n  if (answer.startsWith(\"type:\")) {\n    def parts = /\\s+/.split(answer);\n    if (parts.length < 2) {\n      throw new Exception(\"unexpected QueryResult format\");\n    }\n    if (parts.length == 3) {\n      answers.add([\n        \"type\": params[parts[1]],\n        \"data\": parts[2]\n      ]);\n      relatedHosts.add(parts[2]);\n    } else {\n      answers.add([\n        \"type\": params[parts[1]]\n      ]);\n    }\n  } else {\n    ips.add(answer);\n  }\n}\n\nif (answers.length > 0) {\n  ctx.dns.answers = answers;\n}\nif (ips.length > 0) {\n  ctx.dns.resolved_ip = ips;\n}\nif (relatedHosts.length > 0) {\n  if (ctx.related == null) {\n    ctx.related = new HashMap();\n  }\n  ctx.related.hosts = relatedHosts;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def results = /;/.split(ctx.winlog.event_data.QueryResults);\ndef answers = new ArrayList();\ndef ips = new ArrayList();\ndef relatedHosts = new ArrayList();\nfor (def i = 0; i < results.length; i++) {\n  def answer = results[i];\n  if (answer == \"\") {\n    continue;\n  }\n\n  if (answer.startsWith(\"type:\")) {\n    def parts = /\\s+/.split(answer);\n    if (parts.length < 2) {\n      throw new Exception(\"unexpected QueryResult format\");\n    }\n    if (parts.length == 3) {\n      answers.add([\n        \"type\": params[parts[1]],\n        \"data\": parts[2]\n      ]);\n      relatedHosts.add(parts[2]);\n    } else {\n      answers.add([\n        \"type\": params[parts[1]]\n      ]);\n    }\n  } else {\n    ips.add(answer);\n  }\n}\n\nif (answers.length > 0) {\n  ctx.dns.answers = answers;\n}\nif (ips.length > 0) {\n  ctx.dns.resolved_ip = ips;\n}\nif (relatedHosts.length > 0) {\n  if (ctx.related == null) {\n    ctx.related = new HashMap();\n  }\n  ctx.related.hosts = relatedHosts;\n}"#
                     ),
                     cached_params!(
@@ -1288,9 +1288,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (ctx.dns.answers == null) {\n  ctx.dns.answers = new ArrayList();\n}\nfor (def i = 0; i < ctx.dns.resolved_ip.length; i++) {\n  def ip = ctx.dns.resolved_ip[i];\n  if (ip == null) {\n    ctx.dns.resolved_ip.remove(i);\n    continue;\n  }\n\n  // Synthesize record type based on IP address type.\n  def type = \"A\";\n  if (ip.indexOf(\":\") != -1) {\n    type = \"AAAA\";\n  }\n  ctx.dns.answers.add([\n    \"type\": type,\n    \"data\": ip\n  ]);\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (ctx.dns.answers == null) {\n  ctx.dns.answers = new ArrayList();\n}\nfor (def i = 0; i < ctx.dns.resolved_ip.length; i++) {\n  def ip = ctx.dns.resolved_ip[i];\n  if (ip == null) {\n    ctx.dns.resolved_ip.remove(i);\n    continue;\n  }\n\n  // Synthesize record type based on IP address type.\n  def type = \"A\";\n  if (ip.indexOf(\":\") != -1) {\n    type = \"AAAA\";\n  }\n  ctx.dns.answers.add([\n    \"type\": type,\n    \"data\": ip\n  ]);\n}"#
                     ),
                 )?;
@@ -1535,9 +1535,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: def status = params[ctx.sysmon.dns.status];\nif (status != null) {\n  ctx.sysmon.dns.status = status;\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def status = params[ctx.sysmon.dns.status];\nif (status != null) {\n  ctx.sysmon.dns.status = status;\n}"#
                     ),
                     cached_params!(
@@ -1661,9 +1661,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.registry = new HashMap();\nPattern qwordRegex = /(?i)QWORD \\(((0x[0-9A-F]{8})-(0x[0-9A-F]{8}))\\)/;\nPattern dwordRegex = /(?i)DWORD \\((0x[0-9A-F]{8})\\)/;\nPattern binDataRegex = /Binary Data/;\n\ndef path = ctx.winlog.event_data.TargetObject;\nctx.registry.path = path;\n\ndef pathTokens = Arrays.asList(/\\\\/.split(path));\ndef hive = params[pathTokens[0]];\nif (hive != null) {\n  ctx.registry.hive = hive;\n  if (pathTokens.length > 1) {\n    ctx.registry.key = pathTokens.subList(1, pathTokens.length).join(\"\\\\\");\n  }\n}\n\ndef value = pathTokens[pathTokens.length - 1];\nctx.registry.value = value;\n\ndef data = ctx.winlog?.event_data?.Details;\nif (data != null && data != \"\") {\n  def prefixLen = 2; // to remove 0x prefix\n  def dataValue = \"\";\n  def dataType = \"\";\n  def matcher = qwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedHighByte = Long.parseLong(matcher.group(2).substring(prefixLen), 16);\n    def parsedLowByte = Long.parseLong(matcher.group(3).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedHighByte) && !Double.isNaN(parsedLowByte)) {\n      dataType = \"SZ_QWORD\";\n      dataValue = Long.toString(((parsedHighByte << 8) + parsedLowByte));\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = dwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedValue = Long.parseLong(matcher.group(1).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedValue)) {\n      dataType = \"SZ_DWORD\";\n      dataValue = Long.toString(parsedValue);\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = binDataRegex.matcher(data);\n  if (matcher.matches()) {\n    // Data type could be REG_BINARY or REG_MULTI_SZ\n    ctx.registry.data = [\n      \"strings\": [data],\n      \"type\": \"REG_BINARY\"\n    ];\n    return;\n  }\n\n  // REG_SZ or REG_EXPAND_SZ\n  ctx.registry.data = [\n    \"strings\": [data],\n    \"type\": \"REG_SZ\"\n  ];\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.registry = new HashMap();\nPattern qwordRegex = /(?i)QWORD \\(((0x[0-9A-F]{8})-(0x[0-9A-F]{8}))\\)/;\nPattern dwordRegex = /(?i)DWORD \\((0x[0-9A-F]{8})\\)/;\nPattern binDataRegex = /Binary Data/;\n\ndef path = ctx.winlog.event_data.TargetObject;\nctx.registry.path = path;\n\ndef pathTokens = Arrays.asList(/\\\\/.split(path));\ndef hive = params[pathTokens[0]];\nif (hive != null) {\n  ctx.registry.hive = hive;\n  if (pathTokens.length > 1) {\n    ctx.registry.key = pathTokens.subList(1, pathTokens.length).join(\"\\\\\");\n  }\n}\n\ndef value = pathTokens[pathTokens.length - 1];\nctx.registry.value = value;\n\ndef data = ctx.winlog?.event_data?.Details;\nif (data != null && data != \"\") {\n  def prefixLen = 2; // to remove 0x prefix\n  def dataValue = \"\";\n  def dataType = \"\";\n  def matcher = qwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedHighByte = Long.parseLong(matcher.group(2).substring(prefixLen), 16);\n    def parsedLowByte = Long.parseLong(matcher.group(3).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedHighByte) && !Double.isNaN(parsedLowByte)) {\n      dataType = \"SZ_QWORD\";\n      dataValue = Long.toString(((parsedHighByte << 8) + parsedLowByte));\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = dwordRegex.matcher(data);\n  if (matcher.matches()) {\n    def parsedValue = Long.parseLong(matcher.group(1).substring(prefixLen), 16);\n    if (!Double.isNaN(parsedValue)) {\n      dataType = \"SZ_DWORD\";\n      dataValue = Long.toString(parsedValue);\n      ctx.registry.data = [\n        \"strings\": [dataValue],\n        \"type\": dataType\n      ];\n    }\n    return;\n  }\n\n  matcher = binDataRegex.matcher(data);\n  if (matcher.matches()) {\n    // Data type could be REG_BINARY or REG_MULTI_SZ\n    ctx.registry.data = [\n      \"strings\": [data],\n      \"type\": \"REG_BINARY\"\n    ];\n    return;\n  }\n\n  // REG_SZ or REG_EXPAND_SZ\n  ctx.registry.data = [\n    \"strings\": [data],\n    \"type\": \"REG_SZ\"\n  ];\n}"#
                     ),
                     cached_params!(

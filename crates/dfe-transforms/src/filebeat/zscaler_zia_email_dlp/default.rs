@@ -92,9 +92,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: if (ctx.zscaler_zia.email_dlp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message == null ? [] : ctx.error.message;\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.email_dlp.version == null ? 'null' : ctx.zscaler_zia.email_dlp.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_params(
+                    painless_exec_plan_params(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"if (ctx.zscaler_zia.email_dlp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message == null ? [] : ctx.error.message;\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.email_dlp.version == null ? 'null' : ctx.zscaler_zia.email_dlp.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
                         ),
                         cached_params!(
@@ -162,9 +162,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  if (s.length() == 0) return;\n  List out = new ArrayList();\n  int from = 0;\n  int n = s.length();\n  for (int i = 0; i < n; i++) {\n    if (s.charAt(i) == (char)'|') {\n      out.add(s.substring(from, i));\n      from = i + 1;\n    }\n  }\n  out.add(s.substring(from, n));\n  m.put(key, out);\n}\ndef ed = ctx.zscaler_zia?.email_dlp;\nif (ed == null) return;\nsplitStr(ed, 'severity');\nsplitStr(ed, 'actions');\nif (ed.rule instanceof Map) {\n  splitStr(ed.rule, 'labels');\n}\nif (ed.dlp instanceof Map) {\n  splitStr(ed.dlp, 'dict_names');\n  splitStr(ed.dlp, 'dict_counts');\n  splitStr(ed.dlp, 'engine_names');\n}\nif (ed.email instanceof Map) {\n  splitStr(ed.email, 'triggered_recipients');\n  splitStr(ed.email, 'other_recipients');\n  splitStr(ed.email, 'triggered_recipient_domains');\n  splitStr(ed.email, 'other_recipient_domains');\n  if (ed.email.attachments instanceof Map) {\n    splitStr(ed.email.attachments, 'file_names');\n    splitStr(ed.email.attachments, 'md5s');\n    splitStr(ed.email.attachments, 'sizes');\n    splitStr(ed.email.attachments, 'file_types');\n    splitStr(ed.email.attachments, 'doc_types');\n    splitStr(ed.email.attachments, 'doc_subtypes');\n  }\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  if (s.length() == 0) return;\n  List out = new ArrayList();\n  int from = 0;\n  int n = s.length();\n  for (int i = 0; i < n; i++) {\n    if (s.charAt(i) == (char)'|') {\n      out.add(s.substring(from, i));\n      from = i + 1;\n    }\n  }\n  out.add(s.substring(from, n));\n  m.put(key, out);\n}\ndef ed = ctx.zscaler_zia?.email_dlp;\nif (ed == null) return;\nsplitStr(ed, 'severity');\nsplitStr(ed, 'actions');\nif (ed.rule instanceof Map) {\n  splitStr(ed.rule, 'labels');\n}\nif (ed.dlp instanceof Map) {\n  splitStr(ed.dlp, 'dict_names');\n  splitStr(ed.dlp, 'dict_counts');\n  splitStr(ed.dlp, 'engine_names');\n}\nif (ed.email instanceof Map) {\n  splitStr(ed.email, 'triggered_recipients');\n  splitStr(ed.email, 'other_recipients');\n  splitStr(ed.email, 'triggered_recipient_domains');\n  splitStr(ed.email, 'other_recipient_domains');\n  if (ed.email.attachments instanceof Map) {\n    splitStr(ed.email.attachments, 'file_names');\n    splitStr(ed.email.attachments, 'md5s');\n    splitStr(ed.email.attachments, 'sizes');\n    splitStr(ed.email.attachments, 'file_types');\n    splitStr(ed.email.attachments, 'doc_types');\n    splitStr(ed.email.attachments, 'doc_subtypes');\n  }\n}"#
                     ),
                 )?;
@@ -315,9 +315,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def dlp = ctx.zscaler_zia.email_dlp.dlp;\ndef names = dlp.dict_names instanceof List ? dlp.dict_names : null;\ndef counts = dlp.dict_counts instanceof List ? dlp.dict_counts : null;\nif (names == null) return;\ndef out = new ArrayList();\nfor (int i = 0; i < names.size(); i++) {\n  def name = names.get(i);\n  if (!(name instanceof String) || name == '' || name == 'None') continue;\n  def item = new HashMap();\n  item.put('name', name);\n  if (counts != null && i < counts.size()) item.put('count', counts.get(i));\n  out.add(item);\n}\nif (out.size() > 0) ctx.zscaler_zia.email_dlp.dlp.dictionaries = out;\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def dlp = ctx.zscaler_zia.email_dlp.dlp;\ndef names = dlp.dict_names instanceof List ? dlp.dict_names : null;\ndef counts = dlp.dict_counts instanceof List ? dlp.dict_counts : null;\nif (names == null) return;\ndef out = new ArrayList();\nfor (int i = 0; i < names.size(); i++) {\n  def name = names.get(i);\n  if (!(name instanceof String) || name == '' || name == 'None') continue;\n  def item = new HashMap();\n  item.put('name', name);\n  if (counts != null && i < counts.size()) item.put('count', counts.get(i));\n  out.add(item);\n}\nif (out.size() > 0) ctx.zscaler_zia.email_dlp.dlp.dictionaries = out;\n"#
                         ),
                     )?;
@@ -795,9 +795,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.event = ctx.event ?: [:];\ndef raw = ctx.zscaler_zia.email_dlp.severity;\nList vals;\nif (raw instanceof List) {\n  vals = (List) raw;\n} else if (raw instanceof String) {\n  vals = new ArrayList();\n  vals.add(raw);\n} else {\n  return;\n}\nint maxSev = 0;\nfor (def v : vals) {\n  if (!(v instanceof String)) continue;\n  String t = ((String) v).toLowerCase();\n  int cur = 0;\n  if (t.contains('high')) {\n    cur = 73;\n  } else if (t.contains('medium')) {\n    cur = 47;\n  } else if (t.contains('low') || t.contains('information')) {\n    cur = 21;\n  }\n  if (cur > maxSev) maxSev = cur;\n}\nif (maxSev > 0) ctx.event.severity = maxSev;\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.event = ctx.event ?: [:];\ndef raw = ctx.zscaler_zia.email_dlp.severity;\nList vals;\nif (raw instanceof List) {\n  vals = (List) raw;\n} else if (raw instanceof String) {\n  vals = new ArrayList();\n  vals.add(raw);\n} else {\n  return;\n}\nint maxSev = 0;\nfor (def v : vals) {\n  if (!(v instanceof String)) continue;\n  String t = ((String) v).toLowerCase();\n  int cur = 0;\n  if (t.contains('high')) {\n    cur = 73;\n  } else if (t.contains('medium')) {\n    cur = 47;\n  } else if (t.contains('low') || t.contains('information')) {\n    cur = 21;\n  }\n  if (cur > maxSev) maxSev = cur;\n}\nif (maxSev > 0) ctx.event.severity = maxSev;\n"#
                         ),
                     )?;
@@ -959,9 +959,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: def att = ctx.zscaler_zia.email_dlp.email.attachments;\ndef names = att.file_names instanceof List ? att.file_names : null;\ndef sizes = att.sizes instanceof List ? att.sizes : null;\ndef md5s = att.md5s instanceof List ? att.md5s : null;\ndef types = att.file_types instanceof List ? att.file_types : null;\nint n = 0;\nif (names != null && names.size() > n) n = names.size();\nif (sizes != null && sizes.size() > n) n = sizes.size();\nif (md5s != null && md5s.size() > n) n = md5s.size();\nif (types != null && types.size() > n) n = types.size();\nif (n == 0) return;\nif (ctx.email == null) ctx.email = [:];\nif (ctx.email.attachments == null) ctx.email.attachments = new ArrayList();\nfor (int i = 0; i < n; i++) {\n  def file = new HashMap();\n  if (names != null && i < names.size()) file.put('name', names.get(i));\n  if (sizes != null && i < sizes.size()) file.put('size', sizes.get(i));\n  if (md5s != null && i < md5s.size()) {\n    def hash = new HashMap();\n    hash.put('md5', md5s.get(i));\n    file.put('hash', hash);\n  }\n  if (types != null && i < types.size()) file.put('extension', types.get(i));\n  def item = new HashMap();\n  item.put('file', file);\n  ctx.email.attachments.add(item);\n}\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def att = ctx.zscaler_zia.email_dlp.email.attachments;\ndef names = att.file_names instanceof List ? att.file_names : null;\ndef sizes = att.sizes instanceof List ? att.sizes : null;\ndef md5s = att.md5s instanceof List ? att.md5s : null;\ndef types = att.file_types instanceof List ? att.file_types : null;\nint n = 0;\nif (names != null && names.size() > n) n = names.size();\nif (sizes != null && sizes.size() > n) n = sizes.size();\nif (md5s != null && md5s.size() > n) n = md5s.size();\nif (types != null && types.size() > n) n = types.size();\nif (n == 0) return;\nif (ctx.email == null) ctx.email = [:];\nif (ctx.email.attachments == null) ctx.email.attachments = new ArrayList();\nfor (int i = 0; i < n; i++) {\n  def file = new HashMap();\n  if (names != null && i < names.size()) file.put('name', names.get(i));\n  if (sizes != null && i < sizes.size()) file.put('size', sizes.get(i));\n  if (md5s != null && i < md5s.size()) {\n    def hash = new HashMap();\n    hash.put('md5', md5s.get(i));\n    file.put('hash', hash);\n  }\n  if (types != null && i < types.size()) file.put('extension', types.get(i));\n  def item = new HashMap();\n  item.put('file', file);\n  ctx.email.attachments.add(item);\n}\n"#
                         ),
                     )?;
@@ -1353,9 +1353,9 @@ impl Transform for Default {
             // Painless script
             // Source: boolean dropScalar(Object v) {\n  return v == null || v == '' || v == '0' || v == 'N/A'\n    || v == 'None' || v == 'Unknown' || v == 'Unknown Host' || v == 'Unknown URL';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"boolean dropScalar(Object v) {\n  return v == null || v == '' || v == '0' || v == 'N/A'\n    || v == 'None' || v == 'Unknown' || v == 'Unknown Host' || v == 'Unknown URL';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);"#
                 ),
             )?;

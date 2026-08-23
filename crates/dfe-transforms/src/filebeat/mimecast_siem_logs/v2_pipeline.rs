@@ -39,9 +39,9 @@ impl Transform for V2Pipeline {
                 // Painless script
                 // Source: ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n"#
                     ),
                     cached_params!(
@@ -800,9 +800,9 @@ impl Transform for V2Pipeline {
                 // Painless script
                 // Source: def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n"#
                     ),
                 )?;

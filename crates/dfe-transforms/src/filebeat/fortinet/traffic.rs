@@ -470,9 +470,9 @@ impl Transform for Traffic {
                 // Painless script
                 // Source: ctx.fortinet.firewall.deltabytes = ctx.fortinet.firewall.rcvddelta + ctx.fortinet.firewall.sentdelta
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.fortinet.firewall.deltabytes = ctx.fortinet.firewall.rcvddelta + ctx.fortinet.firewall.sentdelta"#
                     ),
                 )?;

@@ -28,6 +28,7 @@ pub mod grok_cache;
 pub mod painless_common;
 pub mod painless_helpers;
 pub mod painless_params;
+pub mod painless_plan;
 pub mod painless_stats;
 pub mod prelude;
 pub mod syslog_pri;

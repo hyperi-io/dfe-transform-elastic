@@ -1317,10 +1317,11 @@ fn resolve_branches(event: &Event, script: &str) -> String {
 }
 
 /// One arm of an equality ladder: the literal tested, and what it assigns.
-struct LadderArm<'a> {
-    literal: &'a str,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct LadderArm {
+    literal: String,
     target: String,
-    value: &'a str,
+    value: String,
 }
 
 /// An `if (x == 'a') { ctx.t = 'A' } else if (x == 'b') { ... }` ladder.
@@ -1329,13 +1330,18 @@ struct LadderArm<'a> {
 /// or compared inline -- and every arm assigns a string literal to a ctx
 /// path. Fortinet's 11-arm IANA-number-to-transport table is the shape;
 /// writing the table out by hand is how a mapping silently goes stale.
-struct Ladder<'a> {
+///
+/// Owned rather than borrowed from the script: the parse runs once per call
+/// site via [`crate::painless_plan::PainlessPlan`], so the arms are allocated
+/// once per process, not once per event.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Ladder {
     subject: String,
-    arms: Vec<LadderArm<'a>>,
+    arms: Vec<LadderArm>,
 }
 
 /// Parse an equality ladder, or `None` if the script is a different shape.
-fn parse_ladder(script: &str) -> Option<Ladder<'_>> {
+fn parse_ladder(script: &str) -> Option<Ladder> {
     use crate::painless_params::clean_path;
 
     // The subject is whatever the FIRST `if (... == ...)` compares against.
@@ -1371,14 +1377,10 @@ fn parse_ladder(script: &str) -> Option<Ladder<'_>> {
         else {
             continue;
         };
-        // Borrow the literals back out of the script rather than the owned
-        // copies quoted_first returned, so an arm costs no allocation.
-        let lit_at = rhs.find(&literal)?;
-        let val_at = body.find(&value)?;
         arms.push(LadderArm {
-            literal: &rhs[lit_at..lit_at + literal.len()],
+            literal,
             target: clean_path(target.trim()),
-            value: &body[val_at..val_at + value.len()],
+            value,
         });
     }
 
@@ -2104,7 +2106,7 @@ fn painless_literal(text: &str) -> Option<Value> {
 }
 
 /// Run an equality ladder: look the subject up, assign the matching arm.
-fn try_ladder(event: &mut Event, ladder: &Ladder<'_>) -> bool {
+fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
     let subject = event
         .get_str(&ladder.subject)
         .map(String::from)
@@ -3032,8 +3034,96 @@ fn read_u16(event: &Event, field: &str) -> Option<u16> {
 ///
 /// Returns true if the script was handled, false if it should fall through
 /// to the generic `painless_exec` stub.
+///
+/// The dispatch is two halves. [`known_shapes`] reads the script TEXT and
+/// names the matchers it triggers -- a decision that never changes for a given
+/// script, which is why [`crate::painless_plan::PainlessPlan`] makes it once
+/// per call site. [`run_known_shape`] then runs one matcher against one event.
+/// This entry point does both per call, for callers without a plan.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = normalise(script);
+    known_shapes(&normalised)
+        .iter()
+        .any(|shape| run_known_shape(event, &normalised, shape))
+}
+
+/// A matcher branch of the text-only dispatch, with whatever the trigger's own
+/// parse already recovered from the script.
+///
+/// The variants up to `KeysToSnakeCase` recognise what a script DOES and work
+/// for any source that writes the shape; the rest are keyed on a vendor's
+/// FIELD NAMES and recognise whose script it is, ending in the two catch-alls.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum KnownShape {
+    DropEmpty(DropPolicy),
+    Basename,
+    ClassifyMembers,
+    FlattenedDuplicates,
+    CollectEntities,
+    DnsRdataAnswers,
+    RelatedFromDnsAnswers,
+    AnswersFromResolvedIp,
+    CamelToSnake {
+        target: String,
+        source: String,
+    },
+    SplitTrimCollect,
+    SumDirections(&'static str),
+    SumOfFields,
+    DurationToNanos,
+    FlowDuration,
+    ParallelDispatch,
+    ConcatMessage,
+    SwapSubtrees,
+    CollectingLadder,
+    CaseInsensitiveLadder,
+    EqualityLadder(Ladder),
+    SentinelRemovalLiteral,
+    RowLookupWithFallback,
+    SchemelessUrl,
+    VersionSplit,
+    SyslogPriority,
+    AppendUnique {
+        from: &'static str,
+        into: &'static str,
+    },
+    SplitUnquotedKv,
+    ArrayToIndexedObject,
+    KeyValuePairs,
+    JoinOptional,
+    AppendEach,
+    LiteralValueMap,
+    KeysToSnakeCase(Option<String>),
+    CommandLine {
+        parent: bool,
+    },
+    ProcessStartTime,
+    EmailSplit,
+    RiskBehaviors,
+    AzureCategoryEventType,
+    AzureEventCategory,
+    ReplaceDotsInKeys,
+    OktaTargetRename,
+    CollectMapValues,
+    GuardedReplace,
+    ScaleByLiteral,
+    GuardedCopy,
+}
+
+/// The matcher branches this script's text triggers, in dispatch order.
+///
+/// A branch whose matcher is guarded by its own parse -- one the old inline
+/// dispatch spelled `trigger && try_x(event, ...)` -- FALLS THROUGH when the
+/// matcher declines, so every trigger after it that also holds is included,
+/// up to and including the first `return try_x(...)` branch, after which
+/// nothing could ever run. The runner walks the list until a matcher returns
+/// true, which reproduces the old chain exactly minus the per-event scans.
+///
+/// The trigger order is load-bearing; each comment that says why a branch sits
+/// where it does travelled here with it.
+#[allow(clippy::too_many_lines)] // A transliteration of the dispatch ladder; splitting it would hide the order.
+pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
+    let mut shapes = Vec::new();
 
     // Pattern: drop null and empty values recursively. Matched on the SHAPE,
     // not the helper's name -- panw spells it `dropEmptyFields`, and keying
@@ -3044,50 +3134,53 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && normalised.contains("instanceof List")
         && normalised.contains("(ctx)")
     {
-        drop_empty_recursive(event, &DropPolicy::read(&normalised));
-        return true;
+        shapes.push(KnownShape::DropEmpty(DropPolicy::read(normalised)));
+        return shapes;
     }
 
     // Pattern: the basename of one or more path fields -- everything after
     // the last separator. Guarded by the parse rather than by the trigger,
     // so a script that only looks similar falls through.
-    if normalised.contains("lastIndexOf(")
-        && normalised.contains(".substring(")
-        && try_basename_after_separator(event, &normalised)
-    {
-        return true;
+    if normalised.contains("lastIndexOf(") && normalised.contains(".substring(") {
+        shapes.push(KnownShape::Basename);
     }
 
     // Pattern: classify each member of a list by string tests on the member.
     if normalised.contains("addNestedValue(") && normalised.contains("instanceof List") {
-        return try_classify_members(event, &normalised);
+        shapes.push(KnownShape::ClassifyMembers);
+        return shapes;
     }
 
     // Pattern: keep a rendered copy of a nested object beside the object.
     if normalised.contains("keep_flattened_duplicates") {
-        return try_flattened_duplicates(event, &normalised);
+        shapes.push(KnownShape::FlattenedDuplicates);
+        return shapes;
     }
 
     // Pattern: collect every non-empty value the script names into one sorted,
     // unique list.
     if normalised.contains("void addValue(") && normalised.contains("new TreeSet(") {
-        return try_collect_entities(event, &normalised);
+        shapes.push(KnownShape::CollectEntities);
+        return shapes;
     }
 
     // Pattern: DNS RData as tab-separated columns, one answer per line.
     if normalised.contains("answer_parts[") && normalised.contains("dns_answers.add(") {
-        return try_dns_rdata_answers(event, &normalised);
+        shapes.push(KnownShape::DnsRdataAnswers);
+        return shapes;
     }
 
     // Pattern: the ECS lists an answer set feeds, keyed on the record type.
     if normalised.contains("for (answer in ctx.dns.answers)") {
-        return try_related_from_dns_answers(event);
+        shapes.push(KnownShape::RelatedFromDnsAnswers);
+        return shapes;
     }
 
     // Pattern: one synthesised DNS answer per resolved address, typed by
     // whether the address holds a colon.
     if normalised.contains("ctx.dns.answers.add(") && normalised.contains("ip.indexOf(\":\")") {
-        return try_answers_from_resolved_ip(event);
+        shapes.push(KnownShape::AnswersFromResolvedIp);
+        return shapes;
     }
 
     // Pattern: the integrations' own recursive camelCase-to-snake_case pair,
@@ -3096,30 +3189,29 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     // then does nothing with.
     if normalised.contains("Character.isUpperCase(")
         && normalised.contains("instanceof Map")
-        && let Some((target, source)) = snake_case_apply(&normalised)
+        && let Some((target, source)) = snake_case_apply(normalised)
     {
-        if let Some(value) = event.get(&source) {
-            let converted = camel_map_to_snake(value);
-            let _ = event.set(&target, converted);
-        }
-        return true;
+        shapes.push(KnownShape::CamelToSnake { target, source });
+        return shapes;
     }
 
     // Pattern: split, trim and collect several optional fields into one list.
     // Checked early: the script also spells `.add(` and `.splitOnToken(`, which
     // a later matcher reads as a different shape entirely.
     if normalised.contains("new HashSet(") && normalised.contains(".asList()") {
-        return try_split_trim_collect(event, &normalised);
+        shapes.push(KnownShape::SplitTrimCollect);
+        return shapes;
     }
 
     // Pattern: network.bytes / network.packets as the sum of both directions.
-    if let Some(total) = sum_of_directions(&normalised) {
-        return try_sum_directions(event, total);
+    if let Some(total) = sum_of_directions(normalised) {
+        shapes.push(KnownShape::SumDirections(total));
+        return shapes;
     }
 
     // Pattern: one ctx field as the sum of two others.
-    if normalised.contains(" + ctx.") && try_sum_of_fields(event, &normalised) {
-        return true;
+    if normalised.contains(" + ctx.") {
+        shapes.push(KnownShape::SumOfFields);
     }
 
     // Pattern: seconds to nanoseconds for event.duration.
@@ -3127,107 +3219,115 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
         && normalised.contains("Long.parseLong")
         && normalised.contains("1000000000")
     {
-        return try_duration_to_nanos(event, &normalised);
+        shapes.push(KnownShape::DurationToNanos);
+        return shapes;
     }
 
     // Pattern: an `hh:mm:ss` flow duration becomes a span ending at @timestamp.
     if normalised.contains("minusNanos(") && normalised.contains(".toCharArray()") {
-        return try_flow_duration(event, &normalised);
+        shapes.push(KnownShape::FlowDuration);
+        return shapes;
     }
 
     // Pattern: two parallel arrays, one naming what the other holds.
     if normalised.contains("(ctx, ctx.") && normalised.contains("[i])") {
-        return try_parallel_dispatch(event, &normalised);
+        shapes.push(KnownShape::ParallelDispatch);
+        return shapes;
     }
 
     // Pattern: build a string out of ctx fields and literals.
     if normalised.contains("?: ''")
         && normalised.contains(".isEmpty()")
         && normalised.contains("\" + ")
-        && try_concat_message(event, &normalised)
     {
-        return true;
+        shapes.push(KnownShape::ConcatMessage);
     }
 
     // Pattern: swap two ctx subtrees, keeping named keys on one side.
-    if normalised.contains("def tmp = ctx.") && try_swap_subtrees(event, &normalised) {
-        return true;
+    if normalised.contains("def tmp = ctx.") {
+        shapes.push(KnownShape::SwapSubtrees);
     }
 
     // Pattern: a ladder collecting into a list, written as scalar or array.
     if normalised.contains(".add(")
         && normalised.contains(".size()")
         && normalised.contains("else if (")
-        && try_collecting_ladder(event, &normalised)
     {
-        return true;
+        shapes.push(KnownShape::CollectingLadder);
     }
 
     // Pattern: a case-insensitive ladder mapping one field onto a literal.
     // Tried before the `==` ladder, which cannot read either the multi-literal
     // arms or the numeric right-hand sides.
     if normalised.contains(".equalsIgnoreCase(") && normalised.contains("else if (") {
-        return try_case_insensitive_ladder(event, &normalised);
+        shapes.push(KnownShape::CaseInsensitiveLadder);
+        return shapes;
     }
 
     // Pattern: an equality ladder mapping one field onto string literals.
     if normalised.contains("else if (")
-        && let Some(ladder) = parse_ladder(&normalised)
+        && let Some(ladder) = parse_ladder(normalised)
     {
-        return try_ladder(event, &ladder);
+        shapes.push(KnownShape::EqualityLadder(ladder));
+        return shapes;
     }
 
     // Pattern: strip sentinel values and junk keys out of a parsed map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
-        return try_sentinel_removal_literal(event, &normalised);
+        shapes.push(KnownShape::SentinelRemovalLiteral);
+        return shapes;
     }
 
     // Pattern: look a value up in a ctx-held table of rows, else fall back.
-    if normalised.contains("for (def ")
-        && normalised.contains(" : ctx.")
-        && try_row_lookup_with_fallback(event, &normalised)
-    {
-        return true;
+    if normalised.contains("for (def ") && normalised.contains(" : ctx.") {
+        shapes.push(KnownShape::RowLookupWithFallback);
     }
 
     // Pattern: split a schemeless URL into its ECS components.
     if normalised.contains("domainPort") && normalised.contains("url.original") {
-        return try_schemeless_url(event);
+        shapes.push(KnownShape::SchemelessUrl);
+        return shapes;
     }
 
     // Pattern: split a version string at its first digit.
-    if normalised.contains("matcher.start()") && try_version_split(event, &normalised) {
-        return true;
+    if normalised.contains("matcher.start()") {
+        shapes.push(KnownShape::VersionSplit);
     }
 
     // Pattern: decompose a syslog PRI into ECS facility and severity.
     if normalised.contains("log.syslog") && normalised.contains("priority") {
-        return try_syslog_priority(event, &normalised);
+        shapes.push(KnownShape::SyslogPriority);
+        return shapes;
     }
 
     // Pattern: append one array into another, skipping duplicates.
-    if let Some((from, into)) = append_unique_fields(&normalised) {
-        return try_append_unique(event, from, into);
+    if let Some((from, into)) = append_unique_fields(normalised) {
+        shapes.push(KnownShape::AppendUnique { from, into });
+        return shapes;
     }
 
     // Pattern: quote-aware KV split of a whole vendor payload.
     if normalised.contains("splitUnquoted(") {
-        return try_split_unquoted_kv(event, &normalised);
+        shapes.push(KnownShape::SplitUnquotedKv);
+        return shapes;
     }
 
     // Pattern: re-key an array of maps into an object indexed by position.
     if normalised.contains("new HashMap()") && normalised.contains("String.valueOf(") {
-        return try_array_to_indexed_object(event, &normalised);
+        shapes.push(KnownShape::ArrayToIndexedObject);
+        return shapes;
     }
 
     // Pattern: collapse an array of `{key, value}` maps into one object.
     if normalised.contains("[item.key] = item.value") {
-        return try_key_value_pairs(event, &normalised);
+        shapes.push(KnownShape::KeyValuePairs);
+        return shapes;
     }
 
     // Pattern: join two optional fields, each alone if the other is absent.
     if normalised.matches("String ").count() == 2 && normalised.contains("} else if (") {
-        return try_join_optional(event, &normalised);
+        shapes.push(KnownShape::JoinOptional);
+        return shapes;
     }
 
     // Pattern: flatten a field into an array, either by splitting a delimited
@@ -3235,71 +3335,53 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     if normalised.contains(".add(")
         && (normalised.contains(".splitOnToken(") || normalised.contains("instanceof Map"))
     {
-        return try_append_each(event, &normalised);
+        shapes.push(KnownShape::AppendEach);
+        return shapes;
     }
 
     // Pattern: a value map written out as an if/else-if chain over one field.
     // Guarded by the parse, so a script that merely branches falls through.
-    if normalised.contains("else if (") && try_literal_value_map(event, &normalised) {
-        return true;
+    if normalised.contains("else if (") {
+        shapes.push(KnownShape::LiteralValueMap);
     }
 
     // Pattern: keys_to_snake_case
     if normalised.contains("keys_to_snake_case") || normalised.contains("keysToSnakeCase") {
-        if let Some(field) = extract_target_field(&normalised) {
-            if let Some(val) = event.get(&field).cloned() {
-                let mut val = val;
-                keys_to_snake_case(&mut val);
-                let _ = event.set(&field, val);
-            }
-        } else {
-            // Apply to entire event
-            let inner = event.as_value_mut();
-            keys_to_snake_case(inner);
-        }
-        return true;
+        shapes.push(KnownShape::KeysToSnakeCase(extract_target_field(
+            normalised,
+        )));
+        return shapes;
     }
 
-    try_named_painless(event, &normalised)
-}
+    // From here down: the matchers keyed on a vendor's FIELD NAMES rather than
+    // on a Painless construct, plus the two catch-alls.
 
-/// The matchers keyed on a vendor's FIELD NAMES rather than on a Painless
-/// construct, plus the two catch-alls.
-///
-/// Split out of [`try_known_painless`] because they are a different kind of
-/// match: a shape matcher recognises what the script DOES and works for any
-/// source that writes it, where these recognise whose script it is.
-fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
     // Pattern: CommandLine → process fields
     if normalised.contains("CommandLine") && normalised.contains("process") {
-        if normalised.contains("ParentCommandLine") {
-            let _ = extract_process_fields(
-                event,
-                "crowdstrike.event.ParentCommandLine",
-                "process.parent",
-            );
-        } else {
-            let _ = extract_process_fields(event, "crowdstrike.event.CommandLine", "process");
-        }
-        return true;
+        shapes.push(KnownShape::CommandLine {
+            parent: normalised.contains("ParentCommandLine"),
+        });
+        return shapes;
     }
 
     // Pattern: ProcessStartTime epoch → @timestamp or process.start
     if normalised.contains("ProcessStartTime") || normalised.contains("processStartTime") {
-        let _ = epoch_to_timestamp(event, "crowdstrike.event.ProcessStartTime", "process.start");
-        return true;
+        shapes.push(KnownShape::ProcessStartTime);
+        return shapes;
     }
 
     // Pattern: email split — splitOnToken("@") → user.email, user.domain, user.name
     // Used in Okta, O365, Azure, and many other sources
     if normalised.contains("splitOnToken") && normalised.contains('@') {
-        return try_email_split(event, normalised);
+        shapes.push(KnownShape::EmailSplit);
+        return shapes;
     }
 
     // Pattern: okta risk_behaviors extraction from flattened.behaviors
     // Extracts keys with value "POSITIVE" into an array
     if normalised.contains("POSITIVE") && normalised.contains("risk_behaviors") {
-        return try_risk_behaviors(event);
+        shapes.push(KnownShape::RiskBehaviors);
+        return shapes;
     }
 
     // Pattern: Azure category → event type/category mapping via params lookup
@@ -3307,18 +3389,21 @@ fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
         && normalised.contains("category")
         && normalised.contains("params.get")
     {
-        return try_azure_category_to_event_type(event);
+        shapes.push(KnownShape::AzureCategoryEventType);
+        return shapes;
     }
 
     // Pattern: Azure event_category assignment, in whichever module's subtree.
     if normalised.contains("event_category") && normalised.contains("eventCategory") {
-        return try_azure_event_category(event, normalised);
+        shapes.push(KnownShape::AzureEventCategory);
+        return shapes;
     }
 
     // Pattern: replace dots in map keys (Azure identity claims)
     // Matches: ctx.temp_claims[key.replace('.', '_')] = ...
     if normalised.contains("replace('.'") && normalised.contains("keySet()") {
-        return try_replace_dots_in_keys(event, normalised);
+        shapes.push(KnownShape::ReplaceDotsInKeys);
+        return shapes;
     }
 
     // Pattern: okta.target array key renames + user/group extraction
@@ -3328,17 +3413,20 @@ fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
         && normalised.contains("alternate_id")
         && normalised.contains("okta")
     {
-        return try_okta_target_rename(event);
+        shapes.push(KnownShape::OktaTargetRename);
+        return shapes;
     }
 
     // Pattern: collect one nested key out of every entry of a map.
     if normalised.contains(".keySet()") && normalised.contains(".add(") {
-        return try_collect_map_values(event, normalised);
+        shapes.push(KnownShape::CollectMapValues);
+        return shapes;
     }
 
     // Pattern: rewrite one substring of a field in place.
     if normalised.contains(".replace(") {
-        return try_guarded_replace(event, normalised);
+        shapes.push(KnownShape::GuardedReplace);
+        return shapes;
     }
 
     // The two catch-alls below are shapes a longer script also CONTAINS, so
@@ -3346,12 +3434,14 @@ fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
 
     // Pattern: scale a number in place by a literal.
     if normalised.contains(" * ") && !normalised.contains("params") {
-        return try_scale_by_literal(event, normalised);
+        shapes.push(KnownShape::ScaleByLiteral);
+        return shapes;
     }
 
     // Pattern: copy one field to another when the source is set.
     if normalised.contains("!= null") && !normalised.contains("for (") {
-        return try_guarded_copy(event, normalised);
+        shapes.push(KnownShape::GuardedCopy);
+        return shapes;
     }
 
     // Running the statements a script writes that CAN be read, as a last
@@ -3359,7 +3449,99 @@ fn try_named_painless(event: &mut Event, normalised: &str) -> bool {
     // fields. A partial read writes a value where Elastic's whole script
     // would have written a different one, and the corpus says that is worse
     // than writing nothing.
-    false
+    shapes
+}
+
+/// Run one matcher branch against one event.
+///
+/// Returns whether the script counts as HANDLED, with each branch's semantics
+/// unchanged from the old inline dispatch: a guarded branch may decline, and
+/// the caller then tries the next shape in the list.
+pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &KnownShape) -> bool {
+    match shape {
+        KnownShape::DropEmpty(policy) => {
+            drop_empty_recursive(event, policy);
+            true
+        }
+        KnownShape::Basename => try_basename_after_separator(event, normalised),
+        KnownShape::ClassifyMembers => try_classify_members(event, normalised),
+        KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
+        KnownShape::CollectEntities => try_collect_entities(event, normalised),
+        KnownShape::DnsRdataAnswers => try_dns_rdata_answers(event, normalised),
+        KnownShape::RelatedFromDnsAnswers => try_related_from_dns_answers(event),
+        KnownShape::AnswersFromResolvedIp => try_answers_from_resolved_ip(event),
+        KnownShape::CamelToSnake { target, source } => {
+            if let Some(value) = event.get(source) {
+                let converted = camel_map_to_snake(value);
+                let _ = event.set(target, converted);
+            }
+            true
+        }
+        KnownShape::SplitTrimCollect => try_split_trim_collect(event, normalised),
+        KnownShape::SumDirections(total) => try_sum_directions(event, total),
+        KnownShape::SumOfFields => try_sum_of_fields(event, normalised),
+        KnownShape::DurationToNanos => try_duration_to_nanos(event, normalised),
+        KnownShape::FlowDuration => try_flow_duration(event, normalised),
+        KnownShape::ParallelDispatch => try_parallel_dispatch(event, normalised),
+        KnownShape::ConcatMessage => try_concat_message(event, normalised),
+        KnownShape::SwapSubtrees => try_swap_subtrees(event, normalised),
+        KnownShape::CollectingLadder => try_collecting_ladder(event, normalised),
+        KnownShape::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
+        KnownShape::EqualityLadder(ladder) => try_ladder(event, ladder),
+        KnownShape::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
+        KnownShape::RowLookupWithFallback => try_row_lookup_with_fallback(event, normalised),
+        KnownShape::SchemelessUrl => try_schemeless_url(event),
+        KnownShape::VersionSplit => try_version_split(event, normalised),
+        KnownShape::SyslogPriority => try_syslog_priority(event, normalised),
+        KnownShape::AppendUnique { from, into } => try_append_unique(event, from, into),
+        KnownShape::SplitUnquotedKv => try_split_unquoted_kv(event, normalised),
+        KnownShape::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
+        KnownShape::KeyValuePairs => try_key_value_pairs(event, normalised),
+        KnownShape::JoinOptional => try_join_optional(event, normalised),
+        KnownShape::AppendEach => try_append_each(event, normalised),
+        KnownShape::LiteralValueMap => try_literal_value_map(event, normalised),
+        KnownShape::KeysToSnakeCase(field) => {
+            if let Some(field) = field {
+                if let Some(val) = event.get(field).cloned() {
+                    let mut val = val;
+                    keys_to_snake_case(&mut val);
+                    let _ = event.set(field, val);
+                }
+            } else {
+                // Apply to entire event
+                let inner = event.as_value_mut();
+                keys_to_snake_case(inner);
+            }
+            true
+        }
+        KnownShape::CommandLine { parent } => {
+            if *parent {
+                let _ = extract_process_fields(
+                    event,
+                    "crowdstrike.event.ParentCommandLine",
+                    "process.parent",
+                );
+            } else {
+                let _ = extract_process_fields(event, "crowdstrike.event.CommandLine", "process");
+            }
+            true
+        }
+        KnownShape::ProcessStartTime => {
+            let _ =
+                epoch_to_timestamp(event, "crowdstrike.event.ProcessStartTime", "process.start");
+            true
+        }
+        KnownShape::EmailSplit => try_email_split(event, normalised),
+        KnownShape::RiskBehaviors => try_risk_behaviors(event),
+        KnownShape::AzureCategoryEventType => try_azure_category_to_event_type(event),
+        KnownShape::AzureEventCategory => try_azure_event_category(event, normalised),
+        KnownShape::ReplaceDotsInKeys => try_replace_dots_in_keys(event, normalised),
+        KnownShape::OktaTargetRename => try_okta_target_rename(event),
+        KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
+        KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
+        KnownShape::ScaleByLiteral => try_scale_by_literal(event, normalised),
+        KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
+    }
 }
 
 /// Handle the email split Painless pattern.

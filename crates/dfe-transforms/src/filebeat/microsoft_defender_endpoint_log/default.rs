@@ -76,9 +76,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: ctx.process = ctx.process ?: [:];\nctx.process.name = ctx.process.name ?: [];\n// Normalize process.name to a list\ndef nameList = [];\nif (ctx.process.name != null) {\n  if (ctx.process.name instanceof String) {\n    nameList.add(ctx.process.name);\n  } else if (ctx.process.name instanceof List) {\n    nameList.addAll(ctx.process.name);\n  }\n}\n\n// Deduplication using HashSet\ndef currentNames = new HashSet();\ncurrentNames.addAll(nameList);\n// Handle process.command_line (string or list)\nif (ctx.process.command_line != null) {\n  // Convert string to list for unified handling\n  def cmdList = [];\n  if (ctx.process.command_line instanceof String) {\n    cmdList.add(ctx.process.command_line);\n  } else if (ctx.process.command_line instanceof List) {\n    cmdList.addAll(ctx.process.command_line);\n  }\n  for (cmd in cmdList) {\n    if (cmd != null && cmd.length() > 0) {\n      // Extract the first token\n      def parts = cmd.trim().splitOnToken(\" \");\n      if (parts.length > 0) {\n        def executable = parts[0];\n        // If executable is a path, take only the last part\n        if (executable.contains(\"/\")) {\n          def slashParts = executable.splitOnToken(\"/\");\n          executable = slashParts[slashParts.length - 1];\n        }\n        executable = /\\\"/.matcher(executable).replaceAll(\"\");\n        currentNames.add(executable);\n      }\n    }\n  }\n}\n// Update process.name with unique list\nif (currentNames != null && currentNames.size() == 1) {\n  ctx.process.name = currentNames.iterator().next();\n} else {\n  ctx.process.name = new ArrayList(currentNames);\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.process = ctx.process ?: [:];\nctx.process.name = ctx.process.name ?: [];\n// Normalize process.name to a list\ndef nameList = [];\nif (ctx.process.name != null) {\n  if (ctx.process.name instanceof String) {\n    nameList.add(ctx.process.name);\n  } else if (ctx.process.name instanceof List) {\n    nameList.addAll(ctx.process.name);\n  }\n}\n\n// Deduplication using HashSet\ndef currentNames = new HashSet();\ncurrentNames.addAll(nameList);\n// Handle process.command_line (string or list)\nif (ctx.process.command_line != null) {\n  // Convert string to list for unified handling\n  def cmdList = [];\n  if (ctx.process.command_line instanceof String) {\n    cmdList.add(ctx.process.command_line);\n  } else if (ctx.process.command_line instanceof List) {\n    cmdList.addAll(ctx.process.command_line);\n  }\n  for (cmd in cmdList) {\n    if (cmd != null && cmd.length() > 0) {\n      // Extract the first token\n      def parts = cmd.trim().splitOnToken(\" \");\n      if (parts.length > 0) {\n        def executable = parts[0];\n        // If executable is a path, take only the last part\n        if (executable.contains(\"/\")) {\n          def slashParts = executable.splitOnToken(\"/\");\n          executable = slashParts[slashParts.length - 1];\n        }\n        executable = /\\\"/.matcher(executable).replaceAll(\"\");\n        currentNames.add(executable);\n      }\n    }\n  }\n}\n// Update process.name with unique list\nif (currentNames != null && currentNames.size() == 1) {\n  ctx.process.name = currentNames.iterator().next();\n} else {\n  ctx.process.name = new ArrayList(currentNames);\n}\n"#
                     ),
                 )?;
@@ -121,9 +121,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (!ctx.json.empty) {\n  ctx.json.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (!ctx.json.empty) {\n  ctx.json.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n}\n"#
                     ),
                     cached_params!("{\"values\":[null,\"\",\"-\",\"N/A\"]}"),
@@ -135,9 +135,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\nif (!ctx.json.evidence.empty) {\n  ctx.json.evidence.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n}\ndrop(ctx);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\nif (!ctx.json.evidence.empty) {\n  ctx.json.evidence.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n}\ndrop(ctx);\n"#
                     ),
                     cached_params!("{\"values\":[null,\"\",\"-\",\"N/A\"]}"),
@@ -246,9 +246,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.json.severity;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.event = ctx.event ?: [:];\nString risk_score_value = ctx.json.severity;\nif (risk_score_value.equalsIgnoreCase(\"low\") || risk_score_value.equalsIgnoreCase(\"informational\")) {\n  ctx.event.severity = 21;\n} else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  ctx.event.severity = 47;\n} else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  ctx.event.severity = 73;\n} else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  ctx.event.severity = 99;\n}"#
                         ),
                     )?;
@@ -289,9 +289,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: Instant eventstart = ZonedDateTime.parse(ctx.event.start).toInstant(); Instant eventend = ZonedDateTime.parse(ctx.event.end).toInstant(); ctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"Instant eventstart = ZonedDateTime.parse(ctx.event.start).toInstant(); Instant eventend = ZonedDateTime.parse(ctx.event.end).toInstant(); ctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);\n"#
                     ),
                 )?;

@@ -120,9 +120,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: if (params.get(ctx.microsoft_defender_endpoint.machine_action.type) == null) {\n  return;\n} params.get(ctx.microsoft_defender_endpoint.machine_action.type).forEach((k, v) -> {\n  ctx.event[k] = v\n});
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"if (params.get(ctx.microsoft_defender_endpoint.machine_action.type) == null) {\n  return;\n} params.get(ctx.microsoft_defender_endpoint.machine_action.type).forEach((k, v) -> {\n  ctx.event[k] = v\n});"#
                     ),
                     cached_params!(
@@ -560,9 +560,9 @@ impl Transform for Default {
                     // Painless script
                     // Source: ctx.file = ctx.file ?: [:]; ctx.file.hash = ctx.file.hash ?: [:]; String fileType = ctx.microsoft_defender_endpoint.machine_action.related_file_info.file_identifier_type.toLowerCase(); String fileHash = ctx.microsoft_defender_endpoint.machine_action.related_file_info.file_identifier; if (fileType.contains('sha1')) {\n  ctx.file.hash.sha1 = fileHash;\n} else if (fileType.contains('md5')) {\n  ctx.file.hash.md5 = fileHash;\n} else if (fileType.contains('sha256')) {\n  ctx.file.hash.sha256 = fileHash;\n}\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"ctx.file = ctx.file ?: [:]; ctx.file.hash = ctx.file.hash ?: [:]; String fileType = ctx.microsoft_defender_endpoint.machine_action.related_file_info.file_identifier_type.toLowerCase(); String fileHash = ctx.microsoft_defender_endpoint.machine_action.related_file_info.file_identifier; if (fileType.contains('sha1')) {\n  ctx.file.hash.sha1 = fileHash;\n} else if (fileType.contains('md5')) {\n  ctx.file.hash.md5 = fileHash;\n} else if (fileType.contains('sha256')) {\n  ctx.file.hash.sha256 = fileHash;\n}\n"#
                         ),
                     )?;
@@ -751,9 +751,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

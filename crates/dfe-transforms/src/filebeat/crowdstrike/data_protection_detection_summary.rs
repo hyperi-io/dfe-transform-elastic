@@ -542,9 +542,9 @@ impl Transform for DataProtectionDetectionSummary {
                     // Painless script
                     // Source: Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"Instant event_start = ZonedDateTime.parse(ctx.event.start).toInstant();\nInstant event_end = ZonedDateTime.parse(ctx.event.end).toInstant();\nctx.event['duration'] = ChronoUnit.NANOS.between(event_start, event_end);\n"#
                         ),
                     )?;
@@ -664,9 +664,9 @@ impl Transform for DataProtectionDetectionSummary {
                     // Painless script
                     // Source: def idx = ctx.crowdstrike.event.Filename.lastIndexOf('.');\nif (idx != -1) {\n  ctx.file = ctx.file ?: [:];\n  ctx.file.extension = ctx.crowdstrike.event.Filename.substring(idx + 1).toLowerCase();\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec(
+                    painless_exec_plan(
                         event,
-                        cached_script!(
+                        cached_painless!(
                             r#"def idx = ctx.crowdstrike.event.Filename.lastIndexOf('.');\nif (idx != -1) {\n  ctx.file = ctx.file ?: [:];\n  ctx.file.extension = ctx.crowdstrike.event.Filename.substring(idx + 1).toLowerCase();\n}"#
                         ),
                     )?;

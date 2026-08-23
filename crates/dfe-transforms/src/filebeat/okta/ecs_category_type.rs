@@ -21,9 +21,9 @@ impl Transform for EcsCategoryType {
                 // Painless script
                 // Source: def addUnique(List dst, List src) {\n  src = src ?: [];\n  if (src.length == 0) {\n    return dst ?: [];\n  }\n  HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  return new ArrayList(s);\n}\ndef p = params[ctx.okta.event_type];\nctx.event.type = addUnique(ctx.event.type, p.type);\nctx.event.category = addUnique(ctx.event.category, p.category);\nctx.tags = addUnique(ctx.tags, p.tags);
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def addUnique(List dst, List src) {\n  src = src ?: [];\n  if (src.length == 0) {\n    return dst ?: [];\n  }\n  HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  return new ArrayList(s);\n}\ndef p = params[ctx.okta.event_type];\nctx.event.type = addUnique(ctx.event.type, p.type);\nctx.event.category = addUnique(ctx.event.category, p.category);\nctx.tags = addUnique(ctx.tags, p.tags);"#
                     ),
                     cached_params!(

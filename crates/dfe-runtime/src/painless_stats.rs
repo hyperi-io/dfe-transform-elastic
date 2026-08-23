@@ -121,18 +121,19 @@ pub fn reset() {
     }
 }
 
+/// The counters are process-global, so every test in the crate that records
+/// or reads them takes this lock rather than racing the ones that count.
+#[cfg(test)]
+pub(crate) fn serialised() -> std::sync::MutexGuard<'static, ()> {
+    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    LOCK.lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
-
-    /// The counters are process-global, so the tests that read them share one
-    /// lock rather than racing each other.
-    fn serialised() -> std::sync::MutexGuard<'static, ()> {
-        static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-        LOCK.lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-    }
 
     #[test]
     fn counts_both_outcomes() {

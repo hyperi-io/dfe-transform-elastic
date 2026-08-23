@@ -285,9 +285,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: boolean drop(Object object) {\n  if (object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.json.ipAddresses);
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"boolean drop(Object object) {\n  if (object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.json.ipAddresses);"#
                     ),
                 )?;
@@ -925,9 +925,9 @@ impl Transform for Default {
                 // Painless script
                 // Source: String os_platform = ctx.microsoft_defender_endpoint.machine.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\nif (os_platform.contains('centos') || os_platform.contains('ubuntu')) {\n  ctx.host.os.put('type', 'linux');\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_params(
+                painless_exec_plan_params(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"String os_platform = ctx.microsoft_defender_endpoint.machine.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\nif (os_platform.contains('centos') || os_platform.contains('ubuntu')) {\n  ctx.host.os.put('type', 'linux');\n}\n"#
                     ),
                     cached_params!(
@@ -1145,9 +1145,9 @@ impl Transform for Default {
             // Painless script
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
             // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec(
+            painless_exec_plan(
                 event,
-                cached_script!(
+                cached_painless!(
                     r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
                 ),
             )?;

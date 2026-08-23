@@ -138,9 +138,9 @@ impl Transform for FirewallMatch {
                 // Painless script
                 // Source: def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"def result = [];\nif (ctx.crowdstrike.event.ConnectionDirection == \"0\") {\n  result.add('egress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"1\") {\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"3\") {\n  result.add('egress');\n  result.add('ingress');\n} else if (ctx.crowdstrike.event.ConnectionDirection == \"4\") {\n  result.add('unknown');\n}\nif (result.size() > 0) {\n  ctx.network = ctx.network ?: [:];\n}\nif (result.size() == 1) {\n  ctx.network.direction = result[0];\n} else if (result.size() > 1) {\n  ctx.network.direction = result;\n}\n"#
                     ),
                 )?;
