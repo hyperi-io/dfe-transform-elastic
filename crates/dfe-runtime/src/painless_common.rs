@@ -649,6 +649,110 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
     true
 }
 
+/// gcp audit's `related.entity`, transliterated.
+///
+/// The `isKubernetes` gate is the whole point of it: for a k8s cluster the
+/// resource name, the response user and the principal email are all SUPPRESSED,
+/// and adding them anyway put an API path and a service account on every
+/// kubernetes audit event Elasticsearch leaves bare.
+fn run_gcp_related_entity(event: &mut Event) -> bool {
+    let proto = "json.protoPayload";
+    let is_kubernetes = matches!(
+        event.get_str("json.resource.type"),
+        Some("k8s_cluster" | "gke_cluster" | "kubernetes")
+    );
+
+    let mut entities: Vec<String> = Vec::new();
+    let add = |entities: &mut Vec<String>, value: Option<&Value>| {
+        if let Some(text) = value.and_then(Value::as_str).filter(|t| !t.is_empty())
+            && !entities.iter().any(|held| held == text)
+        {
+            entities.push(text.to_string());
+        }
+    };
+    let add_path = |entities: &mut Vec<String>, path: &str| add(entities, event_get(event, path));
+    let members = |path: &str| -> Vec<Value> {
+        match event.get(path) {
+            Some(Value::Array(items)) => items.clone(),
+            _ => Vec::new(),
+        }
+    };
+
+    add_path(&mut entities, &format!("{proto}.request.parent"));
+    if !is_kubernetes {
+        add_path(&mut entities, &format!("{proto}.resourceName"));
+        add_path(&mut entities, &format!("{proto}.response.user"));
+        add_path(
+            &mut entities,
+            &format!("{proto}.authenticationInfo.principalEmail"),
+        );
+    }
+    for member in ["principalSubject", "serviceAccountKeyName"] {
+        add_path(
+            &mut entities,
+            &format!("{proto}.authenticationInfo.{member}"),
+        );
+    }
+    for info in members(&format!(
+        "{proto}.authenticationInfo.serviceAccountDelegationInfo"
+    )) {
+        add(&mut entities, info.get("principalSubject"));
+        for party in ["firstPartyPrincipal", "thirdPartyPrincipal"] {
+            add(
+                &mut entities,
+                info.get(party).and_then(|p| p.get("principalEmail")),
+            );
+        }
+    }
+
+    match event.get_str(&format!("{proto}.serviceName")) {
+        Some("compute.googleapis.com") => {
+            for (list, member) in [
+                ("networkInterfaces", "network"),
+                ("serviceAccounts", "email"),
+                ("disks", "source"),
+            ] {
+                for entry in members(&format!("{proto}.request.{list}")) {
+                    add(&mut entities, entry.get(member));
+                }
+            }
+        }
+        Some("cloudresourcemanager.googleapis.com") => {
+            for path in [
+                format!("{proto}.request.policy.bindings"),
+                format!("{proto}.response.bindings"),
+            ] {
+                for binding in members(&path) {
+                    add(&mut entities, binding.get("role"));
+                    if let Some(Value::Array(list)) = binding.get("members") {
+                        for member in list {
+                            add(&mut entities, Some(member));
+                        }
+                    }
+                }
+            }
+        }
+        Some("iamcredentials.googleapis.com") => {
+            for entry in members(&format!("{proto}.metadata.identityDelegationChain")) {
+                add(&mut entities, Some(&entry));
+            }
+        }
+        _ => {}
+    }
+
+    if !entities.is_empty() {
+        // A TreeSet, so the result is sorted -- the script says as much.
+        entities.sort();
+        let _ = event.set("related.entity", json!(entities));
+    }
+    true
+}
+
+/// Borrow one field, so the closures above can hold `&mut Vec` and still read.
+fn event_get<'e>(event: &'e Event, path: &str) -> Option<&'e Value> {
+    event.get(path)
+}
+
 /// mimecast's `related.*` collection: which paths feed the user and host sets.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct MailRelatedScript {
@@ -4715,6 +4819,7 @@ pub(crate) enum KnownShape {
         multi: bool,
     },
     MailRelated(Box<MailRelatedScript>),
+    GcpRelatedEntity,
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -4959,6 +5064,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::SecurityhubResources);
             return shapes;
         }
+    }
+
+    // Pattern: gcp audit's related.entity, whose `isKubernetes` gate decides
+    // which three of its sources are suppressed.
+    if normalised.contains("boolean isKubernetes") && normalised.contains("ctx.related.entity") {
+        shapes.push(KnownShape::GcpRelatedEntity);
+        return shapes;
     }
 
     // Pattern: mimecast's related.* collection -- display names and email
@@ -5582,6 +5694,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         } => run_starts_with_append(event, source, prefix, target, value),
         KnownShape::InspectorResources { multi } => run_inspector_resources(event, *multi),
         KnownShape::MailRelated(script) => run_mail_related(event, script),
+        KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
         KnownShape::SecurityhubResources => {
             if let Some(Value::Array(resources)) =
                 event.get("aws.securityhub_findings.resources").cloned()

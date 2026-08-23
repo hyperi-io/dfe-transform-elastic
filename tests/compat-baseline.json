@@ -15,7 +15,7 @@
     "crowdstrike": { "events": 49, "events_total": 49, "fields_wrong": 0 },
     "entityanalytics_entra_id": { "events": 6, "events_total": 7, "fields_wrong": 3 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
-    "gcp": { "events": 353, "events_total": 382, "fields_wrong": 20 },
+    "gcp": { "events": 366, "events_total": 382, "fields_wrong": 13 },
     "m365_defender": { "events": 66, "events_total": 108, "fields_wrong": 236 },
     "microsoft_defender_endpoint": { "events": 15, "events_total": 23, "fields_wrong": 94 },
     "mimecast": { "events": 247, "events_total": 262, "fields_wrong": 27 },
