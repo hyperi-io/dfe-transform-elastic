@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -90,7 +90,7 @@ impl Transform for Default {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.senderIpAddress") {
+            if event.has_value("mimecast.senderIpAddress") {
                 event.rename("mimecast.senderIpAddress", "source.ip")?;
             }
 
@@ -110,19 +110,19 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("mimecast.subject") {
+            if event.has_value("mimecast.subject") {
                 event.rename("mimecast.subject", "email.subject")?;
             }
 
-            if event.has("mimecast.action") {
+            if event.has_value("mimecast.action") {
                 event.rename("mimecast.action", "event.action")?;
             }
 
-            if event.has("mimecast.definition") {
+            if event.has_value("mimecast.definition") {
                 event.rename("mimecast.definition", "rule.name")?;
             }
 
-            if event.has("mimecast.id") {
+            if event.has_value("mimecast.id") {
                 event.rename("mimecast.id", "event.id")?;
             }
 
@@ -142,11 +142,11 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("mimecast.messageId") {
+            if event.has_value("mimecast.messageId") {
                 event.rename("mimecast.messageId", "email.message_id")?;
             }
 
-            if event.has("mimecast.similarDomain") {
+            if event.has_value("mimecast.similarDomain") {
                 event.rename("mimecast.similarDomain", "source.domain")?;
             }
 

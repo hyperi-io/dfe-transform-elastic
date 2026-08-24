@@ -45,7 +45,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -161,7 +161,7 @@ impl Transform for Default {
                 event.set("@timestamp", v)?;
             }
 
-            if event.has("json.description") {
+            if event.has_value("json.description") {
                 event.rename("json.description", "aws.inspector.description")?;
             }
 
@@ -181,7 +181,7 @@ impl Transform for Default {
                 event.set("vulnerability.description", v)?;
             }
 
-            if event.has("json.awsAccountId") {
+            if event.has_value("json.awsAccountId") {
                 event.rename("json.awsAccountId", "aws.inspector.aws_account_id")?;
             }
 
@@ -193,7 +193,7 @@ impl Transform for Default {
                 event.set("cloud.account.id", v)?;
             }
 
-            if event.has("json.severity") {
+            if event.has_value("json.severity") {
                 event.rename("json.severity", "aws.inspector.severity")?;
             }
 
@@ -245,7 +245,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.networkReachabilityDetails.protocol") {
+            if event.has_value("json.networkReachabilityDetails.protocol") {
                 event.rename(
                     "json.networkReachabilityDetails.protocol",
                     "aws.inspector.network_reachability_details.protocol",
@@ -269,28 +269,28 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.cwes") {
+            if event.has_value("json.codeVulnerabilityDetails.cwes") {
                 event.rename(
                     "json.codeVulnerabilityDetails.cwes",
                     "aws.inspector.code_vulnerability_details.cwes",
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.detectorId") {
+            if event.has_value("json.codeVulnerabilityDetails.detectorId") {
                 event.rename(
                     "json.codeVulnerabilityDetails.detectorId",
                     "aws.inspector.code_vulnerability_details.detector_id",
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.detectorName") {
+            if event.has_value("json.codeVulnerabilityDetails.detectorName") {
                 event.rename(
                     "json.codeVulnerabilityDetails.detectorName",
                     "aws.inspector.code_vulnerability_details.detector_name",
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.detectorTags") {
+            if event.has_value("json.codeVulnerabilityDetails.detectorTags") {
                 event.rename(
                     "json.codeVulnerabilityDetails.detectorTags",
                     "aws.inspector.code_vulnerability_details.detector_tags",
@@ -347,14 +347,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.codeVulnerabilityDetails.filePath.fileName") {
+            if event.has_value("json.codeVulnerabilityDetails.filePath.fileName") {
                 event.rename(
                     "json.codeVulnerabilityDetails.filePath.fileName",
                     "aws.inspector.code_vulnerability_details.file_path.name",
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.filePath.filePath") {
+            if event.has_value("json.codeVulnerabilityDetails.filePath.filePath") {
                 event.rename(
                     "json.codeVulnerabilityDetails.filePath.filePath",
                     "aws.inspector.code_vulnerability_details.file_path.path",
@@ -412,21 +412,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.codeVulnerabilityDetails.referenceUrls") {
+            if event.has_value("json.codeVulnerabilityDetails.referenceUrls") {
                 event.rename(
                     "json.codeVulnerabilityDetails.referenceUrls",
                     "aws.inspector.code_vulnerability_details.reference_urls",
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.ruleId") {
+            if event.has_value("json.codeVulnerabilityDetails.ruleId") {
                 event.rename(
                     "json.codeVulnerabilityDetails.ruleId",
                     "aws.inspector.code_vulnerability_details.rule_id",
                 )?;
             }
 
-            if event.has("json.codeVulnerabilityDetails.sourceLambdaLayerArn") {
+            if event.has_value("json.codeVulnerabilityDetails.sourceLambdaLayerArn") {
                 event.rename(
                     "json.codeVulnerabilityDetails.sourceLambdaLayerArn",
                     "aws.inspector.code_vulnerability_details.source_lambda_layer_arn",
@@ -543,11 +543,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.exploitAvailable") {
+            if event.has_value("json.exploitAvailable") {
                 event.rename("json.exploitAvailable", "aws.inspector.exploit_available")?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.referenceUrls") {
+            if event.has_value("json.packageVulnerabilityDetails.referenceUrls") {
                 event.rename(
                     "json.packageVulnerabilityDetails.referenceUrls",
                     "aws.inspector.package_vulnerability_details.reference_urls",
@@ -562,7 +562,7 @@ impl Transform for Default {
                 event.set("vulnerability.reference", v)?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.vulnerabilityId") {
+            if event.has_value("json.packageVulnerabilityDetails.vulnerabilityId") {
                 event.rename(
                     "json.packageVulnerabilityDetails.vulnerabilityId",
                     "aws.inspector.package_vulnerability_details.vulnerability_id",
@@ -598,7 +598,7 @@ impl Transform for Default {
                 event.set("vulnerability.enumeration", json!("CVE"))?;
             }
 
-            if event.has("json.findingArn") {
+            if event.has_value("json.findingArn") {
                 event.rename("json.findingArn", "aws.inspector.finding_arn")?;
             }
 
@@ -657,7 +657,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.fixAvailable") {
+            if event.has_value("json.fixAvailable") {
                 event.rename("json.fixAvailable", "aws.inspector.fix_available")?;
             }
 
@@ -708,14 +708,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.inspectorScoreDetails.adjustedCvss.adjustments") {
+            if event.has_value("json.inspectorScoreDetails.adjustedCvss.adjustments") {
                 event.rename(
                     "json.inspectorScoreDetails.adjustedCvss.adjustments",
                     "aws.inspector.inspector_score_details.adjusted_cvss.adjustments",
                 )?;
             }
 
-            if event.has("json.inspectorScoreDetails.adjustedCvss.cvssSource") {
+            if event.has_value("json.inspectorScoreDetails.adjustedCvss.cvssSource") {
                 event.rename(
                     "json.inspectorScoreDetails.adjustedCvss.cvssSource",
                     "aws.inspector.inspector_score_details.adjusted_cvss.cvss_source",
@@ -790,21 +790,21 @@ impl Transform for Default {
                 event.set("vulnerability.classification", json!("CVSS"))?;
             }
 
-            if event.has("json.inspectorScoreDetails.adjustedCvss.scoreSource") {
+            if event.has_value("json.inspectorScoreDetails.adjustedCvss.scoreSource") {
                 event.rename(
                     "json.inspectorScoreDetails.adjustedCvss.scoreSource",
                     "aws.inspector.inspector_score_details.adjusted_cvss.score.source",
                 )?;
             }
 
-            if event.has("json.inspectorScoreDetails.adjustedCvss.scoringVector") {
+            if event.has_value("json.inspectorScoreDetails.adjustedCvss.scoringVector") {
                 event.rename(
                     "json.inspectorScoreDetails.adjustedCvss.scoringVector",
                     "aws.inspector.inspector_score_details.adjusted_cvss.scoring_vector",
                 )?;
             }
 
-            if event.has("json.inspectorScoreDetails.adjustedCvss.version") {
+            if event.has_value("json.inspectorScoreDetails.adjustedCvss.version") {
                 event.rename(
                     "json.inspectorScoreDetails.adjustedCvss.version",
                     "aws.inspector.inspector_score_details.adjusted_cvss.version",
@@ -884,7 +884,7 @@ impl Transform for Default {
                     event,
                     "json.networkReachabilityDetails.networkPath.steps",
                     |event| {
-                        if event.has("_ingest._value.componentId") {
+                        if event.has_value("_ingest._value.componentId") {
                             event.rename(
                                 "_ingest._value.componentId",
                                 "_ingest._value.component.id",
@@ -905,7 +905,7 @@ impl Transform for Default {
                     event,
                     "json.networkReachabilityDetails.networkPath.steps",
                     |event| {
-                        if event.has("_ingest._value.componentType") {
+                        if event.has_value("_ingest._value.componentType") {
                             event.rename(
                                 "_ingest._value.componentType",
                                 "_ingest._value.component.type",
@@ -926,7 +926,7 @@ impl Transform for Default {
                     event,
                     "json.networkReachabilityDetails.networkPath.steps",
                     |event| {
-                        if event.has("_ingest._value.componentArn") {
+                        if event.has_value("_ingest._value.componentArn") {
                             event.rename(
                                 "_ingest._value.componentArn",
                                 "_ingest._value.component.arn",
@@ -937,7 +937,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.networkReachabilityDetails.networkPath.steps") {
+            if event.has_value("json.networkReachabilityDetails.networkPath.steps") {
                 event.rename(
                     "json.networkReachabilityDetails.networkPath.steps",
                     "aws.inspector.network_reachability_details.network_path.steps",
@@ -1126,7 +1126,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.packageVulnerabilityDetails.cvss", |event| {
-                    if event.has("_ingest._value.scoringVector") {
+                    if event.has_value("_ingest._value.scoringVector") {
                         event.rename(
                             "_ingest._value.scoringVector",
                             "_ingest._value.scoring_vector",
@@ -1136,28 +1136,28 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.cvss") {
+            if event.has_value("json.packageVulnerabilityDetails.cvss") {
                 event.rename(
                     "json.packageVulnerabilityDetails.cvss",
                     "aws.inspector.package_vulnerability_details.cvss",
                 )?;
             }
 
-            if event.has("json.networkReachabilityDetails.networkPath.steps") {
+            if event.has_value("json.networkReachabilityDetails.networkPath.steps") {
                 event.rename(
                     "json.networkReachabilityDetails.networkPath.steps",
                     "aws.inspector.network_reachability_details.network_path.steps",
                 )?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.relatedVulnerabilities") {
+            if event.has_value("json.packageVulnerabilityDetails.relatedVulnerabilities") {
                 event.rename(
                     "json.packageVulnerabilityDetails.relatedVulnerabilities",
                     "aws.inspector.package_vulnerability_details.related_vulnerabilities",
                 )?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.source") {
+            if event.has_value("json.packageVulnerabilityDetails.source") {
                 event.rename(
                     "json.packageVulnerabilityDetails.source",
                     "aws.inspector.package_vulnerability_details.source.value",
@@ -1246,7 +1246,7 @@ impl Transform for Default {
                 event.set("vulnerability.published_date", v)?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.vendorSeverity") {
+            if event.has_value("json.packageVulnerabilityDetails.vendorSeverity") {
                 event.rename(
                     "json.packageVulnerabilityDetails.vendorSeverity",
                     "aws.inspector.package_vulnerability_details.vendor.severity",
@@ -1326,7 +1326,7 @@ impl Transform for Default {
                     event,
                     "json.packageVulnerabilityDetails.vulnerablePackages",
                     |event| {
-                        if event.has("_ingest._value.filePath") {
+                        if event.has_value("_ingest._value.filePath") {
                             event.rename("_ingest._value.filePath", "_ingest._value.file_path")?;
                         }
                         Ok(())
@@ -1344,7 +1344,7 @@ impl Transform for Default {
                     event,
                     "json.packageVulnerabilityDetails.vulnerablePackages",
                     |event| {
-                        if event.has("_ingest._value.fixedInVersion") {
+                        if event.has_value("_ingest._value.fixedInVersion") {
                             event.rename(
                                 "_ingest._value.fixedInVersion",
                                 "_ingest._value.fixed_in_version",
@@ -1365,7 +1365,7 @@ impl Transform for Default {
                     event,
                     "json.packageVulnerabilityDetails.vulnerablePackages",
                     |event| {
-                        if event.has("_ingest._value.packageManager") {
+                        if event.has_value("_ingest._value.packageManager") {
                             event.rename(
                                 "_ingest._value.packageManager",
                                 "_ingest._value.package_manager",
@@ -1386,7 +1386,7 @@ impl Transform for Default {
                     event,
                     "json.packageVulnerabilityDetails.vulnerablePackages",
                     |event| {
-                        if event.has("_ingest._value.sourceLambdaLayerArn") {
+                        if event.has_value("_ingest._value.sourceLambdaLayerArn") {
                             event.rename(
                                 "_ingest._value.sourceLambdaLayerArn",
                                 "_ingest._value.source_lambda_layer_arn",
@@ -1407,7 +1407,7 @@ impl Transform for Default {
                     event,
                     "json.packageVulnerabilityDetails.vulnerablePackages",
                     |event| {
-                        if event.has("_ingest._value.sourceLayerHash") {
+                        if event.has_value("_ingest._value.sourceLayerHash") {
                             event.rename(
                                 "_ingest._value.sourceLayerHash",
                                 "_ingest._value.source_layer_hash",
@@ -1441,7 +1441,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.packageVulnerabilityDetails.vulnerablePackages") {
+            if event.has_value("json.packageVulnerabilityDetails.vulnerablePackages") {
                 event.rename(
                     "json.packageVulnerabilityDetails.vulnerablePackages",
                     "aws.inspector.package_vulnerability_details.vulnerable_packages",
@@ -1571,7 +1571,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.remediation.recommendation.text") {
+            if event.has_value("json.remediation.recommendation.text") {
                 event.rename(
                     "json.remediation.recommendation.text",
                     "aws.inspector.remediation.recommendation.text",
@@ -1592,7 +1592,9 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.iamInstanceProfileArn") {
+                    if event
+                        .has_value("_ingest._value.details.awsEc2Instance.iamInstanceProfileArn")
+                    {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.iamInstanceProfileArn",
                             "_ingest._value.details.aws.ec2_instance.iam_instance_profile_arn",
@@ -1605,7 +1607,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.imageId") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.imageId") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.imageId",
                             "_ingest._value.details.aws.ec2_instance.image_id",
@@ -1618,7 +1620,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.ipV4Addresses") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.ipV4Addresses") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.ipV4Addresses",
                             "_ingest._value.details.aws.ec2_instance.ipv4_addresses",
@@ -1741,7 +1743,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.ipV6Addresses") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.ipV6Addresses") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.ipV6Addresses",
                             "_ingest._value.details.aws.ec2_instance.ipv6_addresses",
@@ -1864,7 +1866,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.keyName") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.keyName") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.keyName",
                             "_ingest._value.details.aws.ec2_instance.key_name",
@@ -1941,7 +1943,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.platform") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.platform") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.platform",
                             "_ingest._value.details.aws.ec2_instance.platform",
@@ -1954,7 +1956,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.subnetId") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.subnetId") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.subnetId",
                             "_ingest._value.details.aws.ec2_instance.subnet_id",
@@ -1967,7 +1969,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.type") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.type") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.type",
                             "_ingest._value.details.aws.ec2_instance.type",
@@ -1980,7 +1982,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEc2Instance.vpcId") {
+                    if event.has_value("_ingest._value.details.awsEc2Instance.vpcId") {
                         event.rename(
                             "_ingest._value.details.awsEc2Instance.vpcId",
                             "_ingest._value.details.aws.ec2_instance.vpc_id",
@@ -1993,7 +1995,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.architecture") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.architecture") {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.architecture",
                             "_ingest._value.details.aws.ecr_container_image.architecture",
@@ -2006,7 +2008,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.author") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.author") {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.author",
                             "_ingest._value.details.aws.ecr_container_image.author",
@@ -2019,7 +2021,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.imageHash") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.imageHash") {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.imageHash",
                             "_ingest._value.details.aws.ecr_container_image.image.hash",
@@ -2047,7 +2049,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.imageTags") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.imageTags") {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.imageTags",
                             "_ingest._value.details.aws.ecr_container_image.image.tags",
@@ -2175,7 +2177,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.platform") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.platform") {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.platform",
                             "_ingest._value.details.aws.ecr_container_image.platform",
@@ -2250,7 +2252,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.registry") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.registry") {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.registry",
                             "_ingest._value.details.aws.ecr_container_image.registry",
@@ -2263,7 +2265,8 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsEcrContainerImage.repositoryName") {
+                    if event.has_value("_ingest._value.details.awsEcrContainerImage.repositoryName")
+                    {
                         event.rename(
                             "_ingest._value.details.awsEcrContainerImage.repositoryName",
                             "_ingest._value.details.aws.ecr_container_image.repository_name",
@@ -2276,7 +2279,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction.codeSha256") {
+                    if event.has_value("_ingest._value.details.awsLambdaFunction.codeSha256") {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction.codeSha256",
                             "_ingest._value.details.awsLambdaFunction.code_sha256",
@@ -2304,7 +2307,8 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction.executionRoleArn") {
+                    if event.has_value("_ingest._value.details.awsLambdaFunction.executionRoleArn")
+                    {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction.executionRoleArn",
                             "_ingest._value.details.awsLambdaFunction.execution_role_arn",
@@ -2317,7 +2321,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction.functionName") {
+                    if event.has_value("_ingest._value.details.awsLambdaFunction.functionName") {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction.functionName",
                             "_ingest._value.details.awsLambdaFunction.function_name",
@@ -2392,7 +2396,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction.packageType") {
+                    if event.has_value("_ingest._value.details.awsLambdaFunction.packageType") {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction.packageType",
                             "_ingest._value.details.awsLambdaFunction.package_type",
@@ -2405,9 +2409,9 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event
-                        .has("_ingest._value.details.awsLambdaFunction.vpcConfig.securityGroupIds")
-                    {
+                    if event.has_value(
+                        "_ingest._value.details.awsLambdaFunction.vpcConfig.securityGroupIds",
+                    ) {
                         event.rename("_ingest._value.details.awsLambdaFunction.vpcConfig.securityGroupIds", "_ingest._value.details.awsLambdaFunction.vpc_config.security_group_ids")?;
                     }
                     Ok(())
@@ -2417,7 +2421,9 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction.vpcConfig.subnetIds") {
+                    if event
+                        .has_value("_ingest._value.details.awsLambdaFunction.vpcConfig.subnetIds")
+                    {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction.vpcConfig.subnetIds",
                             "_ingest._value.details.awsLambdaFunction.vpc_config.subnet_ids",
@@ -2430,7 +2436,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction.vpcConfig.vpcId") {
+                    if event.has_value("_ingest._value.details.awsLambdaFunction.vpcConfig.vpcId") {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction.vpcConfig.vpcId",
                             "_ingest._value.details.awsLambdaFunction.vpc_config.vpc_id",
@@ -2455,7 +2461,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.awsLambdaFunction") {
+                    if event.has_value("_ingest._value.details.awsLambdaFunction") {
                         event.rename(
                             "_ingest._value.details.awsLambdaFunction",
                             "_ingest._value.details.aws.lambda_function",
@@ -2468,7 +2474,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.codeRepository.integrationArn") {
+                    if event.has_value("_ingest._value.details.codeRepository.integrationArn") {
                         event.rename(
                             "_ingest._value.details.codeRepository.integrationArn",
                             "_ingest._value.details.code_repository.integration_arn",
@@ -2481,7 +2487,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.codeRepository.projectName") {
+                    if event.has_value("_ingest._value.details.codeRepository.projectName") {
                         event.rename(
                             "_ingest._value.details.codeRepository.projectName",
                             "_ingest._value.details.code_repository.project_name",
@@ -2494,7 +2500,7 @@ impl Transform for Default {
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.resources", |event| {
-                    if event.has("_ingest._value.details.codeRepository.providerType") {
+                    if event.has_value("_ingest._value.details.codeRepository.providerType") {
                         event.rename(
                             "_ingest._value.details.codeRepository.providerType",
                             "_ingest._value.details.code_repository.provider_type",
@@ -2504,7 +2510,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.resources") {
+            if event.has_value("json.resources") {
                 event.rename("json.resources", "aws.inspector.resources")?;
             }
 
@@ -2608,7 +2614,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.status") {
+            if event.has_value("json.status") {
                 event.rename("json.status", "aws.inspector.status")?;
             }
 
@@ -2625,7 +2631,7 @@ impl Transform for Default {
                 event.set("vulnerability.status", json!("fixed"))?;
             }
 
-            if event.has("json.title") {
+            if event.has_value("json.title") {
                 event.rename("json.title", "aws.inspector.title")?;
             }
 
@@ -2637,7 +2643,7 @@ impl Transform for Default {
                 event.set("vulnerability.title", v)?;
             }
 
-            if event.has("json.type") {
+            if event.has_value("json.type") {
                 event.rename("json.type", "aws.inspector.type")?;
             }
 

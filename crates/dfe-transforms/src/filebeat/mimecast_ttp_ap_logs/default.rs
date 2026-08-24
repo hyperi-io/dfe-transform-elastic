@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -236,42 +236,42 @@ impl Transform for Default {
 
             let _cond = { event.has_value("mimecast.actionTriggered") };
             if _cond {
-                if event.has("mimecast.actionTriggered") {
+                if event.has_value("mimecast.actionTriggered") {
                     event.rename("mimecast.actionTriggered", "event.action")?;
                 }
             }
 
             let _cond = { event.has_value("mimecast.subject") };
             if _cond {
-                if event.has("mimecast.subject") {
+                if event.has_value("mimecast.subject") {
                     event.rename("mimecast.subject", "email.subject")?;
                 }
             }
 
             let _cond = { event.has_value("mimecast.messageId") };
             if _cond {
-                if event.has("mimecast.messageId") {
+                if event.has_value("mimecast.messageId") {
                     event.rename("mimecast.messageId", "email.message_id")?;
                 }
             }
 
             let _cond = { event.has_value("mimecast.route") };
             if _cond {
-                if event.has("mimecast.route") {
+                if event.has_value("mimecast.route") {
                     event.rename("mimecast.route", "email.direction")?;
                 }
             }
 
             let _cond = { event.has_value("mimecast.fileName") };
             if _cond {
-                if event.has("mimecast.fileName") {
+                if event.has_value("mimecast.fileName") {
                     event.rename("mimecast.fileName", "email.attachments.file.name")?;
                 }
             }
 
             let _cond = { event.has_value("mimecast.definition") };
             if _cond {
-                if event.has("mimecast.definition") {
+                if event.has_value("mimecast.definition") {
                     event.rename("mimecast.definition", "rule.name")?;
                 }
             }
@@ -283,14 +283,14 @@ impl Transform for Default {
                         .is_some_and(|s| s.len() == 64)
             };
             if _cond {
-                if event.has("mimecast.fileHash") {
+                if event.has_value("mimecast.fileHash") {
                     event.rename("mimecast.fileHash", "email.attachments.file.hash.sha256")?;
                 }
             }
 
             let _cond = { event.has_value("mimecast.fileType") };
             if _cond {
-                if event.has("mimecast.fileType") {
+                if event.has_value("mimecast.fileType") {
                     event.rename("mimecast.fileType", "email.attachments.file.mime_type")?;
                 }
             }

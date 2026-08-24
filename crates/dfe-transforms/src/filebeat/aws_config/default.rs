@@ -40,7 +40,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -94,7 +94,7 @@ impl Transform for Default {
 
             event.append("event.type", json!("info"))?;
 
-            if event.has("json.Annotation") {
+            if event.has_value("json.Annotation") {
                 event.rename("json.Annotation", "aws.config.annotation")?;
             }
 
@@ -164,7 +164,7 @@ impl Transform for Default {
                 event.set("cloud.account.name", v)?;
             }
 
-            if event.has("json.ConfigRuleInfo.ConfigRuleArn") {
+            if event.has_value("json.ConfigRuleInfo.ConfigRuleArn") {
                 event.rename(
                     "json.ConfigRuleInfo.ConfigRuleArn",
                     "aws.config.rule_info.config_rule_arn",
@@ -189,7 +189,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ConfigRuleInfo.ConfigRuleId") {
+            if event.has_value("json.ConfigRuleInfo.ConfigRuleId") {
                 event.rename(
                     "json.ConfigRuleInfo.ConfigRuleId",
                     "aws.config.rule_info.config_rule_id",
@@ -204,7 +204,7 @@ impl Transform for Default {
                 event.set("rule.id", v)?;
             }
 
-            if event.has("json.ConfigRuleInfo.ConfigRuleName") {
+            if event.has_value("json.ConfigRuleInfo.ConfigRuleName") {
                 event.rename(
                     "json.ConfigRuleInfo.ConfigRuleName",
                     "aws.config.rule_info.config_rule_name",
@@ -219,7 +219,7 @@ impl Transform for Default {
                 event.set("rule.name", v)?;
             }
 
-            if event.has("json.ConfigRuleInfo.ConfigRuleState") {
+            if event.has_value("json.ConfigRuleInfo.ConfigRuleState") {
                 event.rename(
                     "json.ConfigRuleInfo.ConfigRuleState",
                     "aws.config.rule_info.config_rule_state",
@@ -238,14 +238,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.CreatedBy") {
+            if event.has_value("json.ConfigRuleInfo.CreatedBy") {
                 event.rename(
                     "json.ConfigRuleInfo.CreatedBy",
                     "aws.config.rule_info.created_by",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Description") {
+            if event.has_value("json.ConfigRuleInfo.Description") {
                 event.rename(
                     "json.ConfigRuleInfo.Description",
                     "aws.config.rule_info.description",
@@ -275,14 +275,14 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.ConfigRuleInfo.EvaluationModes", |event| {
-                    if event.has("_ingest._value.Mode") {
+                    if event.has_value("_ingest._value.Mode") {
                         event.rename("_ingest._value.Mode", "_ingest._value.mode")?;
                     }
                     Ok(())
                 })?;
             }
 
-            if event.has("json.ConfigRuleInfo.EvaluationModes") {
+            if event.has_value("json.ConfigRuleInfo.EvaluationModes") {
                 event.rename(
                     "json.ConfigRuleInfo.EvaluationModes",
                     "aws.config.rule_info.evaluation_modes",
@@ -336,28 +336,28 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ConfigRuleInfo.MaximumExecutionFrequency") {
+            if event.has_value("json.ConfigRuleInfo.MaximumExecutionFrequency") {
                 event.rename(
                     "json.ConfigRuleInfo.MaximumExecutionFrequency",
                     "aws.config.rule_info.maximum_execution_frequency",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Scope.ComplianceResourceId") {
+            if event.has_value("json.ConfigRuleInfo.Scope.ComplianceResourceId") {
                 event.rename(
                     "json.ConfigRuleInfo.Scope.ComplianceResourceId",
                     "aws.config.rule_info.scope.compliance_resource_id",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Scope.ComplianceResourceTypes") {
+            if event.has_value("json.ConfigRuleInfo.Scope.ComplianceResourceTypes") {
                 event.rename(
                     "json.ConfigRuleInfo.Scope.ComplianceResourceTypes",
                     "aws.config.rule_info.scope.compliance_resource_types",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Scope.TagKey") {
+            if event.has_value("json.ConfigRuleInfo.Scope.TagKey") {
                 event.rename(
                     "json.ConfigRuleInfo.Scope.TagKey",
                     "aws.config.rule_info.scope.tag_key",
@@ -411,21 +411,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ConfigRuleInfo.Source.CustomPolicyDetails.PolicyRuntime") {
+            if event.has_value("json.ConfigRuleInfo.Source.CustomPolicyDetails.PolicyRuntime") {
                 event.rename(
                     "json.ConfigRuleInfo.Source.CustomPolicyDetails.PolicyRuntime",
                     "aws.config.rule_info.source.custom_policy_details.policy_runtime",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Source.CustomPolicyDetails.PolicyText") {
+            if event.has_value("json.ConfigRuleInfo.Source.CustomPolicyDetails.PolicyText") {
                 event.rename(
                     "json.ConfigRuleInfo.Source.CustomPolicyDetails.PolicyText",
                     "aws.config.rule_info.source.custom_policy_details.policy_text",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Source.Owner") {
+            if event.has_value("json.ConfigRuleInfo.Source.Owner") {
                 event.rename(
                     "json.ConfigRuleInfo.Source.Owner",
                     "aws.config.rule_info.source.owner",
@@ -439,7 +439,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.ConfigRuleInfo.Source.SourceDetails", |event| {
-                    if event.has("_ingest._value.EventSource") {
+                    if event.has_value("_ingest._value.EventSource") {
                         event
                             .rename("_ingest._value.EventSource", "_ingest._value.event_source")?;
                     }
@@ -454,7 +454,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.ConfigRuleInfo.Source.SourceDetails", |event| {
-                    if event.has("_ingest._value.MaximumExecutionFrequency") {
+                    if event.has_value("_ingest._value.MaximumExecutionFrequency") {
                         event.rename(
                             "_ingest._value.MaximumExecutionFrequency",
                             "_ingest._value.maximum_execution_frequency",
@@ -471,7 +471,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.ConfigRuleInfo.Source.SourceDetails", |event| {
-                    if event.has("_ingest._value.MessageType") {
+                    if event.has_value("_ingest._value.MessageType") {
                         event
                             .rename("_ingest._value.MessageType", "_ingest._value.message_type")?;
                     }
@@ -479,14 +479,14 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.ConfigRuleInfo.Source.SourceDetails") {
+            if event.has_value("json.ConfigRuleInfo.Source.SourceDetails") {
                 event.rename(
                     "json.ConfigRuleInfo.Source.SourceDetails",
                     "aws.config.rule_info.source.source_details",
                 )?;
             }
 
-            if event.has("json.ConfigRuleInfo.Source.SourceIdentifier") {
+            if event.has_value("json.ConfigRuleInfo.Source.SourceIdentifier") {
                 event.rename(
                     "json.ConfigRuleInfo.Source.SourceIdentifier",
                     "aws.config.rule_info.source.source_identifier",
@@ -548,13 +548,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.EvaluationResultIdentifier.EvaluationResultQualifier.ConfigRuleName")
-            {
+            if event.has_value(
+                "json.EvaluationResultIdentifier.EvaluationResultQualifier.ConfigRuleName",
+            ) {
                 event.rename("json.EvaluationResultIdentifier.EvaluationResultQualifier.ConfigRuleName", "aws.config.evaluation_result_identifier.evaluation_result_qualifier.config_rule_name")?;
             }
 
-            if event.has("json.EvaluationResultIdentifier.EvaluationResultQualifier.EvaluationMode")
-            {
+            if event.has_value(
+                "json.EvaluationResultIdentifier.EvaluationResultQualifier.EvaluationMode",
+            ) {
                 event.rename("json.EvaluationResultIdentifier.EvaluationResultQualifier.EvaluationMode", "aws.config.evaluation_result_identifier.evaluation_result_qualifier.evaluation_mode")?;
             }
 
@@ -626,7 +628,7 @@ impl Transform for Default {
                 event.set("event.created", v)?;
             }
 
-            if event.has("json.EvaluationResultIdentifier.ResourceEvaluationId") {
+            if event.has_value("json.EvaluationResultIdentifier.ResourceEvaluationId") {
                 event.rename(
                     "json.EvaluationResultIdentifier.ResourceEvaluationId",
                     "aws.config.evaluation_result_identifier.resource_evaluation_id",
@@ -694,11 +696,13 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ResultToken") {
+            if event.has_value("json.ResultToken") {
                 event.rename("json.ResultToken", "aws.config.result_token")?;
             }
 
-            if event.has("json.EvaluationResultIdentifier.EvaluationResultQualifier.ResourceId") {
+            if event
+                .has_value("json.EvaluationResultIdentifier.EvaluationResultQualifier.ResourceId")
+            {
                 event.rename("json.EvaluationResultIdentifier.EvaluationResultQualifier.ResourceId", "aws.config.evaluation_result_identifier.evaluation_result_qualifier.resource_id")?;
             }
 
@@ -706,7 +710,9 @@ impl Transform for Default {
                 event.set("resource.id", v)?;
             }
 
-            if event.has("json.EvaluationResultIdentifier.EvaluationResultQualifier.ResourceType") {
+            if event
+                .has_value("json.EvaluationResultIdentifier.EvaluationResultQualifier.ResourceType")
+            {
                 event.rename("json.EvaluationResultIdentifier.EvaluationResultQualifier.ResourceType", "aws.config.evaluation_result_identifier.evaluation_result_qualifier.resource_type")?;
             }
 
@@ -714,7 +720,7 @@ impl Transform for Default {
                 event.set("resource.type", v)?;
             }
 
-            if event.has("json.ComplianceType") {
+            if event.has_value("json.ComplianceType") {
                 event.rename("json.ComplianceType", "aws.config.compliance_type")?;
             }
 
@@ -759,7 +765,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ConfigRuleInfo.Scope.TagValue") {
+            if event.has_value("json.ConfigRuleInfo.Scope.TagValue") {
                 event.rename(
                     "json.ConfigRuleInfo.Scope.TagValue",
                     "aws.config.rule_info.scope.tag_value",

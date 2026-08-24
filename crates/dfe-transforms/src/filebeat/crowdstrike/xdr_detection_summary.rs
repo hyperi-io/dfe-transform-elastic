@@ -36,11 +36,11 @@ impl Transform for XdrDetectionSummary {
                 )?;
             }
 
-            if event.has("crowdstrike.event.Name") {
+            if event.has_value("crowdstrike.event.Name") {
                 event.rename("crowdstrike.event.Name", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.DetectId") {
+            if event.has_value("crowdstrike.event.DetectId") {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
@@ -56,7 +56,7 @@ impl Transform for XdrDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.Description") {
+            if event.has_value("crowdstrike.event.Description") {
                 event.rename("crowdstrike.event.Description", "message")?;
             }
 

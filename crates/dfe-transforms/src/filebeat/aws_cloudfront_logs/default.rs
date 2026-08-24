@@ -28,7 +28,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -260,7 +260,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("_tmp.x_edge_location") {
+            if event.has_value("_tmp.x_edge_location") {
                 event.rename("_tmp.x_edge_location", "aws.cloudfront.edge_location")?;
             }
 
@@ -276,7 +276,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("_tmp.c_ip") {
+            if event.has_value("_tmp.c_ip") {
                 event.rename("_tmp.c_ip", "source.address")?;
             }
 
@@ -308,11 +308,11 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("_tmp.cs_method") {
+            if event.has_value("_tmp.cs_method") {
                 event.rename("_tmp.cs_method", "http.request.method")?;
             }
 
-            if event.has("_tmp.cs_host") {
+            if event.has_value("_tmp.cs_host") {
                 event.rename("_tmp.cs_host", "aws.cloudfront.domain")?;
             }
 
@@ -328,7 +328,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("_tmp.cs_uri_stem") {
+            if event.has_value("_tmp.cs_uri_stem") {
                 event.rename("_tmp.cs_uri_stem", "url.path")?;
             }
 
@@ -348,7 +348,7 @@ impl Transform for Default {
                 event.has_value("_tmp.cs_referer") && event.get_str("_tmp.cs_referer") != Some("-")
             };
             if _cond {
-                if event.has("_tmp.cs_referer") {
+                if event.has_value("_tmp.cs_referer") {
                     event.rename("_tmp.cs_referer", "http.request.referrer")?;
                 }
             }
@@ -411,15 +411,15 @@ impl Transform for Default {
                 event.rename("_tmp.cs_cookie", "aws.cloudfront.cookies")?;
             }
 
-            if event.has("_tmp.x_edge_result_type") {
+            if event.has_value("_tmp.x_edge_result_type") {
                 event.rename("_tmp.x_edge_result_type", "aws.cloudfront.edge_result_type")?;
             }
 
-            if event.has("_tmp.x_edge_request_id") {
+            if event.has_value("_tmp.x_edge_request_id") {
                 event.rename("_tmp.x_edge_request_id", "http.request.id")?;
             }
 
-            if event.has("_tmp.x_host_header") {
+            if event.has_value("_tmp.x_host_header") {
                 event.rename("_tmp.x_host_header", "destination.address")?;
             }
 
@@ -443,7 +443,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("_tmp.cs_protocol") {
+            if event.has_value("_tmp.cs_protocol") {
                 event.rename("_tmp.cs_protocol", "network.protocol")?;
             }
 
@@ -630,12 +630,12 @@ impl Transform for Default {
                 event.has_value("_tmp.ssl_cipher") && event.get_str("_tmp.ssl_cipher") != Some("-")
             };
             if _cond {
-                if event.has("_tmp.ssl_cipher") {
+                if event.has_value("_tmp.ssl_cipher") {
                     event.rename("_tmp.ssl_cipher", "tls.cipher")?;
                 }
             }
 
-            if event.has("_tmp.x_edge_response_result_type") {
+            if event.has_value("_tmp.x_edge_response_result_type") {
                 event.rename(
                     "_tmp.x_edge_response_result_type",
                     "aws.cloudfront.edge_response_result_type",
@@ -729,7 +729,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("_tmp.sc_content_type") {
+            if event.has_value("_tmp.sc_content_type") {
                 event.rename("_tmp.sc_content_type", "http.response.mime_type")?;
             }
 
@@ -801,7 +801,7 @@ impl Transform for Default {
                 uri_parts(event, "_tmp.url_full", "url", false, false)?;
             }
 
-            if event.has("_tmp.url_full") {
+            if event.has_value("_tmp.url_full") {
                 event.rename("_tmp.url_full", "url.full")?;
             }
 
@@ -894,11 +894,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 

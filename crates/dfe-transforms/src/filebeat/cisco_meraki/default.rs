@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -716,10 +716,10 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("priority") {
+                if event.has_value("priority") {
                     event.rename("priority", "cisco_meraki.security.priority")?;
                 }
-                if event.has("signature") {
+                if event.has_value("signature") {
                     event.rename("signature", "cisco_meraki.security.signature")?;
                 }
                 if event.has_value("dhost") {
@@ -731,13 +731,13 @@ impl Transform for Default {
                         "-",
                     )?;
                 }
-                if event.has("direction") {
+                if event.has_value("direction") {
                     event.rename("direction", "network.direction")?;
                 }
                 if event.has_value("protocol") {
                     map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
                 }
-                if event.has("decision") {
+                if event.has_value("decision") {
                     event.rename("decision", "cisco_meraki.security.decision")?;
                 }
                 let _cond = { event.has_value("url") };
@@ -757,16 +757,16 @@ impl Transform for Default {
                         "-",
                     )?;
                 }
-                if event.has("name") {
+                if event.has_value("name") {
                     event.rename("name", "file.name")?;
                 }
-                if event.has("sha256") {
+                if event.has_value("sha256") {
                     event.rename("sha256", "file.hash.sha256")?;
                 }
-                if event.has("disposition") {
+                if event.has_value("disposition") {
                     event.rename("disposition", "cisco_meraki.disposition")?;
                 }
-                if event.has("action") {
+                if event.has_value("action") {
                     event.rename("action", "cisco_meraki.security.action")?;
                 }
                 let _cond = {
@@ -2920,11 +2920,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -2983,11 +2983,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -3048,11 +3048,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("client.as.asn") {
+            if event.has_value("client.as.asn") {
                 event.rename("client.as.asn", "client.as.number")?;
             }
 
-            if event.has("client.as.organization_name") {
+            if event.has_value("client.as.organization_name") {
                 event.rename("client.as.organization_name", "client.as.organization.name")?;
             }
 

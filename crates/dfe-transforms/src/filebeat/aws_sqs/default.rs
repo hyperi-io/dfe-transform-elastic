@@ -32,63 +32,63 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("aws.sqs.metrics.ApproximateAgeOfOldestMessage.max") {
+            if event.has_value("aws.sqs.metrics.ApproximateAgeOfOldestMessage.max") {
                 event.rename(
                     "aws.sqs.metrics.ApproximateAgeOfOldestMessage.max",
                     "aws.sqs.oldest_message_age.sec",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.ApproximateNumberOfMessagesDelayed.avg") {
+            if event.has_value("aws.sqs.metrics.ApproximateNumberOfMessagesDelayed.avg") {
                 event.rename(
                     "aws.sqs.metrics.ApproximateNumberOfMessagesDelayed.avg",
                     "aws.sqs.messages.delayed",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.ApproximateNumberOfMessagesNotVisible.avg") {
+            if event.has_value("aws.sqs.metrics.ApproximateNumberOfMessagesNotVisible.avg") {
                 event.rename(
                     "aws.sqs.metrics.ApproximateNumberOfMessagesNotVisible.avg",
                     "aws.sqs.messages.not_visible",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.ApproximateNumberOfMessagesVisible.avg") {
+            if event.has_value("aws.sqs.metrics.ApproximateNumberOfMessagesVisible.avg") {
                 event.rename(
                     "aws.sqs.metrics.ApproximateNumberOfMessagesVisible.avg",
                     "aws.sqs.messages.visible",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.NumberOfMessagesDeleted.sum") {
+            if event.has_value("aws.sqs.metrics.NumberOfMessagesDeleted.sum") {
                 event.rename(
                     "aws.sqs.metrics.NumberOfMessagesDeleted.sum",
                     "aws.sqs.messages.deleted",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.NumberOfMessagesReceived.sum") {
+            if event.has_value("aws.sqs.metrics.NumberOfMessagesReceived.sum") {
                 event.rename(
                     "aws.sqs.metrics.NumberOfMessagesReceived.sum",
                     "aws.sqs.messages.received",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.NumberOfMessagesSent.sum") {
+            if event.has_value("aws.sqs.metrics.NumberOfMessagesSent.sum") {
                 event.rename(
                     "aws.sqs.metrics.NumberOfMessagesSent.sum",
                     "aws.sqs.messages.sent",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.NumberOfEmptyReceives.sum") {
+            if event.has_value("aws.sqs.metrics.NumberOfEmptyReceives.sum") {
                 event.rename(
                     "aws.sqs.metrics.NumberOfEmptyReceives.sum",
                     "aws.sqs.empty_receives",
                 )?;
             }
 
-            if event.has("aws.sqs.metrics.SentMessageSize.avg") {
+            if event.has_value("aws.sqs.metrics.SentMessageSize.avg") {
                 event.rename(
                     "aws.sqs.metrics.SentMessageSize.avg",
                     "aws.sqs.sent_message_size.bytes",

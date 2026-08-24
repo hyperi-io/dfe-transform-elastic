@@ -40,15 +40,15 @@ impl Transform for ReconNotificationSummary {
                 )?;
             }
 
-            if event.has("crowdstrike.event.ItemId") {
+            if event.has_value("crowdstrike.event.ItemId") {
                 event.rename("crowdstrike.event.ItemId", "event.id")?;
             }
 
-            if event.has("crowdstrike.event.RuleId") {
+            if event.has_value("crowdstrike.event.RuleId") {
                 event.rename("crowdstrike.event.RuleId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.RuleName") {
+            if event.has_value("crowdstrike.event.RuleName") {
                 event.rename("crowdstrike.event.RuleName", "rule.name")?;
             }
 
@@ -60,7 +60,7 @@ impl Transform for ReconNotificationSummary {
                 event.set("rule.ruleset", v)?;
             }
 
-            if event.has("crowdstrike.event.RuleTopic") {
+            if event.has_value("crowdstrike.event.RuleTopic") {
                 event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
             }
 

@@ -359,123 +359,123 @@ impl Transform for PipelineAlert {
             }
             }
 
-                if event.has("json.properties.AlertId") {
+                if event.has_value("json.properties.AlertId") {
                     event.rename("json.properties.AlertId", "m365_defender.event.alert.id")?;
                 }
 
-                if event.has("json.properties.ServiceSource") {
+                if event.has_value("json.properties.ServiceSource") {
                     event.rename("json.properties.ServiceSource", "m365_defender.event.service_source")?;
                 }
 
-                if event.has("json.properties.DeviceName") {
+                if event.has_value("json.properties.DeviceName") {
                     event.rename("json.properties.DeviceName", "m365_defender.event.device.name")?;
                 }
 
-                if event.has("json.properties.NetworkMessageId") {
+                if event.has_value("json.properties.NetworkMessageId") {
                     event.rename("json.properties.NetworkMessageId", "m365_defender.event.network.message_id")?;
                 }
 
-                if event.has("json.properties.OAuthApplicationId") {
+                if event.has_value("json.properties.OAuthApplicationId") {
                     event.rename("json.properties.OAuthApplicationId", "m365_defender.event.oauth_application_id")?;
                 }
 
-                if event.has("json.properties.RemoteUrl") {
+                if event.has_value("json.properties.RemoteUrl") {
                     event.rename("json.properties.RemoteUrl", "m365_defender.event.remote.url")?;
                 }
 
-                if event.has("json.properties.AttackTechniques") {
+                if event.has_value("json.properties.AttackTechniques") {
                     event.rename("json.properties.AttackTechniques", "m365_defender.event.attack_techniques")?;
                 }
 
-                if event.has("json.properties.AccountObjectId") {
+                if event.has_value("json.properties.AccountObjectId") {
                     event.rename("json.properties.AccountObjectId", "m365_defender.event.account.object_id")?;
                 }
 
-                if event.has("json.properties.Category") {
+                if event.has_value("json.properties.Category") {
                     event.rename("json.properties.Category", "m365_defender.event.alert.category")?;
                 }
 
-                if event.has("json.properties.Categories") {
+                if event.has_value("json.properties.Categories") {
                     event.rename("json.properties.Categories", "m365_defender.event.alert.categories")?;
                 }
 
-                if event.has("json.properties.DetectionSource") {
+                if event.has_value("json.properties.DetectionSource") {
                     event.rename("json.properties.DetectionSource", "m365_defender.event.detection.source")?;
                 }
 
-                if event.has("json.properties.MachineGroup") {
+                if event.has_value("json.properties.MachineGroup") {
                     event.rename("json.properties.MachineGroup", "m365_defender.event.machine_group")?;
                 }
 
-                if event.has("json.properties.DeviceId") {
+                if event.has_value("json.properties.DeviceId") {
                     event.rename("json.properties.DeviceId", "m365_defender.event.device.id")?;
                 }
 
-                if event.has("json.properties.EvidenceDirection") {
+                if event.has_value("json.properties.EvidenceDirection") {
                     event.rename("json.properties.EvidenceDirection", "m365_defender.event.evidence.direction")?;
                 }
 
-                if event.has("json.properties.ProcessCommandLine") {
+                if event.has_value("json.properties.ProcessCommandLine") {
                     event.rename("json.properties.ProcessCommandLine", "m365_defender.event.process.command_line")?;
                 }
 
-                if event.has("json.properties.RegistryKey") {
+                if event.has_value("json.properties.RegistryKey") {
                     event.rename("json.properties.RegistryKey", "m365_defender.event.registry.key")?;
                 }
 
-                if event.has("json.properties.RegistryValueName") {
+                if event.has_value("json.properties.RegistryValueName") {
                     event.rename("json.properties.RegistryValueName", "m365_defender.event.registry.value_name")?;
                 }
 
-                if event.has("json.properties.RegistryValueData") {
+                if event.has_value("json.properties.RegistryValueData") {
                     event.rename("json.properties.RegistryValueData", "m365_defender.event.registry.value_data")?;
                 }
 
-                if event.has("json.properties.SHA1") {
+                if event.has_value("json.properties.SHA1") {
                     event.rename("json.properties.SHA1", "m365_defender.event.sha1")?;
                 }
 
-                if event.has("json.properties.FolderPath") {
+                if event.has_value("json.properties.FolderPath") {
                     event.rename("json.properties.FolderPath", "m365_defender.event.folder_path")?;
                 }
 
-                if event.has("json.properties.SHA256") {
+                if event.has_value("json.properties.SHA256") {
                     event.rename("json.properties.SHA256", "m365_defender.event.sha256")?;
                 }
 
-                if event.has("json.properties.FileName") {
+                if event.has_value("json.properties.FileName") {
                     event.rename("json.properties.FileName", "m365_defender.event.file.name")?;
                 }
 
-                if event.has("json.properties.ThreatFamily") {
+                if event.has_value("json.properties.ThreatFamily") {
                     event.rename("json.properties.ThreatFamily", "m365_defender.event.threat.family")?;
                 }
 
-                if event.has("json.properties.AccountSid") {
+                if event.has_value("json.properties.AccountSid") {
                     event.rename("json.properties.AccountSid", "m365_defender.event.account.sid")?;
                 }
 
-                if event.has("json.properties.AccountName") {
+                if event.has_value("json.properties.AccountName") {
                     event.rename("json.properties.AccountName", "m365_defender.event.account.name")?;
                 }
 
-                if event.has("json.properties.Title") {
+                if event.has_value("json.properties.Title") {
                     event.rename("json.properties.Title", "m365_defender.event.title")?;
                 }
 
-                if event.has("json.properties.AccountDomain") {
+                if event.has_value("json.properties.AccountDomain") {
                     event.rename("json.properties.AccountDomain", "m365_defender.event.account.domain")?;
                 }
 
-                if event.has("json.properties.AccountUpn") {
+                if event.has_value("json.properties.AccountUpn") {
                     event.rename("json.properties.AccountUpn", "m365_defender.event.account.upn")?;
                 }
 
-                if event.has("json.properties.AdditionalFields") {
+                if event.has_value("json.properties.AdditionalFields") {
                     event.rename("json.properties.AdditionalFields", "m365_defender.event.additional_fields")?;
                 }
 
-                if event.has("json.properties.Application") {
+                if event.has_value("json.properties.Application") {
                     event.rename("json.properties.Application", "m365_defender.event.application")?;
                 }
 
@@ -490,55 +490,55 @@ impl Transform for PipelineAlert {
                 }
             }
 
-                if event.has("json.properties.ActionType") {
+                if event.has_value("json.properties.ActionType") {
                     event.rename("json.properties.ActionType", "m365_defender.event.action.type")?;
                 }
 
-                if event.has("json.properties.BehaviorId") {
+                if event.has_value("json.properties.BehaviorId") {
                     event.rename("json.properties.BehaviorId", "m365_defender.event.behavior_id")?;
                 }
 
-                if event.has("json.properties.CloudResourceType") {
+                if event.has_value("json.properties.CloudResourceType") {
                     event.rename("json.properties.CloudResourceType", "m365_defender.event.cloud_resource_type")?;
                 }
 
-                if event.has("json.properties.CloudResourceId") {
+                if event.has_value("json.properties.CloudResourceId") {
                     event.rename("json.properties.CloudResourceId", "m365_defender.event.cloud_resource_id")?;
                 }
 
-                if event.has("json.properties.CloudSubscriptionId") {
+                if event.has_value("json.properties.CloudSubscriptionId") {
                     event.rename("json.properties.CloudSubscriptionId", "m365_defender.event.cloud_subscription_id")?;
                 }
 
-                if event.has("json.properties.CloudPlatform") {
+                if event.has_value("json.properties.CloudPlatform") {
                     event.rename("json.properties.CloudPlatform", "m365_defender.event.cloud_platform")?;
                 }
 
-                if event.has("json.properties.DataSources") {
+                if event.has_value("json.properties.DataSources") {
                     event.rename("json.properties.DataSources", "m365_defender.event.data_sources")?;
                 }
 
-                if event.has("json.properties.Description") {
+                if event.has_value("json.properties.Description") {
                     event.rename("json.properties.Description", "m365_defender.event.description")?;
                 }
 
-                if event.has("json.properties.DetailedEntityRole") {
+                if event.has_value("json.properties.DetailedEntityRole") {
                     event.rename("json.properties.DetailedEntityRole", "m365_defender.event.detailed_entity_role")?;
                 }
 
-                if event.has("json.properties.EmailSubject") {
+                if event.has_value("json.properties.EmailSubject") {
                     event.rename("json.properties.EmailSubject", "m365_defender.event.email.subject")?;
                 }
 
-                if event.has("json.properties.EntityType") {
+                if event.has_value("json.properties.EntityType") {
                     event.rename("json.properties.EntityType", "m365_defender.event.entity_type")?;
                 }
 
-                if event.has("json.properties.EvidenceRole") {
+                if event.has_value("json.properties.EvidenceRole") {
                     event.rename("json.properties.EvidenceRole", "m365_defender.event.evidence.role")?;
                 }
 
-                if event.has("json.properties.EntityRole") {
+                if event.has_value("json.properties.EntityRole") {
                     event.rename("json.properties.EntityRole", "m365_defender.event.entity_role")?;
                 }
 

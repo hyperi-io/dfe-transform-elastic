@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -83,7 +83,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            if event.has("resp.event") {
+            if event.has_value("resp.event") {
                 event.rename("resp.event", "json")?;
             }
 
@@ -120,7 +120,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            if event.has("json.actiontaken") {
+            if event.has_value("json.actiontaken") {
                 event.rename("json.actiontaken", "zscaler_zia.endpoint_dlp.action_taken")?;
             }
 
@@ -204,32 +204,32 @@ impl Transform for Default {
                 event.append_unique("event.type", json!("denied"))?;
             }
 
-            if event.has("json.activitytype") {
+            if event.has_value("json.activitytype") {
                 event.rename(
                     "json.activitytype",
                     "zscaler_zia.endpoint_dlp.activity_type",
                 )?;
             }
 
-            if event.has("json.additionalinfo") {
+            if event.has_value("json.additionalinfo") {
                 event.rename(
                     "json.additionalinfo",
                     "zscaler_zia.endpoint_dlp.additional_info",
                 )?;
             }
 
-            if event.has("json.channel") {
+            if event.has_value("json.channel") {
                 event.rename("json.channel", "zscaler_zia.endpoint_dlp.channel")?;
             }
 
-            if event.has("json.confirmaction") {
+            if event.has_value("json.confirmaction") {
                 event.rename(
                     "json.confirmaction",
                     "zscaler_zia.endpoint_dlp.confirm_action",
                 )?;
             }
 
-            if event.has("json.confirmjustification") {
+            if event.has_value("json.confirmjustification") {
                 event.rename(
                     "json.confirmjustification",
                     "zscaler_zia.endpoint_dlp.confirm_just",
@@ -287,32 +287,32 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.dlpdictcount") {
+            if event.has_value("json.dlpdictcount") {
                 event.rename("json.dlpdictcount", "zscaler_zia.endpoint_dlp.counts")?;
             }
 
-            if event.has("json.datacentercity") {
+            if event.has_value("json.datacentercity") {
                 event.rename(
                     "json.datacentercity",
                     "zscaler_zia.endpoint_dlp.datacenter.city",
                 )?;
             }
 
-            if event.has("json.datacentercountry") {
+            if event.has_value("json.datacentercountry") {
                 event.rename(
                     "json.datacentercountry",
                     "zscaler_zia.endpoint_dlp.datacenter.country",
                 )?;
             }
 
-            if event.has("json.datacenter") {
+            if event.has_value("json.datacenter") {
                 event.rename(
                     "json.datacenter",
                     "zscaler_zia.endpoint_dlp.datacenter.name",
                 )?;
             }
 
-            if event.has("json.day") {
+            if event.has_value("json.day") {
                 event.rename("json.day", "zscaler_zia.endpoint_dlp.day")?;
             }
 
@@ -363,22 +363,22 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.department") {
+            if event.has_value("json.department") {
                 event.rename("json.department", "zscaler_zia.endpoint_dlp.department")?;
             }
 
-            if event.has("json.dsttype") {
+            if event.has_value("json.dsttype") {
                 event.rename("json.dsttype", "zscaler_zia.endpoint_dlp.destination_type")?;
             }
 
-            if event.has("json.deviceappversion") {
+            if event.has_value("json.deviceappversion") {
                 event.rename(
                     "json.deviceappversion",
                     "zscaler_zia.endpoint_dlp.device.appversion",
                 )?;
             }
 
-            if event.has("json.devicehostname") {
+            if event.has_value("json.devicehostname") {
                 event.rename(
                     "json.devicehostname",
                     "zscaler_zia.endpoint_dlp.device.hostname",
@@ -440,7 +440,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.devicemodel") {
+            if event.has_value("json.devicemodel") {
                 event.rename("json.devicemodel", "zscaler_zia.endpoint_dlp.device.model")?;
             }
 
@@ -452,7 +452,7 @@ impl Transform for Default {
                 event.set("device.model.identifier", v)?;
             }
 
-            if event.has("json.devicename") {
+            if event.has_value("json.devicename") {
                 event.rename("json.devicename", "zscaler_zia.endpoint_dlp.device.name")?;
             }
 
@@ -476,14 +476,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.deviceostype") {
+            if event.has_value("json.deviceostype") {
                 event.rename(
                     "json.deviceostype",
                     "zscaler_zia.endpoint_dlp.device.os.type",
                 )?;
             }
 
-            if event.has("json.deviceosversion") {
+            if event.has_value("json.deviceosversion") {
                 event.rename(
                     "json.deviceosversion",
                     "zscaler_zia.endpoint_dlp.device.os.version",
@@ -498,7 +498,7 @@ impl Transform for Default {
                 event.set("host.os.version", v)?;
             }
 
-            if event.has("json.deviceowner") {
+            if event.has_value("json.deviceowner") {
                 event.rename("json.deviceowner", "zscaler_zia.endpoint_dlp.device.owner")?;
             }
 
@@ -514,7 +514,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.deviceplatform") {
+            if event.has_value("json.deviceplatform") {
                 event.rename(
                     "json.deviceplatform",
                     "zscaler_zia.endpoint_dlp.device.platform",
@@ -529,7 +529,7 @@ impl Transform for Default {
                 event.set("host.os.platform", v)?;
             }
 
-            if event.has("json.devicetype") {
+            if event.has_value("json.devicetype") {
                 event.rename("json.devicetype", "zscaler_zia.endpoint_dlp.device.type")?;
             }
 
@@ -642,7 +642,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.dlpdictnames") {
+            if event.has_value("json.dlpdictnames") {
                 event.rename(
                     "json.dlpdictnames",
                     "zscaler_zia.endpoint_dlp.dictionary_names",
@@ -750,14 +750,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.dlpenginenames") {
+            if event.has_value("json.dlpenginenames") {
                 event.rename(
                     "json.dlpenginenames",
                     "zscaler_zia.endpoint_dlp.engine_names",
                 )?;
             }
 
-            if event.has("json.timezone") {
+            if event.has_value("json.timezone") {
                 event.rename("json.timezone", "zscaler_zia.endpoint_dlp.timezone")?;
             }
 
@@ -835,7 +835,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.expectedaction") {
+            if event.has_value("json.expectedaction") {
                 event.rename(
                     "json.expectedaction",
                     "zscaler_zia.endpoint_dlp.expected_action",
@@ -902,7 +902,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filedstpath") {
+            if event.has_value("json.filedstpath") {
                 event.rename(
                     "json.filedstpath",
                     "zscaler_zia.endpoint_dlp.file.destination_path",
@@ -917,11 +917,11 @@ impl Transform for Default {
                 event.set("file.path", v)?;
             }
 
-            if event.has("json.filedoctype") {
+            if event.has_value("json.filedoctype") {
                 event.rename("json.filedoctype", "zscaler_zia.endpoint_dlp.file.doc_type")?;
             }
 
-            if event.has("json.filemd5") {
+            if event.has_value("json.filemd5") {
                 event.rename("json.filemd5", "zscaler_zia.endpoint_dlp.file.md5")?;
             }
 
@@ -945,7 +945,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filesha") {
+            if event.has_value("json.filesha") {
                 event.rename("json.filesha", "zscaler_zia.endpoint_dlp.file.sha256")?;
             }
 
@@ -969,14 +969,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filesrcpath") {
+            if event.has_value("json.filesrcpath") {
                 event.rename(
                     "json.filesrcpath",
                     "zscaler_zia.endpoint_dlp.file.source_path",
                 )?;
             }
 
-            if event.has("json.filetypename") {
+            if event.has_value("json.filetypename") {
                 event.rename(
                     "json.filetypename",
                     "zscaler_zia.endpoint_dlp.file.type.name",
@@ -985,7 +985,7 @@ impl Transform for Default {
 
             event.set("file.type", json!("file"))?;
 
-            if event.has("json.filetypecategory") {
+            if event.has_value("json.filetypecategory") {
                 event.rename(
                     "json.filetypecategory",
                     "zscaler_zia.endpoint_dlp.file.type_category",
@@ -1051,29 +1051,29 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.itemdstname") {
+            if event.has_value("json.itemdstname") {
                 event.rename(
                     "json.itemdstname",
                     "zscaler_zia.endpoint_dlp.item.destination_name",
                 )?;
             }
 
-            if event.has("json.itemname") {
+            if event.has_value("json.itemname") {
                 event.rename("json.itemname", "zscaler_zia.endpoint_dlp.item.name")?;
             }
 
-            if event.has("json.itemsrcname") {
+            if event.has_value("json.itemsrcname") {
                 event.rename(
                     "json.itemsrcname",
                     "zscaler_zia.endpoint_dlp.item.source_name",
                 )?;
             }
 
-            if event.has("json.itemtype") {
+            if event.has_value("json.itemtype") {
                 event.rename("json.itemtype", "zscaler_zia.endpoint_dlp.item.type")?;
             }
 
-            if event.has("json.logtype") {
+            if event.has_value("json.logtype") {
                 event.rename("json.logtype", "zscaler_zia.endpoint_dlp.log_type")?;
             }
 
@@ -1124,7 +1124,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.mon") {
+            if event.has_value("json.mon") {
                 event.rename("json.mon", "zscaler_zia.endpoint_dlp.month")?;
             }
 
@@ -1175,102 +1175,102 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.odepartment") {
+            if event.has_value("json.odepartment") {
                 event.rename(
                     "json.odepartment",
                     "zscaler_zia.endpoint_dlp.obfuscated.department",
                 )?;
             }
 
-            if event.has("json.odevicehostname") {
+            if event.has_value("json.odevicehostname") {
                 event.rename(
                     "json.odevicehostname",
                     "zscaler_zia.endpoint_dlp.obfuscated.device.hostname",
                 )?;
             }
 
-            if event.has("json.odevicename") {
+            if event.has_value("json.odevicename") {
                 event.rename(
                     "json.odevicename",
                     "zscaler_zia.endpoint_dlp.obfuscated.device.name",
                 )?;
             }
 
-            if event.has("json.odeviceowner") {
+            if event.has_value("json.odeviceowner") {
                 event.rename(
                     "json.odeviceowner",
                     "zscaler_zia.endpoint_dlp.obfuscated.device.owner",
                 )?;
             }
 
-            if event.has("json.odlpdictnames") {
+            if event.has_value("json.odlpdictnames") {
                 event.rename(
                     "json.odlpdictnames",
                     "zscaler_zia.endpoint_dlp.obfuscated.dlp.dictionary_names",
                 )?;
             }
 
-            if event.has("json.odlpenginenames") {
+            if event.has_value("json.odlpenginenames") {
                 event.rename(
                     "json.odlpenginenames",
                     "zscaler_zia.endpoint_dlp.obfuscated.dlp.engine_names",
                 )?;
             }
 
-            if event.has("json.ofiledstpath") {
+            if event.has_value("json.ofiledstpath") {
                 event.rename(
                     "json.ofiledstpath",
                     "zscaler_zia.endpoint_dlp.obfuscated.file.destination_path",
                 )?;
             }
 
-            if event.has("json.ofilesrcpath") {
+            if event.has_value("json.ofilesrcpath") {
                 event.rename(
                     "json.ofilesrcpath",
                     "zscaler_zia.endpoint_dlp.obfuscated.file.source_path",
                 )?;
             }
 
-            if event.has("json.oitemdstname") {
+            if event.has_value("json.oitemdstname") {
                 event.rename(
                     "json.oitemdstname",
                     "zscaler_zia.endpoint_dlp.obfuscated.item.destination_names",
                 )?;
             }
 
-            if event.has("json.oitemname") {
+            if event.has_value("json.oitemname") {
                 event.rename(
                     "json.oitemname",
                     "zscaler_zia.endpoint_dlp.obfuscated.item.name",
                 )?;
             }
 
-            if event.has("json.oitemsrcname") {
+            if event.has_value("json.oitemsrcname") {
                 event.rename(
                     "json.oitemsrcname",
                     "zscaler_zia.endpoint_dlp.obfuscated.item.source_names",
                 )?;
             }
 
-            if event.has("json.ootherrulelabels") {
+            if event.has_value("json.ootherrulelabels") {
                 event.rename(
                     "json.ootherrulelabels",
                     "zscaler_zia.endpoint_dlp.obfuscated.other_rule_labels",
                 )?;
             }
 
-            if event.has("json.orulename") {
+            if event.has_value("json.orulename") {
                 event.rename(
                     "json.orulename",
                     "zscaler_zia.endpoint_dlp.obfuscated.triggered_rule_label",
                 )?;
             }
 
-            if event.has("json.ouser") {
+            if event.has_value("json.ouser") {
                 event.rename("json.ouser", "zscaler_zia.endpoint_dlp.obfuscated.user")?;
             }
 
-            if event.has("json.otherrulelabels") {
+            if event.has_value("json.otherrulelabels") {
                 event.rename(
                     "json.otherrulelabels",
                     "zscaler_zia.endpoint_dlp.other_rule_labels",
@@ -1452,11 +1452,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.severity") {
+            if event.has_value("json.severity") {
                 event.rename("json.severity", "zscaler_zia.endpoint_dlp.severity")?;
             }
 
-            if event.has("json.srctype") {
+            if event.has_value("json.srctype") {
                 event.rename("json.srctype", "zscaler_zia.endpoint_dlp.source_type")?;
             }
 
@@ -1526,7 +1526,7 @@ impl Transform for Default {
                 event.set("@timestamp", v)?;
             }
 
-            if event.has("json.rulename") {
+            if event.has_value("json.rulename") {
                 event.rename(
                     "json.rulename",
                     "zscaler_zia.endpoint_dlp.triggered_rule_label",
@@ -1545,7 +1545,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.user") {
+            if event.has_value("json.user") {
                 event.rename("json.user", "zscaler_zia.endpoint_dlp.user")?;
             }
 
@@ -1598,7 +1598,7 @@ impl Transform for Default {
                         "_ingest.on_failure_processor_tag",
                         "create_user_name_and_user_domain",
                     )?;
-                    if event.has("user.email") {
+                    if event.has_value("user.email") {
                         event.rename("user.email", "user.name")?;
                     }
                     event.remove("_ingest.on_failure_message");
@@ -1681,7 +1681,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.zdpmode") {
+            if event.has_value("json.zdpmode") {
                 event.rename("json.zdpmode", "zscaler_zia.endpoint_dlp.zdp_mode")?;
             }
 

@@ -32,21 +32,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("aws.s3.metrics.NumberOfObjects.avg") {
+            if event.has_value("aws.s3.metrics.NumberOfObjects.avg") {
                 event.rename(
                     "aws.s3.metrics.NumberOfObjects.avg",
                     "aws.s3_daily_storage.number_of_objects",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.BucketSizeBytes.avg") {
+            if event.has_value("aws.s3.metrics.BucketSizeBytes.avg") {
                 event.rename(
                     "aws.s3.metrics.BucketSizeBytes.avg",
                     "aws.s3_daily_storage.bucket.size.bytes",
                 )?;
             }
 
-            if event.has("aws.dimensions.BucketName") {
+            if event.has_value("aws.dimensions.BucketName") {
                 event.rename("aws.dimensions.BucketName", "aws.s3.bucket.name")?;
             }
 

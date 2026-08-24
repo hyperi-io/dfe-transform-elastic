@@ -29,7 +29,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -60,14 +60,14 @@ impl Transform for Default {
 
             event.append("event.category", json!("vulnerability"))?;
 
-            if event.has("json.application") {
+            if event.has_value("json.application") {
                 event.rename(
                     "json.application",
                     "sentinel_one.application_risk.application",
                 )?;
             }
 
-            if event.has("json.applicationName") {
+            if event.has_value("json.applicationName") {
                 event.rename(
                     "json.applicationName",
                     "sentinel_one.application_risk.application_name",
@@ -82,14 +82,14 @@ impl Transform for Default {
                 event.set("package.name", v)?;
             }
 
-            if event.has("json.applicationVendor") {
+            if event.has_value("json.applicationVendor") {
                 event.rename(
                     "json.applicationVendor",
                     "sentinel_one.application_risk.application_vendor",
                 )?;
             }
 
-            if event.has("json.applicationVersion") {
+            if event.has_value("json.applicationVersion") {
                 event.rename(
                     "json.applicationVersion",
                     "sentinel_one.application_risk.application_version",
@@ -159,7 +159,7 @@ impl Transform for Default {
                 event.set("vulnerability.score.base", v)?;
             }
 
-            if event.has("json.cveId") {
+            if event.has_value("json.cveId") {
                 event.rename("json.cveId", "sentinel_one.application_risk.cve_id")?;
             }
 
@@ -179,7 +179,7 @@ impl Transform for Default {
                 event.set("vulnerability.cve", v)?;
             }
 
-            if event.has("json.cvssVersion") {
+            if event.has_value("json.cvssVersion") {
                 event.rename(
                     "json.cvssVersion",
                     "sentinel_one.application_risk.cvss_version",
@@ -326,7 +326,7 @@ impl Transform for Default {
                 event.set("resource.id", v)?;
             }
 
-            if event.has("json.endpointName") {
+            if event.has_value("json.endpointName") {
                 event.rename(
                     "json.endpointName",
                     "sentinel_one.application_risk.endpoint_name",
@@ -341,7 +341,7 @@ impl Transform for Default {
                 event.set("resource.name", v)?;
             }
 
-            if event.has("json.endpointType") {
+            if event.has_value("json.endpointType") {
                 event.rename(
                     "json.endpointType",
                     "sentinel_one.application_risk.endpoint_type",
@@ -356,7 +356,7 @@ impl Transform for Default {
                 event.set("host.type", v)?;
             }
 
-            if event.has("json.exploitCodeMaturity") {
+            if event.has_value("json.exploitCodeMaturity") {
                 event.rename(
                     "json.exploitCodeMaturity",
                     "sentinel_one.application_risk.exploit_code_maturity",
@@ -443,7 +443,7 @@ impl Transform for Default {
                 event.set("@timestamp", v)?;
             }
 
-            if event.has("json.lastScanResult") {
+            if event.has_value("json.lastScanResult") {
                 event.rename(
                     "json.lastScanResult",
                     "sentinel_one.application_risk.last_scan_result",
@@ -472,11 +472,11 @@ impl Transform for Default {
                 event.set("event.outcome", json!("unknown"))?;
             }
 
-            if event.has("json.markType") {
+            if event.has_value("json.markType") {
                 event.rename("json.markType", "sentinel_one.application_risk.mark_type")?;
             }
 
-            if event.has("json.markedBy") {
+            if event.has_value("json.markedBy") {
                 event.rename("json.markedBy", "sentinel_one.application_risk.marked_by")?;
             }
 
@@ -539,7 +539,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.mitigationStatus") {
+            if event.has_value("json.mitigationStatus") {
                 event.rename(
                     "json.mitigationStatus",
                     "sentinel_one.application_risk.mitigation_status",
@@ -607,14 +607,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.mitigationStatusChangedBy") {
+            if event.has_value("json.mitigationStatusChangedBy") {
                 event.rename(
                     "json.mitigationStatusChangedBy",
                     "sentinel_one.application_risk.mitigation_status_changed_by",
                 )?;
             }
 
-            if event.has("json.mitigationStatusReason") {
+            if event.has_value("json.mitigationStatusReason") {
                 event.rename(
                     "json.mitigationStatusReason",
                     "sentinel_one.application_risk.mitigation_status_reason",
@@ -671,14 +671,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.nvdCvssVersion") {
+            if event.has_value("json.nvdCvssVersion") {
                 event.rename(
                     "json.nvdCvssVersion",
                     "sentinel_one.application_risk.nvd_cvss_version",
                 )?;
             }
 
-            if event.has("json.osType") {
+            if event.has_value("json.osType") {
                 event.rename("json.osType", "sentinel_one.application_risk.os_type")?;
             }
 
@@ -765,7 +765,7 @@ impl Transform for Default {
                 event.set("event.created", v)?;
             }
 
-            if event.has("json.reason") {
+            if event.has_value("json.reason") {
                 event.rename("json.reason", "sentinel_one.application_risk.reason")?;
             }
 
@@ -777,14 +777,14 @@ impl Transform for Default {
                 event.set("event.reason", v)?;
             }
 
-            if event.has("json.remediationLevel") {
+            if event.has_value("json.remediationLevel") {
                 event.rename(
                     "json.remediationLevel",
                     "sentinel_one.application_risk.remediation_level",
                 )?;
             }
 
-            if event.has("json.reportConfidence") {
+            if event.has_value("json.reportConfidence") {
                 event.rename(
                     "json.reportConfidence",
                     "sentinel_one.application_risk.report_confidence",
@@ -838,7 +838,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.severity") {
+            if event.has_value("json.severity") {
                 event.rename("json.severity", "sentinel_one.application_risk.severity")?;
             }
 
@@ -888,7 +888,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.status") {
+            if event.has_value("json.status") {
                 event.rename("json.status", "sentinel_one.application_risk.status")?;
             }
 

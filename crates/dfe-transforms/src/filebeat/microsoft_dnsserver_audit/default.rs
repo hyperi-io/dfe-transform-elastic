@@ -177,7 +177,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("dns.question.domain") {
+            if event.has_value("dns.question.domain") {
                 event.rename("dns.question.domain", "dns.question.name")?;
             }
 
@@ -301,15 +301,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("winlog.process") {
+            if event.has_value("winlog.process") {
                 event.rename("winlog.process", "process")?;
             }
 

@@ -531,7 +531,7 @@ impl Transform for Decryption {
                 Ok(())
             })();
 
-            if event.has("_temp_.config_version") {
+            if event.has_value("_temp_.config_version") {
                 event.rename("_temp_.config_version", "panw.panos.config_version")?;
             }
 

@@ -142,18 +142,18 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.userIdentity.type") {
+            if event.has_value("json.userIdentity.type") {
                 event.rename(
                     "json.userIdentity.type",
                     "aws.cloudtrail.user_identity.type",
                 )?;
             }
 
-            if event.has("json.userIdentity.userName") {
+            if event.has_value("json.userIdentity.userName") {
                 event.rename("json.userIdentity.userName", "user.name")?;
             }
 
-            if event.has("json.userIdentity.principalId") {
+            if event.has_value("json.userIdentity.principalId") {
                 event.rename("json.userIdentity.principalId", "user.id")?;
             }
 
@@ -223,7 +223,7 @@ impl Transform for Default {
                     || event.get_str("aws.cloudtrail.user_identity.type") == Some("FederatedUser")
             };
             if _cond {
-                if event.has("json.userIdentity.sessionContext.sessionIssuer.userName") {
+                if event.has_value("json.userIdentity.sessionContext.sessionIssuer.userName") {
                     event.rename_over(
                         "json.userIdentity.sessionContext.sessionIssuer.userName",
                         "user.name",
@@ -233,7 +233,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.userIdentity.sessionContext.sessionIssuer.principalId") {
+                if event.has_value("json.userIdentity.sessionContext.sessionIssuer.principalId") {
                     event.rename(
                         "json.userIdentity.sessionContext.sessionIssuer.principalId",
                         "aws.cloudtrail.user_identity.session_context.session_issuer.principal_id",
@@ -345,7 +345,7 @@ impl Transform for Default {
                     && !event.has_value("user.id")
             };
             if _cond {
-                if event.has("json.userIdentity.onBehalfOf.userId") {
+                if event.has_value("json.userIdentity.onBehalfOf.userId") {
                     event.rename("json.userIdentity.onBehalfOf.userId", "user.id")?;
                 }
             }
@@ -370,7 +370,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.sessionCredentialFromConsole") {
+                if event.has_value("json.sessionCredentialFromConsole") {
                     event.rename(
                         "json.sessionCredentialFromConsole",
                         "aws.cloudtrail.session_credential_from_console",
@@ -493,11 +493,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -928,11 +928,11 @@ impl Transform for Default {
                 event.remove("json.insightDetails");
             }
 
-            if event.has("aws.cloudtrail.digest") {
+            if event.has_value("aws.cloudtrail.digest") {
                 event.rename("aws.cloudtrail.digest", "aws.cloudtrail.flattened.digest")?;
             }
 
-            if event.has("json.insightDetails") {
+            if event.has_value("json.insightDetails") {
                 event.rename(
                     "json.insightDetails",
                     "aws.cloudtrail.flattened.insight_details",
@@ -1005,11 +1005,11 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.tlsDetails.cipherSuite") {
+            if event.has_value("json.tlsDetails.cipherSuite") {
                 event.rename("json.tlsDetails.cipherSuite", "tls.cipher")?;
             }
 
-            if event.has("json.tlsDetails.clientProvidedHostHeader") {
+            if event.has_value("json.tlsDetails.clientProvidedHostHeader") {
                 event.rename(
                     "json.tlsDetails.clientProvidedHostHeader",
                     "tls.client.server_name",

@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -100,7 +100,7 @@ impl Transform for Default {
 
             event.set("observer.product", json!("Proofpoint On Demand"))?;
 
-            if event.has("json.audit.action") {
+            if event.has_value("json.audit.action") {
                 event.rename("json.audit.action", "proofpoint_on_demand.audit.action")?;
             }
 
@@ -116,7 +116,7 @@ impl Transform for Default {
                 map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
-            if event.has("json.guid") {
+            if event.has_value("json.guid") {
                 event.rename("json.guid", "proofpoint_on_demand.audit.guid")?;
             }
 
@@ -128,7 +128,7 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            if event.has("json.audit.level") {
+            if event.has_value("json.audit.level") {
                 event.rename("json.audit.level", "proofpoint_on_demand.audit.level")?;
             }
 
@@ -140,7 +140,7 @@ impl Transform for Default {
                 event.set("log.level", v)?;
             }
 
-            if event.has("json.metadata.customerId") {
+            if event.has_value("json.metadata.customerId") {
                 event.rename(
                     "json.metadata.customerId",
                     "proofpoint_on_demand.audit.metadata.customer_id",
@@ -173,7 +173,7 @@ impl Transform for Default {
                         "_ingest.on_failure_processor_tag",
                         "convert_metadata_origin_data_agent_to_ip",
                     )?;
-                    if event.has("json.metadata.origin.data.agent") {
+                    if event.has_value("json.metadata.origin.data.agent") {
                         event.rename(
                             "json.metadata.origin.data.agent",
                             "proofpoint_on_demand.audit.metadata.origin.data.agent",
@@ -235,7 +235,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.metadata.origin.data.cid") {
+            if event.has_value("json.metadata.origin.data.cid") {
                 event.rename(
                     "json.metadata.origin.data.cid",
                     "proofpoint_on_demand.audit.metadata.origin.data.cid",
@@ -288,7 +288,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.metadata.origin.type") {
+            if event.has_value("json.metadata.origin.type") {
                 event.rename(
                     "json.metadata.origin.type",
                     "proofpoint_on_demand.audit.metadata.origin.type",
@@ -351,42 +351,42 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.metadata.trace") {
+            if event.has_value("json.metadata.trace") {
                 event.rename(
                     "json.metadata.trace",
                     "proofpoint_on_demand.audit.metadata.trace",
                 )?;
             }
 
-            if event.has("json.audit.resourceName") {
+            if event.has_value("json.audit.resourceName") {
                 event.rename(
                     "json.audit.resourceName",
                     "proofpoint_on_demand.audit.resource_name",
                 )?;
             }
 
-            if event.has("json.audit.resourceType") {
+            if event.has_value("json.audit.resourceType") {
                 event.rename(
                     "json.audit.resourceType",
                     "proofpoint_on_demand.audit.resource_type",
                 )?;
             }
 
-            if event.has("json.audit.service.cid") {
+            if event.has_value("json.audit.service.cid") {
                 event.rename(
                     "json.audit.service.cid",
                     "proofpoint_on_demand.audit.service.cid",
                 )?;
             }
 
-            if event.has("json.audit.service.customerId") {
+            if event.has_value("json.audit.service.customerId") {
                 event.rename(
                     "json.audit.service.customerId",
                     "proofpoint_on_demand.audit.service.customer_id",
                 )?;
             }
 
-            if event.has("json.audit.service.id") {
+            if event.has_value("json.audit.service.id") {
                 event.rename(
                     "json.audit.service.id",
                     "proofpoint_on_demand.audit.service.id",
@@ -482,7 +482,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.audit.tags") {
+            if event.has_value("json.audit.tags") {
                 event.rename("json.audit.tags", "proofpoint_on_demand.audit.tags")?;
             }
 
@@ -591,7 +591,7 @@ impl Transform for Default {
                 event.set("@timestamp", v)?;
             }
 
-            if event.has("json.audit.user.email") {
+            if event.has_value("json.audit.user.email") {
                 event.rename(
                     "json.audit.user.email",
                     "proofpoint_on_demand.audit.user.email",
@@ -618,7 +618,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.audit.user.id") {
+            if event.has_value("json.audit.user.id") {
                 event.rename("json.audit.user.id", "proofpoint_on_demand.audit.user.id")?;
             }
 
@@ -745,14 +745,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("audit.user.roleAssigned") {
+            if event.has_value("audit.user.roleAssigned") {
                 event.rename(
                     "audit.user.roleAssigned",
                     "proofpoint_on_demand.audit.user.roles_assigned",
                 )?;
             }
 
-            if event.has("json.audit.user.rolesAssigned") {
+            if event.has_value("json.audit.user.rolesAssigned") {
                 event.rename(
                     "json.audit.user.rolesAssigned",
                     "proofpoint_on_demand.audit.user.roles_assigned",

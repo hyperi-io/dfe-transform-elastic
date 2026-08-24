@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -90,7 +90,7 @@ impl Transform for Default {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.url") {
+            if event.has_value("mimecast.url") {
                 event.rename("mimecast.url", "url.original")?;
             }
 
@@ -102,23 +102,23 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("mimecast.userAwarenessAction") {
+            if event.has_value("mimecast.userAwarenessAction") {
                 event.rename("mimecast.userAwarenessAction", "event.action")?;
             }
 
-            if event.has("mimecast.route") {
+            if event.has_value("mimecast.route") {
                 event.rename("mimecast.route", "email.direction")?;
             }
 
-            if event.has("mimecast.ttpDefinition") {
+            if event.has_value("mimecast.ttpDefinition") {
                 event.rename("mimecast.ttpDefinition", "rule.name")?;
             }
 
-            if event.has("mimecast.subject") {
+            if event.has_value("mimecast.subject") {
                 event.rename("mimecast.subject", "email.subject")?;
             }
 
-            if event.has("mimecast.messageId") {
+            if event.has_value("mimecast.messageId") {
                 event.rename("mimecast.messageId", "email.message_id")?;
             }
 

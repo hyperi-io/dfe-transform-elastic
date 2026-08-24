@@ -34,11 +34,11 @@ impl Transform for IpdDetectionSummary {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            if event.has("crowdstrike.event.DetectDescription") {
+            if event.has_value("crowdstrike.event.DetectDescription") {
                 event.rename("crowdstrike.event.DetectDescription", "message")?;
             }
 
-            if event.has("crowdstrike.event.LocationCountryCode") {
+            if event.has_value("crowdstrike.event.LocationCountryCode") {
                 event.rename(
                     "crowdstrike.event.LocationCountryCode",
                     "host.geo.country_iso_code",
@@ -57,19 +57,19 @@ impl Transform for IpdDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.SourceAccountDomain") {
+            if event.has_value("crowdstrike.event.SourceAccountDomain") {
                 event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
             }
 
-            if event.has("crowdstrike.event.SourceAccountName") {
+            if event.has_value("crowdstrike.event.SourceAccountName") {
                 event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
             }
 
-            if event.has("crowdstrike.event.SourceAccountObjectSid") {
+            if event.has_value("crowdstrike.event.SourceAccountObjectSid") {
                 event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
             }
 
-            if event.has("crowdstrike.event.SourceEndpointHostName") {
+            if event.has_value("crowdstrike.event.SourceEndpointHostName") {
                 event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
             }
 
@@ -155,15 +155,15 @@ impl Transform for IpdDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.DetectName") {
+            if event.has_value("crowdstrike.event.DetectName") {
                 event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.DetectId") {
+            if event.has_value("crowdstrike.event.DetectId") {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 

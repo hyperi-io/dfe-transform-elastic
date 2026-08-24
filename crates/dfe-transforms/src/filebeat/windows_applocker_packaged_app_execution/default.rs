@@ -188,7 +188,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.user.name") {
+                    if event.has_value("winlog.user.name") {
                         event.rename("winlog.user.name", "user.name")?;
                     }
                     Ok(())

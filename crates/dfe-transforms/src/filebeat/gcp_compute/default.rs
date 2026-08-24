@@ -29,133 +29,133 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("gcp.metrics.firewall.dropped.bytes") {
+            if event.has_value("gcp.metrics.firewall.dropped.bytes") {
                 event.rename(
                     "gcp.metrics.firewall.dropped.bytes",
                     "gcp.compute.firewall.dropped.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.firewall.dropped_packets_count.value") {
+            if event.has_value("gcp.metrics.firewall.dropped_packets_count.value") {
                 event.rename(
                     "gcp.metrics.firewall.dropped_packets_count.value",
                     "gcp.compute.firewall.dropped_packets_count.value",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.cpu.reserved_cores.value") {
+            if event.has_value("gcp.metrics.instance.cpu.reserved_cores.value") {
                 event.rename(
                     "gcp.metrics.instance.cpu.reserved_cores.value",
                     "gcp.compute.instance.cpu.reserved_cores.value",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.cpu.usage_time.sec") {
+            if event.has_value("gcp.metrics.instance.cpu.usage_time.sec") {
                 event.rename(
                     "gcp.metrics.instance.cpu.usage_time.sec",
                     "gcp.compute.instance.cpu.usage_time.sec",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.cpu.usage.pct") {
+            if event.has_value("gcp.metrics.instance.cpu.usage.pct") {
                 event.rename(
                     "gcp.metrics.instance.cpu.usage.pct",
                     "gcp.compute.instance.cpu.usage.pct",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.disk.read.bytes") {
+            if event.has_value("gcp.metrics.instance.disk.read.bytes") {
                 event.rename(
                     "gcp.metrics.instance.disk.read.bytes",
                     "gcp.compute.instance.disk.read.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.disk.read_ops_count.value") {
+            if event.has_value("gcp.metrics.instance.disk.read_ops_count.value") {
                 event.rename(
                     "gcp.metrics.instance.disk.read_ops_count.value",
                     "gcp.compute.instance.disk.read_ops_count.value",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.disk.write.bytes") {
+            if event.has_value("gcp.metrics.instance.disk.write.bytes") {
                 event.rename(
                     "gcp.metrics.instance.disk.write.bytes",
                     "gcp.compute.instance.disk.write.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.disk.write_ops_count.value") {
+            if event.has_value("gcp.metrics.instance.disk.write_ops_count.value") {
                 event.rename(
                     "gcp.metrics.instance.disk.write_ops_count.value",
                     "gcp.compute.instance.disk.write_ops_count.value",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.memory.balloon.ram_size.value") {
+            if event.has_value("gcp.metrics.instance.memory.balloon.ram_size.value") {
                 event.rename(
                     "gcp.metrics.instance.memory.balloon.ram_size.value",
                     "gcp.compute.instance.memory.balloon.ram_size.value",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.memory.balloon.ram_used.value") {
+            if event.has_value("gcp.metrics.instance.memory.balloon.ram_used.value") {
                 event.rename(
                     "gcp.metrics.instance.memory.balloon.ram_used.value",
                     "gcp.compute.instance.memory.balloon.ram_used.value",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.memory.balloon.swap_in.bytes") {
+            if event.has_value("gcp.metrics.instance.memory.balloon.swap_in.bytes") {
                 event.rename(
                     "gcp.metrics.instance.memory.balloon.swap_in.bytes",
                     "gcp.compute.instance.memory.balloon.swap_in.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.memory.balloon.swap_out.bytes") {
+            if event.has_value("gcp.metrics.instance.memory.balloon.swap_out.bytes") {
                 event.rename(
                     "gcp.metrics.instance.memory.balloon.swap_out.bytes",
                     "gcp.compute.instance.memory.balloon.swap_out.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.network.ingress.bytes") {
+            if event.has_value("gcp.metrics.instance.network.ingress.bytes") {
                 event.rename(
                     "gcp.metrics.instance.network.ingress.bytes",
                     "gcp.compute.instance.network.ingress.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.network.ingress.packets.count") {
+            if event.has_value("gcp.metrics.instance.network.ingress.packets.count") {
                 event.rename(
                     "gcp.metrics.instance.network.ingress.packets.count",
                     "gcp.compute.instance.network.ingress.packets.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.network.egress.bytes") {
+            if event.has_value("gcp.metrics.instance.network.egress.bytes") {
                 event.rename(
                     "gcp.metrics.instance.network.egress.bytes",
                     "gcp.compute.instance.network.egress.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.network.egress.packets.count") {
+            if event.has_value("gcp.metrics.instance.network.egress.packets.count") {
                 event.rename(
                     "gcp.metrics.instance.network.egress.packets.count",
                     "gcp.compute.instance.network.egress.packets.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.uptime.sec") {
+            if event.has_value("gcp.metrics.instance.uptime.sec") {
                 event.rename(
                     "gcp.metrics.instance.uptime.sec",
                     "gcp.compute.instance.uptime.sec",
                 )?;
             }
 
-            if event.has("gcp.metrics.instance.uptime_total.sec") {
+            if event.has_value("gcp.metrics.instance.uptime_total.sec") {
                 event.rename(
                     "gcp.metrics.instance.uptime_total.sec",
                     "gcp.compute.instance.uptime_total.sec",

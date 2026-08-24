@@ -275,7 +275,7 @@ impl Transform for SecurityStandard {
                 painless_exec_plan(event, cached_painless!(r#"def extIdx = ctx.file.name.lastIndexOf(\".\");\nif (extIdx > -1) {\n    ctx.file.extension = ctx.file.name.substring(extIdx+1);\n}"#))?;
             }
 
-                if event.has("winlog.event_data.DirectionDescription") {
+                if event.has_value("winlog.event_data.DirectionDescription") {
                     event.rename("winlog.event_data.DirectionDescription", "network.direction")?;
                 }
 

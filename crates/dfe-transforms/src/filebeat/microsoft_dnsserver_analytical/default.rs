@@ -153,7 +153,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("microsoft_dnsserver.analytical.extended_data.SID") {
+            if event.has_value("microsoft_dnsserver.analytical.extended_data.SID") {
                 event.rename(
                     "microsoft_dnsserver.analytical.extended_data.SID",
                     "user.id",
@@ -233,7 +233,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("dns.question.domain") {
+            if event.has_value("dns.question.domain") {
                 event.rename("dns.question.domain", "dns.question.name")?;
             }
 
@@ -397,7 +397,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("winlog.activity_guid") {
+            if event.has_value("winlog.activity_guid") {
                 event.rename("winlog.activity_guid", "winlog.activity_id")?;
             }
 
@@ -457,7 +457,7 @@ impl Transform for Default {
                 event.has_value("destination.ip") && event.get_str("destination.ip") != Some("")
             };
             if _cond {
-                if event.has("microsoft_dnsserver.analytical.Port") {
+                if event.has_value("microsoft_dnsserver.analytical.Port") {
                     event.rename(
                         "microsoft_dnsserver.analytical.Port",
                         "microsoft_dnsserver.analytical.destination.port",
@@ -538,11 +538,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -588,7 +588,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("source.ip") && event.get_str("source.ip") != Some("") };
             if _cond {
-                if event.has("microsoft_dnsserver.analytical.Port") {
+                if event.has_value("microsoft_dnsserver.analytical.Port") {
                     event.rename(
                         "microsoft_dnsserver.analytical.Port",
                         "microsoft_dnsserver.analytical.source.port",
@@ -668,11 +668,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 

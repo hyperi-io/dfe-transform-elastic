@@ -39,7 +39,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -98,7 +98,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.displayMessage") {
+                if event.has_value("json.displayMessage") {
                     event.rename("json.displayMessage", "okta.display_message")?;
                 }
                 Ok(())
@@ -106,7 +106,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.eventType") {
+                if event.has_value("json.eventType") {
                     event.rename("json.eventType", "okta.event_type")?;
                 }
                 Ok(())
@@ -320,7 +320,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.uuid") {
+                if event.has_value("json.uuid") {
                     event.rename("json.uuid", "okta.uuid")?;
                 }
                 Ok(())
@@ -328,7 +328,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.actor.alternateId") {
+                if event.has_value("json.actor.alternateId") {
                     event.rename("json.actor.alternateId", "okta.actor.alternate_id")?;
                 }
                 Ok(())
@@ -403,7 +403,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.actor.displayName") {
+                if event.has_value("json.actor.displayName") {
                     event.rename("json.actor.displayName", "okta.actor.display_name")?;
                 }
                 Ok(())
@@ -411,7 +411,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.actor.id") {
+                if event.has_value("json.actor.id") {
                     event.rename("json.actor.id", "okta.actor.id")?;
                 }
                 Ok(())
@@ -419,7 +419,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.actor.type") {
+                if event.has_value("json.actor.type") {
                     event.rename("json.actor.type", "okta.actor.type")?;
                 }
                 Ok(())
@@ -427,7 +427,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.device") {
+                if event.has_value("json.client.device") {
                     event.rename("json.client.device", "okta.client.device")?;
                 }
                 Ok(())
@@ -435,7 +435,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.device") {
+                if event.has_value("json.device") {
                     event.rename("json.device", "okta.device")?;
                 }
                 Ok(())
@@ -452,7 +452,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.geographicalContext.geolocation") {
+                if event.has_value("json.client.geographicalContext.geolocation") {
                     event.rename(
                         "json.client.geographicalContext.geolocation",
                         "client.geo.location",
@@ -463,7 +463,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.geographicalContext.city") {
+                if event.has_value("json.client.geographicalContext.city") {
                     event.rename(
                         "json.client.geographicalContext.city",
                         "client.geo.city_name",
@@ -474,7 +474,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.geographicalContext.state") {
+                if event.has_value("json.client.geographicalContext.state") {
                     event.rename(
                         "json.client.geographicalContext.state",
                         "client.geo.region_name",
@@ -485,7 +485,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.geographicalContext.country") {
+                if event.has_value("json.client.geographicalContext.country") {
                     event.rename(
                         "json.client.geographicalContext.country",
                         "client.geo.country_name",
@@ -496,7 +496,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.id") {
+                if event.has_value("json.client.id") {
                     event.rename("json.client.id", "okta.client.id")?;
                 }
                 Ok(())
@@ -520,7 +520,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.userAgent.browser") {
+                if event.has_value("json.client.userAgent.browser") {
                     event.rename(
                         "json.client.userAgent.browser",
                         "okta.client.user_agent.browser",
@@ -531,7 +531,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.userAgent.os") {
+                if event.has_value("json.client.userAgent.os") {
                     event.rename("json.client.userAgent.os", "okta.client.user_agent.os")?;
                 }
                 Ok(())
@@ -539,7 +539,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.userAgent.rawUserAgent") {
+                if event.has_value("json.client.userAgent.rawUserAgent") {
                     event.rename(
                         "json.client.userAgent.rawUserAgent",
                         "okta.client.user_agent.raw_user_agent",
@@ -550,7 +550,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.client.zone") {
+                if event.has_value("json.client.zone") {
                     event.rename("json.client.zone", "okta.client.zone")?;
                 }
                 Ok(())
@@ -558,7 +558,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.outcome.reason") {
+                if event.has_value("json.outcome.reason") {
                     event.rename("json.outcome.reason", "okta.outcome.reason")?;
                 }
                 Ok(())
@@ -566,7 +566,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.outcome.result") {
+                if event.has_value("json.outcome.result") {
                     event.rename("json.outcome.result", "okta.outcome.result")?;
                 }
                 Ok(())
@@ -574,7 +574,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.target") {
+                if event.has_value("json.target") {
                     event.rename("json.target", "okta.target")?;
                 }
                 Ok(())
@@ -582,7 +582,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.transaction.id") {
+                if event.has_value("json.transaction.id") {
                     event.rename("json.transaction.id", "okta.transaction.id")?;
                 }
                 Ok(())
@@ -590,7 +590,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.transaction.type") {
+                if event.has_value("json.transaction.type") {
                     event.rename("json.transaction.type", "okta.transaction.type")?;
                 }
                 Ok(())
@@ -598,7 +598,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.transaction.detail.requestApiTokenId") {
+                if event.has_value("json.transaction.detail.requestApiTokenId") {
                     event.rename(
                         "json.transaction.detail.requestApiTokenId",
                         "okta.transaction.detail.request_api_token_id",
@@ -607,7 +607,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.transaction.detail.rootApiTokenId") {
+            if event.has_value("json.transaction.detail.rootApiTokenId") {
                 event.rename(
                     "json.transaction.detail.rootApiTokenId",
                     "okta.transaction.detail.root_api_token_id",
@@ -707,7 +707,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("_behaviors_object") {
+                    if event.has_value("_behaviors_object") {
                         event.rename(
                             "_behaviors_object",
                             "okta.debug_context.debug_data.flattened.behaviors",
@@ -869,7 +869,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("_risk_object") {
+                    if event.has_value("_risk_object") {
                         event.rename(
                             "_risk_object",
                             "okta.debug_context.debug_data.flattened.risk",
@@ -879,7 +879,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.deviceFingerprint") {
+                    if event.has_value("json.debugContext.debugData.deviceFingerprint") {
                         event.rename(
                             "json.debugContext.debugData.deviceFingerprint",
                             "okta.debug_context.debug_data.device_fingerprint",
@@ -889,7 +889,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.requestId") {
+                    if event.has_value("json.debugContext.debugData.requestId") {
                         event.rename(
                             "json.debugContext.debugData.requestId",
                             "okta.debug_context.debug_data.request_id",
@@ -899,7 +899,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.requestUri") {
+                    if event.has_value("json.debugContext.debugData.requestUri") {
                         event.rename(
                             "json.debugContext.debugData.requestUri",
                             "okta.debug_context.debug_data.request_uri",
@@ -909,7 +909,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.threatSuspected") {
+                    if event.has_value("json.debugContext.debugData.threatSuspected") {
                         event.rename(
                             "json.debugContext.debugData.threatSuspected",
                             "okta.debug_context.debug_data.threat_suspected",
@@ -919,7 +919,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.url") {
+                    if event.has_value("json.debugContext.debugData.url") {
                         event.rename(
                             "json.debugContext.debugData.url",
                             "okta.debug_context.debug_data.url",
@@ -929,7 +929,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.dtHash") {
+                    if event.has_value("json.debugContext.debugData.dtHash") {
                         event.rename(
                             "json.debugContext.debugData.dtHash",
                             "okta.debug_context.debug_data.dt_hash",
@@ -939,7 +939,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.clientSecret") {
+                    if event.has_value("json.debugContext.debugData.clientSecret") {
                         event.rename(
                             "json.debugContext.debugData.clientSecret",
                             "okta.debug_context.debug_data.client_secret",
@@ -949,7 +949,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.requestedScopes") {
+                    if event.has_value("json.debugContext.debugData.requestedScopes") {
                         event.rename(
                             "json.debugContext.debugData.requestedScopes",
                             "okta.debug_context.debug_data.requested_scopes",
@@ -959,7 +959,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.grantedScopes") {
+                    if event.has_value("json.debugContext.debugData.grantedScopes") {
                         event.rename(
                             "json.debugContext.debugData.grantedScopes",
                             "okta.debug_context.debug_data.granted_scopes",
@@ -969,7 +969,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.grantType") {
+                    if event.has_value("json.debugContext.debugData.grantType") {
                         event.rename(
                             "json.debugContext.debugData.grantType",
                             "okta.debug_context.debug_data.grant_type",
@@ -1209,7 +1209,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("_behaviors_object") {
+                    if event.has_value("_behaviors_object") {
                         event.rename(
                             "_behaviors_object",
                             "okta.debug_context.debug_data.behaviors",
@@ -1361,7 +1361,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("_risk_object") {
+                    if event.has_value("_risk_object") {
                         event.rename("_risk_object", "okta.debug_context.debug_data.risk")?;
                     }
                     Ok(())
@@ -1519,7 +1519,7 @@ impl Transform for Default {
                 )?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.deviceFingerprint") {
+                    if event.has_value("okta.debug_context.debug_data.deviceFingerprint") {
                         event.rename(
                             "okta.debug_context.debug_data.deviceFingerprint",
                             "okta.debug_context.debug_data.device_fingerprint",
@@ -1529,7 +1529,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.dtHash") {
+                    if event.has_value("okta.debug_context.debug_data.dtHash") {
                         event.rename(
                             "okta.debug_context.debug_data.dtHash",
                             "okta.debug_context.debug_data.dt_hash",
@@ -1539,7 +1539,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.requestId") {
+                    if event.has_value("okta.debug_context.debug_data.requestId") {
                         event.rename(
                             "okta.debug_context.debug_data.requestId",
                             "okta.debug_context.debug_data.request_id",
@@ -1549,7 +1549,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.requestUri") {
+                    if event.has_value("okta.debug_context.debug_data.requestUri") {
                         event.rename(
                             "okta.debug_context.debug_data.requestUri",
                             "okta.debug_context.debug_data.request_uri",
@@ -1559,7 +1559,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("okta.debug_context.debug_data.threatSuspected") {
+                    if event.has_value("okta.debug_context.debug_data.threatSuspected") {
                         event.rename(
                             "okta.debug_context.debug_data.threatSuspected",
                             "okta.debug_context.debug_data.threat_suspected",
@@ -1569,7 +1569,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.clientSecret") {
+                    if event.has_value("json.debugContext.debugData.clientSecret") {
                         event.rename(
                             "json.debugContext.debugData.clientSecret",
                             "okta.debug_context.debug_data.client_secret",
@@ -1579,7 +1579,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.requestedScopes") {
+                    if event.has_value("json.debugContext.debugData.requestedScopes") {
                         event.rename(
                             "json.debugContext.debugData.requestedScopes",
                             "okta.debug_context.debug_data.requested_scopes",
@@ -1589,7 +1589,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.grantedScopes") {
+                    if event.has_value("json.debugContext.debugData.grantedScopes") {
                         event.rename(
                             "json.debugContext.debugData.grantedScopes",
                             "okta.debug_context.debug_data.granted_scopes",
@@ -1599,7 +1599,7 @@ impl Transform for Default {
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.debugContext.debugData.grantType") {
+                    if event.has_value("json.debugContext.debugData.grantType") {
                         event.rename(
                             "json.debugContext.debugData.grantType",
                             "okta.debug_context.debug_data.grant_type",
@@ -1624,7 +1624,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.authenticationProvider") {
+                if event.has_value("json.authenticationContext.authenticationProvider") {
                     event.rename(
                         "json.authenticationContext.authenticationProvider",
                         "okta.authentication_context.authentication_provider",
@@ -1635,7 +1635,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.authenticationStep") {
+                if event.has_value("json.authenticationContext.authenticationStep") {
                     event.rename(
                         "json.authenticationContext.authenticationStep",
                         "okta.authentication_context.authentication_step",
@@ -1646,7 +1646,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.credentialProvider") {
+                if event.has_value("json.authenticationContext.credentialProvider") {
                     event.rename(
                         "json.authenticationContext.credentialProvider",
                         "okta.authentication_context.credential_provider",
@@ -1657,7 +1657,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.credentialType") {
+                if event.has_value("json.authenticationContext.credentialType") {
                     event.rename(
                         "json.authenticationContext.credentialType",
                         "okta.authentication_context.credential_type",
@@ -1668,7 +1668,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.externalSessionId") {
+                if event.has_value("json.authenticationContext.externalSessionId") {
                     event.rename(
                         "json.authenticationContext.externalSessionId",
                         "okta.authentication_context.external_session_id",
@@ -1679,7 +1679,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.interface") {
+                if event.has_value("json.authenticationContext.interface") {
                     event.rename(
                         "json.authenticationContext.interface",
                         "okta.authentication_context.authentication_provider",
@@ -1690,7 +1690,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.authenticationContext.issuer") {
+                if event.has_value("json.authenticationContext.issuer") {
                     event.rename(
                         "json.authenticationContext.issuer",
                         "okta.authentication_context.issuer",
@@ -1699,7 +1699,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.authenticationContext.rootSessionId") {
+            if event.has_value("json.authenticationContext.rootSessionId") {
                 event.rename(
                     "json.authenticationContext.rootSessionId",
                     "okta.authentication_context.root_session_id",
@@ -1708,7 +1708,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.securityContext.asNumber") {
+                if event.has_value("json.securityContext.asNumber") {
                     event.rename(
                         "json.securityContext.asNumber",
                         "okta.security_context.as.number",
@@ -1719,7 +1719,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.securityContext.asOrg") {
+                if event.has_value("json.securityContext.asOrg") {
                     event.rename(
                         "json.securityContext.asOrg",
                         "okta.security_context.as.organization.name",
@@ -1730,7 +1730,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.securityContext.domain") {
+                if event.has_value("json.securityContext.domain") {
                     event.rename(
                         "json.securityContext.domain",
                         "okta.security_context.domain",
@@ -1741,7 +1741,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.securityContext.isProxy") {
+                if event.has_value("json.securityContext.isProxy") {
                     event.rename(
                         "json.securityContext.isProxy",
                         "okta.security_context.is_proxy",
@@ -1752,7 +1752,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.securityContext.isp") {
+                if event.has_value("json.securityContext.isp") {
                     event.rename("json.securityContext.isp", "okta.security_context.isp")?;
                 }
                 Ok(())
@@ -1760,7 +1760,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.request.ipChain") {
+                if event.has_value("json.request.ipChain") {
                     event.rename("json.request.ipChain", "okta.request.ip_chain")?;
                 }
                 Ok(())
@@ -1770,7 +1770,7 @@ impl Transform for Default {
                 foreach_array(event, "okta.request.ip_chain", |event| {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("_ingest._value.geographicalContext") {
+                        if event.has_value("_ingest._value.geographicalContext") {
                             event.rename(
                                 "_ingest._value.geographicalContext",
                                 "_ingest._value.geographical_context",
@@ -1786,7 +1786,7 @@ impl Transform for Default {
                 foreach_array(event, "okta.request.ip_chain", |event| {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("_ingest._value.geographical_context.postalCode") {
+                        if event.has_value("_ingest._value.geographical_context.postalCode") {
                             event.rename(
                                 "_ingest._value.geographical_context.postalCode",
                                 "_ingest._value.geographical_context.postal_code",
@@ -2225,19 +2225,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -2256,7 +2256,7 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("okta_url.domain") {
+                if event.has_value("okta_url.domain") {
                     event.rename("okta_url.domain", "host.name")?;
                 }
                 Ok(())

@@ -16,21 +16,21 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            if event.has("gcp.metrics.document.delete.count") {
+            if event.has_value("gcp.metrics.document.delete.count") {
                 event.rename(
                     "gcp.metrics.document.delete.count",
                     "gcp.firestore.document.delete.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.document.read.count") {
+            if event.has_value("gcp.metrics.document.read.count") {
                 event.rename(
                     "gcp.metrics.document.read.count",
                     "gcp.firestore.document.read.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.document.write.count") {
+            if event.has_value("gcp.metrics.document.write.count") {
                 event.rename(
                     "gcp.metrics.document.write.count",
                     "gcp.firestore.document.write.count",

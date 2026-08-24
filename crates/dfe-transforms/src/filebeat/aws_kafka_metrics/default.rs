@@ -22,22 +22,22 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("aws.dimensions.Cluster Name") {
+            if event.has_value("aws.dimensions.Cluster Name") {
                 event.rename("aws.dimensions.Cluster Name", "aws.dimensions.ClusterName")?;
             }
 
-            if event.has("aws.dimensions.Consumer Group") {
+            if event.has_value("aws.dimensions.Consumer Group") {
                 event.rename(
                     "aws.dimensions.Consumer Group",
                     "aws.dimensions.ConsumerGroup",
                 )?;
             }
 
-            if event.has("aws.dimensions.Broker ID") {
+            if event.has_value("aws.dimensions.Broker ID") {
                 event.rename("aws.dimensions.Broker ID", "aws.dimensions.BrokerID")?;
             }
 
-            if event.has("aws.dimensions.Client Authentication") {
+            if event.has_value("aws.dimensions.Client Authentication") {
                 event.rename(
                     "aws.dimensions.Client Authentication",
                     "aws.dimensions.ClientAuthentication",

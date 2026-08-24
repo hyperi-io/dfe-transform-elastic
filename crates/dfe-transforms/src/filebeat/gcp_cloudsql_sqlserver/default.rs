@@ -34,168 +34,168 @@ impl Transform for Default {
                 return Ok(TransformResult::Drop);
             }
 
-            if event.has("gcp.metrics.database.auto_failover_request_count.value") {
+            if event.has_value("gcp.metrics.database.auto_failover_request_count.value") {
                 event.rename(
                     "gcp.metrics.database.auto_failover_request_count.value",
                     "gcp.cloudsql_sqlserver.database.auto_failover_request.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.available_for_failover.value") {
+            if event.has_value("gcp.metrics.database.available_for_failover.value") {
                 event.rename(
                     "gcp.metrics.database.available_for_failover.value",
                     "gcp.cloudsql_sqlserver.database.available_for_failover",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.cpu.reserved_cores.value") {
+            if event.has_value("gcp.metrics.database.cpu.reserved_cores.value") {
                 event.rename(
                     "gcp.metrics.database.cpu.reserved_cores.value",
                     "gcp.cloudsql_sqlserver.database.cpu.reserved_cores.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.cpu.usage_time.value") {
+            if event.has_value("gcp.metrics.database.cpu.usage_time.value") {
                 event.rename(
                     "gcp.metrics.database.cpu.usage_time.value",
                     "gcp.cloudsql_sqlserver.database.cpu.usage_time.sec",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.cpu.utilization.value") {
+            if event.has_value("gcp.metrics.database.cpu.utilization.value") {
                 event.rename(
                     "gcp.metrics.database.cpu.utilization.value",
                     "gcp.cloudsql_sqlserver.database.cpu.utilization.pct",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.disk.bytes_used.value") {
+            if event.has_value("gcp.metrics.database.disk.bytes_used.value") {
                 event.rename(
                     "gcp.metrics.database.disk.bytes_used.value",
                     "gcp.cloudsql_sqlserver.database.disk.bytes_used.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.disk.quota.value") {
+            if event.has_value("gcp.metrics.database.disk.quota.value") {
                 event.rename(
                     "gcp.metrics.database.disk.quota.value",
                     "gcp.cloudsql_sqlserver.database.disk.quota.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.disk.read_ops_count.value") {
+            if event.has_value("gcp.metrics.database.disk.read_ops_count.value") {
                 event.rename(
                     "gcp.metrics.database.disk.read_ops_count.value",
                     "gcp.cloudsql_sqlserver.database.disk.read_ops.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.disk.utilization.value") {
+            if event.has_value("gcp.metrics.database.disk.utilization.value") {
                 event.rename(
                     "gcp.metrics.database.disk.utilization.value",
                     "gcp.cloudsql_sqlserver.database.disk.utilization.pct",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.disk.write_ops_count.value") {
+            if event.has_value("gcp.metrics.database.disk.write_ops_count.value") {
                 event.rename(
                     "gcp.metrics.database.disk.write_ops_count.value",
                     "gcp.cloudsql_sqlserver.database.disk.write_ops.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.instance_state.value") {
+            if event.has_value("gcp.metrics.database.instance_state.value") {
                 event.rename(
                     "gcp.metrics.database.instance_state.value",
                     "gcp.cloudsql_sqlserver.database.instance_state",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.memory.quota.value") {
+            if event.has_value("gcp.metrics.database.memory.quota.value") {
                 event.rename(
                     "gcp.metrics.database.memory.quota.value",
                     "gcp.cloudsql_sqlserver.database.memory.quota.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.memory.total_usage.value") {
+            if event.has_value("gcp.metrics.database.memory.total_usage.value") {
                 event.rename(
                     "gcp.metrics.database.memory.total_usage.value",
                     "gcp.cloudsql_sqlserver.database.memory.total_usage.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.memory.usage.value") {
+            if event.has_value("gcp.metrics.database.memory.usage.value") {
                 event.rename(
                     "gcp.metrics.database.memory.usage.value",
                     "gcp.cloudsql_sqlserver.database.memory.usage.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.memory.utilization.value") {
+            if event.has_value("gcp.metrics.database.memory.utilization.value") {
                 event.rename(
                     "gcp.metrics.database.memory.utilization.value",
                     "gcp.cloudsql_sqlserver.database.memory.utilization.pct",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.network.connections.value") {
+            if event.has_value("gcp.metrics.database.network.connections.value") {
                 event.rename(
                     "gcp.metrics.database.network.connections.value",
                     "gcp.cloudsql_sqlserver.database.network.connections.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.network.received_bytes_count.value") {
+            if event.has_value("gcp.metrics.database.network.received_bytes_count.value") {
                 event.rename(
                     "gcp.metrics.database.network.received_bytes_count.value",
                     "gcp.cloudsql_sqlserver.database.network.received_bytes.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.network.sent_bytes_count.value") {
+            if event.has_value("gcp.metrics.database.network.sent_bytes_count.value") {
                 event.rename(
                     "gcp.metrics.database.network.sent_bytes_count.value",
                     "gcp.cloudsql_sqlserver.database.network.sent_bytes.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.replication.network_lag.value") {
+            if event.has_value("gcp.metrics.database.replication.network_lag.value") {
                 event.rename(
                     "gcp.metrics.database.replication.network_lag.value",
                     "gcp.cloudsql_sqlserver.database.replication.network_lag.sec",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.replication.replica_lag.value") {
+            if event.has_value("gcp.metrics.database.replication.replica_lag.value") {
                 event.rename(
                     "gcp.metrics.database.replication.replica_lag.value",
                     "gcp.cloudsql_sqlserver.database.replication.replica_lag.sec",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.sqlserver.audits_size.value") {
+            if event.has_value("gcp.metrics.database.sqlserver.audits_size.value") {
                 event.rename(
                     "gcp.metrics.database.sqlserver.audits_size.value",
                     "gcp.cloudsql_sqlserver.database.audits_size.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.sqlserver.audits_upload_count.value") {
+            if event.has_value("gcp.metrics.database.sqlserver.audits_upload_count.value") {
                 event.rename(
                     "gcp.metrics.database.sqlserver.audits_upload_count.value",
                     "gcp.cloudsql_sqlserver.database.audits_upload.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.up.value") {
+            if event.has_value("gcp.metrics.database.up.value") {
                 event.rename(
                     "gcp.metrics.database.up.value",
                     "gcp.cloudsql_sqlserver.database.up",
                 )?;
             }
 
-            if event.has("gcp.metrics.database.uptime.value") {
+            if event.has_value("gcp.metrics.database.uptime.value") {
                 event.rename(
                     "gcp.metrics.database.uptime.value",
                     "gcp.cloudsql_sqlserver.database.uptime.sec",

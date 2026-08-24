@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -350,89 +350,89 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("_jsonPayload.src_instance.vm_name") {
+            if event.has_value("_jsonPayload.src_instance.vm_name") {
                 event.rename("_jsonPayload.src_instance.vm_name", "source.domain")?;
             }
 
-            if event.has("_jsonPayload.dest_instance.vm_name") {
+            if event.has_value("_jsonPayload.dest_instance.vm_name") {
                 event.rename("_jsonPayload.dest_instance.vm_name", "destination.domain")?;
             }
 
-            if event.has("_jsonPayload.dest_location.asn") {
+            if event.has_value("_jsonPayload.dest_location.asn") {
                 event.rename("_jsonPayload.dest_location.asn", "destination.as.number")?;
             }
 
-            if event.has("_jsonPayload.dest_location.continent") {
+            if event.has_value("_jsonPayload.dest_location.continent") {
                 event.rename(
                     "_jsonPayload.dest_location.continent",
                     "destination.geo.continent_name",
                 )?;
             }
 
-            if event.has("_jsonPayload.dest_location.country") {
+            if event.has_value("_jsonPayload.dest_location.country") {
                 event.rename(
                     "_jsonPayload.dest_location.country",
                     "destination.geo.country_name",
                 )?;
             }
 
-            if event.has("_jsonPayload.dest_location.region") {
+            if event.has_value("_jsonPayload.dest_location.region") {
                 event.rename(
                     "_jsonPayload.dest_location.region",
                     "destination.geo.region_name",
                 )?;
             }
 
-            if event.has("_jsonPayload.dest_location.city") {
+            if event.has_value("_jsonPayload.dest_location.city") {
                 event.rename(
                     "_jsonPayload.dest_location.city",
                     "destination.geo.city_name",
                 )?;
             }
 
-            if event.has("_jsonPayload.src_location.asn") {
+            if event.has_value("_jsonPayload.src_location.asn") {
                 event.rename("_jsonPayload.src_location.asn", "source.as.number")?;
             }
 
-            if event.has("_jsonPayload.src_location.continent") {
+            if event.has_value("_jsonPayload.src_location.continent") {
                 event.rename(
                     "_jsonPayload.src_location.continent",
                     "source.geo.continent_name",
                 )?;
             }
 
-            if event.has("_jsonPayload.src_location.country") {
+            if event.has_value("_jsonPayload.src_location.country") {
                 event.rename(
                     "_jsonPayload.src_location.country",
                     "source.geo.country_name",
                 )?;
             }
 
-            if event.has("_jsonPayload.src_location.region") {
+            if event.has_value("_jsonPayload.src_location.region") {
                 event.rename("_jsonPayload.src_location.region", "source.geo.region_name")?;
             }
 
-            if event.has("_jsonPayload.src_location.city") {
+            if event.has_value("_jsonPayload.src_location.city") {
                 event.rename("_jsonPayload.src_location.city", "source.geo.city_name")?;
             }
 
-            if event.has("_jsonPayload.dest_instance") {
+            if event.has_value("_jsonPayload.dest_instance") {
                 event.rename("_jsonPayload.dest_instance", "gcp.destination.instance")?;
             }
 
-            if event.has("_jsonPayload.dest_vpc") {
+            if event.has_value("_jsonPayload.dest_vpc") {
                 event.rename("_jsonPayload.dest_vpc", "gcp.destination.vpc")?;
             }
 
-            if event.has("_jsonPayload.src_instance") {
+            if event.has_value("_jsonPayload.src_instance") {
                 event.rename("_jsonPayload.src_instance", "gcp.source.instance")?;
             }
 
-            if event.has("_jsonPayload.src_vpc") {
+            if event.has_value("_jsonPayload.src_vpc") {
                 event.rename("_jsonPayload.src_vpc", "gcp.source.vpc")?;
             }
 
-            if event.has("json.jsonPayload.rule_details.reference") {
+            if event.has_value("json.jsonPayload.rule_details.reference") {
                 event.rename("json.jsonPayload.rule_details.reference", "rule.name")?;
             }
 
@@ -804,19 +804,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",

@@ -36,7 +36,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -72,11 +72,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "sentinel_one.threat_event.id")?;
             }
 
-            if event.has("json.objectType") {
+            if event.has_value("json.objectType") {
                 event.rename("json.objectType", "sentinel_one.threat_event.object_type")?;
             }
 
@@ -131,22 +131,22 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.processName") {
+            if event.has_value("json.processName") {
                 event.rename("json.processName", "sentinel_one.threat_event.process.name")?;
             }
 
-            if event.has("json.agentName") {
+            if event.has_value("json.agentName") {
                 event.rename("json.agentName", "sentinel_one.threat_event.agent.name")?;
             }
 
-            if event.has("json.agentGroupId") {
+            if event.has_value("json.agentGroupId") {
                 event.rename(
                     "json.agentGroupId",
                     "sentinel_one.threat_event.agent.group_id",
                 )?;
             }
 
-            if event.has("json.agentId") {
+            if event.has_value("json.agentId") {
                 event.rename("json.agentId", "sentinel_one.threat_event.agent.id")?;
             }
 
@@ -247,44 +247,44 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.agentMachineType") {
+            if event.has_value("json.agentMachineType") {
                 event.rename(
                     "json.agentMachineType",
                     "sentinel_one.threat_event.agent.machine_type",
                 )?;
             }
 
-            if event.has("json.agentNetworkStatus") {
+            if event.has_value("json.agentNetworkStatus") {
                 event.rename(
                     "json.agentNetworkStatus",
                     "sentinel_one.threat_event.agent.network_status",
                 )?;
             }
 
-            if event.has("json.agentOs") {
+            if event.has_value("json.agentOs") {
                 event.rename("json.agentOs", "sentinel_one.threat_event.agent.os")?;
             }
 
-            if event.has("json.agentVersion") {
+            if event.has_value("json.agentVersion") {
                 event.rename(
                     "json.agentVersion",
                     "sentinel_one.threat_event.agent.version",
                 )?;
             }
 
-            if event.has("json.agentUuid") {
+            if event.has_value("json.agentUuid") {
                 event.rename("json.agentUuid", "sentinel_one.threat_event.agent.uuid")?;
             }
 
-            if event.has("json.siteId") {
+            if event.has_value("json.siteId") {
                 event.rename("json.siteId", "sentinel_one.site.id")?;
             }
 
-            if event.has("json.siteName") {
+            if event.has_value("json.siteName") {
                 event.rename("json.siteName", "sentinel_one.site.name")?;
             }
 
-            if event.has("json.pid") {
+            if event.has_value("json.pid") {
                 event.rename("json.pid", "sentinel_one.threat_event.pid")?;
             }
 
@@ -476,132 +476,132 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.fileSha1") {
+            if event.has_value("json.fileSha1") {
                 event.rename("json.fileSha1", "sentinel_one.threat_event.file.sha1")?;
             }
 
-            if event.has("json.fileSha256") {
+            if event.has_value("json.fileSha256") {
                 event.rename("json.fileSha256", "sentinel_one.threat_event.file.sha256")?;
             }
 
-            if event.has("json.fileMd5") {
+            if event.has_value("json.fileMd5") {
                 event.rename("json.fileMd5", "sentinel_one.threat_event.file.md5")?;
             }
 
-            if event.has("json.oldFileSha1") {
+            if event.has_value("json.oldFileSha1") {
                 event.rename(
                     "json.oldFileSha1",
                     "sentinel_one.threat_event.old_file.sha1",
                 )?;
             }
 
-            if event.has("json.oldFileSha256") {
+            if event.has_value("json.oldFileSha256") {
                 event.rename(
                     "json.oldFileSha256",
                     "sentinel_one.threat_event.old_file.sha256",
                 )?;
             }
 
-            if event.has("json.oldFileMd5") {
+            if event.has_value("json.oldFileMd5") {
                 event.rename("json.oldFileMd5", "sentinel_one.threat_event.old_file.md5")?;
             }
 
-            if event.has("json.signatureSignedInvalidReason") {
+            if event.has_value("json.signatureSignedInvalidReason") {
                 event.rename(
                     "json.signatureSignedInvalidReason",
                     "sentinel_one.threat_event.signature_signed_invalid_reason",
                 )?;
             }
 
-            if event.has("json.verifiedStatus") {
+            if event.has_value("json.verifiedStatus") {
                 event.rename(
                     "json.verifiedStatus",
                     "sentinel_one.threat_event.verified_status",
                 )?;
             }
 
-            if event.has("json.signedStatus") {
+            if event.has_value("json.signedStatus") {
                 event.rename(
                     "json.signedStatus",
                     "sentinel_one.threat_event.signed_status",
                 )?;
             }
 
-            if event.has("json.sha256") {
+            if event.has_value("json.sha256") {
                 event.rename("json.sha256", "sentinel_one.threat_event.sha256")?;
             }
 
-            if event.has("json.sha1") {
+            if event.has_value("json.sha1") {
                 event.rename("json.sha1", "sentinel_one.threat_event.sha1")?;
             }
 
-            if event.has("json.md5") {
+            if event.has_value("json.md5") {
                 event.rename("json.md5", "sentinel_one.threat_event.md5")?;
             }
 
-            if event.has("json.fileFullName") {
+            if event.has_value("json.fileFullName") {
                 event.rename(
                     "json.fileFullName",
                     "sentinel_one.threat_event.file.full_name",
                 )?;
             }
 
-            if event.has("json.oldFileName") {
+            if event.has_value("json.oldFileName") {
                 event.rename(
                     "json.oldFileName",
                     "sentinel_one.threat_event.old_file.name",
                 )?;
             }
 
-            if event.has("json.tid") {
+            if event.has_value("json.tid") {
                 event.rename("json.tid", "sentinel_one.threat_event.tid")?;
             }
 
-            if event.has("json.rpid") {
+            if event.has_value("json.rpid") {
                 event.rename("json.rpid", "sentinel_one.threat_event.rpid")?;
             }
 
-            if event.has("json.dnsRequest") {
+            if event.has_value("json.dnsRequest") {
                 event.rename("json.dnsRequest", "sentinel_one.threat_event.dns_request")?;
             }
 
-            if event.has("json.dnsResponse") {
+            if event.has_value("json.dnsResponse") {
                 event.rename("json.dnsResponse", "sentinel_one.threat_event.dns_response")?;
             }
 
-            if event.has("json.processCmd") {
+            if event.has_value("json.processCmd") {
                 event.rename("json.processCmd", "sentinel_one.threat_event.process.cmd")?;
             }
 
-            if event.has("json.processGroupId") {
+            if event.has_value("json.processGroupId") {
                 event.rename(
                     "json.processGroupId",
                     "sentinel_one.threat_event.process.group_id",
                 )?;
             }
 
-            if event.has("json.processImagePath") {
+            if event.has_value("json.processImagePath") {
                 event.rename(
                     "json.processImagePath",
                     "sentinel_one.threat_event.process.image_path",
                 )?;
             }
 
-            if event.has("json.processUserName") {
+            if event.has_value("json.processUserName") {
                 event.rename(
                     "json.processUserName",
                     "sentinel_one.threat_event.process.user_name",
                 )?;
             }
 
-            if event.has("json.processImageSha1Hash") {
+            if event.has_value("json.processImageSha1Hash") {
                 event.rename(
                     "json.processImageSha1Hash",
                     "sentinel_one.threat_event.process.image_sha1_hash",
                 )?;
             }
 
-            if event.has("json.processUniqueKey") {
+            if event.has_value("json.processUniqueKey") {
                 event.rename(
                     "json.processUniqueKey",
                     "sentinel_one.threat_event.process.unique_key",
@@ -660,135 +660,135 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.processSubSystem") {
+            if event.has_value("json.processSubSystem") {
                 event.rename(
                     "json.processSubSystem",
                     "sentinel_one.threat_event.process.sub_system",
                 )?;
             }
 
-            if event.has("json.processSessionId") {
+            if event.has_value("json.processSessionId") {
                 event.rename(
                     "json.processSessionId",
                     "sentinel_one.threat_event.process.session_id",
                 )?;
             }
 
-            if event.has("json.processIntegrityLevel") {
+            if event.has_value("json.processIntegrityLevel") {
                 event.rename(
                     "json.processIntegrityLevel",
                     "sentinel_one.threat_event.process.integrity_level",
                 )?;
             }
 
-            if event.has("json.processDisplayName") {
+            if event.has_value("json.processDisplayName") {
                 event.rename(
                     "json.processDisplayName",
                     "sentinel_one.threat_event.process.display_name",
                 )?;
             }
 
-            if event.has("json.processIsWow64") {
+            if event.has_value("json.processIsWow64") {
                 event.rename(
                     "json.processIsWow64",
                     "sentinel_one.threat_event.process.is_wow64",
                 )?;
             }
 
-            if event.has("json.processIsRedirectedCommandProcessor") {
+            if event.has_value("json.processIsRedirectedCommandProcessor") {
                 event.rename(
                     "json.processIsRedirectedCommandProcessor",
                     "sentinel_one.threat_event.process.is_redirected_command_processor",
                 )?;
             }
 
-            if event.has("json.processRoot") {
+            if event.has_value("json.processRoot") {
                 event.rename("json.processRoot", "sentinel_one.threat_event.process.root")?;
             }
 
-            if event.has("json.parentProcessName") {
+            if event.has_value("json.parentProcessName") {
                 event.rename(
                     "json.parentProcessName",
                     "sentinel_one.threat_event.parent_process.name",
                 )?;
             }
 
-            if event.has("json.parentPid") {
+            if event.has_value("json.parentPid") {
                 event.rename("json.parentPid", "sentinel_one.threat_event.parent_pid")?;
             }
 
-            if event.has("json.parentProcessUniqueKey") {
+            if event.has_value("json.parentProcessUniqueKey") {
                 event.rename(
                     "json.parentProcessUniqueKey",
                     "sentinel_one.threat_event.parent_process.unique_key",
                 )?;
             }
 
-            if event.has("json.networkSource") {
+            if event.has_value("json.networkSource") {
                 event.rename(
                     "json.networkSource",
                     "sentinel_one.threat_event.network.source",
                 )?;
             }
 
-            if event.has("json.networkUrl") {
+            if event.has_value("json.networkUrl") {
                 event.rename("json.networkUrl", "sentinel_one.threat_event.network.url")?;
             }
 
-            if event.has("json.networkMethod") {
+            if event.has_value("json.networkMethod") {
                 event.rename(
                     "json.networkMethod",
                     "sentinel_one.threat_event.network.method",
                 )?;
             }
 
-            if event.has("json.direction") {
+            if event.has_value("json.direction") {
                 event.rename("json.direction", "sentinel_one.threat_event.direction")?;
             }
 
-            if event.has("json.eventType") {
+            if event.has_value("json.eventType") {
                 event.rename("json.eventType", "sentinel_one.threat_event.event_type")?;
             }
 
-            if event.has("json.registryPath") {
+            if event.has_value("json.registryPath") {
                 event.rename(
                     "json.registryPath",
                     "sentinel_one.threat_event.registry.path",
                 )?;
             }
 
-            if event.has("json.registryId") {
+            if event.has_value("json.registryId") {
                 event.rename("json.registryId", "sentinel_one.threat_event.registry.id")?;
             }
 
-            if event.has("json.registryClassification") {
+            if event.has_value("json.registryClassification") {
                 event.rename(
                     "json.registryClassification",
                     "sentinel_one.threat_event.registry.classification",
                 )?;
             }
 
-            if event.has("json.taskName") {
+            if event.has_value("json.taskName") {
                 event.rename("json.taskName", "sentinel_one.threat_event.task_name")?;
             }
 
-            if event.has("json.taskPath") {
+            if event.has_value("json.taskPath") {
                 event.rename("json.taskPath", "sentinel_one.threat_event.task_path")?;
             }
 
-            if event.has("json.trueContext") {
+            if event.has_value("json.trueContext") {
                 event.rename("json.trueContext", "sentinel_one.threat_event.true_context")?;
             }
 
-            if event.has("json.storyline") {
+            if event.has_value("json.storyline") {
                 event.rename("json.storyline", "sentinel_one.threat_event.storyline")?;
             }
 
-            if event.has("json.fileId") {
+            if event.has_value("json.fileId") {
                 event.rename("json.fileId", "sentinel_one.threat_event.file.id")?;
             }
 
-            if event.has("json.loginsUserName") {
+            if event.has_value("json.loginsUserName") {
                 event.rename(
                     "json.loginsUserName",
                     "sentinel_one.threat_event.logins_user_name",
@@ -807,49 +807,49 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.loginsBaseType") {
+            if event.has_value("json.loginsBaseType") {
                 event.rename(
                     "json.loginsBaseType",
                     "sentinel_one.threat_event.logins_base_type",
                 )?;
             }
 
-            if event.has("json.indicatorCategory") {
+            if event.has_value("json.indicatorCategory") {
                 event.rename(
                     "json.indicatorCategory",
                     "sentinel_one.threat_event.indicator.category",
                 )?;
             }
 
-            if event.has("json.indicatorDescription") {
+            if event.has_value("json.indicatorDescription") {
                 event.rename(
                     "json.indicatorDescription",
                     "sentinel_one.threat_event.indicator.description",
                 )?;
             }
 
-            if event.has("json.indicatorMetadata") {
+            if event.has_value("json.indicatorMetadata") {
                 event.rename(
                     "json.indicatorMetadata",
                     "sentinel_one.threat_event.indicator.metadata",
                 )?;
             }
 
-            if event.has("json.indicatorName") {
+            if event.has_value("json.indicatorName") {
                 event.rename(
                     "json.indicatorName",
                     "sentinel_one.threat_event.indicator.name",
                 )?;
             }
 
-            if event.has("json.connectionStatus") {
+            if event.has_value("json.connectionStatus") {
                 event.rename(
                     "json.connectionStatus",
                     "sentinel_one.threat_event.connection_status",
                 )?;
             }
 
-            if event.has("json.publisher") {
+            if event.has_value("json.publisher") {
                 event.rename("json.publisher", "sentinel_one.threat_event.publisher")?;
             }
 
@@ -900,7 +900,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.agentDomain") {
+            if event.has_value("json.agentDomain") {
                 event.rename("json.agentDomain", "sentinel_one.threat_event.agent.domain")?;
             }
 
@@ -963,7 +963,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.user") {
+            if event.has_value("json.user") {
                 event.rename("json.user", "sentinel_one.threat_event.user")?;
             }
 
@@ -1014,14 +1014,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.threatStatus") {
+            if event.has_value("json.threatStatus") {
                 event.rename(
                     "json.threatStatus",
                     "sentinel_one.threat_event.threat_status",
                 )?;
             }
 
-            if event.has("json.protocol") {
+            if event.has_value("json.protocol") {
                 event.rename("json.protocol", "sentinel_one.threat_event.protocol")?;
             }
 
@@ -1072,21 +1072,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.activeContentFileId") {
+            if event.has_value("json.activeContentFileId") {
                 event.rename(
                     "json.activeContentFileId",
                     "sentinel_one.threat_event.active_content.file_id",
                 )?;
             }
 
-            if event.has("json.activeContentPath") {
+            if event.has_value("json.activeContentPath") {
                 event.rename(
                     "json.activeContentPath",
                     "sentinel_one.threat_event.active_content.path",
                 )?;
             }
 
-            if event.has("json.activeContentHash") {
+            if event.has_value("json.activeContentHash") {
                 event.rename(
                     "json.activeContentHash",
                     "sentinel_one.threat_event.active_content.hash",
@@ -1140,7 +1140,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.parentProcessGroupId") {
+            if event.has_value("json.parentProcessGroupId") {
                 event.rename(
                     "json.parentProcessGroupId",
                     "sentinel_one.threat_event.parent_process.group_id",
@@ -1197,11 +1197,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.fileSize") {
+            if event.has_value("json.fileSize") {
                 event.rename("json.fileSize", "sentinel_one.threat_event.file.size")?;
             }
 
-            if event.has("json.fileType") {
+            if event.has_value("json.fileType") {
                 event.rename("json.fileType", "sentinel_one.threat_event.file.type")?;
             }
 

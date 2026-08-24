@@ -101,15 +101,15 @@ impl Transform for AwsLambdaJson {
             })();
             }
 
-                if event.has("parsed.service") {
+                if event.has_value("parsed.service") {
                     event.rename("parsed.service", "service.name")?;
                 }
 
-                if event.has("parsed.level") {
+                if event.has_value("parsed.level") {
                     event.rename("parsed.level", "log.level")?;
                 }
 
-                if event.has("parsed.requestId") {
+                if event.has_value("parsed.requestId") {
                     event.rename("parsed.requestId", "aws.lambda.request_id")?;
                 }
 
@@ -123,7 +123,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.functionArn") {
+                if event.has_value("parsed.record.functionArn") {
                     event.rename("parsed.record.functionArn", "aws.lambda.arn")?;
                 }
                 Ok(())
@@ -131,7 +131,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.requestId") {
+                if event.has_value("parsed.record.requestId") {
                     event.rename("parsed.record.requestId", "aws.lambda.request_id")?;
                 }
                 Ok(())
@@ -139,7 +139,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.version") {
+                if event.has_value("parsed.record.version") {
                     event.rename("parsed.record.version", "aws.lambda.version")?;
                 }
                 Ok(())
@@ -147,7 +147,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.status") {
+                if event.has_value("parsed.record.status") {
                     event.rename("parsed.record.status", "aws.lambda.status")?;
                 }
                 Ok(())
@@ -167,7 +167,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.tracing.spanId") {
+                if event.has_value("parsed.record.tracing.spanId") {
                     event.rename("parsed.record.tracing.spanId", "aws.lambda.tracing.span_id")?;
                 }
                 Ok(())
@@ -175,7 +175,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.tracing.type") {
+                if event.has_value("parsed.record.tracing.type") {
                     event.rename("parsed.record.tracing.type", "aws.lambda.tracing.type")?;
                 }
                 Ok(())
@@ -183,7 +183,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.tracing.value") {
+                if event.has_value("parsed.record.tracing.value") {
                     event.rename("parsed.record.tracing.value", "aws.lambda.tracing.value")?;
                 }
                 Ok(())
@@ -191,7 +191,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.errorType") {
+                if event.has_value("parsed.record.errorType") {
                     event.rename("parsed.record.errorType", "aws.lambda.error.type")?;
                 }
                 Ok(())
@@ -199,7 +199,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.initializationType") {
+                if event.has_value("parsed.record.initializationType") {
                     event.rename("parsed.record.initializationType", "aws.lambda.initialization_type")?;
                 }
                 Ok(())
@@ -207,7 +207,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.phase") {
+                if event.has_value("parsed.record.phase") {
                     event.rename("parsed.record.phase", "aws.lambda.phase")?;
                 }
                 Ok(())
@@ -215,7 +215,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.functionVersion") {
+                if event.has_value("parsed.record.functionVersion") {
                     event.rename("parsed.record.functionVersion", "aws.lambda.version")?;
                 }
                 Ok(())
@@ -223,7 +223,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.functionName") {
+                if event.has_value("parsed.record.functionName") {
                     event.rename("parsed.record.functionName", "aws.lambda.name")?;
                 }
                 Ok(())
@@ -231,7 +231,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.instanceId") {
+                if event.has_value("parsed.record.instanceId") {
                     event.rename("parsed.record.instanceId", "aws.lambda.instance_id")?;
                 }
                 Ok(())
@@ -239,7 +239,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.runtimeVersion") {
+                if event.has_value("parsed.record.runtimeVersion") {
                     event.rename("parsed.record.runtimeVersion", "aws.lambda.runtime_version")?;
                 }
                 Ok(())
@@ -247,7 +247,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.runtimeVersionArn") {
+                if event.has_value("parsed.record.runtimeVersionArn") {
                     event.rename("parsed.record.runtimeVersionArn", "aws.lambda.runtime_version_arn")?;
                 }
                 Ok(())
@@ -255,7 +255,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.name") {
+                if event.has_value("parsed.record.name") {
                     event.rename("parsed.record.name", "aws.lambda.extension.name")?;
                 }
                 Ok(())
@@ -263,7 +263,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.state") {
+                if event.has_value("parsed.record.state") {
                     event.rename("parsed.record.state", "aws.lambda.extension.state")?;
                 }
                 Ok(())
@@ -271,7 +271,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.events") {
+                if event.has_value("parsed.record.events") {
                     event.rename("parsed.record.events", "aws.lambda.extension.events")?;
                 }
                 Ok(())
@@ -279,7 +279,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.record.spans") {
+                if event.has_value("parsed.record.spans") {
                     event.rename("parsed.record.spans", "aws.lambda.spans")?;
                 }
                 Ok(())
@@ -290,7 +290,7 @@ impl Transform for AwsLambdaJson {
             if false {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.time") {
+                if event.has_value("parsed.time") {
                     event.rename("parsed.time", "@timestamp")?;
                 }
                 Ok(())
@@ -299,7 +299,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.errorMessage") {
+                if event.has_value("parsed.errorMessage") {
                     event.rename("parsed.errorMessage", "aws.lambda.error.message")?;
                 }
                 Ok(())
@@ -307,7 +307,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.errorType") {
+                if event.has_value("parsed.errorType") {
                     event.rename("parsed.errorType", "aws.lambda.error.type")?;
                 }
                 Ok(())
@@ -315,7 +315,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.logger") {
+                if event.has_value("parsed.logger") {
                     event.rename("parsed.logger", "log.logger")?;
                 }
                 Ok(())
@@ -323,7 +323,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.stack_trace_flattened") {
+                if event.has_value("parsed.stack_trace_flattened") {
                     event.rename("parsed.stack_trace_flattened", "aws.lambda.error.stack_trace")?;
                 }
                 Ok(())
@@ -331,7 +331,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.message.stack_trace_flattened") {
+                if event.has_value("parsed.message.stack_trace_flattened") {
                     event.rename("parsed.message.stack_trace_flattened", "aws.lambda.error.stack_trace")?;
                 }
                 Ok(())
@@ -339,7 +339,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.message.errorType") {
+                if event.has_value("parsed.message.errorType") {
                     event.rename("parsed.message.errorType", "aws.lambda.error.type")?;
                 }
                 Ok(())
@@ -347,7 +347,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.message.errorMessage") {
+                if event.has_value("parsed.message.errorMessage") {
                     event.rename("parsed.message.errorMessage", "aws.lambda.error.message")?;
                 }
                 Ok(())
@@ -355,7 +355,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.time") {
+                if event.has_value("parsed.time") {
                     event.rename("parsed.time", "@timestamp")?;
                 }
                 Ok(())
@@ -363,7 +363,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.timestamp") {
+                if event.has_value("parsed.timestamp") {
                     event.rename("parsed.timestamp", "@timestamp")?;
                 }
                 Ok(())
@@ -371,7 +371,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.type") {
+                if event.has_value("parsed.type") {
                     event.rename("parsed.type", "aws.lambda.event_type")?;
                 }
                 Ok(())
@@ -379,7 +379,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.cold_start") {
+                if event.has_value("parsed.cold_start") {
                     event.rename("parsed.cold_start", "aws.lambda.cold_start")?;
                 }
                 Ok(())
@@ -387,7 +387,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.correlation_id") {
+                if event.has_value("parsed.correlation_id") {
                     event.rename("parsed.correlation_id", "aws.lambda.correlation_id")?;
                 }
                 Ok(())
@@ -395,7 +395,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.function_arn") {
+                if event.has_value("parsed.function_arn") {
                     event.rename("parsed.function_arn", "aws.lambda.arn")?;
                 }
                 Ok(())
@@ -418,7 +418,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.function_name") {
+                if event.has_value("parsed.function_name") {
                     event.rename("parsed.function_name", "aws.lambda.name")?;
                 }
                 Ok(())
@@ -426,7 +426,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.function_request_id") {
+                if event.has_value("parsed.function_request_id") {
                     event.rename("parsed.function_request_id", "aws.lambda.request_id")?;
                 }
                 Ok(())
@@ -434,7 +434,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.location") {
+                if event.has_value("parsed.location") {
                     event.rename("parsed.location", "aws.lambda.error.location")?;
                 }
                 Ok(())
@@ -444,7 +444,7 @@ impl Transform for AwsLambdaJson {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.message") {
+                if event.has_value("parsed.message") {
                     event.rename("parsed.message", "aws.lambda.message")?;
                 }
                 Ok(())
@@ -467,7 +467,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.users") {
+                if event.has_value("parsed.users") {
                     event.rename("parsed.users", "aws.lambda.users")?;
                 }
                 Ok(())
@@ -475,7 +475,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.tracing.xray_trace_id") {
+                if event.has_value("parsed.tracing.xray_trace_id") {
                     event.rename("parsed.tracing.xray_trace_id", "aws.lambda.xray_trace_id")?;
                 }
                 Ok(())
@@ -483,7 +483,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.ColdStart") {
+                if event.has_value("parsed.ColdStart") {
                     event.rename("parsed.ColdStart", "aws.lambda.cold_start_int")?;
                 }
                 Ok(())
@@ -491,7 +491,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.FunctionName") {
+                if event.has_value("parsed.FunctionName") {
                     event.rename("parsed.FunctionName", "aws.lambda.name")?;
                 }
                 Ok(())
@@ -499,7 +499,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.Service") {
+                if event.has_value("parsed.Service") {
                     event.rename("parsed.Service", "aws.lambda.service.name")?;
                 }
                 Ok(())
@@ -507,7 +507,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.executionEnvironment") {
+                if event.has_value("parsed.executionEnvironment") {
                     event.rename("parsed.executionEnvironment", "aws.lambda.execution_environment")?;
                 }
                 Ok(())
@@ -515,7 +515,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.functionVersion") {
+                if event.has_value("parsed.functionVersion") {
                     event.rename("parsed.functionVersion", "aws.lambda.version")?;
                 }
                 Ok(())
@@ -523,7 +523,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.logStreamId") {
+                if event.has_value("parsed.logStreamId") {
                     event.rename("parsed.logStreamId", "aws.lambda.log_stream_id")?;
                 }
                 Ok(())
@@ -531,7 +531,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.traceId") {
+                if event.has_value("parsed.traceId") {
                     event.rename("parsed.traceId", "aws.lambda.trace_id")?;
                 }
                 Ok(())
@@ -539,7 +539,7 @@ impl Transform for AwsLambdaJson {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed.AWSRequestId") {
+                if event.has_value("parsed.AWSRequestId") {
                     event.rename("parsed.AWSRequestId", "aws.lambda.aws_request_id")?;
                 }
                 Ok(())
@@ -549,7 +549,7 @@ impl Transform for AwsLambdaJson {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("parsed") {
+                if event.has_value("parsed") {
                     event.rename("parsed", "aws.lambda.message")?;
                 }
                 Ok(())

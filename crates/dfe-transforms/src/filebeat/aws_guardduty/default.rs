@@ -35,7 +35,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -108,15 +108,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.accountId") {
+            if event.has_value("json.accountId") {
                 event.rename("json.accountId", "aws.guardduty.account_id")?;
             }
 
-            if event.has("json.arn") {
+            if event.has_value("json.arn") {
                 event.rename("json.arn", "aws.guardduty.arn")?;
             }
 
-            if event.has("json.confidence") {
+            if event.has_value("json.confidence") {
                 event.rename("json.confidence", "aws.guardduty.confidence")?;
             }
 
@@ -165,37 +165,37 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.description") {
+            if event.has_value("json.description") {
                 event.rename("json.description", "aws.guardduty.description")?;
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "aws.guardduty.id")?;
             }
 
-            if event.has("json.partition") {
+            if event.has_value("json.partition") {
                 event.rename("json.partition", "aws.guardduty.partition")?;
             }
 
-            if event.has("json.region") {
+            if event.has_value("json.region") {
                 event.rename("json.region", "aws.guardduty.region")?;
             }
 
-            if event.has("json.resource.accessKeyDetails.accessKeyId") {
+            if event.has_value("json.resource.accessKeyDetails.accessKeyId") {
                 event.rename(
                     "json.resource.accessKeyDetails.accessKeyId",
                     "aws.guardduty.resource.access_key_details.accesskey_id",
                 )?;
             }
 
-            if event.has("json.resource.accessKeyDetails.userType") {
+            if event.has_value("json.resource.accessKeyDetails.userType") {
                 event.rename(
                     "json.resource.accessKeyDetails.userType",
                     "aws.guardduty.resource.access_key_details.user.type",
                 )?;
             }
 
-            if event.has("json.resource.accessKeyDetails.principalId") {
+            if event.has_value("json.resource.accessKeyDetails.principalId") {
                 event.rename(
                     "json.resource.accessKeyDetails.principalId",
                     "aws.guardduty.resource.access_key_details.principal_id",
@@ -215,7 +215,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.accessKeyDetails.userName") {
+            if event.has_value("json.resource.accessKeyDetails.userName") {
                 event.rename(
                     "json.resource.accessKeyDetails.userName",
                     "aws.guardduty.resource.access_key_details.user.name",
@@ -234,35 +234,35 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.containerDetails.containerRuntime") {
+            if event.has_value("json.resource.containerDetails.containerRuntime") {
                 event.rename(
                     "json.resource.containerDetails.containerRuntime",
                     "aws.guardduty.resource.container_details.container_runtime",
                 )?;
             }
 
-            if event.has("json.resource.containerDetails.id") {
+            if event.has_value("json.resource.containerDetails.id") {
                 event.rename(
                     "json.resource.containerDetails.id",
                     "aws.guardduty.resource.container_details.id",
                 )?;
             }
 
-            if event.has("json.resource.containerDetails.image") {
+            if event.has_value("json.resource.containerDetails.image") {
                 event.rename(
                     "json.resource.containerDetails.image",
                     "aws.guardduty.resource.container_details.image.value",
                 )?;
             }
 
-            if event.has("json.resource.containerDetails.imagePrefix") {
+            if event.has_value("json.resource.containerDetails.imagePrefix") {
                 event.rename(
                     "json.resource.containerDetails.imagePrefix",
                     "aws.guardduty.resource.container_details.image.prefix",
                 )?;
             }
 
-            if event.has("json.resource.containerDetails.name") {
+            if event.has_value("json.resource.containerDetails.name") {
                 event.rename(
                     "json.resource.containerDetails.name",
                     "aws.guardduty.resource.container_details.name",
@@ -327,7 +327,7 @@ impl Transform for Default {
                     event,
                     "json.resource.containerDetails.volumeMounts",
                     |event| {
-                        if event.has("_ingest._value.mountPath") {
+                        if event.has_value("_ingest._value.mountPath") {
                             event
                                 .rename("_ingest._value.mountPath", "_ingest._value.mount_path")?;
                         }
@@ -336,7 +336,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.containerDetails.volumeMounts") {
+            if event.has_value("json.resource.containerDetails.volumeMounts") {
                 event.rename(
                     "json.resource.containerDetails.volumeMounts",
                     "aws.guardduty.resource.container_details.volume_mounts",
@@ -353,7 +353,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.deviceName") {
+                        if event.has_value("_ingest._value.deviceName") {
                             event.rename(
                                 "_ingest._value.deviceName",
                                 "_ingest._value.device_name",
@@ -374,7 +374,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.encryptionType") {
+                        if event.has_value("_ingest._value.encryptionType") {
                             event.rename(
                                 "_ingest._value.encryptionType",
                                 "_ingest._value.encryption_type",
@@ -395,7 +395,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.kmsKeyArn") {
+                        if event.has_value("_ingest._value.kmsKeyArn") {
                             event
                                 .rename("_ingest._value.kmsKeyArn", "_ingest._value.kmskey_arn")?;
                         }
@@ -414,7 +414,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.snapshotArn") {
+                        if event.has_value("_ingest._value.snapshotArn") {
                             event.rename(
                                 "_ingest._value.snapshotArn",
                                 "_ingest._value.snapshot_arn",
@@ -435,7 +435,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.volumeArn") {
+                        if event.has_value("_ingest._value.volumeArn") {
                             event
                                 .rename("_ingest._value.volumeArn", "_ingest._value.volume.arn")?;
                         }
@@ -502,7 +502,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.volumeType") {
+                        if event.has_value("_ingest._value.volumeType") {
                             event.rename(
                                 "_ingest._value.volumeType",
                                 "_ingest._value.volume.type",
@@ -529,7 +529,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.ebsVolumeDetails.scannedVolumeDetails") {
+            if event.has_value("json.resource.ebsVolumeDetails.scannedVolumeDetails") {
                 event.rename(
                     "json.resource.ebsVolumeDetails.scannedVolumeDetails",
                     "aws.guardduty.resource.ebs_volume_details.scanned_volume_details",
@@ -546,7 +546,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.deviceName") {
+                        if event.has_value("_ingest._value.deviceName") {
                             event.rename(
                                 "_ingest._value.deviceName",
                                 "_ingest._value.device_name",
@@ -567,7 +567,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.encryptionType") {
+                        if event.has_value("_ingest._value.encryptionType") {
                             event.rename(
                                 "_ingest._value.encryptionType",
                                 "_ingest._value.encryption_type",
@@ -588,7 +588,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.kmsKeyArn") {
+                        if event.has_value("_ingest._value.kmsKeyArn") {
                             event
                                 .rename("_ingest._value.kmsKeyArn", "_ingest._value.kmskey_arn")?;
                         }
@@ -607,7 +607,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.snapshotArn") {
+                        if event.has_value("_ingest._value.snapshotArn") {
                             event.rename(
                                 "_ingest._value.snapshotArn",
                                 "_ingest._value.snapshot_arn",
@@ -628,7 +628,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.volumeArn") {
+                        if event.has_value("_ingest._value.volumeArn") {
                             event
                                 .rename("_ingest._value.volumeArn", "_ingest._value.volume.arn")?;
                         }
@@ -695,7 +695,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     |event| {
-                        if event.has("_ingest._value.volumeType") {
+                        if event.has_value("_ingest._value.volumeType") {
                             event.rename(
                                 "_ingest._value.volumeType",
                                 "_ingest._value.volume.type",
@@ -722,7 +722,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.ebsVolumeDetails.skippedVolumeDetails") {
+            if event.has_value("json.resource.ebsVolumeDetails.skippedVolumeDetails") {
                 event.rename(
                     "json.resource.ebsVolumeDetails.skippedVolumeDetails",
                     "aws.guardduty.resource.ebs_volume_details.skipped_volume_details",
@@ -768,14 +768,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.ecsClusterDetails.arn") {
+            if event.has_value("json.resource.ecsClusterDetails.arn") {
                 event.rename(
                     "json.resource.ecsClusterDetails.arn",
                     "aws.guardduty.resource.ecs_cluster_details.arn",
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.name") {
+            if event.has_value("json.resource.ecsClusterDetails.name") {
                 event.rename(
                     "json.resource.ecsClusterDetails.name",
                     "aws.guardduty.resource.ecs_cluster_details.name",
@@ -858,21 +858,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.ecsClusterDetails.status") {
+            if event.has_value("json.resource.ecsClusterDetails.status") {
                 event.rename(
                     "json.resource.ecsClusterDetails.status",
                     "aws.guardduty.resource.ecs_cluster_details.status",
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.tags") {
+            if event.has_value("json.resource.ecsClusterDetails.tags") {
                 event.rename(
                     "json.resource.ecsClusterDetails.tags",
                     "aws.guardduty.resource.ecs_cluster_details.tags",
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.arn") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.arn") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.arn",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.arn",
@@ -889,7 +889,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ecsClusterDetails.taskDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.containerRuntime") {
+                        if event.has_value("_ingest._value.containerRuntime") {
                             event.rename(
                                 "_ingest._value.containerRuntime",
                                 "_ingest._value.container_runtime",
@@ -910,7 +910,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ecsClusterDetails.taskDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.image") {
+                        if event.has_value("_ingest._value.image") {
                             event.rename("_ingest._value.image", "_ingest._value.image.value")?;
                         }
                         Ok(())
@@ -928,7 +928,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ecsClusterDetails.taskDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.imagePrefix") {
+                        if event.has_value("_ingest._value.imagePrefix") {
                             event.rename(
                                 "_ingest._value.imagePrefix",
                                 "_ingest._value.image.prefix",
@@ -1005,7 +1005,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.volumeMounts") {
                             foreach_array(event, "_ingest._value.volumeMounts", |event| {
-                                if event.has("_ingest._value.mountPath") {
+                                if event.has_value("_ingest._value.mountPath") {
                                     event.rename(
                                         "_ingest._value.mountPath",
                                         "_ingest._value.mount_path",
@@ -1029,7 +1029,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ecsClusterDetails.taskDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.volumeMounts") {
+                        if event.has_value("_ingest._value.volumeMounts") {
                             event.rename(
                                 "_ingest._value.volumeMounts",
                                 "_ingest._value.volume_mounts",
@@ -1056,21 +1056,21 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.containers") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.containers") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.containers",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.containers",
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.definitionArn") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.definitionArn") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.definitionArn",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.definitionarn",
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.group") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.group") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.group",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.group",
@@ -1117,14 +1117,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.startedBy") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.startedBy") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.startedBy",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.started_by",
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.tags") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.tags") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.tags",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.tags",
@@ -1171,7 +1171,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.version") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.version") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.version",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.version",
@@ -1188,7 +1188,7 @@ impl Transform for Default {
                     event,
                     "json.resource.ecsClusterDetails.taskDetails.volumes",
                     |event| {
-                        if event.has("_ingest._value.hostPath") {
+                        if event.has_value("_ingest._value.hostPath") {
                             event.rename("_ingest._value.hostPath", "_ingest._value.host_path")?;
                         }
                         Ok(())
@@ -1196,14 +1196,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.ecsClusterDetails.taskDetails.volumes") {
+            if event.has_value("json.resource.ecsClusterDetails.taskDetails.volumes") {
                 event.rename(
                     "json.resource.ecsClusterDetails.taskDetails.volumes",
                     "aws.guardduty.resource.ecs_cluster_details.task_details.volumes",
                 )?;
             }
 
-            if event.has("json.resource.eksClusterDetails.arn") {
+            if event.has_value("json.resource.eksClusterDetails.arn") {
                 event.rename(
                     "json.resource.eksClusterDetails.arn",
                     "aws.guardduty.resource.eks_cluster_details.arn",
@@ -1257,77 +1257,77 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.eksClusterDetails.name") {
+            if event.has_value("json.resource.eksClusterDetails.name") {
                 event.rename(
                     "json.resource.eksClusterDetails.name",
                     "aws.guardduty.resource.eks_cluster_details.name",
                 )?;
             }
 
-            if event.has("json.resource.eksClusterDetails.status") {
+            if event.has_value("json.resource.eksClusterDetails.status") {
                 event.rename(
                     "json.resource.eksClusterDetails.status",
                     "aws.guardduty.resource.eks_cluster_details.status",
                 )?;
             }
 
-            if event.has("json.resource.eksClusterDetails.tags") {
+            if event.has_value("json.resource.eksClusterDetails.tags") {
                 event.rename(
                     "json.resource.eksClusterDetails.tags",
                     "aws.guardduty.resource.eks_cluster_details.tags",
                 )?;
             }
 
-            if event.has("json.resource.eksClusterDetails.vpcId") {
+            if event.has_value("json.resource.eksClusterDetails.vpcId") {
                 event.rename(
                     "json.resource.eksClusterDetails.vpcId",
                     "aws.guardduty.resource.eks_cluster_details.vpcid",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.availabilityZone") {
+            if event.has_value("json.resource.instanceDetails.availabilityZone") {
                 event.rename(
                     "json.resource.instanceDetails.availabilityZone",
                     "aws.guardduty.resource.instance_details.availability_zone",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.iamInstanceProfile") {
+            if event.has_value("json.resource.instanceDetails.iamInstanceProfile") {
                 event.rename(
                     "json.resource.instanceDetails.iamInstanceProfile",
                     "aws.guardduty.resource.instance_details.iaminstance_profile",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.imageDescription") {
+            if event.has_value("json.resource.instanceDetails.imageDescription") {
                 event.rename(
                     "json.resource.instanceDetails.imageDescription",
                     "aws.guardduty.resource.instance_details.image.description",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.imageId") {
+            if event.has_value("json.resource.instanceDetails.imageId") {
                 event.rename(
                     "json.resource.instanceDetails.imageId",
                     "aws.guardduty.resource.instance_details.image.id",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.instanceId") {
+            if event.has_value("json.resource.instanceDetails.instanceId") {
                 event.rename(
                     "json.resource.instanceDetails.instanceId",
                     "aws.guardduty.resource.instance_details.instance.id",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.instanceState") {
+            if event.has_value("json.resource.instanceDetails.instanceState") {
                 event.rename(
                     "json.resource.instanceDetails.instanceState",
                     "aws.guardduty.resource.instance_details.instance.state",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.instanceType") {
+            if event.has_value("json.resource.instanceDetails.instanceType") {
                 event.rename(
                     "json.resource.instanceDetails.instanceType",
                     "aws.guardduty.resource.instance_details.instance.type",
@@ -1514,7 +1514,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.ipv6Addresses") {
+                        if event.has_value("_ingest._value.ipv6Addresses") {
                             event.rename(
                                 "_ingest._value.ipv6Addresses",
                                 "_ingest._value.ipv6_addresses",
@@ -1535,7 +1535,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.networkInterfaceId") {
+                        if event.has_value("_ingest._value.networkInterfaceId") {
                             event.rename(
                                 "_ingest._value.networkInterfaceId",
                                 "_ingest._value.network_interface_id",
@@ -1556,7 +1556,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.privateDnsName") {
+                        if event.has_value("_ingest._value.privateDnsName") {
                             event.rename(
                                 "_ingest._value.privateDnsName",
                                 "_ingest._value.private.dns_name",
@@ -1737,7 +1737,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.privateIpAddresses") {
                             foreach_array(event, "_ingest._value.privateIpAddresses", |event| {
-                                if event.has("_ingest._value.privateDnsName") {
+                                if event.has_value("_ingest._value.privateDnsName") {
                                     event.rename(
                                         "_ingest._value.privateDnsName",
                                         "_ingest._value.private.dns_name",
@@ -1782,7 +1782,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.privateIpAddresses") {
+                        if event.has_value("_ingest._value.privateIpAddresses") {
                             event.rename(
                                 "_ingest._value.privateIpAddresses",
                                 "_ingest._value.private.ip_addresses",
@@ -1803,7 +1803,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.publicDnsName") {
+                        if event.has_value("_ingest._value.publicDnsName") {
                             event.rename(
                                 "_ingest._value.publicDnsName",
                                 "_ingest._value.public.dns_name",
@@ -1897,7 +1897,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.securityGroups") {
                             foreach_array(event, "_ingest._value.securityGroups", |event| {
-                                if event.has("_ingest._value.groupId") {
+                                if event.has_value("_ingest._value.groupId") {
                                     event.rename(
                                         "_ingest._value.groupId",
                                         "_ingest._value.group.id",
@@ -1923,7 +1923,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.securityGroups") {
                             foreach_array(event, "_ingest._value.securityGroups", |event| {
-                                if event.has("_ingest._value.groupName") {
+                                if event.has_value("_ingest._value.groupName") {
                                     event.rename(
                                         "_ingest._value.groupName",
                                         "_ingest._value.group.name",
@@ -1947,7 +1947,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.securityGroups") {
+                        if event.has_value("_ingest._value.securityGroups") {
                             event.rename(
                                 "_ingest._value.securityGroups",
                                 "_ingest._value.security_groups",
@@ -1968,7 +1968,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.subnetId") {
+                        if event.has_value("_ingest._value.subnetId") {
                             event.rename("_ingest._value.subnetId", "_ingest._value.subnet_id")?;
                         }
                         Ok(())
@@ -1986,7 +1986,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.networkInterfaces",
                     |event| {
-                        if event.has("_ingest._value.vpcId") {
+                        if event.has_value("_ingest._value.vpcId") {
                             event.rename("_ingest._value.vpcId", "_ingest._value.vpc_id")?;
                         }
                         Ok(())
@@ -2011,21 +2011,21 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.networkInterfaces") {
+            if event.has_value("json.resource.instanceDetails.networkInterfaces") {
                 event.rename(
                     "json.resource.instanceDetails.networkInterfaces",
                     "aws.guardduty.resource.instance_details.network_interfaces",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.outpostArn") {
+            if event.has_value("json.resource.instanceDetails.outpostArn") {
                 event.rename(
                     "json.resource.instanceDetails.outpostArn",
                     "aws.guardduty.resource.instance_details.outpost_arn",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.platform") {
+            if event.has_value("json.resource.instanceDetails.platform") {
                 event.rename(
                     "json.resource.instanceDetails.platform",
                     "aws.guardduty.resource.instance_details.platform",
@@ -2042,7 +2042,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.productCodes",
                     |event| {
-                        if event.has("_ingest._value.productCodeId") {
+                        if event.has_value("_ingest._value.productCodeId") {
                             event.rename(
                                 "_ingest._value.productCodeId",
                                 "_ingest._value.product_code.id",
@@ -2063,7 +2063,7 @@ impl Transform for Default {
                     event,
                     "json.resource.instanceDetails.productCodes",
                     |event| {
-                        if event.has("_ingest._value.productCodeType") {
+                        if event.has_value("_ingest._value.productCodeType") {
                             event.rename(
                                 "_ingest._value.productCodeType",
                                 "_ingest._value.product_code.type",
@@ -2074,21 +2074,21 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.productCodes") {
+            if event.has_value("json.resource.instanceDetails.productCodes") {
                 event.rename(
                     "json.resource.instanceDetails.productCodes",
                     "aws.guardduty.resource.instance_details.product_codes",
                 )?;
             }
 
-            if event.has("json.resource.instanceDetails.tags") {
+            if event.has_value("json.resource.instanceDetails.tags") {
                 event.rename(
                     "json.resource.instanceDetails.tags",
                     "aws.guardduty.resource.instance_details.tags",
                 )?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesUserDetails.uid") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesUserDetails.uid") {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesUserDetails.uid",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_user_details.uid",
@@ -2104,7 +2104,7 @@ impl Transform for Default {
                 event.append_unique("related.user", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.uid").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesUserDetails.username") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesUserDetails.username") {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesUserDetails.username",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_user_details.user_name",
@@ -2120,7 +2120,7 @@ impl Transform for Default {
                 event.append_unique("related.user", json!(event.get("aws.guardduty.resource.kubernetes_details.kubernetes_user_details.user_name").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesUserDetails.groups") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesUserDetails.groups") {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesUserDetails.groups",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_user_details.groups",
@@ -2137,7 +2137,7 @@ impl Transform for Default {
                     event,
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.containerRuntime") {
+                        if event.has_value("_ingest._value.containerRuntime") {
                             event.rename(
                                 "_ingest._value.containerRuntime",
                                 "_ingest._value.container_runtime",
@@ -2158,7 +2158,7 @@ impl Transform for Default {
                     event,
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.image") {
+                        if event.has_value("_ingest._value.image") {
                             event.rename("_ingest._value.image", "_ingest._value.image.value")?;
                         }
                         Ok(())
@@ -2176,7 +2176,7 @@ impl Transform for Default {
                     event,
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.imagePrefix") {
+                        if event.has_value("_ingest._value.imagePrefix") {
                             event.rename(
                                 "_ingest._value.imagePrefix",
                                 "_ingest._value.image.prefix",
@@ -2253,7 +2253,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.volumeMounts") {
                             foreach_array(event, "_ingest._value.volumeMounts", |event| {
-                                if event.has("_ingest._value.mountPath") {
+                                if event.has_value("_ingest._value.mountPath") {
                                     event.rename(
                                         "_ingest._value.mountPath",
                                         "_ingest._value.mount_path",
@@ -2277,7 +2277,7 @@ impl Transform for Default {
                     event,
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers",
                     |event| {
-                        if event.has("_ingest._value.volumeMounts") {
+                        if event.has_value("_ingest._value.volumeMounts") {
                             event.rename(
                                 "_ingest._value.volumeMounts",
                                 "_ingest._value.volume_mounts",
@@ -2304,7 +2304,9 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers") {
+            if event
+                .has_value("json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers")
+            {
                 event.rename("json.resource.kubernetesDetails.kubernetesWorkloadDetails.containers", "aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.containers")?;
             }
 
@@ -2345,25 +2347,27 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesWorkloadDetails.name") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesWorkloadDetails.name") {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.name",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.name",
                 )?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesWorkloadDetails.namespace") {
+            if event
+                .has_value("json.resource.kubernetesDetails.kubernetesWorkloadDetails.namespace")
+            {
                 event.rename("json.resource.kubernetesDetails.kubernetesWorkloadDetails.namespace", "aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.name_space")?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesWorkloadDetails.type") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesWorkloadDetails.type") {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.type",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.type",
                 )?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesWorkloadDetails.uid") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesWorkloadDetails.uid") {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.uid",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.uid",
@@ -2380,7 +2384,7 @@ impl Transform for Default {
                     event,
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.volumes",
                     |event| {
-                        if event.has("_ingest._value.hostPath") {
+                        if event.has_value("_ingest._value.hostPath") {
                             event.rename("_ingest._value.hostPath", "_ingest._value.host_path")?;
                         }
                         Ok(())
@@ -2388,21 +2392,22 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.kubernetesDetails.kubernetesWorkloadDetails.volumes") {
+            if event.has_value("json.resource.kubernetesDetails.kubernetesWorkloadDetails.volumes")
+            {
                 event.rename(
                     "json.resource.kubernetesDetails.kubernetesWorkloadDetails.volumes",
                     "aws.guardduty.resource.kubernetes_details.kubernetes_workload_details.volumes",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbInstanceDetails.dbInstanceIdentifier") {
+            if event.has_value("json.resource.rdsDbInstanceDetails.dbInstanceIdentifier") {
                 event.rename(
                     "json.resource.rdsDbInstanceDetails.dbInstanceIdentifier",
                     "aws.guardduty.resource.rdsdb_instance_details.instance_identifier",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbInstanceDetails.engine") {
+            if event.has_value("json.resource.rdsDbInstanceDetails.engine") {
                 event.rename(
                     "json.resource.rdsDbInstanceDetails.engine",
                     "aws.guardduty.resource.rdsdb_instance_details.engine",
@@ -2447,21 +2452,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.resource.rdsDbInstanceDetails.dbClusterIdentifier") {
+            if event.has_value("json.resource.rdsDbInstanceDetails.dbClusterIdentifier") {
                 event.rename(
                     "json.resource.rdsDbInstanceDetails.dbClusterIdentifier",
                     "aws.guardduty.resource.rdsdb_instance_details.cluster_identifier",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbInstanceDetails.dbInstanceArn") {
+            if event.has_value("json.resource.rdsDbInstanceDetails.dbInstanceArn") {
                 event.rename(
                     "json.resource.rdsDbInstanceDetails.dbInstanceArn",
                     "aws.guardduty.resource.rdsdb_instance_details.instance_arn",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbUserDetails.user") {
+            if event.has_value("json.resource.rdsDbUserDetails.user") {
                 event.rename(
                     "json.resource.rdsDbUserDetails.user",
                     "aws.guardduty.resource.rdsdb_user_details.user",
@@ -2480,35 +2485,35 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.resource.rdsDbUserDetails.application") {
+            if event.has_value("json.resource.rdsDbUserDetails.application") {
                 event.rename(
                     "json.resource.rdsDbUserDetails.application",
                     "aws.guardduty.resource.rdsdb_user_details.application",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbUserDetails.database") {
+            if event.has_value("json.resource.rdsDbUserDetails.database") {
                 event.rename(
                     "json.resource.rdsDbUserDetails.database",
                     "aws.guardduty.resource.rdsdb_user_details.database",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbUserDetails.ssl") {
+            if event.has_value("json.resource.rdsDbUserDetails.ssl") {
                 event.rename(
                     "json.resource.rdsDbUserDetails.ssl",
                     "aws.guardduty.resource.rdsdb_user_details.ssl",
                 )?;
             }
 
-            if event.has("json.resource.rdsDbUserDetails.authMethod") {
+            if event.has_value("json.resource.rdsDbUserDetails.authMethod") {
                 event.rename(
                     "json.resource.rdsDbUserDetails.authMethod",
                     "aws.guardduty.resource.rdsdb_user_details.auth_method",
                 )?;
             }
 
-            if event.has("json.resource.resourceType") {
+            if event.has_value("json.resource.resourceType") {
                 event.rename("json.resource.resourceType", "aws.guardduty.resource.type")?;
             }
 
@@ -2571,7 +2576,8 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.resource.s3BucketDetails", |event| {
-                    if event.has("_ingest._value.defaultServerSideEncryption.encryptionType") {
+                    if event.has_value("_ingest._value.defaultServerSideEncryption.encryptionType")
+                    {
                         event.rename(
                             "_ingest._value.defaultServerSideEncryption.encryptionType",
                             "_ingest._value.default_server_side_encryption.encryption_type",
@@ -2588,7 +2594,8 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.resource.s3BucketDetails", |event| {
-                    if event.has("_ingest._value.defaultServerSideEncryption.kmsMasterKeyArn") {
+                    if event.has_value("_ingest._value.defaultServerSideEncryption.kmsMasterKeyArn")
+                    {
                         event.rename(
                             "_ingest._value.defaultServerSideEncryption.kmsMasterKeyArn",
                             "_ingest._value.default_server_side_encryption.kms_masterkey_arn",
@@ -2605,7 +2612,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.resource.s3BucketDetails", |event| {
-                    if event.has("_ingest._value.publicAccess") {
+                    if event.has_value("_ingest._value.publicAccess") {
                         event.rename(
                             "_ingest._value.publicAccess",
                             "_ingest._value.public_access",
@@ -2646,7 +2653,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.resource.s3BucketDetails") {
+            if event.has_value("json.resource.s3BucketDetails") {
                 event.rename(
                     "json.resource.s3BucketDetails",
                     "aws.guardduty.resource.s3_bucket_details",
@@ -2690,35 +2697,35 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.actionType") {
+            if event.has_value("json.service.action.actionType") {
                 event.rename(
                     "json.service.action.actionType",
                     "aws.guardduty.service.action.type",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.affectedResources") {
+            if event.has_value("json.service.action.awsApiCallAction.affectedResources") {
                 event.rename(
                     "json.service.action.awsApiCallAction.affectedResources",
                     "aws.guardduty.service.action.aws_api_call_action.affected_resources",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.api") {
+            if event.has_value("json.service.action.awsApiCallAction.api") {
                 event.rename(
                     "json.service.action.awsApiCallAction.api",
                     "aws.guardduty.service.action.aws_api_call_action.api",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.callerType") {
+            if event.has_value("json.service.action.awsApiCallAction.callerType") {
                 event.rename(
                     "json.service.action.awsApiCallAction.callerType",
                     "aws.guardduty.service.action.aws_api_call_action.caller_type",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.domainDetails.domain") {
+            if event.has_value("json.service.action.awsApiCallAction.domainDetails.domain") {
                 event.rename(
                     "json.service.action.awsApiCallAction.domainDetails.domain",
                     "aws.guardduty.service.action.aws_api_call_action.domain_details.domain",
@@ -2734,14 +2741,16 @@ impl Transform for Default {
                 event.append_unique("related.hosts", json!(event.get("aws.guardduty.service.action.aws_api_call_action.domain_details.domain").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.errorCode") {
+            if event.has_value("json.service.action.awsApiCallAction.errorCode") {
                 event.rename(
                     "json.service.action.awsApiCallAction.errorCode",
                     "aws.guardduty.service.action.aws_api_call_action.error_code",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteAccountDetails.accountId") {
+            if event
+                .has_value("json.service.action.awsApiCallAction.remoteAccountDetails.accountId")
+            {
                 event.rename("json.service.action.awsApiCallAction.remoteAccountDetails.accountId", "aws.guardduty.service.action.aws_api_call_action.remote_account_details.account_id")?;
             }
 
@@ -2782,24 +2791,27 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.city.cityName") {
+            if event.has_value("json.service.action.awsApiCallAction.remoteIpDetails.city.cityName")
+            {
                 event.rename(
                     "json.service.action.awsApiCallAction.remoteIpDetails.city.cityName",
                     "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.city.name",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.country.countryCode")
-            {
+            if event.has_value(
+                "json.service.action.awsApiCallAction.remoteIpDetails.country.countryCode",
+            ) {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.country.countryCode", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.code")?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.country.countryName")
-            {
+            if event.has_value(
+                "json.service.action.awsApiCallAction.remoteIpDetails.country.countryName",
+            ) {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.country.countryName", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.country.name")?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.geoLocation") {
+            if event.has_value("json.service.action.awsApiCallAction.remoteIpDetails.geoLocation") {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.geoLocation", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.geo_location")?;
             }
 
@@ -2847,31 +2859,38 @@ impl Transform for Default {
                 event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.aws_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.organization.asn") {
+            if event
+                .has_value("json.service.action.awsApiCallAction.remoteIpDetails.organization.asn")
+            {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.organization.asn", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asn")?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg")
-            {
+            if event.has_value(
+                "json.service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg",
+            ) {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.asnorg")?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.organization.isp") {
+            if event
+                .has_value("json.service.action.awsApiCallAction.remoteIpDetails.organization.isp")
+            {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.organization.isp", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.isp")?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.remoteIpDetails.organization.org") {
+            if event
+                .has_value("json.service.action.awsApiCallAction.remoteIpDetails.organization.org")
+            {
                 event.rename("json.service.action.awsApiCallAction.remoteIpDetails.organization.org", "aws.guardduty.service.action.aws_api_call_action.remote_ip_details.organization.org")?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.serviceName") {
+            if event.has_value("json.service.action.awsApiCallAction.serviceName") {
                 event.rename(
                     "json.service.action.awsApiCallAction.serviceName",
                     "aws.guardduty.service.action.aws_api_call_action.service_name",
                 )?;
             }
 
-            if event.has("json.service.action.awsApiCallAction.userAgent") {
+            if event.has_value("json.service.action.awsApiCallAction.userAgent") {
                 event.rename(
                     "json.service.action.awsApiCallAction.userAgent",
                     "aws.guardduty.service.action.aws_api_call_action.user_agent",
@@ -2915,7 +2934,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.dnsRequestAction.domain") {
+            if event.has_value("json.service.action.dnsRequestAction.domain") {
                 event.rename(
                     "json.service.action.dnsRequestAction.domain",
                     "aws.guardduty.service.action.dns_request_action.domain",
@@ -2935,40 +2954,41 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.service.action.dnsRequestAction.protocol") {
+            if event.has_value("json.service.action.dnsRequestAction.protocol") {
                 event.rename(
                     "json.service.action.dnsRequestAction.protocol",
                     "aws.guardduty.service.action.dns_request_action.protocol",
                 )?;
             }
 
-            if event.has("json.service.action.kubernetesApiCallAction.parameters") {
+            if event.has_value("json.service.action.kubernetesApiCallAction.parameters") {
                 event.rename(
                     "json.service.action.kubernetesApiCallAction.parameters",
                     "aws.guardduty.service.action.kubernetes_api_call_action.parameters",
                 )?;
             }
 
-            if event
-                .has("json.service.action.kubernetesApiCallAction.remoteIpDetails.city.cityName")
-            {
+            if event.has_value(
+                "json.service.action.kubernetesApiCallAction.remoteIpDetails.city.cityName",
+            ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.city.cityName", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.city.name")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.kubernetesApiCallAction.remoteIpDetails.country.countryCode",
             ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.country.countryCode", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.code")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.kubernetesApiCallAction.remoteIpDetails.country.countryName",
             ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.country.countryName", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.country.name")?;
             }
 
-            if event.has("json.service.action.kubernetesApiCallAction.remoteIpDetails.geoLocation")
-            {
+            if event.has_value(
+                "json.service.action.kubernetesApiCallAction.remoteIpDetails.geoLocation",
+            ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.geoLocation", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.geo_location")?;
             }
 
@@ -3016,31 +3036,31 @@ impl Transform for Default {
                 event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event
-                .has("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.asn")
-            {
+            if event.has_value(
+                "json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.asn",
+            ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.asn", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asn")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.asnOrg",
             ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.asnOrg", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.asnorg")?;
             }
 
-            if event
-                .has("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.isp")
-            {
+            if event.has_value(
+                "json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.isp",
+            ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.isp", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.isp")?;
             }
 
-            if event
-                .has("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.org")
-            {
+            if event.has_value(
+                "json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.org",
+            ) {
                 event.rename("json.service.action.kubernetesApiCallAction.remoteIpDetails.organization.org", "aws.guardduty.service.action.kubernetes_api_call_action.remote_ip_details.organization.org")?;
             }
 
-            if event.has("json.service.action.kubernetesApiCallAction.requestUri") {
+            if event.has_value("json.service.action.kubernetesApiCallAction.requestUri") {
                 event.rename(
                     "json.service.action.kubernetesApiCallAction.requestUri",
                     "aws.guardduty.service.action.kubernetes_api_call_action.request_uri",
@@ -3141,7 +3161,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.service.action.kubernetesApiCallAction.sourceIPs") {
+            if event.has_value("json.service.action.kubernetesApiCallAction.sourceIPs") {
                 event.rename(
                     "json.service.action.kubernetesApiCallAction.sourceIPs",
                     "aws.guardduty.service.action.kubernetes_api_call_action.source_ips",
@@ -3188,14 +3208,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.kubernetesApiCallAction.userAgent") {
+            if event.has_value("json.service.action.kubernetesApiCallAction.userAgent") {
                 event.rename(
                     "json.service.action.kubernetesApiCallAction.userAgent",
                     "aws.guardduty.service.action.kubernetes_api_call_action.user_agent",
                 )?;
             }
 
-            if event.has("json.service.action.kubernetesApiCallAction.verb") {
+            if event.has_value("json.service.action.kubernetesApiCallAction.verb") {
                 event.rename(
                     "json.service.action.kubernetesApiCallAction.verb",
                     "aws.guardduty.service.action.kubernetes_api_call_action.verb",
@@ -3241,7 +3261,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.networkConnectionAction.connectionDirection") {
+            if event.has_value("json.service.action.networkConnectionAction.connectionDirection") {
                 event.rename(
                     "json.service.action.networkConnectionAction.connectionDirection",
                     "aws.guardduty.service.action.network_connection_action.connection_direction",
@@ -3329,37 +3349,40 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.networkConnectionAction.localPortDetails.portName") {
+            if event
+                .has_value("json.service.action.networkConnectionAction.localPortDetails.portName")
+            {
                 event.rename("json.service.action.networkConnectionAction.localPortDetails.portName", "aws.guardduty.service.action.network_connection_action.local_port_details.port.name")?;
             }
 
-            if event.has("json.service.action.networkConnectionAction.protocol") {
+            if event.has_value("json.service.action.networkConnectionAction.protocol") {
                 event.rename(
                     "json.service.action.networkConnectionAction.protocol",
                     "aws.guardduty.service.action.network_connection_action.transport",
                 )?;
             }
 
-            if event
-                .has("json.service.action.networkConnectionAction.remoteIpDetails.city.cityName")
-            {
+            if event.has_value(
+                "json.service.action.networkConnectionAction.remoteIpDetails.city.cityName",
+            ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.city.cityName", "aws.guardduty.service.action.network_connection_action.remote_ip_details.city.name")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.networkConnectionAction.remoteIpDetails.country.countryCode",
             ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.country.countryCode", "aws.guardduty.service.action.network_connection_action.remote_ip_details.country.code")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.networkConnectionAction.remoteIpDetails.country.countryName",
             ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.country.countryName", "aws.guardduty.service.action.network_connection_action.remote_ip_details.country.name")?;
             }
 
-            if event.has("json.service.action.networkConnectionAction.remoteIpDetails.geoLocation")
-            {
+            if event.has_value(
+                "json.service.action.networkConnectionAction.remoteIpDetails.geoLocation",
+            ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.geoLocation", "aws.guardduty.service.action.network_connection_action.remote_ip_details.geo_location")?;
             }
 
@@ -3407,27 +3430,27 @@ impl Transform for Default {
                 event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.network_connection_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event
-                .has("json.service.action.networkConnectionAction.remoteIpDetails.organization.asn")
-            {
+            if event.has_value(
+                "json.service.action.networkConnectionAction.remoteIpDetails.organization.asn",
+            ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.organization.asn", "aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asn")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg",
             ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg", "aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.asnorg")?;
             }
 
-            if event
-                .has("json.service.action.networkConnectionAction.remoteIpDetails.organization.isp")
-            {
+            if event.has_value(
+                "json.service.action.networkConnectionAction.remoteIpDetails.organization.isp",
+            ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.organization.isp", "aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.isp")?;
             }
 
-            if event
-                .has("json.service.action.networkConnectionAction.remoteIpDetails.organization.org")
-            {
+            if event.has_value(
+                "json.service.action.networkConnectionAction.remoteIpDetails.organization.org",
+            ) {
                 event.rename("json.service.action.networkConnectionAction.remoteIpDetails.organization.org", "aws.guardduty.service.action.network_connection_action.remote_ip_details.organization.org")?;
             }
 
@@ -3468,7 +3491,9 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.action.networkConnectionAction.remotePortDetails.portName") {
+            if event
+                .has_value("json.service.action.networkConnectionAction.remotePortDetails.portName")
+            {
                 event.rename("json.service.action.networkConnectionAction.remotePortDetails.portName", "aws.guardduty.service.action.network_connection_action.remote_port_details.port.name")?;
             }
 
@@ -3648,7 +3673,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.localPortDetails.portName") {
+                        if event.has_value("_ingest._value.localPortDetails.portName") {
                             event.rename(
                                 "_ingest._value.localPortDetails.portName",
                                 "_ingest._value.local_port_details.port.name",
@@ -3669,7 +3694,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.city.cityName") {
+                        if event.has_value("_ingest._value.remoteIpDetails.city.cityName") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.city.cityName",
                                 "_ingest._value.remote_ip_details.city.name",
@@ -3690,7 +3715,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.country.countryCode") {
+                        if event.has_value("_ingest._value.remoteIpDetails.country.countryCode") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.country.countryCode",
                                 "_ingest._value.remote_ip_details.country.code",
@@ -3711,7 +3736,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.country.countryName") {
+                        if event.has_value("_ingest._value.remoteIpDetails.country.countryName") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.country.countryName",
                                 "_ingest._value.remote_ip_details.country.name",
@@ -3732,7 +3757,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.geoLocation") {
+                        if event.has_value("_ingest._value.remoteIpDetails.geoLocation") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.geoLocation",
                                 "_ingest._value.remote_ip_details.geo_location",
@@ -3830,7 +3855,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.organization.isp") {
+                        if event.has_value("_ingest._value.remoteIpDetails.organization.isp") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.organization.isp",
                                 "_ingest._value.remote_ip_details.organization.isp",
@@ -3851,7 +3876,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.organization.org") {
+                        if event.has_value("_ingest._value.remoteIpDetails.organization.org") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.organization.org",
                                 "_ingest._value.remote_ip_details.organization.org",
@@ -3872,7 +3897,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.organization.asn") {
+                        if event.has_value("_ingest._value.remoteIpDetails.organization.asn") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.organization.asn",
                                 "_ingest._value.remote_ip_details.organization.asn",
@@ -3893,7 +3918,7 @@ impl Transform for Default {
                     event,
                     "json.service.action.portProbeAction.portProbeDetails",
                     |event| {
-                        if event.has("_ingest._value.remoteIpDetails.organization.asnOrg") {
+                        if event.has_value("_ingest._value.remoteIpDetails.organization.asnOrg") {
                             event.rename(
                                 "_ingest._value.remoteIpDetails.organization.asnOrg",
                                 "_ingest._value.remote_ip_details.organization.asnorg",
@@ -3922,31 +3947,34 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.service.action.portProbeAction.portProbeDetails") {
+            if event.has_value("json.service.action.portProbeAction.portProbeDetails") {
                 event.rename(
                     "json.service.action.portProbeAction.portProbeDetails",
                     "aws.guardduty.service.action.port_probe_action.port_probe_details",
                 )?;
             }
 
-            if event.has("json.service.action.rdsLoginAttemptAction.remoteIpDetails.city.cityName")
-            {
+            if event.has_value(
+                "json.service.action.rdsLoginAttemptAction.remoteIpDetails.city.cityName",
+            ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.city.cityName", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.city.name")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.rdsLoginAttemptAction.remoteIpDetails.country.countryCode",
             ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.country.countryCode", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.code")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.rdsLoginAttemptAction.remoteIpDetails.country.countryName",
             ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.country.countryName", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.country.name")?;
             }
 
-            if event.has("json.service.action.rdsLoginAttemptAction.remoteIpDetails.geoLocation") {
+            if event
+                .has_value("json.service.action.rdsLoginAttemptAction.remoteIpDetails.geoLocation")
+            {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.geoLocation", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.geo_location")?;
             }
 
@@ -3994,31 +4022,31 @@ impl Transform for Default {
                 event.append_unique("related.ip", json!(event.get("aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.ip_address_v4").map_or_else(String::new, template_to_string)))?;
             }
 
-            if event
-                .has("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.asn")
-            {
+            if event.has_value(
+                "json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.asn",
+            ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.asn", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asn")?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.asnOrg",
             ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.asnOrg", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.asnorg")?;
             }
 
-            if event
-                .has("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.isp")
-            {
+            if event.has_value(
+                "json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.isp",
+            ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.isp", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.isp")?;
             }
 
-            if event
-                .has("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.org")
-            {
+            if event.has_value(
+                "json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.org",
+            ) {
                 event.rename("json.service.action.rdsLoginAttemptAction.remoteIpDetails.organization.org", "aws.guardduty.service.action.rds_login_attempt_action.remote_ip_details.organization.org")?;
             }
 
-            if event.has("json.service.additionalInfo") {
+            if event.has_value("json.service.additionalInfo") {
                 event.rename(
                     "json.service.additionalInfo",
                     "aws.guardduty.service.additional_info",
@@ -4099,7 +4127,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.detectorId") {
+            if event.has_value("json.service.detectorId") {
                 event.rename(
                     "json.service.detectorId",
                     "aws.guardduty.service.detector_id",
@@ -4187,11 +4215,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.ebsVolumeScanDetails.scanDetections.highestSeverityThreatDetails.severity") {
+            if event.has_value("json.service.ebsVolumeScanDetails.scanDetections.highestSeverityThreatDetails.severity") {
                     event.rename("json.service.ebsVolumeScanDetails.scanDetections.highestSeverityThreatDetails.severity", "aws.guardduty.service.ebs_volume_scan_details.scan.detections.highest_severity_threat_details.severity")?;
                 }
 
-            if event.has("json.service.ebsVolumeScanDetails.scanDetections.highestSeverityThreatDetails.threatName") {
+            if event.has_value("json.service.ebsVolumeScanDetails.scanDetections.highestSeverityThreatDetails.threatName") {
                     event.rename("json.service.ebsVolumeScanDetails.scanDetections.highestSeverityThreatDetails.threatName", "aws.guardduty.service.ebs_volume_scan_details.scan.detections.highest_severity_threat_details.threat_name")?;
                 }
 
@@ -4382,7 +4410,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.filePaths") {
                             foreach_array(event, "_ingest._value.filePaths", |event| {
-                                if event.has("_ingest._value.fileName") {
+                                if event.has_value("_ingest._value.fileName") {
                                     event.rename(
                                         "_ingest._value.fileName",
                                         "_ingest._value.file.name",
@@ -4406,7 +4434,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.filePaths") {
                             foreach_array(event, "_ingest._value.filePaths", |event| {
-                                if event.has("_ingest._value.filePath") {
+                                if event.has_value("_ingest._value.filePath") {
                                     event.rename(
                                         "_ingest._value.filePath",
                                         "_ingest._value.file.path",
@@ -4456,7 +4484,7 @@ impl Transform for Default {
                     |event| {
                         if event.has_value("_ingest._value.filePaths") {
                             foreach_array(event, "_ingest._value.filePaths", |event| {
-                                if event.has("_ingest._value.volumeArn") {
+                                if event.has_value("_ingest._value.volumeArn") {
                                     event.rename(
                                         "_ingest._value.volumeArn",
                                         "_ingest._value.volume_arn",
@@ -4478,7 +4506,7 @@ impl Transform for Default {
                     event,
                     "json.service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames",
                     |event| {
-                        if event.has("_ingest._value.filePaths") {
+                        if event.has_value("_ingest._value.filePaths") {
                             event
                                 .rename("_ingest._value.filePaths", "_ingest._value.file_paths")?;
                         }
@@ -4547,7 +4575,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has(
+            if event.has_value(
                 "json.service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames",
             ) {
                 event.rename("json.service.ebsVolumeScanDetails.scanDetections.threatDetectedByName.threatNames", "aws.guardduty.service.ebs_volume_scan_details.scan.detections.threat_detected_by_name.threat_names")?;
@@ -4619,7 +4647,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.ebsVolumeScanDetails.scanId") {
+            if event.has_value("json.service.ebsVolumeScanDetails.scanId") {
                 event.rename(
                     "json.service.ebsVolumeScanDetails.scanId",
                     "aws.guardduty.service.ebs_volume_scan_details.scan.id",
@@ -4673,14 +4701,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.ebsVolumeScanDetails.sources") {
+            if event.has_value("json.service.ebsVolumeScanDetails.sources") {
                 event.rename(
                     "json.service.ebsVolumeScanDetails.sources",
                     "aws.guardduty.service.ebs_volume_scan_details.sources",
                 )?;
             }
 
-            if event.has("json.service.ebsVolumeScanDetails.triggerFindingId") {
+            if event.has_value("json.service.ebsVolumeScanDetails.triggerFindingId") {
                 event.rename(
                     "json.service.ebsVolumeScanDetails.triggerFindingId",
                     "aws.guardduty.service.ebs_volume_scan_details.trigger_finding_id",
@@ -4785,7 +4813,7 @@ impl Transform for Default {
                     event,
                     "json.service.evidence.threatIntelligenceDetails",
                     |event| {
-                        if event.has("_ingest._value.threatListName") {
+                        if event.has_value("_ingest._value.threatListName") {
                             event.rename(
                                 "_ingest._value.threatListName",
                                 "_ingest._value.threat.list_name",
@@ -4806,7 +4834,7 @@ impl Transform for Default {
                     event,
                     "json.service.evidence.threatIntelligenceDetails",
                     |event| {
-                        if event.has("_ingest._value.threatNames") {
+                        if event.has_value("_ingest._value.threatNames") {
                             event.rename(
                                 "_ingest._value.threatNames",
                                 "_ingest._value.threat.names",
@@ -4817,49 +4845,49 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.service.evidence.threatIntelligenceDetails") {
+            if event.has_value("json.service.evidence.threatIntelligenceDetails") {
                 event.rename(
                     "json.service.evidence.threatIntelligenceDetails",
                     "aws.guardduty.service.evidence.threat_intelligence_details",
                 )?;
             }
 
-            if event.has("json.service.featureName") {
+            if event.has_value("json.service.featureName") {
                 event.rename(
                     "json.service.featureName",
                     "aws.guardduty.service.feature_name",
                 )?;
             }
 
-            if event.has("json.service.resourceRole") {
+            if event.has_value("json.service.resourceRole") {
                 event.rename(
                     "json.service.resourceRole",
                     "aws.guardduty.service.resource_role",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.addressFamily") {
+            if event.has_value("json.service.runtimeDetails.context.addressFamily") {
                 event.rename(
                     "json.service.runtimeDetails.context.addressFamily",
                     "aws.guardduty.service.runtime_details.context.address_family",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.commandLineExample") {
+            if event.has_value("json.service.runtimeDetails.context.commandLineExample") {
                 event.rename(
                     "json.service.runtimeDetails.context.commandLineExample",
                     "aws.guardduty.service.runtime_details.context.command_line_example",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.fileSystemType") {
+            if event.has_value("json.service.runtimeDetails.context.fileSystemType") {
                 event.rename(
                     "json.service.runtimeDetails.context.fileSystemType",
                     "aws.guardduty.service.runtime_details.context.file_system_type",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.flags") {
+            if event.has_value("json.service.runtimeDetails.context.flags") {
                 event.rename(
                     "json.service.runtimeDetails.context.flags",
                     "aws.guardduty.service.runtime_details.context.flags",
@@ -4906,21 +4934,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.context.ldPreloadValue") {
+            if event.has_value("json.service.runtimeDetails.context.ldPreloadValue") {
                 event.rename(
                     "json.service.runtimeDetails.context.ldPreloadValue",
                     "aws.guardduty.service.runtime_details.context.ld_preload",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.libraryPath") {
+            if event.has_value("json.service.runtimeDetails.context.libraryPath") {
                 event.rename(
                     "json.service.runtimeDetails.context.libraryPath",
                     "aws.guardduty.service.runtime_details.context.library_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.memoryRegions") {
+            if event.has_value("json.service.runtimeDetails.context.memoryRegions") {
                 event.rename(
                     "json.service.runtimeDetails.context.memoryRegions",
                     "aws.guardduty.service.runtime_details.context.memory_regions",
@@ -4974,28 +5002,28 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.context.modifyingProcess") {
+            if event.has_value("json.service.runtimeDetails.context.modifyingProcess") {
                 event.rename(
                     "json.service.runtimeDetails.context.modifyingProcess",
                     "aws.guardduty.service.runtime_details.context.modifying_process",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.moduleFilePath") {
+            if event.has_value("json.service.runtimeDetails.context.moduleFilePath") {
                 event.rename(
                     "json.service.runtimeDetails.context.moduleFilePath",
                     "aws.guardduty.service.runtime_details.context.module_file_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.moduleName") {
+            if event.has_value("json.service.runtimeDetails.context.moduleName") {
                 event.rename(
                     "json.service.runtimeDetails.context.moduleName",
                     "aws.guardduty.service.runtime_details.context.module_name",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.moduleSha256") {
+            if event.has_value("json.service.runtimeDetails.context.moduleSha256") {
                 event.rename(
                     "json.service.runtimeDetails.context.moduleSha256",
                     "aws.guardduty.service.runtime_details.context.module_sha256",
@@ -5015,84 +5043,84 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.mountSource") {
+            if event.has_value("json.service.runtimeDetails.context.mountSource") {
                 event.rename(
                     "json.service.runtimeDetails.context.mountSource",
                     "aws.guardduty.service.runtime_details.context.mount_source",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.mountTarget") {
+            if event.has_value("json.service.runtimeDetails.context.mountTarget") {
                 event.rename(
                     "json.service.runtimeDetails.context.mountTarget",
                     "aws.guardduty.service.runtime_details.context.mount_target",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.releaseAgentPath") {
+            if event.has_value("json.service.runtimeDetails.context.releaseAgentPath") {
                 event.rename(
                     "json.service.runtimeDetails.context.releaseAgentPath",
                     "aws.guardduty.service.runtime_details.context.release_agent_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.runcBinaryPath") {
+            if event.has_value("json.service.runtimeDetails.context.runcBinaryPath") {
                 event.rename(
                     "json.service.runtimeDetails.context.runcBinaryPath",
                     "aws.guardduty.service.runtime_details.context.runc_binary_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.scriptPath") {
+            if event.has_value("json.service.runtimeDetails.context.scriptPath") {
                 event.rename(
                     "json.service.runtimeDetails.context.scriptPath",
                     "aws.guardduty.service.runtime_details.context.script_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.serviceName") {
+            if event.has_value("json.service.runtimeDetails.context.serviceName") {
                 event.rename(
                     "json.service.runtimeDetails.context.serviceName",
                     "aws.guardduty.service.runtime_details.context.service_name",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.shellHistoryFilePath") {
+            if event.has_value("json.service.runtimeDetails.context.shellHistoryFilePath") {
                 event.rename(
                     "json.service.runtimeDetails.context.shellHistoryFilePath",
                     "aws.guardduty.service.runtime_details.context.shell_history_file_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.socketPath") {
+            if event.has_value("json.service.runtimeDetails.context.socketPath") {
                 event.rename(
                     "json.service.runtimeDetails.context.socketPath",
                     "aws.guardduty.service.runtime_details.context.socket_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.targetProcess") {
+            if event.has_value("json.service.runtimeDetails.context.targetProcess") {
                 event.rename(
                     "json.service.runtimeDetails.context.targetProcess",
                     "aws.guardduty.service.runtime_details.context.target_process",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.threatFilePath") {
+            if event.has_value("json.service.runtimeDetails.context.threatFilePath") {
                 event.rename(
                     "json.service.runtimeDetails.context.threatFilePath",
                     "aws.guardduty.service.runtime_details.context.threat_file_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.toolCategory") {
+            if event.has_value("json.service.runtimeDetails.context.toolCategory") {
                 event.rename(
                     "json.service.runtimeDetails.context.toolCategory",
                     "aws.guardduty.service.runtime_details.context.tool_category",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.context.toolName") {
+            if event.has_value("json.service.runtimeDetails.context.toolName") {
                 event.rename(
                     "json.service.runtimeDetails.context.toolName",
                     "aws.guardduty.service.runtime_details.context.tool_name",
@@ -5136,14 +5164,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.process.executablePath") {
+            if event.has_value("json.service.runtimeDetails.process.executablePath") {
                 event.rename(
                     "json.service.runtimeDetails.process.executablePath",
                     "aws.guardduty.service.runtime_details.process.executable_path",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.process.executableSha256") {
+            if event.has_value("json.service.runtimeDetails.process.executableSha256") {
                 event.rename(
                     "json.service.runtimeDetails.process.executableSha256",
                     "aws.guardduty.service.runtime_details.process.executable_sha256",
@@ -5164,14 +5192,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.process.lineage") {
+            if event.has_value("json.service.runtimeDetails.process.lineage") {
                 event.rename(
                     "json.service.runtimeDetails.process.lineage",
                     "aws.guardduty.service.runtime_details.process.lineage",
                 )?;
             }
 
-            if event.has("json.service.runtimeDetails.process.name") {
+            if event.has_value("json.service.runtimeDetails.process.name") {
                 event.rename(
                     "json.service.runtimeDetails.process.name",
                     "aws.guardduty.service.runtime_details.process.name",
@@ -5216,7 +5244,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.process.parentUuid") {
+            if event.has_value("json.service.runtimeDetails.process.parentUuid") {
                 event.rename(
                     "json.service.runtimeDetails.process.parentUuid",
                     "aws.guardduty.service.runtime_details.process.parent_uuid",
@@ -5260,7 +5288,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.process.pwd") {
+            if event.has_value("json.service.runtimeDetails.process.pwd") {
                 event.rename(
                     "json.service.runtimeDetails.process.pwd",
                     "aws.guardduty.service.runtime_details.process.pwd",
@@ -5314,7 +5342,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.process.user") {
+            if event.has_value("json.service.runtimeDetails.process.user") {
                 event.rename(
                     "json.service.runtimeDetails.process.user",
                     "aws.guardduty.service.runtime_details.process.user",
@@ -5358,21 +5386,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.service.runtimeDetails.process.uuid") {
+            if event.has_value("json.service.runtimeDetails.process.uuid") {
                 event.rename(
                     "json.service.runtimeDetails.process.uuid",
                     "aws.guardduty.service.runtime_details.process.uuid",
                 )?;
             }
 
-            if event.has("json.service.serviceName") {
+            if event.has_value("json.service.serviceName") {
                 event.rename(
                     "json.service.serviceName",
                     "aws.guardduty.service.service_name",
                 )?;
             }
 
-            if event.has("json.service.userFeedback") {
+            if event.has_value("json.service.userFeedback") {
                 event.rename(
                     "json.service.userFeedback",
                     "aws.guardduty.service.user_feedback",
@@ -5455,11 +5483,11 @@ impl Transform for Default {
                 event.set("aws.guardduty.severity.value", json!("Low"))?;
             }
 
-            if event.has("json.title") {
+            if event.has_value("json.title") {
                 event.rename("json.title", "aws.guardduty.title")?;
             }
 
-            if event.has("json.type") {
+            if event.has_value("json.type") {
                 event.rename("json.type", "aws.guardduty.type")?;
             }
 

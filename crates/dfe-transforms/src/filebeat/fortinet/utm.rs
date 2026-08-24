@@ -46,13 +46,13 @@ impl Transform for Utm {
 
             event.append("event.category", json!("network"))?;
 
-            if event.has("fortinet.firewall.dstip") {
+            if event.has_value("fortinet.firewall.dstip") {
                 event.rename("fortinet.firewall.dstip", "destination.ip")?;
             }
 
             let _cond = { !event.has_value("destination.ip") };
             if _cond {
-                if event.has("fortinet.firewall.remip") {
+                if event.has_value("fortinet.firewall.remip") {
                     event.rename("fortinet.firewall.remip", "destination.ip")?;
                 }
             }
@@ -127,7 +127,7 @@ impl Transform for Utm {
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.recipient") {
+            if event.has_value("fortinet.firewall.recipient") {
                 event.rename("fortinet.firewall.recipient", "email.to.address")?;
             }
 
@@ -143,11 +143,11 @@ impl Transform for Utm {
                 )?;
             }
 
-            if event.has("fortinet.firewall.group") {
+            if event.has_value("fortinet.firewall.group") {
                 event.rename("fortinet.firewall.group", "source.user.group.name")?;
             }
 
-            if event.has("fortinet.firewall.locip") {
+            if event.has_value("fortinet.firewall.locip") {
                 event.rename("fortinet.firewall.locip", "source.ip")?;
             }
 
@@ -221,36 +221,36 @@ impl Transform for Utm {
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.srcdomain") {
+            if event.has_value("fortinet.firewall.srcdomain") {
                 event.rename("fortinet.firewall.srcdomain", "source.domain")?;
             }
 
             let _cond = { !event.has_value("source.ip") };
             if _cond {
-                if event.has("fortinet.firewall.srcip") {
+                if event.has_value("fortinet.firewall.srcip") {
                     event.rename("fortinet.firewall.srcip", "source.ip")?;
                 }
             }
 
-            if event.has("fortinet.firewall.httpmethod") {
+            if event.has_value("fortinet.firewall.httpmethod") {
                 event.rename("fortinet.firewall.httpmethod", "http.request.method")?;
             }
 
-            if event.has("fortinet.firewall.referralurl") {
+            if event.has_value("fortinet.firewall.referralurl") {
                 event.rename("fortinet.firewall.referralurl", "http.request.referrer")?;
             }
 
-            if event.has("fortinet.firewall.srcmac") {
+            if event.has_value("fortinet.firewall.srcmac") {
                 event.rename("fortinet.firewall.srcmac", "source.mac")?;
             }
 
-            if event.has("fortinet.firewall.unauthuser") {
+            if event.has_value("fortinet.firewall.unauthuser") {
                 event.rename("fortinet.firewall.unauthuser", "source.user.name")?;
             }
 
             let _cond = { !event.has_value("source.user.name") };
             if _cond {
-                if event.has("fortinet.firewall.user") {
+                if event.has_value("fortinet.firewall.user") {
                     event.rename("fortinet.firewall.user", "source.user.name")?;
                 }
             }
@@ -279,25 +279,25 @@ impl Transform for Utm {
                 )?;
             }
 
-            if event.has("fortinet.firewall.agent") {
+            if event.has_value("fortinet.firewall.agent") {
                 event.rename("fortinet.firewall.agent", "user_agent.original")?;
             }
 
-            if event.has("fortinet.firewall.app") {
+            if event.has_value("fortinet.firewall.app") {
                 event.rename("fortinet.firewall.app", "network.application")?;
             }
 
-            if event.has("fortinet.firewall.appcat") {
+            if event.has_value("fortinet.firewall.appcat") {
                 event.rename("fortinet.firewall.appcat", "rule.category")?;
             }
 
-            if event.has("fortinet.firewall.applist") {
+            if event.has_value("fortinet.firewall.applist") {
                 event.rename("fortinet.firewall.applist", "rule.ruleset")?;
             }
 
             let _cond = { !event.has_value("rule.category") };
             if _cond {
-                if event.has("fortinet.firewall.catdesc") {
+                if event.has_value("fortinet.firewall.catdesc") {
                     event.rename("fortinet.firewall.catdesc", "rule.category")?;
                 }
             }
@@ -315,26 +315,26 @@ impl Transform for Utm {
                 }
             }
 
-            if event.has("fortinet.firewall.error") {
+            if event.has_value("fortinet.firewall.error") {
                 event.rename("fortinet.firewall.error", "event.message")?;
             }
 
-            if event.has("fortinet.firewall.errorcode") {
+            if event.has_value("fortinet.firewall.errorcode") {
                 event.rename("fortinet.firewall.errorcode", "event.code")?;
             }
 
-            if event.has("fortinet.firewall.event_id") {
+            if event.has_value("fortinet.firewall.event_id") {
                 event.rename("fortinet.firewall.event_id", "event.id")?;
             }
 
             let _cond = { !event.has_value("event.id") };
             if _cond {
-                if event.has("fortinet.firewall.eventid") {
+                if event.has_value("fortinet.firewall.eventid") {
                     event.rename("fortinet.firewall.eventid", "event.id")?;
                 }
             }
 
-            if event.has("fortinet.firewall.filename") {
+            if event.has_value("fortinet.firewall.filename") {
                 event.rename("fortinet.firewall.filename", "file.name")?;
             }
 
@@ -354,46 +354,46 @@ impl Transform for Utm {
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.filetype") {
+            if event.has_value("fortinet.firewall.filetype") {
                 event.rename("fortinet.firewall.filetype", "file.extension")?;
             }
 
             let _cond = { !event.has_value("file.name") };
             if _cond {
-                if event.has("fortinet.firewall.infectedfilename") {
+                if event.has_value("fortinet.firewall.infectedfilename") {
                     event.rename("fortinet.firewall.infectedfilename", "file.name")?;
                 }
             }
 
             let _cond = { !event.has_value("file.size") };
             if _cond {
-                if event.has("fortinet.firewall.infectedfilesize") {
+                if event.has_value("fortinet.firewall.infectedfilesize") {
                     event.rename("fortinet.firewall.infectedfilesize", "file.size")?;
                 }
             }
 
             let _cond = { !event.has_value("file.extension") };
             if _cond {
-                if event.has("fortinet.firewall.infectedfiletype") {
+                if event.has_value("fortinet.firewall.infectedfiletype") {
                     event.rename("fortinet.firewall.infectedfiletype", "file.extension")?;
                 }
             }
 
             let _cond = { !event.has_value("file.name") };
             if _cond {
-                if event.has("fortinet.firewall.matchedfilename") {
+                if event.has_value("fortinet.firewall.matchedfilename") {
                     event.rename("fortinet.firewall.matchedfilename", "file.name")?;
                 }
             }
 
             let _cond = { !event.has_value("file.extension") };
             if _cond {
-                if event.has("fortinet.firewall.matchedfiletype") {
+                if event.has_value("fortinet.firewall.matchedfiletype") {
                     event.rename("fortinet.firewall.matchedfiletype", "file.extension")?;
                 }
             }
 
-            if event.has("fortinet.firewall.ipaddr") {
+            if event.has_value("fortinet.firewall.ipaddr") {
                 event.rename("fortinet.firewall.ipaddr", "dns.resolved_ip")?;
             }
 
@@ -404,59 +404,59 @@ impl Transform for Utm {
                 }
             }
 
-            if event.has("fortinet.firewall.level") {
+            if event.has_value("fortinet.firewall.level") {
                 event.rename("fortinet.firewall.level", "log.level")?;
             }
 
             let _cond = { !event.has_value("event.code") };
             if _cond {
-                if event.has("fortinet.firewall.logid") {
+                if event.has_value("fortinet.firewall.logid") {
                     event.rename("fortinet.firewall.logid", "event.code")?;
                 }
             }
 
-            if event.has("fortinet.firewall.msg") {
+            if event.has_value("fortinet.firewall.msg") {
                 event.rename("fortinet.firewall.msg", "message")?;
             }
 
             let _cond = { !event.has_value("rule.id") };
             if _cond {
-                if event.has("fortinet.firewall.policy_id") {
+                if event.has_value("fortinet.firewall.policy_id") {
                     event.rename("fortinet.firewall.policy_id", "rule.id")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.id") };
             if _cond {
-                if event.has("fortinet.firewall.policyid") {
+                if event.has_value("fortinet.firewall.policyid") {
                     event.rename("fortinet.firewall.policyid", "rule.id")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.ruleset") };
             if _cond {
-                if event.has("fortinet.firewall.profile") {
+                if event.has_value("fortinet.firewall.profile") {
                     event.rename("fortinet.firewall.profile", "rule.ruleset")?;
                 }
             }
 
-            if event.has("fortinet.firewall.proto") {
+            if event.has_value("fortinet.firewall.proto") {
                 event.rename("fortinet.firewall.proto", "network.iana_number")?;
             }
 
-            if event.has("fortinet.firewall.qclass") {
+            if event.has_value("fortinet.firewall.qclass") {
                 event.rename("fortinet.firewall.qclass", "dns.question.class")?;
             }
 
-            if event.has("fortinet.firewall.qname") {
+            if event.has_value("fortinet.firewall.qname") {
                 event.rename("fortinet.firewall.qname", "dns.question.name")?;
             }
 
-            if event.has("fortinet.firewall.qtype") {
+            if event.has_value("fortinet.firewall.qtype") {
                 event.rename("fortinet.firewall.qtype", "dns.question.type")?;
             }
 
-            if event.has("fortinet.firewall.service") {
+            if event.has_value("fortinet.firewall.service") {
                 event.rename("fortinet.firewall.service", "network.protocol")?;
             }
 
@@ -576,7 +576,7 @@ impl Transform for Utm {
 
             event.remove("fortinet.firewall.url");
 
-            if event.has("fortinet.firewall.xid") {
+            if event.has_value("fortinet.firewall.xid") {
                 event.rename("fortinet.firewall.xid", "dns.id")?;
             }
 
@@ -592,7 +592,7 @@ impl Transform for Utm {
                 )?;
             }
 
-            if event.has("fortinet.firewall.scertissuer") {
+            if event.has_value("fortinet.firewall.scertissuer") {
                 event.rename("fortinet.firewall.scertissuer", "tls.server.issuer")?;
             }
 
@@ -608,7 +608,7 @@ impl Transform for Utm {
                 )?;
             }
 
-            if event.has("fortinet.firewall.ccertissuer") {
+            if event.has_value("fortinet.firewall.ccertissuer") {
                 event.rename("fortinet.firewall.ccertissuer", "tls.client.issuer")?;
             }
 
@@ -624,18 +624,18 @@ impl Transform for Utm {
                 )?;
             }
 
-            if event.has("fortinet.firewall.sender") {
+            if event.has_value("fortinet.firewall.sender") {
                 event.rename("fortinet.firewall.sender", "tls.server.issuer")?;
             }
 
             let _cond = { !event.has_value("tls.server.issuer") };
             if _cond {
-                if event.has("fortinet.firewall.issuer") {
+                if event.has_value("fortinet.firewall.issuer") {
                     event.rename("fortinet.firewall.issuer", "tls.server.issuer")?;
                 }
             }
 
-            if event.has("fortinet.firewall.authalgo") {
+            if event.has_value("fortinet.firewall.authalgo") {
                 event.rename(
                     "fortinet.firewall.authalgo",
                     "tls.server.x509.public_key_algorithm",
@@ -644,7 +644,7 @@ impl Transform for Utm {
 
             let _cond = { !event.has_value("tls.server.x509.public_key_algorithm") };
             if _cond {
-                if event.has("fortinet.firewall.keyalgo") {
+                if event.has_value("fortinet.firewall.keyalgo") {
                     event.rename(
                         "fortinet.firewall.keyalgo",
                         "tls.server.x509.public_key_algorithm",
@@ -654,21 +654,21 @@ impl Transform for Utm {
 
             let _cond = { !event.has_value("tls.server.not_before") };
             if _cond {
-                if event.has("fortinet.firewall.notbefore") {
+                if event.has_value("fortinet.firewall.notbefore") {
                     event.rename("fortinet.firewall.notbefore", "tls.server.not_before")?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.not_after") };
             if _cond {
-                if event.has("fortinet.firewall.notafter") {
+                if event.has_value("fortinet.firewall.notafter") {
                     event.rename("fortinet.firewall.notafter", "tls.server.not_after")?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.x509.public_key_size") };
             if _cond {
-                if event.has("fortinet.firewall.keysize") {
+                if event.has_value("fortinet.firewall.keysize") {
                     event.rename(
                         "fortinet.firewall.keysize",
                         "tls.server.x509.public_key_size",
@@ -690,14 +690,14 @@ impl Transform for Utm {
 
             let _cond = { !event.has_value("tls.server.x509.serial_number") };
             if _cond {
-                if event.has("fortinet.firewall.sn") {
+                if event.has_value("fortinet.firewall.sn") {
                     event.rename("fortinet.firewall.sn", "tls.server.x509.serial_number")?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.hash.sha1") };
             if _cond {
-                if event.has("fortinet.firewall.certhash") {
+                if event.has_value("fortinet.firewall.certhash") {
                     event.rename("fortinet.firewall.certhash", "tls.server.hash.sha1")?;
                 }
             }
@@ -757,15 +757,15 @@ impl Transform for Utm {
                 event.set("tls.client.x509.public_key_algorithm", v)?;
             }
 
-            if event.has("fortinet.firewall.kxcurve") {
+            if event.has_value("fortinet.firewall.kxcurve") {
                 event.rename("fortinet.firewall.kxcurve", "tls.curve")?;
             }
 
-            if event.has("fortinet.firewall.cipher") {
+            if event.has_value("fortinet.firewall.cipher") {
                 event.rename("fortinet.firewall.cipher", "tls.cipher")?;
             }
 
-            if event.has("fortinet.firewall.sni") {
+            if event.has_value("fortinet.firewall.sni") {
                 event.rename("fortinet.firewall.sni", "tls.client.server_name")?;
             }
 
@@ -818,11 +818,11 @@ impl Transform for Utm {
                 )?;
             }
 
-            if event.has("fortinet.firewall.ref") {
+            if event.has_value("fortinet.firewall.ref") {
                 event.rename("fortinet.firewall.ref", "event.reference")?;
             }
 
-            if event.has("fortinet.firewall.filehash") {
+            if event.has_value("fortinet.firewall.filehash") {
                 event.rename("fortinet.firewall.filehash", "fortinet.file.hash.crc32")?;
             }
 

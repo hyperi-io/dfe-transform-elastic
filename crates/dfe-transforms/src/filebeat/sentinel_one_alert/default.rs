@@ -37,7 +37,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -69,11 +69,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.agentDetectionInfo.machineType") {
+            if event.has_value("json.agentDetectionInfo.machineType") {
                 event.rename("json.agentDetectionInfo.machineType", "host.type")?;
             }
 
-            if event.has("json.agentDetectionInfo.name") {
+            if event.has_value("json.agentDetectionInfo.name") {
                 event.rename("json.agentDetectionInfo.name", "host.name")?;
             }
 
@@ -93,31 +93,31 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.agentDetectionInfo.osFamily") {
+            if event.has_value("json.agentDetectionInfo.osFamily") {
                 event.rename("json.agentDetectionInfo.osFamily", "host.os.family")?;
             }
 
-            if event.has("json.agentDetectionInfo.osRevision") {
+            if event.has_value("json.agentDetectionInfo.osRevision") {
                 event.rename("json.agentDetectionInfo.osRevision", "host.os.version")?;
             }
 
-            if event.has("json.agentDetectionInfo.siteId") {
+            if event.has_value("json.agentDetectionInfo.siteId") {
                 event.rename("json.agentDetectionInfo.siteId", "sentinel_one.site.id")?;
             }
 
-            if event.has("json.agentDetectionInfo.uuid") {
+            if event.has_value("json.agentDetectionInfo.uuid") {
                 event.rename("json.agentDetectionInfo.uuid", "observer.serial_number")?;
             }
 
-            if event.has("json.agentDetectionInfo.osName") {
+            if event.has_value("json.agentDetectionInfo.osName") {
                 event.rename("json.agentDetectionInfo.osName", "host.os.name")?;
             }
 
-            if event.has("json.agentDetectionInfo.version") {
+            if event.has_value("json.agentDetectionInfo.version") {
                 event.rename("json.agentDetectionInfo.version", "observer.version")?;
             }
 
-            if event.has("json.agentRealtimeInfo.id") {
+            if event.has_value("json.agentRealtimeInfo.id") {
                 event.rename("json.agentRealtimeInfo.id", "sentinel_one.alert.agent.id")?;
             }
 
@@ -263,14 +263,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.agentRealtimeInfo.machineType") {
+            if event.has_value("json.agentRealtimeInfo.machineType") {
                 event.rename(
                     "json.agentRealtimeInfo.machineType",
                     "sentinel_one.alert.agent.machine_type",
                 )?;
             }
 
-            if event.has("json.agentRealtimeInfo.name") {
+            if event.has_value("json.agentRealtimeInfo.name") {
                 event.rename(
                     "json.agentRealtimeInfo.name",
                     "sentinel_one.alert.agent.computer_name",
@@ -284,7 +284,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.agentRealtimeInfo.os") {
+            if event.has_value("json.agentRealtimeInfo.os") {
                 event.rename(
                     "json.agentRealtimeInfo.os",
                     "sentinel_one.alert.agent.os.type",
@@ -421,21 +421,21 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.alertInfo.incidentStatus") {
+            if event.has_value("json.alertInfo.incidentStatus") {
                 event.rename(
                     "json.alertInfo.incidentStatus",
                     "sentinel_one.alert.info.status",
                 )?;
             }
 
-            if event.has("json.alertInfo.registryOldValue") {
+            if event.has_value("json.alertInfo.registryOldValue") {
                 event.rename(
                     "json.alertInfo.registryOldValue",
                     "sentinel_one.alert.info.registry.old_value",
                 )?;
             }
 
-            if event.has("json.alertInfo.alertId") {
+            if event.has_value("json.alertInfo.alertId") {
                 event.rename("json.alertInfo.alertId", "event.id")?;
             }
 
@@ -487,18 +487,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alertInfo.indicatorName") {
+            if event.has_value("json.alertInfo.indicatorName") {
                 event.rename(
                     "json.alertInfo.indicatorName",
                     "sentinel_one.alert.info.indicator.name",
                 )?;
             }
 
-            if event.has("json.alertInfo.registryPath") {
+            if event.has_value("json.alertInfo.registryPath") {
                 event.rename("json.alertInfo.registryPath", "registry.path")?;
             }
 
-            if event.has("json.alertInfo.loginType") {
+            if event.has_value("json.alertInfo.loginType") {
                 event.rename(
                     "json.alertInfo.loginType",
                     "sentinel_one.alert.info.login.type",
@@ -618,14 +618,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alertInfo.indicatorDescription") {
+            if event.has_value("json.alertInfo.indicatorDescription") {
                 event.rename(
                     "json.alertInfo.indicatorDescription",
                     "sentinel_one.alert.info.indicator.description",
                 )?;
             }
 
-            if event.has("json.alertInfo.loginsUserName") {
+            if event.has_value("json.alertInfo.loginsUserName") {
                 event.rename("json.alertInfo.loginsUserName", "user.name")?;
             }
 
@@ -679,32 +679,32 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.alertInfo.loginIsSuccessful") {
+            if event.has_value("json.alertInfo.loginIsSuccessful") {
                 event.rename(
                     "json.alertInfo.loginIsSuccessful",
                     "sentinel_one.alert.info.login.is_successful",
                 )?;
             }
 
-            if event.has("json.alertInfo.indicatorCategory") {
+            if event.has_value("json.alertInfo.indicatorCategory") {
                 event.rename(
                     "json.alertInfo.indicatorCategory",
                     "sentinel_one.alert.info.indicator.category",
                 )?;
             }
 
-            if event.has("json.alertInfo.modulePath") {
+            if event.has_value("json.alertInfo.modulePath") {
                 event.rename("json.alertInfo.modulePath", "dll.path")?;
             }
 
-            if event.has("json.alertInfo.loginAccountSid") {
+            if event.has_value("json.alertInfo.loginAccountSid") {
                 event.rename(
                     "json.alertInfo.loginAccountSid",
                     "sentinel_one.alert.info.login.account.sid",
                 )?;
             }
 
-            if event.has("json.alertInfo.dnsResponse") {
+            if event.has_value("json.alertInfo.dnsResponse") {
                 event.rename(
                     "json.alertInfo.dnsResponse",
                     "sentinel_one.alert.info.dns.response",
@@ -724,12 +724,12 @@ impl Transform for Default {
                     )
             };
             if _cond {
-                if event.has("json.alertInfo.netEventDirection") {
+                if event.has_value("json.alertInfo.netEventDirection") {
                     event.rename("json.alertInfo.netEventDirection", "network.direction")?;
                 }
             }
 
-            if event.has("json.alertInfo.registryValue") {
+            if event.has_value("json.alertInfo.registryValue") {
                 event.rename("json.alertInfo.registryValue", "registry.value")?;
             }
 
@@ -813,54 +813,54 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.alertInfo.registryOldValueType") {
+            if event.has_value("json.alertInfo.registryOldValueType") {
                 event.rename(
                     "json.alertInfo.registryOldValueType",
                     "sentinel_one.alert.info.registry.old_value_type",
                 )?;
             }
 
-            if event.has("json.alertInfo.eventType") {
+            if event.has_value("json.alertInfo.eventType") {
                 event.rename(
                     "json.alertInfo.eventType",
                     "sentinel_one.alert.info.event_type",
                 )?;
             }
 
-            if event.has("json.alertInfo.analystVerdict") {
+            if event.has_value("json.alertInfo.analystVerdict") {
                 event.rename(
                     "json.alertInfo.analystVerdict",
                     "sentinel_one.alert.analyst_verdict",
                 )?;
             }
 
-            if event.has("json.alertInfo.dvEventId") {
+            if event.has_value("json.alertInfo.dvEventId") {
                 event.rename("json.alertInfo.dvEventId", "sentinel_one.alert.dv_event.id")?;
             }
 
-            if event.has("json.alertInfo.dnsRequest") {
+            if event.has_value("json.alertInfo.dnsRequest") {
                 event.rename("json.alertInfo.dnsRequest", "dns.question.name")?;
             }
 
-            if event.has("json.alertInfo.loginIsAdministratorEquivalent") {
+            if event.has_value("json.alertInfo.loginIsAdministratorEquivalent") {
                 event.rename(
                     "json.alertInfo.loginIsAdministratorEquivalent",
                     "sentinel_one.alert.info.login.is_administrator",
                 )?;
             }
 
-            if event.has("json.alertInfo.loginAccountDomain") {
+            if event.has_value("json.alertInfo.loginAccountDomain") {
                 event.rename("json.alertInfo.loginAccountDomain", "user.domain")?;
             }
 
-            if event.has("json.alertInfo.tiIndicatorType") {
+            if event.has_value("json.alertInfo.tiIndicatorType") {
                 event.rename(
                     "json.alertInfo.tiIndicatorType",
                     "sentinel_one.alert.info.ti_indicator.type",
                 )?;
             }
 
-            if event.has("json.alertInfo.moduleSha1") {
+            if event.has_value("json.alertInfo.moduleSha1") {
                 event.rename("json.alertInfo.moduleSha1", "dll.hash.sha1")?;
             }
 
@@ -880,7 +880,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.alertInfo.source") {
+            if event.has_value("json.alertInfo.source") {
                 event.rename("json.alertInfo.source", "sentinel_one.alert.info.source")?;
             }
 
@@ -932,14 +932,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alertInfo.tiIndicatorValue") {
+            if event.has_value("json.alertInfo.tiIndicatorValue") {
                 event.rename(
                     "json.alertInfo.tiIndicatorValue",
                     "sentinel_one.alert.info.ti_indicator.value",
                 )?;
             }
 
-            if event.has("json.alertInfo.tiIndicatorSource") {
+            if event.has_value("json.alertInfo.tiIndicatorSource") {
                 event.rename(
                     "json.alertInfo.tiIndicatorSource",
                     "sentinel_one.alert.info.ti_indicator.source",
@@ -995,30 +995,30 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alertInfo.registryKeyPath") {
+            if event.has_value("json.alertInfo.registryKeyPath") {
                 event.rename("json.alertInfo.registryKeyPath", "registry.key")?;
             }
 
-            if event.has("json.alertInfo.tiIndicatorComparisonMethod") {
+            if event.has_value("json.alertInfo.tiIndicatorComparisonMethod") {
                 event.rename(
                     "json.alertInfo.tiIndicatorComparisonMethod",
                     "sentinel_one.alert.info.ti_indicator.comparison_method",
                 )?;
             }
 
-            if event.has("json.alertInfo.hitType") {
+            if event.has_value("json.alertInfo.hitType") {
                 event.rename("json.alertInfo.hitType", "sentinel_one.alert.info.hit.type")?;
             }
 
-            if event.has("json.containerInfo.id") {
+            if event.has_value("json.containerInfo.id") {
                 event.rename("json.containerInfo.id", "container.id")?;
             }
 
-            if event.has("json.containerInfo.image") {
+            if event.has_value("json.containerInfo.image") {
                 event.rename("json.containerInfo.image", "container.image.name")?;
             }
 
-            if event.has("json.containerInfo.labels") {
+            if event.has_value("json.containerInfo.labels") {
                 event.rename(
                     "json.containerInfo.labels",
                     "sentinel_one.alert.container.info.labels",
@@ -1029,7 +1029,7 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.containerInfo.name") {
+                    if event.has_value("json.containerInfo.name") {
                         event.rename("json.containerInfo.name", "container.name")?;
                     }
                     Ok(())
@@ -1040,28 +1040,28 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.kubernetesInfo.cluster") {
+                    if event.has_value("json.kubernetesInfo.cluster") {
                         event.rename("json.kubernetesInfo.cluster", "orchestrator.cluster.name")?;
                     }
                     Ok(())
                 })();
             }
 
-            if event.has("json.kubernetesInfo.controllerKind") {
+            if event.has_value("json.kubernetesInfo.controllerKind") {
                 event.rename(
                     "json.kubernetesInfo.controllerKind",
                     "sentinel_one.alert.kubernetes.controller.kind",
                 )?;
             }
 
-            if event.has("json.kubernetesInfo.controllerLabels") {
+            if event.has_value("json.kubernetesInfo.controllerLabels") {
                 event.rename(
                     "json.kubernetesInfo.controllerLabels",
                     "sentinel_one.alert.kubernetes.controller.labels",
                 )?;
             }
 
-            if event.has("json.kubernetesInfo.controllerName") {
+            if event.has_value("json.kubernetesInfo.controllerName") {
                 event.rename(
                     "json.kubernetesInfo.controllerName",
                     "sentinel_one.alert.kubernetes.controller.name",
@@ -1072,58 +1072,58 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("json.kubernetesInfo.namespace") {
+                    if event.has_value("json.kubernetesInfo.namespace") {
                         event.rename("json.kubernetesInfo.namespace", "orchestrator.namespace")?;
                     }
                     Ok(())
                 })();
             }
 
-            if event.has("json.kubernetesInfo.namespaceLabels") {
+            if event.has_value("json.kubernetesInfo.namespaceLabels") {
                 event.rename(
                     "json.kubernetesInfo.namespaceLabels",
                     "sentinel_one.alert.kubernetes.namespace.labels",
                 )?;
             }
 
-            if event.has("json.kubernetesInfo.node") {
+            if event.has_value("json.kubernetesInfo.node") {
                 event.rename(
                     "json.kubernetesInfo.node",
                     "sentinel_one.alert.kubernetes.node",
                 )?;
             }
 
-            if event.has("json.kubernetesInfo.pod") {
+            if event.has_value("json.kubernetesInfo.pod") {
                 event.rename(
                     "json.kubernetesInfo.pod",
                     "sentinel_one.alert.kubernetes.pod.name",
                 )?;
             }
 
-            if event.has("json.kubernetesInfo.podLabels") {
+            if event.has_value("json.kubernetesInfo.podLabels") {
                 event.rename(
                     "json.kubernetesInfo.podLabels",
                     "sentinel_one.alert.kubernetes.pod.labels",
                 )?;
             }
 
-            if event.has("json.osName") {
+            if event.has_value("json.osName") {
                 event.rename("json.osName", "observer.os.name")?;
             }
 
-            if event.has("json.ruleInfo.type") {
+            if event.has_value("json.ruleInfo.type") {
                 event.rename("json.ruleInfo.type", "rule.category")?;
             }
 
-            if event.has("json.ruleInfo.description") {
+            if event.has_value("json.ruleInfo.description") {
                 event.rename("json.ruleInfo.description", "rule.description")?;
             }
 
-            if event.has("json.ruleInfo.id") {
+            if event.has_value("json.ruleInfo.id") {
                 event.rename("json.ruleInfo.id", "rule.id")?;
             }
 
-            if event.has("json.ruleInfo.name") {
+            if event.has_value("json.ruleInfo.name") {
                 event.rename("json.ruleInfo.name", "rule.name")?;
             }
 
@@ -1134,14 +1134,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ruleInfo.scopeLevel") {
+            if event.has_value("json.ruleInfo.scopeLevel") {
                 event.rename(
                     "json.ruleInfo.scopeLevel",
                     "sentinel_one.alert.rule.scope_level",
                 )?;
             }
 
-            if event.has("json.ruleInfo.severity") {
+            if event.has_value("json.ruleInfo.severity") {
                 event.rename("json.ruleInfo.severity", "sentinel_one.alert.rule.severity")?;
             }
 
@@ -1194,21 +1194,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ruleInfo.treatAsThreat") {
+            if event.has_value("json.ruleInfo.treatAsThreat") {
                 event.rename(
                     "json.ruleInfo.treatAsThreat",
                     "sentinel_one.alert.rule.treat_as_threat",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.commandline") {
+            if event.has_value("json.sourceParentProcessInfo.commandline") {
                 event.rename(
                     "json.sourceParentProcessInfo.commandline",
                     "process.parent.command_line",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.fileHashMd5") {
+            if event.has_value("json.sourceParentProcessInfo.fileHashMd5") {
                 event.rename(
                     "json.sourceParentProcessInfo.fileHashMd5",
                     "process.parent.hash.md5",
@@ -1231,7 +1231,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.sourceParentProcessInfo.fileHashSha1") {
+            if event.has_value("json.sourceParentProcessInfo.fileHashSha1") {
                 event.rename(
                     "json.sourceParentProcessInfo.fileHashSha1",
                     "process.parent.hash.sha1",
@@ -1254,7 +1254,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.sourceParentProcessInfo.fileHashSha256") {
+            if event.has_value("json.sourceParentProcessInfo.fileHashSha256") {
                 event.rename(
                     "json.sourceParentProcessInfo.fileHashSha256",
                     "process.parent.hash.sha256",
@@ -1277,28 +1277,28 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.sourceParentProcessInfo.filePath") {
+            if event.has_value("json.sourceParentProcessInfo.filePath") {
                 event.rename(
                     "json.sourceParentProcessInfo.filePath",
                     "process.parent.executable",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.fileSignerIdentity") {
+            if event.has_value("json.sourceParentProcessInfo.fileSignerIdentity") {
                 event.rename(
                     "json.sourceParentProcessInfo.fileSignerIdentity",
                     "process.parent.code_signature.signing_id",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.integrityLevel") {
+            if event.has_value("json.sourceParentProcessInfo.integrityLevel") {
                 event.rename(
                     "json.sourceParentProcessInfo.integrityLevel",
                     "sentinel_one.alert.process.parent.integrity_level",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.name") {
+            if event.has_value("json.sourceParentProcessInfo.name") {
                 event.rename("json.sourceParentProcessInfo.name", "process.parent.name")?;
             }
 
@@ -1399,39 +1399,39 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.sourceParentProcessInfo.storyline") {
+            if event.has_value("json.sourceParentProcessInfo.storyline") {
                 event.rename(
                     "json.sourceParentProcessInfo.storyline",
                     "sentinel_one.alert.process.parent.storyline",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.subsystem") {
+            if event.has_value("json.sourceParentProcessInfo.subsystem") {
                 event.rename(
                     "json.sourceParentProcessInfo.subsystem",
                     "sentinel_one.alert.process.parent.subsystem",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.uniqueId") {
+            if event.has_value("json.sourceParentProcessInfo.uniqueId") {
                 event.rename(
                     "json.sourceParentProcessInfo.uniqueId",
                     "process.parent.entity_id",
                 )?;
             }
 
-            if event.has("json.sourceParentProcessInfo.user") {
+            if event.has_value("json.sourceParentProcessInfo.user") {
                 event.rename(
                     "json.sourceParentProcessInfo.user",
                     "process.parent.user.name",
                 )?;
             }
 
-            if event.has("json.sourceProcessInfo.commandline") {
+            if event.has_value("json.sourceProcessInfo.commandline") {
                 event.rename("json.sourceProcessInfo.commandline", "process.command_line")?;
             }
 
-            if event.has("json.sourceProcessInfo.fileHashMd5") {
+            if event.has_value("json.sourceProcessInfo.fileHashMd5") {
                 event.rename("json.sourceProcessInfo.fileHashMd5", "process.hash.md5")?;
             }
 
@@ -1451,7 +1451,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.sourceProcessInfo.fileHashSha1") {
+            if event.has_value("json.sourceProcessInfo.fileHashSha1") {
                 event.rename("json.sourceProcessInfo.fileHashSha1", "process.hash.sha1")?;
             }
 
@@ -1471,7 +1471,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.sourceProcessInfo.fileHashSha256") {
+            if event.has_value("json.sourceProcessInfo.fileHashSha256") {
                 event.rename(
                     "json.sourceProcessInfo.fileHashSha256",
                     "process.hash.sha256",
@@ -1494,25 +1494,25 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.sourceProcessInfo.filePath") {
+            if event.has_value("json.sourceProcessInfo.filePath") {
                 event.rename("json.sourceProcessInfo.filePath", "process.executable")?;
             }
 
-            if event.has("json.sourceProcessInfo.fileSignerIdentity") {
+            if event.has_value("json.sourceProcessInfo.fileSignerIdentity") {
                 event.rename(
                     "json.sourceProcessInfo.fileSignerIdentity",
                     "process.code_signature.signing_id",
                 )?;
             }
 
-            if event.has("json.sourceProcessInfo.integrityLevel") {
+            if event.has_value("json.sourceProcessInfo.integrityLevel") {
                 event.rename(
                     "json.sourceProcessInfo.integrityLevel",
                     "sentinel_one.alert.process.integrity_level",
                 )?;
             }
 
-            if event.has("json.sourceProcessInfo.name") {
+            if event.has_value("json.sourceProcessInfo.name") {
                 event.rename("json.sourceProcessInfo.name", "process.name")?;
             }
 
@@ -1616,25 +1616,25 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.sourceProcessInfo.storyline") {
+            if event.has_value("json.sourceProcessInfo.storyline") {
                 event.rename(
                     "json.sourceProcessInfo.storyline",
                     "sentinel_one.alert.process.storyline",
                 )?;
             }
 
-            if event.has("json.sourceProcessInfo.subsystem") {
+            if event.has_value("json.sourceProcessInfo.subsystem") {
                 event.rename(
                     "json.sourceProcessInfo.subsystem",
                     "sentinel_one.alert.process.subsystem",
                 )?;
             }
 
-            if event.has("json.sourceProcessInfo.uniqueId") {
+            if event.has_value("json.sourceProcessInfo.uniqueId") {
                 event.rename("json.sourceProcessInfo.uniqueId", "process.entity_id")?;
             }
 
-            if event.has("json.sourceProcessInfo.user") {
+            if event.has_value("json.sourceProcessInfo.user") {
                 event.rename("json.sourceProcessInfo.user", "process.user.name")?;
             }
 
@@ -1690,35 +1690,35 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.targetProcessInfo.tgtFileIsSigned") {
+            if event.has_value("json.targetProcessInfo.tgtFileIsSigned") {
                 event.rename(
                     "json.targetProcessInfo.tgtFileIsSigned",
                     "sentinel_one.alert.target.process.file.is_signed",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtFileOldPath") {
+            if event.has_value("json.targetProcessInfo.tgtFileOldPath") {
                 event.rename(
                     "json.targetProcessInfo.tgtFileOldPath",
                     "sentinel_one.alert.target.process.file.old_path",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtProcImagePath") {
+            if event.has_value("json.targetProcessInfo.tgtProcImagePath") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcImagePath",
                     "sentinel_one.alert.target.process.proc.image_path",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtProcSignedStatus") {
+            if event.has_value("json.targetProcessInfo.tgtProcSignedStatus") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcSignedStatus",
                     "sentinel_one.alert.target.process.proc.signed_status",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtFileHashSha256") {
+            if event.has_value("json.targetProcessInfo.tgtFileHashSha256") {
                 event.rename(
                     "json.targetProcessInfo.tgtFileHashSha256",
                     "sentinel_one.alert.target.process.file.hash.sha256",
@@ -1741,7 +1741,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.targetProcessInfo.tgtProcStorylineId") {
+            if event.has_value("json.targetProcessInfo.tgtProcStorylineId") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcStorylineId",
                     "sentinel_one.alert.target.process.proc.storyline_id",
@@ -1793,14 +1793,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.targetProcessInfo.tgtProcCmdLine") {
+            if event.has_value("json.targetProcessInfo.tgtProcCmdLine") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcCmdLine",
                     "sentinel_one.alert.target.process.proc.cmdline",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtProcName") {
+            if event.has_value("json.targetProcessInfo.tgtProcName") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcName",
                     "sentinel_one.alert.target.process.proc.name",
@@ -1859,21 +1859,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.targetProcessInfo.tgtFileId") {
+            if event.has_value("json.targetProcessInfo.tgtFileId") {
                 event.rename(
                     "json.targetProcessInfo.tgtFileId",
                     "sentinel_one.alert.target.process.file.id",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtProcIntegrityLevel") {
+            if event.has_value("json.targetProcessInfo.tgtProcIntegrityLevel") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcIntegrityLevel",
                     "sentinel_one.alert.target.process.proc.integrity_level",
                 )?;
             }
 
-            if event.has("json.targetProcessInfo.tgtFileHashSha1") {
+            if event.has_value("json.targetProcessInfo.tgtFileHashSha1") {
                 event.rename(
                     "json.targetProcessInfo.tgtFileHashSha1",
                     "sentinel_one.alert.target.process.file.hash.sha1",
@@ -1896,7 +1896,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.targetProcessInfo.tgtProcUid") {
+            if event.has_value("json.targetProcessInfo.tgtProcUid") {
                 event.rename(
                     "json.targetProcessInfo.tgtProcUid",
                     "sentinel_one.alert.target.process.proc.uid",
@@ -1954,7 +1954,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.targetProcessInfo.tgtFilePath") {
+            if event.has_value("json.targetProcessInfo.tgtFilePath") {
                 event.rename(
                     "json.targetProcessInfo.tgtFilePath",
                     "sentinel_one.alert.target.process.file.path",

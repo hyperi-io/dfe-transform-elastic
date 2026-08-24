@@ -571,7 +571,7 @@ impl Transform for Default {
                             ),
                         )?;
                     }
-                    if event.has("winlog.event_data.DirectionDescription") {
+                    if event.has_value("winlog.event_data.DirectionDescription") {
                         event.rename(
                             "winlog.event_data.DirectionDescription",
                             "network.direction",
@@ -780,10 +780,10 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("source.as.asn") {
+                if event.has_value("source.as.asn") {
                     event.rename("source.as.asn", "source.as.number")?;
                 }
-                if event.has("source.as.organization_name") {
+                if event.has_value("source.as.organization_name") {
                     event.rename("source.as.organization_name", "source.as.organization.name")?;
                 }
                 let _cond =
@@ -1107,7 +1107,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostId") {
+                        if event.has_value("winlog.event_data.HostId") {
                             event.rename("winlog.event_data.HostId", "process.entity_id")?;
                         }
                         Ok(())
@@ -1117,7 +1117,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostApplication") {
+                        if event.has_value("winlog.event_data.HostApplication") {
                             event.rename(
                                 "winlog.event_data.HostApplication",
                                 "process.command_line",
@@ -1130,7 +1130,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostName") {
+                        if event.has_value("winlog.event_data.HostName") {
                             event.rename("winlog.event_data.HostName", "process.title")?;
                         }
                         Ok(())
@@ -1198,14 +1198,14 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.event_data._MemberUserName") {
+                    if event.has_value("winlog.event_data._MemberUserName") {
                         event.rename("winlog.event_data._MemberUserName", "user.name")?;
                     }
                     Ok(())
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.event_data._MemberDomain") {
+                    if event.has_value("winlog.event_data._MemberDomain") {
                         event.rename("winlog.event_data._MemberDomain", "user.domain")?;
                     }
                     Ok(())
@@ -1250,7 +1250,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.NewEngineState") {
+                        if event.has_value("winlog.event_data.NewEngineState") {
                             event.rename(
                                 "winlog.event_data.NewEngineState",
                                 "powershell.engine.new_state",
@@ -1263,7 +1263,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.PreviousEngineState") {
+                        if event.has_value("winlog.event_data.PreviousEngineState") {
                             event.rename(
                                 "winlog.event_data.PreviousEngineState",
                                 "powershell.engine.previous_state",
@@ -1276,7 +1276,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.NewProviderState") {
+                        if event.has_value("winlog.event_data.NewProviderState") {
                             event.rename(
                                 "winlog.event_data.NewProviderState",
                                 "powershell.provider.new_state",
@@ -1289,7 +1289,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ProviderName") {
+                        if event.has_value("winlog.event_data.ProviderName") {
                             event.rename(
                                 "winlog.event_data.ProviderName",
                                 "powershell.provider.name",
@@ -1338,7 +1338,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.EngineVersion") {
+                        if event.has_value("winlog.event_data.EngineVersion") {
                             event.rename(
                                 "winlog.event_data.EngineVersion",
                                 "powershell.engine.version",
@@ -1351,7 +1351,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.PipelineId") {
+                        if event.has_value("winlog.event_data.PipelineId") {
                             event
                                 .rename("winlog.event_data.PipelineId", "powershell.pipeline_id")?;
                         }
@@ -1362,7 +1362,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.RunspaceId") {
+                        if event.has_value("winlog.event_data.RunspaceId") {
                             event
                                 .rename("winlog.event_data.RunspaceId", "powershell.runspace_id")?;
                         }
@@ -1373,7 +1373,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostVersion") {
+                        if event.has_value("winlog.event_data.HostVersion") {
                             event.rename(
                                 "winlog.event_data.HostVersion",
                                 "powershell.process.executable_version",
@@ -1386,7 +1386,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandLine") {
+                        if event.has_value("winlog.event_data.CommandLine") {
                             event.rename(
                                 "winlog.event_data.CommandLine",
                                 "powershell.command.value",
@@ -1399,7 +1399,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandPath") {
+                        if event.has_value("winlog.event_data.CommandPath") {
                             event.rename(
                                 "winlog.event_data.CommandPath",
                                 "powershell.command.path",
@@ -1412,7 +1412,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandName") {
+                        if event.has_value("winlog.event_data.CommandName") {
                             event.rename(
                                 "winlog.event_data.CommandName",
                                 "powershell.command.name",
@@ -1425,7 +1425,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandType") {
+                        if event.has_value("winlog.event_data.CommandType") {
                             event.rename(
                                 "winlog.event_data.CommandType",
                                 "powershell.command.type",
@@ -1502,7 +1502,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ScriptName") {
+                        if event.has_value("winlog.event_data.ScriptName") {
                             event.rename("winlog.event_data.ScriptName", "file.path")?;
                         }
                         Ok(())
@@ -1737,7 +1737,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostID") {
+                        if event.has_value("winlog.event_data.HostID") {
                             event.rename("winlog.event_data.HostID", "process.entity_id")?;
                         }
                         Ok(())
@@ -1747,7 +1747,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostApplication") {
+                        if event.has_value("winlog.event_data.HostApplication") {
                             event.rename(
                                 "winlog.event_data.HostApplication",
                                 "process.command_line",
@@ -1760,7 +1760,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostName") {
+                        if event.has_value("winlog.event_data.HostName") {
                             event.rename("winlog.event_data.HostName", "process.title")?;
                         }
                         Ok(())
@@ -1904,7 +1904,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("user.domain") {
+                        if event.has_value("user.domain") {
                             event.rename("user.domain", "destination.user.domain")?;
                         }
                         Ok(())
@@ -1914,7 +1914,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("user.name") {
+                        if event.has_value("user.name") {
                             event.rename("user.name", "destination.user.name")?;
                         }
                         Ok(())
@@ -1950,14 +1950,14 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.event_data._MemberUserName") {
+                    if event.has_value("winlog.event_data._MemberUserName") {
                         event.rename("winlog.event_data._MemberUserName", "user.name")?;
                     }
                     Ok(())
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.event_data._MemberDomain") {
+                    if event.has_value("winlog.event_data._MemberDomain") {
                         event.rename("winlog.event_data._MemberDomain", "user.domain")?;
                     }
                     Ok(())
@@ -2032,7 +2032,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ShellID") {
+                        if event.has_value("winlog.event_data.ShellID") {
                             event.rename("winlog.event_data.ShellID", "powershell.id")?;
                         }
                         Ok(())
@@ -2042,7 +2042,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.EngineVersion") {
+                        if event.has_value("winlog.event_data.EngineVersion") {
                             event.rename(
                                 "winlog.event_data.EngineVersion",
                                 "powershell.engine.version",
@@ -2055,7 +2055,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.PipelineID") {
+                        if event.has_value("winlog.event_data.PipelineID") {
                             event
                                 .rename("winlog.event_data.PipelineID", "powershell.pipeline_id")?;
                         }
@@ -2066,7 +2066,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.RunspaceID") {
+                        if event.has_value("winlog.event_data.RunspaceID") {
                             event
                                 .rename("winlog.event_data.RunspaceID", "powershell.runspace_id")?;
                         }
@@ -2077,7 +2077,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.RunspaceId") {
+                        if event.has_value("winlog.event_data.RunspaceId") {
                             event
                                 .rename("winlog.event_data.RunspaceId", "powershell.runspace_id")?;
                         }
@@ -2088,7 +2088,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.HostVersion") {
+                        if event.has_value("winlog.event_data.HostVersion") {
                             event.rename(
                                 "winlog.event_data.HostVersion",
                                 "powershell.process.executable_version",
@@ -2101,7 +2101,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandLine") {
+                        if event.has_value("winlog.event_data.CommandLine") {
                             event.rename(
                                 "winlog.event_data.CommandLine",
                                 "powershell.command.value",
@@ -2114,7 +2114,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandPath") {
+                        if event.has_value("winlog.event_data.CommandPath") {
                             event.rename(
                                 "winlog.event_data.CommandPath",
                                 "powershell.command.path",
@@ -2127,7 +2127,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandName") {
+                        if event.has_value("winlog.event_data.CommandName") {
                             event.rename(
                                 "winlog.event_data.CommandName",
                                 "powershell.command.name",
@@ -2140,7 +2140,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandType") {
+                        if event.has_value("winlog.event_data.CommandType") {
                             event.rename(
                                 "winlog.event_data.CommandType",
                                 "powershell.command.type",
@@ -2153,7 +2153,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ScriptBlockId") {
+                        if event.has_value("winlog.event_data.ScriptBlockId") {
                             event.rename(
                                 "winlog.event_data.ScriptBlockId",
                                 "powershell.file.script_block_id",
@@ -2166,7 +2166,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ScriptBlockText") {
+                        if event.has_value("winlog.event_data.ScriptBlockText") {
                             event.rename(
                                 "winlog.event_data.ScriptBlockText",
                                 "powershell.file.script_block_text",
@@ -2280,7 +2280,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Path") {
+                        if event.has_value("winlog.event_data.Path") {
                             event
                                 .rename("winlog.event_data.Path", "winlog.event_data.ScriptName")?;
                         }
@@ -2308,7 +2308,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ScriptName") {
+                        if event.has_value("winlog.event_data.ScriptName") {
                             event.rename("winlog.event_data.ScriptName", "file.path")?;
                         }
                         Ok(())
@@ -2378,7 +2378,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.level") {
+                        if event.has_value("winlog.level") {
                             event.rename("winlog.level", "log.level")?;
                         }
                         Ok(())
@@ -2510,7 +2510,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ID") {
+                        if event.has_value("winlog.event_data.ID") {
                             event.rename("winlog.event_data.ID", "error.code")?;
                         }
                         Ok(())
@@ -2524,7 +2524,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.RuleName") {
+                        if event.has_value("winlog.event_data.RuleName") {
                             event.rename("winlog.event_data.RuleName", "rule.name")?;
                         }
                         Ok(())
@@ -2538,7 +2538,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Type") {
+                        if event.has_value("winlog.event_data.Type") {
                             event.rename("winlog.event_data.Type", "message")?;
                         }
                         Ok(())
@@ -2551,7 +2551,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Hash") {
+                        if event.has_value("winlog.event_data.Hash") {
                             event.rename("winlog.event_data.Hash", "winlog.event_data.Hashes")?;
                         }
                         Ok(())
@@ -2604,7 +2604,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("process.hash.imphash") {
+                    if event.has_value("process.hash.imphash") {
                         event.rename("process.hash.imphash", "process.pe.imphash")?;
                     }
                     Ok(())
@@ -2616,7 +2616,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ProcessGuid") {
+                        if event.has_value("winlog.event_data.ProcessGuid") {
                             event.rename("winlog.event_data.ProcessGuid", "process.entity_id")?;
                         }
                         Ok(())
@@ -2650,7 +2650,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Image") {
+                        if event.has_value("winlog.event_data.Image") {
                             event.rename("winlog.event_data.Image", "process.executable")?;
                         }
                         Ok(())
@@ -2663,7 +2663,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.SourceProcessGuid") {
+                        if event.has_value("winlog.event_data.SourceProcessGuid") {
                             event.rename(
                                 "winlog.event_data.SourceProcessGuid",
                                 "process.entity_id",
@@ -2679,7 +2679,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.SourceProcessGUID") {
+                        if event.has_value("winlog.event_data.SourceProcessGUID") {
                             event.rename(
                                 "winlog.event_data.SourceProcessGUID",
                                 "process.entity_id",
@@ -2737,7 +2737,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.SourceImage") {
+                        if event.has_value("winlog.event_data.SourceImage") {
                             event.rename("winlog.event_data.SourceImage", "process.executable")?;
                         }
                         Ok(())
@@ -2750,7 +2750,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Destination") {
+                        if event.has_value("winlog.event_data.Destination") {
                             event.rename("winlog.event_data.Destination", "process.executable")?;
                         }
                         Ok(())
@@ -2763,7 +2763,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CommandLine") {
+                        if event.has_value("winlog.event_data.CommandLine") {
                             event
                                 .rename("winlog.event_data.CommandLine", "process.command_line")?;
                         }
@@ -2777,7 +2777,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.CurrentDirectory") {
+                        if event.has_value("winlog.event_data.CurrentDirectory") {
                             event.rename(
                                 "winlog.event_data.CurrentDirectory",
                                 "process.working_directory",
@@ -2793,7 +2793,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ParentProcessGuid") {
+                        if event.has_value("winlog.event_data.ParentProcessGuid") {
                             event.rename(
                                 "winlog.event_data.ParentProcessGuid",
                                 "process.parent.entity_id",
@@ -2830,7 +2830,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ParentImage") {
+                        if event.has_value("winlog.event_data.ParentImage") {
                             event.rename(
                                 "winlog.event_data.ParentImage",
                                 "process.parent.executable",
@@ -2846,7 +2846,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ParentCommandLine") {
+                        if event.has_value("winlog.event_data.ParentCommandLine") {
                             event.rename(
                                 "winlog.event_data.ParentCommandLine",
                                 "process.parent.command_line",
@@ -2863,7 +2863,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.OriginalFileName") {
+                        if event.has_value("winlog.event_data.OriginalFileName") {
                             event.rename(
                                 "winlog.event_data.OriginalFileName",
                                 "process.pe.original_file_name",
@@ -2978,7 +2978,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("file.hash.imphash") {
+                    if event.has_value("file.hash.imphash") {
                         event.rename("file.hash.imphash", "file.pe.imphash")?;
                     }
                     Ok(())
@@ -2990,7 +2990,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.TargetFilename") {
+                        if event.has_value("winlog.event_data.TargetFilename") {
                             event.rename("winlog.event_data.TargetFilename", "file.path")?;
                         }
                         Ok(())
@@ -3003,7 +3003,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Device") {
+                        if event.has_value("winlog.event_data.Device") {
                             event.rename("winlog.event_data.Device", "file.path")?;
                         }
                         Ok(())
@@ -3016,7 +3016,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.PipeName") {
+                        if event.has_value("winlog.event_data.PipeName") {
                             event.rename("winlog.event_data.PipeName", "file.name")?;
                         }
                         Ok(())
@@ -3029,7 +3029,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.ImageLoaded") {
+                        if event.has_value("winlog.event_data.ImageLoaded") {
                             event.rename("winlog.event_data.ImageLoaded", "file.path")?;
                         }
                         Ok(())
@@ -3065,7 +3065,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.OriginalFileName") {
+                        if event.has_value("winlog.event_data.OriginalFileName") {
                             event.rename(
                                 "winlog.event_data.OriginalFileName",
                                 "file.pe.original_file_name",
@@ -3246,7 +3246,7 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("dll.hash.imphash") {
+                    if event.has_value("dll.hash.imphash") {
                         event.rename("dll.hash.imphash", "dll.pe.imphash")?;
                     }
                     Ok(())
@@ -3271,7 +3271,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.Protocol") {
+                        if event.has_value("winlog.event_data.Protocol") {
                             event.rename("winlog.event_data.Protocol", "network.transport")?;
                         }
                         Ok(())
@@ -3285,7 +3285,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.DestinationPortName") {
+                        if event.has_value("winlog.event_data.DestinationPortName") {
                             event.rename(
                                 "winlog.event_data.DestinationPortName",
                                 "network.protocol",
@@ -3302,7 +3302,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.SourcePortName") {
+                        if event.has_value("winlog.event_data.SourcePortName") {
                             event.rename("winlog.event_data.SourcePortName", "network.protocol")?;
                         }
                         Ok(())
@@ -3340,7 +3340,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.SourceHostname") {
+                        if event.has_value("winlog.event_data.SourceHostname") {
                             event.rename("winlog.event_data.SourceHostname", "source.domain")?;
                         }
                         Ok(())
@@ -3395,7 +3395,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.DestinationHostname") {
+                        if event.has_value("winlog.event_data.DestinationHostname") {
                             event.rename(
                                 "winlog.event_data.DestinationHostname",
                                 "destination.domain",
@@ -3432,7 +3432,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.QueryName") {
+                        if event.has_value("winlog.event_data.QueryName") {
                             event.rename("winlog.event_data.QueryName", "dns.question.name")?;
                         }
                         Ok(())
@@ -3736,14 +3736,14 @@ impl Transform for Default {
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.event_data._MemberUserName") {
+                    if event.has_value("winlog.event_data._MemberUserName") {
                         event.rename("winlog.event_data._MemberUserName", "user.name")?;
                     }
                     Ok(())
                 })();
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("winlog.event_data._MemberDomain") {
+                    if event.has_value("winlog.event_data._MemberDomain") {
                         event.rename("winlog.event_data._MemberDomain", "user.domain")?;
                     }
                     Ok(())
@@ -3791,7 +3791,7 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        if event.has("winlog.event_data.QueryStatus") {
+                        if event.has_value("winlog.event_data.QueryStatus") {
                             event.rename("winlog.event_data.QueryStatus", "sysmon.dns.status")?;
                         }
                         Ok(())
@@ -3999,7 +3999,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("winlog.event_data._MemberUserName") {
+                if event.has_value("winlog.event_data._MemberUserName") {
                     event.rename("winlog.event_data._MemberUserName", "user.name")?;
                 }
                 Ok(())
@@ -4007,7 +4007,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("winlog.event_data._MemberDomain") {
+                if event.has_value("winlog.event_data._MemberDomain") {
                     event.rename("winlog.event_data._MemberDomain", "user.domain")?;
                 }
                 Ok(())

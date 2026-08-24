@@ -104,11 +104,11 @@ impl Transform for Security {
                 }
             }
 
-            if event.has("priority") {
+            if event.has_value("priority") {
                 event.rename("priority", "cisco_meraki.security.priority")?;
             }
 
-            if event.has("signature") {
+            if event.has_value("signature") {
                 event.rename("signature", "cisco_meraki.security.signature")?;
             }
 
@@ -122,7 +122,7 @@ impl Transform for Security {
                 )?;
             }
 
-            if event.has("direction") {
+            if event.has_value("direction") {
                 event.rename("direction", "network.direction")?;
             }
 
@@ -130,7 +130,7 @@ impl Transform for Security {
                 map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
             }
 
-            if event.has("decision") {
+            if event.has_value("decision") {
                 event.rename("decision", "cisco_meraki.security.decision")?;
             }
 
@@ -153,19 +153,19 @@ impl Transform for Security {
                 )?;
             }
 
-            if event.has("name") {
+            if event.has_value("name") {
                 event.rename("name", "file.name")?;
             }
 
-            if event.has("sha256") {
+            if event.has_value("sha256") {
                 event.rename("sha256", "file.hash.sha256")?;
             }
 
-            if event.has("disposition") {
+            if event.has_value("disposition") {
                 event.rename("disposition", "cisco_meraki.disposition")?;
             }
 
-            if event.has("action") {
+            if event.has_value("action") {
                 event.rename("action", "cisco_meraki.security.action")?;
             }
 

@@ -22,23 +22,23 @@ impl Transform for IdentityProtectionIncident {
 
             event.append("event.type", json!("info"))?;
 
-            if event.has("crowdstrike.event.IncidentType") {
+            if event.has_value("crowdstrike.event.IncidentType") {
                 event.rename("crowdstrike.event.IncidentType", "event.action")?;
             }
 
-            if event.has("crowdstrike.event.IncidentDescription") {
+            if event.has_value("crowdstrike.event.IncidentDescription") {
                 event.rename("crowdstrike.event.IncidentDescription", "message")?;
             }
 
-            if event.has("crowdstrike.event.IdentityProtectionIncidentId") {
+            if event.has_value("crowdstrike.event.IdentityProtectionIncidentId") {
                 event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.UserName") {
+            if event.has_value("crowdstrike.event.UserName") {
                 event.rename("crowdstrike.event.UserName", "user.name")?;
             }
 
@@ -80,7 +80,7 @@ impl Transform for IdentityProtectionIncident {
                 }
             }
 
-            if event.has("crowdstrike.event.EndpointName") {
+            if event.has_value("crowdstrike.event.EndpointName") {
                 event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
             }
 

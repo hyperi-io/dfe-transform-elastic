@@ -99,7 +99,7 @@ impl Transform for RemoteResponseSessionEnd {
 
             event.set("message", json!("Remote response session ended."))?;
 
-            if event.has("crowdstrike.event.HostnameField") {
+            if event.has_value("crowdstrike.event.HostnameField") {
                 event.rename("crowdstrike.event.HostnameField", "host.name")?;
             }
 

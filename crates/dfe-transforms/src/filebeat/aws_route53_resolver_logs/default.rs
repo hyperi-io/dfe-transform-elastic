@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -34,7 +34,7 @@ impl Transform for Default {
 
             event.set("cloud.provider", json!("aws"))?;
 
-            if event.has("json.account_id") {
+            if event.has_value("json.account_id") {
                 event.rename("json.account_id", "cloud.account.id")?;
             }
 
@@ -62,11 +62,11 @@ impl Transform for Default {
                 event.set("cloud.region", v)?;
             }
 
-            if event.has("json.vpc_id") {
+            if event.has_value("json.vpc_id") {
                 event.rename("json.vpc_id", "aws.vpc_id")?;
             }
 
-            if event.has("json.srcids.instance") {
+            if event.has_value("json.srcids.instance") {
                 event.rename("json.srcids.instance", "aws.instance_id")?;
             }
 
@@ -116,30 +116,30 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("dns.question.domain") {
+            if event.has_value("dns.question.domain") {
                 event.rename("dns.question.domain", "dns.question.name")?;
             }
 
             let _cond = { !event.has_value("dns.question.name") };
             if _cond {
-                if event.has("json.query_name") {
+                if event.has_value("json.query_name") {
                     event.rename("json.query_name", "dns.question.name")?;
                 }
             }
 
-            if event.has("json.query_class") {
+            if event.has_value("json.query_class") {
                 event.rename("json.query_class", "dns.question.class")?;
             }
 
-            if event.has("json.query_type") {
+            if event.has_value("json.query_type") {
                 event.rename("json.query_type", "dns.question.type")?;
             }
 
-            if event.has("json.rcode") {
+            if event.has_value("json.rcode") {
                 event.rename("json.rcode", "dns.response_code")?;
             }
 
-            if event.has("json.answers") {
+            if event.has_value("json.answers") {
                 event.rename("json.answers", "dns.answers")?;
             }
 
@@ -163,7 +163,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.transport") {
+            if event.has_value("json.transport") {
                 event.rename("json.transport", "network.transport")?;
             }
 
@@ -200,7 +200,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.srcaddr") {
+            if event.has_value("json.srcaddr") {
                 event.rename("json.srcaddr", "source.address")?;
             }
 
@@ -263,11 +263,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -295,18 +295,18 @@ impl Transform for Default {
                 event.set("network.type", json!("ipv6"))?;
             }
 
-            if event.has("json.firewall_rule_action") {
+            if event.has_value("json.firewall_rule_action") {
                 event.rename("json.firewall_rule_action", "aws.route53.firewall.action")?;
             }
 
-            if event.has("json.firewall_rule_group_id") {
+            if event.has_value("json.firewall_rule_group_id") {
                 event.rename(
                     "json.firewall_rule_group_id",
                     "aws.route53.firewall.rule_group.id",
                 )?;
             }
 
-            if event.has("json.firewall_domain_list_id") {
+            if event.has_value("json.firewall_domain_list_id") {
                 event.rename(
                     "json.firewall_domain_list_id",
                     "aws.route53.firewall.domain_list.id",

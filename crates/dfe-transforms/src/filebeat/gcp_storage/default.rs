@@ -29,63 +29,63 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("gcp.metrics.api.request.count") {
+            if event.has_value("gcp.metrics.api.request.count") {
                 event.rename(
                     "gcp.metrics.api.request.count",
                     "gcp.storage.api.request.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.authz.acl_based_object_access.count") {
+            if event.has_value("gcp.metrics.authz.acl_based_object_access.count") {
                 event.rename(
                     "gcp.metrics.authz.acl_based_object_access.count",
                     "gcp.storage.authz.acl_based_object_access.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.authz.acl_operations.count") {
+            if event.has_value("gcp.metrics.authz.acl_operations.count") {
                 event.rename(
                     "gcp.metrics.authz.acl_operations.count",
                     "gcp.storage.authz.acl_operations.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.authz.object_specific_acl_mutation.count") {
+            if event.has_value("gcp.metrics.authz.object_specific_acl_mutation.count") {
                 event.rename(
                     "gcp.metrics.authz.object_specific_acl_mutation.count",
                     "gcp.storage.authz.object_specific_acl_mutation.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.network.received.bytes") {
+            if event.has_value("gcp.metrics.network.received.bytes") {
                 event.rename(
                     "gcp.metrics.network.received.bytes",
                     "gcp.storage.network.received.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.network.sent.bytes") {
+            if event.has_value("gcp.metrics.network.sent.bytes") {
                 event.rename(
                     "gcp.metrics.network.sent.bytes",
                     "gcp.storage.network.sent.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.storage.object.count") {
+            if event.has_value("gcp.metrics.storage.object.count") {
                 event.rename(
                     "gcp.metrics.storage.object.count",
                     "gcp.storage.storage.object.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.storage.total_byte_seconds.bytes") {
+            if event.has_value("gcp.metrics.storage.total_byte_seconds.bytes") {
                 event.rename(
                     "gcp.metrics.storage.total_byte_seconds.bytes",
                     "gcp.storage.storage.total_byte_seconds.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.storage.total.bytes") {
+            if event.has_value("gcp.metrics.storage.total.bytes") {
                 event.rename(
                     "gcp.metrics.storage.total.bytes",
                     "gcp.storage.storage.total.bytes",

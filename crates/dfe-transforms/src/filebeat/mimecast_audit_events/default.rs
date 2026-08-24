@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -118,15 +118,15 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("mimecast.auditType") {
+            if event.has_value("mimecast.auditType") {
                 event.rename("mimecast.auditType", "event.action")?;
             }
 
-            if event.has("mimecast.user") {
+            if event.has_value("mimecast.user") {
                 event.rename("mimecast.user", "user.email")?;
             }
 
-            if event.has("mimecast.id") {
+            if event.has_value("mimecast.id") {
                 event.rename("mimecast.id", "event.id")?;
             }
 
@@ -409,7 +409,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("mimecast.event_info_parts.Date") {
+            if event.has_value("mimecast.event_info_parts.Date") {
                 event.rename("mimecast.event_info_parts.Date", "mimecast.date")?;
             }
 
@@ -442,48 +442,48 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("mimecast.event_info_parts.Time") {
+            if event.has_value("mimecast.event_info_parts.Time") {
                 event.rename("mimecast.event_info_parts.Time", "mimecast.time")?;
             }
 
-            if event.has("mimecast.event_info_parts.IP") {
+            if event.has_value("mimecast.event_info_parts.IP") {
                 event.rename("mimecast.event_info_parts.IP", "client.ip")?;
             }
 
-            if event.has("mimecast.event_info_parts.Application") {
+            if event.has_value("mimecast.event_info_parts.Application") {
                 event.rename(
                     "mimecast.event_info_parts.Application",
                     "mimecast.application",
                 )?;
             }
 
-            if event.has("mimecast.event_info_parts.Method") {
+            if event.has_value("mimecast.event_info_parts.Method") {
                 event.rename("mimecast.event_info_parts.Method", "mimecast.method")?;
             }
 
-            if event.has("mimecast.event_info_parts.Reason") {
+            if event.has_value("mimecast.event_info_parts.Reason") {
                 event.rename("mimecast.event_info_parts.Reason", "event.reason")?;
             }
 
             let _cond = { event.get_str("event.action") == Some("threat-intel-feed-download") };
             if _cond {
-                if event.has("mimecast.info") {
+                if event.has_value("mimecast.info") {
                     event.rename("mimecast.info", "mimecast.filename")?;
                 }
             }
 
-            if event.has("mimecast.event_info_parts.Processed") {
+            if event.has_value("mimecast.event_info_parts.Processed") {
                 event.rename(
                     "mimecast.event_info_parts.Processed",
                     "email.origination_timestamp",
                 )?;
             }
 
-            if event.has("mimecast.event_info_parts.Subject") {
+            if event.has_value("mimecast.event_info_parts.Subject") {
                 event.rename("mimecast.event_info_parts.Subject", "email.subject")?;
             }
 
-            if event.has("mimecast.event_info_parts.2FA") {
+            if event.has_value("mimecast.event_info_parts.2FA") {
                 event.rename("mimecast.event_info_parts.2FA", "mimecast.2FA")?;
             }
 
@@ -989,7 +989,7 @@ impl Transform for Default {
                     && event.get_str("event.action") == Some("threat-intel-feed-download")
             };
             if _cond {
-                if event.has("mimecast.filename") {
+                if event.has_value("mimecast.filename") {
                     event.rename("mimecast.filename", "file.name")?;
                 }
             }
@@ -1123,11 +1123,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("client.as.asn") {
+            if event.has_value("client.as.asn") {
                 event.rename("client.as.asn", "client.as.number")?;
             }
 
-            if event.has("client.as.organization_name") {
+            if event.has_value("client.as.organization_name") {
                 event.rename("client.as.organization_name", "client.as.organization.name")?;
             }
 

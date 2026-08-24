@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.11.0"))?;
 
-            if event.has("azure") {
+            if event.has_value("azure") {
                 event.rename("azure", "azure-eventhub")?;
             }
 
@@ -41,7 +41,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -82,7 +82,7 @@ impl Transform for Default {
 
             event.remove("azure.activitylogs.time");
 
-            if event.has("azure.activitylogs.resourceId") {
+            if event.has_value("azure.activitylogs.resourceId") {
                 event.rename("azure.activitylogs.resourceId", "azure.resource_id")?;
             }
 
@@ -105,7 +105,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("azure.activitylogs.callerIpAddress") {
+                    if event.has_value("azure.activitylogs.callerIpAddress") {
                         event.rename("azure.activitylogs.callerIpAddress", "source.address")?;
                     }
                     Ok(())
@@ -144,11 +144,11 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.activitylogs.level") {
+            if event.has_value("azure.activitylogs.level") {
                 event.rename("azure.activitylogs.level", "log.level")?;
             }
 
-            if event.has("azure.activitylogs.durationMs") {
+            if event.has_value("azure.activitylogs.durationMs") {
                 event.rename("azure.activitylogs.durationMs", "event.duration")?;
             }
 
@@ -167,7 +167,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.activitylogs.location") {
+            if event.has_value("azure.activitylogs.location") {
                 event.rename("azure.activitylogs.location", "geo.name")?;
             }
 
@@ -177,7 +177,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_string())
             };
             if _cond {
-                if event.has("azure.activitylogs.identity") {
+                if event.has_value("azure.activitylogs.identity") {
                     event.rename(
                         "azure.activitylogs.identity",
                         "azure.activitylogs.identity_name",
@@ -272,7 +272,7 @@ impl Transform for Default {
                 event.remove("azure.activitylogs.properties.eventCategory");
             }
 
-            if event.has("azure.activitylogs.resultType") {
+            if event.has_value("azure.activitylogs.resultType") {
                 event.rename(
                     "azure.activitylogs.resultType",
                     "azure.activitylogs.result_type",
@@ -327,7 +327,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("azure.activitylogs.operationName") {
+            if event.has_value("azure.activitylogs.operationName") {
                 event.rename(
                     "azure.activitylogs.operationName",
                     "azure.activitylogs.operation_name",
@@ -346,82 +346,88 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("azure.activitylogs.operationVersion") {
+            if event.has_value("azure.activitylogs.operationVersion") {
                 event.rename(
                     "azure.activitylogs.operationVersion",
                     "azure.activitylogs.operation_version",
                 )?;
             }
 
-            if event.has("azure.activitylogs.tenantId") {
+            if event.has_value("azure.activitylogs.tenantId") {
                 event.rename(
                     "azure.activitylogs.tenantId",
                     "azure.activitylogs.tenant_id",
                 )?;
             }
 
-            if event.has("azure.activitylogs.Level") {
+            if event.has_value("azure.activitylogs.Level") {
                 event.rename("azure.activitylogs.Level", "azure.activitylogs.level")?;
             }
 
-            if event.has("azure.activitylogs.resultSignature") {
+            if event.has_value("azure.activitylogs.resultSignature") {
                 event.rename(
                     "azure.activitylogs.resultSignature",
                     "azure.activitylogs.result_signature",
                 )?;
             }
 
-            if event.has("azure.activitylogs.identity.authorization.evidence.roleAssignmentScope") {
+            if event
+                .has_value("azure.activitylogs.identity.authorization.evidence.roleAssignmentScope")
+            {
                 event.rename(
                     "azure.activitylogs.identity.authorization.evidence.roleAssignmentScope",
                     "azure.activitylogs.identity.authorization.evidence.role_assignment_scope",
                 )?;
             }
 
-            if event.has("azure.activitylogs.identity.authorization.evidence.roleDefinitionId") {
+            if event
+                .has_value("azure.activitylogs.identity.authorization.evidence.roleDefinitionId")
+            {
                 event.rename(
                     "azure.activitylogs.identity.authorization.evidence.roleDefinitionId",
                     "azure.activitylogs.identity.authorization.evidence.role_definition_id",
                 )?;
             }
 
-            if event.has("azure.activitylogs.identity.authorization.evidence.roleAssignmentId") {
+            if event
+                .has_value("azure.activitylogs.identity.authorization.evidence.roleAssignmentId")
+            {
                 event.rename(
                     "azure.activitylogs.identity.authorization.evidence.roleAssignmentId",
                     "azure.activitylogs.identity.authorization.evidence.role_assignment_id",
                 )?;
             }
 
-            if event.has("azure.activitylogs.identity.authorization.evidence.principalId") {
+            if event.has_value("azure.activitylogs.identity.authorization.evidence.principalId") {
                 event.rename(
                     "azure.activitylogs.identity.authorization.evidence.principalId",
                     "azure.activitylogs.identity.authorization.evidence.principal_id",
                 )?;
             }
 
-            if event.has("azure.activitylogs.identity.authorization.evidence.principalType") {
+            if event.has_value("azure.activitylogs.identity.authorization.evidence.principalType") {
                 event.rename(
                     "azure.activitylogs.identity.authorization.evidence.principalType",
                     "azure.activitylogs.identity.authorization.evidence.principal_type",
                 )?;
             }
 
-            if event.has("azure.activitylogs.correlationId") {
+            if event.has_value("azure.activitylogs.correlationId") {
                 event.rename("azure.activitylogs.correlationId", "azure.correlation_id")?;
             }
 
-            if event.has("azure.activitylogs.properties.serviceRequestId") {
+            if event.has_value("azure.activitylogs.properties.serviceRequestId") {
                 event.rename(
                     "azure.activitylogs.properties.serviceRequestId",
                     "azure.activitylogs.properties.service_request_id",
                 )?;
             }
 
-            if event.has("azure.activitylogs.properties.statusMessage") {
+            if event.has_value("azure.activitylogs.properties.statusMessage") {
                 event.rename("azure.activitylogs.properties.statusMessage", "message")?;
             }
 
-            if event.has("azure.activitylogs.properties.statusCode") {
+            if event.has_value("azure.activitylogs.properties.statusCode") {
                 event.rename(
                     "azure.activitylogs.properties.statusCode",
                     "azure.activitylogs.properties.status_code",
@@ -461,7 +467,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("azure.activitylogs.identity.claims.name") {
+            if event.has_value("azure.activitylogs.identity.claims.name") {
                 event.rename(
                     "azure.activitylogs.identity.claims.name",
                     "azure.activitylogs.identity.claims_initiated_by_user.fullname",
@@ -601,11 +607,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -932,7 +938,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            if event.has("azure.resource_id") {
+            if event.has_value("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
             if event.has_value("event.outcome") {

@@ -44,7 +44,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.CPUUtilization.avg") {
+                if event.has_value("aws.ec2.metrics.CPUUtilization.avg") {
                     event.rename("aws.ec2.metrics.CPUUtilization.avg", "host.cpu.usage")?;
                 }
                 Ok(())
@@ -52,7 +52,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.NetworkIn.sum") {
+                if event.has_value("aws.ec2.metrics.NetworkIn.sum") {
                     event.rename(
                         "aws.ec2.metrics.NetworkIn.sum",
                         "host.network.ingress.bytes",
@@ -63,7 +63,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.NetworkOut.sum") {
+                if event.has_value("aws.ec2.metrics.NetworkOut.sum") {
                     event.rename(
                         "aws.ec2.metrics.NetworkOut.sum",
                         "host.network.egress.bytes",
@@ -74,7 +74,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.NetworkPacketsIn.sum") {
+                if event.has_value("aws.ec2.metrics.NetworkPacketsIn.sum") {
                     event.rename(
                         "aws.ec2.metrics.NetworkPacketsIn.sum",
                         "host.network.ingress.packets",
@@ -85,7 +85,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.NetworkPacketsOut.sum") {
+                if event.has_value("aws.ec2.metrics.NetworkPacketsOut.sum") {
                     event.rename(
                         "aws.ec2.metrics.NetworkPacketsOut.sum",
                         "host.network.egress.packets",
@@ -96,7 +96,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.DiskReadBytes.sum") {
+                if event.has_value("aws.ec2.metrics.DiskReadBytes.sum") {
                     event.rename("aws.ec2.metrics.DiskReadBytes.sum", "host.disk.read.bytes")?;
                 }
                 Ok(())
@@ -104,7 +104,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("aws.ec2.metrics.DiskWriteBytes.sum") {
+                if event.has_value("aws.ec2.metrics.DiskWriteBytes.sum") {
                     event.rename(
                         "aws.ec2.metrics.DiskWriteBytes.sum",
                         "host.disk.write.bytes",

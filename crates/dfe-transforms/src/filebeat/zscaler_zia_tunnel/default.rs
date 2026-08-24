@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -83,7 +83,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            if event.has("resp.event") {
+            if event.has_value("resp.event") {
                 event.rename("resp.event", "json")?;
             }
 
@@ -122,18 +122,18 @@ impl Transform for Default {
                 ),
             )?;
 
-            if event.has("json.Recordtype") {
+            if event.has_value("json.Recordtype") {
                 event.rename("json.Recordtype", "zscaler_zia.tunnel.action.type")?;
             }
 
-            if event.has("json.authentication") {
+            if event.has_value("json.authentication") {
                 event.rename(
                     "json.authentication",
                     "zscaler_zia.tunnel.authentication.algorithm",
                 )?;
             }
 
-            if event.has("json.authtype") {
+            if event.has_value("json.authtype") {
                 event.rename("json.authtype", "zscaler_zia.tunnel.authentication.type")?;
             }
 
@@ -253,7 +253,7 @@ impl Transform for Default {
                 event.set("source.bytes", v)?;
             }
 
-            if event.has("json.timezone") {
+            if event.has_value("json.timezone") {
                 event.rename("json.timezone", "zscaler_zia.tunnel.timezone")?;
             }
 
@@ -336,7 +336,7 @@ impl Transform for Default {
                 event.set("@timestamp", v)?;
             }
 
-            if event.has("json.day") {
+            if event.has_value("json.day") {
                 event.rename("json.day", "zscaler_zia.tunnel.day")?;
             }
 
@@ -736,11 +736,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.algo") {
+            if event.has_value("json.algo") {
                 event.rename("json.algo", "zscaler_zia.tunnel.encryption.algorithm")?;
             }
 
-            if event.has("json.event") {
+            if event.has_value("json.event") {
                 event.rename("json.event", "zscaler_zia.tunnel.event")?;
             }
 
@@ -801,7 +801,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.eventreason") {
+            if event.has_value("json.eventreason") {
                 event.rename("json.eventreason", "zscaler_zia.tunnel.event_reason")?;
             }
 
@@ -860,7 +860,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ikeversion") {
+            if event.has_value("json.ikeversion") {
                 event.rename("json.ikeversion", "zscaler_zia.tunnel.ikeversion")?;
             }
 
@@ -1059,7 +1059,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.mon") {
+            if event.has_value("json.mon") {
                 event.rename("json.mon", "zscaler_zia.tunnel.month")?;
             }
 
@@ -1110,14 +1110,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.olocationname") {
+            if event.has_value("json.olocationname") {
                 event.rename(
                     "json.olocationname",
                     "zscaler_zia.tunnel.obfuscated.location_name",
                 )?;
             }
 
-            if event.has("json.ovpncredentialname") {
+            if event.has_value("json.ovpncredentialname") {
                 event.rename(
                     "json.ovpncredentialname",
                     "zscaler_zia.tunnel.obfuscated.vpn_credential_name",
@@ -1240,7 +1240,7 @@ impl Transform for Default {
                 event.set("source.packets", v)?;
             }
 
-            if event.has("json.protocol") {
+            if event.has_value("json.protocol") {
                 event.rename("json.protocol", "zscaler_zia.tunnel.policy.protocol")?;
             }
 
@@ -1291,11 +1291,11 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.tunnelprotocol") {
+            if event.has_value("json.tunnelprotocol") {
                 event.rename("json.tunnelprotocol", "zscaler_zia.tunnel.protocol")?;
             }
 
-            if event.has("json.recordid") {
+            if event.has_value("json.recordid") {
                 event.rename("json.recordid", "zscaler_zia.tunnel.record.id")?;
             }
 
@@ -1650,19 +1650,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.spi") {
+            if event.has_value("json.spi") {
                 event.rename("json.spi", "zscaler_zia.tunnel.spi")?;
             }
 
-            if event.has("json.spi_in") {
+            if event.has_value("json.spi_in") {
                 event.rename("json.spi_in", "zscaler_zia.tunnel.spi_in")?;
             }
 
-            if event.has("json.spi_out") {
+            if event.has_value("json.spi_out") {
                 event.rename("json.spi_out", "zscaler_zia.tunnel.spi_out")?;
             }
 
-            if event.has("json.tunneltype") {
+            if event.has_value("json.tunneltype") {
                 event.rename("json.tunneltype", "zscaler_zia.tunnel.type")?;
             }
 
@@ -1695,7 +1695,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.vendorname") {
+            if event.has_value("json.vendorname") {
                 event.rename("json.vendorname", "zscaler_zia.tunnel.vendor.name")?;
             }
 

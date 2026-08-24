@@ -141,27 +141,27 @@ impl Transform for V2Pipeline {
                 )?;
             }
 
-            if event.has("mimecast.action") {
+            if event.has_value("mimecast.action") {
                 event.rename("mimecast.action", "event.action")?;
             }
 
-            if event.has("mimecast.tlsCipher") {
+            if event.has_value("mimecast.tlsCipher") {
                 event.rename("mimecast.tlsCipher", "tls.cipher")?;
             }
 
-            if event.has("mimecast.direction") {
+            if event.has_value("mimecast.direction") {
                 event.rename("mimecast.direction", "email.direction")?;
             }
 
-            if event.has("mimecast.receiptErrors") {
+            if event.has_value("mimecast.receiptErrors") {
                 event.rename("mimecast.receiptErrors", "error.message")?;
             }
 
-            if event.has("mimecast.senderIp") {
+            if event.has_value("mimecast.senderIp") {
                 event.rename("mimecast.senderIp", "source.ip")?;
             }
 
-            if event.has("mimecast.messageId") {
+            if event.has_value("mimecast.messageId") {
                 event.rename("mimecast.messageId", "email.message_id")?;
             }
 
@@ -177,11 +177,11 @@ impl Transform for V2Pipeline {
                 )?;
             }
 
-            if event.has("mimecast.rejectionCode") {
+            if event.has_value("mimecast.rejectionCode") {
                 event.rename("mimecast.rejectionCode", "error.code")?;
             }
 
-            if event.has("mimecast.rejectionInfo") {
+            if event.has_value("mimecast.rejectionInfo") {
                 event.rename("mimecast.rejectionInfo", "event.reason")?;
             }
 
@@ -193,7 +193,7 @@ impl Transform for V2Pipeline {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.rejectionType") {
+            if event.has_value("mimecast.rejectionType") {
                 event.rename("mimecast.rejectionType", "error.type")?;
             }
 
@@ -209,15 +209,15 @@ impl Transform for V2Pipeline {
                 )?;
             }
 
-            if event.has("mimecast.subject") {
+            if event.has_value("mimecast.subject") {
                 event.rename("mimecast.subject", "email.subject")?;
             }
 
-            if event.has("mimecast.tlsVer") {
+            if event.has_value("mimecast.tlsVer") {
                 event.rename("mimecast.tlsVer", "tls.version")?;
             }
 
-            if event.has("mimecast.totalSizeAttachments") {
+            if event.has_value("mimecast.totalSizeAttachments") {
                 event.rename(
                     "mimecast.totalSizeAttachments",
                     "email.attachments.file.size",
@@ -254,7 +254,7 @@ impl Transform for V2Pipeline {
                 }
             }
 
-            if event.has("mimecast.attachments") {
+            if event.has_value("mimecast.attachments") {
                 event.rename("mimecast.attachments", "email.attachments.file.name")?;
             }
 
@@ -264,19 +264,19 @@ impl Transform for V2Pipeline {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.holdReason") {
+            if event.has_value("mimecast.holdReason") {
                 event.rename("mimecast.holdReason", "event.reason")?;
             }
 
-            if event.has("mimecast.destinationIp") {
+            if event.has_value("mimecast.destinationIp") {
                 event.rename("mimecast.destinationIp", "destination.ip")?;
             }
 
-            if event.has("mimecast.deliveryErrors") {
+            if event.has_value("mimecast.deliveryErrors") {
                 event.rename("mimecast.deliveryErrors", "error.message")?;
             }
 
-            if event.has("mimecast.tlsUsed") {
+            if event.has_value("mimecast.tlsUsed") {
                 event.rename("mimecast.tlsUsed", "tls.established")?;
             }
 
@@ -308,11 +308,11 @@ impl Transform for V2Pipeline {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.fileExtension") {
+            if event.has_value("mimecast.fileExtension") {
                 event.rename("mimecast.fileExtension", "email.attachments.file.extension")?;
             }
 
-            if event.has("mimecast.md5") {
+            if event.has_value("mimecast.md5") {
                 event.rename("mimecast.md5", "email.attachments.file.hash.md5")?;
             }
 
@@ -368,15 +368,15 @@ impl Transform for V2Pipeline {
                 }
             }
 
-            if event.has("mimecast.sha1") {
+            if event.has_value("mimecast.sha1") {
                 event.rename("mimecast.sha1", "email.attachments.file.hash.sha1")?;
             }
 
-            if event.has("mimecast.sha256") {
+            if event.has_value("mimecast.sha256") {
                 event.rename("mimecast.sha256", "email.attachments.file.hash.sha256")?;
             }
 
-            if event.has("mimecast.fileName") {
+            if event.has_value("mimecast.fileName") {
                 event.rename("mimecast.fileName", "email.attachments.file.name")?;
             }
 
@@ -388,7 +388,7 @@ impl Transform for V2Pipeline {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.senderIp") {
+            if event.has_value("mimecast.senderIp") {
                 event.rename("mimecast.senderIp", "source.ip")?;
             }
 
@@ -398,7 +398,7 @@ impl Transform for V2Pipeline {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.url") {
+            if event.has_value("mimecast.url") {
                 event.rename("mimecast.url", "url.full")?;
             }
 
@@ -410,15 +410,15 @@ impl Transform for V2Pipeline {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("mimecast.action") {
+            if event.has_value("mimecast.action") {
                 event.rename("mimecast.action", "event.action")?;
             }
 
-            if event.has("mimecast.policyDefinition") {
+            if event.has_value("mimecast.policyDefinition") {
                 event.rename("mimecast.policyDefinition", "rule.name")?;
             }
 
-            if event.has("mimecast.newDomain") {
+            if event.has_value("mimecast.newDomain") {
                 event.rename("mimecast.newDomain", "source.domain")?;
             }
 
@@ -526,13 +526,13 @@ impl Transform for V2Pipeline {
                 }
             }
 
-            if event.has("mimecast.blockReason") {
+            if event.has_value("mimecast.blockReason") {
                 event.rename("mimecast.blockReason", "event.reason")?;
             }
 
             let _cond = { !event.has_value("email.direction") };
             if _cond {
-                if event.has("mimecast.route") {
+                if event.has_value("mimecast.route") {
                     event.rename("mimecast.route", "email.direction")?;
                 }
             }
@@ -549,27 +549,27 @@ impl Transform for V2Pipeline {
                 )?;
             }
 
-            if event.has("mimecast.senderDomain") {
+            if event.has_value("mimecast.senderDomain") {
                 event.rename("mimecast.senderDomain", "source.domain")?;
             }
 
-            if event.has("mimecast.sourceIp") {
+            if event.has_value("mimecast.sourceIp") {
                 event.rename("mimecast.sourceIp", "source.ip")?;
             }
 
-            if event.has("mimecast.subject") {
+            if event.has_value("mimecast.subject") {
                 event.rename("mimecast.subject", "email.subject")?;
             }
 
-            if event.has("mimecast.url") {
+            if event.has_value("mimecast.url") {
                 event.rename("mimecast.url", "url.full")?;
             }
 
-            if event.has("mimecast.action") {
+            if event.has_value("mimecast.action") {
                 event.rename("mimecast.action", "event.action")?;
             }
 
-            if event.has("mimecast.Delivered") {
+            if event.has_value("mimecast.Delivered") {
                 event.rename("mimecast.Delivered", "event.outcome")?;
             }
 
@@ -645,11 +645,11 @@ impl Transform for V2Pipeline {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -701,11 +701,11 @@ impl Transform for V2Pipeline {
                 }
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -807,7 +807,7 @@ impl Transform for V2Pipeline {
                 event.remove("mimecast.senderEnvelope");
             }
 
-            if event.has("original") {
+            if event.has_value("original") {
                 event.rename_over("original", "mimecast")?;
             }
 

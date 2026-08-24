@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -83,7 +83,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            if event.has("resp.event") {
+            if event.has_value("resp.event") {
                 event.rename("resp.event", "json")?;
             }
 
@@ -212,7 +212,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.cloudname") {
+            if event.has_value("json.cloudname") {
                 event.rename("json.cloudname", "zscaler_zia.dns.cloud.name")?;
             }
 
@@ -224,7 +224,7 @@ impl Transform for Default {
                 event.set("cloud.provider", v)?;
             }
 
-            if event.has("json.company") {
+            if event.has_value("json.company") {
                 event.rename("json.company", "zscaler_zia.dns.company")?;
             }
 
@@ -236,22 +236,22 @@ impl Transform for Default {
                 event.set("organization.name", v)?;
             }
 
-            if event.has("json.datacentercity") {
+            if event.has_value("json.datacentercity") {
                 event.rename("json.datacentercity", "zscaler_zia.dns.datacenter.city")?;
             }
 
-            if event.has("json.datacentercountry") {
+            if event.has_value("json.datacentercountry") {
                 event.rename(
                     "json.datacentercountry",
                     "zscaler_zia.dns.datacenter.country",
                 )?;
             }
 
-            if event.has("json.datacenter") {
+            if event.has_value("json.datacenter") {
                 event.rename("json.datacenter", "zscaler_zia.dns.datacenter.name")?;
             }
 
-            if event.has("json.day") {
+            if event.has_value("json.day") {
                 event.rename("json.day", "zscaler_zia.dns.day")?;
             }
 
@@ -305,15 +305,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.dept") {
+            if event.has_value("json.dept") {
                 event.rename("json.dept", "zscaler_zia.dns.dept")?;
             }
 
-            if event.has("json.deviceappversion") {
+            if event.has_value("json.deviceappversion") {
                 event.rename("json.deviceappversion", "zscaler_zia.dns.device.appversion")?;
             }
 
-            if event.has("json.devicehostname") {
+            if event.has_value("json.devicehostname") {
                 event.rename("json.devicehostname", "zscaler_zia.dns.device.hostname")?;
             }
 
@@ -373,7 +373,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.devicemodel") {
+            if event.has_value("json.devicemodel") {
                 event.rename("json.devicemodel", "zscaler_zia.dns.device.model")?;
             }
 
@@ -385,7 +385,7 @@ impl Transform for Default {
                 event.set("device.model.name", v)?;
             }
 
-            if event.has("json.devicename") {
+            if event.has_value("json.devicename") {
                 event.rename("json.devicename", "zscaler_zia.dns.device.name")?;
             }
 
@@ -409,11 +409,11 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.deviceostype") {
+            if event.has_value("json.deviceostype") {
                 event.rename("json.deviceostype", "zscaler_zia.dns.device.os.type")?;
             }
 
-            if event.has("json.deviceosversion") {
+            if event.has_value("json.deviceosversion") {
                 event.rename("json.deviceosversion", "zscaler_zia.dns.device.os.version")?;
             }
 
@@ -425,7 +425,7 @@ impl Transform for Default {
                 event.set("host.os.version", v)?;
             }
 
-            if event.has("json.deviceowner") {
+            if event.has_value("json.deviceowner") {
                 event.rename("json.deviceowner", "zscaler_zia.dns.device.owner")?;
             }
 
@@ -441,7 +441,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.devicetype") {
+            if event.has_value("json.devicetype") {
                 event.rename("json.devicetype", "zscaler_zia.dns.device.type")?;
             }
 
@@ -453,15 +453,15 @@ impl Transform for Default {
                 event.set("host.type", v)?;
             }
 
-            if event.has("json.dnsappcat") {
+            if event.has_value("json.dnsappcat") {
                 event.rename("json.dnsappcat", "zscaler_zia.dns.dns.category")?;
             }
 
-            if event.has("json.dns_gateway_rule") {
+            if event.has_value("json.dns_gateway_rule") {
                 event.rename("json.dns_gateway_rule", "zscaler_zia.dns.dns.gateway.rule")?;
             }
 
-            if event.has("json.dns_gateway_server_protocol") {
+            if event.has_value("json.dns_gateway_server_protocol") {
                 event.rename(
                     "json.dns_gateway_server_protocol",
                     "zscaler_zia.dns.dns.gateway.server_protocol",
@@ -480,14 +480,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.dns_gateway_status") {
+            if event.has_value("json.dns_gateway_status") {
                 event.rename(
                     "json.dns_gateway_status",
                     "zscaler_zia.dns.dns.gateway.status",
                 )?;
             }
 
-            if event.has("json.dnsapp") {
+            if event.has_value("json.dnsapp") {
                 event.rename("json.dnsapp", "zscaler_zia.dns.dns.type")?;
             }
 
@@ -535,7 +535,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.category") {
+            if event.has_value("json.category") {
                 event.rename("json.category", "zscaler_zia.dns.dom.category")?;
             }
 
@@ -637,19 +637,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ecs_prefix") {
+            if event.has_value("json.ecs_prefix") {
                 event.rename("json.ecs_prefix", "zscaler_zia.dns.ecs.prefix")?;
             }
 
-            if event.has("json.ecs_slot") {
+            if event.has_value("json.ecs_slot") {
                 event.rename("json.ecs_slot", "zscaler_zia.dns.ecs.slot")?;
             }
 
-            if event.has("json.ednsreq") {
+            if event.has_value("json.ednsreq") {
                 event.rename("json.ednsreq", "zscaler_zia.dns.ednsreq")?;
             }
 
-            if event.has("json.eedone") {
+            if event.has_value("json.eedone") {
                 event.rename("json.eedone", "zscaler_zia.dns.eedone")?;
             }
 
@@ -702,7 +702,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.error") {
+            if event.has_value("json.error") {
                 event.rename("json.error", "zscaler_zia.dns.error")?;
             }
 
@@ -761,15 +761,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.http_code") {
+            if event.has_value("json.http_code") {
                 event.rename("json.http_code", "zscaler_zia.dns.http_code")?;
             }
 
-            if event.has("json.istcp") {
+            if event.has_value("json.istcp") {
                 event.rename("json.istcp", "zscaler_zia.dns.istcp")?;
             }
 
-            if event.has("json.loc") {
+            if event.has_value("json.loc") {
                 event.rename("json.loc", "zscaler_zia.dns.loc")?;
             }
 
@@ -800,7 +800,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                if event.has("json.user") {
+                if event.has_value("json.user") {
                     event.rename("json.user", "zscaler_zia.dns.user")?;
                 }
             }
@@ -955,7 +955,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.month") {
+            if event.has_value("json.month") {
                 event.rename("json.month", "zscaler_zia.dns.month")?;
             }
 
@@ -1009,36 +1009,36 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.oclientsourceip") {
+            if event.has_value("json.oclientsourceip") {
                 event.rename(
                     "json.oclientsourceip",
                     "zscaler_zia.dns.obfuscated.client_source_ip",
                 )?;
             }
 
-            if event.has("json.odevicename") {
+            if event.has_value("json.odevicename") {
                 event.rename("json.odevicename", "zscaler_zia.dns.obfuscated.device.name")?;
             }
 
-            if event.has("json.odeviceowner") {
+            if event.has_value("json.odeviceowner") {
                 event.rename(
                     "json.odeviceowner",
                     "zscaler_zia.dns.obfuscated.device.owner",
                 )?;
             }
 
-            if event.has("json.odomcat") {
+            if event.has_value("json.odomcat") {
                 event.rename("json.odomcat", "zscaler_zia.dns.obfuscated.dom.category")?;
             }
 
-            if event.has("json.odevicehostname") {
+            if event.has_value("json.odevicehostname") {
                 event.rename(
                     "json.odevicehostname",
                     "zscaler_zia.dns.obfuscated.host_name",
                 )?;
             }
 
-            if event.has("json.protocol") {
+            if event.has_value("json.protocol") {
                 event.rename("json.protocol", "zscaler_zia.dns.protocol")?;
             }
 
@@ -1084,11 +1084,11 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            if event.has("json.reqaction") {
+            if event.has_value("json.reqaction") {
                 event.rename("json.reqaction", "zscaler_zia.dns.request.action")?;
             }
 
-            if event.has("json.dns_req") {
+            if event.has_value("json.dns_req") {
                 event.rename("json.dns_req", "zscaler_zia.dns.request.name")?;
             }
 
@@ -1132,7 +1132,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.dns_reqtype") {
+            if event.has_value("json.dns_reqtype") {
                 event.rename("json.dns_reqtype", "zscaler_zia.dns.request.type")?;
             }
 
@@ -1144,11 +1144,11 @@ impl Transform for Default {
                 event.set("dns.question.type", v)?;
             }
 
-            if event.has("json.resaction") {
+            if event.has_value("json.resaction") {
                 event.rename("json.resaction", "zscaler_zia.dns.response.action")?;
             }
 
-            if event.has("json.respipcategory") {
+            if event.has_value("json.respipcategory") {
                 event.rename("json.respipcategory", "zscaler_zia.dns.response.category")?;
             }
 
@@ -1173,7 +1173,7 @@ impl Transform for Default {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "convert")?;
                     event.set("_ingest.on_failure_processor_tag", "convert_dns_resp_to_ip")?;
-                    if event.has("json.dns_resp") {
+                    if event.has_value("json.dns_resp") {
                         event.rename("json.dns_resp", "zscaler_zia.dns.response.name")?;
                     }
                     event.remove("_ingest.on_failure_message");
@@ -1212,7 +1212,7 @@ impl Transform for Default {
             let _cond = { event.get("dns.answers").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "dns.answers", |event| {
-                    if event.has("_ingest._value") {
+                    if event.has_value("_ingest._value") {
                         event.rename("_ingest._value", "_ingest._value.data")?;
                     }
                     Ok(())
@@ -1275,7 +1275,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.restype") {
+            if event.has_value("json.restype") {
                 event.rename("json.restype", "zscaler_zia.dns.response.type")?;
             }
 
@@ -1510,7 +1510,7 @@ impl Transform for Default {
                 event.set("source.port", v)?;
             }
 
-            if event.has("json.tz") {
+            if event.has_value("json.tz") {
                 event.rename("json.tz", "zscaler_zia.dns.timezone")?;
             }
 
@@ -1667,7 +1667,7 @@ impl Transform for Default {
                     })
             };
             if _cond {
-                if event.has("json.login") {
+                if event.has_value("json.login") {
                     event.rename("json.login", "zscaler_zia.dns.login")?;
                 }
             }

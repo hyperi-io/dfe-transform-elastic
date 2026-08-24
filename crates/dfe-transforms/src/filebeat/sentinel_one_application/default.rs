@@ -40,7 +40,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -63,7 +63,7 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "json")?;
 
-            if event.has("json.accountName") {
+            if event.has_value("json.accountName") {
                 event.rename("json.accountName", "sentinel_one.account.name")?;
             }
 
@@ -132,14 +132,14 @@ impl Transform for Default {
                 event.set("package.installed", v)?;
             }
 
-            if event.has("json.applicationInstallationPath") {
+            if event.has_value("json.applicationInstallationPath") {
                 event.rename(
                     "json.applicationInstallationPath",
                     "sentinel_one.application.application_installation_path",
                 )?;
             }
 
-            if event.has("json.applicationName") {
+            if event.has_value("json.applicationName") {
                 event.rename(
                     "json.applicationName",
                     "sentinel_one.application.application_name",
@@ -154,7 +154,7 @@ impl Transform for Default {
                 event.set("package.name", v)?;
             }
 
-            if event.has("json.applicationVendor") {
+            if event.has_value("json.applicationVendor") {
                 event.rename(
                     "json.applicationVendor",
                     "sentinel_one.application.application_vendor",
@@ -258,7 +258,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.cpe") {
+            if event.has_value("json.cpe") {
                 event.rename("json.cpe", "sentinel_one.application.cpe")?;
             }
 
@@ -361,7 +361,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.endpointId") {
+            if event.has_value("json.endpointId") {
                 event.rename("json.endpointId", "sentinel_one.application.endpoint_id")?;
             }
 
@@ -373,7 +373,7 @@ impl Transform for Default {
                 event.set("host.id", v)?;
             }
 
-            if event.has("json.endpointName") {
+            if event.has_value("json.endpointName") {
                 event.rename(
                     "json.endpointName",
                     "sentinel_one.application.endpoint_name",
@@ -400,7 +400,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.endpointType") {
+            if event.has_value("json.endpointType") {
                 event.rename(
                     "json.endpointType",
                     "sentinel_one.application.endpoint_type",
@@ -415,7 +415,7 @@ impl Transform for Default {
                 event.set("host.type", v)?;
             }
 
-            if event.has("json.endpointUuid") {
+            if event.has_value("json.endpointUuid") {
                 event.rename(
                     "json.endpointUuid",
                     "sentinel_one.application.endpoint_uuid",
@@ -571,7 +571,7 @@ impl Transform for Default {
                 event.set("package.size", v)?;
             }
 
-            if event.has("json.groupName") {
+            if event.has_value("json.groupName") {
                 event.rename("json.groupName", "sentinel_one.application.group_name")?;
             }
 
@@ -583,7 +583,7 @@ impl Transform for Default {
                 event.set("group.name", v)?;
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "sentinel_one.application.id")?;
             }
 
@@ -595,7 +595,7 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            if event.has("json.osArch") {
+            if event.has_value("json.osArch") {
                 event.rename("json.osArch", "sentinel_one.application.os_arch")?;
             }
 
@@ -607,7 +607,7 @@ impl Transform for Default {
                 event.set("host.architecture", v)?;
             }
 
-            if event.has("json.osName") {
+            if event.has_value("json.osName") {
                 event.rename("json.osName", "sentinel_one.application.os_name")?;
             }
 
@@ -619,7 +619,7 @@ impl Transform for Default {
                 event.set("host.os.name", v)?;
             }
 
-            if event.has("json.osType") {
+            if event.has_value("json.osType") {
                 event.rename("json.osType", "sentinel_one.application.os_type")?;
             }
 
@@ -631,7 +631,7 @@ impl Transform for Default {
                 event.set("host.os.type", v)?;
             }
 
-            if event.has("json.osVersion") {
+            if event.has_value("json.osVersion") {
                 event.rename("json.osVersion", "sentinel_one.application.os_version")?;
             }
 
@@ -643,11 +643,11 @@ impl Transform for Default {
                 event.set("host.os.full", v)?;
             }
 
-            if event.has("json.siteName") {
+            if event.has_value("json.siteName") {
                 event.rename("json.siteName", "sentinel_one.site.name")?;
             }
 
-            if event.has("json.version") {
+            if event.has_value("json.version") {
                 event.rename("json.version", "sentinel_one.application.version")?;
             }
 

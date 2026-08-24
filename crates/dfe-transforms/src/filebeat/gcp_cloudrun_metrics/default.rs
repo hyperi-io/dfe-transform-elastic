@@ -29,77 +29,77 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("gcp.metrics.container.billable_instance_time.value") {
+            if event.has_value("gcp.metrics.container.billable_instance_time.value") {
                 event.rename(
                     "gcp.metrics.container.billable_instance_time.value",
                     "gcp.cloudrun_metrics.container.billable_instance_time",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.cpu.allocation_time.value") {
+            if event.has_value("gcp.metrics.container.cpu.allocation_time.value") {
                 event.rename(
                     "gcp.metrics.container.cpu.allocation_time.value",
                     "gcp.cloudrun_metrics.container.cpu.allocation_time.sec",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.cpu.utilizations.value") {
+            if event.has_value("gcp.metrics.container.cpu.utilizations.value") {
                 event.rename(
                     "gcp.metrics.container.cpu.utilizations.value",
                     "gcp.cloudrun_metrics.container.cpu.utilizations",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.instance_count.value") {
+            if event.has_value("gcp.metrics.container.instance_count.value") {
                 event.rename(
                     "gcp.metrics.container.instance_count.value",
                     "gcp.cloudrun_metrics.container.instance.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.max_request_concurrencies.value") {
+            if event.has_value("gcp.metrics.container.max_request_concurrencies.value") {
                 event.rename(
                     "gcp.metrics.container.max_request_concurrencies.value",
                     "gcp.cloudrun_metrics.container.max_request_concurrencies",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.memory.allocation_time.value") {
+            if event.has_value("gcp.metrics.container.memory.allocation_time.value") {
                 event.rename(
                     "gcp.metrics.container.memory.allocation_time.value",
                     "gcp.cloudrun_metrics.container.memory.allocation_time",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.memory.utilizations.value") {
+            if event.has_value("gcp.metrics.container.memory.utilizations.value") {
                 event.rename(
                     "gcp.metrics.container.memory.utilizations.value",
                     "gcp.cloudrun_metrics.container.memory.utilizations",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.network.received_bytes_count.value") {
+            if event.has_value("gcp.metrics.container.network.received_bytes_count.value") {
                 event.rename(
                     "gcp.metrics.container.network.received_bytes_count.value",
                     "gcp.cloudrun_metrics.container.network.received.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.container.network.sent_bytes_count.value") {
+            if event.has_value("gcp.metrics.container.network.sent_bytes_count.value") {
                 event.rename(
                     "gcp.metrics.container.network.sent_bytes_count.value",
                     "gcp.cloudrun_metrics.container.network.sent.bytes",
                 )?;
             }
 
-            if event.has("gcp.metrics.request_count.value") {
+            if event.has_value("gcp.metrics.request_count.value") {
                 event.rename(
                     "gcp.metrics.request_count.value",
                     "gcp.cloudrun_metrics.request.count",
                 )?;
             }
 
-            if event.has("gcp.metrics.request_latencies.value") {
+            if event.has_value("gcp.metrics.request_latencies.value") {
                 event.rename(
                     "gcp.metrics.request_latencies.value",
                     "gcp.cloudrun_metrics.request_latencies",

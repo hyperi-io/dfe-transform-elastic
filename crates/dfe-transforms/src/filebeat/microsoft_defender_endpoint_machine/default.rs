@@ -40,7 +40,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -103,7 +103,7 @@ impl Transform for Default {
 
             event.append_unique("event.type", json!("info"))?;
 
-            if event.has("json.aadDeviceId") {
+            if event.has_value("json.aadDeviceId") {
                 event.rename(
                     "json.aadDeviceId",
                     "microsoft_defender_endpoint.machine.aad_device_id",
@@ -130,14 +130,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.agentVersion") {
+            if event.has_value("json.agentVersion") {
                 event.rename(
                     "json.agentVersion",
                     "microsoft_defender_endpoint.machine.agent_version",
                 )?;
             }
 
-            if event.has("json.computerDnsName") {
+            if event.has_value("json.computerDnsName") {
                 event.rename(
                     "json.computerDnsName",
                     "microsoft_defender_endpoint.machine.computer_dns_name",
@@ -173,21 +173,21 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.deviceValue") {
+            if event.has_value("json.deviceValue") {
                 event.rename(
                     "json.deviceValue",
                     "microsoft_defender_endpoint.machine.device_value",
                 )?;
             }
 
-            if event.has("json.exclusionReason") {
+            if event.has_value("json.exclusionReason") {
                 event.rename(
                     "json.exclusionReason",
                     "microsoft_defender_endpoint.machine.exclusion_reason",
                 )?;
             }
 
-            if event.has("json.exposureLevel") {
+            if event.has_value("json.exposureLevel") {
                 event.rename(
                     "json.exposureLevel",
                     "microsoft_defender_endpoint.machine.exposure_level",
@@ -249,14 +249,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.healthStatus") {
+            if event.has_value("json.healthStatus") {
                 event.rename(
                     "json.healthStatus",
                     "microsoft_defender_endpoint.machine.health_status",
                 )?;
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "microsoft_defender_endpoint.machine.id")?;
             }
 
@@ -395,7 +395,7 @@ impl Transform for Default {
             let _cond = { event.get("json.ipAddresses").is_some_and(|v| v.is_array()) };
             if _cond {
                 foreach_array(event, "json.ipAddresses", |event| {
-                    if event.has("_ingest._value.operationalStatus") {
+                    if event.has_value("_ingest._value.operationalStatus") {
                         event.rename(
                             "_ingest._value.operationalStatus",
                             "_ingest._value.operational_status",
@@ -414,7 +414,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.ipAddresses") {
+            if event.has_value("json.ipAddresses") {
                 event.rename(
                     "json.ipAddresses",
                     "microsoft_defender_endpoint.machine.ip_addresses",
@@ -799,21 +799,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.machineTags") {
+            if event.has_value("json.machineTags") {
                 event.rename(
                     "json.machineTags",
                     "microsoft_defender_endpoint.machine.machine_tags",
                 )?;
             }
 
-            if event.has("json.managedBy") {
+            if event.has_value("json.managedBy") {
                 event.rename(
                     "json.managedBy",
                     "microsoft_defender_endpoint.machine.managed_by",
                 )?;
             }
 
-            if event.has("json.managedByStatus") {
+            if event.has_value("json.managedByStatus") {
                 event.rename(
                     "json.managedByStatus",
                     "microsoft_defender_endpoint.machine.managed_by_status",
@@ -835,14 +835,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.onboardingStatus") {
+            if event.has_value("json.onboardingStatus") {
                 event.rename(
                     "json.onboardingStatus",
                     "microsoft_defender_endpoint.machine.onboarding_status",
                 )?;
             }
 
-            if event.has("json.osArchitecture") {
+            if event.has_value("json.osArchitecture") {
                 event.rename(
                     "json.osArchitecture",
                     "microsoft_defender_endpoint.machine.os_architecture",
@@ -896,7 +896,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.osPlatform") {
+            if event.has_value("json.osPlatform") {
                 event.rename(
                     "json.osPlatform",
                     "microsoft_defender_endpoint.machine.os_platform",
@@ -927,7 +927,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.osProcessor") {
+            if event.has_value("json.osProcessor") {
                 event.rename(
                     "json.osProcessor",
                     "microsoft_defender_endpoint.machine.os_processor",
@@ -1012,7 +1012,7 @@ impl Transform for Default {
                 event.set("group.id", v)?;
             }
 
-            if event.has("json.rbacGroupName") {
+            if event.has_value("json.rbacGroupName") {
                 event.rename(
                     "json.rbacGroupName",
                     "microsoft_defender_endpoint.machine.rbac_group_name",
@@ -1027,7 +1027,7 @@ impl Transform for Default {
                 event.set("group.name", v)?;
             }
 
-            if event.has("json.riskScore") {
+            if event.has_value("json.riskScore") {
                 event.rename(
                     "json.riskScore",
                     "microsoft_defender_endpoint.machine.risk_score",
@@ -1042,7 +1042,7 @@ impl Transform for Default {
                 event.set("host.risk.calculated_level", v)?;
             }
 
-            if event.has("json.version") {
+            if event.has_value("json.version") {
                 event.rename(
                     "json.version",
                     "microsoft_defender_endpoint.machine.version",
@@ -1078,28 +1078,28 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.vm_metadata.cloudProvider") {
+            if event.has_value("json.vm_metadata.cloudProvider") {
                 event.rename(
                     "json.vm_metadata.cloudProvider",
                     "microsoft_defender_endpoint.machine.vm_metadata.cloud_provider",
                 )?;
             }
 
-            if event.has("json.vm_metadata.resourceId") {
+            if event.has_value("json.vm_metadata.resourceId") {
                 event.rename(
                     "json.vm_metadata.resourceId",
                     "microsoft_defender_endpoint.machine.vm_metadata.resource_id",
                 )?;
             }
 
-            if event.has("json.vm_metadata.subscriptionId") {
+            if event.has_value("json.vm_metadata.subscriptionId") {
                 event.rename(
                     "json.vm_metadata.subscriptionId",
                     "microsoft_defender_endpoint.machine.vm_metadata.subscription_id",
                 )?;
             }
 
-            if event.has("json.vm_metadata.vmId") {
+            if event.has_value("json.vm_metadata.vmId") {
                 event.rename(
                     "json.vm_metadata.vmId",
                     "microsoft_defender_endpoint.machine.vm_metadata.vm_id",

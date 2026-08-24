@@ -25,7 +25,7 @@ impl Transform for User {
 
             event.set("asset.type", json!("microsoft_entra_id_user"))?;
 
-            if event.has("azure_ad") {
+            if event.has_value("azure_ad") {
                 event.rename("azure_ad", "entityanalytics_entra_id.user")?;
             }
 

@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.11.0"))?;
 
-            if event.has("azure") {
+            if event.has_value("azure") {
                 event.rename("azure", "azure-eventhub")?;
             }
 
@@ -48,7 +48,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("azure.signinlogs.time") };
             if _cond {
-                if event.has("azure.signinlogs.created_date_time") {
+                if event.has_value("azure.signinlogs.created_date_time") {
                     event.rename(
                         "azure.signinlogs.created_date_time",
                         "azure.signinlogs.time",
@@ -87,7 +87,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -97,7 +97,7 @@ impl Transform for Default {
                 event.remove("message");
             }
 
-            if event.has("azure.signinlogs.resource_id") {
+            if event.has_value("azure.signinlogs.resource_id") {
                 event.rename("azure.signinlogs.resource_id", "azure.resource_id")?;
             }
 
@@ -226,7 +226,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_string()))
             };
             if _cond {
-                if event.has("azure.signinlogs.duration_ms") {
+                if event.has_value("azure.signinlogs.duration_ms") {
                     event.rename("azure.signinlogs.duration_ms", "event.duration")?;
                 }
             }
@@ -244,7 +244,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.signinlogs.location") {
+            if event.has_value("azure.signinlogs.location") {
                 event.rename("azure.signinlogs.location", "geo.country_iso_code")?;
             }
 
@@ -260,29 +260,29 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("azure.signinlogs.tenant_id") {
+            if event.has_value("azure.signinlogs.tenant_id") {
                 event.rename("azure.signinlogs.tenant_id", "azure.tenant_id")?;
             }
 
-            if event.has("azure.signinlogs.correlation_id") {
+            if event.has_value("azure.signinlogs.correlation_id") {
                 event.rename("azure.signinlogs.correlation_id", "azure.correlation_id")?;
             }
 
-            if event.has("azure.signinlogs.properties.created_date_time") {
+            if event.has_value("azure.signinlogs.properties.created_date_time") {
                 event.rename(
                     "azure.signinlogs.properties.created_date_time",
                     "azure.signinlogs.properties.created_at",
                 )?;
             }
 
-            if event.has("azure.signinlogs.properties.processing_time_in_milliseconds") {
+            if event.has_value("azure.signinlogs.properties.processing_time_in_milliseconds") {
                 event.rename(
                     "azure.signinlogs.properties.processing_time_in_milliseconds",
                     "azure.signinlogs.properties.processing_time_ms",
                 )?;
             }
 
-            if event.has("azure.signinlogs.properties.risk_level_during_sign_in") {
+            if event.has_value("azure.signinlogs.properties.risk_level_during_sign_in") {
                 event.rename(
                     "azure.signinlogs.properties.risk_level_during_sign_in",
                     "azure.signinlogs.properties.risk_level_during_signin",
@@ -303,25 +303,25 @@ impl Transform for Default {
 
             event.remove("azure.signinlogs.properties.status.additional_details");
 
-            if event.has("azure.signinlogs.properties.location.city") {
+            if event.has_value("azure.signinlogs.properties.location.city") {
                 event.rename("azure.signinlogs.properties.location.city", "geo.city_name")?;
             }
 
-            if event.has("azure.signinlogs.properties.location.state") {
+            if event.has_value("azure.signinlogs.properties.location.state") {
                 event.rename(
                     "azure.signinlogs.properties.location.state",
                     "geo.region_name",
                 )?;
             }
 
-            if event.has("azure.signinlogs.properties.location.geo_coordinates.latitude") {
+            if event.has_value("azure.signinlogs.properties.location.geo_coordinates.latitude") {
                 event.rename(
                     "azure.signinlogs.properties.location.geo_coordinates.latitude",
                     "geo.location.lat",
                 )?;
             }
 
-            if event.has("azure.signinlogs.properties.location.geo_coordinates.longitude") {
+            if event.has_value("azure.signinlogs.properties.location.geo_coordinates.longitude") {
                 event.rename(
                     "azure.signinlogs.properties.location.geo_coordinates.longitude",
                     "geo.location.lon",
@@ -531,17 +531,17 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
             let _cond = { !event.has_value("user_agent.original") };
             if _cond {
-                if event.has("azure.signinlogs.properties.user_agent") {
+                if event.has_value("azure.signinlogs.properties.user_agent") {
                     event.rename(
                         "azure.signinlogs.properties.user_agent",
                         "user_agent.original",
@@ -908,7 +908,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            if event.has("azure.resource_id") {
+            if event.has_value("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
             if event.has_value("event.outcome") {

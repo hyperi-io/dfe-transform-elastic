@@ -415,11 +415,11 @@ impl Transform for AutomatedLeadSummary {
                 })?;
             }
 
-            if event.has("crowdstrike.event.CompositeId") {
+            if event.has_value("crowdstrike.event.CompositeId") {
                 event.rename("crowdstrike.event.CompositeId", "event.id")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 

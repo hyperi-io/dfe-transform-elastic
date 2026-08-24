@@ -170,11 +170,11 @@ impl Transform for AuthActivityAudit {
                 event.set("event.outcome", json!("unknown"))?;
             }
 
-            if event.has("crowdstrike.event.ServiceName") {
+            if event.has_value("crowdstrike.event.ServiceName") {
                 event.rename("crowdstrike.event.ServiceName", "message")?;
             }
 
-            if event.has("crowdstrike.event.UserIp") {
+            if event.has_value("crowdstrike.event.UserIp") {
                 event.rename("crowdstrike.event.UserIp", "source.ip")?;
             }
 

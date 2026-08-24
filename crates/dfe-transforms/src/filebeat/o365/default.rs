@@ -29,7 +29,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -88,7 +88,7 @@ impl Transform for Default {
 
             let _cond = { event.get("o365audit.Sender").is_some_and(|v| v.is_object()) };
             if _cond {
-                if event.has("o365audit.Sender") {
+                if event.has_value("o365audit.Sender") {
                     event.rename("o365audit.Sender", "o365audit.SenderEntity")?;
                 }
             }
@@ -99,7 +99,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                if event.has("o365audit.Message") {
+                if event.has_value("o365audit.Message") {
                     event.rename("o365audit.Message", "o365audit.MessageObject")?;
                 }
             }
@@ -270,24 +270,24 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("o365audit.Id") {
+            if event.has_value("o365audit.Id") {
                 event.rename("o365audit.Id", "event.id")?;
             }
 
-            if event.has("o365audit.ClientIPAddress") {
+            if event.has_value("o365audit.ClientIPAddress") {
                 event.rename("o365audit.ClientIPAddress", "client._temp")?;
             }
 
             let _cond = { !event.has_value("client._temp") };
             if _cond {
-                if event.has("o365audit.ClientIP") {
+                if event.has_value("o365audit.ClientIP") {
                     event.rename("o365audit.ClientIP", "client._temp")?;
                 }
             }
 
             let _cond = { !event.has_value("client._temp") };
             if _cond {
-                if event.has("o365audit.ActorIpAddress") {
+                if event.has_value("o365audit.ActorIpAddress") {
                     event.rename("o365audit.ActorIpAddress", "client._temp")?;
                 }
             }
@@ -300,17 +300,17 @@ impl Transform for Default {
                 event.set("user.id", v)?;
             }
 
-            if event.has("o365audit.Workload") {
+            if event.has_value("o365audit.Workload") {
                 event.rename("o365audit.Workload", "event.provider")?;
             }
 
-            if event.has("o365audit.Operation") {
+            if event.has_value("o365audit.Operation") {
                 event.rename("o365audit.Operation", "event.action")?;
             }
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                if event.has("o365audit.OrganizationId") {
+                if event.has_value("o365audit.OrganizationId") {
                     event.rename("o365audit.OrganizationId", "organization.id")?;
                 }
                 Ok(())
@@ -450,7 +450,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("o365audit.UserAgent") {
+            if event.has_value("o365audit.UserAgent") {
                 event.rename("o365audit.UserAgent", "user_agent.original")?;
             }
 
@@ -707,7 +707,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("o365audit.OrganizationName") {
+                    if event.has_value("o365audit.OrganizationName") {
                         event.rename("o365audit.OrganizationName", "organization.name")?;
                     }
                     Ok(())
@@ -747,7 +747,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("ExchangeAdmin") };
             if _cond {
-                if event.has("o365audit.OriginatingServer") {
+                if event.has_value("o365audit.OriginatingServer") {
                     event.rename("o365audit.OriginatingServer", "server._temp")?;
                 }
             }
@@ -759,7 +759,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
             if _cond {
-                if event.has("o365audit.MailboxOwnerUPN") {
+                if event.has_value("o365audit.MailboxOwnerUPN") {
                     event.rename("o365audit.MailboxOwnerUPN", "user.email")?;
                 }
             }
@@ -781,7 +781,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
             if _cond {
-                if event.has("o365audit.LogonUserDisplayName") {
+                if event.has_value("o365audit.LogonUserDisplayName") {
                     event.rename("o365audit.LogonUserDisplayName", "user.full_name")?;
                 }
             }
@@ -790,7 +790,7 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    if event.has("o365audit.OrganizationName") {
+                    if event.has_value("o365audit.OrganizationName") {
                         event.rename("o365audit.OrganizationName", "organization.name")?;
                     }
                     Ok(())
@@ -830,21 +830,21 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
             if _cond {
-                if event.has("o365audit.OriginatingServer") {
+                if event.has_value("o365audit.OriginatingServer") {
                     event.rename("o365audit.OriginatingServer", "server._temp")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
             if _cond {
-                if event.has("o365audit.ClientIPAddress") {
+                if event.has_value("o365audit.ClientIPAddress") {
                     event.rename("o365audit.ClientIPAddress", "client._temp")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("ExchangeItem") };
             if _cond {
-                if event.has("o365audit.ClientProcessName") {
+                if event.has_value("o365audit.ClientProcessName") {
                     event.rename("o365audit.ClientProcessName", "process.name")?;
                 }
             }
@@ -973,7 +973,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.ObjectId") {
+                if event.has_value("o365audit.ObjectId") {
                     event.rename("o365audit.ObjectId", "url.original")?;
                 }
             }
@@ -984,7 +984,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SourceRelativeUrl") {
+                if event.has_value("o365audit.SourceRelativeUrl") {
                     event.rename("o365audit.SourceRelativeUrl", "file.directory")?;
                 }
             }
@@ -995,7 +995,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SourceFileName") {
+                if event.has_value("o365audit.SourceFileName") {
                     event.rename("o365audit.SourceFileName", "file.name")?;
                 }
             }
@@ -1006,7 +1006,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SourceFileExtension") {
+                if event.has_value("o365audit.SourceFileExtension") {
                     event.rename("o365audit.SourceFileExtension", "file.extension")?;
                 }
             }
@@ -1096,42 +1096,42 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.Name") {
+                if event.has_value("o365audit.Name") {
                     event.rename("o365audit.Name", "rule.name")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.PolicyId") {
+                if event.has_value("o365audit.PolicyId") {
                     event.rename("o365audit.PolicyId", "rule.id")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.Category") {
+                if event.has_value("o365audit.Category") {
                     event.rename("o365audit.Category", "rule.category")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.EntityType") {
+                if event.has_value("o365audit.EntityType") {
                     event.rename("o365audit.EntityType", "rule.ruleset")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.AlertEntityId") {
+                if event.has_value("o365audit.AlertEntityId") {
                     event.rename("o365audit.AlertEntityId", "rule.description")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("SecurityComplianceAlerts") };
             if _cond {
-                if event.has("o365audit.AlertLinks") {
+                if event.has_value("o365audit.AlertLinks") {
                     event.rename("o365audit.AlertLinks", "rule.reference")?;
                 }
             }
@@ -1214,7 +1214,7 @@ impl Transform for Default {
                         .contains(&event.get_str("rule.ruleset").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.AlertEntityId") {
+                if event.has_value("o365audit.AlertEntityId") {
                     event.rename("o365audit.AlertEntityId", "user.email")?;
                 }
             }
@@ -1224,7 +1224,7 @@ impl Transform for Default {
                     && event.get_str("rule.ruleset") == Some("MalwareFamily")
             };
             if _cond {
-                if event.has("o365audit.AlertEntityId") {
+                if event.has_value("o365audit.AlertEntityId") {
                     event.rename("o365audit.AlertEntityId", "threat.technique.id")?;
                 }
             }
@@ -1276,7 +1276,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SharePointMetaData.From") {
+                if event.has_value("o365audit.SharePointMetaData.From") {
                     event.rename("o365audit.SharePointMetaData.From", "user.id")?;
                 }
             }
@@ -1287,7 +1287,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SharePointMetaData.FileName") {
+                if event.has_value("o365audit.SharePointMetaData.FileName") {
                     event.rename("o365audit.SharePointMetaData.FileName", "file.name")?;
                 }
             }
@@ -1298,7 +1298,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SharePointMetaData.FilePathUrl") {
+                if event.has_value("o365audit.SharePointMetaData.FilePathUrl") {
                     event.rename("o365audit.SharePointMetaData.FilePathUrl", "url.original")?;
                 }
             }
@@ -1309,7 +1309,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SharePointMetaData.UniqueId") {
+                if event.has_value("o365audit.SharePointMetaData.UniqueId") {
                     event.rename("o365audit.SharePointMetaData.UniqueId", "file.inode")?;
                 }
             }
@@ -1320,7 +1320,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SharePointMetaData.UniqueID") {
+                if event.has_value("o365audit.SharePointMetaData.UniqueID") {
                     event.rename("o365audit.SharePointMetaData.UniqueID", "file.inode")?;
                 }
             }
@@ -1331,7 +1331,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.SharePointMetaData.FileOwner") {
+                if event.has_value("o365audit.SharePointMetaData.FileOwner") {
                     event.rename("o365audit.SharePointMetaData.FileOwner", "file.owner")?;
                 }
             }
@@ -1342,7 +1342,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.ExchangeMetaData.From") {
+                if event.has_value("o365audit.ExchangeMetaData.From") {
                     event.rename("o365audit.ExchangeMetaData.From", "source.user.email")?;
                 }
             }
@@ -1353,7 +1353,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.PolicyId") {
+                if event.has_value("o365audit.PolicyId") {
                     event.rename("o365audit.PolicyId", "rule.id")?;
                 }
             }
@@ -1364,7 +1364,7 @@ impl Transform for Default {
                         .contains(&event.get_str("event.code").unwrap_or(""))
             };
             if _cond {
-                if event.has("o365audit.PolicyName") {
+                if event.has_value("o365audit.PolicyName") {
                     event.rename("o365audit.PolicyName", "rule.name")?;
                 }
             }
@@ -1419,7 +1419,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_string())
             };
             if _cond {
-                if event.has("o365audit.ExceptionInfo") {
+                if event.has_value("o365audit.ExceptionInfo") {
                     event.rename("o365audit.ExceptionInfo", "o365audit.ExceptionInfo.Reason")?;
                 }
             }
@@ -1444,7 +1444,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.ActorUserId") {
+                if event.has_value("o365audit.ActorUserId") {
                     event.rename("o365audit.ActorUserId", "user.email")?;
                 }
             }
@@ -1463,35 +1463,35 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.FileId") {
+                if event.has_value("o365audit.FileId") {
                     event.rename("o365audit.FileId", "file.inode")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.FileName") {
+                if event.has_value("o365audit.FileName") {
                     event.rename("o365audit.FileName", "file.name")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.GroupName") {
+                if event.has_value("o365audit.GroupName") {
                     event.rename("o365audit.GroupName", "group.name")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.TargetUserId") {
+                if event.has_value("o365audit.TargetUserId") {
                     event.rename("o365audit.TargetUserId", "destination.user.email")?;
                 }
             }
 
             let _cond = { event.get_str("event.code") == Some("Yammer") };
             if _cond {
-                if event.has("o365audit.TargetYammerUserId") {
+                if event.has_value("o365audit.TargetYammerUserId") {
                     event.rename("o365audit.TargetYammerUserId", "destination.user.id")?;
                 }
             }
@@ -1646,7 +1646,7 @@ impl Transform for Default {
 
             let _cond = { event.get_str("event.code") == Some("MicrosoftTeams") };
             if _cond {
-                if event.has("o365audit.TeamName") {
+                if event.has_value("o365audit.TeamName") {
                     event.rename("o365audit.TeamName", "group.name")?;
                 }
             }
@@ -1720,7 +1720,7 @@ impl Transform for Default {
                     && event.get_str("event.action") == Some("deleted-user-account")
             };
             if _cond {
-                if event.has("o365audit.ObjectId") {
+                if event.has_value("o365audit.ObjectId") {
                     event.rename("o365audit.ObjectId", "user.target.id")?;
                 }
             }
@@ -2086,7 +2086,7 @@ impl Transform for Default {
 
             let _cond = { event.has_value("o365audit.ExtendedProperties.UserAgent") };
             if _cond {
-                if event.has("o365audit.ExtendedProperties.UserAgent") {
+                if event.has_value("o365audit.ExtendedProperties.UserAgent") {
                     event.rename(
                         "o365audit.ExtendedProperties.UserAgent",
                         "user_agent.original",
@@ -2526,7 +2526,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("o365audit.Data") {
+            if event.has_value("o365audit.Data") {
                 event.rename("o365audit.Data", "o365audit.Data.flattened")?;
             }
 
@@ -3005,14 +3005,14 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("_tmp.entities.OriginalDeliveryLocation") {
+            if event.has_value("_tmp.entities.OriginalDeliveryLocation") {
                 event.rename(
                     "_tmp.entities.OriginalDeliveryLocation",
                     "o365audit.OriginalDeliveryLocation",
                 )?;
             }
 
-            if event.has("_tmp.entities.PhishConfidenceLevel") {
+            if event.has_value("_tmp.entities.PhishConfidenceLevel") {
                 event.rename(
                     "_tmp.entities.PhishConfidenceLevel",
                     "o365audit.PhishConfidenceLevel",
@@ -3187,7 +3187,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("o365audit") {
+            if event.has_value("o365audit") {
                 event.rename("o365audit", "o365.audit")?;
             }
 
@@ -3268,11 +3268,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 

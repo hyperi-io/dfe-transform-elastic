@@ -40,7 +40,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -140,14 +140,14 @@ impl Transform for Default {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            if event.has("json.Classification.Category") {
+            if event.has_value("json.Classification.Category") {
                 event.rename(
                     "json.Classification.Category",
                     "zscaler_zia.sandbox_report.classification.category",
                 )?;
             }
 
-            if event.has("json.Classification.DetectedMalware") {
+            if event.has_value("json.Classification.DetectedMalware") {
                 event.rename(
                     "json.Classification.DetectedMalware",
                     "zscaler_zia.sandbox_report.classification.detected_malware",
@@ -267,21 +267,21 @@ impl Transform for Default {
 
             event.set("threat.indicator.type", json!("file"))?;
 
-            if event.has("json.Classification.Type") {
+            if event.has_value("json.Classification.Type") {
                 event.rename(
                     "json.Classification.Type",
                     "zscaler_zia.sandbox_report.classification.type",
                 )?;
             }
 
-            if event.has("json.FileProperties.RootCA") {
+            if event.has_value("json.FileProperties.RootCA") {
                 event.rename(
                     "json.FileProperties.RootCA",
                     "zscaler_zia.sandbox_report.file_properties.root_ca",
                 )?;
             }
 
-            if event.has("json.FileProperties.DigitalCerificate") {
+            if event.has_value("json.FileProperties.DigitalCerificate") {
                 event.rename(
                     "json.FileProperties.DigitalCerificate",
                     "zscaler_zia.sandbox_report.file_properties.digital_cerificate",
@@ -346,14 +346,14 @@ impl Transform for Default {
                 event.set("file.size", v)?;
             }
 
-            if event.has("json.FileProperties.FileType") {
+            if event.has_value("json.FileProperties.FileType") {
                 event.rename(
                     "json.FileProperties.FileType",
                     "zscaler_zia.sandbox_report.file_properties.file_type",
                 )?;
             }
 
-            if event.has("json.FileProperties.Issuer") {
+            if event.has_value("json.FileProperties.Issuer") {
                 event.rename(
                     "json.FileProperties.Issuer",
                     "zscaler_zia.sandbox_report.file_properties.issuer",
@@ -372,7 +372,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.FileProperties.MD5") {
+            if event.has_value("json.FileProperties.MD5") {
                 event.rename(
                     "json.FileProperties.MD5",
                     "zscaler_zia.sandbox_report.file_properties.md5",
@@ -399,7 +399,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.FileProperties.SHA1") {
+            if event.has_value("json.FileProperties.SHA1") {
                 event.rename(
                     "json.FileProperties.SHA1",
                     "zscaler_zia.sandbox_report.file_properties.sha1",
@@ -426,7 +426,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.FileProperties.Sha256") {
+            if event.has_value("json.FileProperties.Sha256") {
                 event.rename(
                     "json.FileProperties.Sha256",
                     "zscaler_zia.sandbox_report.file_properties.sha256",
@@ -453,7 +453,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.FileProperties.SSDeep") {
+            if event.has_value("json.FileProperties.SSDeep") {
                 event.rename(
                     "json.FileProperties.SSDeep",
                     "zscaler_zia.sandbox_report.file_properties.ssdeep",
@@ -480,123 +480,123 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.Networking.Risk") {
+            if event.has_value("json.Networking.Risk") {
                 event.rename(
                     "json.Networking.Risk",
                     "zscaler_zia.sandbox_report.networking.risk",
                 )?;
             }
 
-            if event.has("json.Networking.Signature") {
+            if event.has_value("json.Networking.Signature") {
                 event.rename(
                     "json.Networking.Signature",
                     "zscaler_zia.sandbox_report.networking.signature",
                 )?;
             }
 
-            if event.has("json.Networking.SignatureSources") {
+            if event.has_value("json.Networking.SignatureSources") {
                 event.rename(
                     "json.Networking.SignatureSources",
                     "zscaler_zia.sandbox_report.networking.signature_sources",
                 )?;
             }
 
-            if event.has("json.Persistence.Risk") {
+            if event.has_value("json.Persistence.Risk") {
                 event.rename(
                     "json.Persistence.Risk",
                     "zscaler_zia.sandbox_report.persistence.risk",
                 )?;
             }
 
-            if event.has("json.Persistence.Signature") {
+            if event.has_value("json.Persistence.Signature") {
                 event.rename(
                     "json.Persistence.Signature",
                     "zscaler_zia.sandbox_report.persistence.signature",
                 )?;
             }
 
-            if event.has("json.Persistence.SignatureSources") {
+            if event.has_value("json.Persistence.SignatureSources") {
                 event.rename(
                     "json.Persistence.SignatureSources",
                     "zscaler_zia.sandbox_report.persistence.signature_sources",
                 )?;
             }
 
-            if event.has("json.SecurityBypass.Risk") {
+            if event.has_value("json.SecurityBypass.Risk") {
                 event.rename(
                     "json.SecurityBypass.Risk",
                     "zscaler_zia.sandbox_report.security_bypass.risk",
                 )?;
             }
 
-            if event.has("json.SecurityBypass.Signature") {
+            if event.has_value("json.SecurityBypass.Signature") {
                 event.rename(
                     "json.SecurityBypass.Signature",
                     "zscaler_zia.sandbox_report.security_bypass.signature",
                 )?;
             }
 
-            if event.has("json.SecurityBypass.SignatureSources") {
+            if event.has_value("json.SecurityBypass.SignatureSources") {
                 event.rename(
                     "json.SecurityBypass.SignatureSources",
                     "zscaler_zia.sandbox_report.security_bypass.signature_sources",
                 )?;
             }
 
-            if event.has("json.Stealth.Risk") {
+            if event.has_value("json.Stealth.Risk") {
                 event.rename(
                     "json.Stealth.Risk",
                     "zscaler_zia.sandbox_report.stealth.risk",
                 )?;
             }
 
-            if event.has("json.Stealth.Signature") {
+            if event.has_value("json.Stealth.Signature") {
                 event.rename(
                     "json.Stealth.Signature",
                     "zscaler_zia.sandbox_report.stealth.signature",
                 )?;
             }
 
-            if event.has("json.Stealth.SignatureSources") {
+            if event.has_value("json.Stealth.SignatureSources") {
                 event.rename(
                     "json.Stealth.SignatureSources",
                     "zscaler_zia.sandbox_report.stealth.signature_sources",
                 )?;
             }
 
-            if event.has("json.Origin.Risk") {
+            if event.has_value("json.Origin.Risk") {
                 event.rename("json.Origin.Risk", "zscaler_zia.sandbox_report.origin.risk")?;
             }
 
-            if event.has("json.Origin.Language") {
+            if event.has_value("json.Origin.Language") {
                 event.rename(
                     "json.Origin.Language",
                     "zscaler_zia.sandbox_report.origin.language",
                 )?;
             }
 
-            if event.has("json.Origin.Country") {
+            if event.has_value("json.Origin.Country") {
                 event.rename(
                     "json.Origin.Country",
                     "zscaler_zia.sandbox_report.origin.country",
                 )?;
             }
 
-            if event.has("json.Exploit.Risk") {
+            if event.has_value("json.Exploit.Risk") {
                 event.rename(
                     "json.Exploit.Risk",
                     "zscaler_zia.sandbox_report.exploit.risk",
                 )?;
             }
 
-            if event.has("json.Exploit.Signature") {
+            if event.has_value("json.Exploit.Signature") {
                 event.rename(
                     "json.Exploit.Signature",
                     "zscaler_zia.sandbox_report.exploit.signature",
                 )?;
             }
 
-            if event.has("json.Exploit.SignatureSources") {
+            if event.has_value("json.Exploit.SignatureSources") {
                 event.rename(
                     "json.Exploit.SignatureSources",
                     "zscaler_zia.sandbox_report.exploit.signature_sources",
@@ -615,7 +615,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Summary.Category") {
+            if event.has_value("json.Summary.Category") {
                 event.rename(
                     "json.Summary.Category",
                     "zscaler_zia.sandbox_report.summary.category",
@@ -717,7 +717,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Summary.FileType") {
+            if event.has_value("json.Summary.FileType") {
                 event.rename(
                     "json.Summary.FileType",
                     "zscaler_zia.sandbox_report.summary.file.type",
@@ -788,7 +788,7 @@ impl Transform for Default {
                 event.set("event.start", v)?;
             }
 
-            if event.has("json.Summary.Status") {
+            if event.has_value("json.Summary.Status") {
                 event.rename(
                     "json.Summary.Status",
                     "zscaler_zia.sandbox_report.summary.status",
@@ -852,14 +852,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Summary.TimeUnit") {
+            if event.has_value("json.Summary.TimeUnit") {
                 event.rename(
                     "json.Summary.TimeUnit",
                     "zscaler_zia.sandbox_report.summary.time_unit",
                 )?;
             }
 
-            if event.has("json.Summary.Url") {
+            if event.has_value("json.Summary.Url") {
                 event.rename("json.Summary.Url", "zscaler_zia.sandbox_report.summary.url")?;
             }
 
@@ -875,21 +875,21 @@ impl Transform for Default {
                 uri_parts(event, "url.original", "url", true, false)?;
             }
 
-            if event.has("json.SystemSummary.Risk") {
+            if event.has_value("json.SystemSummary.Risk") {
                 event.rename(
                     "json.SystemSummary.Risk",
                     "zscaler_zia.sandbox_report.system_summary.risk",
                 )?;
             }
 
-            if event.has("json.SystemSummary.Signature") {
+            if event.has_value("json.SystemSummary.Signature") {
                 event.rename(
                     "json.SystemSummary.Signature",
                     "zscaler_zia.sandbox_report.system_summary.signature",
                 )?;
             }
 
-            if event.has("json.SystemSummary.SignatureSources") {
+            if event.has_value("json.SystemSummary.SignatureSources") {
                 event.rename(
                     "json.SystemSummary.SignatureSources",
                     "zscaler_zia.sandbox_report.system_summary.signature_sources",

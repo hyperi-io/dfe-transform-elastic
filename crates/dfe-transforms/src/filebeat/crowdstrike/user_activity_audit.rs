@@ -56,7 +56,7 @@ impl Transform for UserActivityAudit {
                 }
             }
 
-            if event.has("crowdstrike.event.OperationName") {
+            if event.has_value("crowdstrike.event.OperationName") {
                 event.rename("crowdstrike.event.OperationName", "message")?;
             }
 
@@ -65,7 +65,7 @@ impl Transform for UserActivityAudit {
                     && event.get_str("crowdstrike.event.UserIp") != Some("")
             };
             if _cond {
-                if event.has("crowdstrike.event.UserIp") {
+                if event.has_value("crowdstrike.event.UserIp") {
                     event.rename("crowdstrike.event.UserIp", "source.ip")?;
                 }
             }

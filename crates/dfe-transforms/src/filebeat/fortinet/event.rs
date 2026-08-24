@@ -87,13 +87,13 @@ impl Transform for Event {
                 event.append("event.category", json!("authentication"))?;
             }
 
-            if event.has("fortinet.firewall.dstip") {
+            if event.has_value("fortinet.firewall.dstip") {
                 event.rename("fortinet.firewall.dstip", "destination.ip")?;
             }
 
             let _cond = { !event.has_value("destination.ip") };
             if _cond {
-                if event.has("fortinet.firewall.remip") {
+                if event.has_value("fortinet.firewall.remip") {
                     event.rename("fortinet.firewall.remip", "destination.ip")?;
                 }
             }
@@ -149,25 +149,25 @@ impl Transform for Event {
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.daddr") {
+            if event.has_value("fortinet.firewall.daddr") {
                 event.rename("fortinet.firewall.daddr", "destination.address")?;
             }
 
             let _cond = { !event.has_value("destination.address") };
             if _cond {
-                if event.has("fortinet.firewall.dst_host") {
+                if event.has_value("fortinet.firewall.dst_host") {
                     event.rename("fortinet.firewall.dst_host", "destination.address")?;
                 }
             }
 
             let _cond = { !event.has_value("destination.address") };
             if _cond {
-                if event.has("fortinet.firewall.dst_host") {
+                if event.has_value("fortinet.firewall.dst_host") {
                     event.rename("fortinet.firewall.dst_host", "destination.domain")?;
                 }
             }
 
-            if event.has("fortinet.firewall.group") {
+            if event.has_value("fortinet.firewall.group") {
                 event.rename("fortinet.firewall.group", "source.user.group.name")?;
             }
 
@@ -187,24 +187,24 @@ impl Transform for Event {
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.srcip") {
+            if event.has_value("fortinet.firewall.srcip") {
                 event.rename("fortinet.firewall.srcip", "source.ip")?;
             }
 
             let _cond = { !event.has_value("source.ip") };
             if _cond {
-                if event.has("fortinet.firewall.locip") {
+                if event.has_value("fortinet.firewall.locip") {
                     event.rename("fortinet.firewall.locip", "source.ip")?;
                 }
             }
 
-            if event.has("fortinet.firewall.srcmac") {
+            if event.has_value("fortinet.firewall.srcmac") {
                 event.rename("fortinet.firewall.srcmac", "source.mac")?;
             }
 
             let _cond = { !event.has_value("source.mac") };
             if _cond {
-                if event.has("fortinet.firewall.source_mac") {
+                if event.has_value("fortinet.firewall.source_mac") {
                     event.rename("fortinet.firewall.source_mac", "source.mac")?;
                 }
             }
@@ -244,19 +244,19 @@ impl Transform for Event {
                 })();
             }
 
-            if event.has("fortinet.firewall.user") {
+            if event.has_value("fortinet.firewall.user") {
                 event.rename("fortinet.firewall.user", "source.user.name")?;
             }
 
-            if event.has("fortinet.firewall.saddr") {
+            if event.has_value("fortinet.firewall.saddr") {
                 event.rename("fortinet.firewall.saddr", "source.address")?;
             }
 
-            if event.has("fortinet.firewall.agent") {
+            if event.has_value("fortinet.firewall.agent") {
                 event.rename("fortinet.firewall.agent", "user_agent.original")?;
             }
 
-            if event.has("fortinet.firewall.file") {
+            if event.has_value("fortinet.firewall.file") {
                 event.rename("fortinet.firewall.file", "file.name")?;
             }
 
@@ -276,30 +276,30 @@ impl Transform for Event {
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.level") {
+            if event.has_value("fortinet.firewall.level") {
                 event.rename("fortinet.firewall.level", "log.level")?;
             }
 
             let _cond = { !event.has_value("event.code") };
             if _cond {
-                if event.has("fortinet.firewall.logid") {
+                if event.has_value("fortinet.firewall.logid") {
                     event.rename("fortinet.firewall.logid", "event.code")?;
                 }
             }
 
-            if event.has("fortinet.firewall.msg") {
+            if event.has_value("fortinet.firewall.msg") {
                 event.rename("fortinet.firewall.msg", "message")?;
             }
 
-            if event.has("fortinet.firewall.policyid") {
+            if event.has_value("fortinet.firewall.policyid") {
                 event.rename("fortinet.firewall.policyid", "rule.id")?;
             }
 
-            if event.has("fortinet.firewall.proto") {
+            if event.has_value("fortinet.firewall.proto") {
                 event.rename("fortinet.firewall.proto", "network.iana_number")?;
             }
 
-            if event.has("fortinet.firewall.service") {
+            if event.has_value("fortinet.firewall.service") {
                 event.rename("fortinet.firewall.service", "network.protocol")?;
             }
 
@@ -312,11 +312,11 @@ impl Transform for Event {
                 )?;
             }
 
-            if event.has("fortinet.firewall.error_num") {
+            if event.has_value("fortinet.firewall.error_num") {
                 event.rename("fortinet.firewall.error_num", "error.code")?;
             }
 
-            if event.has("fortinet.firewall.logdesc") {
+            if event.has_value("fortinet.firewall.logdesc") {
                 event.rename("fortinet.firewall.logdesc", "rule.description")?;
             }
 

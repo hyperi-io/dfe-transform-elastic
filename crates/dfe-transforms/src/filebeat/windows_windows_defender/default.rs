@@ -452,14 +452,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("winlog.event_data.Target_Commandline") {
+            if event.has_value("winlog.event_data.Target_Commandline") {
                 event.rename(
                     "winlog.event_data.Target_Commandline",
                     "process.command_line",
                 )?;
             }
 
-            if event.has("winlog.event_data.Parent_Commandline") {
+            if event.has_value("winlog.event_data.Parent_Commandline") {
                 event.rename(
                     "winlog.event_data.Parent_Commandline",
                     "process.parent.command_line",
@@ -471,7 +471,7 @@ impl Transform for Default {
                     && event.get_str("event.code") != Some("1126")
             };
             if _cond {
-                if event.has("winlog.event_data.Process_Name") {
+                if event.has_value("winlog.event_data.Process_Name") {
                     event.rename("winlog.event_data.Process_Name", "process.executable")?;
                 }
             }
@@ -479,7 +479,7 @@ impl Transform for Default {
             let _cond =
                 { !event.has_value("process.name") && event.get_str("event.code") == Some("1126") };
             if _cond {
-                if event.has("winlog.event_data.Process_Name") {
+                if event.has_value("winlog.event_data.Process_Name") {
                     event.rename("winlog.event_data.Process_Name", "process.name")?;
                 }
             }

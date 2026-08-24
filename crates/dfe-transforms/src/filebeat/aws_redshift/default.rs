@@ -32,7 +32,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("aws.dimensions.service class") {
+            if event.has_value("aws.dimensions.service class") {
                 event.rename(
                     "aws.dimensions.service class",
                     "aws.dimensions.service_class",

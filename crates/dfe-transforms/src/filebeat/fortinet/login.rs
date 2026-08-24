@@ -457,15 +457,15 @@ impl Transform for Login {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            if event.has("fortinet.firewall.log_id") {
+            if event.has_value("fortinet.firewall.log_id") {
                 event.rename("fortinet.firewall.log_id", "event.id")?;
             }
 
-            if event.has("fortinet.firewall.pri") {
+            if event.has_value("fortinet.firewall.pri") {
                 event.rename("fortinet.firewall.pri", "log.level")?;
             }
 
-            if event.has("fortinet.firewall.device_id") {
+            if event.has_value("fortinet.firewall.device_id") {
                 event.rename("fortinet.firewall.device_id", "observer.serial_number")?;
             }
 

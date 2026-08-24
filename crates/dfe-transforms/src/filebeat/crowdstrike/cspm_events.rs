@@ -33,11 +33,11 @@ impl Transform for CspmEvents {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            if event.has("crowdstrike.event.EventAction") {
+            if event.has_value("crowdstrike.event.EventAction") {
                 event.rename("crowdstrike.event.EventAction", "event.action")?;
             }
 
-            if event.has("crowdstrike.event.ReportUrl") {
+            if event.has_value("crowdstrike.event.ReportUrl") {
                 event.rename("crowdstrike.event.ReportUrl", "event.reference")?;
             }
 
@@ -50,58 +50,58 @@ impl Transform for CspmEvents {
                 )?;
             }
 
-            if event.has("crowdstrike.event.EventSource") {
+            if event.has_value("crowdstrike.event.EventSource") {
                 event.rename("crowdstrike.event.EventSource", "event.provider")?;
             }
 
             let _cond = { !event.has_value("cloud.account.id") };
             if _cond {
-                if event.has("crowdstrike.event.AccountId") {
+                if event.has_value("crowdstrike.event.AccountId") {
                     event.rename("crowdstrike.event.AccountId", "cloud.account.id")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.region") };
             if _cond {
-                if event.has("crowdstrike.event.Region") {
+                if event.has_value("crowdstrike.event.Region") {
                     event.rename("crowdstrike.event.Region", "cloud.region")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.provider") };
             if _cond {
-                if event.has("crowdstrike.event.CloudProvider") {
+                if event.has_value("crowdstrike.event.CloudProvider") {
                     event.rename("crowdstrike.event.CloudProvider", "cloud.provider")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.provider") };
             if _cond {
-                if event.has("crowdstrike.event.CloudPlatform") {
+                if event.has_value("crowdstrike.event.CloudPlatform") {
                     event.rename("crowdstrike.event.CloudPlatform", "cloud.provider")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.service.name") };
             if _cond {
-                if event.has("crowdstrike.event.CloudService") {
+                if event.has_value("crowdstrike.event.CloudService") {
                     event.rename("crowdstrike.event.CloudService", "cloud.service.name")?;
                 }
             }
 
-            if event.has("crowdstrike.event.PolicyStatement") {
+            if event.has_value("crowdstrike.event.PolicyStatement") {
                 event.rename("crowdstrike.event.PolicyStatement", "message")?;
             }
 
-            if event.has("crowdstrike.event.UserName") {
+            if event.has_value("crowdstrike.event.UserName") {
                 event.rename("crowdstrike.event.UserName", "user.name")?;
             }
 
-            if event.has("crowdstrike.event.UserId") {
+            if event.has_value("crowdstrike.event.UserId") {
                 event.rename("crowdstrike.event.UserId", "user.id")?;
             }
 
-            if event.has("crowdstrike.event.UserSourceIp") {
+            if event.has_value("crowdstrike.event.UserSourceIp") {
                 event.rename("crowdstrike.event.UserSourceIp", "source.ip")?;
             }
 

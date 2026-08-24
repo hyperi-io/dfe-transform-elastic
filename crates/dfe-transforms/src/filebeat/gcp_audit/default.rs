@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -74,11 +74,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.logName") {
+            if event.has_value("json.logName") {
                 event.rename("json.logName", "log.logger")?;
             }
 
-            if event.has("json.severity") {
+            if event.has_value("json.severity") {
                 event.rename("json.severity", "log.level")?;
             }
 
@@ -437,7 +437,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("client.user.email") };
             if _cond {
-                if event.has("gcp.audit.authentication_info.principal_email") {
+                if event.has_value("gcp.audit.authentication_info.principal_email") {
                     event.rename(
                         "gcp.audit.authentication_info.principal_email",
                         "client.user.email",
@@ -447,7 +447,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("client.user.id") };
             if _cond {
-                if event.has("gcp.audit.authentication_info.principal_subject") {
+                if event.has_value("gcp.audit.authentication_info.principal_subject") {
                     event.rename(
                         "gcp.audit.authentication_info.principal_subject",
                         "client.user.id",
@@ -850,7 +850,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("service.name") };
             if _cond {
-                if event.has("gcp.audit.service_name") {
+                if event.has_value("gcp.audit.service_name") {
                     event.rename("gcp.audit.service_name", "service.name")?;
                 }
             }
@@ -888,14 +888,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.jsonPayload.access.callerIpGeo.regionCode") {
+            if event.has_value("json.jsonPayload.access.callerIpGeo.regionCode") {
                 event.rename(
                     "json.jsonPayload.access.callerIpGeo.regionCode",
                     "gcp.audit.access.caller_ip_geo.region_code",
                 )?;
             }
 
-            if event.has("json.jsonPayload.access.methodName") {
+            if event.has_value("json.jsonPayload.access.methodName") {
                 event.rename(
                     "json.jsonPayload.access.methodName",
                     "gcp.audit.access.method_name",
@@ -912,7 +912,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.jsonPayload.access.principalEmail") {
+            if event.has_value("json.jsonPayload.access.principalEmail") {
                 event.rename(
                     "json.jsonPayload.access.principalEmail",
                     "gcp.audit.access.principal_email",
@@ -929,14 +929,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.jsonPayload.access.principalSubject") {
+            if event.has_value("json.jsonPayload.access.principalSubject") {
                 event.rename(
                     "json.jsonPayload.access.principalSubject",
                     "gcp.audit.access.principal_subject",
                 )?;
             }
 
-            if event.has("json.jsonPayload.access.serviceName") {
+            if event.has_value("json.jsonPayload.access.serviceName") {
                 event.rename(
                     "json.jsonPayload.access.serviceName",
                     "gcp.audit.access.service_name",
@@ -953,7 +953,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.jsonPayload.access.userAgent") {
+            if event.has_value("json.jsonPayload.access.userAgent") {
                 event.rename(
                     "json.jsonPayload.access.userAgent",
                     "gcp.audit.access.user_agent",
@@ -1017,22 +1017,22 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.jsonPayload.actionType") {
+            if event.has_value("json.jsonPayload.actionType") {
                 event.rename("json.jsonPayload.actionType", "gcp.audit.action_type")?;
             }
 
-            if event.has("json.jsonPayload.affectedResources") {
+            if event.has_value("json.jsonPayload.affectedResources") {
                 event.rename(
                     "json.jsonPayload.affectedResources",
                     "gcp.audit.affected_resources",
                 )?;
             }
 
-            if event.has("json.jsonPayload.learnMoreUri") {
+            if event.has_value("json.jsonPayload.learnMoreUri") {
                 event.rename("json.jsonPayload.learnMoreUri", "gcp.audit.learn_more_uri")?;
             }
 
-            if event.has("json.jsonPayload.sourceLogIds") {
+            if event.has_value("json.jsonPayload.sourceLogIds") {
                 event.rename("json.jsonPayload.sourceLogIds", "gcp.audit.source_log_ids")?;
             }
 
@@ -1044,7 +1044,7 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
                     foreach_array(event, "gcp.audit.source_log_ids", |event| {
-                        if event.has("_ingest._value.insertId") {
+                        if event.has_value("_ingest._value.insertId") {
                             event.rename("_ingest._value.insertId", "_ingest._value.insert_id")?;
                         }
                         Ok(())
@@ -1060,7 +1060,7 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
                     foreach_array(event, "gcp.audit.source_log_ids", |event| {
-                        if event.has("_ingest._value.queryUri") {
+                        if event.has_value("_ingest._value.queryUri") {
                             event.rename("_ingest._value.queryUri", "_ingest._value.query_uri")?;
                         }
                         Ok(())
@@ -1076,7 +1076,7 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
                     foreach_array(event, "gcp.audit.source_log_ids", |event| {
-                        if event.has("_ingest._value.resourceContainer") {
+                        if event.has_value("_ingest._value.resourceContainer") {
                             event.rename(
                                 "_ingest._value.resourceContainer",
                                 "_ingest._value.resource_container",
@@ -1297,11 +1297,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 

@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -150,7 +150,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.@odata.type") {
+            if event.has_value("json.@odata.type") {
                 event.rename("json.@odata.type", "m365_defender.incident.odata_type")?;
             }
 
@@ -215,7 +215,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.displayName") {
+            if event.has_value("json.displayName") {
                 event.rename("json.displayName", "m365_defender.incident.display_name")?;
             }
 
@@ -227,7 +227,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.tenantId") {
+            if event.has_value("json.tenantId") {
                 event.rename("json.tenantId", "m365_defender.incident.tenant_id")?;
             }
 
@@ -300,7 +300,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "m365_defender.incident.id")?;
             }
 
@@ -312,7 +312,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.alerts.serviceSource") {
+            if event.has_value("json.alerts.serviceSource") {
                 event.rename(
                     "json.alerts.serviceSource",
                     "m365_defender.incident.alert.service_source",
@@ -412,7 +412,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.assignedTo") {
+            if event.has_value("json.assignedTo") {
                 event.rename("json.assignedTo", "m365_defender.incident.assigned_to")?;
             }
 
@@ -482,14 +482,14 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.alerts.threatFamilyName") {
+            if event.has_value("json.alerts.threatFamilyName") {
                 event.rename(
                     "json.alerts.threatFamilyName",
                     "m365_defender.incident.alert.threat_family_name",
                 )?;
             }
 
-            if event.has("json.alerts.category") {
+            if event.has_value("json.alerts.category") {
                 event.rename(
                     "json.alerts.category",
                     "m365_defender.incident.alert.category",
@@ -509,7 +509,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.alerts.mitreTechniques") {
+            if event.has_value("json.alerts.mitreTechniques") {
                 event.rename(
                     "json.alerts.mitreTechniques",
                     "m365_defender.incident.alert.mitre_techniques",
@@ -527,7 +527,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.alerts.actorDisplayName") {
+            if event.has_value("json.alerts.actorDisplayName") {
                 event.rename(
                     "json.alerts.actorDisplayName",
                     "m365_defender.incident.alert.actor_display_name",
@@ -545,14 +545,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.alerts.assignedTo") {
+            if event.has_value("json.alerts.assignedTo") {
                 event.rename(
                     "json.alerts.assignedTo",
                     "m365_defender.incident.alert.assigned_to",
                 )?;
             }
 
-            if event.has("json.alerts.classification") {
+            if event.has_value("json.alerts.classification") {
                 event.rename(
                     "json.alerts.classification",
                     "m365_defender.incident.alert.classification",
@@ -586,7 +586,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.alerts.comments") {
+            if event.has_value("json.alerts.comments") {
                 event.rename(
                     "json.alerts.comments",
                     "m365_defender.incident.alert.comments",
@@ -642,28 +642,28 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alerts.description") {
+            if event.has_value("json.alerts.description") {
                 event.rename(
                     "json.alerts.description",
                     "m365_defender.incident.alert.description",
                 )?;
             }
 
-            if event.has("json.alerts.detectionSource") {
+            if event.has_value("json.alerts.detectionSource") {
                 event.rename(
                     "json.alerts.detectionSource",
                     "m365_defender.incident.alert.detection_source",
                 )?;
             }
 
-            if event.has("json.alerts.detectorId") {
+            if event.has_value("json.alerts.detectorId") {
                 event.rename(
                     "json.alerts.detectorId",
                     "m365_defender.incident.alert.detector_id",
                 )?;
             }
 
-            if event.has("json.alerts.determination") {
+            if event.has_value("json.alerts.determination") {
                 event.rename(
                     "json.alerts.determination",
                     "m365_defender.incident.alert.determination",
@@ -744,7 +744,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.remediationStatus") {
+                        if event.has_value("_ingest._value.remediationStatus") {
                             event.rename(
                                 "_ingest._value.remediationStatus",
                                 "_ingest._value.remediation_status",
@@ -765,7 +765,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.remediationStatusDetails") {
+                        if event.has_value("_ingest._value.remediationStatusDetails") {
                             event.rename(
                                 "_ingest._value.remediationStatusDetails",
                                 "_ingest._value.remediation_status_details",
@@ -829,11 +829,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alerts.id") {
+            if event.has_value("json.alerts.id") {
                 event.rename("json.alerts.id", "m365_defender.incident.alert.id")?;
             }
 
-            if event.has("json.alerts.incidentId") {
+            if event.has_value("json.alerts.incidentId") {
                 event.rename(
                     "json.alerts.incidentId",
                     "m365_defender.incident.alert.incident_id",
@@ -952,14 +952,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alerts.providerAlertId") {
+            if event.has_value("json.alerts.providerAlertId") {
                 event.rename(
                     "json.alerts.providerAlertId",
                     "m365_defender.incident.alert.provider_alert_id",
                 )?;
             }
 
-            if event.has("json.alerts.recommendedActions") {
+            if event.has_value("json.alerts.recommendedActions") {
                 event.rename(
                     "json.alerts.recommendedActions",
                     "m365_defender.incident.alert.recommended_actions",
@@ -1015,36 +1015,36 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.alerts.severity") {
+            if event.has_value("json.alerts.severity") {
                 event.rename(
                     "json.alerts.severity",
                     "m365_defender.incident.alert.severity",
                 )?;
             }
 
-            if event.has("json.alerts.status") {
+            if event.has_value("json.alerts.status") {
                 event.rename("json.alerts.status", "m365_defender.incident.alert.status")?;
             }
 
-            if event.has("json.alerts.tenantId") {
+            if event.has_value("json.alerts.tenantId") {
                 event.rename(
                     "json.alerts.tenantId",
                     "m365_defender.incident.alert.tenant_id",
                 )?;
             }
 
-            if event.has("json.alerts.threatDisplayName") {
+            if event.has_value("json.alerts.threatDisplayName") {
                 event.rename(
                     "json.alerts.threatDisplayName",
                     "m365_defender.incident.alert.threat_display_name",
                 )?;
             }
 
-            if event.has("json.alerts.title") {
+            if event.has_value("json.alerts.title") {
                 event.rename("json.alerts.title", "m365_defender.incident.alert.title")?;
             }
 
-            if event.has("json.classification") {
+            if event.has_value("json.classification") {
                 event.rename(
                     "json.classification",
                     "m365_defender.incident.classification",
@@ -1097,26 +1097,26 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.comments") {
+            if event.has_value("json.comments") {
                 event.rename("json.comments", "m365_defender.incident.comments")?;
             }
 
-            if event.has("json.determination") {
+            if event.has_value("json.determination") {
                 event.rename("json.determination", "m365_defender.incident.determination")?;
             }
 
-            if event.has("json.redirectIncidentId") {
+            if event.has_value("json.redirectIncidentId") {
                 event.rename(
                     "json.redirectIncidentId",
                     "m365_defender.incident.redirect_incident_id",
                 )?;
             }
 
-            if event.has("json.status") {
+            if event.has_value("json.status") {
                 event.rename("json.status", "m365_defender.incident.status")?;
             }
 
-            if event.has("json.tags") {
+            if event.has_value("json.tags") {
                 event.rename("json.tags", "m365_defender.incident.tags")?;
             }
 
@@ -1143,7 +1143,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.@odata.type") {
+                    if event.has_value("_ingest._value.@odata.type") {
                         event.rename("_ingest._value.@odata.type", "_ingest._value.odata_type")?;
                     }
                     Ok(())
@@ -1238,7 +1238,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.antiSpamDirection") {
+                        if event.has_value("_ingest._value.antiSpamDirection") {
                             event.rename(
                                 "_ingest._value.antiSpamDirection",
                                 "_ingest._value.antispam_direction",
@@ -1313,7 +1313,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.recipientEmailAddress") {
+                        if event.has_value("_ingest._value.recipientEmailAddress") {
                             event.rename(
                                 "_ingest._value.recipientEmailAddress",
                                 "_ingest._value.recipient_email_address",
@@ -1451,7 +1451,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.deliveryAction") {
+                        if event.has_value("_ingest._value.deliveryAction") {
                             event.rename(
                                 "_ingest._value.deliveryAction",
                                 "_ingest._value.delivery_action",
@@ -1472,7 +1472,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.deliveryLocation") {
+                        if event.has_value("_ingest._value.deliveryLocation") {
                             event.rename(
                                 "_ingest._value.deliveryLocation",
                                 "_ingest._value.delivery_location",
@@ -1493,7 +1493,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.internetMessageId") {
+                        if event.has_value("_ingest._value.internetMessageId") {
                             event.rename(
                                 "_ingest._value.internetMessageId",
                                 "_ingest._value.internet_message_id",
@@ -1514,7 +1514,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.networkMessageId") {
+                        if event.has_value("_ingest._value.networkMessageId") {
                             event.rename(
                                 "_ingest._value.networkMessageId",
                                 "_ingest._value.network_message_id",
@@ -1549,7 +1549,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.p1Sender.@odata.type") {
+                    if event.has_value("_ingest._value.p1Sender.@odata.type") {
                         event.rename(
                             "_ingest._value.p1Sender.@odata.type",
                             "_ingest._value.p1_sender.odata_type",
@@ -1582,7 +1582,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.p2Sender.@odata.type") {
+                    if event.has_value("_ingest._value.p2Sender.@odata.type") {
                         event.rename(
                             "_ingest._value.p2Sender.@odata.type",
                             "_ingest._value.p2_sender.odata_type",
@@ -1601,7 +1601,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.p1Sender.displayName") {
+                        if event.has_value("_ingest._value.p1Sender.displayName") {
                             event.rename(
                                 "_ingest._value.p1Sender.displayName",
                                 "_ingest._value.p1_sender.display_name",
@@ -1649,7 +1649,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.p1Sender.domainName") {
+                        if event.has_value("_ingest._value.p1Sender.domainName") {
                             event.rename(
                                 "_ingest._value.p1Sender.domainName",
                                 "_ingest._value.p1_sender.domain_name",
@@ -1697,7 +1697,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.p1Sender.emailAddress") {
+                        if event.has_value("_ingest._value.p1Sender.emailAddress") {
                             event.rename(
                                 "_ingest._value.p1Sender.emailAddress",
                                 "_ingest._value.p1_sender.email_address",
@@ -1772,7 +1772,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.p2Sender.displayName") {
+                        if event.has_value("_ingest._value.p2Sender.displayName") {
                             event.rename(
                                 "_ingest._value.p2Sender.displayName",
                                 "_ingest._value.p2_sender.display_name",
@@ -1820,7 +1820,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.p2Sender.domainName") {
+                        if event.has_value("_ingest._value.p2Sender.domainName") {
                             event.rename(
                                 "_ingest._value.p2Sender.domainName",
                                 "_ingest._value.p2_sender.domain_name",
@@ -1868,7 +1868,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.p2Sender.emailAddress") {
+                        if event.has_value("_ingest._value.p2Sender.emailAddress") {
                             event.rename(
                                 "_ingest._value.p2Sender.emailAddress",
                                 "_ingest._value.p2_sender.email_address",
@@ -2032,7 +2032,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.threatDetectionMethods") {
+                        if event.has_value("_ingest._value.threatDetectionMethods") {
                             event.rename(
                                 "_ingest._value.threatDetectionMethods",
                                 "_ingest._value.threat_detection_methods",
@@ -2204,7 +2204,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.instanceName") {
+                        if event.has_value("_ingest._value.instanceName") {
                             event.rename(
                                 "_ingest._value.instanceName",
                                 "_ingest._value.instance_name",
@@ -2314,7 +2314,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.displayName") {
+                        if event.has_value("_ingest._value.displayName") {
                             event.rename(
                                 "_ingest._value.displayName",
                                 "_ingest._value.display_name",
@@ -2397,7 +2397,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.vmMetadata.cloudProvider") {
+                        if event.has_value("_ingest._value.vmMetadata.cloudProvider") {
                             event.rename(
                                 "_ingest._value.vmMetadata.cloudProvider",
                                 "_ingest._value.vm_metadata.cloud_provider",
@@ -2418,7 +2418,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.mdeDeviceId") {
+                        if event.has_value("_ingest._value.mdeDeviceId") {
                             event.rename(
                                 "_ingest._value.mdeDeviceId",
                                 "_ingest._value.mde_device_id",
@@ -2439,7 +2439,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.osPlatform") {
+                        if event.has_value("_ingest._value.osPlatform") {
                             event.rename(
                                 "_ingest._value.osPlatform",
                                 "_ingest._value.os_platform",
@@ -2537,7 +2537,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.azureAdDeviceId") {
+                        if event.has_value("_ingest._value.azureAdDeviceId") {
                             event.rename(
                                 "_ingest._value.azureAdDeviceId",
                                 "_ingest._value.azure_ad_device_id",
@@ -2558,7 +2558,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.defenderAvStatus") {
+                        if event.has_value("_ingest._value.defenderAvStatus") {
                             event.rename(
                                 "_ingest._value.defenderAvStatus",
                                 "_ingest._value.defender_av_status",
@@ -2579,7 +2579,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.deviceDnsName") {
+                        if event.has_value("_ingest._value.deviceDnsName") {
                             event.rename(
                                 "_ingest._value.deviceDnsName",
                                 "_ingest._value.device_dns_name",
@@ -2728,7 +2728,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.healthStatus") {
+                        if event.has_value("_ingest._value.healthStatus") {
                             event.rename(
                                 "_ingest._value.healthStatus",
                                 "_ingest._value.health_status",
@@ -2753,7 +2753,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.loggedOnUsers") {
                                 foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
-                                    if event.has("_ingest._value.accountName") {
+                                    if event.has_value("_ingest._value.accountName") {
                                         event.rename(
                                             "_ingest._value.accountName",
                                             "_ingest._value.account_name",
@@ -2855,7 +2855,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.loggedOnUsers") {
                                 foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
-                                    if event.has("_ingest._value.domainName") {
+                                    if event.has_value("_ingest._value.domainName") {
                                         event.rename(
                                             "_ingest._value.domainName",
                                             "_ingest._value.domain_name",
@@ -2950,7 +2950,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.loggedOnUsers") {
                                 foreach_array(event, "_ingest._value.loggedOnUsers", |event| {
-                                    if event.has("_ingest._value.@odata.type") {
+                                    if event.has_value("_ingest._value.@odata.type") {
                                         event.rename(
                                             "_ingest._value.@odata.type",
                                             "_ingest._value.odata_type",
@@ -2976,7 +2976,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.loggedOnUsers") {
+                        if event.has_value("_ingest._value.loggedOnUsers") {
                             event.rename(
                                 "_ingest._value.loggedOnUsers",
                                 "_ingest._value.logged_on_users",
@@ -2997,7 +2997,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.onboardingStatus") {
+                        if event.has_value("_ingest._value.onboardingStatus") {
                             event.rename(
                                 "_ingest._value.onboardingStatus",
                                 "_ingest._value.onboarding_status",
@@ -3142,7 +3142,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.rbacGroupName") {
+                        if event.has_value("_ingest._value.rbacGroupName") {
                             event.rename(
                                 "_ingest._value.rbacGroupName",
                                 "_ingest._value.rbac_group.name",
@@ -3163,7 +3163,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.riskScore") {
+                        if event.has_value("_ingest._value.riskScore") {
                             event
                                 .rename("_ingest._value.riskScore", "_ingest._value.risk_score")?;
                         }
@@ -3196,7 +3196,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.vmMetadata.@odata.type") {
+                    if event.has_value("_ingest._value.vmMetadata.@odata.type") {
                         event.rename(
                             "_ingest._value.vmMetadata.@odata.type",
                             "_ingest._value.vm_metadata.odata_type",
@@ -3215,7 +3215,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.vmMetadata.resourceId") {
+                        if event.has_value("_ingest._value.vmMetadata.resourceId") {
                             event.rename(
                                 "_ingest._value.vmMetadata.resourceId",
                                 "_ingest._value.vm_metadata.resource_id",
@@ -3236,7 +3236,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.vmMetadata.subscriptionId") {
+                        if event.has_value("_ingest._value.vmMetadata.subscriptionId") {
                             event.rename(
                                 "_ingest._value.vmMetadata.subscriptionId",
                                 "_ingest._value.vm_metadata.subscription_id",
@@ -3257,7 +3257,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.vmMetadata.vmId") {
+                        if event.has_value("_ingest._value.vmMetadata.vmId") {
                             event.rename(
                                 "_ingest._value.vmMetadata.vmId",
                                 "_ingest._value.vm_metadata.vm_id",
@@ -3278,7 +3278,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.detectionStatus") {
+                        if event.has_value("_ingest._value.detectionStatus") {
                             event.rename(
                                 "_ingest._value.detectionStatus",
                                 "_ingest._value.detection_status",
@@ -3340,7 +3340,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.fileDetails.@odata.type") {
+                    if event.has_value("_ingest._value.fileDetails.@odata.type") {
                         event.rename(
                             "_ingest._value.fileDetails.@odata.type",
                             "_ingest._value.file_details.odata_type",
@@ -3359,7 +3359,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.sha1") {
+                        if event.has_value("_ingest._value.fileDetails.sha1") {
                             event.rename(
                                 "_ingest._value.fileDetails.sha1",
                                 "_ingest._value.file_details.sha1",
@@ -3434,7 +3434,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.sha256") {
+                        if event.has_value("_ingest._value.fileDetails.sha256") {
                             event.rename(
                                 "_ingest._value.fileDetails.sha256",
                                 "_ingest._value.file_details.sha256",
@@ -3509,7 +3509,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.fileName") {
+                        if event.has_value("_ingest._value.fileDetails.fileName") {
                             event.rename(
                                 "_ingest._value.fileDetails.fileName",
                                 "_ingest._value.file_details.name",
@@ -3557,7 +3557,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.filePath") {
+                        if event.has_value("_ingest._value.fileDetails.filePath") {
                             event.rename(
                                 "_ingest._value.fileDetails.filePath",
                                 "_ingest._value.file_details.path",
@@ -3688,7 +3688,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.filePublisher") {
+                        if event.has_value("_ingest._value.fileDetails.filePublisher") {
                             event.rename(
                                 "_ingest._value.fileDetails.filePublisher",
                                 "_ingest._value.file_details.publisher",
@@ -3709,7 +3709,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.issuer") {
+                        if event.has_value("_ingest._value.fileDetails.issuer") {
                             event.rename(
                                 "_ingest._value.fileDetails.issuer",
                                 "_ingest._value.file_details.issuer",
@@ -3730,7 +3730,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.fileDetails.signer") {
+                        if event.has_value("_ingest._value.fileDetails.signer") {
                             event.rename(
                                 "_ingest._value.fileDetails.signer",
                                 "_ingest._value.file_details.signer",
@@ -3881,7 +3881,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.userAccount.@odata.type") {
+                    if event.has_value("_ingest._value.userAccount.@odata.type") {
                         event.rename(
                             "_ingest._value.userAccount.@odata.type",
                             "_ingest._value.user_account.odata_type",
@@ -3900,7 +3900,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.userAccount.domainName") {
+                        if event.has_value("_ingest._value.userAccount.domainName") {
                             event.rename(
                                 "_ingest._value.userAccount.domainName",
                                 "_ingest._value.user_account.domain_name",
@@ -3948,7 +3948,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.userAccount.azureAdUserId") {
+                        if event.has_value("_ingest._value.userAccount.azureAdUserId") {
                             event.rename(
                                 "_ingest._value.userAccount.azureAdUserId",
                                 "_ingest._value.user_account.azure_ad_user_id",
@@ -3996,7 +3996,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.userAccount.userPrincipalName") {
+                        if event.has_value("_ingest._value.userAccount.userPrincipalName") {
                             event.rename(
                                 "_ingest._value.userAccount.userPrincipalName",
                                 "_ingest._value.user_account.user_principal_name",
@@ -4044,7 +4044,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.primaryAddress") {
+                        if event.has_value("_ingest._value.primaryAddress") {
                             event.rename(
                                 "_ingest._value.primaryAddress",
                                 "_ingest._value.primary_address",
@@ -4111,7 +4111,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.userAccount.accountName") {
+                        if event.has_value("_ingest._value.userAccount.accountName") {
                             event.rename(
                                 "_ingest._value.userAccount.accountName",
                                 "_ingest._value.user_account.account_name",
@@ -4132,7 +4132,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.userAccount.displayName") {
+                        if event.has_value("_ingest._value.userAccount.displayName") {
                             event.rename(
                                 "_ingest._value.userAccount.displayName",
                                 "_ingest._value.user_account.display_name",
@@ -4203,7 +4203,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.userAccount.userSid") {
+                        if event.has_value("_ingest._value.userAccount.userSid") {
                             event.rename(
                                 "_ingest._value.userAccount.userSid",
                                 "_ingest._value.user_account.user_sid",
@@ -4251,7 +4251,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.clusterBy") {
+                        if event.has_value("_ingest._value.clusterBy") {
                             event
                                 .rename("_ingest._value.clusterBy", "_ingest._value.cluster_by")?;
                         }
@@ -4270,7 +4270,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.clusterByValue") {
+                        if event.has_value("_ingest._value.clusterByValue") {
                             event.rename(
                                 "_ingest._value.clusterByValue",
                                 "_ingest._value.cluster_by_value",
@@ -4353,7 +4353,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.networkMessageIds") {
+                        if event.has_value("_ingest._value.networkMessageIds") {
                             event.rename(
                                 "_ingest._value.networkMessageIds",
                                 "_ingest._value.network_message_ids",
@@ -4374,7 +4374,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.objectId") {
+                        if event.has_value("_ingest._value.objectId") {
                             event.rename("_ingest._value.objectId", "_ingest._value.object_id")?;
                         }
                         Ok(())
@@ -4392,7 +4392,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.processCommandLine") {
+                        if event.has_value("_ingest._value.processCommandLine") {
                             event.rename(
                                 "_ingest._value.processCommandLine",
                                 "_ingest._value.process.command_line",
@@ -4499,7 +4499,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.imageFile.@odata.type") {
+                    if event.has_value("_ingest._value.imageFile.@odata.type") {
                         event.rename(
                             "_ingest._value.imageFile.@odata.type",
                             "_ingest._value.image_file.odata_type",
@@ -4518,7 +4518,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.sha1") {
+                        if event.has_value("_ingest._value.imageFile.sha1") {
                             event.rename(
                                 "_ingest._value.imageFile.sha1",
                                 "_ingest._value.image_file.sha1",
@@ -4593,7 +4593,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.sha256") {
+                        if event.has_value("_ingest._value.imageFile.sha256") {
                             event.rename(
                                 "_ingest._value.imageFile.sha256",
                                 "_ingest._value.image_file.sha256",
@@ -4686,7 +4686,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.alerts.evidence", |event| {
-                    if event.has("_ingest._value.parentProcessImageFile.@odata.type") {
+                    if event.has_value("_ingest._value.parentProcessImageFile.@odata.type") {
                         event.rename(
                             "_ingest._value.parentProcessImageFile.@odata.type",
                             "_ingest._value.parent_process.image_file.odata_type",
@@ -4705,7 +4705,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.sha1") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.sha1") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.sha1",
                                 "_ingest._value.parent_process.image_file.sha1",
@@ -4780,7 +4780,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.sha256") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.sha256") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.sha256",
                                 "_ingest._value.parent_process.image_file.sha256",
@@ -5139,7 +5139,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.fileName") {
+                        if event.has_value("_ingest._value.imageFile.fileName") {
                             event.rename(
                                 "_ingest._value.imageFile.fileName",
                                 "_ingest._value.image_file.name",
@@ -5160,7 +5160,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.filePath") {
+                        if event.has_value("_ingest._value.imageFile.filePath") {
                             event.rename(
                                 "_ingest._value.imageFile.filePath",
                                 "_ingest._value.image_file.path",
@@ -5181,7 +5181,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.filePublisher") {
+                        if event.has_value("_ingest._value.imageFile.filePublisher") {
                             event.rename(
                                 "_ingest._value.imageFile.filePublisher",
                                 "_ingest._value.image_file.publisher",
@@ -5267,7 +5267,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.issuer") {
+                        if event.has_value("_ingest._value.imageFile.issuer") {
                             event.rename(
                                 "_ingest._value.imageFile.issuer",
                                 "_ingest._value.image_file.issuer",
@@ -5288,7 +5288,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.imageFile.signer") {
+                        if event.has_value("_ingest._value.imageFile.signer") {
                             event.rename(
                                 "_ingest._value.imageFile.signer",
                                 "_ingest._value.image_file.signer",
@@ -5309,7 +5309,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.fileName") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.fileName") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.fileName",
                                 "_ingest._value.parent_process.image_file.name",
@@ -5330,7 +5330,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.filePath") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.filePath") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.filePath",
                                 "_ingest._value.parent_process.image_file.path",
@@ -5351,7 +5351,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.filePublisher") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.filePublisher") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.filePublisher",
                                 "_ingest._value.parent_process.image_file.publisher",
@@ -5444,7 +5444,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.issuer") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.issuer") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.issuer",
                                 "_ingest._value.parent_process.image_file.issuer",
@@ -5465,7 +5465,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.parentProcessImageFile.signer") {
+                        if event.has_value("_ingest._value.parentProcessImageFile.signer") {
                             event.rename(
                                 "_ingest._value.parentProcessImageFile.signer",
                                 "_ingest._value.parent_process.image_file.signer",
@@ -5503,7 +5503,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.registryHive") {
+                        if event.has_value("_ingest._value.registryHive") {
                             event.rename(
                                 "_ingest._value.registryHive",
                                 "_ingest._value.registry_hive",
@@ -5551,7 +5551,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.registryKey") {
+                        if event.has_value("_ingest._value.registryKey") {
                             event.rename(
                                 "_ingest._value.registryKey",
                                 "_ingest._value.registry_key",
@@ -5599,7 +5599,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.registryValueType") {
+                        if event.has_value("_ingest._value.registryValueType") {
                             event.rename(
                                 "_ingest._value.registryValueType",
                                 "_ingest._value.registry_value_type",
@@ -5647,7 +5647,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.registryValue") {
+                        if event.has_value("_ingest._value.registryValue") {
                             event.rename(
                                 "_ingest._value.registryValue",
                                 "_ingest._value.registry_value",
@@ -5695,7 +5695,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.registryValueName") {
+                        if event.has_value("_ingest._value.registryValueName") {
                             event.rename(
                                 "_ingest._value.registryValueName",
                                 "_ingest._value.registry_value_name",
@@ -5716,7 +5716,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.alerts.evidence", |event| {
-                        if event.has("_ingest._value.securityGroupId") {
+                        if event.has_value("_ingest._value.securityGroupId") {
                             event.rename(
                                 "_ingest._value.securityGroupId",
                                 "_ingest._value.security_group_id",
@@ -5848,7 +5848,7 @@ impl Transform for Default {
                 map_strings(event, "host.name", "host.name", str::to_lowercase)?;
             }
 
-            if event.has("json.alerts.evidence") {
+            if event.has_value("json.alerts.evidence") {
                 event.rename(
                     "json.alerts.evidence",
                     "m365_defender.incident.alert.evidence",

@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -36,56 +36,56 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("aws.apigateway.requestId") {
+            if event.has_value("aws.apigateway.requestId") {
                 event.rename("aws.apigateway.requestId", "aws.apigateway.request_id")?;
             }
 
-            if event.has("aws.apigateway.responseLength") {
+            if event.has_value("aws.apigateway.responseLength") {
                 event.rename(
                     "aws.apigateway.responseLength",
                     "aws.apigateway.response_length",
                 )?;
             }
 
-            if event.has("aws.apigateway.requestTime") {
+            if event.has_value("aws.apigateway.requestTime") {
                 event.rename("aws.apigateway.requestTime", "aws.apigateway.request_time")?;
             }
 
-            if event.has("aws.apigateway.httpMethod") {
+            if event.has_value("aws.apigateway.httpMethod") {
                 event.rename("aws.apigateway.httpMethod", "aws.apigateway.http_method")?;
             }
 
-            if event.has("aws.apigateway.routeKey") {
+            if event.has_value("aws.apigateway.routeKey") {
                 event.rename("aws.apigateway.routeKey", "aws.apigateway.route_key")?;
             }
 
-            if event.has("aws.apigateway.ip") {
+            if event.has_value("aws.apigateway.ip") {
                 event.rename("aws.apigateway.ip", "aws.apigateway.ip_address")?;
             }
 
-            if event.has("aws.apigateway.resourcePath") {
+            if event.has_value("aws.apigateway.resourcePath") {
                 event.rename(
                     "aws.apigateway.resourcePath",
                     "aws.apigateway.resource_path",
                 )?;
             }
 
-            if event.has("aws.apigateway.connectionId") {
+            if event.has_value("aws.apigateway.connectionId") {
                 event.rename(
                     "aws.apigateway.connectionId",
                     "aws.apigateway.connection_id",
                 )?;
             }
 
-            if event.has("aws.apigateway.eventType") {
+            if event.has_value("aws.apigateway.eventType") {
                 event.rename("aws.apigateway.eventType", "aws.apigateway.event_type")?;
             }
 
-            if event.has("aws.apigateway.apiId") {
+            if event.has_value("aws.apigateway.apiId") {
                 event.rename("aws.apigateway.apiId", "aws.apigateway.api_id")?;
             }
 
-            if event.has("aws.apigateway.domainName") {
+            if event.has_value("aws.apigateway.domainName") {
                 event.rename("aws.apigateway.domainName", "aws.apigateway.domain_name")?;
             }
 

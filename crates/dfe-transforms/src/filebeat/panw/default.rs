@@ -1758,7 +1758,7 @@ impl Transform for Default {
                         "_ingest.on_failure_processor_tag",
                         "convert__temp__forwarded_ip_to_network_forwarded_ip_e6722dcc",
                     )?;
-                    if event.has("_temp_.forwarded_ip") {
+                    if event.has_value("_temp_.forwarded_ip") {
                         event.rename("_temp_.forwarded_ip", "panw.panos.x_forwarded_for")?;
                     }
                     event.remove("_ingest.on_failure_message");
@@ -3967,7 +3967,7 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                if event.has("_temp_.config_version") {
+                if event.has_value("_temp_.config_version") {
                     event.rename("_temp_.config_version", "panw.panos.config_version")?;
                 }
                 let _cond = {
@@ -11260,19 +11260,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -11281,14 +11281,14 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.geo.name") };
             if _cond {
-                if event.has("_temp_.srcloc") {
+                if event.has_value("_temp_.srcloc") {
                     event.rename("_temp_.srcloc", "source.geo.name")?;
                 }
             }
 
             let _cond = { !event.has_value("destination.geo.name") };
             if _cond {
-                if event.has("_temp_.dstloc") {
+                if event.has_value("_temp_.dstloc") {
                     event.rename("_temp_.dstloc", "destination.geo.name")?;
                 }
             }

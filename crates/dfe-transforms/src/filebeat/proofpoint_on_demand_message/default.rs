@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -92,25 +92,25 @@ impl Transform for Default {
 
             event.set("observer.type", json!("mail-gateway"))?;
 
-            if event.has("json.action_dkimv") {
+            if event.has_value("json.action_dkimv") {
                 event.rename(
                     "json.action_dkimv",
                     "proofpoint_on_demand.message.action_dkimv",
                 )?;
             }
 
-            if event.has("json.action_dmarc") {
+            if event.has_value("json.action_dmarc") {
                 event.rename(
                     "json.action_dmarc",
                     "proofpoint_on_demand.message.action_dmarc",
                 )?;
             }
 
-            if event.has("json.action_spf") {
+            if event.has_value("json.action_spf") {
                 event.rename("json.action_spf", "proofpoint_on_demand.message.action_spf")?;
             }
 
-            if event.has("json.connection.country") {
+            if event.has_value("json.connection.country") {
                 event.rename(
                     "json.connection.country",
                     "proofpoint_on_demand.message.connection.country",
@@ -134,7 +134,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.connection.helo") {
+            if event.has_value("json.connection.helo") {
                 event.rename(
                     "json.connection.helo",
                     "proofpoint_on_demand.message.connection.helo",
@@ -179,7 +179,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.connection.host") {
+            if event.has_value("json.connection.host") {
                 event.rename(
                     "json.connection.host",
                     "proofpoint_on_demand.message.connection.host",
@@ -309,7 +309,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.connection.protocol") {
+            if event.has_value("json.connection.protocol") {
                 event.rename(
                     "json.connection.protocol",
                     "proofpoint_on_demand.message.connection.protocol",
@@ -328,21 +328,21 @@ impl Transform for Default {
                 event.set("network.protocol", json!("smtp"))?;
             }
 
-            if event.has("json.connection.resolveStatus") {
+            if event.has_value("json.connection.resolveStatus") {
                 event.rename(
                     "json.connection.resolveStatus",
                     "proofpoint_on_demand.message.connection.resolve_status",
                 )?;
             }
 
-            if event.has("json.connection.sid") {
+            if event.has_value("json.connection.sid") {
                 event.rename(
                     "json.connection.sid",
                     "proofpoint_on_demand.message.connection.sid",
                 )?;
             }
 
-            if event.has("json.connection.tls.inbound.cipher") {
+            if event.has_value("json.connection.tls.inbound.cipher") {
                 event.rename(
                     "json.connection.tls.inbound.cipher",
                     "proofpoint_on_demand.message.connection.tls.inbound.cipher",
@@ -413,14 +413,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.connection.tls.inbound.policy") {
+            if event.has_value("json.connection.tls.inbound.policy") {
                 event.rename(
                     "json.connection.tls.inbound.policy",
                     "proofpoint_on_demand.message.connection.tls.inbound.policy",
                 )?;
             }
 
-            if event.has("json.connection.tls.inbound.version") {
+            if event.has_value("json.connection.tls.inbound.version") {
                 event.rename(
                     "json.connection.tls.inbound.version",
                     "proofpoint_on_demand.message.connection.tls.inbound.version",
@@ -465,7 +465,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.envelope.from") {
+            if event.has_value("json.envelope.from") {
                 event.rename(
                     "json.envelope.from",
                     "proofpoint_on_demand.message.envelope.from",
@@ -492,7 +492,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.envelope.fromHashed") {
+            if event.has_value("json.envelope.fromHashed") {
                 event.rename(
                     "json.envelope.fromHashed",
                     "proofpoint_on_demand.message.envelope.from_hashed",
@@ -518,14 +518,14 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.envelope.rcpts") {
+            if event.has_value("json.envelope.rcpts") {
                 event.rename(
                     "json.envelope.rcpts",
                     "proofpoint_on_demand.message.envelope.rcpts",
                 )?;
             }
 
-            if event.has("json.envelope.rcptsHashed") {
+            if event.has_value("json.envelope.rcptsHashed") {
                 event.rename(
                     "json.envelope.rcptsHashed",
                     "proofpoint_on_demand.message.envelope.rcpts_hashed",
@@ -603,21 +603,21 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.filter.actions") {
+            if event.has_value("json.filter.actions") {
                 event.rename(
                     "json.filter.actions",
                     "proofpoint_on_demand.message.filter.actions",
                 )?;
             }
 
-            if event.has("json.filter.currentFolder") {
+            if event.has_value("json.filter.currentFolder") {
                 event.rename(
                     "json.filter.currentFolder",
                     "proofpoint_on_demand.message.filter.current_folder",
                 )?;
             }
 
-            if event.has("json.filter.disposition") {
+            if event.has_value("json.filter.disposition") {
                 event.rename(
                     "json.filter.disposition",
                     "proofpoint_on_demand.message.filter.disposition",
@@ -881,7 +881,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filter.mid") {
+            if event.has_value("json.filter.mid") {
                 event.rename("json.filter.mid", "proofpoint_on_demand.message.filter.mid")?;
             }
 
@@ -893,7 +893,7 @@ impl Transform for Default {
                 event.set("email.local_id", v)?;
             }
 
-            if event.has("json.filter.modules.av.virusNames") {
+            if event.has_value("json.filter.modules.av.virusNames") {
                 event.rename(
                     "json.filter.modules.av.virusNames",
                     "proofpoint_on_demand.message.filter.modules.av.virus_names",
@@ -919,7 +919,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.filter.modules.dkimv") {
+            if event.has_value("json.filter.modules.dkimv") {
                 event.rename(
                     "json.filter.modules.dkimv",
                     "proofpoint_on_demand.message.filter.modules.dkimv",
@@ -933,7 +933,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.filter.modules.dmarc.alignment", |event| {
-                    if event.has("_ingest._value.fromDomain") {
+                    if event.has_value("_ingest._value.fromDomain") {
                         event.rename("_ingest._value.fromDomain", "_ingest._value.from_domain")?;
                     }
                     Ok(())
@@ -967,7 +967,7 @@ impl Transform for Default {
             if _cond {
                 foreach_array(event, "json.filter.modules.dmarc.alignment", |event| {
                     foreach_array(event, "_ingest._value.results", |event| {
-                        if event.has("_ingest._value.identityOrg") {
+                        if event.has_value("_ingest._value.identityOrg") {
                             event.rename(
                                 "_ingest._value.identityOrg",
                                 "_ingest._value.identity_org",
@@ -979,7 +979,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.filter.modules.dmarc.alignment") {
+            if event.has_value("json.filter.modules.dmarc.alignment") {
                 event.rename(
                     "json.filter.modules.dmarc.alignment",
                     "proofpoint_on_demand.message.filter.modules.dmarc.alignment",
@@ -1009,7 +1009,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.filter.modules.dmarc.authResults", |event| {
-                    if event.has("_ingest._value.emailIdentities") {
+                    if event.has_value("_ingest._value.emailIdentities") {
                         event.rename(
                             "_ingest._value.emailIdentities",
                             "_ingest._value.email_identities",
@@ -1026,7 +1026,7 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "json.filter.modules.dmarc.authResults", |event| {
-                    if event.has("_ingest._value.email_identities.smtp.mailfromHashed") {
+                    if event.has_value("_ingest._value.email_identities.smtp.mailfromHashed") {
                         event.rename(
                             "_ingest._value.email_identities.smtp.mailfromHashed",
                             "_ingest._value.email_identities.smtp.mailfrom_hashed",
@@ -1071,28 +1071,28 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.filter.modules.dmarc.authResults") {
+            if event.has_value("json.filter.modules.dmarc.authResults") {
                 event.rename(
                     "json.filter.modules.dmarc.authResults",
                     "proofpoint_on_demand.message.filter.modules.dmarc.auth_results",
                 )?;
             }
 
-            if event.has("json.filter.modules.dmarc.filterdResult") {
+            if event.has_value("json.filter.modules.dmarc.filterdResult") {
                 event.rename(
                     "json.filter.modules.dmarc.filterdResult",
                     "proofpoint_on_demand.message.filter.modules.dmarc.filterd_result",
                 )?;
             }
 
-            if event.has("json.filter.modules.dmarc.records") {
+            if event.has_value("json.filter.modules.dmarc.records") {
                 event.rename(
                     "json.filter.modules.dmarc.records",
                     "proofpoint_on_demand.message.filter.modules.dmarc.records",
                 )?;
             }
 
-            if event.has("json.filter.modules.dmarc.srvid") {
+            if event.has_value("json.filter.modules.dmarc.srvid") {
                 event.rename(
                     "json.filter.modules.dmarc.srvid",
                     "proofpoint_on_demand.message.filter.modules.dmarc.srvid",
@@ -1249,7 +1249,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filter.modules.pdr.v2.response") {
+            if event.has_value("json.filter.modules.pdr.v2.response") {
                 event.rename(
                     "json.filter.modules.pdr.v2.response",
                     "proofpoint_on_demand.message.filter.modules.pdr.v2.response",
@@ -1306,28 +1306,28 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filter.modules.sandbox.errorStatus") {
+            if event.has_value("json.filter.modules.sandbox.errorStatus") {
                 event.rename(
                     "json.filter.modules.sandbox.errorStatus",
                     "proofpoint_on_demand.message.filter.modules.sandbox.error_status",
                 )?;
             }
 
-            if event.has("json.filter.modules.spam.triggeredClassifier") {
+            if event.has_value("json.filter.modules.spam.triggeredClassifier") {
                 event.rename(
                     "json.filter.modules.spam.triggeredClassifier",
                     "json.filter.modules.spam.triggered_classifier",
                 )?;
             }
 
-            if event.has("json.filter.modules.spam") {
+            if event.has_value("json.filter.modules.spam") {
                 event.rename(
                     "json.filter.modules.spam",
                     "proofpoint_on_demand.message.filter.modules.spam",
                 )?;
             }
 
-            if event.has("json.filter.modules.spf.domain") {
+            if event.has_value("json.filter.modules.spf.domain") {
                 event.rename(
                     "json.filter.modules.spf.domain",
                     "proofpoint_on_demand.message.filter.modules.spf.domain",
@@ -1347,7 +1347,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filter.modules.spf.result") {
+            if event.has_value("json.filter.modules.spf.result") {
                 event.rename(
                     "json.filter.modules.spf.result",
                     "proofpoint_on_demand.message.filter.modules.spf.result",
@@ -1899,7 +1899,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filter.modules.urldefense.rewrittenUrls") {
+            if event.has_value("json.filter.modules.urldefense.rewrittenUrls") {
                 event.rename(
                     "json.filter.modules.urldefense.rewrittenUrls",
                     "proofpoint_on_demand.message.filter.modules.urldefense.rewritten_urls",
@@ -1986,7 +1986,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filter.origGuid") {
+            if event.has_value("json.filter.origGuid") {
                 event.rename(
                     "json.filter.origGuid",
                     "proofpoint_on_demand.message.filter.orig_guid",
@@ -1999,7 +1999,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                if event.has("json.filter.pe.rcpts") {
+                if event.has_value("json.filter.pe.rcpts") {
                     event.rename(
                         "json.filter.pe.rcpts",
                         "proofpoint_on_demand.message.filter.pe.rcpts_object",
@@ -2019,18 +2019,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.filter.qid") {
+            if event.has_value("json.filter.qid") {
                 event.rename("json.filter.qid", "proofpoint_on_demand.message.filter.qid")?;
             }
 
-            if event.has("json.filter.quarantine.folder") {
+            if event.has_value("json.filter.quarantine.folder") {
                 event.rename(
                     "json.filter.quarantine.folder",
                     "proofpoint_on_demand.message.filter.quarantine.folder",
                 )?;
             }
 
-            if event.has("json.filter.quarantine.rule") {
+            if event.has_value("json.filter.quarantine.rule") {
                 event.rename(
                     "json.filter.quarantine.rule",
                     "proofpoint_on_demand.message.filter.quarantine.rule",
@@ -2049,7 +2049,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filter.routeDirection") {
+            if event.has_value("json.filter.routeDirection") {
                 event.rename(
                     "json.filter.routeDirection",
                     "proofpoint_on_demand.message.filter.route_direction",
@@ -2073,21 +2073,21 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filter.routes") {
+            if event.has_value("json.filter.routes") {
                 event.rename(
                     "json.filter.routes",
                     "proofpoint_on_demand.message.filter.routes",
                 )?;
             }
 
-            if event.has("json.filter.smime.rcpts") {
+            if event.has_value("json.filter.smime.rcpts") {
                 event.rename(
                     "json.filter.smime.rcpts",
                     "proofpoint_on_demand.message.filter.smime.rcpts",
                 )?;
             }
 
-            if event.has("json.filter.smime.signedRcpts") {
+            if event.has_value("json.filter.smime.signedRcpts") {
                 event.rename(
                     "json.filter.smime.signedRcpts",
                     "proofpoint_on_demand.message.filter.smime.signed_rcpts",
@@ -2208,21 +2208,21 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.filter.verified.rcpts") {
+            if event.has_value("json.filter.verified.rcpts") {
                 event.rename(
                     "json.filter.verified.rcpts",
                     "proofpoint_on_demand.message.filter.verified.rcpts",
                 )?;
             }
 
-            if event.has("json.filter.verified.rcptsHashed") {
+            if event.has_value("json.filter.verified.rcptsHashed") {
                 event.rename(
                     "json.filter.verified.rcptsHashed",
                     "proofpoint_on_demand.message.filter.verified.rcpts_hashed",
                 )?;
             }
 
-            if event.has("json.final_action") {
+            if event.has_value("json.final_action") {
                 event.rename(
                     "json.final_action",
                     "proofpoint_on_demand.message.final_action",
@@ -2241,14 +2241,14 @@ impl Transform for Default {
                 map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
-            if event.has("json.final_module") {
+            if event.has_value("json.final_module") {
                 event.rename(
                     "json.final_module",
                     "proofpoint_on_demand.message.final_module",
                 )?;
             }
 
-            if event.has("json.final_rule") {
+            if event.has_value("json.final_rule") {
                 event.rename("json.final_rule", "proofpoint_on_demand.message.final_rule")?;
             }
 
@@ -2264,7 +2264,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.guid") {
+            if event.has_value("json.guid") {
                 event.rename("json.guid", "proofpoint_on_demand.message.guid")?;
             }
 
@@ -2276,7 +2276,7 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            if event.has("json.metadata.origin.data.agent") {
+            if event.has_value("json.metadata.origin.data.agent") {
                 event.rename(
                     "json.metadata.origin.data.agent",
                     "proofpoint_on_demand.message.metadata.origin.data.agent",
@@ -2304,7 +2304,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.metadata.origin.data.cid") {
+            if event.has_value("json.metadata.origin.data.cid") {
                 event.rename(
                     "json.metadata.origin.data.cid",
                     "proofpoint_on_demand.message.metadata.origin.data.cid",
@@ -2319,7 +2319,7 @@ impl Transform for Default {
                 event.set("observer.name", v)?;
             }
 
-            if event.has("json.metadata.origin.data.version") {
+            if event.has_value("json.metadata.origin.data.version") {
                 event.rename(
                     "json.metadata.origin.data.version",
                     "proofpoint_on_demand.message.metadata.origin.data.version",
@@ -2334,7 +2334,7 @@ impl Transform for Default {
                 event.set("observer.version", v)?;
             }
 
-            if event.has("json.pps.agent") {
+            if event.has_value("json.pps.agent") {
                 event.rename("json.pps.agent", "proofpoint_on_demand.message.pps.agent")?;
             }
 
@@ -2358,7 +2358,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.pps.cid") {
+            if event.has_value("json.pps.cid") {
                 event.rename("json.pps.cid", "proofpoint_on_demand.message.pps.cid")?;
             }
 
@@ -2370,7 +2370,7 @@ impl Transform for Default {
                 event.set("observer.name", v)?;
             }
 
-            if event.has("json.pps.version") {
+            if event.has_value("json.pps.version") {
                 event.rename(
                     "json.pps.version",
                     "proofpoint_on_demand.message.pps.version",
@@ -2423,7 +2423,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.msg.header.cc") {
+            if event.has_value("json.msg.header.cc") {
                 event.rename(
                     "json.msg.header.cc",
                     "proofpoint_on_demand.message.msg.header.cc",
@@ -2468,21 +2468,21 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.msg.header.from") {
+            if event.has_value("json.msg.header.from") {
                 event.rename(
                     "json.msg.header.from",
                     "proofpoint_on_demand.message.msg.header.from",
                 )?;
             }
 
-            if event.has("json.msg.header.fromHashed") {
+            if event.has_value("json.msg.header.fromHashed") {
                 event.rename(
                     "json.msg.header.fromHashed",
                     "proofpoint_on_demand.message.msg.header.from_hashed",
                 )?;
             }
 
-            if event.has("json.msg.header.message-id") {
+            if event.has_value("json.msg.header.message-id") {
                 event.rename(
                     "json.msg.header.message-id",
                     "proofpoint_on_demand.message.msg.header.message_id",
@@ -2512,7 +2512,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.msg.header.reply-to") {
+            if event.has_value("json.msg.header.reply-to") {
                 event.rename(
                     "json.msg.header.reply-to",
                     "proofpoint_on_demand.message.msg.header.reply_to",
@@ -2565,7 +2565,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.msg.header.return-path") {
+            if event.has_value("json.msg.header.return-path") {
                 event.rename(
                     "json.msg.header.return-path",
                     "proofpoint_on_demand.message.msg.header.return_path",
@@ -2591,7 +2591,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.msg.header.subject") {
+            if event.has_value("json.msg.header.subject") {
                 event.rename(
                     "json.msg.header.subject",
                     "proofpoint_on_demand.message.msg.header.subject",
@@ -2636,60 +2636,60 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.msg.header.to") {
+            if event.has_value("json.msg.header.to") {
                 event.rename(
                     "json.msg.header.to",
                     "proofpoint_on_demand.message.msg.header.to",
                 )?;
             }
 
-            if event.has("json.msg.header.toHashed") {
+            if event.has_value("json.msg.header.toHashed") {
                 event.rename(
                     "json.msg.header.toHashed",
                     "proofpoint_on_demand.message.msg.header.to_hashed",
                 )?;
             }
 
-            if event.has("json.msg.lang") {
+            if event.has_value("json.msg.lang") {
                 event.rename("json.msg.lang", "proofpoint_on_demand.message.msg.lang")?;
             }
 
-            if event.has("json.msg.normalizedHeader.fromHashed") {
+            if event.has_value("json.msg.normalizedHeader.fromHashed") {
                 event.rename(
                     "json.msg.normalizedHeader.fromHashed",
                     "json.msg.normalizedHeader.from_hashed",
                 )?;
             }
 
-            if event.has("json.msg.normalizedHeader.message-id") {
+            if event.has_value("json.msg.normalizedHeader.message-id") {
                 event.rename(
                     "json.msg.normalizedHeader.message-id",
                     "json.msg.normalizedHeader.message_id",
                 )?;
             }
 
-            if event.has("json.msg.normalizedHeader.reply-to") {
+            if event.has_value("json.msg.normalizedHeader.reply-to") {
                 event.rename(
                     "json.msg.normalizedHeader.reply-to",
                     "json.msg.normalizedHeader.reply_to",
                 )?;
             }
 
-            if event.has("json.msg.normalizedHeader.return-path") {
+            if event.has_value("json.msg.normalizedHeader.return-path") {
                 event.rename(
                     "json.msg.normalizedHeader.return-path",
                     "json.msg.normalizedHeader.return_path",
                 )?;
             }
 
-            if event.has("json.msg.normalizedHeader.toHashed") {
+            if event.has_value("json.msg.normalizedHeader.toHashed") {
                 event.rename(
                     "json.msg.normalizedHeader.toHashed",
                     "json.msg.normalizedHeader.to_hashed",
                 )?;
             }
 
-            if event.has("json.msg.normalizedHeader") {
+            if event.has_value("json.msg.normalizedHeader") {
                 event.rename(
                     "json.msg.normalizedHeader",
                     "proofpoint_on_demand.message.msg.normalized_header",
@@ -2734,7 +2734,7 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.msg.parsedAddresses.fromHashed") {
+            if event.has_value("json.msg.parsedAddresses.fromHashed") {
                 event.rename(
                     "json.msg.parsedAddresses.fromHashed",
                     "json.msg.parsedAddresses.from_hashed",
@@ -2760,14 +2760,14 @@ impl Transform for Default {
                 })?;
             }
 
-            if event.has("json.msg.parsedAddresses.toHashed") {
+            if event.has_value("json.msg.parsedAddresses.toHashed") {
                 event.rename(
                     "json.msg.parsedAddresses.toHashed",
                     "json.msg.parsedAddresses.to_hashed",
                 )?;
             }
 
-            if event.has("json.msg.parsedAddresses") {
+            if event.has_value("json.msg.parsedAddresses") {
                 event.rename(
                     "json.msg.parsedAddresses",
                     "proofpoint_on_demand.message.msg.parsed_addresses",

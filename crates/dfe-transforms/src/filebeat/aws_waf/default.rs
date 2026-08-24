@@ -27,7 +27,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -55,7 +55,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.httpRequest.clientIp") {
+            if event.has_value("json.httpRequest.clientIp") {
                 event.rename("json.httpRequest.clientIp", "source.ip")?;
             }
 
@@ -94,7 +94,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("source.geo.country_iso_code") };
             if _cond {
-                if event.has("json.httpRequest.country") {
+                if event.has_value("json.httpRequest.country") {
                     event.rename("json.httpRequest.country", "source.geo.country_iso_code")?;
                 }
             }
@@ -114,18 +114,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
             let _cond = { !event.has_value("source.as.number") };
             if _cond {
-                if event.has("json.ClientASN") {
+                if event.has_value("json.ClientASN") {
                     event.rename("json.ClientASN", "source.as.number")?;
                 }
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -233,7 +233,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.captchaResponse.failureReason") {
+            if event.has_value("json.captchaResponse.failureReason") {
                 event.rename(
                     "json.captchaResponse.failureReason",
                     "aws.waf.captcha_response.failure_reason",
@@ -344,7 +344,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.challengeResponse.failureReason") {
+            if event.has_value("json.challengeResponse.failureReason") {
                 event.rename(
                     "json.challengeResponse.failureReason",
                     "aws.waf.challenge_response.failure_reason",
@@ -363,19 +363,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.httpRequest.fragment") {
+            if event.has_value("json.httpRequest.fragment") {
                 event.rename("json.httpRequest.fragment", "url.fragment")?;
             }
 
-            if event.has("json.httpRequest.host") {
+            if event.has_value("json.httpRequest.host") {
                 event.rename("json.httpRequest.host", "url.registered_domain")?;
             }
 
-            if event.has("json.httpRequest.requestId") {
+            if event.has_value("json.httpRequest.requestId") {
                 event.rename("json.httpRequest.requestId", "http.request.id")?;
             }
 
-            if event.has("json.httpRequest.scheme") {
+            if event.has_value("json.httpRequest.scheme") {
                 event.rename("json.httpRequest.scheme", "url.scheme")?;
             }
 
@@ -520,7 +520,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.httpRequest.httpMethod") {
+            if event.has_value("json.httpRequest.httpMethod") {
                 event.rename("json.httpRequest.httpMethod", "http.request.method")?;
             }
 
@@ -568,46 +568,46 @@ impl Transform for Default {
                 event.set("network.transport", json!("tcp"))?;
             }
 
-            if event.has("json.httpRequest.args") {
+            if event.has_value("json.httpRequest.args") {
                 event.rename("json.httpRequest.args", "url.query")?;
             }
 
-            if event.has("json.httpRequest.uri") {
+            if event.has_value("json.httpRequest.uri") {
                 event.rename("json.httpRequest.uri", "url.path")?;
             }
 
-            if event.has("json.ja3Fingerprint") {
+            if event.has_value("json.ja3Fingerprint") {
                 event.rename("json.ja3Fingerprint", "tls.client.ja3")?;
             }
 
-            if event.has("json.ja4Fingerprint") {
+            if event.has_value("json.ja4Fingerprint") {
                 event.rename("json.ja4Fingerprint", "aws.waf.ja4_fingerprint")?;
             }
 
-            if event.has("json.labels") {
+            if event.has_value("json.labels") {
                 event.rename("json.labels", "aws.waf.labels")?;
             }
 
-            if event.has("json.oversizeFields") {
+            if event.has_value("json.oversizeFields") {
                 event.rename("json.oversizeFields", "aws.waf.oversize_fields")?;
             }
 
-            if event.has("json.terminatingRuleMatchDetails") {
+            if event.has_value("json.terminatingRuleMatchDetails") {
                 event.rename(
                     "json.terminatingRuleMatchDetails",
                     "aws.waf.terminating_rule_match_details",
                 )?;
             }
 
-            if event.has("json.ruleGroupList") {
+            if event.has_value("json.ruleGroupList") {
                 event.rename("json.ruleGroupList", "aws.waf.rule_group_list")?;
             }
 
-            if event.has("json.rateBasedRuleList") {
+            if event.has_value("json.rateBasedRuleList") {
                 event.rename("json.rateBasedRuleList", "aws.waf.rate_based_rule_list")?;
             }
 
-            if event.has("json.nonTerminatingMatchingRules") {
+            if event.has_value("json.nonTerminatingMatchingRules") {
                 event.rename(
                     "json.nonTerminatingMatchingRules",
                     "aws.waf.non_terminating_matching_rules",
@@ -682,7 +682,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.action") {
+            if event.has_value("json.action") {
                 event.rename("json.action", "event.action")?;
             }
 
@@ -712,7 +712,7 @@ impl Transform for Default {
                 event.append("event.type", json!("denied"))?;
             }
 
-            if event.has("json.webaclId") {
+            if event.has_value("json.webaclId") {
                 event.rename("json.webaclId", "aws.waf.arn")?;
             }
 
@@ -775,19 +775,19 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.terminatingRuleId") {
+            if event.has_value("json.terminatingRuleId") {
                 event.rename("json.terminatingRuleId", "rule.id")?;
             }
 
-            if event.has("json.terminatingRuleType") {
+            if event.has_value("json.terminatingRuleType") {
                 event.rename("json.terminatingRuleType", "rule.ruleset")?;
             }
 
-            if event.has("json.httpSourceName") {
+            if event.has_value("json.httpSourceName") {
                 event.rename("json.httpSourceName", "aws.waf.source.name")?;
             }
 
-            if event.has("json.httpSourceId") {
+            if event.has_value("json.httpSourceId") {
                 event.rename("json.httpSourceId", "aws.waf.source.id")?;
             }
 

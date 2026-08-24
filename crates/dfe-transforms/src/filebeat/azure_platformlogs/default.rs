@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.11.0"))?;
 
-            if event.has("azure") {
+            if event.has_value("azure") {
                 event.rename("azure", "azure-eventhub")?;
             }
 
@@ -39,11 +39,11 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azureLogForwarder") && !event.has("azure_log_forwarder") {
+            if event.has_value("azureLogForwarder") && !event.has("azure_log_forwarder") {
                 event.rename("azureLogForwarder", "azure_log_forwarder")?;
             }
 
-            if event.has("azure_log_forwarder.resourceType")
+            if event.has_value("azure_log_forwarder.resourceType")
                 && !event.has("azure_log_forwarder.resource_type")
             {
                 event.rename(
@@ -52,7 +52,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure_log_forwarder.serviceProvider")
+            if event.has_value("azure_log_forwarder.serviceProvider")
                 && !event.has("azure_log_forwarder.service_provider")
             {
                 event.rename(
@@ -61,7 +61,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("dataStream") && !event.has("data_stream") {
+            if event.has_value("dataStream") && !event.has("data_stream") {
                 event.rename("dataStream", "data_stream")?;
             }
 
@@ -96,7 +96,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -218,7 +218,7 @@ impl Transform for Default {
 
             event.remove("temp_properties");
 
-            if event.has("azure.platformlogs.Identity") {
+            if event.has_value("azure.platformlogs.Identity") {
                 event.rename("azure.platformlogs.Identity", "azure.platformlogs.identity")?;
             }
 
@@ -228,7 +228,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_string())
             };
             if _cond {
-                if event.has("azure.platformlogs.identity") {
+                if event.has_value("azure.platformlogs.identity") {
                     event.rename(
                         "azure.platformlogs.identity",
                         "azure.platformlogs.identity_name",
@@ -294,23 +294,23 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("azure.resource_id") };
             if _cond {
-                if event.has("azure.platformlogs.resourceId") {
+                if event.has_value("azure.platformlogs.resourceId") {
                     event.rename("azure.platformlogs.resourceId", "azure.resource_id")?;
                 }
             }
 
             let _cond = { !event.has_value("azure.resource_id") };
             if _cond {
-                if event.has("azure.platformlogs.ResourceId") {
+                if event.has_value("azure.platformlogs.ResourceId") {
                     event.rename("azure.platformlogs.ResourceId", "azure.resource_id")?;
                 }
             }
 
-            if event.has("azure.platformlogs.Region") {
+            if event.has_value("azure.platformlogs.Region") {
                 event.rename("azure.platformlogs.Region", "cloud.region")?;
             }
 
-            if event.has("azure.platformlogs.Host") {
+            if event.has_value("azure.platformlogs.Host") {
                 event.rename("azure.platformlogs.Host", "host.name")?;
             }
 
@@ -346,16 +346,16 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_string())
             };
             if _cond {
-                if event.has("azure.platformlogs.properties.log") {
+                if event.has_value("azure.platformlogs.properties.log") {
                     event.rename("azure.platformlogs.properties.log", "message")?;
                 }
             }
 
-            if event.has("azure.platformlogs.EventName") {
+            if event.has_value("azure.platformlogs.EventName") {
                 event.rename("azure.platformlogs.EventName", "event.action")?;
             }
 
-            if event.has("azure.platformlogs.EventIpAddress") {
+            if event.has_value("azure.platformlogs.EventIpAddress") {
                 event.rename(
                     "azure.platformlogs.EventIpAddress",
                     "azure.platformlogs.callerIpAddress",
@@ -381,7 +381,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("azure.platformlogs.callerIpAddress") {
+                    if event.has_value("azure.platformlogs.callerIpAddress") {
                         event.rename("azure.platformlogs.callerIpAddress", "source.address")?;
                     }
                     Ok(())
@@ -420,7 +420,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.platformlogs.level") {
+            if event.has_value("azure.platformlogs.level") {
                 event.rename("azure.platformlogs.level", "log.level")?;
             }
 
@@ -465,7 +465,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.platformlogs.location") {
+            if event.has_value("azure.platformlogs.location") {
                 event.rename("azure.platformlogs.location", "geo.name")?;
             }
 
@@ -483,7 +483,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.platformlogs.resultType") {
+            if event.has_value("azure.platformlogs.resultType") {
                 event.rename(
                     "azure.platformlogs.resultType",
                     "azure.platformlogs.result_type",
@@ -574,7 +574,7 @@ impl Transform for Default {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            if event.has("azure.platformlogs.operationName") {
+            if event.has_value("azure.platformlogs.operationName") {
                 event.rename(
                     "azure.platformlogs.operationName",
                     "azure.platformlogs.operation_name",
@@ -593,25 +593,25 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("azure.platformlogs.resultSignature") {
+            if event.has_value("azure.platformlogs.resultSignature") {
                 event.rename(
                     "azure.platformlogs.resultSignature",
                     "azure.platformlogs.result_signature",
                 )?;
             }
 
-            if event.has("azure.platformlogs.correlationId") {
+            if event.has_value("azure.platformlogs.correlationId") {
                 event.rename("azure.platformlogs.correlationId", "azure.correlation_id")?;
             }
 
-            if event.has("azure.platformlogs.properties.statusCode") {
+            if event.has_value("azure.platformlogs.properties.statusCode") {
                 event.rename(
                     "azure.platformlogs.properties.statusCode",
                     "azure.platformlogs.properties.status_code",
                 )?;
             }
 
-            if event.has("azure.platformlogs.Status") {
+            if event.has_value("azure.platformlogs.Status") {
                 event.rename("azure.platformlogs.Status", "azure.platformlogs.status")?;
             }
 
@@ -709,11 +709,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -813,7 +813,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            if event.has("azure.resource_id") {
+            if event.has_value("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
             if event.has_value("event.outcome") {
@@ -843,7 +843,7 @@ impl Transform for Default {
                     )?;
                     Ok(())
                 })();
-                if event.has("azure.platformlogs") {
+                if event.has_value("azure.platformlogs") {
                     event.rename("azure.platformlogs", "azure.springcloudlogs")?;
                 }
                 // ignore_failure: true
@@ -868,82 +868,82 @@ impl Transform for Default {
                 if _cond {
                     return Ok(TransformResult::Drop);
                 }
-                if event.has("azure.springcloudlogs.LogFormat") {
+                if event.has_value("azure.springcloudlogs.LogFormat") {
                     event.rename(
                         "azure.springcloudlogs.LogFormat",
                         "azure.springcloudlogs.log_format",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.InstanceName") {
+                if event.has_value("azure.springcloudlogs.properties.InstanceName") {
                     event.rename(
                         "azure.springcloudlogs.properties.InstanceName",
                         "azure.springcloudlogs.properties.instance_name",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Log") {
+                if event.has_value("azure.springcloudlogs.properties.Log") {
                     event.rename(
                         "azure.springcloudlogs.properties.Log",
                         "azure.springcloudlogs.properties.log",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.ServiceName") {
+                if event.has_value("azure.springcloudlogs.properties.ServiceName") {
                     event.rename(
                         "azure.springcloudlogs.properties.ServiceName",
                         "azure.springcloudlogs.properties.service_name",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Stream") {
+                if event.has_value("azure.springcloudlogs.properties.Stream") {
                     event.rename(
                         "azure.springcloudlogs.properties.Stream",
                         "azure.springcloudlogs.properties.stream",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.AppName") {
+                if event.has_value("azure.springcloudlogs.properties.AppName") {
                     event.rename(
                         "azure.springcloudlogs.properties.AppName",
                         "azure.springcloudlogs.properties.app_name",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.ServiceId") {
+                if event.has_value("azure.springcloudlogs.properties.ServiceId") {
                     event.rename(
                         "azure.springcloudlogs.properties.ServiceId",
                         "azure.springcloudlogs.properties.service_id",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Type") {
+                if event.has_value("azure.springcloudlogs.properties.Type") {
                     event.rename(
                         "azure.springcloudlogs.properties.Type",
                         "azure.springcloudlogs.properties.type",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Level") {
+                if event.has_value("azure.springcloudlogs.properties.Level") {
                     event.rename(
                         "azure.springcloudlogs.properties.Level",
                         "azure.springcloudlogs.level",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Logger") {
+                if event.has_value("azure.springcloudlogs.properties.Logger") {
                     event.rename(
                         "azure.springcloudlogs.properties.Logger",
                         "azure.springcloudlogs.properties.logger",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Stack") {
+                if event.has_value("azure.springcloudlogs.properties.Stack") {
                     event.rename(
                         "azure.springcloudlogs.properties.Stack",
                         "azure.springcloudlogs.properties.stack",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.properties.Thread") {
+                if event.has_value("azure.springcloudlogs.properties.Thread") {
                     event.rename(
                         "azure.springcloudlogs.properties.Thread",
                         "azure.springcloudlogs.properties.thread",
                     )?;
                 }
-                if event.has("azure.springcloudlogs.level") {
+                if event.has_value("azure.springcloudlogs.level") {
                     event.rename("azure.springcloudlogs.level", "log.level")?;
                 }
-                if event.has("azure.springcloudlogs.operationName") {
+                if event.has_value("azure.springcloudlogs.operationName") {
                     event.rename(
                         "azure.springcloudlogs.operationName",
                         "azure.springcloudlogs.operation_name",
@@ -963,7 +963,7 @@ impl Transform for Default {
                 // End nested pipeline: "springcloudlogs-inner-pipeline"
             }
 
-            if event.has("azure.platformlogs.resultDescription") {
+            if event.has_value("azure.platformlogs.resultDescription") {
                 event.rename(
                     "azure.platformlogs.resultDescription",
                     "azure.platformlogs.result_description",

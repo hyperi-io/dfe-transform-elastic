@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -97,26 +97,26 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("mimecast.searchText") {
+            if event.has_value("mimecast.searchText") {
                 event.rename("mimecast.searchText", "mimecast.search_details.text")?;
             }
 
-            if event.has("mimecast.description") {
+            if event.has_value("mimecast.description") {
                 event.rename(
                     "mimecast.description",
                     "mimecast.search_details.description",
                 )?;
             }
 
-            if event.has("mimecast.source") {
+            if event.has_value("mimecast.source") {
                 event.rename("mimecast.source", "mimecast.search_details.source")?;
             }
 
-            if event.has("mimecast.searchPath") {
+            if event.has_value("mimecast.searchPath") {
                 event.rename("mimecast.searchPath", "mimecast.search_details.path")?;
             }
 
-            if event.has("mimecast.searchReason") {
+            if event.has_value("mimecast.searchReason") {
                 event.rename("mimecast.searchReason", "mimecast.search_details.reason")?;
             }
 
@@ -129,7 +129,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("mimecast.emailAddr") {
+            if event.has_value("mimecast.emailAddr") {
                 event.rename("mimecast.emailAddr", "user.email")?;
             }
 

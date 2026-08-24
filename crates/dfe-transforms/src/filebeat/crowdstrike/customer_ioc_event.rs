@@ -204,11 +204,11 @@ impl Transform for CustomerIocEvent {
                 }
             }
 
-            if event.has("threat.indicator.as.asn") {
+            if event.has_value("threat.indicator.as.asn") {
                 event.rename("threat.indicator.as.asn", "threat.indicator.as.number")?;
             }
 
-            if event.has("threat.indicator.as.organization_name") {
+            if event.has_value("threat.indicator.as.organization_name") {
                 event.rename(
                     "threat.indicator.as.organization_name",
                     "threat.indicator.as.organization.name",

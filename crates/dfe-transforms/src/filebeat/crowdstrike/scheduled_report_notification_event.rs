@@ -114,7 +114,7 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
-            if event.has("crowdstrike.event.UserID") {
+            if event.has_value("crowdstrike.event.UserID") {
                 event.rename("crowdstrike.event.UserID", "user.id")?;
             }
 

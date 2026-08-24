@@ -46,7 +46,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.availability_zone") {
+            if event.has_value("json.availability_zone") {
                 event.rename("json.availability_zone", "cloud.availability_zone")?;
             }
 
@@ -62,7 +62,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.firewall_name") {
+            if event.has_value("json.firewall_name") {
                 event.rename("json.firewall_name", "observer.name")?;
             }
 
@@ -189,11 +189,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -302,18 +302,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
                 )?;
             }
 
-            if event.has("json.event.proto") {
+            if event.has_value("json.event.proto") {
                 event.rename("json.event.proto", "network.transport")?;
             }
 
@@ -370,15 +370,15 @@ impl Transform for Default {
                 event.set("rule.name", json!("rule.id"))?;
             }
 
-            if event.has("json.event.alert.rev_id") {
+            if event.has_value("json.event.alert.rev_id") {
                 event.rename("json.event.alert.rev_id", "rule.version")?;
             }
 
-            if event.has("json.event.alert.severity") {
+            if event.has_value("json.event.alert.severity") {
                 event.rename("json.event.alert.severity", "event.severity")?;
             }
 
-            if event.has("json.event.app_proto") {
+            if event.has_value("json.event.app_proto") {
                 event.rename("json.event.app_proto", "network.protocol")?;
             }
 
@@ -390,7 +390,7 @@ impl Transform for Default {
                 event.set("network.protocol", json!("unknown"))?;
             }
 
-            if event.has("json.event.http.hostname") {
+            if event.has_value("json.event.http.hostname") {
                 event.rename("json.event.http.hostname", "destination.domain")?;
             }
 
@@ -399,7 +399,7 @@ impl Transform for Default {
                 uri_parts(event, "json.event.http.url", "url", true, false)?;
             }
 
-            if event.has("json.event.http.http_method") {
+            if event.has_value("json.event.http.http_method") {
                 event.rename("json.event.http.http_method", "http.request.method")?;
             }
 
@@ -457,7 +457,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.event.tls.sni") {
+            if event.has_value("json.event.tls.sni") {
                 event.rename("json.event.tls.sni", "tls.client.server_name")?;
             }
 
@@ -510,23 +510,23 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.event.tls.ja3s.hash") {
+            if event.has_value("json.event.tls.ja3s.hash") {
                 event.rename("json.event.tls.ja3s.hash", "tls.server.ja3s")?;
             }
 
-            if event.has("json.event.tls.ja3.hash") {
+            if event.has_value("json.event.tls.ja3.hash") {
                 event.rename("json.event.tls.ja3.hash", "tls.server.ja3")?;
             }
 
-            if event.has("json.event.tls.certificate") {
+            if event.has_value("json.event.tls.certificate") {
                 event.rename("json.event.tls.certificate", "tls.server.certificate")?;
             }
 
-            if event.has("tls.server.certificate_chain") {
+            if event.has_value("tls.server.certificate_chain") {
                 event.rename("tls.server.certificate_chain", "json.event.tls.chain")?;
             }
 
-            if event.has("tls.server.x509.serial_number") {
+            if event.has_value("tls.server.x509.serial_number") {
                 event.rename("tls.server.x509.serial_number", "json.event.tls.serial")?;
             }
 
@@ -570,15 +570,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("tls.server.not_after") {
+            if event.has_value("tls.server.not_after") {
                 event.rename("tls.server.not_after", "tls.server.x509.not_after")?;
             }
 
-            if event.has("tls.server.not_before") {
+            if event.has_value("tls.server.not_before") {
                 event.rename("tls.server.not_before", "tls.server.x509.not_before")?;
             }
 
-            if event.has("json.event.tcp.tcp_flags") {
+            if event.has_value("json.event.tcp.tcp_flags") {
                 event.rename("json.event.tcp.tcp_flags", "aws.firewall.tcp_flags")?;
             }
 
@@ -599,11 +599,11 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.event.netflow") {
+            if event.has_value("json.event.netflow") {
                 event.rename("json.event.netflow", "aws.firewall.flow")?;
             }
 
-            if event.has("json.event.flow_id") {
+            if event.has_value("json.event.flow_id") {
                 event.rename("json.event.flow_id", "aws.firewall.flow.id")?;
             }
 

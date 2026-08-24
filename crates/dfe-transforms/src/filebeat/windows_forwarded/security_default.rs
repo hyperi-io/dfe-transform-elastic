@@ -254,7 +254,7 @@ impl Transform for SecurityDefault {
                 // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec_plan(event, cached_painless!(r#"def extIdx = ctx.file.name.lastIndexOf(\".\");\nif (extIdx > -1) {\n    ctx.file.extension = ctx.file.name.substring(extIdx+1);\n}"#))?;
                 }
-                if event.has("winlog.event_data.DirectionDescription") {
+                if event.has_value("winlog.event_data.DirectionDescription") {
                 event.rename("winlog.event_data.DirectionDescription", "network.direction")?;
                 }
                 if event.has_value("network.direction") {
@@ -399,11 +399,11 @@ impl Transform for SecurityDefault {
                 }
             }
 
-                if event.has("source.as.asn") {
+                if event.has_value("source.as.asn") {
                     event.rename("source.as.asn", "source.as.number")?;
                 }
 
-                if event.has("source.as.organization_name") {
+                if event.has_value("source.as.organization_name") {
                     event.rename("source.as.organization_name", "source.as.organization.name")?;
                 }
 

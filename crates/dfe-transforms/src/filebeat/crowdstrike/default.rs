@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -719,10 +719,10 @@ impl Transform for Default {
                         Ok(())
                     })?;
                 }
-                if event.has("crowdstrike.event.CompositeId") {
+                if event.has_value("crowdstrike.event.CompositeId") {
                     event.rename("crowdstrike.event.CompositeId", "event.id")?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
                 let _cond = {
@@ -1005,10 +1005,10 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("threat.indicator.as.asn") {
+                if event.has_value("threat.indicator.as.asn") {
                     event.rename("threat.indicator.as.asn", "threat.indicator.as.number")?;
                 }
-                if event.has("threat.indicator.as.organization_name") {
+                if event.has_value("threat.indicator.as.organization_name") {
                     event.rename(
                         "threat.indicator.as.organization_name",
                         "threat.indicator.as.organization.name",
@@ -1978,7 +1978,7 @@ impl Transform for Default {
                 event.set("event.kind", json!("alert"))?;
                 event.append("event.category", json!("malware"))?;
                 event.append("event.type", json!("info"))?;
-                if event.has("crowdstrike.event.UserName") {
+                if event.has_value("crowdstrike.event.UserName") {
                     event.rename("crowdstrike.event.UserName", "user.name")?;
                 }
                 let _cond = {
@@ -2068,11 +2068,11 @@ impl Transform for Default {
                         && event.get_str("crowdstrike.event.LocalIP") != Some("")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.LocalIP") {
+                    if event.has_value("crowdstrike.event.LocalIP") {
                         event.rename("crowdstrike.event.LocalIP", "source.ip")?;
                     }
                 }
-                if event.has("crowdstrike.event.ProcessId") {
+                if event.has_value("crowdstrike.event.ProcessId") {
                     event.rename("crowdstrike.event.ProcessId", "process.pid")?;
                 }
                 if event.has_value("crowdstrike.event.HostGroups") {
@@ -2081,28 +2081,28 @@ impl Transform for Default {
                         event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
                     }
                 }
-                if event.has("crowdstrike.event.ParentProcessId") {
+                if event.has_value("crowdstrike.event.ParentProcessId") {
                     event.rename("crowdstrike.event.ParentProcessId", "process.parent.pid")?;
                 }
                 let _cond = { !event.has_value("process.parent.executable") };
                 if _cond {
-                    if event.has("crowdstrike.event.ParentImageFileName") {
+                    if event.has_value("crowdstrike.event.ParentImageFileName") {
                         event.rename(
                             "crowdstrike.event.ParentImageFileName",
                             "process.parent.executable",
                         )?;
                     }
                 }
-                if event.has("crowdstrike.event.PatternDispositionDescription") {
+                if event.has_value("crowdstrike.event.PatternDispositionDescription") {
                     event.rename(
                         "crowdstrike.event.PatternDispositionDescription",
                         "event.action",
                     )?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.DetectDescription") {
+                if event.has_value("crowdstrike.event.DetectDescription") {
                     event.rename("crowdstrike.event.DetectDescription", "message")?;
                 }
                 let _cond = { event.has_value("message") };
@@ -2118,19 +2118,19 @@ impl Transform for Default {
                 {
                     event.set("process.name", v)?;
                 }
-                if event.has("crowdstrike.event.MachineDomain") {
+                if event.has_value("crowdstrike.event.MachineDomain") {
                     event.rename("crowdstrike.event.MachineDomain", "host.domain")?;
                 }
-                if event.has("crowdstrike.event.ComputerName") {
+                if event.has_value("crowdstrike.event.ComputerName") {
                     event.rename("crowdstrike.event.ComputerName", "host.name")?;
                 }
-                if event.has("crowdstrike.event.SHA256String") {
+                if event.has_value("crowdstrike.event.SHA256String") {
                     event.rename("crowdstrike.event.SHA256String", "file.hash.sha256")?;
                 }
-                if event.has("crowdstrike.event.MD5String") {
+                if event.has_value("crowdstrike.event.MD5String") {
                     event.rename("crowdstrike.event.MD5String", "file.hash.md5")?;
                 }
-                if event.has("crowdstrike.event.SHA1String") {
+                if event.has_value("crowdstrike.event.SHA1String") {
                     event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
                 }
                 let _cond = {
@@ -2173,21 +2173,21 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                if event.has("crowdstrike.event.FileName") {
+                if event.has_value("crowdstrike.event.FileName") {
                     event.rename("crowdstrike.event.FileName", "file.name")?;
                 }
-                if event.has("crowdstrike.event.FilePath") {
+                if event.has_value("crowdstrike.event.FilePath") {
                     event.rename("crowdstrike.event.FilePath", "file.path")?;
                 }
-                if event.has("crowdstrike.event.DetectName") {
+                if event.has_value("crowdstrike.event.DetectName") {
                     event.rename("crowdstrike.event.DetectName", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.DetectId") {
+                if event.has_value("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.MacAddress") };
                 if _cond {
-                    if event.has("crowdstrike.event.MacAddress") {
+                    if event.has_value("crowdstrike.event.MacAddress") {
                         event.rename("crowdstrike.event.MacAddress", "host.mac")?;
                     }
                 }
@@ -2514,7 +2514,7 @@ impl Transform for Default {
                 event.set("event.kind", json!("alert"))?;
                 event.append("event.category", json!("malware"))?;
                 event.append("event.type", json!("info"))?;
-                if event.has("crowdstrike.event.UserName") {
+                if event.has_value("crowdstrike.event.UserName") {
                     event.rename("crowdstrike.event.UserName", "user.name")?;
                 }
                 let _cond = {
@@ -2604,11 +2604,11 @@ impl Transform for Default {
                         && event.get_str("crowdstrike.event.LocalIP") != Some("")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.LocalIP") {
+                    if event.has_value("crowdstrike.event.LocalIP") {
                         event.rename("crowdstrike.event.LocalIP", "source.ip")?;
                     }
                 }
-                if event.has("crowdstrike.event.ProcessId") {
+                if event.has_value("crowdstrike.event.ProcessId") {
                     event.rename("crowdstrike.event.ProcessId", "process.pid")?;
                 }
                 if event.has_value("crowdstrike.event.HostGroups") {
@@ -2617,28 +2617,28 @@ impl Transform for Default {
                         event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
                     }
                 }
-                if event.has("crowdstrike.event.ParentProcessId") {
+                if event.has_value("crowdstrike.event.ParentProcessId") {
                     event.rename("crowdstrike.event.ParentProcessId", "process.parent.pid")?;
                 }
                 let _cond = { !event.has_value("process.parent.executable") };
                 if _cond {
-                    if event.has("crowdstrike.event.ParentImageFileName") {
+                    if event.has_value("crowdstrike.event.ParentImageFileName") {
                         event.rename(
                             "crowdstrike.event.ParentImageFileName",
                             "process.parent.executable",
                         )?;
                     }
                 }
-                if event.has("crowdstrike.event.PatternDispositionDescription") {
+                if event.has_value("crowdstrike.event.PatternDispositionDescription") {
                     event.rename(
                         "crowdstrike.event.PatternDispositionDescription",
                         "event.action",
                     )?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.DetectDescription") {
+                if event.has_value("crowdstrike.event.DetectDescription") {
                     event.rename("crowdstrike.event.DetectDescription", "message")?;
                 }
                 let _cond = { event.has_value("message") };
@@ -2654,19 +2654,19 @@ impl Transform for Default {
                 {
                     event.set("process.name", v)?;
                 }
-                if event.has("crowdstrike.event.MachineDomain") {
+                if event.has_value("crowdstrike.event.MachineDomain") {
                     event.rename("crowdstrike.event.MachineDomain", "host.domain")?;
                 }
-                if event.has("crowdstrike.event.ComputerName") {
+                if event.has_value("crowdstrike.event.ComputerName") {
                     event.rename("crowdstrike.event.ComputerName", "host.name")?;
                 }
-                if event.has("crowdstrike.event.SHA256String") {
+                if event.has_value("crowdstrike.event.SHA256String") {
                     event.rename("crowdstrike.event.SHA256String", "file.hash.sha256")?;
                 }
-                if event.has("crowdstrike.event.MD5String") {
+                if event.has_value("crowdstrike.event.MD5String") {
                     event.rename("crowdstrike.event.MD5String", "file.hash.md5")?;
                 }
-                if event.has("crowdstrike.event.SHA1String") {
+                if event.has_value("crowdstrike.event.SHA1String") {
                     event.rename("crowdstrike.event.SHA1String", "file.hash.sha1")?;
                 }
                 let _cond = {
@@ -2709,21 +2709,21 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                if event.has("crowdstrike.event.FileName") {
+                if event.has_value("crowdstrike.event.FileName") {
                     event.rename("crowdstrike.event.FileName", "file.name")?;
                 }
-                if event.has("crowdstrike.event.FilePath") {
+                if event.has_value("crowdstrike.event.FilePath") {
                     event.rename("crowdstrike.event.FilePath", "file.path")?;
                 }
-                if event.has("crowdstrike.event.DetectName") {
+                if event.has_value("crowdstrike.event.DetectName") {
                     event.rename("crowdstrike.event.DetectName", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.DetectId") {
+                if event.has_value("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.MacAddress") };
                 if _cond {
-                    if event.has("crowdstrike.event.MacAddress") {
+                    if event.has_value("crowdstrike.event.MacAddress") {
                         event.rename("crowdstrike.event.MacAddress", "host.mac")?;
                     }
                 }
@@ -2837,7 +2837,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("crowdstrike.event.MobileDetectionId") {
+                if event.has_value("crowdstrike.event.MobileDetectionId") {
                     event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
                 }
                 if event.has_value("event.id") {
@@ -2851,13 +2851,13 @@ impl Transform for Default {
                         event.set("event.id", converted)?;
                     }
                 }
-                if event.has("crowdstrike.event.DetectId") {
+                if event.has_value("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
-                if event.has("crowdstrike.event.DetectName") {
+                if event.has_value("crowdstrike.event.DetectName") {
                     event.rename("crowdstrike.event.DetectName", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.DetectDescription") {
+                if event.has_value("crowdstrike.event.DetectDescription") {
                     event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.Technique") };
@@ -2904,19 +2904,19 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                if event.has("crowdstrike.event.ComputerName") {
+                if event.has_value("crowdstrike.event.ComputerName") {
                     event.rename("crowdstrike.event.ComputerName", "host.name")?;
                 }
-                if event.has("crowdstrike.event.UserName") {
+                if event.has_value("crowdstrike.event.UserName") {
                     event.rename("crowdstrike.event.UserName", "user.name")?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.SensorId") {
+                if event.has_value("crowdstrike.event.SensorId") {
                     event.rename("crowdstrike.event.SensorId", "device.id")?;
                 }
-                if event.has("crowdstrike.event.ProcessId") {
+                if event.has_value("crowdstrike.event.ProcessId") {
                     event.rename("crowdstrike.event.ProcessId", "process.pid")?;
                 }
                 // End nested pipeline: "mobile_detection_summary"
@@ -2931,13 +2931,13 @@ impl Transform for Default {
                 event.set("event.kind", json!("alert"))?;
                 event.append("event.category", json!("malware"))?;
                 event.append("event.type", json!("info"))?;
-                if event.has("crowdstrike.event.CompositeId") {
+                if event.has_value("crowdstrike.event.CompositeId") {
                     event.rename("crowdstrike.event.CompositeId", "event.id")?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.Description") {
+                if event.has_value("crowdstrike.event.Description") {
                     event.rename("crowdstrike.event.Description", "message")?;
                 }
                 // on_failure: 2 handler(s)
@@ -3110,13 +3110,13 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.HostID") {
+                if event.has_value("crowdstrike.event.HostID") {
                     event.rename("crowdstrike.event.HostID", "host.id")?;
                 }
-                if event.has("crowdstrike.event.IncidentID") {
+                if event.has_value("crowdstrike.event.IncidentID") {
                     event.rename("crowdstrike.event.IncidentID", "event.id")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.FineScore") };
@@ -3154,10 +3154,10 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                if event.has("crowdstrike.event.Name") {
+                if event.has_value("crowdstrike.event.Name") {
                     event.rename("crowdstrike.event.Name", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.DetectId") {
+                if event.has_value("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
                 if event.has_value("crowdstrike.event.PatternId") {
@@ -3171,7 +3171,7 @@ impl Transform for Default {
                         event.set("rule.uuid", converted)?;
                     }
                 }
-                if event.has("crowdstrike.event.Description") {
+                if event.has_value("crowdstrike.event.Description") {
                     event.rename("crowdstrike.event.Description", "message")?;
                 }
                 let _cond = {
@@ -3686,10 +3686,10 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
                 }
-                if event.has("crowdstrike.event.DetectDescription") {
+                if event.has_value("crowdstrike.event.DetectDescription") {
                     event.rename("crowdstrike.event.DetectDescription", "message")?;
                 }
-                if event.has("crowdstrike.event.LocationCountryCode") {
+                if event.has_value("crowdstrike.event.LocationCountryCode") {
                     event.rename(
                         "crowdstrike.event.LocationCountryCode",
                         "host.geo.country_iso_code",
@@ -3706,16 +3706,16 @@ impl Transform for Default {
                         event.set("rule.uuid", converted)?;
                     }
                 }
-                if event.has("crowdstrike.event.SourceAccountDomain") {
+                if event.has_value("crowdstrike.event.SourceAccountDomain") {
                     event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
                 }
-                if event.has("crowdstrike.event.SourceAccountName") {
+                if event.has_value("crowdstrike.event.SourceAccountName") {
                     event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
                 }
-                if event.has("crowdstrike.event.SourceAccountObjectSid") {
+                if event.has_value("crowdstrike.event.SourceAccountObjectSid") {
                     event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
                 }
-                if event.has("crowdstrike.event.SourceEndpointHostName") {
+                if event.has_value("crowdstrike.event.SourceEndpointHostName") {
                     event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
                 }
                 let _cond = {
@@ -3793,13 +3793,13 @@ impl Transform for Default {
                         event.set("rule.description", v)?;
                     }
                 }
-                if event.has("crowdstrike.event.DetectName") {
+                if event.has_value("crowdstrike.event.DetectName") {
                     event.rename("crowdstrike.event.DetectName", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.DetectId") {
+                if event.has_value("crowdstrike.event.DetectId") {
                     event.rename("crowdstrike.event.DetectId", "rule.id")?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.ContextTimeStamp") };
@@ -4191,13 +4191,13 @@ impl Transform for Default {
                         )),
                     )?;
                 }
-                if event.has("crowdstrike.event.ItemId") {
+                if event.has_value("crowdstrike.event.ItemId") {
                     event.rename("crowdstrike.event.ItemId", "event.id")?;
                 }
-                if event.has("crowdstrike.event.RuleId") {
+                if event.has_value("crowdstrike.event.RuleId") {
                     event.rename("crowdstrike.event.RuleId", "rule.id")?;
                 }
-                if event.has("crowdstrike.event.RuleName") {
+                if event.has_value("crowdstrike.event.RuleName") {
                     event.rename("crowdstrike.event.RuleName", "rule.name")?;
                 }
                 if let Some(v) = event
@@ -4207,7 +4207,7 @@ impl Transform for Default {
                 {
                     event.set("rule.ruleset", v)?;
                 }
-                if event.has("crowdstrike.event.RuleTopic") {
+                if event.has_value("crowdstrike.event.RuleTopic") {
                     event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
                 }
                 let _cond = {
@@ -4305,19 +4305,19 @@ impl Transform for Default {
                 event.set("event.kind", json!("event"))?;
                 event.append("event.category", json!("iam"))?;
                 event.append("event.type", json!("info"))?;
-                if event.has("crowdstrike.event.IncidentType") {
+                if event.has_value("crowdstrike.event.IncidentType") {
                     event.rename("crowdstrike.event.IncidentType", "event.action")?;
                 }
-                if event.has("crowdstrike.event.IncidentDescription") {
+                if event.has_value("crowdstrike.event.IncidentDescription") {
                     event.rename("crowdstrike.event.IncidentDescription", "message")?;
                 }
-                if event.has("crowdstrike.event.IdentityProtectionIncidentId") {
+                if event.has_value("crowdstrike.event.IdentityProtectionIncidentId") {
                     event.rename("crowdstrike.event.IdentityProtectionIncidentId", "event.id")?;
                 }
-                if event.has("crowdstrike.event.FalconHostLink") {
+                if event.has_value("crowdstrike.event.FalconHostLink") {
                     event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
                 }
-                if event.has("crowdstrike.event.UserName") {
+                if event.has_value("crowdstrike.event.UserName") {
                     event.rename("crowdstrike.event.UserName", "user.name")?;
                 }
                 let _cond = {
@@ -4359,7 +4359,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("crowdstrike.event.EndpointName") {
+                if event.has_value("crowdstrike.event.EndpointName") {
                     event.rename("crowdstrike.event.EndpointName", "host.hostname")?;
                 }
                 let _cond = {
@@ -4548,10 +4548,10 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.outcome", json!("failure"))?;
                 }
-                if event.has("crowdstrike.event.EventAction") {
+                if event.has_value("crowdstrike.event.EventAction") {
                     event.rename("crowdstrike.event.EventAction", "event.action")?;
                 }
-                if event.has("crowdstrike.event.ReportUrl") {
+                if event.has_value("crowdstrike.event.ReportUrl") {
                     event.rename("crowdstrike.event.ReportUrl", "event.reference")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.ResourceAttributes") };
@@ -4562,49 +4562,49 @@ impl Transform for Default {
                         "crowdstrike.event.ResourceAttributes",
                     )?;
                 }
-                if event.has("crowdstrike.event.EventSource") {
+                if event.has_value("crowdstrike.event.EventSource") {
                     event.rename("crowdstrike.event.EventSource", "event.provider")?;
                 }
                 let _cond = { !event.has_value("cloud.account.id") };
                 if _cond {
-                    if event.has("crowdstrike.event.AccountId") {
+                    if event.has_value("crowdstrike.event.AccountId") {
                         event.rename("crowdstrike.event.AccountId", "cloud.account.id")?;
                     }
                 }
                 let _cond = { !event.has_value("cloud.region") };
                 if _cond {
-                    if event.has("crowdstrike.event.Region") {
+                    if event.has_value("crowdstrike.event.Region") {
                         event.rename("crowdstrike.event.Region", "cloud.region")?;
                     }
                 }
                 let _cond = { !event.has_value("cloud.provider") };
                 if _cond {
-                    if event.has("crowdstrike.event.CloudProvider") {
+                    if event.has_value("crowdstrike.event.CloudProvider") {
                         event.rename("crowdstrike.event.CloudProvider", "cloud.provider")?;
                     }
                 }
                 let _cond = { !event.has_value("cloud.provider") };
                 if _cond {
-                    if event.has("crowdstrike.event.CloudPlatform") {
+                    if event.has_value("crowdstrike.event.CloudPlatform") {
                         event.rename("crowdstrike.event.CloudPlatform", "cloud.provider")?;
                     }
                 }
                 let _cond = { !event.has_value("cloud.service.name") };
                 if _cond {
-                    if event.has("crowdstrike.event.CloudService") {
+                    if event.has_value("crowdstrike.event.CloudService") {
                         event.rename("crowdstrike.event.CloudService", "cloud.service.name")?;
                     }
                 }
-                if event.has("crowdstrike.event.PolicyStatement") {
+                if event.has_value("crowdstrike.event.PolicyStatement") {
                     event.rename("crowdstrike.event.PolicyStatement", "message")?;
                 }
-                if event.has("crowdstrike.event.UserName") {
+                if event.has_value("crowdstrike.event.UserName") {
                     event.rename("crowdstrike.event.UserName", "user.name")?;
                 }
-                if event.has("crowdstrike.event.UserId") {
+                if event.has_value("crowdstrike.event.UserId") {
                     event.rename("crowdstrike.event.UserId", "user.id")?;
                 }
-                if event.has("crowdstrike.event.UserSourceIp") {
+                if event.has_value("crowdstrike.event.UserSourceIp") {
                     event.rename("crowdstrike.event.UserSourceIp", "source.ip")?;
                 }
                 let _cond = {
@@ -4806,7 +4806,7 @@ impl Transform for Default {
                         event.set("user.email", v)?;
                     }
                 }
-                if event.has("crowdstrike.event.OperationName") {
+                if event.has_value("crowdstrike.event.OperationName") {
                     event.rename("crowdstrike.event.OperationName", "message")?;
                 }
                 let _cond = {
@@ -4814,7 +4814,7 @@ impl Transform for Default {
                         && event.get_str("crowdstrike.event.UserIp") != Some("")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.UserIp") {
+                    if event.has_value("crowdstrike.event.UserIp") {
                         event.rename("crowdstrike.event.UserIp", "source.ip")?;
                     }
                 }
@@ -4966,10 +4966,10 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.outcome", json!("unknown"))?;
                 }
-                if event.has("crowdstrike.event.ServiceName") {
+                if event.has_value("crowdstrike.event.ServiceName") {
                     event.rename("crowdstrike.event.ServiceName", "message")?;
                 }
-                if event.has("crowdstrike.event.UserIp") {
+                if event.has_value("crowdstrike.event.UserIp") {
                     event.rename("crowdstrike.event.UserIp", "source.ip")?;
                 }
                 // End nested pipeline: "auth_activity_audit"
@@ -5031,7 +5031,7 @@ impl Transform for Default {
                         )),
                     )?;
                 }
-                if event.has("crowdstrike.event.Ipv") {
+                if event.has_value("crowdstrike.event.Ipv") {
                     event.rename("crowdstrike.event.Ipv", "network.type")?;
                 }
                 if event.has_value("crowdstrike.event.PID") {
@@ -5054,25 +5054,25 @@ impl Transform for Default {
                     event.set("process.executable", v)?;
                 }
                 event.remove("crowdstrike.event.ImageFileName");
-                if event.has("crowdstrike.event.RuleId") {
+                if event.has_value("crowdstrike.event.RuleId") {
                     event.rename("crowdstrike.event.RuleId", "rule.id")?;
                 }
-                if event.has("crowdstrike.event.RuleName") {
+                if event.has_value("crowdstrike.event.RuleName") {
                     event.rename("crowdstrike.event.RuleName", "rule.name")?;
                 }
-                if event.has("crowdstrike.event.RuleGroupName") {
+                if event.has_value("crowdstrike.event.RuleGroupName") {
                     event.rename("crowdstrike.event.RuleGroupName", "rule.ruleset")?;
                 }
-                if event.has("crowdstrike.event.RuleDescription") {
+                if event.has_value("crowdstrike.event.RuleDescription") {
                     event.rename("crowdstrike.event.RuleDescription", "rule.description")?;
                 }
-                if event.has("crowdstrike.event.RuleFamilyID") {
+                if event.has_value("crowdstrike.event.RuleFamilyID") {
                     event.rename("crowdstrike.event.RuleFamilyID", "rule.category")?;
                 }
-                if event.has("crowdstrike.event.HostName") {
+                if event.has_value("crowdstrike.event.HostName") {
                     event.rename("crowdstrike.event.HostName", "host.name")?;
                 }
-                if event.has("crowdstrike.event.EventType") {
+                if event.has_value("crowdstrike.event.EventType") {
                     event.rename("crowdstrike.event.EventType", "event.code")?;
                 }
                 let _cond = { event.has_value("crowdstrike.event.ConnectionDirection") };
@@ -5092,7 +5092,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("ingress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.RemoteAddress") {
+                    if event.has_value("crowdstrike.event.RemoteAddress") {
                         event.rename("crowdstrike.event.RemoteAddress", "source.ip")?;
                     }
                 }
@@ -5101,7 +5101,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("ingress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.LocalAddress") {
+                    if event.has_value("crowdstrike.event.LocalAddress") {
                         event.rename("crowdstrike.event.LocalAddress", "destination.ip")?;
                     }
                 }
@@ -5144,7 +5144,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("egress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.RemoteAddress") {
+                    if event.has_value("crowdstrike.event.RemoteAddress") {
                         event.rename("crowdstrike.event.RemoteAddress", "destination.ip")?;
                     }
                 }
@@ -5153,7 +5153,7 @@ impl Transform for Default {
                         && event.get_str("network.direction") == Some("egress")
                 };
                 if _cond {
-                    if event.has("crowdstrike.event.LocalAddress") {
+                    if event.has_value("crowdstrike.event.LocalAddress") {
                         event.rename("crowdstrike.event.LocalAddress", "source.ip")?;
                     }
                 }
@@ -5191,7 +5191,7 @@ impl Transform for Default {
                         }
                     }
                 }
-                if event.has("crowdstrike.event.Platform") {
+                if event.has_value("crowdstrike.event.Platform") {
                     event.rename("crowdstrike.event.Platform", "host.os.platform")?;
                 }
                 // End nested pipeline: "firewall_match"
@@ -5279,7 +5279,7 @@ impl Transform for Default {
                     }
                 }
                 event.set("message", json!("Remote response session started."))?;
-                if event.has("crowdstrike.event.HostnameField") {
+                if event.has_value("crowdstrike.event.HostnameField") {
                     event.rename("crowdstrike.event.HostnameField", "host.name")?;
                 }
                 // End nested pipeline: "remote_response_session_start"
@@ -5365,7 +5365,7 @@ impl Transform for Default {
                     }
                 }
                 event.set("message", json!("Remote response session ended."))?;
-                if event.has("crowdstrike.event.HostnameField") {
+                if event.has_value("crowdstrike.event.HostnameField") {
                     event.rename("crowdstrike.event.HostnameField", "host.name")?;
                 }
                 // End nested pipeline: "remote_response_session_end"
@@ -5473,7 +5473,7 @@ impl Transform for Default {
                         event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
                     }
                 }
-                if event.has("crowdstrike.event.UserID") {
+                if event.has_value("crowdstrike.event.UserID") {
                     event.rename("crowdstrike.event.UserID", "user.id")?;
                 }
                 let _cond = {
@@ -5714,11 +5714,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -5770,11 +5770,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",

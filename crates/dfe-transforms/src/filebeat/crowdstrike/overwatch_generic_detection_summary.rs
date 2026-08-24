@@ -22,15 +22,15 @@ impl Transform for OverwatchGenericDetectionSummary {
 
             event.append("event.type", json!("info"))?;
 
-            if event.has("crowdstrike.event.CompositeId") {
+            if event.has_value("crowdstrike.event.CompositeId") {
                 event.rename("crowdstrike.event.CompositeId", "event.id")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.Description") {
+            if event.has_value("crowdstrike.event.Description") {
                 event.rename("crowdstrike.event.Description", "message")?;
             }
 

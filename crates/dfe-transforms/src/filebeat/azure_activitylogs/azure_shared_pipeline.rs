@@ -247,7 +247,7 @@ impl Transform for AzureSharedPipeline {
                 })();
             }
 
-            if event.has("azure.resource_id") {
+            if event.has_value("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
 

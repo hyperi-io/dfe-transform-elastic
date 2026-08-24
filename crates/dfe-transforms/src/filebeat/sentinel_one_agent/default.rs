@@ -37,7 +37,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -53,57 +53,57 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.missingPermissions") {
+            if event.has_value("json.missingPermissions") {
                 event.rename(
                     "json.missingPermissions",
                     "sentinel_one.agent.missing_permissions",
                 )?;
             }
 
-            if event.has("json.accountId") {
+            if event.has_value("json.accountId") {
                 event.rename("json.accountId", "sentinel_one.agent.account.id")?;
             }
 
-            if event.has("json.accountName") {
+            if event.has_value("json.accountName") {
                 event.rename("json.accountName", "sentinel_one.account.name")?;
             }
 
-            if event.has("json.activeDirectory.computerDistinguishedName") {
+            if event.has_value("json.activeDirectory.computerDistinguishedName") {
                 event.rename(
                     "json.activeDirectory.computerDistinguishedName",
                     "sentinel_one.agent.active_directory.computer.name",
                 )?;
             }
 
-            if event.has("json.activeDirectory.computerMemberOf") {
+            if event.has_value("json.activeDirectory.computerMemberOf") {
                 event.rename(
                     "json.activeDirectory.computerMemberOf",
                     "sentinel_one.agent.active_directory.computer.member_of",
                 )?;
             }
 
-            if event.has("json.activeDirectory.lastUserDistinguishedName") {
+            if event.has_value("json.activeDirectory.lastUserDistinguishedName") {
                 event.rename(
                     "json.activeDirectory.lastUserDistinguishedName",
                     "sentinel_one.agent.active_directory.last_user.distinguished_name",
                 )?;
             }
 
-            if event.has("json.activeDirectory.lastUserMemberOf") {
+            if event.has_value("json.activeDirectory.lastUserMemberOf") {
                 event.rename(
                     "json.activeDirectory.lastUserMemberOf",
                     "sentinel_one.agent.active_directory.last_user.member_of",
                 )?;
             }
 
-            if event.has("json.activeDirectory.userPrincipalName") {
+            if event.has_value("json.activeDirectory.userPrincipalName") {
                 event.rename(
                     "json.activeDirectory.userPrincipalName",
                     "sentinel_one.agent.active_directory.user.principal_name",
                 )?;
             }
 
-            if event.has("json.activeDirectory.mail") {
+            if event.has_value("json.activeDirectory.mail") {
                 event.rename(
                     "json.activeDirectory.mail",
                     "sentinel_one.agent.active_directory.mail",
@@ -155,7 +155,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.agentVersion") {
+            if event.has_value("json.agentVersion") {
                 event.rename("json.agentVersion", "observer.version")?;
             }
 
@@ -204,18 +204,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.appsVulnerabilityStatus") {
+            if event.has_value("json.appsVulnerabilityStatus") {
                 event.rename(
                     "json.appsVulnerabilityStatus",
                     "sentinel_one.agent.apps_vulnerability_status",
                 )?;
             }
 
-            if event.has("json.cloudProviders") {
+            if event.has_value("json.cloudProviders") {
                 event.rename("json.cloudProviders", "sentinel_one.agent.cloud_provider")?;
             }
 
-            if event.has("json.computerName") {
+            if event.has_value("json.computerName") {
                 event.rename("json.computerName", "host.name")?;
             }
 
@@ -235,7 +235,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.consoleMigrationStatus") {
+            if event.has_value("json.consoleMigrationStatus") {
                 event.rename(
                     "json.consoleMigrationStatus",
                     "sentinel_one.agent.console_migration_status",
@@ -338,7 +338,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.cpuId") {
+            if event.has_value("json.cpuId") {
                 event.rename("json.cpuId", "sentinel_one.agent.cpu.id")?;
             }
 
@@ -392,11 +392,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.detectionState") {
+            if event.has_value("json.detectionState") {
                 event.rename("json.detectionState", "sentinel_one.agent.detection_state")?;
             }
 
-            if event.has("json.domain") {
+            if event.has_value("json.domain") {
                 event.rename("json.domain", "host.domain")?;
             }
 
@@ -461,7 +461,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.externalId") {
+            if event.has_value("json.externalId") {
                 event.rename("json.externalId", "sentinel_one.agent.external.id")?;
             }
 
@@ -680,15 +680,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.groupId") {
+            if event.has_value("json.groupId") {
                 event.rename("json.groupId", "group.id")?;
             }
 
-            if event.has("json.groupIp") {
+            if event.has_value("json.groupIp") {
                 event.rename("json.groupIp", "sentinel_one.agent.group.ip")?;
             }
 
-            if event.has("json.groupName") {
+            if event.has_value("json.groupName") {
                 event.rename("json.groupName", "group.name")?;
             }
 
@@ -744,7 +744,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "sentinel_one.agent.agent.id")?;
             }
 
@@ -856,7 +856,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.installerType") {
+            if event.has_value("json.installerType") {
                 event.rename("json.installerType", "sentinel_one.agent.installer_type")?;
             }
 
@@ -1210,7 +1210,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.lastLoggedInUserName") {
+            if event.has_value("json.lastLoggedInUserName") {
                 event.rename(
                     "json.lastLoggedInUserName",
                     "sentinel_one.agent.last_logged_in_user_name",
@@ -1233,7 +1233,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.licenseKey") {
+            if event.has_value("json.licenseKey") {
                 event.rename("json.licenseKey", "sentinel_one.agent.license.key")?;
             }
 
@@ -1285,30 +1285,30 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.locations") {
+            if event.has_value("json.locations") {
                 event.rename("json.locations", "sentinel_one.agent.locations")?;
             }
 
-            if event.has("json.locationType") {
+            if event.has_value("json.locationType") {
                 event.rename("json.locationType", "sentinel_one.agent.location.type")?;
             }
 
-            if event.has("json.machineType") {
+            if event.has_value("json.machineType") {
                 event.rename("json.machineType", "sentinel_one.agent.machine.type")?;
             }
 
-            if event.has("json.mitigationMode") {
+            if event.has_value("json.mitigationMode") {
                 event.rename("json.mitigationMode", "sentinel_one.agent.mitigation_mode")?;
             }
 
-            if event.has("json.mitigationModeSuspicious") {
+            if event.has_value("json.mitigationModeSuspicious") {
                 event.rename(
                     "json.mitigationModeSuspicious",
                     "sentinel_one.agent.mitigation_mode_suspicious",
                 )?;
             }
 
-            if event.has("json.modelName") {
+            if event.has_value("json.modelName") {
                 event.rename("json.modelName", "sentinel_one.agent.model_name")?;
             }
 
@@ -1758,7 +1758,7 @@ impl Transform for Default {
                 map_strings(event, "host.mac", "host.mac", str::to_uppercase)?;
             }
 
-            if event.has("json.networkInterfaces") {
+            if event.has_value("json.networkInterfaces") {
                 event.rename(
                     "json.networkInterfaces",
                     "sentinel_one.agent.network_interfaces",
@@ -1810,25 +1810,25 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.networkStatus") {
+            if event.has_value("json.networkStatus") {
                 event.rename("json.networkStatus", "sentinel_one.agent.network_status")?;
             }
 
-            if event.has("json.operationalState") {
+            if event.has_value("json.operationalState") {
                 event.rename(
                     "json.operationalState",
                     "sentinel_one.agent.operational_state",
                 )?;
             }
 
-            if event.has("json.operationalStateExpiration") {
+            if event.has_value("json.operationalStateExpiration") {
                 event.rename(
                     "json.operationalStateExpiration",
                     "sentinel_one.agent.operational_state_expiration",
                 )?;
             }
 
-            if event.has("json.osArch") {
+            if event.has_value("json.osArch") {
                 event.rename("json.osArch", "sentinel_one.agent.os.arch")?;
             }
 
@@ -1840,11 +1840,11 @@ impl Transform for Default {
                 event.set("host.architecture", v)?;
             }
 
-            if event.has("json.osName") {
+            if event.has_value("json.osName") {
                 event.rename("json.osName", "host.os.name")?;
             }
 
-            if event.has("json.osRevision") {
+            if event.has_value("json.osRevision") {
                 event.rename("json.osRevision", "host.os.version")?;
             }
 
@@ -1916,7 +1916,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.osUsername") {
+            if event.has_value("json.osUsername") {
                 event.rename("json.osUsername", "user.name")?;
             }
 
@@ -2022,11 +2022,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.rangerStatus") {
+            if event.has_value("json.rangerStatus") {
                 event.rename("json.rangerStatus", "sentinel_one.agent.ranger.status")?;
             }
 
-            if event.has("json.rangerVersion") {
+            if event.has_value("json.rangerVersion") {
                 event.rename("json.rangerVersion", "sentinel_one.agent.ranger.version")?;
             }
 
@@ -2082,14 +2082,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.remoteProfilingState") {
+            if event.has_value("json.remoteProfilingState") {
                 event.rename(
                     "json.remoteProfilingState",
                     "sentinel_one.agent.remote_profiling_state",
                 )?;
             }
 
-            if event.has("json.remoteProfilingStateExpiration") {
+            if event.has_value("json.remoteProfilingStateExpiration") {
                 event.rename(
                     "json.remoteProfilingStateExpiration",
                     "sentinel_one.agent.remote_profiling_state_expiration",
@@ -2252,23 +2252,23 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.scanStatus") {
+            if event.has_value("json.scanStatus") {
                 event.rename("json.scanStatus", "sentinel_one.agent.scan.status")?;
             }
 
-            if event.has("json.siteId") {
+            if event.has_value("json.siteId") {
                 event.rename("json.siteId", "sentinel_one.site.id")?;
             }
 
-            if event.has("json.siteName") {
+            if event.has_value("json.siteName") {
                 event.rename("json.siteName", "sentinel_one.site.name")?;
             }
 
-            if event.has("json.storageName") {
+            if event.has_value("json.storageName") {
                 event.rename("json.storageName", "sentinel_one.agent.storage.name")?;
             }
 
-            if event.has("json.storageType") {
+            if event.has_value("json.storageType") {
                 event.rename("json.storageType", "sentinel_one.agent.storage.type")?;
             }
 
@@ -2415,18 +2415,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.userActionsNeeded") {
+            if event.has_value("json.userActionsNeeded") {
                 event.rename(
                     "json.userActionsNeeded",
                     "sentinel_one.agent.user_action_needed",
                 )?;
             }
 
-            if event.has("json.uuid") {
+            if event.has_value("json.uuid") {
                 event.rename("json.uuid", "sentinel_one.agent.uuid")?;
             }
 
-            if event.has("json.tags.sentinelone") {
+            if event.has_value("json.tags.sentinelone") {
                 event.rename("json.tags.sentinelone", "sentinel_one.agent.tags")?;
             }
 
@@ -2494,7 +2494,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "sentinel_one.agent.tags", |event| {
-                        if event.has("_ingest._value.assignedBy") {
+                        if event.has_value("_ingest._value.assignedBy") {
                             event.rename(
                                 "_ingest._value.assignedBy",
                                 "_ingest._value.assigned_by",
@@ -2516,7 +2516,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "sentinel_one.agent.tags", |event| {
-                        if event.has("_ingest._value.assignedById") {
+                        if event.has_value("_ingest._value.assignedById") {
                             event.rename(
                                 "_ingest._value.assignedById",
                                 "_ingest._value.assigned_by_id",

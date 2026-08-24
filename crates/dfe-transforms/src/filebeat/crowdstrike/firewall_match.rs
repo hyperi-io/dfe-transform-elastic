@@ -78,7 +78,7 @@ impl Transform for FirewallMatch {
                 )?;
             }
 
-            if event.has("crowdstrike.event.Ipv") {
+            if event.has_value("crowdstrike.event.Ipv") {
                 event.rename("crowdstrike.event.Ipv", "network.type")?;
             }
 
@@ -105,31 +105,31 @@ impl Transform for FirewallMatch {
 
             event.remove("crowdstrike.event.ImageFileName");
 
-            if event.has("crowdstrike.event.RuleId") {
+            if event.has_value("crowdstrike.event.RuleId") {
                 event.rename("crowdstrike.event.RuleId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.RuleName") {
+            if event.has_value("crowdstrike.event.RuleName") {
                 event.rename("crowdstrike.event.RuleName", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.RuleGroupName") {
+            if event.has_value("crowdstrike.event.RuleGroupName") {
                 event.rename("crowdstrike.event.RuleGroupName", "rule.ruleset")?;
             }
 
-            if event.has("crowdstrike.event.RuleDescription") {
+            if event.has_value("crowdstrike.event.RuleDescription") {
                 event.rename("crowdstrike.event.RuleDescription", "rule.description")?;
             }
 
-            if event.has("crowdstrike.event.RuleFamilyID") {
+            if event.has_value("crowdstrike.event.RuleFamilyID") {
                 event.rename("crowdstrike.event.RuleFamilyID", "rule.category")?;
             }
 
-            if event.has("crowdstrike.event.HostName") {
+            if event.has_value("crowdstrike.event.HostName") {
                 event.rename("crowdstrike.event.HostName", "host.name")?;
             }
 
-            if event.has("crowdstrike.event.EventType") {
+            if event.has_value("crowdstrike.event.EventType") {
                 event.rename("crowdstrike.event.EventType", "event.code")?;
             }
 
@@ -151,7 +151,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("ingress")
             };
             if _cond {
-                if event.has("crowdstrike.event.RemoteAddress") {
+                if event.has_value("crowdstrike.event.RemoteAddress") {
                     event.rename("crowdstrike.event.RemoteAddress", "source.ip")?;
                 }
             }
@@ -161,7 +161,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("ingress")
             };
             if _cond {
-                if event.has("crowdstrike.event.LocalAddress") {
+                if event.has_value("crowdstrike.event.LocalAddress") {
                     event.rename("crowdstrike.event.LocalAddress", "destination.ip")?;
                 }
             }
@@ -207,7 +207,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("egress")
             };
             if _cond {
-                if event.has("crowdstrike.event.RemoteAddress") {
+                if event.has_value("crowdstrike.event.RemoteAddress") {
                     event.rename("crowdstrike.event.RemoteAddress", "destination.ip")?;
                 }
             }
@@ -217,7 +217,7 @@ impl Transform for FirewallMatch {
                     && event.get_str("network.direction") == Some("egress")
             };
             if _cond {
-                if event.has("crowdstrike.event.LocalAddress") {
+                if event.has_value("crowdstrike.event.LocalAddress") {
                     event.rename("crowdstrike.event.LocalAddress", "source.ip")?;
                 }
             }
@@ -258,7 +258,7 @@ impl Transform for FirewallMatch {
                 }
             }
 
-            if event.has("crowdstrike.event.Platform") {
+            if event.has_value("crowdstrike.event.Platform") {
                 event.rename("crowdstrike.event.Platform", "host.os.platform")?;
             }
 

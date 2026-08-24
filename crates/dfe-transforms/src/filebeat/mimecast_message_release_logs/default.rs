@@ -40,7 +40,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -219,7 +219,7 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("mimecast.spamProcessingDetail.verdict") {
+                if event.has_value("mimecast.spamProcessingDetail.verdict") {
                     event.rename(
                         "mimecast.spamProcessingDetail.verdict",
                         "mimecast.spamProcessingDetail.spamVerdict",

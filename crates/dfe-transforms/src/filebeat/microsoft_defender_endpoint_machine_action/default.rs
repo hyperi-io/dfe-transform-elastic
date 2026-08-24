@@ -40,7 +40,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -90,7 +90,7 @@ impl Transform for Default {
 
             event.set("event.kind", json!("event"))?;
 
-            if event.has("json.type") {
+            if event.has_value("json.type") {
                 event.rename(
                     "json.type",
                     "microsoft_defender_endpoint.machine_action.type",
@@ -124,7 +124,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.status") {
+            if event.has_value("json.status") {
                 event.rename(
                     "json.status",
                     "microsoft_defender_endpoint.machine_action.status",
@@ -159,7 +159,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.cancellationComment") {
+            if event.has_value("json.cancellationComment") {
                 event.rename(
                     "json.cancellationComment",
                     "microsoft_defender_endpoint.machine_action.cancellation_comment",
@@ -219,7 +219,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.cancellationRequestor") {
+            if event.has_value("json.cancellationRequestor") {
                 event.rename(
                     "json.cancellationRequestor",
                     "microsoft_defender_endpoint.machine_action.cancellation_requestor",
@@ -242,14 +242,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.commands") {
+            if event.has_value("json.commands") {
                 event.rename(
                     "json.commands",
                     "microsoft_defender_endpoint.machine_action.commands",
                 )?;
             }
 
-            if event.has("json.computerDnsName") {
+            if event.has_value("json.computerDnsName") {
                 event.rename(
                     "json.computerDnsName",
                     "microsoft_defender_endpoint.machine_action.computer_dns_name",
@@ -354,7 +354,7 @@ impl Transform for Default {
                 event.set("event.created", v)?;
             }
 
-            if event.has("json.errorHResult") {
+            if event.has_value("json.errorHResult") {
                 event.rename(
                     "json.errorHResult",
                     "microsoft_defender_endpoint.machine_action.error_h_result",
@@ -411,7 +411,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.externalID") {
+            if event.has_value("json.externalID") {
                 event.rename(
                     "json.externalID",
                     "microsoft_defender_endpoint.machine_action.external_id",
@@ -431,7 +431,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "microsoft_defender_endpoint.machine_action.id")?;
             }
 
@@ -504,7 +504,7 @@ impl Transform for Default {
                 event.set("@timestamp", v)?;
             }
 
-            if event.has("json.machineId") {
+            if event.has_value("json.machineId") {
                 event.rename(
                     "json.machineId",
                     "microsoft_defender_endpoint.machine_action.machine_id",
@@ -532,14 +532,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.relatedFileInfo.fileIdentifier") {
+            if event.has_value("json.relatedFileInfo.fileIdentifier") {
                 event.rename(
                     "json.relatedFileInfo.fileIdentifier",
                     "microsoft_defender_endpoint.machine_action.related_file_info.file_identifier",
                 )?;
             }
 
-            if event.has("json.relatedFileInfo.fileIdentifierType") {
+            if event.has_value("json.relatedFileInfo.fileIdentifierType") {
                 event.rename("json.relatedFileInfo.fileIdentifierType", "microsoft_defender_endpoint.machine_action.related_file_info.file_identifier_type")?;
             }
 
@@ -599,14 +599,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.requestSource") {
+            if event.has_value("json.requestSource") {
                 event.rename(
                     "json.requestSource",
                     "microsoft_defender_endpoint.machine_action.request_source",
                 )?;
             }
 
-            if event.has("json.requestor") {
+            if event.has_value("json.requestor") {
                 event.rename(
                     "json.requestor",
                     "microsoft_defender_endpoint.machine_action.requestor",
@@ -697,28 +697,28 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.requestorComment") {
+            if event.has_value("json.requestorComment") {
                 event.rename(
                     "json.requestorComment",
                     "microsoft_defender_endpoint.machine_action.requestor_comment",
                 )?;
             }
 
-            if event.has("json.scope") {
+            if event.has_value("json.scope") {
                 event.rename(
                     "json.scope",
                     "microsoft_defender_endpoint.machine_action.scope",
                 )?;
             }
 
-            if event.has("json.title") {
+            if event.has_value("json.title") {
                 event.rename(
                     "json.title",
                     "microsoft_defender_endpoint.machine_action.title",
                 )?;
             }
 
-            if event.has("json.troubleshootInfo") {
+            if event.has_value("json.troubleshootInfo") {
                 event.rename(
                     "json.troubleshootInfo",
                     "microsoft_defender_endpoint.machine_action.troubleshoot_info",

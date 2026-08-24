@@ -109,7 +109,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_behaviors_object") {
+                if event.has_value("_behaviors_object") {
                     event.rename(
                         "_behaviors_object",
                         "okta.debug_context.debug_data.flattened.behaviors",
@@ -279,7 +279,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("_risk_object") {
+                if event.has_value("_risk_object") {
                     event.rename(
                         "_risk_object",
                         "okta.debug_context.debug_data.flattened.risk",
@@ -290,7 +290,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.deviceFingerprint") {
+                if event.has_value("json.debugContext.debugData.deviceFingerprint") {
                     event.rename(
                         "json.debugContext.debugData.deviceFingerprint",
                         "okta.debug_context.debug_data.device_fingerprint",
@@ -301,7 +301,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.requestId") {
+                if event.has_value("json.debugContext.debugData.requestId") {
                     event.rename(
                         "json.debugContext.debugData.requestId",
                         "okta.debug_context.debug_data.request_id",
@@ -312,7 +312,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.requestUri") {
+                if event.has_value("json.debugContext.debugData.requestUri") {
                     event.rename(
                         "json.debugContext.debugData.requestUri",
                         "okta.debug_context.debug_data.request_uri",
@@ -323,7 +323,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.threatSuspected") {
+                if event.has_value("json.debugContext.debugData.threatSuspected") {
                     event.rename(
                         "json.debugContext.debugData.threatSuspected",
                         "okta.debug_context.debug_data.threat_suspected",
@@ -334,7 +334,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.url") {
+                if event.has_value("json.debugContext.debugData.url") {
                     event.rename(
                         "json.debugContext.debugData.url",
                         "okta.debug_context.debug_data.url",
@@ -345,7 +345,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.dtHash") {
+                if event.has_value("json.debugContext.debugData.dtHash") {
                     event.rename(
                         "json.debugContext.debugData.dtHash",
                         "okta.debug_context.debug_data.dt_hash",
@@ -356,7 +356,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.clientSecret") {
+                if event.has_value("json.debugContext.debugData.clientSecret") {
                     event.rename(
                         "json.debugContext.debugData.clientSecret",
                         "okta.debug_context.debug_data.client_secret",
@@ -367,7 +367,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.requestedScopes") {
+                if event.has_value("json.debugContext.debugData.requestedScopes") {
                     event.rename(
                         "json.debugContext.debugData.requestedScopes",
                         "okta.debug_context.debug_data.requested_scopes",
@@ -378,7 +378,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.grantedScopes") {
+                if event.has_value("json.debugContext.debugData.grantedScopes") {
                     event.rename(
                         "json.debugContext.debugData.grantedScopes",
                         "okta.debug_context.debug_data.granted_scopes",
@@ -389,7 +389,7 @@ impl Transform for UseFlattenedDebug {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("json.debugContext.debugData.grantType") {
+                if event.has_value("json.debugContext.debugData.grantType") {
                     event.rename(
                         "json.debugContext.debugData.grantType",
                         "okta.debug_context.debug_data.grant_type",

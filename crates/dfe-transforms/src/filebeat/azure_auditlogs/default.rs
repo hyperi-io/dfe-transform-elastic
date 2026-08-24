@@ -18,7 +18,7 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("ecs.version", json!("8.11.0"))?;
 
-            if event.has("azure") {
+            if event.has_value("azure") {
                 event.rename("azure", "azure-eventhub")?;
             }
 
@@ -26,7 +26,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -70,7 +70,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.auditlogs.resourceId") {
+            if event.has_value("azure.auditlogs.resourceId") {
                 event.rename("azure.auditlogs.resourceId", "azure.resource_id")?;
             }
 
@@ -105,7 +105,7 @@ impl Transform for Default {
                         .is_some_and(|v| v.is_string()))
             };
             if _cond {
-                if event.has("azure.auditlogs.durationMs") {
+                if event.has_value("azure.auditlogs.durationMs") {
                     event.rename("azure.auditlogs.durationMs", "event.duration")?;
                 }
             }
@@ -142,7 +142,7 @@ impl Transform for Default {
                 event.rename("azure.auditlogs.properties.result", "event.outcome")?;
             }
 
-            if event.has("azure.auditlogs.level") {
+            if event.has_value("azure.auditlogs.level") {
                 event.rename("azure.auditlogs.level", "log.level")?;
             }
 
@@ -164,45 +164,45 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.auditlogs.operationName") {
+            if event.has_value("azure.auditlogs.operationName") {
                 event.rename(
                     "azure.auditlogs.operationName",
                     "azure.auditlogs.operation_name",
                 )?;
             }
 
-            if event.has("azure.auditlogs.resultSignature") {
+            if event.has_value("azure.auditlogs.resultSignature") {
                 event.rename(
                     "azure.auditlogs.resultSignature",
                     "azure.auditlogs.result_signature",
                 )?;
             }
 
-            if event.has("azure.auditlogs.resultDescription") {
+            if event.has_value("azure.auditlogs.resultDescription") {
                 event.rename(
                     "azure.auditlogs.resultDescription",
                     "azure.auditlogs.result_description",
                 )?;
             }
 
-            if event.has("azure.auditlogs.operationVersion") {
+            if event.has_value("azure.auditlogs.operationVersion") {
                 event.rename(
                     "azure.auditlogs.operationVersion",
                     "azure.auditlogs.operation_version",
                 )?;
             }
 
-            if event.has("azure.auditlogs.tenantId") {
+            if event.has_value("azure.auditlogs.tenantId") {
                 event.rename("azure.auditlogs.tenantId", "azure.tenant_id")?;
             }
 
-            if event.has("azure.auditlogs.correlationId") {
+            if event.has_value("azure.auditlogs.correlationId") {
                 event.rename("azure.auditlogs.correlationId", "azure.correlation_id")?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("azure.auditlogs.properties.activityDisplayName") {
+                if event.has_value("azure.auditlogs.properties.activityDisplayName") {
                     event.rename(
                         "azure.auditlogs.properties.activityDisplayName",
                         "azure.auditlogs.properties.activity_display_name",
@@ -211,14 +211,14 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.auditlogs.properties.activityDateTime") {
+            if event.has_value("azure.auditlogs.properties.activityDateTime") {
                 event.rename(
                     "azure.auditlogs.properties.activityDateTime",
                     "azure.auditlogs.properties.activity_datetime",
                 )?;
             }
 
-            if event.has("azure.auditlogs.properties.additionalDetails") {
+            if event.has_value("azure.auditlogs.properties.additionalDetails") {
                 event.rename(
                     "azure.auditlogs.properties.additionalDetails",
                     "azure.auditlogs.properties.additional_details",
@@ -244,7 +244,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("azure.auditlogs.callerIpAddress") {
+                    if event.has_value("azure.auditlogs.callerIpAddress") {
                         event.rename("azure.auditlogs.callerIpAddress", "source.address")?;
                     }
                     Ok(())
@@ -300,46 +300,46 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("azure.auditlogs.properties.resultReason") {
+            if event.has_value("azure.auditlogs.properties.resultReason") {
                 event.rename(
                     "azure.auditlogs.properties.resultReason",
                     "azure.auditlogs.properties.result_reason",
                 )?;
             }
 
-            if event.has("azure.auditlogs.properties.resultDescription") {
+            if event.has_value("azure.auditlogs.properties.resultDescription") {
                 event.rename(
                     "azure.auditlogs.properties.resultDescription",
                     "azure.auditlogs.properties.result_description",
                 )?;
             }
 
-            if event.has("azure.auditlogs.properties.correlationId") {
+            if event.has_value("azure.auditlogs.properties.correlationId") {
                 event.rename(
                     "azure.auditlogs.properties.correlationId",
                     "azure.auditlogs.properties.correlation_id",
                 )?;
             }
 
-            if event.has("azure.auditlogs.properties.loggedByService") {
+            if event.has_value("azure.auditlogs.properties.loggedByService") {
                 event.rename(
                     "azure.auditlogs.properties.loggedByService",
                     "azure.auditlogs.properties.logged_by_service",
                 )?;
             }
 
-            if event.has("azure.auditlogs.properties.operationType") {
+            if event.has_value("azure.auditlogs.properties.operationType") {
                 event.rename(
                     "azure.auditlogs.properties.operationType",
                     "azure.auditlogs.properties.operation_type",
                 )?;
             }
 
-            if event.has("azure.auditlogs.Level") {
+            if event.has_value("azure.auditlogs.Level") {
                 event.rename("azure.auditlogs.Level", "azure.auditlogs.level")?;
             }
 
-            if event.has("azure.auditlogs.properties.additional_details.userAgent") {
+            if event.has_value("azure.auditlogs.properties.additional_details.userAgent") {
                 event.rename(
                     "azure.auditlogs.properties.additional_details.userAgent",
                     "azure.auditlogs.properties.additional_details.user_agent",
@@ -366,7 +366,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("azure.auditlogs.properties.initiatedBy") {
+            if event.has_value("azure.auditlogs.properties.initiatedBy") {
                 event.rename(
                     "azure.auditlogs.properties.initiatedBy",
                     "azure.auditlogs.properties.initiated_by",
@@ -449,11 +449,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
@@ -782,7 +782,7 @@ impl Transform for Default {
                     Ok(())
                 })();
             }
-            if event.has("azure.resource_id") {
+            if event.has_value("azure.resource_id") {
                 event.rename("azure.resource_id", "azure.resource.id")?;
             }
             if event.has_value("event.outcome") {

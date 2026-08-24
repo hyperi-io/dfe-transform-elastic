@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -60,7 +60,7 @@ impl Transform for Default {
             event.remove("host");
             event.remove("cloud");
 
-            if event.has("json.evidence.processCommandLine") {
+            if event.has_value("json.evidence.processCommandLine") {
                 event.rename("json.evidence.processCommandLine", "process.command_line")?;
             }
 
@@ -151,15 +151,15 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.aadTenantId") {
+            if event.has_value("json.aadTenantId") {
                 event.rename("json.aadTenantId", "cloud.account.id")?;
             }
 
-            if event.has("json.machineId") {
+            if event.has_value("json.machineId") {
                 event.rename("json.machineId", "cloud.instance.id")?;
             }
 
-            if event.has("json.title") {
+            if event.has_value("json.title") {
                 event.rename("json.title", "message")?;
             }
 
@@ -220,15 +220,15 @@ impl Transform for Default {
                 event.append("event.type", json!("end"))?;
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "event.id")?;
             }
 
-            if event.has("json.firstEventTime") {
+            if event.has_value("json.firstEventTime") {
                 event.rename("json.firstEventTime", "event.start")?;
             }
 
-            if event.has("json.lastEventTime") {
+            if event.has_value("json.lastEventTime") {
                 event.rename("json.lastEventTime", "event.end")?;
             }
 
@@ -314,40 +314,40 @@ impl Transform for Default {
                         .is_some_and(|s| s.len() < 1020)
             };
             if _cond {
-                if event.has("json.description") {
+                if event.has_value("json.description") {
                     event.rename("json.description", "rule.description")?;
                 }
             }
 
-            if event.has("json.evidence.fileName") {
+            if event.has_value("json.evidence.fileName") {
                 event.rename("json.evidence.fileName", "file.name")?;
             }
 
-            if event.has("json.evidence.sha256") {
+            if event.has_value("json.evidence.sha256") {
                 event.rename("json.evidence.sha256", "file.hash.sha256")?;
             }
 
-            if event.has("json.evidence.sha1") {
+            if event.has_value("json.evidence.sha1") {
                 event.rename("json.evidence.sha1", "file.hash.sha1")?;
             }
 
-            if event.has("json.evidence.filePath") {
+            if event.has_value("json.evidence.filePath") {
                 event.rename("json.evidence.filePath", "file.path")?;
             }
 
-            if event.has("json.evidence.processId") {
+            if event.has_value("json.evidence.processId") {
                 event.rename("json.evidence.processId", "process.pid")?;
             }
 
-            if event.has("json.evidence.processCreationTime") {
+            if event.has_value("json.evidence.processCreationTime") {
                 event.rename("json.evidence.processCreationTime", "process.start")?;
             }
 
-            if event.has("json.evidence.parentProcessId") {
+            if event.has_value("json.evidence.parentProcessId") {
                 event.rename("json.evidence.parentProcessId", "process.parent.pid")?;
             }
 
-            if event.has("json.evidence.parentProcessCreationTime") {
+            if event.has_value("json.evidence.parentProcessCreationTime") {
                 event.rename(
                     "json.evidence.parentProcessCreationTime",
                     "process.parent.start",
@@ -376,13 +376,13 @@ impl Transform for Default {
 
             event.set("observer.vendor", json!("Microsoft"))?;
 
-            if event.has("json.detectionSource") {
+            if event.has_value("json.detectionSource") {
                 event.rename("json.detectionSource", "observer.name")?;
             }
 
             let _cond = { event.has_value("json.evidence.url") };
             if _cond {
-                if event.has("json.evidence.url") {
+                if event.has_value("json.evidence.url") {
                     event.rename("json.evidence.url", "url.full")?;
                 }
             }
@@ -396,7 +396,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.computerDnsName") {
+            if event.has_value("json.computerDnsName") {
                 event.rename("json.computerDnsName", "host.hostname")?;
             }
 
@@ -416,15 +416,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.relatedUser.userName") {
+            if event.has_value("json.relatedUser.userName") {
                 event.rename("json.relatedUser.userName", "user.name")?;
             }
 
-            if event.has("json.relatedUser.domainName") {
+            if event.has_value("json.relatedUser.domainName") {
                 event.rename("json.relatedUser.domainName", "user.domain")?;
             }
 
-            if event.has("json.evidence.userSid") {
+            if event.has_value("json.evidence.userSid") {
                 event.rename("json.evidence.userSid", "user.id")?;
             }
 
@@ -493,7 +493,7 @@ impl Transform for Default {
             event.remove("json.relatedUser");
             event.remove("json.category");
 
-            if event.has("json") {
+            if event.has_value("json") {
                 event.rename("json", "microsoft.defender_endpoint")?;
             }
 

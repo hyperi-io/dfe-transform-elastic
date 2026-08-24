@@ -30,7 +30,7 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 Ok(())
             })();
 
-            if event.has("azure.platformlogs") {
+            if event.has_value("azure.platformlogs") {
                 event.rename("azure.platformlogs", "azure.springcloudlogs")?;
             }
 
@@ -57,95 +57,95 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 return Ok(TransformResult::Drop);
             }
 
-            if event.has("azure.springcloudlogs.LogFormat") {
+            if event.has_value("azure.springcloudlogs.LogFormat") {
                 event.rename(
                     "azure.springcloudlogs.LogFormat",
                     "azure.springcloudlogs.log_format",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.InstanceName") {
+            if event.has_value("azure.springcloudlogs.properties.InstanceName") {
                 event.rename(
                     "azure.springcloudlogs.properties.InstanceName",
                     "azure.springcloudlogs.properties.instance_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Log") {
+            if event.has_value("azure.springcloudlogs.properties.Log") {
                 event.rename(
                     "azure.springcloudlogs.properties.Log",
                     "azure.springcloudlogs.properties.log",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.ServiceName") {
+            if event.has_value("azure.springcloudlogs.properties.ServiceName") {
                 event.rename(
                     "azure.springcloudlogs.properties.ServiceName",
                     "azure.springcloudlogs.properties.service_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Stream") {
+            if event.has_value("azure.springcloudlogs.properties.Stream") {
                 event.rename(
                     "azure.springcloudlogs.properties.Stream",
                     "azure.springcloudlogs.properties.stream",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.AppName") {
+            if event.has_value("azure.springcloudlogs.properties.AppName") {
                 event.rename(
                     "azure.springcloudlogs.properties.AppName",
                     "azure.springcloudlogs.properties.app_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.ServiceId") {
+            if event.has_value("azure.springcloudlogs.properties.ServiceId") {
                 event.rename(
                     "azure.springcloudlogs.properties.ServiceId",
                     "azure.springcloudlogs.properties.service_id",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Type") {
+            if event.has_value("azure.springcloudlogs.properties.Type") {
                 event.rename(
                     "azure.springcloudlogs.properties.Type",
                     "azure.springcloudlogs.properties.type",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Level") {
+            if event.has_value("azure.springcloudlogs.properties.Level") {
                 event.rename(
                     "azure.springcloudlogs.properties.Level",
                     "azure.springcloudlogs.level",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Logger") {
+            if event.has_value("azure.springcloudlogs.properties.Logger") {
                 event.rename(
                     "azure.springcloudlogs.properties.Logger",
                     "azure.springcloudlogs.properties.logger",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Stack") {
+            if event.has_value("azure.springcloudlogs.properties.Stack") {
                 event.rename(
                     "azure.springcloudlogs.properties.Stack",
                     "azure.springcloudlogs.properties.stack",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Thread") {
+            if event.has_value("azure.springcloudlogs.properties.Thread") {
                 event.rename(
                     "azure.springcloudlogs.properties.Thread",
                     "azure.springcloudlogs.properties.thread",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.level") {
+            if event.has_value("azure.springcloudlogs.level") {
                 event.rename("azure.springcloudlogs.level", "log.level")?;
             }
 
-            if event.has("azure.springcloudlogs.operationName") {
+            if event.has_value("azure.springcloudlogs.operationName") {
                 event.rename(
                     "azure.springcloudlogs.operationName",
                     "azure.springcloudlogs.operation_name",

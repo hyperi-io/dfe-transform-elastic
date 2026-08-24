@@ -24,7 +24,7 @@ impl Transform for Device {
 
             event.set("asset.type", json!("microsoft_entra_id_device"))?;
 
-            if event.has("azure_ad") {
+            if event.has_value("azure_ad") {
                 event.rename("azure_ad", "entityanalytics_entra_id.device")?;
             }
 
@@ -287,28 +287,28 @@ impl Transform for Device {
                 }
             }
 
-            if event.has("entityanalytics_entra_id.device.device_category") {
+            if event.has_value("entityanalytics_entra_id.device.device_category") {
                 event.rename(
                     "entityanalytics_entra_id.device.device_category",
                     "entityanalytics_entra_id.device.category",
                 )?;
             }
 
-            if event.has("entityanalytics_entra_id.device.device_id") {
+            if event.has_value("entityanalytics_entra_id.device.device_id") {
                 event.rename(
                     "entityanalytics_entra_id.device.device_id",
                     "entityanalytics_entra_id.device.d_id",
                 )?;
             }
 
-            if event.has("entityanalytics_entra_id.device.device_metadata") {
+            if event.has_value("entityanalytics_entra_id.device.device_metadata") {
                 event.rename(
                     "entityanalytics_entra_id.device.device_metadata",
                     "entityanalytics_entra_id.device.metadata",
                 )?;
             }
 
-            if event.has("entityanalytics_entra_id.device.device_ownership") {
+            if event.has_value("entityanalytics_entra_id.device.device_ownership") {
                 event.rename(
                     "entityanalytics_entra_id.device.device_ownership",
                     "entityanalytics_entra_id.device.ownership",
@@ -784,7 +784,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_owners", |event| {
-                        if event.has("_ingest._value.userPrincipalName") {
+                        if event.has_value("_ingest._value.userPrincipalName") {
                             event.rename(
                                 "_ingest._value.userPrincipalName",
                                 "_ingest._value.user_principal_name",
@@ -851,7 +851,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_owners", |event| {
-                        if event.has("_ingest._value.displayName") {
+                        if event.has_value("_ingest._value.displayName") {
                             event.rename(
                                 "_ingest._value.displayName",
                                 "_ingest._value.display_name",
@@ -895,7 +895,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_owners", |event| {
-                        if event.has("_ingest._value.givenName") {
+                        if event.has_value("_ingest._value.givenName") {
                             event
                                 .rename("_ingest._value.givenName", "_ingest._value.given_name")?;
                         }
@@ -914,7 +914,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_owners", |event| {
-                        if event.has("_ingest._value.jobTitle") {
+                        if event.has_value("_ingest._value.jobTitle") {
                             event.rename("_ingest._value.jobTitle", "_ingest._value.job_title")?;
                         }
                         Ok(())
@@ -932,7 +932,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_owners", |event| {
-                        if event.has("_ingest._value.mobilePhone") {
+                        if event.has_value("_ingest._value.mobilePhone") {
                             event.rename(
                                 "_ingest._value.mobilePhone",
                                 "_ingest._value.mobile_phone",
@@ -953,7 +953,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_owners", |event| {
-                        if event.has("_ingest._value.businessPhones") {
+                        if event.has_value("_ingest._value.businessPhones") {
                             event.rename(
                                 "_ingest._value.businessPhones",
                                 "_ingest._value.business_phones",
@@ -974,7 +974,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_users", |event| {
-                        if event.has("_ingest._value.userPrincipalName") {
+                        if event.has_value("_ingest._value.userPrincipalName") {
                             event.rename(
                                 "_ingest._value.userPrincipalName",
                                 "_ingest._value.user_principal_name",
@@ -1041,7 +1041,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_users", |event| {
-                        if event.has("_ingest._value.displayName") {
+                        if event.has_value("_ingest._value.displayName") {
                             event.rename(
                                 "_ingest._value.displayName",
                                 "_ingest._value.display_name",
@@ -1085,7 +1085,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_users", |event| {
-                        if event.has("_ingest._value.givenName") {
+                        if event.has_value("_ingest._value.givenName") {
                             event
                                 .rename("_ingest._value.givenName", "_ingest._value.given_name")?;
                         }
@@ -1104,7 +1104,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_users", |event| {
-                        if event.has("_ingest._value.jobTitle") {
+                        if event.has_value("_ingest._value.jobTitle") {
                             event.rename("_ingest._value.jobTitle", "_ingest._value.job_title")?;
                         }
                         Ok(())
@@ -1122,7 +1122,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_users", |event| {
-                        if event.has("_ingest._value.mobilePhone") {
+                        if event.has_value("_ingest._value.mobilePhone") {
                             event.rename(
                                 "_ingest._value.mobilePhone",
                                 "_ingest._value.mobile_phone",
@@ -1143,7 +1143,7 @@ impl Transform for Device {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "device.registered_users", |event| {
-                        if event.has("_ingest._value.businessPhones") {
+                        if event.has_value("_ingest._value.businessPhones") {
                             event.rename(
                                 "_ingest._value.businessPhones",
                                 "_ingest._value.business_phones",

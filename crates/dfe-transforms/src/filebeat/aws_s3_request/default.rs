@@ -32,127 +32,127 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("aws.s3.metrics.AllRequests.sum") {
+            if event.has_value("aws.s3.metrics.AllRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.AllRequests.sum",
                     "aws.s3_request.requests.total",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.GetRequests.sum") {
+            if event.has_value("aws.s3.metrics.GetRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.GetRequests.sum",
                     "aws.s3_request.requests.get",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.PutRequests.sum") {
+            if event.has_value("aws.s3.metrics.PutRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.PutRequests.sum",
                     "aws.s3_request.requests.put",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.DeleteRequests.sum") {
+            if event.has_value("aws.s3.metrics.DeleteRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.DeleteRequests.sum",
                     "aws.s3_request.requests.delete",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.HeadRequests.sum") {
+            if event.has_value("aws.s3.metrics.HeadRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.HeadRequests.sum",
                     "aws.s3_request.requests.head",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.PostRequests.sum") {
+            if event.has_value("aws.s3.metrics.PostRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.PostRequests.sum",
                     "aws.s3_request.requests.post",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.SelectRequests.sum") {
+            if event.has_value("aws.s3.metrics.SelectRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.SelectRequests.sum",
                     "aws.s3_request.requests.select",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.SelectScannedBytes.avg") {
+            if event.has_value("aws.s3.metrics.SelectScannedBytes.avg") {
                 event.rename(
                     "aws.s3.metrics.SelectScannedBytes.avg",
                     "aws.s3_request.requests.select_scanned.bytes",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.SelectReturnedBytes.avg") {
+            if event.has_value("aws.s3.metrics.SelectReturnedBytes.avg") {
                 event.rename(
                     "aws.s3.metrics.SelectReturnedBytes.avg",
                     "aws.s3_request.requests.select_returned.bytes",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.ListRequests.sum") {
+            if event.has_value("aws.s3.metrics.ListRequests.sum") {
                 event.rename(
                     "aws.s3.metrics.ListRequests.sum",
                     "aws.s3_request.requests.list",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.BytesDownloaded.avg") {
+            if event.has_value("aws.s3.metrics.BytesDownloaded.avg") {
                 event.rename(
                     "aws.s3.metrics.BytesDownloaded.avg",
                     "aws.s3_request.downloaded.bytes",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.BytesUploaded.avg") {
+            if event.has_value("aws.s3.metrics.BytesUploaded.avg") {
                 event.rename(
                     "aws.s3.metrics.BytesUploaded.avg",
                     "aws.s3_request.uploaded.bytes",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.BytesDownloaded.sum") {
+            if event.has_value("aws.s3.metrics.BytesDownloaded.sum") {
                 event.rename(
                     "aws.s3.metrics.BytesDownloaded.sum",
                     "aws.s3_request.downloaded.bytes_per_period",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.BytesUploaded.sum") {
+            if event.has_value("aws.s3.metrics.BytesUploaded.sum") {
                 event.rename(
                     "aws.s3.metrics.BytesUploaded.sum",
                     "aws.s3_request.uploaded.bytes_per_period",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.4xxErrors.avg") {
+            if event.has_value("aws.s3.metrics.4xxErrors.avg") {
                 event.rename("aws.s3.metrics.4xxErrors.avg", "aws.s3_request.errors.4xx")?;
             }
 
-            if event.has("aws.s3.metrics.5xxErrors.avg") {
+            if event.has_value("aws.s3.metrics.5xxErrors.avg") {
                 event.rename("aws.s3.metrics.5xxErrors.avg", "aws.s3_request.errors.5xx")?;
             }
 
-            if event.has("aws.s3.metrics.FirstByteLatency.avg") {
+            if event.has_value("aws.s3.metrics.FirstByteLatency.avg") {
                 event.rename(
                     "aws.s3.metrics.FirstByteLatency.avg",
                     "aws.s3_request.latency.first_byte.ms",
                 )?;
             }
 
-            if event.has("aws.s3.metrics.TotalRequestLatency.avg") {
+            if event.has_value("aws.s3.metrics.TotalRequestLatency.avg") {
                 event.rename(
                     "aws.s3.metrics.TotalRequestLatency.avg",
                     "aws.s3_request.latency.total_request.ms",
                 )?;
             }
 
-            if event.has("aws.dimensions.BucketName") {
+            if event.has_value("aws.dimensions.BucketName") {
                 event.rename("aws.dimensions.BucketName", "aws.s3.bucket.name")?;
             }
 

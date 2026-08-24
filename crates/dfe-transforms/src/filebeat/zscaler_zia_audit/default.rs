@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -83,7 +83,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            if event.has("resp.event") {
+            if event.has_value("resp.event") {
                 event.rename("resp.event", "json")?;
             }
 
@@ -166,7 +166,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.action") {
+            if event.has_value("json.action") {
                 event.rename("json.action", "zscaler_zia.audit.action")?;
             }
 
@@ -227,7 +227,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.adminid") {
+            if event.has_value("json.adminid") {
                 event.rename("json.adminid", "zscaler_zia.audit.admin_id")?;
             }
 
@@ -331,11 +331,11 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.auditlogtype") {
+            if event.has_value("json.auditlogtype") {
                 event.rename("json.auditlogtype", "zscaler_zia.audit.audit_log_type")?;
             }
 
-            if event.has("json.category") {
+            if event.has_value("json.category") {
                 event.rename("json.category", "zscaler_zia.audit.category")?;
             }
 
@@ -447,7 +447,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.errorcode") {
+            if event.has_value("json.errorcode") {
                 event.rename("json.errorcode", "zscaler_zia.audit.error_code")?;
             }
 
@@ -459,19 +459,19 @@ impl Transform for Default {
                 event.set("error.code", v)?;
             }
 
-            if event.has("json.interface") {
+            if event.has_value("json.interface") {
                 event.rename("json.interface", "zscaler_zia.audit.interface")?;
             }
 
-            if event.has("json.postaction") {
+            if event.has_value("json.postaction") {
                 event.rename("json.postaction", "zscaler_zia.audit.post_action")?;
             }
 
-            if event.has("json.preaction") {
+            if event.has_value("json.preaction") {
                 event.rename("json.preaction", "zscaler_zia.audit.pre_action")?;
             }
 
-            if event.has("json.recordid") {
+            if event.has_value("json.recordid") {
                 event.rename("json.recordid", "zscaler_zia.audit.record.id")?;
             }
 
@@ -483,7 +483,7 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            if event.has("json.resource") {
+            if event.has_value("json.resource") {
                 event.rename("json.resource", "zscaler_zia.audit.resource")?;
             }
 
@@ -495,7 +495,7 @@ impl Transform for Default {
                 event.set("rule.name", v)?;
             }
 
-            if event.has("json.result") {
+            if event.has_value("json.result") {
                 event.rename("json.result", "zscaler_zia.audit.result")?;
             }
 
@@ -517,7 +517,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.subcategory") {
+            if event.has_value("json.subcategory") {
                 event.rename("json.subcategory", "zscaler_zia.audit.sub_category")?;
             }
 
@@ -529,7 +529,7 @@ impl Transform for Default {
                 event.set("rule.category", v)?;
             }
 
-            if event.has("json.timezone") {
+            if event.has_value("json.timezone") {
                 event.rename("json.timezone", "zscaler_zia.audit.timezone")?;
             }
 

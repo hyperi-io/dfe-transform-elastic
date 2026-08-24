@@ -37,7 +37,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -73,7 +73,7 @@ impl Transform for Default {
 
             event.set("cloud.provider", json!("aws"))?;
 
-            if event.has("json.Action.ActionType") {
+            if event.has_value("json.Action.ActionType") {
                 event.rename(
                     "json.Action.ActionType",
                     "aws.securityhub_findings_full_posture.action.type",
@@ -95,28 +95,28 @@ impl Transform for Default {
                 map_strings(event, "event.action", "event.action", str::to_lowercase)?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.AffectedResources") {
+            if event.has_value("json.Action.AwsApiCallAction.AffectedResources") {
                 event.rename(
                     "json.Action.AwsApiCallAction.AffectedResources",
                     "aws.securityhub_findings_full_posture.action.aws_api_call.affected_resources",
                 )?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.Api") {
+            if event.has_value("json.Action.AwsApiCallAction.Api") {
                 event.rename(
                     "json.Action.AwsApiCallAction.Api",
                     "aws.securityhub_findings_full_posture.action.aws_api_call.api",
                 )?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.CallerType") {
+            if event.has_value("json.Action.AwsApiCallAction.CallerType") {
                 event.rename(
                     "json.Action.AwsApiCallAction.CallerType",
                     "aws.securityhub_findings_full_posture.action.aws_api_call.caller.type",
                 )?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.DomainDetails.Domain") {
+            if event.has_value("json.Action.AwsApiCallAction.DomainDetails.Domain") {
                 event.rename("json.Action.AwsApiCallAction.DomainDetails.Domain", "aws.securityhub_findings_full_posture.action.aws_api_call.domain_details.domain")?;
             }
 
@@ -204,18 +204,18 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.AwsApiCallAction.RemoteIpDetails.City.CityName") {
+            if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.City.CityName") {
                 event.rename(
                     "json.Action.AwsApiCallAction.RemoteIpDetails.City.CityName",
                     "aws.securityhub_findings_full_posture.action.aws_api_call.remote_ip.city.name",
                 )?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.RemoteIpDetails.Country.CountryCode") {
+            if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.Country.CountryCode") {
                 event.rename("json.Action.AwsApiCallAction.RemoteIpDetails.Country.CountryCode", "aws.securityhub_findings_full_posture.action.aws_api_call.remote_ip.country.code")?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.RemoteIpDetails.Country.CountryName") {
+            if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.Country.CountryName") {
                 event.rename("json.Action.AwsApiCallAction.RemoteIpDetails.Country.CountryName", "aws.securityhub_findings_full_posture.action.aws_api_call.remote_ip.country.name")?;
             }
 
@@ -391,19 +391,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.AsnOrg") {
+            if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.AsnOrg") {
                 event.rename("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.AsnOrg", "aws.securityhub_findings_full_posture.action.aws_api_call.remote_ip.organization.asn_organization")?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Isp") {
+            if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Isp") {
                 event.rename("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Isp", "aws.securityhub_findings_full_posture.action.aws_api_call.remote_ip.organization.internet_service_provider")?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Org") {
+            if event.has_value("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Org") {
                 event.rename("json.Action.AwsApiCallAction.RemoteIpDetails.Organization.Org", "aws.securityhub_findings_full_posture.action.aws_api_call.remote_ip.organization.internet_provider")?;
             }
 
-            if event.has("json.Action.AwsApiCallAction.ServiceName") {
+            if event.has_value("json.Action.AwsApiCallAction.ServiceName") {
                 event.rename(
                     "json.Action.AwsApiCallAction.ServiceName",
                     "aws.securityhub_findings_full_posture.action.aws_api_call.service.name",
@@ -450,14 +450,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.DnsRequestAction.Domain") {
+            if event.has_value("json.Action.DnsRequestAction.Domain") {
                 event.rename(
                     "json.Action.DnsRequestAction.Domain",
                     "aws.securityhub_findings_full_posture.action.dns_request.domain",
                 )?;
             }
 
-            if event.has("json.Action.DnsRequestAction.Protocol") {
+            if event.has_value("json.Action.DnsRequestAction.Protocol") {
                 event.rename(
                     "json.Action.DnsRequestAction.Protocol",
                     "aws.securityhub_findings_full_posture.action.dns_request.protocol",
@@ -503,7 +503,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.NetworkConnectionAction.ConnectionDirection") {
+            if event.has_value("json.Action.NetworkConnectionAction.ConnectionDirection") {
                 event.rename(
                     "json.Action.NetworkConnectionAction.ConnectionDirection",
                     "aws.securityhub_findings_full_posture.action.network_connection.direction",
@@ -555,28 +555,31 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.NetworkConnectionAction.LocalPortDetails.PortName") {
+            if event.has_value("json.Action.NetworkConnectionAction.LocalPortDetails.PortName") {
                 event.rename("json.Action.NetworkConnectionAction.LocalPortDetails.PortName", "aws.securityhub_findings_full_posture.action.network_connection.local.port.name")?;
             }
 
-            if event.has("json.Action.NetworkConnectionAction.Protocol") {
+            if event.has_value("json.Action.NetworkConnectionAction.Protocol") {
                 event.rename(
                     "json.Action.NetworkConnectionAction.Protocol",
                     "aws.securityhub_findings_full_posture.action.network_connection.protocol",
                 )?;
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemoteIpDetails.City.CityName") {
+            if event.has_value("json.Action.NetworkConnectionAction.RemoteIpDetails.City.CityName")
+            {
                 event.rename("json.Action.NetworkConnectionAction.RemoteIpDetails.City.CityName", "aws.securityhub_findings_full_posture.action.network_connection.remote_ip.city.name")?;
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemoteIpDetails.Country.CountryCode")
-            {
+            if event.has_value(
+                "json.Action.NetworkConnectionAction.RemoteIpDetails.Country.CountryCode",
+            ) {
                 event.rename("json.Action.NetworkConnectionAction.RemoteIpDetails.Country.CountryCode", "aws.securityhub_findings_full_posture.action.network_connection.remote_ip.country.code")?;
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemoteIpDetails.Country.CountryName")
-            {
+            if event.has_value(
+                "json.Action.NetworkConnectionAction.RemoteIpDetails.Country.CountryName",
+            ) {
                 event.rename("json.Action.NetworkConnectionAction.RemoteIpDetails.Country.CountryName", "aws.securityhub_findings_full_posture.action.network_connection.remote_ip.country.name")?;
             }
 
@@ -753,16 +756,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.AsnOrg")
-            {
+            if event.has_value(
+                "json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.AsnOrg",
+            ) {
                 event.rename("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.AsnOrg", "aws.securityhub_findings_full_posture.action.network_connection.remote_ip.organization.asn_organization")?;
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Isp") {
+            if event
+                .has_value("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Isp")
+            {
                 event.rename("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Isp", "aws.securityhub_findings_full_posture.action.network_connection.remote_ip.organization.internet_service_provider")?;
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Org") {
+            if event
+                .has_value("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Org")
+            {
                 event.rename("json.Action.NetworkConnectionAction.RemoteIpDetails.Organization.Org", "aws.securityhub_findings_full_posture.action.network_connection.remote_ip.organization.internet_provider")?;
             }
 
@@ -811,7 +819,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Action.NetworkConnectionAction.RemotePortDetails.PortName") {
+            if event.has_value("json.Action.NetworkConnectionAction.RemotePortDetails.PortName") {
                 event.rename("json.Action.NetworkConnectionAction.RemotePortDetails.PortName", "aws.securityhub_findings_full_posture.action.network_connection.remote.port.name")?;
             }
 
@@ -982,7 +990,7 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.LocalPortDetails.PortName") {
+                            if event.has_value("_ingest._value.LocalPortDetails.PortName") {
                                 event.rename(
                                     "_ingest._value.LocalPortDetails.PortName",
                                     "_ingest._value.local.port.name",
@@ -1008,7 +1016,7 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.RemoteIpDetails.City.CityName") {
+                            if event.has_value("_ingest._value.RemoteIpDetails.City.CityName") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.City.CityName",
                                     "_ingest._value.remote_ip.city.name",
@@ -1034,7 +1042,8 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.RemoteIpDetails.Country.CountryCode") {
+                            if event.has_value("_ingest._value.RemoteIpDetails.Country.CountryCode")
+                            {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Country.CountryCode",
                                     "_ingest._value.remote_ip.country.code",
@@ -1060,7 +1069,8 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.RemoteIpDetails.Country.CountryName") {
+                            if event.has_value("_ingest._value.RemoteIpDetails.Country.CountryName")
+                            {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Country.CountryName",
                                     "_ingest._value.remote_ip.country.name",
@@ -1324,7 +1334,8 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.RemoteIpDetails.Organization.AsnOrg") {
+                            if event.has_value("_ingest._value.RemoteIpDetails.Organization.AsnOrg")
+                            {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Organization.AsnOrg",
                                     "_ingest._value.remote_ip.organization.asn_organization",
@@ -1350,7 +1361,7 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.RemoteIpDetails.Organization.Isp") {
+                            if event.has_value("_ingest._value.RemoteIpDetails.Organization.Isp") {
                                 event.rename("_ingest._value.RemoteIpDetails.Organization.Isp", "_ingest._value.remote_ip.organization.internet_service_provider")?;
                             }
                             Ok(())
@@ -1373,7 +1384,7 @@ impl Transform for Default {
                         event,
                         "json.Action.PortProbeAction.PortProbeDetails",
                         |event| {
-                            if event.has("_ingest._value.RemoteIpDetails.Organization.Org") {
+                            if event.has_value("_ingest._value.RemoteIpDetails.Organization.Org") {
                                 event.rename(
                                     "_ingest._value.RemoteIpDetails.Organization.Org",
                                     "_ingest._value.remote_ip.organization.internet_provider",
@@ -1409,14 +1420,14 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Action.PortProbeAction.PortProbeDetails") {
+            if event.has_value("json.Action.PortProbeAction.PortProbeDetails") {
                 event.rename(
                     "json.Action.PortProbeAction.PortProbeDetails",
                     "aws.securityhub_findings_full_posture.action.port_probe.details",
                 )?;
             }
 
-            if event.has("json.AwsAccountId") {
+            if event.has_value("json.AwsAccountId") {
                 event.rename(
                     "json.AwsAccountId",
                     "aws.securityhub_findings_full_posture.aws_account_id",
@@ -1434,7 +1445,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.CompanyName") {
+            if event.has_value("json.CompanyName") {
                 event.rename(
                     "json.CompanyName",
                     "aws.securityhub_findings_full_posture.company.name",
@@ -1452,7 +1463,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.Compliance.RelatedRequirements") {
+            if event.has_value("json.Compliance.RelatedRequirements") {
                 event.rename(
                     "json.Compliance.RelatedRequirements",
                     "aws.securityhub_findings_full_posture.compliance.related_requirements",
@@ -1482,7 +1493,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.Compliance.Status") {
+            if event.has_value("json.Compliance.Status") {
                 event.rename(
                     "json.Compliance.Status",
                     "aws.securityhub_findings_full_posture.compliance.status",
@@ -1556,7 +1567,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Compliance.StatusReasons", |event| {
-                        if event.has("_ingest._value.Description") {
+                        if event.has_value("_ingest._value.Description") {
                             event.rename(
                                 "_ingest._value.Description",
                                 "_ingest._value.description",
@@ -1578,7 +1589,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Compliance.StatusReasons", |event| {
-                        if event.has("_ingest._value.ReasonCode") {
+                        if event.has_value("_ingest._value.ReasonCode") {
                             event.rename(
                                 "_ingest._value.ReasonCode",
                                 "_ingest._value.reason_code",
@@ -1590,7 +1601,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Compliance.StatusReasons") {
+            if event.has_value("json.Compliance.StatusReasons") {
                 event.rename(
                     "json.Compliance.StatusReasons",
                     "aws.securityhub_findings_full_posture.compliance.status_reasons",
@@ -1786,7 +1797,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Description") {
+            if event.has_value("json.Description") {
                 event.rename(
                     "json.Description",
                     "aws.securityhub_findings_full_posture.description",
@@ -1894,7 +1905,7 @@ impl Transform for Default {
                         event,
                         "json.FindingProviderFields.RelatedFindings",
                         |event| {
-                            if event.has("_ingest._value.Id") {
+                            if event.has_value("_ingest._value.Id") {
                                 event.rename("_ingest._value.Id", "_ingest._value.id")?;
                             }
                             Ok(())
@@ -1917,7 +1928,7 @@ impl Transform for Default {
                         event,
                         "json.FindingProviderFields.RelatedFindings",
                         |event| {
-                            if event.has("_ingest._value.ProductArn") {
+                            if event.has_value("_ingest._value.ProductArn") {
                                 event.rename(
                                     "_ingest._value.ProductArn",
                                     "_ingest._value.product.arn",
@@ -1930,21 +1941,21 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.FindingProviderFields.RelatedFindings") {
+            if event.has_value("json.FindingProviderFields.RelatedFindings") {
                 event.rename(
                     "json.FindingProviderFields.RelatedFindings",
                     "aws.securityhub_findings_full_posture.provider_fields.related_findings",
                 )?;
             }
 
-            if event.has("json.FindingProviderFields.Severity.Label") {
+            if event.has_value("json.FindingProviderFields.Severity.Label") {
                 event.rename(
                     "json.FindingProviderFields.Severity.Label",
                     "aws.securityhub_findings_full_posture.provider_fields.severity.label",
                 )?;
             }
 
-            if event.has("json.FindingProviderFields.Severity.Original") {
+            if event.has_value("json.FindingProviderFields.Severity.Original") {
                 event.rename(
                     "json.FindingProviderFields.Severity.Original",
                     "aws.securityhub_findings_full_posture.provider_fields.severity.original",
@@ -2030,7 +2041,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.FindingProviderFields.Types") {
+            if event.has_value("json.FindingProviderFields.Types") {
                 event.rename(
                     "json.FindingProviderFields.Types",
                     "aws.securityhub_findings_full_posture.provider_fields.types",
@@ -2085,7 +2096,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.GeneratorId") {
+            if event.has_value("json.GeneratorId") {
                 event.rename(
                     "json.GeneratorId",
                     "aws.securityhub_findings_full_posture.generator.id",
@@ -2100,7 +2111,7 @@ impl Transform for Default {
                 event.set("rule.id", v)?;
             }
 
-            if event.has("json.Compliance.SecurityControlId") {
+            if event.has_value("json.Compliance.SecurityControlId") {
                 event.rename(
                     "json.Compliance.SecurityControlId",
                     "aws.securityhub_findings_full_posture.compliance.security_control_id",
@@ -2118,7 +2129,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Id") {
+            if event.has_value("json.Id") {
                 event.rename("json.Id", "aws.securityhub_findings_full_posture.id")?;
             }
 
@@ -2254,7 +2265,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Malware", |event| {
-                        if event.has("_ingest._value.Name") {
+                        if event.has_value("_ingest._value.Name") {
                             event.rename("_ingest._value.Name", "_ingest._value.name")?;
                         }
                         Ok(())
@@ -2271,7 +2282,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Malware", |event| {
-                        if event.has("_ingest._value.Path") {
+                        if event.has_value("_ingest._value.Path") {
                             event.rename("_ingest._value.Path", "_ingest._value.path")?;
                         }
                         Ok(())
@@ -2288,7 +2299,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Malware", |event| {
-                        if event.has("_ingest._value.State") {
+                        if event.has_value("_ingest._value.State") {
                             event.rename("_ingest._value.State", "_ingest._value.state")?;
                         }
                         Ok(())
@@ -2305,7 +2316,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Malware", |event| {
-                        if event.has("_ingest._value.Type") {
+                        if event.has_value("_ingest._value.Type") {
                             event.rename("_ingest._value.Type", "_ingest._value.type")?;
                         }
                         Ok(())
@@ -2314,14 +2325,14 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Malware") {
+            if event.has_value("json.Malware") {
                 event.rename(
                     "json.Malware",
                     "aws.securityhub_findings_full_posture.malware",
                 )?;
             }
 
-            if event.has("json.Network.DestinationDomain") {
+            if event.has_value("json.Network.DestinationDomain") {
                 event.rename(
                     "json.Network.DestinationDomain",
                     "aws.securityhub_findings_full_posture.network.destination.domain",
@@ -2492,7 +2503,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.Network.Direction") {
+            if event.has_value("json.Network.Direction") {
                 event.rename(
                     "json.Network.Direction",
                     "aws.securityhub_findings_full_posture.network.direction",
@@ -2592,7 +2603,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Network.Protocol") {
+            if event.has_value("json.Network.Protocol") {
                 event.rename(
                     "json.Network.Protocol",
                     "aws.securityhub_findings_full_posture.network.protocol",
@@ -2619,7 +2630,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.Network.SourceDomain") {
+            if event.has_value("json.Network.SourceDomain") {
                 event.rename(
                     "json.Network.SourceDomain",
                     "aws.securityhub_findings_full_posture.network.source.domain",
@@ -2751,7 +2762,7 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Network.SourceMac") {
+            if event.has_value("json.Network.SourceMac") {
                 event.rename(
                     "json.Network.SourceMac",
                     "aws.securityhub_findings_full_posture.network.source.mac",
@@ -2847,7 +2858,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.ComponentId") {
+                        if event.has_value("_ingest._value.ComponentId") {
                             event.rename(
                                 "_ingest._value.ComponentId",
                                 "_ingest._value.component.id",
@@ -2867,7 +2878,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.ComponentType") {
+                        if event.has_value("_ingest._value.ComponentType") {
                             event.rename(
                                 "_ingest._value.ComponentType",
                                 "_ingest._value.component.type",
@@ -2887,7 +2898,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Egress.Destination.Address") {
+                        if event.has_value("_ingest._value.Egress.Destination.Address") {
                             event.rename(
                                 "_ingest._value.Egress.Destination.Address",
                                 "_ingest._value.egress.destination.address",
@@ -3083,7 +3094,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Egress.Destination.PortRanges") {
+                        if event.has_value("_ingest._value.Egress.Destination.PortRanges") {
                             event.rename(
                                 "_ingest._value.Egress.Destination.PortRanges",
                                 "_ingest._value.egress.destination.port_ranges",
@@ -3103,7 +3114,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Egress.Protocol") {
+                        if event.has_value("_ingest._value.Egress.Protocol") {
                             event.rename(
                                 "_ingest._value.Egress.Protocol",
                                 "_ingest._value.egress.protocol",
@@ -3123,7 +3134,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Egress.Source.Address") {
+                        if event.has_value("_ingest._value.Egress.Source.Address") {
                             event.rename(
                                 "_ingest._value.Egress.Source.Address",
                                 "_ingest._value.egress.source.address",
@@ -3319,7 +3330,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Egress.Source.PortRanges") {
+                        if event.has_value("_ingest._value.Egress.Source.PortRanges") {
                             event.rename(
                                 "_ingest._value.Egress.Source.PortRanges",
                                 "_ingest._value.egress.source.port_ranges",
@@ -3339,7 +3350,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Ingress.Destination.Address") {
+                        if event.has_value("_ingest._value.Ingress.Destination.Address") {
                             event.rename(
                                 "_ingest._value.Ingress.Destination.Address",
                                 "_ingest._value.ingress.destination.address",
@@ -3535,7 +3546,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Ingress.Destination.PortRanges") {
+                        if event.has_value("_ingest._value.Ingress.Destination.PortRanges") {
                             event.rename(
                                 "_ingest._value.Ingress.Destination.PortRanges",
                                 "_ingest._value.ingress.destination.port_ranges",
@@ -3555,7 +3566,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Ingress.Protocol") {
+                        if event.has_value("_ingest._value.Ingress.Protocol") {
                             event.rename(
                                 "_ingest._value.Ingress.Protocol",
                                 "_ingest._value.ingress.protocol",
@@ -3575,7 +3586,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Ingress.Source.Address") {
+                        if event.has_value("_ingest._value.Ingress.Source.Address") {
                             event.rename(
                                 "_ingest._value.Ingress.Source.Address",
                                 "_ingest._value.ingress.source.address",
@@ -3741,7 +3752,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.NetworkPath", |event| {
-                        if event.has("_ingest._value.Ingress.Source.PortRanges") {
+                        if event.has_value("_ingest._value.Ingress.Source.PortRanges") {
                             event.rename(
                                 "_ingest._value.Ingress.Source.PortRanges",
                                 "_ingest._value.ingress.source.port_ranges",
@@ -3753,14 +3764,14 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.NetworkPath") {
+            if event.has_value("json.NetworkPath") {
                 event.rename(
                     "json.NetworkPath",
                     "aws.securityhub_findings_full_posture.network_path",
                 )?;
             }
 
-            if event.has("json.Note.Text") {
+            if event.has_value("json.Note.Text") {
                 event.rename(
                     "json.Note.Text",
                     "aws.securityhub_findings_full_posture.note.text",
@@ -3815,7 +3826,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Note.UpdatedBy") {
+            if event.has_value("json.Note.UpdatedBy") {
                 event.rename(
                     "json.Note.UpdatedBy",
                     "aws.securityhub_findings_full_posture.note.updated_by",
@@ -3862,7 +3873,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.PatchSummary.Id") {
+            if event.has_value("json.PatchSummary.Id") {
                 event.rename(
                     "json.PatchSummary.Id",
                     "aws.securityhub_findings_full_posture.patch_summary.id",
@@ -4057,7 +4068,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.PatchSummary.Operation") {
+            if event.has_value("json.PatchSummary.Operation") {
                 event.rename(
                     "json.PatchSummary.Operation",
                     "aws.securityhub_findings_full_posture.patch_summary.operation.type",
@@ -4148,7 +4159,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.PatchSummary.RebootOption") {
+            if event.has_value("json.PatchSummary.RebootOption") {
                 event.rename(
                     "json.PatchSummary.RebootOption",
                     "aws.securityhub_findings_full_posture.patch_summary.reboot_option",
@@ -4214,7 +4225,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.Process.Name") {
+            if event.has_value("json.Process.Name") {
                 event.rename(
                     "json.Process.Name",
                     "aws.securityhub_findings_full_posture.process.name",
@@ -4283,7 +4294,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.Process.Path") {
+            if event.has_value("json.Process.Path") {
                 event.rename(
                     "json.Process.Path",
                     "aws.securityhub_findings_full_posture.process.path",
@@ -4411,35 +4422,35 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.ProductArn") {
+            if event.has_value("json.ProductArn") {
                 event.rename(
                     "json.ProductArn",
                     "aws.securityhub_findings_full_posture.product.arn",
                 )?;
             }
 
-            if event.has("json.ProductFields") {
+            if event.has_value("json.ProductFields") {
                 event.rename(
                     "json.ProductFields",
                     "aws.securityhub_findings_full_posture.product.fields",
                 )?;
             }
 
-            if event.has("json.ProductName") {
+            if event.has_value("json.ProductName") {
                 event.rename(
                     "json.ProductName",
                     "aws.securityhub_findings_full_posture.product.name",
                 )?;
             }
 
-            if event.has("json.RecordState") {
+            if event.has_value("json.RecordState") {
                 event.rename(
                     "json.RecordState",
                     "aws.securityhub_findings_full_posture.record_state",
                 )?;
             }
 
-            if event.has("json.Region") {
+            if event.has_value("json.Region") {
                 event.rename(
                     "json.Region",
                     "aws.securityhub_findings_full_posture.region",
@@ -4464,7 +4475,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.RelatedFindings", |event| {
-                        if event.has("_ingest._value.Id") {
+                        if event.has_value("_ingest._value.Id") {
                             event.rename("_ingest._value.Id", "_ingest._value.id")?;
                         }
                         Ok(())
@@ -4483,7 +4494,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.RelatedFindings", |event| {
-                        if event.has("_ingest._value.ProductArn") {
+                        if event.has_value("_ingest._value.ProductArn") {
                             event.rename(
                                 "_ingest._value.ProductArn",
                                 "_ingest._value.product.arn",
@@ -4495,21 +4506,21 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.RelatedFindings") {
+            if event.has_value("json.RelatedFindings") {
                 event.rename(
                     "json.RelatedFindings",
                     "aws.securityhub_findings_full_posture.related_findings",
                 )?;
             }
 
-            if event.has("json.Remediation.Recommendation.Text") {
+            if event.has_value("json.Remediation.Recommendation.Text") {
                 event.rename(
                     "json.Remediation.Recommendation.Text",
                     "aws.securityhub_findings_full_posture.remediation.recommendation.text",
                 )?;
             }
 
-            if event.has("json.Remediation.Recommendation.Url") {
+            if event.has_value("json.Remediation.Recommendation.Url") {
                 event.rename(
                     "json.Remediation.Recommendation.Url",
                     "aws.securityhub_findings_full_posture.remediation.recommendation.url",
@@ -4548,7 +4559,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Resources") {
+            if event.has_value("json.Resources") {
                 event.rename(
                     "json.Resources",
                     "aws.securityhub_findings_full_posture.resources",
@@ -4622,14 +4633,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.SchemaVersion") {
+            if event.has_value("json.SchemaVersion") {
                 event.rename(
                     "json.SchemaVersion",
                     "aws.securityhub_findings_full_posture.schema.version",
                 )?;
             }
 
-            if event.has("json.Severity.Label") {
+            if event.has_value("json.Severity.Label") {
                 event.rename(
                     "json.Severity.Label",
                     "aws.securityhub_findings_full_posture.severity.label",
@@ -4728,7 +4739,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.Severity.Original") {
+            if event.has_value("json.Severity.Original") {
                 event.rename(
                     "json.Severity.Original",
                     "aws.securityhub_findings_full_posture.severity.original",
@@ -4775,7 +4786,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.SourceUrl") {
+            if event.has_value("json.SourceUrl") {
                 event.rename(
                     "json.SourceUrl",
                     "aws.securityhub_findings_full_posture.source_url",
@@ -4819,7 +4830,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.ThreatIntelIndicators", |event| {
-                        if event.has("_ingest._value.Category") {
+                        if event.has_value("_ingest._value.Category") {
                             event.rename("_ingest._value.Category", "_ingest._value.category")?;
                         }
                         Ok(())
@@ -4915,7 +4926,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.ThreatIntelIndicators", |event| {
-                        if event.has("_ingest._value.Source") {
+                        if event.has_value("_ingest._value.Source") {
                             event.rename("_ingest._value.Source", "_ingest._value.source")?;
                         }
                         Ok(())
@@ -4934,7 +4945,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.ThreatIntelIndicators", |event| {
-                        if event.has("_ingest._value.SourceUrl") {
+                        if event.has_value("_ingest._value.SourceUrl") {
                             event
                                 .rename("_ingest._value.SourceUrl", "_ingest._value.source_url")?;
                         }
@@ -4954,7 +4965,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.ThreatIntelIndicators", |event| {
-                        if event.has("_ingest._value.Value") {
+                        if event.has_value("_ingest._value.Value") {
                             event.rename("_ingest._value.Value", "_ingest._value.value")?;
                         }
                         Ok(())
@@ -4973,7 +4984,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.ThreatIntelIndicators", |event| {
-                        if event.has("_ingest._value.Type") {
+                        if event.has_value("_ingest._value.Type") {
                             event.rename("_ingest._value.Type", "_ingest._value.type")?;
                         }
                         Ok(())
@@ -5026,14 +5037,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.ThreatIntelIndicators") {
+            if event.has_value("json.ThreatIntelIndicators") {
                 event.rename(
                     "json.ThreatIntelIndicators",
                     "aws.securityhub_findings_full_posture.threat_intel_indicators",
                 )?;
             }
 
-            if event.has("json.Title") {
+            if event.has_value("json.Title") {
                 event.rename("json.Title", "aws.securityhub_findings_full_posture.title")?;
             }
 
@@ -5045,18 +5056,18 @@ impl Transform for Default {
                 event.set("rule.name", v)?;
             }
 
-            if event.has("json.Types") {
+            if event.has_value("json.Types") {
                 event.rename("json.Types", "aws.securityhub_findings_full_posture.types")?;
             }
 
-            if event.has("json.UserDefinedFields") {
+            if event.has_value("json.UserDefinedFields") {
                 event.rename(
                     "json.UserDefinedFields",
                     "aws.securityhub_findings_full_posture.user_defined_fields",
                 )?;
             }
 
-            if event.has("json.VerificationState") {
+            if event.has_value("json.VerificationState") {
                 event.rename(
                     "json.VerificationState",
                     "aws.securityhub_findings_full_posture.verification_state",
@@ -5084,7 +5095,7 @@ impl Transform for Default {
                                                 event,
                                                 "_ingest._value.Adjustments",
                                                 |event| {
-                                                    if event.has("_ingest._value.Metric") {
+                                                    if event.has_value("_ingest._value.Metric") {
                                                         event.rename(
                                                             "_ingest._value.Metric",
                                                             "_ingest._value.metric",
@@ -5128,7 +5139,7 @@ impl Transform for Default {
                                                 event,
                                                 "_ingest._value.Adjustments",
                                                 |event| {
-                                                    if event.has("_ingest._value.Reason") {
+                                                    if event.has_value("_ingest._value.Reason") {
                                                         event.rename(
                                                             "_ingest._value.Reason",
                                                             "_ingest._value.reason",
@@ -5165,7 +5176,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.Cvss") {
                                 foreach_array(event, "_ingest._value.Cvss", |event| {
-                                    if event.has("_ingest._value.Adjustments") {
+                                    if event.has_value("_ingest._value.Adjustments") {
                                         event.rename(
                                             "_ingest._value.Adjustments",
                                             "_ingest._value.adjustments",
@@ -5258,7 +5269,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.Cvss") {
                                 foreach_array(event, "_ingest._value.Cvss", |event| {
-                                    if event.has("_ingest._value.BaseVector") {
+                                    if event.has_value("_ingest._value.BaseVector") {
                                         event.rename(
                                             "_ingest._value.BaseVector",
                                             "_ingest._value.base_vector",
@@ -5289,7 +5300,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.Cvss") {
                                 foreach_array(event, "_ingest._value.Cvss", |event| {
-                                    if event.has("_ingest._value.Source") {
+                                    if event.has_value("_ingest._value.Source") {
                                         event.rename(
                                             "_ingest._value.Source",
                                             "_ingest._value.source",
@@ -5320,7 +5331,7 @@ impl Transform for Default {
                         let _ = (|| -> Result<()> {
                             if event.has_value("_ingest._value.Cvss") {
                                 foreach_array(event, "_ingest._value.Cvss", |event| {
-                                    if event.has("_ingest._value.Version") {
+                                    if event.has_value("_ingest._value.Version") {
                                         event.rename(
                                             "_ingest._value.Version",
                                             "_ingest._value.version",
@@ -5441,7 +5452,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.Cvss") {
+                        if event.has_value("_ingest._value.Cvss") {
                             event.rename("_ingest._value.Cvss", "_ingest._value.cvss")?;
                         }
                         Ok(())
@@ -5460,7 +5471,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.Id") {
+                        if event.has_value("_ingest._value.Id") {
                             event.rename("_ingest._value.Id", "_ingest._value.id")?;
                         }
                         Ok(())
@@ -5502,7 +5513,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.ReferenceUrls") {
+                        if event.has_value("_ingest._value.ReferenceUrls") {
                             event.rename(
                                 "_ingest._value.ReferenceUrls",
                                 "_ingest._value.reference_urls",
@@ -5547,7 +5558,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.RelatedVulnerabilities") {
+                        if event.has_value("_ingest._value.RelatedVulnerabilities") {
                             event.rename(
                                 "_ingest._value.RelatedVulnerabilities",
                                 "_ingest._value.related_vulnerabilities",
@@ -5569,7 +5580,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.Vendor.Name") {
+                        if event.has_value("_ingest._value.Vendor.Name") {
                             event.rename(
                                 "_ingest._value.Vendor.Name",
                                 "_ingest._value.vendor.name",
@@ -5614,7 +5625,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.Vendor.Url") {
+                        if event.has_value("_ingest._value.Vendor.Url") {
                             event
                                 .rename("_ingest._value.Vendor.Url", "_ingest._value.vendor.url")?;
                         }
@@ -5693,7 +5704,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.Vendor.VendorSeverity") {
+                        if event.has_value("_ingest._value.Vendor.VendorSeverity") {
                             event.rename(
                                 "_ingest._value.Vendor.VendorSeverity",
                                 "_ingest._value.vendor.severity",
@@ -5799,7 +5810,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.Category") {
+                                        if event.has_value("_ingest._value.Category") {
                                             event.rename(
                                                 "_ingest._value.Category",
                                                 "_ingest._value.category",
@@ -5834,7 +5845,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.Architecture") {
+                                        if event.has_value("_ingest._value.Architecture") {
                                             event.rename(
                                                 "_ingest._value.Architecture",
                                                 "_ingest._value.architecture",
@@ -5869,7 +5880,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.Epoch") {
+                                        if event.has_value("_ingest._value.Epoch") {
                                             event.rename(
                                                 "_ingest._value.Epoch",
                                                 "_ingest._value.epoch",
@@ -5904,7 +5915,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.FilePath") {
+                                        if event.has_value("_ingest._value.FilePath") {
                                             event.rename(
                                                 "_ingest._value.FilePath",
                                                 "_ingest._value.file_path",
@@ -5939,7 +5950,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.Name") {
+                                        if event.has_value("_ingest._value.Name") {
                                             event.rename(
                                                 "_ingest._value.Name",
                                                 "_ingest._value.name",
@@ -5974,7 +5985,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.PackageManager") {
+                                        if event.has_value("_ingest._value.PackageManager") {
                                             event.rename(
                                                 "_ingest._value.PackageManager",
                                                 "_ingest._value.package_manager",
@@ -6009,7 +6020,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.Release") {
+                                        if event.has_value("_ingest._value.Release") {
                                             event.rename(
                                                 "_ingest._value.Release",
                                                 "_ingest._value.release",
@@ -6044,7 +6055,7 @@ impl Transform for Default {
                                     event,
                                     "_ingest._value.VulnerablePackages",
                                     |event| {
-                                        if event.has("_ingest._value.Version") {
+                                        if event.has_value("_ingest._value.Version") {
                                             event.rename(
                                                 "_ingest._value.Version",
                                                 "_ingest._value.version",
@@ -6072,7 +6083,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Vulnerabilities", |event| {
-                        if event.has("_ingest._value.VulnerablePackages") {
+                        if event.has_value("_ingest._value.VulnerablePackages") {
                             event.rename(
                                 "_ingest._value.VulnerablePackages",
                                 "_ingest._value.vulnerable_packages",
@@ -6084,21 +6095,21 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Vulnerabilities") {
+            if event.has_value("json.Vulnerabilities") {
                 event.rename(
                     "json.Vulnerabilities",
                     "aws.securityhub_findings_full_posture.vulnerabilities",
                 )?;
             }
 
-            if event.has("json.Workflow.Status") {
+            if event.has_value("json.Workflow.Status") {
                 event.rename(
                     "json.Workflow.Status",
                     "aws.securityhub_findings_full_posture.workflow.status",
                 )?;
             }
 
-            if event.has("json.WorkflowState") {
+            if event.has_value("json.WorkflowState") {
                 event.rename(
                     "json.WorkflowState",
                     "aws.securityhub_findings_full_posture.workflow.state",

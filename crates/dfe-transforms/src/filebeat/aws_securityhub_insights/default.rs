@@ -37,7 +37,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -53,28 +53,28 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("json.Filters.AwsAccountId") {
+            if event.has_value("json.Filters.AwsAccountId") {
                 event.rename(
                     "json.Filters.AwsAccountId",
                     "aws.securityhub_insights.filters.aws_account_id",
                 )?;
             }
 
-            if event.has("json.Filters.CompanyName") {
+            if event.has_value("json.Filters.CompanyName") {
                 event.rename(
                     "json.Filters.CompanyName",
                     "aws.securityhub_insights.filters.company.name",
                 )?;
             }
 
-            if event.has("json.Filters.ComplianceStatus") {
+            if event.has_value("json.Filters.ComplianceStatus") {
                 event.rename(
                     "json.Filters.ComplianceStatus",
                     "aws.securityhub_insights.filters.compliance.status",
                 )?;
             }
 
-            if event.has("json.Filters.Confidence") {
+            if event.has_value("json.Filters.Confidence") {
                 event.rename(
                     "json.Filters.Confidence",
                     "aws.securityhub_insights.filters.confidence",
@@ -91,7 +91,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.CreatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -113,7 +113,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.CreatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -256,67 +256,67 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.CreatedAt") {
+            if event.has_value("json.Filters.CreatedAt") {
                 event.rename(
                     "json.Filters.CreatedAt",
                     "aws.securityhub_insights.filters.created_at",
                 )?;
             }
 
-            if event.has("json.Filters.Criticality") {
+            if event.has_value("json.Filters.Criticality") {
                 event.rename(
                     "json.Filters.Criticality",
                     "aws.securityhub_insights.filters.criticality",
                 )?;
             }
 
-            if event.has("json.Filters.Description") {
+            if event.has_value("json.Filters.Description") {
                 event.rename(
                     "json.Filters.Description",
                     "aws.securityhub_insights.filters.description",
                 )?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsConfidence") {
+            if event.has_value("json.Filters.FindingProviderFieldsConfidence") {
                 event.rename(
                     "json.Filters.FindingProviderFieldsConfidence",
                     "aws.securityhub_insights.filters.finding_provider_fields.confidence",
                 )?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsCriticality") {
+            if event.has_value("json.Filters.FindingProviderFieldsCriticality") {
                 event.rename(
                     "json.Filters.FindingProviderFieldsCriticality",
                     "aws.securityhub_insights.filters.finding_provider_fields.criticality",
                 )?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsRelatedFindingsId") {
+            if event.has_value("json.Filters.FindingProviderFieldsRelatedFindingsId") {
                 event.rename(
                     "json.Filters.FindingProviderFieldsRelatedFindingsId",
                     "aws.securityhub_insights.filters.finding_provider_fields.related_findings.id",
                 )?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsRelatedFindingsProductArn") {
+            if event.has_value("json.Filters.FindingProviderFieldsRelatedFindingsProductArn") {
                 event.rename("json.Filters.FindingProviderFieldsRelatedFindingsProductArn", "aws.securityhub_insights.filters.finding_provider_fields.related_findings.product.arn")?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsSeverityLabel") {
+            if event.has_value("json.Filters.FindingProviderFieldsSeverityLabel") {
                 event.rename(
                     "json.Filters.FindingProviderFieldsSeverityLabel",
                     "aws.securityhub_insights.filters.finding_provider_fields.severity.label",
                 )?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsSeverityOriginal") {
+            if event.has_value("json.Filters.FindingProviderFieldsSeverityOriginal") {
                 event.rename(
                     "json.Filters.FindingProviderFieldsSeverityOriginal",
                     "aws.securityhub_insights.filters.finding_provider_fields.severity.original",
                 )?;
             }
 
-            if event.has("json.Filters.FindingProviderFieldsTypes") {
+            if event.has_value("json.Filters.FindingProviderFieldsTypes") {
                 event.rename(
                     "json.Filters.FindingProviderFieldsTypes",
                     "aws.securityhub_insights.filters.finding_provider_fields.types",
@@ -333,7 +333,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.FirstObservedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -355,7 +355,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.FirstObservedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -500,25 +500,25 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.FirstObservedAt") {
+            if event.has_value("json.Filters.FirstObservedAt") {
                 event.rename(
                     "json.Filters.FirstObservedAt",
                     "aws.securityhub_insights.filters.first_observed_at",
                 )?;
             }
 
-            if event.has("json.Filters.GeneratorId") {
+            if event.has_value("json.Filters.GeneratorId") {
                 event.rename(
                     "json.Filters.GeneratorId",
                     "aws.securityhub_insights.filters.generator.id",
                 )?;
             }
 
-            if event.has("json.Filters.Id") {
+            if event.has_value("json.Filters.Id") {
                 event.rename("json.Filters.Id", "aws.securityhub_insights.filters.id")?;
             }
 
-            if event.has("json.Filters.Keyword") {
+            if event.has_value("json.Filters.Keyword") {
                 event.rename(
                     "json.Filters.Keyword",
                     "aws.securityhub_insights.filters.keyword",
@@ -535,7 +535,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.LastObservedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -557,7 +557,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.LastObservedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -702,119 +702,119 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.LastObservedAt") {
+            if event.has_value("json.Filters.LastObservedAt") {
                 event.rename(
                     "json.Filters.LastObservedAt",
                     "aws.securityhub_insights.filters.last_observed_at",
                 )?;
             }
 
-            if event.has("json.Filters.MalwareName") {
+            if event.has_value("json.Filters.MalwareName") {
                 event.rename(
                     "json.Filters.MalwareName",
                     "aws.securityhub_insights.filters.malware.name",
                 )?;
             }
 
-            if event.has("json.Filters.MalwarePath") {
+            if event.has_value("json.Filters.MalwarePath") {
                 event.rename(
                     "json.Filters.MalwarePath",
                     "aws.securityhub_insights.filters.malware.path",
                 )?;
             }
 
-            if event.has("json.Filters.MalwareState") {
+            if event.has_value("json.Filters.MalwareState") {
                 event.rename(
                     "json.Filters.MalwareState",
                     "aws.securityhub_insights.filters.malware.state",
                 )?;
             }
 
-            if event.has("json.Filters.MalwareType") {
+            if event.has_value("json.Filters.MalwareType") {
                 event.rename(
                     "json.Filters.MalwareType",
                     "aws.securityhub_insights.filters.malware.type",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkDestinationDomain") {
+            if event.has_value("json.Filters.NetworkDestinationDomain") {
                 event.rename(
                     "json.Filters.NetworkDestinationDomain",
                     "aws.securityhub_insights.filters.network.destination.domain",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkDestinationIpV4") {
+            if event.has_value("json.Filters.NetworkDestinationIpV4") {
                 event.rename(
                     "json.Filters.NetworkDestinationIpV4",
                     "aws.securityhub_insights.filters.network.destination.ip.v4",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkDestinationIpV6") {
+            if event.has_value("json.Filters.NetworkDestinationIpV6") {
                 event.rename(
                     "json.Filters.NetworkDestinationIpV6",
                     "aws.securityhub_insights.filters.network.destination.ip.v6",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkDestinationPort") {
+            if event.has_value("json.Filters.NetworkDestinationPort") {
                 event.rename(
                     "json.Filters.NetworkDestinationPort",
                     "aws.securityhub_insights.filters.network.destination.port",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkDirection") {
+            if event.has_value("json.Filters.NetworkDirection") {
                 event.rename(
                     "json.Filters.NetworkDirection",
                     "aws.securityhub_insights.filters.network.direction",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkProtocol") {
+            if event.has_value("json.Filters.NetworkProtocol") {
                 event.rename(
                     "json.Filters.NetworkProtocol",
                     "aws.securityhub_insights.filters.network.protocol",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkSourceDomain") {
+            if event.has_value("json.Filters.NetworkSourceDomain") {
                 event.rename(
                     "json.Filters.NetworkSourceDomain",
                     "aws.securityhub_insights.filters.network.source.domain",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkSourceIpV4") {
+            if event.has_value("json.Filters.NetworkSourceIpV4") {
                 event.rename(
                     "json.Filters.NetworkSourceIpV4",
                     "aws.securityhub_insights.filters.network.source.ip.v4",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkSourceIpV6") {
+            if event.has_value("json.Filters.NetworkSourceIpV6") {
                 event.rename(
                     "json.Filters.NetworkSourceIpV6",
                     "aws.securityhub_insights.filters.network.source.ip.v6",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkSourceMac") {
+            if event.has_value("json.Filters.NetworkSourceMac") {
                 event.rename(
                     "json.Filters.NetworkSourceMac",
                     "aws.securityhub_insights.filters.network.source.mac",
                 )?;
             }
 
-            if event.has("json.Filters.NetworkSourcePort") {
+            if event.has_value("json.Filters.NetworkSourcePort") {
                 event.rename(
                     "json.Filters.NetworkSourcePort",
                     "aws.securityhub_insights.filters.network.source.port",
                 )?;
             }
 
-            if event.has("json.Filters.NoteText") {
+            if event.has_value("json.Filters.NoteText") {
                 event.rename(
                     "json.Filters.NoteText",
                     "aws.securityhub_insights.filters.note.text",
@@ -831,7 +831,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -853,7 +853,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.NoteUpdatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -998,14 +998,14 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.NoteUpdatedAt") {
+            if event.has_value("json.Filters.NoteUpdatedAt") {
                 event.rename(
                     "json.Filters.NoteUpdatedAt",
                     "aws.securityhub_insights.filters.note.updated_at",
                 )?;
             }
 
-            if event.has("json.Filters.NoteUpdatedBy") {
+            if event.has_value("json.Filters.NoteUpdatedBy") {
                 event.rename(
                     "json.Filters.NoteUpdatedBy",
                     "aws.securityhub_insights.filters.note.updated_by",
@@ -1022,7 +1022,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -1044,7 +1044,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.ProcessLaunchedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -1189,35 +1189,35 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.ProcessLaunchedAt") {
+            if event.has_value("json.Filters.ProcessLaunchedAt") {
                 event.rename(
                     "json.Filters.ProcessLaunchedAt",
                     "aws.securityhub_insights.filters.process.launched_at",
                 )?;
             }
 
-            if event.has("json.Filters.ProcessName") {
+            if event.has_value("json.Filters.ProcessName") {
                 event.rename(
                     "json.Filters.ProcessName",
                     "aws.securityhub_insights.filters.process.name",
                 )?;
             }
 
-            if event.has("json.Filters.ProcessParentPid") {
+            if event.has_value("json.Filters.ProcessParentPid") {
                 event.rename(
                     "json.Filters.ProcessParentPid",
                     "aws.securityhub_insights.filters.process.parent.pid",
                 )?;
             }
 
-            if event.has("json.Filters.ProcessPath") {
+            if event.has_value("json.Filters.ProcessPath") {
                 event.rename(
                     "json.Filters.ProcessPath",
                     "aws.securityhub_insights.filters.process.path",
                 )?;
             }
 
-            if event.has("json.Filters.ProcessPid") {
+            if event.has_value("json.Filters.ProcessPid") {
                 event.rename(
                     "json.Filters.ProcessPid",
                     "aws.securityhub_insights.filters.process.pid",
@@ -1234,7 +1234,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -1256,7 +1256,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.ProcessTerminatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -1401,95 +1401,95 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.ProcessTerminatedAt") {
+            if event.has_value("json.Filters.ProcessTerminatedAt") {
                 event.rename(
                     "json.Filters.ProcessTerminatedAt",
                     "aws.securityhub_insights.filters.process.terminated_at",
                 )?;
             }
 
-            if event.has("json.Filters.ProductArn") {
+            if event.has_value("json.Filters.ProductArn") {
                 event.rename(
                     "json.Filters.ProductArn",
                     "aws.securityhub_insights.filters.product.arn",
                 )?;
             }
 
-            if event.has("json.Filters.ProductFields") {
+            if event.has_value("json.Filters.ProductFields") {
                 event.rename(
                     "json.Filters.ProductFields",
                     "aws.securityhub_insights.filters.product.fields",
                 )?;
             }
 
-            if event.has("json.Filters.ProductName") {
+            if event.has_value("json.Filters.ProductName") {
                 event.rename(
                     "json.Filters.ProductName",
                     "aws.securityhub_insights.filters.product.name",
                 )?;
             }
 
-            if event.has("json.Filters.RecommendationText") {
+            if event.has_value("json.Filters.RecommendationText") {
                 event.rename(
                     "json.Filters.RecommendationText",
                     "aws.securityhub_insights.filters.recommendation_text",
                 )?;
             }
 
-            if event.has("json.Filters.RecordState") {
+            if event.has_value("json.Filters.RecordState") {
                 event.rename(
                     "json.Filters.RecordState",
                     "aws.securityhub_insights.filters.record_state",
                 )?;
             }
 
-            if event.has("json.Filters.Region") {
+            if event.has_value("json.Filters.Region") {
                 event.rename(
                     "json.Filters.Region",
                     "aws.securityhub_insights.filters.region",
                 )?;
             }
 
-            if event.has("json.Filters.RelatedFindingsId") {
+            if event.has_value("json.Filters.RelatedFindingsId") {
                 event.rename(
                     "json.Filters.RelatedFindingsId",
                     "aws.securityhub_insights.filters.related_findings.id",
                 )?;
             }
 
-            if event.has("json.Filters.RelatedFindingsProductArn") {
+            if event.has_value("json.Filters.RelatedFindingsProductArn") {
                 event.rename(
                     "json.Filters.RelatedFindingsProductArn",
                     "aws.securityhub_insights.filters.related_findings.product.arn",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceIamInstanceProfileArn") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceIamInstanceProfileArn") {
                 event.rename("json.Filters.ResourceAwsEc2InstanceIamInstanceProfileArn", "aws.securityhub_insights.filters.resource.aws_ec2_instance.iam_instance_profile.arn")?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceImageId") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceImageId") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceImageId",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.image.id",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceIpV4Addresses") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceIpV4Addresses") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceIpV4Addresses",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.ip.v4_addresses",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceIpV6Addresses") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceIpV6Addresses") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceIpV6Addresses",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.ip.v6_addresses",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceKeyName") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceKeyName") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceKeyName",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.key.name",
@@ -1509,7 +1509,7 @@ impl Transform for Default {
                         event,
                         "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
                         |event| {
-                            if event.has("_ingest._value.DateRange.Unit") {
+                            if event.has_value("_ingest._value.DateRange.Unit") {
                                 event.rename(
                                     "_ingest._value.DateRange.Unit",
                                     "_ingest._value.date_range.unit",
@@ -1535,7 +1535,7 @@ impl Transform for Default {
                         event,
                         "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
                         |event| {
-                            if event.has("_ingest._value.DateRange.Value") {
+                            if event.has_value("_ingest._value.DateRange.Value") {
                                 event.rename(
                                     "_ingest._value.DateRange.Value",
                                     "_ingest._value.date_range.value",
@@ -1693,28 +1693,28 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceLaunchedAt") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceLaunchedAt") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.launched_at",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceSubnetId") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceSubnetId") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceSubnetId",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.subnet.id",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceType") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceType") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceType",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.type",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsEc2InstanceVpcId") {
+            if event.has_value("json.Filters.ResourceAwsEc2InstanceVpcId") {
                 event.rename(
                     "json.Filters.ResourceAwsEc2InstanceVpcId",
                     "aws.securityhub_insights.filters.resource.aws_ec2_instance.vpc.id",
@@ -1734,7 +1734,7 @@ impl Transform for Default {
                         event,
                         "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
                         |event| {
-                            if event.has("_ingest._value.DateRange.Unit") {
+                            if event.has_value("_ingest._value.DateRange.Unit") {
                                 event.rename(
                                     "_ingest._value.DateRange.Unit",
                                     "_ingest._value.date_range.unit",
@@ -1760,7 +1760,7 @@ impl Transform for Default {
                         event,
                         "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
                         |event| {
-                            if event.has("_ingest._value.DateRange.Value") {
+                            if event.has_value("_ingest._value.DateRange.Value") {
                                 event.rename(
                                     "_ingest._value.DateRange.Value",
                                     "_ingest._value.date_range.value",
@@ -1918,63 +1918,63 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.ResourceAwsIamAccessKeyCreatedAt") {
+            if event.has_value("json.Filters.ResourceAwsIamAccessKeyCreatedAt") {
                 event.rename(
                     "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
                     "aws.securityhub_insights.filters.resource.aws_iam_access_key.created_at",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsIamAccessKeyPrincipalName") {
+            if event.has_value("json.Filters.ResourceAwsIamAccessKeyPrincipalName") {
                 event.rename(
                     "json.Filters.ResourceAwsIamAccessKeyPrincipalName",
                     "aws.securityhub_insights.filters.resource.aws_iam_access_key.principal.name",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsIamAccessKeyStatus") {
+            if event.has_value("json.Filters.ResourceAwsIamAccessKeyStatus") {
                 event.rename(
                     "json.Filters.ResourceAwsIamAccessKeyStatus",
                     "aws.securityhub_insights.filters.resource.aws_iam_access_key.status",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsIamAccessKeyUserName") {
+            if event.has_value("json.Filters.ResourceAwsIamAccessKeyUserName") {
                 event.rename(
                     "json.Filters.ResourceAwsIamAccessKeyUserName",
                     "aws.securityhub_insights.filters.resource.aws_iam_access_key.user.name",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsIamUserUserName") {
+            if event.has_value("json.Filters.ResourceAwsIamUserUserName") {
                 event.rename(
                     "json.Filters.ResourceAwsIamUserUserName",
                     "aws.securityhub_insights.filters.resource.aws_iam_user.user.name",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsS3BucketOwnerId") {
+            if event.has_value("json.Filters.ResourceAwsS3BucketOwnerId") {
                 event.rename(
                     "json.Filters.ResourceAwsS3BucketOwnerId",
                     "aws.securityhub_insights.filters.resource.aws_s3_bucket.owner.id",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceAwsS3BucketOwnerName") {
+            if event.has_value("json.Filters.ResourceAwsS3BucketOwnerName") {
                 event.rename(
                     "json.Filters.ResourceAwsS3BucketOwnerName",
                     "aws.securityhub_insights.filters.resource.aws_s3_bucket.owner.name",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceContainerImageId") {
+            if event.has_value("json.Filters.ResourceContainerImageId") {
                 event.rename(
                     "json.Filters.ResourceContainerImageId",
                     "aws.securityhub_insights.filters.resource.container.image.id",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceContainerImageName") {
+            if event.has_value("json.Filters.ResourceContainerImageName") {
                 event.rename(
                     "json.Filters.ResourceContainerImageName",
                     "aws.securityhub_insights.filters.resource.container.image.name",
@@ -1991,7 +1991,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -2013,7 +2013,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.ResourceContainerLaunchedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -2166,98 +2166,98 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.ResourceContainerLaunchedAt") {
+            if event.has_value("json.Filters.ResourceContainerLaunchedAt") {
                 event.rename(
                     "json.Filters.ResourceContainerLaunchedAt",
                     "aws.securityhub_insights.filters.resource.container.launched_at",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceContainerName") {
+            if event.has_value("json.Filters.ResourceContainerName") {
                 event.rename(
                     "json.Filters.ResourceContainerName",
                     "aws.securityhub_insights.filters.resource.container.name",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceDetailsOther") {
+            if event.has_value("json.Filters.ResourceDetailsOther") {
                 event.rename(
                     "json.Filters.ResourceDetailsOther",
                     "aws.securityhub_insights.filters.resource.details_other",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceId") {
+            if event.has_value("json.Filters.ResourceId") {
                 event.rename(
                     "json.Filters.ResourceId",
                     "aws.securityhub_insights.filters.resource.id",
                 )?;
             }
 
-            if event.has("json.Filters.ResourcePartition") {
+            if event.has_value("json.Filters.ResourcePartition") {
                 event.rename(
                     "json.Filters.ResourcePartition",
                     "aws.securityhub_insights.filters.resource.partition",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceRegion") {
+            if event.has_value("json.Filters.ResourceRegion") {
                 event.rename(
                     "json.Filters.ResourceRegion",
                     "aws.securityhub_insights.filters.resource.region",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceTags") {
+            if event.has_value("json.Filters.ResourceTags") {
                 event.rename(
                     "json.Filters.ResourceTags",
                     "aws.securityhub_insights.filters.resource.tags",
                 )?;
             }
 
-            if event.has("json.Filters.ResourceType") {
+            if event.has_value("json.Filters.ResourceType") {
                 event.rename(
                     "json.Filters.ResourceType",
                     "aws.securityhub_insights.filters.resource.type",
                 )?;
             }
 
-            if event.has("json.Filters.Sample") {
+            if event.has_value("json.Filters.Sample") {
                 event.rename(
                     "json.Filters.Sample",
                     "aws.securityhub_insights.filters.sample",
                 )?;
             }
 
-            if event.has("json.Filters.SeverityLabel") {
+            if event.has_value("json.Filters.SeverityLabel") {
                 event.rename(
                     "json.Filters.SeverityLabel",
                     "aws.securityhub_insights.filters.severity.label",
                 )?;
             }
 
-            if event.has("json.Filters.SeverityNormalized") {
+            if event.has_value("json.Filters.SeverityNormalized") {
                 event.rename(
                     "json.Filters.SeverityNormalized",
                     "aws.securityhub_insights.filters.severity.normalized",
                 )?;
             }
 
-            if event.has("json.Filters.SeverityProduct") {
+            if event.has_value("json.Filters.SeverityProduct") {
                 event.rename(
                     "json.Filters.SeverityProduct",
                     "aws.securityhub_insights.filters.severity.product",
                 )?;
             }
 
-            if event.has("json.Filters.SourceUrl") {
+            if event.has_value("json.Filters.SourceUrl") {
                 event.rename(
                     "json.Filters.SourceUrl",
                     "aws.securityhub_insights.filters.source_url",
                 )?;
             }
 
-            if event.has("json.Filters.ThreatIntelIndicatorCategory") {
+            if event.has_value("json.Filters.ThreatIntelIndicatorCategory") {
                 event.rename(
                     "json.Filters.ThreatIntelIndicatorCategory",
                     "aws.securityhub_insights.filters.threat_intel_indicator.category",
@@ -2277,7 +2277,7 @@ impl Transform for Default {
                         event,
                         "json.Filters.ThreatIntelIndicatorLastObservedAt",
                         |event| {
-                            if event.has("_ingest._value.DateRange.Unit") {
+                            if event.has_value("_ingest._value.DateRange.Unit") {
                                 event.rename(
                                     "_ingest._value.DateRange.Unit",
                                     "_ingest._value.date_range.unit",
@@ -2303,7 +2303,7 @@ impl Transform for Default {
                         event,
                         "json.Filters.ThreatIntelIndicatorLastObservedAt",
                         |event| {
-                            if event.has("_ingest._value.DateRange.Value") {
+                            if event.has_value("_ingest._value.DateRange.Value") {
                                 event.rename(
                                     "_ingest._value.DateRange.Value",
                                     "_ingest._value.date_range.value",
@@ -2461,49 +2461,49 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.ThreatIntelIndicatorLastObservedAt") {
+            if event.has_value("json.Filters.ThreatIntelIndicatorLastObservedAt") {
                 event.rename(
                     "json.Filters.ThreatIntelIndicatorLastObservedAt",
                     "aws.securityhub_insights.filters.threat_intel_indicator.last_observed_at",
                 )?;
             }
 
-            if event.has("json.Filters.ThreatIntelIndicatorSource") {
+            if event.has_value("json.Filters.ThreatIntelIndicatorSource") {
                 event.rename(
                     "json.Filters.ThreatIntelIndicatorSource",
                     "aws.securityhub_insights.filters.threat_intel_indicator.source",
                 )?;
             }
 
-            if event.has("json.Filters.ThreatIntelIndicatorSourceUrl") {
+            if event.has_value("json.Filters.ThreatIntelIndicatorSourceUrl") {
                 event.rename(
                     "json.Filters.ThreatIntelIndicatorSourceUrl",
                     "aws.securityhub_insights.filters.threat_intel_indicator.source_url",
                 )?;
             }
 
-            if event.has("json.Filters.ThreatIntelIndicatorType") {
+            if event.has_value("json.Filters.ThreatIntelIndicatorType") {
                 event.rename(
                     "json.Filters.ThreatIntelIndicatorType",
                     "aws.securityhub_insights.filters.threat_intel_indicator.type",
                 )?;
             }
 
-            if event.has("json.Filters.ThreatIntelIndicatorValue") {
+            if event.has_value("json.Filters.ThreatIntelIndicatorValue") {
                 event.rename(
                     "json.Filters.ThreatIntelIndicatorValue",
                     "aws.securityhub_insights.filters.threat_intel_indicator.value",
                 )?;
             }
 
-            if event.has("json.Filters.Title") {
+            if event.has_value("json.Filters.Title") {
                 event.rename(
                     "json.Filters.Title",
                     "aws.securityhub_insights.filters.title",
                 )?;
             }
 
-            if event.has("json.Filters.Type") {
+            if event.has_value("json.Filters.Type") {
                 event.rename("json.Filters.Type", "aws.securityhub_insights.filters.type")?;
             }
 
@@ -2517,7 +2517,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.UpdatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Unit") {
+                        if event.has_value("_ingest._value.DateRange.Unit") {
                             event.rename(
                                 "_ingest._value.DateRange.Unit",
                                 "_ingest._value.date_range.unit",
@@ -2539,7 +2539,7 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     foreach_array(event, "json.Filters.UpdatedAt", |event| {
-                        if event.has("_ingest._value.DateRange.Value") {
+                        if event.has_value("_ingest._value.DateRange.Value") {
                             event.rename(
                                 "_ingest._value.DateRange.Value",
                                 "_ingest._value.date_range.value",
@@ -2682,53 +2682,53 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.Filters.UpdatedAt") {
+            if event.has_value("json.Filters.UpdatedAt") {
                 event.rename(
                     "json.Filters.UpdatedAt",
                     "aws.securityhub_insights.filters.updated_at",
                 )?;
             }
 
-            if event.has("json.Filters.UserDefinedFields") {
+            if event.has_value("json.Filters.UserDefinedFields") {
                 event.rename(
                     "json.Filters.UserDefinedFields",
                     "aws.securityhub_insights.filters.user_defined_fields",
                 )?;
             }
 
-            if event.has("json.Filters.VerificationState") {
+            if event.has_value("json.Filters.VerificationState") {
                 event.rename(
                     "json.Filters.VerificationState",
                     "aws.securityhub_insights.filters.verification.state",
                 )?;
             }
 
-            if event.has("json.Filters.WorkflowState") {
+            if event.has_value("json.Filters.WorkflowState") {
                 event.rename(
                     "json.Filters.WorkflowState",
                     "aws.securityhub_insights.filters.workflow.state",
                 )?;
             }
 
-            if event.has("json.Filters.WorkflowStatus") {
+            if event.has_value("json.Filters.WorkflowStatus") {
                 event.rename(
                     "json.Filters.WorkflowStatus",
                     "aws.securityhub_insights.filters.workflow.status",
                 )?;
             }
 
-            if event.has("json.GroupByAttribute") {
+            if event.has_value("json.GroupByAttribute") {
                 event.rename(
                     "json.GroupByAttribute",
                     "aws.securityhub_insights.group_by_attribute",
                 )?;
             }
 
-            if event.has("json.InsightArn") {
+            if event.has_value("json.InsightArn") {
                 event.rename("json.InsightArn", "aws.securityhub_insights.insight_arn")?;
             }
 
-            if event.has("json.Name") {
+            if event.has_value("json.Name") {
                 event.rename("json.Name", "aws.securityhub_insights.name")?;
             }
 

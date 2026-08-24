@@ -218,7 +218,7 @@ impl Transform for Default {
             event.remove("syslog5424_ver");
             event.remove("host");
 
-            if event.has("@timestamp") {
+            if event.has_value("@timestamp") {
                 event.rename("@timestamp", "event.created")?;
             }
 
@@ -429,13 +429,13 @@ impl Transform for Default {
                 event.set("observer.product", v)?;
             }
 
-            if event.has("checkpoint.src") {
+            if event.has_value("checkpoint.src") {
                 event.rename("checkpoint.src", "source.ip")?;
             }
 
             let _cond = { !event.has_value("source.ip") };
             if _cond {
-                if event.has("checkpoint.client_ip") {
+                if event.has_value("checkpoint.client_ip") {
                     event.rename("checkpoint.client_ip", "source.ip")?;
                 }
             }
@@ -445,12 +445,12 @@ impl Transform for Default {
                     && event.get_str("checkpoint.xlatesrc") != Some("")
             };
             if _cond {
-                if event.has("checkpoint.xlatesrc") {
+                if event.has_value("checkpoint.xlatesrc") {
                     event.rename("checkpoint.xlatesrc", "source.nat.ip")?;
                 }
             }
 
-            if event.has("checkpoint.dst") {
+            if event.has_value("checkpoint.dst") {
                 event.rename("checkpoint.dst", "destination.ip")?;
             }
 
@@ -459,12 +459,12 @@ impl Transform for Default {
                     && event.get_str("checkpoint.xlatedst") != Some("")
             };
             if _cond {
-                if event.has("checkpoint.xlatedst") {
+                if event.has_value("checkpoint.xlatedst") {
                     event.rename("checkpoint.xlatedst", "destination.nat.ip")?;
                 }
             }
 
-            if event.has("checkpoint.uid") {
+            if event.has_value("checkpoint.uid") {
                 event.rename("checkpoint.uid", "source.user.id")?;
             }
 
@@ -738,21 +738,21 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("checkpoint.mac_source_address") {
+            if event.has_value("checkpoint.mac_source_address") {
                 event.rename("checkpoint.mac_source_address", "source.mac")?;
             }
 
-            if event.has("checkpoint.src_machine_name") {
+            if event.has_value("checkpoint.src_machine_name") {
                 event.rename("checkpoint.src_machine_name", "source.domain")?;
             }
 
-            if event.has("checkpoint.destination_dns_hostname") {
+            if event.has_value("checkpoint.destination_dns_hostname") {
                 event.rename("checkpoint.destination_dns_hostname", "destination.domain")?;
             }
 
             let _cond = { !event.has_value("server.domain") };
             if _cond {
-                if event.has("checkpoint.dst_machine_name") {
+                if event.has_value("checkpoint.dst_machine_name") {
                     event.rename("checkpoint.dst_machine_name", "destination.domain")?;
                 }
             }
@@ -789,7 +789,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.src_user_group") {
+            if event.has_value("checkpoint.src_user_group") {
                 event.rename("checkpoint.src_user_group", "source.user.group.name")?;
             }
 
@@ -801,7 +801,7 @@ impl Transform for Default {
                 event.append_unique("event.category", json!("authentication"))?;
             }
 
-            if event.has("checkpoint.originsicname") {
+            if event.has_value("checkpoint.originsicname") {
                 event.rename("checkpoint.originsicname", "checkpoint.origin_sic_name")?;
             }
 
@@ -1119,11 +1119,11 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("checkpoint.from") {
+            if event.has_value("checkpoint.from") {
                 event.rename("checkpoint.from", "source.user.email")?;
             }
 
-            if event.has("checkpoint.to") {
+            if event.has_value("checkpoint.to") {
                 event.rename("checkpoint.to", "destination.user.email")?;
             }
 
@@ -1227,23 +1227,23 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.usercheck_incident_uid") {
+            if event.has_value("checkpoint.usercheck_incident_uid") {
                 event.rename("checkpoint.usercheck_incident_uid", "destination.user.id")?;
             }
 
-            if event.has("checkpoint.service_name") {
+            if event.has_value("checkpoint.service_name") {
                 event.rename("checkpoint.service_name", "destination.service.name")?;
             }
 
-            if event.has("checkpoint.mac_destination_address") {
+            if event.has_value("checkpoint.mac_destination_address") {
                 event.rename("checkpoint.mac_destination_address", "destination.mac")?;
             }
 
-            if event.has("checkpoint.dns_type") {
+            if event.has_value("checkpoint.dns_type") {
                 event.rename("checkpoint.dns_type", "dns.question.type")?;
             }
 
-            if event.has("checkpoint.domain_name") {
+            if event.has_value("checkpoint.domain_name") {
                 event.rename("checkpoint.domain_name", "dns.question.name")?;
             }
 
@@ -1252,7 +1252,7 @@ impl Transform for Default {
                     && !event.has_value("source.user.domain")
             };
             if _cond {
-                if event.has("dns.question.name") {
+                if event.has_value("dns.question.name") {
                     event.rename("dns.question.name", "source.user.domain")?;
                 }
             }
@@ -1291,15 +1291,15 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("checkpoint.dns_message_type") {
+            if event.has_value("checkpoint.dns_message_type") {
                 event.rename("checkpoint.dns_message_type", "dns.type")?;
             }
 
-            if event.has("checkpoint.tid") {
+            if event.has_value("checkpoint.tid") {
                 event.rename("checkpoint.tid", "dns.id")?;
             }
 
-            if event.has("checkpoint.loguid") {
+            if event.has_value("checkpoint.loguid") {
                 event.rename("checkpoint.loguid", "event.id")?;
             }
 
@@ -1335,7 +1335,7 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("checkpoint.action") {
+            if event.has_value("checkpoint.action") {
                 event.rename("checkpoint.action", "event.action")?;
             }
 
@@ -1551,22 +1551,22 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("checkpoint.packet_capture") {
+            if event.has_value("checkpoint.packet_capture") {
                 event.rename("checkpoint.packet_capture", "event.url")?;
             }
 
-            if event.has("checkpoint.start_time") {
+            if event.has_value("checkpoint.start_time") {
                 event.rename("checkpoint.start_time", "event.start")?;
             }
 
             let _cond = { !event.has_value("event.start") };
             if _cond {
-                if event.has("checkpoint.first_detection") {
+                if event.has_value("checkpoint.first_detection") {
                     event.rename("checkpoint.first_detection", "event.start")?;
                 }
             }
 
-            if event.has("checkpoint.last_detection") {
+            if event.has_value("checkpoint.last_detection") {
                 event.rename("checkpoint.last_detection", "event.end")?;
             }
 
@@ -1583,19 +1583,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.app_risk") {
+            if event.has_value("checkpoint.app_risk") {
                 event.rename("checkpoint.app_risk", "event.risk_score")?;
             }
 
-            if event.has("checkpoint.file_id") {
+            if event.has_value("checkpoint.file_id") {
                 event.rename("checkpoint.file_id", "file.inode")?;
             }
 
-            if event.has("checkpoint.file_type") {
+            if event.has_value("checkpoint.file_type") {
                 event.rename("checkpoint.file_type", "file.type")?;
             }
 
-            if event.has("checkpoint.file_name") {
+            if event.has_value("checkpoint.file_name") {
                 event.rename("checkpoint.file_name", "file.name")?;
             }
 
@@ -1615,47 +1615,47 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("checkpoint.file_md5") {
+            if event.has_value("checkpoint.file_md5") {
                 event.rename("checkpoint.file_md5", "file.hash.md5")?;
             }
 
-            if event.has("checkpoint.file_sha1") {
+            if event.has_value("checkpoint.file_sha1") {
                 event.rename("checkpoint.file_sha1", "file.hash.sha1")?;
             }
 
-            if event.has("checkpoint.file_sha256") {
+            if event.has_value("checkpoint.file_sha256") {
                 event.rename("checkpoint.file_sha256", "file.hash.sha256")?;
             }
 
-            if event.has("checkpoint.dlp_file_name") {
+            if event.has_value("checkpoint.dlp_file_name") {
                 event.rename("checkpoint.dlp_file_name", "file.name")?;
             }
 
-            if event.has("checkpoint.user_group") {
+            if event.has_value("checkpoint.user_group") {
                 event.rename("checkpoint.user_group", "group.name")?;
             }
 
-            if event.has("checkpoint.os_version") {
+            if event.has_value("checkpoint.os_version") {
                 event.rename("checkpoint.os_version", "host.os.version")?;
             }
 
-            if event.has("checkpoint.os_name") {
+            if event.has_value("checkpoint.os_name") {
                 event.rename("checkpoint.os_name", "host.os.name")?;
             }
 
-            if event.has("checkpoint.method") {
+            if event.has_value("checkpoint.method") {
                 event.rename("checkpoint.method", "http.request.method")?;
             }
 
-            if event.has("checkpoint.referrer") {
+            if event.has_value("checkpoint.referrer") {
                 event.rename("checkpoint.referrer", "http.request.referrer")?;
             }
 
-            if event.has("checkpoint.service_id") {
+            if event.has_value("checkpoint.service_id") {
                 event.rename("checkpoint.service_id", "network.application")?;
             }
 
-            if event.has("checkpoint.ifdir") {
+            if event.has_value("checkpoint.ifdir") {
                 event.rename("checkpoint.ifdir", "network.direction")?;
             }
 
@@ -1703,11 +1703,11 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            if event.has("checkpoint.bytes") {
+            if event.has_value("checkpoint.bytes") {
                 event.rename("checkpoint.bytes", "network.bytes")?;
             }
 
-            if event.has("checkpoint.proto") {
+            if event.has_value("checkpoint.proto") {
                 event.rename("checkpoint.proto", "network.iana_number")?;
             }
 
@@ -1855,7 +1855,7 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_number())
             };
             if _cond {
-                if event.has("checkpoint.packets") {
+                if event.has_value("checkpoint.packets") {
                     event.rename("checkpoint.packets", "network.packets")?;
                 }
             }
@@ -1892,22 +1892,22 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.layer_name") {
+            if event.has_value("checkpoint.layer_name") {
                 event.rename("checkpoint.layer_name", "network.name")?;
             }
 
-            if event.has("checkpoint.app_name") {
+            if event.has_value("checkpoint.app_name") {
                 event.rename("checkpoint.app_name", "network.application")?;
             }
 
-            if event.has("checkpoint.client_inbound_interface") {
+            if event.has_value("checkpoint.client_inbound_interface") {
                 event.rename(
                     "checkpoint.client_inbound_interface",
                     "observer.ingress.interface.name",
                 )?;
             }
 
-            if event.has("checkpoint.client_outbound_interface") {
+            if event.has_value("checkpoint.client_outbound_interface") {
                 event.rename(
                     "checkpoint.client_outbound_interface",
                     "observer.egress.interface.name",
@@ -1919,7 +1919,7 @@ impl Transform for Default {
                     && event.get_str("network.direction") == Some("inbound")
             };
             if _cond {
-                if event.has("checkpoint.ifname") {
+                if event.has_value("checkpoint.ifname") {
                     event.rename("checkpoint.ifname", "observer.ingress.interface.name")?;
                 }
             }
@@ -1929,12 +1929,12 @@ impl Transform for Default {
                     && event.get_str("network.direction") == Some("outbound")
             };
             if _cond {
-                if event.has("checkpoint.ifname") {
+                if event.has_value("checkpoint.ifname") {
                     event.rename("checkpoint.ifname", "observer.egress.interface.name")?;
                 }
             }
 
-            if event.has("checkpoint.type") {
+            if event.has_value("checkpoint.type") {
                 event.rename("checkpoint.type", "observer.type")?;
             }
 
@@ -1960,7 +1960,7 @@ impl Transform for Default {
 
             event.remove("checkpoint.origin");
 
-            if event.has("checkpoint.mac_address") {
+            if event.has_value("checkpoint.mac_address") {
                 event.rename("checkpoint.mac_address", "_temp_.observer.mac")?;
             }
 
@@ -2021,152 +2021,152 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("checkpoint.outzone") {
+            if event.has_value("checkpoint.outzone") {
                 event.rename("checkpoint.outzone", "observer.egress.zone")?;
             }
 
-            if event.has("checkpoint.inzone") {
+            if event.has_value("checkpoint.inzone") {
                 event.rename("checkpoint.inzone", "observer.ingress.zone")?;
             }
 
             let _cond = { !event.has_value("observer.egress.zone") };
             if _cond {
-                if event.has("checkpoint.security_outzone") {
+                if event.has_value("checkpoint.security_outzone") {
                     event.rename("checkpoint.security_outzone", "observer.egress.zone")?;
                 }
             }
 
             let _cond = { !event.has_value("observer.ingress.zone") };
             if _cond {
-                if event.has("checkpoint.security_inzone") {
+                if event.has_value("checkpoint.security_inzone") {
                     event.rename("checkpoint.security_inzone", "observer.ingress.zone")?;
                 }
             }
 
-            if event.has("checkpoint.update_version") {
+            if event.has_value("checkpoint.update_version") {
                 event.rename("checkpoint.update_version", "observer.version")?;
             }
 
-            if event.has("checkpoint.process_md5") {
+            if event.has_value("checkpoint.process_md5") {
                 event.rename("checkpoint.process_md5", "process.hash.md5")?;
             }
 
-            if event.has("checkpoint.process_name") {
+            if event.has_value("checkpoint.process_name") {
                 event.rename("checkpoint.process_name", "process.name")?;
             }
 
-            if event.has("checkpoint.parent_process_md5") {
+            if event.has_value("checkpoint.parent_process_md5") {
                 event.rename("checkpoint.parent_process_md5", "process.parent.hash.md5")?;
             }
 
-            if event.has("checkpoint.parent_process_name") {
+            if event.has_value("checkpoint.parent_process_name") {
                 event.rename("checkpoint.parent_process_name", "process.parent.name")?;
             }
 
-            if event.has("checkpoint.matched_category") {
+            if event.has_value("checkpoint.matched_category") {
                 event.rename("checkpoint.matched_category", "rule.category")?;
             }
 
             let _cond = { !event.has_value("rule.category") };
             if _cond {
-                if event.has("checkpoint.categories") {
+                if event.has_value("checkpoint.categories") {
                     event.rename("checkpoint.categories", "rule.category")?;
                 }
             }
 
-            if event.has("checkpoint.malware_action") {
+            if event.has_value("checkpoint.malware_action") {
                 event.rename("checkpoint.malware_action", "rule.description")?;
             }
 
-            if event.has("checkpoint.malware_rule_id") {
+            if event.has_value("checkpoint.malware_rule_id") {
                 event.rename("checkpoint.malware_rule_id", "rule.id")?;
             }
 
             let _cond = { !event.has_value("rule.id") };
             if _cond {
-                if event.has("checkpoint.app_rule_id") {
+                if event.has_value("checkpoint.app_rule_id") {
                     event.rename("checkpoint.app_rule_id", "rule.id")?;
                 }
             }
 
-            if event.has("checkpoint.objectname") {
+            if event.has_value("checkpoint.objectname") {
                 event.rename("checkpoint.objectname", "rule.name")?;
             }
 
             let _cond = { !event.has_value("rule.name") };
             if _cond {
-                if event.has("checkpoint.rule_name") {
+                if event.has_value("checkpoint.rule_name") {
                     event.rename("checkpoint.rule_name", "rule.name")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.name") };
             if _cond {
-                if event.has("checkpoint.malware_rule_name") {
+                if event.has_value("checkpoint.malware_rule_name") {
                     event.rename("checkpoint.malware_rule_name", "rule.name")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.name") };
             if _cond {
-                if event.has("checkpoint.app_rule_name") {
+                if event.has_value("checkpoint.app_rule_name") {
                     event.rename("checkpoint.app_rule_name", "rule.name")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.name") };
             if _cond {
-                if event.has("checkpoint.dlp_rule_name") {
+                if event.has_value("checkpoint.dlp_rule_name") {
                     event.rename("checkpoint.dlp_rule_name", "rule.name")?;
                 }
             }
 
-            if event.has("checkpoint.smartdefence_profile") {
+            if event.has_value("checkpoint.smartdefence_profile") {
                 event.rename("checkpoint.smartdefence_profile", "rule.ruleset")?;
             }
 
             let _cond = { !event.has_value("rule.ruleset") };
             if _cond {
-                if event.has("checkpoint.policy") {
+                if event.has_value("checkpoint.policy") {
                     event.rename("checkpoint.policy", "rule.ruleset")?;
                 }
             }
 
-            if event.has("checkpoint.rule_uid") {
+            if event.has_value("checkpoint.rule_uid") {
                 event.rename("checkpoint.rule_uid", "rule.uuid")?;
             }
 
             let _cond = { !event.has_value("rule.uuid") };
             if _cond {
-                if event.has("checkpoint.dlp_rule_uid") {
+                if event.has_value("checkpoint.dlp_rule_uid") {
                     event.rename("checkpoint.dlp_rule_uid", "rule.uuid")?;
                 }
             }
 
-            if event.has("checkpoint.url") {
+            if event.has_value("checkpoint.url") {
                 event.rename("checkpoint.url", "url.original")?;
             }
 
             let _cond = { !event.has_value("url.original") };
             if _cond {
-                if event.has("checkpoint.resource") {
+                if event.has_value("checkpoint.resource") {
                     event.rename("checkpoint.resource", "url.original")?;
                 }
             }
 
-            if event.has("checkpoint.http_host") {
+            if event.has_value("checkpoint.http_host") {
                 event.rename("checkpoint.http_host", "url.domain")?;
             }
 
-            if event.has("checkpoint.web_client_type") {
+            if event.has_value("checkpoint.web_client_type") {
                 event.rename("checkpoint.web_client_type", "user_agent.name")?;
             }
 
-            if event.has("checkpoint.user_agent") {
+            if event.has_value("checkpoint.user_agent") {
                 event.rename("checkpoint.user_agent", "user_agent.original")?;
             }
 
-            if event.has("checkpoint.industry_reference") {
+            if event.has_value("checkpoint.industry_reference") {
                 event.rename("checkpoint.industry_reference", "vulnerability.id")?;
             }
 
@@ -2226,7 +2226,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint._temp_unixms") {
+            if event.has_value("checkpoint._temp_unixms") {
                 event.rename("checkpoint._temp_unixms", "@timestamp")?;
             }
 
@@ -2290,7 +2290,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.duration") {
+            if event.has_value("checkpoint.duration") {
                 event.rename("checkpoint.duration", "event.duration")?;
             }
 
@@ -2365,20 +2365,20 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("checkpoint.message") {
+            if event.has_value("checkpoint.message") {
                 event.rename("checkpoint.message", "message")?;
             }
 
             let _cond = { !event.has_value("message") };
             if _cond {
-                if event.has("checkpoint.reason") {
+                if event.has_value("checkpoint.reason") {
                     event.rename("checkpoint.reason", "message")?;
                 }
             }
 
             let _cond = { !event.has_value("message") };
             if _cond {
-                if event.has("checkpoint.subject") {
+                if event.has_value("checkpoint.subject") {
                     event.rename("checkpoint.subject", "message")?;
                 }
             }
@@ -2689,7 +2689,7 @@ impl Transform for Default {
                         })
             };
             if _cond {
-                if event.has("checkpoint.action_reason") {
+                if event.has_value("checkpoint.action_reason") {
                     event.rename("checkpoint.action_reason", "checkpoint.action_reason_msg")?;
                 }
             }
@@ -2796,19 +2796,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -3009,7 +3009,7 @@ impl Transform for Default {
             event.remove("_temp_");
             event.remove("_conf");
 
-            if event.has("checkpoint.times") {
+            if event.has_value("checkpoint.times") {
                 event.rename("checkpoint.times", "checkpoint.time")?;
             }
 

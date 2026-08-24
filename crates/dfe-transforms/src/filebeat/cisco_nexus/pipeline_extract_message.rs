@@ -368,47 +368,47 @@ impl Transform for PipelineExtractMessage {
                 Ok(())
             })();
 
-            if event.has("temp.logname") {
+            if event.has_value("temp.logname") {
                 event.rename("temp.logname", "cisco_nexus.log.logname")?;
             }
 
-            if event.has("temp.uid") {
+            if event.has_value("temp.uid") {
                 event.rename("temp.uid", "cisco_nexus.log.uid")?;
             }
 
-            if event.has("temp.euid") {
+            if event.has_value("temp.euid") {
                 event.rename("temp.euid", "cisco_nexus.log.euid")?;
             }
 
-            if event.has("temp.tty") {
+            if event.has_value("temp.tty") {
                 event.rename("temp.tty", "cisco_nexus.log.tty")?;
             }
 
-            if event.has("temp.ruser") {
+            if event.has_value("temp.ruser") {
                 event.rename("temp.ruser", "cisco_nexus.log.ruser")?;
             }
 
-            if event.has("temp.rhost") {
+            if event.has_value("temp.rhost") {
                 event.rename("temp.rhost", "cisco_nexus.log.rhost")?;
             }
 
-            if event.has("temp.user") {
+            if event.has_value("temp.user") {
                 event.rename("temp.user", "user.name")?;
             }
 
-            if event.has("temp.COMMAND") {
+            if event.has_value("temp.COMMAND") {
                 event.rename("temp.COMMAND", "cisco_nexus.log.command")?;
             }
 
-            if event.has("temp.PWD") {
+            if event.has_value("temp.PWD") {
                 event.rename("temp.PWD", "cisco_nexus.log.pwd")?;
             }
 
-            if event.has("temp.TTY") {
+            if event.has_value("temp.TTY") {
                 event.rename("temp.TTY", "cisco_nexus.log.tty")?;
             }
 
-            if event.has("temp.USER") {
+            if event.has_value("temp.USER") {
                 event.rename("temp.USER", "user.name")?;
             }
 

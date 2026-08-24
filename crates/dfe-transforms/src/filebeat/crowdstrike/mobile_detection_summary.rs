@@ -69,7 +69,7 @@ impl Transform for MobileDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.MobileDetectionId") {
+            if event.has_value("crowdstrike.event.MobileDetectionId") {
                 event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
             }
 
@@ -85,15 +85,15 @@ impl Transform for MobileDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.DetectId") {
+            if event.has_value("crowdstrike.event.DetectId") {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.DetectName") {
+            if event.has_value("crowdstrike.event.DetectName") {
                 event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.DetectDescription") {
+            if event.has_value("crowdstrike.event.DetectDescription") {
                 event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
             }
 
@@ -145,23 +145,23 @@ impl Transform for MobileDetectionSummary {
                 )?;
             }
 
-            if event.has("crowdstrike.event.ComputerName") {
+            if event.has_value("crowdstrike.event.ComputerName") {
                 event.rename("crowdstrike.event.ComputerName", "host.name")?;
             }
 
-            if event.has("crowdstrike.event.UserName") {
+            if event.has_value("crowdstrike.event.UserName") {
                 event.rename("crowdstrike.event.UserName", "user.name")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.SensorId") {
+            if event.has_value("crowdstrike.event.SensorId") {
                 event.rename("crowdstrike.event.SensorId", "device.id")?;
             }
 
-            if event.has("crowdstrike.event.ProcessId") {
+            if event.has_value("crowdstrike.event.ProcessId") {
                 event.rename("crowdstrike.event.ProcessId", "process.pid")?;
             }
 

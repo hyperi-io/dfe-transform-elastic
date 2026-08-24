@@ -20,7 +20,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -57,7 +57,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.logName") {
+            if event.has_value("json.logName") {
                 event.rename("json.logName", "log.logger")?;
             }
 
@@ -168,15 +168,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("json.httpRequest.requestMethod") {
+            if event.has_value("json.httpRequest.requestMethod") {
                 event.rename("json.httpRequest.requestMethod", "http.request.method")?;
             }
 
@@ -204,7 +204,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.httpRequest.status") {
+            if event.has_value("json.httpRequest.status") {
                 event.rename("json.httpRequest.status", "http.response.status_code")?;
             }
 
@@ -281,7 +281,7 @@ impl Transform for Default {
                 uri_parts(event, "json.httpRequest.requestUrl", "url", true, false)?;
             }
 
-            if event.has("json.httpRequest.referer") {
+            if event.has_value("json.httpRequest.referer") {
                 event.rename("json.httpRequest.referer", "http.request.referrer")?;
             }
 
@@ -338,7 +338,7 @@ impl Transform for Default {
                 event.set("_ingest.on_failure_processor_type", "convert")?;
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("url.domain") {
+                    if event.has_value("url.domain") {
                         event.rename("url.domain", "destination.domain")?;
                     }
                     Ok(())
@@ -351,54 +351,54 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.severity") {
+            if event.has_value("json.severity") {
                 event.rename("json.severity", "log.level")?;
             }
 
-            if event.has("json.jsonPayload.cacheId") {
+            if event.has_value("json.jsonPayload.cacheId") {
                 event.rename("json.jsonPayload.cacheId", "gcp.load_balancer.cache_id")?;
             }
 
-            if event.has("json.jsonPayload.statusDetails") {
+            if event.has_value("json.jsonPayload.statusDetails") {
                 event.rename(
                     "json.jsonPayload.statusDetails",
                     "gcp.load_balancer.status_details",
                 )?;
             }
 
-            if event.has("json.httpRequest.cacheHit") {
+            if event.has_value("json.httpRequest.cacheHit") {
                 event.rename("json.httpRequest.cacheHit", "gcp.load_balancer.cache_hit")?;
             }
 
-            if event.has("json.httpRequest.cacheLookup") {
+            if event.has_value("json.httpRequest.cacheLookup") {
                 event.rename(
                     "json.httpRequest.cacheLookup",
                     "gcp.load_balancer.cache_lookup",
                 )?;
             }
 
-            if event.has("json.resource.labels.url_map_name") {
+            if event.has_value("json.resource.labels.url_map_name") {
                 event.rename(
                     "json.resource.labels.url_map_name",
                     "gcp.load_balancer.url_map_name",
                 )?;
             }
 
-            if event.has("json.resource.labels.forwarding_rule_name") {
+            if event.has_value("json.resource.labels.forwarding_rule_name") {
                 event.rename(
                     "json.resource.labels.forwarding_rule_name",
                     "gcp.load_balancer.forwarding_rule_name",
                 )?;
             }
 
-            if event.has("json.resource.labels.target_proxy_name") {
+            if event.has_value("json.resource.labels.target_proxy_name") {
                 event.rename(
                     "json.resource.labels.target_proxy_name",
                     "gcp.load_balancer.target_proxy_name",
                 )?;
             }
 
-            if event.has("json.resource.labels.backend_service_name") {
+            if event.has_value("json.resource.labels.backend_service_name") {
                 event.rename(
                     "json.resource.labels.backend_service_name",
                     "gcp.load_balancer.backend_service_name",

@@ -31,7 +31,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -83,7 +83,7 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            if event.has("resp.event") {
+            if event.has_value("resp.event") {
                 event.rename("resp.event", "json")?;
             }
 
@@ -138,7 +138,7 @@ impl Transform for Default {
                 ),
             )?;
 
-            if event.has("json.action") {
+            if event.has_value("json.action") {
                 event.rename("json.action", "zscaler_zia.web.action")?;
             }
 
@@ -217,19 +217,19 @@ impl Transform for Default {
                 event.set("event.outcome", json!("unknown"))?;
             }
 
-            if event.has("json.applayerprotocol") {
+            if event.has_value("json.applayerprotocol") {
                 event.rename("json.applayerprotocol", "zscaler_zia.web.alpn_protocol")?;
             }
 
-            if event.has("json.appclass") {
+            if event.has_value("json.appclass") {
                 event.rename("json.appclass", "zscaler_zia.web.app.class")?;
             }
 
-            if event.has("json.appname") {
+            if event.has_value("json.appname") {
                 event.rename("json.appname", "zscaler_zia.web.app.name")?;
             }
 
-            if event.has("json.appriskscore") {
+            if event.has_value("json.appriskscore") {
                 event.rename("json.appriskscore", "zscaler_zia.web.app.risk_score")?;
             }
 
@@ -293,29 +293,29 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.bandwidthclassname") {
+            if event.has_value("json.bandwidthclassname") {
                 event.rename(
                     "json.bandwidthclassname",
                     "zscaler_zia.web.bandwidth_class_name",
                 )?;
             }
 
-            if event.has("json.bandwidthrulename") {
+            if event.has_value("json.bandwidthrulename") {
                 event.rename(
                     "json.bandwidthrulename",
                     "zscaler_zia.web.bandwidth_rule_name",
                 )?;
             }
 
-            if event.has("json.bwthrottle") {
+            if event.has_value("json.bwthrottle") {
                 event.rename("json.bwthrottle", "zscaler_zia.web.bandwidth_throttle")?;
             }
 
-            if event.has("json.bypassedtraffic") {
+            if event.has_value("json.bypassedtraffic") {
                 event.rename("json.bypassedtraffic", "zscaler_zia.web.bypassed.traffic")?;
             }
 
-            if event.has("json.cltsslcipher") {
+            if event.has_value("json.cltsslcipher") {
                 event.rename("json.cltsslcipher", "zscaler_zia.web.client.cipher")?;
             }
 
@@ -327,7 +327,7 @@ impl Transform for Default {
                 event.set("tls.cipher", v)?;
             }
 
-            if event.has("json.cltsslsessreuse") {
+            if event.has_value("json.cltsslsessreuse") {
                 event.rename(
                     "json.cltsslsessreuse",
                     "zscaler_zia.web.client.cipher_reuse",
@@ -692,22 +692,22 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ssl_rulename") {
+            if event.has_value("json.ssl_rulename") {
                 event.rename("json.ssl_rulename", "zscaler_zia.web.ssl_rulename")?;
             }
 
-            if event.has("json.ft_rulename") {
+            if event.has_value("json.ft_rulename") {
                 event.rename("json.ft_rulename", "zscaler_zia.web.ft_rulename")?;
             }
 
-            if event.has("json.cltsslfailreason") {
+            if event.has_value("json.cltsslfailreason") {
                 event.rename(
                     "json.cltsslfailreason",
                     "zscaler_zia.web.client.ssl.fail_reason",
                 )?;
             }
 
-            if event.has("json.clttlsversion") {
+            if event.has_value("json.clttlsversion") {
                 event.rename("json.clttlsversion", "zscaler_zia.web.client.tls_version")?;
             }
 
@@ -1120,21 +1120,21 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.client_tls_keyex_alg") {
+            if event.has_value("json.client_tls_keyex_alg") {
                 event.rename(
                     "json.client_tls_keyex_alg",
                     "zscaler_zia.web.client.tls_keyex_alg",
                 )?;
             }
 
-            if event.has("json.client_tls_sig_alg") {
+            if event.has_value("json.client_tls_sig_alg") {
                 event.rename(
                     "json.client_tls_sig_alg",
                     "zscaler_zia.web.client.tls_sig_alg",
                 )?;
             }
 
-            if event.has("json.cloudname") {
+            if event.has_value("json.cloudname") {
                 event.rename("json.cloudname", "zscaler_zia.web.cloud_name")?;
             }
 
@@ -1146,7 +1146,7 @@ impl Transform for Default {
                 event.set("cloud.provider", v)?;
             }
 
-            if event.has("json.company") {
+            if event.has_value("json.company") {
                 event.rename("json.company", "zscaler_zia.web.company")?;
             }
 
@@ -1158,26 +1158,26 @@ impl Transform for Default {
                 event.set("organization.name", v)?;
             }
 
-            if event.has("json.contenttype") {
+            if event.has_value("json.contenttype") {
                 event.rename("json.contenttype", "zscaler_zia.web.content_type")?;
             }
 
-            if event.has("json.datacentercity") {
+            if event.has_value("json.datacentercity") {
                 event.rename("json.datacentercity", "zscaler_zia.web.datacenter.city")?;
             }
 
-            if event.has("json.datacentercountry") {
+            if event.has_value("json.datacentercountry") {
                 event.rename(
                     "json.datacentercountry",
                     "zscaler_zia.web.datacenter.country",
                 )?;
             }
 
-            if event.has("json.datacenter") {
+            if event.has_value("json.datacenter") {
                 event.rename("json.datacenter", "zscaler_zia.web.datacenter.name")?;
             }
 
-            if event.has("json.day") {
+            if event.has_value("json.day") {
                 event.rename("json.day", "zscaler_zia.web.day")?;
             }
 
@@ -1231,15 +1231,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.dept") {
+            if event.has_value("json.dept") {
                 event.rename("json.dept", "zscaler_zia.web.department")?;
             }
 
-            if event.has("json.deviceappversion") {
+            if event.has_value("json.deviceappversion") {
                 event.rename("json.deviceappversion", "zscaler_zia.web.device.appversion")?;
             }
 
-            if event.has("json.devicehostname") {
+            if event.has_value("json.devicehostname") {
                 event.rename("json.devicehostname", "zscaler_zia.web.device.hostname")?;
             }
 
@@ -1302,7 +1302,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.devicemodel") {
+            if event.has_value("json.devicemodel") {
                 event.rename("json.devicemodel", "zscaler_zia.web.device.model")?;
             }
 
@@ -1382,7 +1382,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.deviceostype") {
+            if event.has_value("json.deviceostype") {
                 event.rename("json.deviceostype", "zscaler_zia.web.device.os.type")?;
             }
 
@@ -1437,7 +1437,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.deviceosversion") {
+            if event.has_value("json.deviceosversion") {
                 event.rename("json.deviceosversion", "zscaler_zia.web.device.os.version")?;
             }
 
@@ -1449,7 +1449,7 @@ impl Transform for Default {
                 event.set("host.os.version", v)?;
             }
 
-            if event.has("json.deviceowner") {
+            if event.has_value("json.deviceowner") {
                 event.rename("json.deviceowner", "zscaler_zia.web.device.owner")?;
             }
 
@@ -1465,7 +1465,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.devicetype") {
+            if event.has_value("json.devicetype") {
                 event.rename("json.devicetype", "zscaler_zia.web.device.type")?;
             }
 
@@ -1477,26 +1477,26 @@ impl Transform for Default {
                 event.set("host.type", v)?;
             }
 
-            if event.has("json.df_hosthead") {
+            if event.has_value("json.df_hosthead") {
                 event.rename("json.df_hosthead", "zscaler_zia.web.df.host.head")?;
             }
 
-            if event.has("json.df_hostname") {
+            if event.has_value("json.df_hostname") {
                 event.rename("json.df_hostname", "zscaler_zia.web.df.host.name")?;
             }
 
-            if event.has("json.dlpdicthitcount") {
+            if event.has_value("json.dlpdicthitcount") {
                 event.rename(
                     "json.dlpdicthitcount",
                     "zscaler_zia.web.dlp.dictionaries.hit_count",
                 )?;
             }
 
-            if event.has("json.dlpdict") {
+            if event.has_value("json.dlpdict") {
                 event.rename("json.dlpdict", "zscaler_zia.web.dlp.dictionaries.name")?;
             }
 
-            if event.has("json.dlpeng") {
+            if event.has_value("json.dlpeng") {
                 event.rename("json.dlpeng", "zscaler_zia.web.dlp.engine")?;
             }
 
@@ -1512,7 +1512,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.dlpmd5") {
+            if event.has_value("json.dlpmd5") {
                 event.rename("json.dlpmd5", "zscaler_zia.web.dlp.md5")?;
             }
 
@@ -1528,7 +1528,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.dlprulename") {
+            if event.has_value("json.dlprulename") {
                 event.rename("json.dlprulename", "zscaler_zia.web.dlp.rule.name")?;
             }
 
@@ -1544,7 +1544,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.eedone") {
+            if event.has_value("json.eedone") {
                 event.rename("json.eedone", "zscaler_zia.web.eedone")?;
             }
 
@@ -1597,7 +1597,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.external_devid") {
+            if event.has_value("json.external_devid") {
                 event.rename("json.external_devid", "zscaler_zia.web.external.device.id")?;
             }
 
@@ -1609,7 +1609,7 @@ impl Transform for Default {
                 event.set("device.id", v)?;
             }
 
-            if event.has("json.fileclass") {
+            if event.has_value("json.fileclass") {
                 event.rename("json.fileclass", "zscaler_zia.web.file.class")?;
             }
 
@@ -1673,7 +1673,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filesubtype") {
+            if event.has_value("json.filesubtype") {
                 event.rename("json.filesubtype", "zscaler_zia.web.file.subtype")?;
             }
 
@@ -1689,13 +1689,13 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.filetype") {
+            if event.has_value("json.filetype") {
                 event.rename("json.filetype", "zscaler_zia.web.file.type")?;
             }
 
             event.set("file.type", json!("file"))?;
 
-            if event.has("json.flow_type") {
+            if event.has_value("json.flow_type") {
                 event.rename("json.flow_type", "zscaler_zia.web.flow_type")?;
             }
 
@@ -1761,14 +1761,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.forward_gateway_name") {
+            if event.has_value("json.forward_gateway_name") {
                 event.rename(
                     "json.forward_gateway_name",
                     "zscaler_zia.web.forward_gateway.name",
                 )?;
             }
 
-            if event.has("json.forward_type") {
+            if event.has_value("json.forward_type") {
                 event.rename("json.forward_type", "zscaler_zia.web.forward_type")?;
             }
 
@@ -1873,50 +1873,50 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.is_sslexpiredca") {
+            if event.has_value("json.is_sslexpiredca") {
                 event.rename(
                     "json.is_sslexpiredca",
                     "zscaler_zia.web.is_ssl_certificate_expired",
                 )?;
             }
 
-            if event.has("json.is_sslselfsigned") {
+            if event.has_value("json.is_sslselfsigned") {
                 event.rename(
                     "json.is_sslselfsigned",
                     "zscaler_zia.web.is_ssl_certificate_selfsigned",
                 )?;
             }
 
-            if event.has("json.is_ssluntrustedca") {
+            if event.has_value("json.is_ssluntrustedca") {
                 event.rename(
                     "json.is_ssluntrustedca",
                     "zscaler_zia.web.is_ssl_certificate_untrusted",
                 )?;
             }
 
-            if event.has("json.is_src_cntry_risky") {
+            if event.has_value("json.is_src_cntry_risky") {
                 event.rename(
                     "json.is_src_cntry_risky",
                     "zscaler_zia.web.is_src_cntry_risky",
                 )?;
             }
 
-            if event.has("json.srcip_country") {
+            if event.has_value("json.srcip_country") {
                 event.rename("json.srcip_country", "zscaler_zia.web.srcip_country")?;
             }
 
-            if event.has("json.dstip_country") {
+            if event.has_value("json.dstip_country") {
                 event.rename("json.dstip_country", "zscaler_zia.web.dstip_country")?;
             }
 
-            if event.has("json.is_dst_cntry_risky") {
+            if event.has_value("json.is_dst_cntry_risky") {
                 event.rename(
                     "json.is_dst_cntry_risky",
                     "zscaler_zia.web.is_dst_cntry_risky",
                 )?;
             }
 
-            if event.has("json.keyprotectiontype") {
+            if event.has_value("json.keyprotectiontype") {
                 event.rename(
                     "json.keyprotectiontype",
                     "zscaler_zia.web.key_protection_type",
@@ -2107,15 +2107,15 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.malwarecategory") {
+            if event.has_value("json.malwarecategory") {
                 event.rename("json.malwarecategory", "zscaler_zia.web.malware.category")?;
             }
 
-            if event.has("json.malwareclass") {
+            if event.has_value("json.malwareclass") {
                 event.rename("json.malwareclass", "zscaler_zia.web.malware.class")?;
             }
 
-            if event.has("json.bamd5") {
+            if event.has_value("json.bamd5") {
                 event.rename("json.bamd5", "zscaler_zia.web.md5_hash")?;
             }
 
@@ -2194,7 +2194,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.mobappcategory") {
+            if event.has_value("json.mobappcategory") {
                 event.rename(
                     "json.mobappcategory",
                     "zscaler_zia.web.mobile.application.category",
@@ -2248,15 +2248,15 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.mobdevtype") {
+            if event.has_value("json.mobdevtype") {
                 event.rename("json.mobdevtype", "zscaler_zia.web.mobile.dev.type")?;
             }
 
-            if event.has("json.module") {
+            if event.has_value("json.module") {
                 event.rename("json.module", "zscaler_zia.web.module")?;
             }
 
-            if event.has("json.month") {
+            if event.has_value("json.month") {
                 event.rename("json.month", "zscaler_zia.web.month")?;
             }
 
@@ -2372,14 +2372,14 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.oapprulelabel") {
+            if event.has_value("json.oapprulelabel") {
                 event.rename(
                     "json.oapprulelabel",
                     "zscaler_zia.web.obfuscated.app_rule_label",
                 )?;
             }
 
-            if event.has("json.obwclassname") {
+            if event.has_value("json.obwclassname") {
                 event.rename(
                     "json.obwclassname",
                     "zscaler_zia.web.obfuscated.bendwidth.class_name",
@@ -2410,91 +2410,91 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.odevicehostname") {
+            if event.has_value("json.odevicehostname") {
                 event.rename(
                     "json.odevicehostname",
                     "zscaler_zia.web.obfuscated.device.host_name",
                 )?;
             }
 
-            if event.has("json.odevicename") {
+            if event.has_value("json.odevicename") {
                 event.rename("json.odevicename", "zscaler_zia.web.obfuscated.device.name")?;
             }
 
-            if event.has("json.odeviceowner") {
+            if event.has_value("json.odeviceowner") {
                 event.rename(
                     "json.odeviceowner",
                     "zscaler_zia.web.obfuscated.device.owner",
                 )?;
             }
 
-            if event.has("json.odlpdict") {
+            if event.has_value("json.odlpdict") {
                 event.rename(
                     "json.odlpdict",
                     "zscaler_zia.web.obfuscated.dlp.dictionaries",
                 )?;
             }
 
-            if event.has("json.odlpeng") {
+            if event.has_value("json.odlpeng") {
                 event.rename("json.odlpeng", "zscaler_zia.web.obfuscated.dlp.engine")?;
             }
 
-            if event.has("json.odlprulename") {
+            if event.has_value("json.odlprulename") {
                 event.rename(
                     "json.odlprulename",
                     "zscaler_zia.web.obfuscated.dlp.rule.name",
                 )?;
             }
 
-            if event.has("json.ofwd_gw_name") {
+            if event.has_value("json.ofwd_gw_name") {
                 event.rename(
                     "json.ofwd_gw_name",
                     "zscaler_zia.web.obfuscated.forward_gateway_name",
                 )?;
             }
 
-            if event.has("json.ologin") {
+            if event.has_value("json.ologin") {
                 event.rename("json.ologin", "zscaler_zia.web.obfuscated.login")?;
             }
 
-            if event.has("json.ordr_rulename") {
+            if event.has_value("json.ordr_rulename") {
                 event.rename("json.ordr_rulename", "zscaler_zia.web.obfuscated.rule.name")?;
             }
 
-            if event.has("json.ourlcat") {
+            if event.has_value("json.ourlcat") {
                 event.rename("json.ourlcat", "zscaler_zia.web.obfuscated.url.category")?;
             }
 
-            if event.has("json.ourlfilterrulelabel") {
+            if event.has_value("json.ourlfilterrulelabel") {
                 event.rename(
                     "json.ourlfilterrulelabel",
                     "zscaler_zia.web.obfuscated.url.filter_rule_label",
                 )?;
             }
 
-            if event.has("json.ozpa_app_seg_name") {
+            if event.has_value("json.ozpa_app_seg_name") {
                 event.rename(
                     "json.ozpa_app_seg_name",
                     "zscaler_zia.web.obfuscated.zpa_app_segment",
                 )?;
             }
 
-            if event.has("json.externalsslpolicyreason") {
+            if event.has_value("json.externalsslpolicyreason") {
                 event.rename(
                     "json.externalsslpolicyreason",
                     "zscaler_zia.web.policy.reason",
                 )?;
             }
 
-            if event.has("json.productversion") {
+            if event.has_value("json.productversion") {
                 event.rename("json.productversion", "zscaler_zia.web.product_version")?;
             }
 
-            if event.has("json.prompt_req") {
+            if event.has_value("json.prompt_req") {
                 event.rename("json.prompt_req", "zscaler_zia.web.prompt_req")?;
             }
 
-            if event.has("json.proto") {
+            if event.has_value("json.proto") {
                 event.rename("json.proto", "zscaler_zia.web.prototype")?;
             }
 
@@ -2515,7 +2515,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.reason") {
+            if event.has_value("json.reason") {
                 event.rename("json.reason", "zscaler_zia.web.reason")?;
             }
 
@@ -2547,7 +2547,7 @@ impl Transform for Default {
                 event.set("event.id", v)?;
             }
 
-            if event.has("json.rdr_rulename") {
+            if event.has_value("json.rdr_rulename") {
                 event.rename("json.rdr_rulename", "zscaler_zia.web.redirect_policy_name")?;
             }
 
@@ -2678,7 +2678,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.reqmethod") {
+            if event.has_value("json.reqmethod") {
                 event.rename("json.reqmethod", "zscaler_zia.web.request.method")?;
             }
 
@@ -2798,7 +2798,7 @@ impl Transform for Default {
                 event.set("http.request.bytes", v)?;
             }
 
-            if event.has("json.reqversion") {
+            if event.has_value("json.reqversion") {
                 event.rename("json.reqversion", "zscaler_zia.web.request.version")?;
             }
 
@@ -2810,7 +2810,7 @@ impl Transform for Default {
                 event.set("http.version", v)?;
             }
 
-            if event.has("json.respcode") {
+            if event.has_value("json.respcode") {
                 event.rename("json.respcode", "zscaler_zia.web.response.code")?;
             }
 
@@ -2972,7 +2972,7 @@ impl Transform for Default {
                 event.set("http.response.bytes", v)?;
             }
 
-            if event.has("json.respversion") {
+            if event.has_value("json.respversion") {
                 event.rename("json.respversion", "zscaler_zia.web.response.version")?;
             }
 
@@ -3098,7 +3098,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.ruletype") {
+            if event.has_value("json.ruletype") {
                 event.rename("json.ruletype", "zscaler_zia.web.rule.type")?;
             }
 
@@ -3149,32 +3149,32 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.srvcertvalidityperiod") {
+            if event.has_value("json.srvcertvalidityperiod") {
                 event.rename(
                     "json.srvcertvalidityperiod",
                     "zscaler_zia.web.server.certificate.validation.period",
                 )?;
             }
 
-            if event.has("json.srvcertchainvalpass") {
+            if event.has_value("json.srvcertchainvalpass") {
                 event.rename(
                     "json.srvcertchainvalpass",
                     "zscaler_zia.web.server.certificate_validation_chain",
                 )?;
             }
 
-            if event.has("json.srvcertvalidationtype") {
+            if event.has_value("json.srvcertvalidationtype") {
                 event.rename(
                     "json.srvcertvalidationtype",
                     "zscaler_zia.web.server.certificate_validation_type",
                 )?;
             }
 
-            if event.has("json.srvsslcipher") {
+            if event.has_value("json.srvsslcipher") {
                 event.rename("json.srvsslcipher", "zscaler_zia.web.server.cipher")?;
             }
 
-            if event.has("json.serversslsessreuse") {
+            if event.has_value("json.serversslsessreuse") {
                 event.rename(
                     "json.serversslsessreuse",
                     "zscaler_zia.web.server.cipher_reuse",
@@ -3293,36 +3293,36 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.srvocspresult") {
+            if event.has_value("json.srvocspresult") {
                 event.rename("json.srvocspresult", "zscaler_zia.web.server.ocsp_result")?;
             }
 
-            if event.has("json.srvtlsversion") {
+            if event.has_value("json.srvtlsversion") {
                 event.rename("json.srvtlsversion", "zscaler_zia.web.server.tls_version")?;
             }
 
-            if event.has("json.srvwildcardcert") {
+            if event.has_value("json.srvwildcardcert") {
                 event.rename(
                     "json.srvwildcardcert",
                     "zscaler_zia.web.server.wildcard_certificate",
                 )?;
             }
 
-            if event.has("json.server_tls_keyex_alg") {
+            if event.has_value("json.server_tls_keyex_alg") {
                 event.rename(
                     "json.server_tls_keyex_alg",
                     "zscaler_zia.web.server.tls_keyex_alg",
                 )?;
             }
 
-            if event.has("json.server_tls_sig_alg") {
+            if event.has_value("json.server_tls_sig_alg") {
                 event.rename(
                     "json.server_tls_sig_alg",
                     "zscaler_zia.web.server.tls_sig_alg",
                 )?;
             }
 
-            if event.has("json.sha256") {
+            if event.has_value("json.sha256") {
                 event.rename("json.sha256", "zscaler_zia.web.sha256")?;
             }
 
@@ -3346,15 +3346,15 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.ssldecrypted") {
+            if event.has_value("json.ssldecrypted") {
                 event.rename("json.ssldecrypted", "zscaler_zia.web.ssl_decrypted")?;
             }
 
-            if event.has("json.threatname") {
+            if event.has_value("json.threatname") {
                 event.rename("json.threatname", "zscaler_zia.web.threat.name")?;
             }
 
-            if event.has("json.threatseverity") {
+            if event.has_value("json.threatseverity") {
                 event.rename("json.threatseverity", "zscaler_zia.web.threat.severity")?;
             }
 
@@ -3458,7 +3458,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.tz") {
+            if event.has_value("json.tz") {
                 event.rename("json.tz", "zscaler_zia.web.timezone")?;
             }
 
@@ -3650,25 +3650,25 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.trafficredirectmethod") {
+            if event.has_value("json.trafficredirectmethod") {
                 event.rename(
                     "json.trafficredirectmethod",
                     "zscaler_zia.web.traffic_redirect_method",
                 )?;
             }
 
-            if event.has("json.unscannabletype") {
+            if event.has_value("json.unscannabletype") {
                 event.rename("json.unscannabletype", "zscaler_zia.web.unscannable.type")?;
             }
 
-            if event.has("json.upload_doctypename") {
+            if event.has_value("json.upload_doctypename") {
                 event.rename(
                     "json.upload_doctypename",
                     "zscaler_zia.web.upload.doc.type_name",
                 )?;
             }
 
-            if event.has("json.upload_fileclass") {
+            if event.has_value("json.upload_fileclass") {
                 event.rename("json.upload_fileclass", "zscaler_zia.web.upload.file.class")?;
             }
 
@@ -3735,7 +3735,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.upload_filesubtype") {
+            if event.has_value("json.upload_filesubtype") {
                 event.rename(
                     "json.upload_filesubtype",
                     "zscaler_zia.web.upload.file.subtype",
@@ -3754,23 +3754,23 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.upload_filetype") {
+            if event.has_value("json.upload_filetype") {
                 event.rename("json.upload_filetype", "zscaler_zia.web.upload.file.type")?;
             }
 
-            if event.has("json.urlsubcat") {
+            if event.has_value("json.urlsubcat") {
                 event.rename("json.urlsubcat", "zscaler_zia.web.url.category.sub")?;
             }
 
-            if event.has("json.urlsupercat") {
+            if event.has_value("json.urlsupercat") {
                 event.rename("json.urlsupercat", "zscaler_zia.web.url.category.super")?;
             }
 
-            if event.has("json.urlcatmethod") {
+            if event.has_value("json.urlcatmethod") {
                 event.rename("json.urlcatmethod", "zscaler_zia.web.url.category_method")?;
             }
 
-            if event.has("json.urlclass") {
+            if event.has_value("json.urlclass") {
                 event.rename("json.urlclass", "zscaler_zia.web.url.class")?;
             }
 
@@ -3890,7 +3890,7 @@ impl Transform for Default {
                 )?;
             }
 
-            if event.has("json.useragentclass") {
+            if event.has_value("json.useragentclass") {
                 event.rename("json.useragentclass", "zscaler_zia.web.user_agent.class")?;
             }
 
@@ -3954,7 +3954,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.useragenttoken") {
+            if event.has_value("json.useragenttoken") {
                 event.rename("json.useragenttoken", "zscaler_zia.web.user_agent.token")?;
             }
 
@@ -4056,11 +4056,11 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.ztunnelversion") {
+            if event.has_value("json.ztunnelversion") {
                 event.rename("json.ztunnelversion", "zscaler_zia.web.z_tunnel_version")?;
             }
 
-            if event.has("json.zpa_app_seg_name") {
+            if event.has_value("json.zpa_app_seg_name") {
                 event.rename("json.zpa_app_seg_name", "zscaler_zia.web.zpa_app_segment")?;
             }
 

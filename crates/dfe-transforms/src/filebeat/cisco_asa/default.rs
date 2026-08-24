@@ -9709,19 +9709,19 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("source.as.asn") {
+            if event.has_value("source.as.asn") {
                 event.rename("source.as.asn", "source.as.number")?;
             }
 
-            if event.has("source.as.organization_name") {
+            if event.has_value("source.as.organization_name") {
                 event.rename("source.as.organization_name", "source.as.organization.name")?;
             }
 
-            if event.has("destination.as.asn") {
+            if event.has_value("destination.as.asn") {
                 event.rename("destination.as.asn", "destination.as.number")?;
             }
 
-            if event.has("destination.as.organization_name") {
+            if event.has_value("destination.as.organization_name") {
                 event.rename(
                     "destination.as.organization_name",
                     "destination.as.organization.name",
@@ -10088,7 +10088,7 @@ impl Transform for Default {
                 event.rename("_temp_.cisco", "cisco.asa")?;
             }
 
-            if event.has("cisco.asa.list_id") {
+            if event.has_value("cisco.asa.list_id") {
                 event.rename("cisco.asa.list_id", "cisco.asa.rule_name")?;
             }
 
@@ -10514,7 +10514,7 @@ impl Transform for Default {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                if event.has("_temp_.cisco") {
+                if event.has_value("_temp_.cisco") {
                     event.rename("_temp_.cisco", "cisco.asa")?;
                 }
                 event.remove("_temp_");

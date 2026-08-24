@@ -37,7 +37,7 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-                if event.has("message") {
+                if event.has_value("message") {
                     event.rename("message", "event.original")?;
                 }
             }
@@ -169,7 +169,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.creator") {
+            if event.has_value("json.creator") {
                 event.rename("json.creator", "user.full_name")?;
             }
 
@@ -189,19 +189,19 @@ impl Transform for Default {
                 })();
             }
 
-            if event.has("json.creatorId") {
+            if event.has_value("json.creatorId") {
                 event.rename("json.creatorId", "sentinel_one.group.creator.id")?;
             }
 
-            if event.has("json.filterId") {
+            if event.has_value("json.filterId") {
                 event.rename("json.filterId", "sentinel_one.group.filter.id")?;
             }
 
-            if event.has("json.filterName") {
+            if event.has_value("json.filterName") {
                 event.rename("json.filterName", "sentinel_one.group.filter.name")?;
             }
 
-            if event.has("json.id") {
+            if event.has_value("json.id") {
                 event.rename("json.id", "group.id")?;
             }
 
@@ -309,7 +309,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.name") {
+            if event.has_value("json.name") {
                 event.rename("json.name", "group.name")?;
             }
 
@@ -361,14 +361,14 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.registrationToken") {
+            if event.has_value("json.registrationToken") {
                 event.rename(
                     "json.registrationToken",
                     "sentinel_one.group.registration_token",
                 )?;
             }
 
-            if event.has("json.siteId") {
+            if event.has_value("json.siteId") {
                 event.rename("json.siteId", "sentinel_one.site.id")?;
             }
 
@@ -420,7 +420,7 @@ impl Transform for Default {
                 }
             }
 
-            if event.has("json.type") {
+            if event.has_value("json.type") {
                 event.rename("json.type", "sentinel_one.group.type")?;
             }
 

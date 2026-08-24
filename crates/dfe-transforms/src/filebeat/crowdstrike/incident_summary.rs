@@ -136,15 +136,15 @@ impl Transform for IncidentSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.HostID") {
+            if event.has_value("crowdstrike.event.HostID") {
                 event.rename("crowdstrike.event.HostID", "host.id")?;
             }
 
-            if event.has("crowdstrike.event.IncidentID") {
+            if event.has_value("crowdstrike.event.IncidentID") {
                 event.rename("crowdstrike.event.IncidentID", "event.id")?;
             }
 

@@ -679,7 +679,7 @@ impl Transform for Threat {
                     "_ingest.on_failure_processor_tag",
                     "convert__temp__forwarded_ip_to_network_forwarded_ip_e6722dcc",
                 )?;
-                if event.has("_temp_.forwarded_ip") {
+                if event.has_value("_temp_.forwarded_ip") {
                     event.rename("_temp_.forwarded_ip", "panw.panos.x_forwarded_for")?;
                 }
                 event.remove("_ingest.on_failure_message");
