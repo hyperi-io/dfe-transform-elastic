@@ -3,7 +3,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "aws": { "events": 466, "events_total": 538, "fields_wrong": 145 },
+    "aws": { "events": 474, "events_total": 538, "fields_wrong": 121 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },
     "cisco_asa": { "events": 508, "events_total": 512, "fields_wrong": 19 },
@@ -11,7 +11,7 @@
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
     "cisco_meraki": { "events": 245, "events_total": 245, "fields_wrong": 0 },
     "cisco_nexus": { "events": 45, "events_total": 45, "fields_wrong": 0 },
-    "cisco_umbrella": { "events": 37, "events_total": 39, "fields_wrong": 2 },
+    "cisco_umbrella": { "events": 36, "events_total": 39, "fields_wrong": 5 },
     "crowdstrike": { "events": 49, "events_total": 49, "fields_wrong": 0 },
     "entityanalytics_entra_id": { "events": 6, "events_total": 7, "fields_wrong": 3 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
@@ -25,7 +25,7 @@
     "proofpoint_on_demand": { "events": 45, "events_total": 55, "fields_wrong": 34 },
     "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
-    "windows": { "events": 570, "events_total": 596, "fields_wrong": 83 },
+    "windows": { "events": 574, "events_total": 596, "fields_wrong": 71 },
     "zscaler_zia": { "events": 87, "events_total": 93, "fields_wrong": 5 }
   }
 }

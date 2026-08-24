@@ -57,10 +57,11 @@ pub fn community_id_v1(
 ///
 /// An ICANN suffix is honoured whole, which is the only way `211.52.31.172
 /// .in-addr.arpa` registers `172.in-addr.arpa` rather than the last two labels.
-/// The PRIVATE half of the list is deliberately not: the corpus has
-/// Elasticsearch registering `akamaized.net`, `cloudfront.net` and
-/// `googleapis.com` -- all private entries -- under `net` and `com`, so
-/// applying them would move the split a label the wrong way.
+///
+/// A PRIVATE entry of THREE labels or more is the registered domain itself, so
+/// `ec2-instance-connect.us-east-1.amazonaws.com` registers
+/// `us-east-1.amazonaws.com` under `amazonaws.com`. A two-label private entry
+/// lands on the same split either way, so it is left to the ICANN path.
 ///
 /// An unlisted top-level domain gets NOTHING. Elasticsearch's processor is a
 /// list lookup and a name off the list has no answer, so `domain.tld` has no
@@ -74,10 +75,28 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
         return None;
     }
 
-    let icann = psl::suffix(domain.as_bytes())
-        .filter(|suffix| suffix.typ() == Some(psl::Type::Icann))
-        .and_then(|suffix| std::str::from_utf8(suffix.as_bytes()).ok())
-        .filter(|suffix| suffix.len() < domain.len());
+    let listed = psl::suffix(domain.as_bytes())
+        .and_then(|suffix| Some((std::str::from_utf8(suffix.as_bytes()).ok()?, suffix.typ()?)))
+        .filter(|(suffix, _)| suffix.len() < domain.len());
+
+    if let Some((private, _)) = listed.filter(|(suffix, typ)| {
+        *typ == psl::Type::Private && suffix.split('.').count() > 2
+    }) && let Some((_, tld)) = private.split_once('.')
+    {
+        let subdomain = domain[..domain.len() - private.len()]
+            .strip_suffix('.')
+            .filter(|rest| !rest.is_empty())
+            .map(str::to_string);
+        return Some(RegisteredDomainResult {
+            registered_domain: Some(private.to_string()),
+            top_level_domain: tld.to_string(),
+            subdomain,
+        });
+    }
+
+    let icann = listed
+        .filter(|(_, typ)| *typ == psl::Type::Icann)
+        .map(|(suffix, _)| suffix);
 
     // Everything the suffix does not cover, split at its last label.
     let suffix = icann.unwrap_or(parts[0]);
@@ -1477,15 +1496,44 @@ mod tests {
         assert!(registered_domain_lookup("localhost").is_none());
     }
 
-    /// A PRIVATE entry is not a suffix here: the corpus has Elasticsearch
-    /// registering `akamaized.net` under `net`, not a host under
-    /// `akamaized.net`.
+    /// A two-label PRIVATE entry lands on the same split whichever half of the
+    /// list is read, so it stays on the ICANN path: the corpus has
+    /// Elasticsearch registering `akamaized.net` under `net`.
     #[test]
     fn a_private_suffix_keeps_the_two_label_split() {
         let result = registered_domain_lookup("static-s-msn-com.akamaized.net").expect("known");
         assert_eq!(result.registered_domain.as_deref(), Some("akamaized.net"));
         assert_eq!(result.top_level_domain, "net");
         assert_eq!(result.subdomain.as_deref(), Some("static-s-msn-com"));
+    }
+
+    /// A PRIVATE entry of three labels or more IS the registered domain, with
+    /// its own first label peeled off as the top-level domain. Both cases are
+    /// verbatim from the route53 corpus.
+    #[test]
+    fn a_long_private_suffix_is_the_registered_domain() {
+        let short =
+            registered_domain_lookup("ec2-instance-connect.us-east-1.amazonaws.com").expect("known");
+        assert_eq!(
+            short.registered_domain.as_deref(),
+            Some("us-east-1.amazonaws.com")
+        );
+        assert_eq!(short.top_level_domain, "amazonaws.com");
+        assert_eq!(short.subdomain.as_deref(), Some("ec2-instance-connect"));
+
+        let long = registered_domain_lookup(
+            "amazonlinux-2-repos-us-east-1.s3.dualstack.us-east-1.amazonaws.com",
+        )
+        .expect("known");
+        assert_eq!(
+            long.registered_domain.as_deref(),
+            Some("s3.dualstack.us-east-1.amazonaws.com")
+        );
+        assert_eq!(long.top_level_domain, "dualstack.us-east-1.amazonaws.com");
+        assert_eq!(
+            long.subdomain.as_deref(),
+            Some("amazonlinux-2-repos-us-east-1")
+        );
     }
 
     /// An ICANN suffix IS honoured whole -- reverse DNS is the case that needs
