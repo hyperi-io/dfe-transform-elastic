@@ -301,32 +301,22 @@ pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<
     Ok(())
 }
 
-/// Parse a JSON string on the SIMD path.
+/// Parse a JSON string into the document's own value type.
 ///
-/// simd-json parses in place, so the text is copied into a thread-local
-/// scratch buffer that grows to the largest payload the thread has seen and
-/// is reused from then on -- no allocation per event once warm, where
-/// `serde_json::from_str` walked the text byte by byte every time. The
-/// service runs one transform thread per partition, so thread-local is
-/// per-partition state, never contended.
+/// `serde_json`, not simd-json. simd-json is faster at building ITS tape;
+/// getting a `serde_json::Value` out of it goes tape -> serde deserializer ->
+/// `Value`, which is strictly more work than `serde_json` parsing straight
+/// into the same tree, and the map here is an `IndexMap` because
+/// `preserve_order` is not optional for parity. Measured in
+/// `benches/json_parse.rs`: 6.7 vs 8.9 microseconds on an okta document and
+/// 115 vs 271 nanoseconds on a small one, with half the allocations.
 ///
 /// # Errors
 ///
 /// Returns the parser's message, prefixed the way the generated modules
 /// always worded it.
 pub fn parse_json_str(text: &str) -> std::result::Result<Value, String> {
-    use std::cell::RefCell;
-
-    thread_local! {
-        static SCRATCH: RefCell<Vec<u8>> = const { RefCell::new(Vec::new()) };
-    }
-    SCRATCH.with(|cell| {
-        let mut buffer = cell.borrow_mut();
-        buffer.clear();
-        buffer.extend_from_slice(text.as_bytes());
-        simd_json::serde::from_slice::<Value>(&mut buffer)
-            .map_err(|e| format!("failed to parse JSON: {e}"))
-    })
+    serde_json::from_str::<Value>(text).map_err(|e| format!("failed to parse JSON: {e}"))
 }
 
 /// Turn keys whose NAME contains dots into the nested objects they describe.

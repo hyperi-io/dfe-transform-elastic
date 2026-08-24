@@ -4964,26 +4964,9 @@ fn try_array_to_indexed_object(event: &mut Event, script: &str) -> bool {
     true
 }
 
-/// Quote-aware key/value split of a whole vendor payload into one map.
-///
-/// Fortinet ships `key=value key2="value with spaces"` as one syslog field and
-/// the pipeline hand-rolls the parse, because a plain split on space would
-/// break inside the quotes:
-///
-/// ```painless
-/// def arr = splitUnquoted(ctx.syslog5424_sd, " ");
-/// for (def i = 0; i < arr?.length; i++) {
-///   def kv = splitUnquoted(arr[i], "=");
-///   if (kv.length == 2) { map[kv[0]] = pattern.matcher(kv[1]).replaceAll(""); }
-/// }
-/// ctx.fortinet.firewall = map;
-/// ```
-///
-/// A fragment without the pair separator is skipped, which is what the
-/// `kv.length == 2` guard does.
 /// A numeric field's bits decoded into a list of names.
 ///
-/// aws/vpcflow and aws/firewall_logs both spell out the six TCP flags this
+/// `aws/vpcflow` and `aws/firewall_logs` both spell out the six TCP flags this
 /// way. The masks and names are read off the script rather than assumed to be
 /// TCP's, because nothing in the shape says they must be.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -5042,7 +5025,11 @@ fn run_bit_flag_names(event: &mut Event, decode: &BitFlagNames) -> bool {
     let Some(flags) = event
         .get_str(&decode.source)
         .and_then(|text| text.trim().parse::<u64>().ok())
-        .or_else(|| event.get_i64(&decode.source).and_then(|n| u64::try_from(n).ok()))
+        .or_else(|| {
+            event
+                .get_i64(&decode.source)
+                .and_then(|n| u64::try_from(n).ok())
+        })
     else {
         return true;
     };
@@ -5060,10 +5047,24 @@ fn run_bit_flag_names(event: &mut Event, decode: &BitFlagNames) -> bool {
     true
 }
 
-/// A quote-aware KV split, resolved once from the script text.
+/// Quote-aware key/value split of a whole vendor payload into one map.
 ///
-/// Everything here is a property of the script alone, and reading it per event
-/// meant seven allocations before the payload was even looked at.
+/// Fortinet ships `key=value key2="value with spaces"` as one syslog field and
+/// the pipeline hand-rolls the parse, because a plain split on space would
+/// break inside the quotes:
+///
+/// ```painless
+/// def arr = splitUnquoted(ctx.syslog5424_sd, " ");
+/// for (def i = 0; i < arr?.length; i++) {
+///   def kv = splitUnquoted(arr[i], "=");
+///   if (kv.length == 2) { map[kv[0]] = pattern.matcher(kv[1]).replaceAll(""); }
+/// }
+/// ctx.fortinet.firewall = map;
+/// ```
+///
+/// Everything the split needs is a property of the script alone, so it is
+/// resolved once into here. Reading it per event meant seven allocations
+/// before the payload was even looked at.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SplitKv {
     source: String,

@@ -33,20 +33,22 @@ impl Event {
         Ok(Self { inner: value })
     }
 
-    /// Parse from a mutable byte buffer using `simd_json`.
+    /// Parse from a byte buffer. The primary Kafka ingestion path.
     ///
-    /// This is the primary Kafka ingestion path — 2-3x faster than `serde_json`.
+    /// `serde_json`, not simd-json. Building a simd-json `OwnedValue` and then
+    /// converting it with `serde_json::to_value` is two complete trees for one
+    /// document, and it measures 1.7x slower on an okta payload and 2.7x on a
+    /// small one (`benches/json_parse.rs`). simd-json's advantage is its own
+    /// tape; it does not survive the conversion into the `IndexMap`-backed
+    /// tree `preserve_order` requires.
+    ///
+    /// Takes `&mut [u8]` still, so a caller holding a scratch buffer needs no
+    /// change.
     pub fn from_bytes(buf: &mut [u8]) -> Result<Self> {
-        let owned = simd_json::to_owned_value(buf).map_err(|e| TransformError::ParseError {
+        let value: Value = serde_json::from_slice(buf).map_err(|e| TransformError::ParseError {
             path: String::new(),
             message: e.to_string(),
         })?;
-        // Convert simd_json OwnedValue → serde_json Value via serde
-        let value: Value =
-            serde_json::to_value(&owned).map_err(|e| TransformError::ParseError {
-                path: String::new(),
-                message: e.to_string(),
-            })?;
         Ok(Self { inner: value })
     }
 
@@ -219,9 +221,9 @@ impl Event {
     /// this constantly -- the sampled profile charges it 78 allocations an
     /// event on okta and 56 on fortinet, none of which bought anything.
     pub fn remove(&mut self, path: &str) -> Option<Value> {
-        let (parents, last) = path.rsplit_once('.').map_or((None, path), |(head, last)| {
-            (Some(head), last)
-        });
+        let (parents, last) = path
+            .rsplit_once('.')
+            .map_or((None, path), |(head, last)| (Some(head), last));
 
         let mut current = &mut self.inner;
         if let Some(parents) = parents {
