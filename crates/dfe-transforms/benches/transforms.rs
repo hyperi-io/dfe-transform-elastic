@@ -15,6 +15,14 @@ use dfe_runtime::{Event, Transform};
 
 /// Beats-shaped events from a committed fixture: the raw vendor payload as a
 /// STRING in `message`, which is what the transforms are written for.
+///
+/// The fixtures come in two shapes and only one of them needs wrapping. A
+/// syslog fixture is ALREADY `{"message": "<134>1 ..."}` per line, and
+/// wrapping that again gave the transform a `message` holding the TEXT of a
+/// JSON object -- no grok matched, nothing was set, and the benchmark timed a
+/// no-op. `cisco_meraki` and `fortinet` both read that way, which is why they
+/// looked cheaper than `okta`. A line that already carries `message` is used
+/// as it stands; anything else is the raw vendor payload and gets wrapped.
 fn fixture_events(relative: &str) -> Vec<Event> {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../tests/fixtures")
@@ -24,11 +32,16 @@ fn fixture_events(relative: &str) -> Vec<Event> {
 
     raw.lines()
         .filter(|l| !l.trim().is_empty())
-        .map(|line| {
-            let beat = serde_json::json!({ "message": line });
-            Event::new(beat)
-        })
+        .map(|line| Event::new(beat_shaped(line)))
         .collect()
+}
+
+/// One fixture line as the document a transform is handed.
+fn beat_shaped(line: &str) -> serde_json::Value {
+    match serde_json::from_str::<serde_json::Value>(line) {
+        Ok(value) if value.get("message").is_some() => value,
+        _ => serde_json::json!({ "message": line }),
+    }
 }
 
 /// One pass of `transform` over every event.
@@ -54,6 +67,17 @@ fn run_pass(transform: &dyn Transform, mut events: Vec<Event>) -> usize {
 fn bench_source(c: &mut Criterion, name: &str, fixture: &str, transform: &dyn Transform) {
     let events = fixture_events(fixture);
     assert!(!events.is_empty(), "{name}: fixture produced no events");
+
+    // A transform that changed nothing is not fast, it is absent. Two of these
+    // benches spent their whole life measuring one, because the fixture was
+    // double-wrapped and no grok ever matched.
+    let mut probe = events[0].clone();
+    let _ = transform.transform(&mut probe);
+    assert_ne!(
+        serde_json::to_string(events[0].as_value()).unwrap_or_default(),
+        serde_json::to_string(probe.as_value()).unwrap_or_default(),
+        "{name}: the transform left the event untouched, so this measures nothing"
+    );
 
     let mut group = c.benchmark_group(name);
     group.throughput(criterion::Throughput::Elements(events.len() as u64));

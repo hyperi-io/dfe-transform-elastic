@@ -3080,8 +3080,18 @@ fn last_bracket_subscript(script: &str, name: &str) -> Option<String> {
 }
 
 /// Strip Painless null-safe navigation from a field path.
+///
+/// Allocates once where there is nothing to strip, which is most paths, and
+/// twice where there is. Returning a `Cow` would borrow in the common case,
+/// but 85 of the callers build a shape struct that owns its paths, so the
+/// signature change costs more than the runtime sites it would save.
 pub(crate) fn clean_path(path: &str) -> String {
-    path.trim().replace("?.", ".").replace('?', "")
+    let path = path.trim();
+    if path.contains('?') {
+        path.replace("?.", ".").replace('?', "")
+    } else {
+        path.to_string()
+    }
 }
 
 /// A mutable reference to the value at a dotted path.

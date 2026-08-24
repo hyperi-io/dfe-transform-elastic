@@ -4981,43 +4981,142 @@ fn try_array_to_indexed_object(event: &mut Event, script: &str) -> bool {
 ///
 /// A fragment without the pair separator is skipped, which is what the
 /// `kv.length == 2` guard does.
-fn try_split_unquoted_kv(event: &mut Event, script: &str) -> bool {
+/// A numeric field's bits decoded into a list of names.
+///
+/// aws/vpcflow and aws/firewall_logs both spell out the six TCP flags this
+/// way. The masks and names are read off the script rather than assumed to be
+/// TCP's, because nothing in the shape says they must be.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BitFlagNames {
+    source: String,
+    target: String,
+    /// Mask and the name it sets, in the order the script tests them --
+    /// which is the order the list comes out in.
+    flags: Vec<(u64, String)>,
+}
+
+/// Read `def flags = Integer.parseUnsignedInt(ctx.<s>)` and the `if ((flags &
+/// 0xNN) != 0) { ctx.<t>.add('name'); }` ladder under it.
+fn parse_bit_flag_names(script: &str) -> Option<BitFlagNames> {
     use crate::painless_params::clean_path;
 
-    let calls: Vec<&str> = script.split("splitUnquoted(").skip(1).collect();
-    // The definition, then the call that splits the whole payload into tokens.
-    let [_, fields, ..] = calls.as_slice() else {
-        return false;
-    };
-    let Some(source) = fields
-        .strip_prefix("ctx.")
-        .and_then(|rest| rest.split(',').next())
+    let at = script.find("parseUnsignedInt(ctx.")?;
+    let source = script[at + "parseUnsignedInt(ctx.".len()..]
+        .split(')')
+        .next()?;
+
+    let mut target = None;
+    let mut flags = Vec::new();
+    for arm in script.split("& 0x").skip(1) {
+        let (mask, rest) = arm.split_once(')')?;
+        let Ok(mask) = u64::from_str_radix(mask.trim(), 16) else {
+            continue;
+        };
+        // `ctx.<target>.add('name')`
+        let Some(add_at) = rest.find(".add(") else {
+            continue;
+        };
+        let Some(ctx_at) = rest[..add_at].rfind("ctx.") else {
+            continue;
+        };
+        let path = clean_path(&rest[ctx_at + "ctx.".len()..add_at]);
+        let name = quoted_first(&rest[add_at..])?;
+        if target.get_or_insert_with(|| path.clone()) != &path {
+            return None;
+        }
+        flags.push((mask, name));
+    }
+
+    (!flags.is_empty()).then(|| BitFlagNames {
+        source: clean_path(source),
+        target: target.unwrap_or_default(),
+        flags,
+    })
+}
+
+/// Decode the flags, appending to whatever the list already holds.
+///
+/// The script creates the list when it is absent and adds to it otherwise, so
+/// a second decode over the same field extends rather than replaces.
+fn run_bit_flag_names(event: &mut Event, decode: &BitFlagNames) -> bool {
+    let Some(flags) = event
+        .get_str(&decode.source)
+        .and_then(|text| text.trim().parse::<u64>().ok())
+        .or_else(|| event.get_i64(&decode.source).and_then(|n| u64::try_from(n).ok()))
     else {
-        return false;
-    };
-    // The per-token split is whichever helper takes the loop variable. Newer
-    // pipelines call `splitOnceByToken`, older ones `splitUnquoted` again.
-    let Some(pairs) = ["splitOnceByToken(", "splitUnquoted("]
-        .iter()
-        .find_map(|helper| script.split(helper).find(|s| s.starts_with("arr[")))
-    else {
-        return false;
-    };
-    let (Some(field_sep), Some(pair_sep)) = (quoted_first(fields), quoted_first(pairs)) else {
-        return false;
-    };
-    let Some(target) = crate::painless_params::ctx_path_before(script, " = map") else {
-        return false;
+        return true;
     };
 
+    let mut names = match event.get(&decode.target) {
+        Some(Value::Array(existing)) => existing.clone(),
+        _ => Vec::new(),
+    };
+    for (mask, name) in &decode.flags {
+        if flags & mask != 0 {
+            names.push(Value::String(name.clone()));
+        }
+    }
+    let _ = event.set(&decode.target, Value::Array(names));
+    true
+}
+
+/// A quote-aware KV split, resolved once from the script text.
+///
+/// Everything here is a property of the script alone, and reading it per event
+/// meant seven allocations before the payload was even looked at.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SplitKv {
+    source: String,
+    target: String,
+    /// Between one pair and the next.
+    field_sep: char,
+    /// Between a key and its value. Spelled as a string because the vendor
+    /// writes it quoted and it is compared with `split_once`.
+    pair_sep: String,
+}
+
+fn parse_split_unquoted_kv(script: &str) -> Option<SplitKv> {
+    use crate::painless_params::clean_path;
+
+    let mut calls = script.split("splitUnquoted(").skip(1);
+    // The definition, then the call that splits the whole payload into tokens.
+    let _definition = calls.next()?;
+    let fields = calls.next()?;
+    let source = fields
+        .strip_prefix("ctx.")
+        .and_then(|rest| rest.split(',').next())?;
+
+    // The per-token split is whichever helper takes the loop variable. Newer
+    // pipelines call `splitOnceByToken`, older ones `splitUnquoted` again.
+    let pairs = ["splitOnceByToken(", "splitUnquoted("]
+        .iter()
+        .find_map(|helper| script.split(helper).find(|s| s.starts_with("arr[")))?;
+
+    let field_sep = quoted_first(fields)?.chars().next()?;
+    let pair_sep = quoted_first(pairs)?;
+    let target = crate::painless_params::ctx_path_before(script, " = map")?;
+
+    Some(SplitKv {
+        source: clean_path(source),
+        target: clean_path(&target),
+        field_sep,
+        pair_sep,
+    })
+}
+
+/// Split the payload and write the pairs, with nothing re-read off the script.
+///
+/// A fragment without the pair separator is skipped, which is what the
+/// vendor's `kv.length == 2` guard does.
+fn run_split_unquoted_kv(event: &mut Event, split: &SplitKv) -> bool {
     // A missing source is not a failure -- the processor's `if` guards it.
-    let Some(payload) = event.get_str(&clean_path(source)).map(str::to_string) else {
+    let Some(payload) = event.get_str(&split.source).map(str::to_string) else {
         return true;
     };
 
     let mut map = Map::new();
-    for token in split_unquoted(&payload, &field_sep) {
-        let Some((key, value)) = token.split_once(pair_sep.as_str()) else {
+    for token in split_unquoted(&payload, split.field_sep) {
+        let Some((key, value)) = token.split_once(split.pair_sep.as_str()) else {
             continue;
         };
         map.insert(
@@ -5025,13 +5124,18 @@ fn try_split_unquoted_kv(event: &mut Event, script: &str) -> bool {
             json!(value.trim().trim_matches('"')),
         );
     }
-    let _ = event.set(&clean_path(&target), Value::Object(map));
+    let _ = event.set(&split.target, Value::Object(map));
     true
 }
 
 /// Split on `separator`, ignoring any occurrence inside double quotes.
-fn split_unquoted(input: &str, separator: &str) -> Vec<String> {
-    let sep = separator.chars().next().unwrap_or(' ');
+///
+/// Borrows from `input`. Returning owned tokens cost one `String` per field,
+/// and a fortigate line carries thirty of them -- the caller keeps only the
+/// halves either side of the pair separator, so nothing needed copying.
+fn split_unquoted(input: &str, separator: char) -> Vec<&str> {
+    let mut buffer = [0u8; 4];
+    let separator_str: &str = separator.encode_utf8(&mut buffer);
     let mut out = Vec::new();
     let mut start = 0;
     let mut in_quotes = false;
@@ -5039,17 +5143,17 @@ fn split_unquoted(input: &str, separator: &str) -> Vec<String> {
     for (i, c) in input.char_indices() {
         if c == '"' {
             in_quotes = !in_quotes;
-        } else if c == sep && !in_quotes {
+        } else if c == separator && !in_quotes {
             let token = input[start..i].trim();
             if !token.is_empty() {
-                out.push(token.to_string());
+                out.push(token);
             }
             start = i + c.len_utf8();
         }
     }
     let last = input[start..].trim();
-    if !last.is_empty() && last != separator {
-        out.push(last.to_string());
+    if !last.is_empty() && last != separator_str {
+        out.push(last);
     }
     out
 }
@@ -5989,6 +6093,7 @@ pub(crate) enum KnownShape {
     MaxByContains(Box<MaxByContains>),
     CheckpointPackets,
     ConsoleLoginEventData,
+    BitFlagNames(Box<BitFlagNames>),
     TlsVersionSplit {
         source: String,
     },
@@ -6088,7 +6193,7 @@ pub(crate) enum KnownShape {
         from: &'static str,
         into: &'static str,
     },
-    SplitUnquotedKv,
+    SplitUnquotedKv(Box<SplitKv>),
     ArrayToIndexedObject,
     KeyValuePairs,
     JoinOptional,
@@ -6464,6 +6569,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a numeric field's bits decoded into a list of names.
+    if normalised.contains("parseUnsignedInt(")
+        && normalised.contains("& 0x")
+        && let Some(shape) = parse_bit_flag_names(normalised)
+    {
+        shapes.push(KnownShape::BitFlagNames(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: cloudtrail's ConsoleLogin extras.
     if normalised.contains("aed_map") && normalised.contains("'ConsoleLogin'") {
         shapes.push(KnownShape::ConsoleLoginEventData);
@@ -6799,8 +6913,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: quote-aware KV split of a whole vendor payload.
-    if normalised.contains("splitUnquoted(") {
-        shapes.push(KnownShape::SplitUnquotedKv);
+    if normalised.contains("splitUnquoted(")
+        && let Some(shape) = parse_split_unquoted_kv(normalised)
+    {
+        shapes.push(KnownShape::SplitUnquotedKv(Box::new(shape)));
         return shapes;
     }
 
@@ -7001,6 +7117,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::SecurityhubResource(source) => run_securityhub_resource(event, source),
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
         KnownShape::ConsoleLoginEventData => run_console_login_event_data(event),
+        KnownShape::BitFlagNames(decode) => run_bit_flag_names(event, decode),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::ConcatParts(script) => run_concat_parts(event, script),
         KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
@@ -7178,7 +7295,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::VersionSplit => try_version_split(event, normalised),
         KnownShape::SyslogPriority => try_syslog_priority(event, normalised),
         KnownShape::AppendUnique { from, into } => try_append_unique(event, from, into),
-        KnownShape::SplitUnquotedKv => try_split_unquoted_kv(event, normalised),
+        KnownShape::SplitUnquotedKv(split) => run_split_unquoted_kv(event, split),
         KnownShape::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
         KnownShape::KeyValuePairs => try_key_value_pairs(event, normalised),
         KnownShape::JoinOptional => try_join_optional(event, normalised),
@@ -7880,6 +7997,45 @@ mod tests {
         }}));
         assert!(try_known_painless(&mut other, script));
         assert!(!other.has("aws.cloudtrail.console_login"));
+    }
+
+    /// Verbatim from `pipelines/aws/vpcflow/default.yml`: the six TCP flags,
+    /// in the order the script tests them. `aws/firewall_logs` ships the same
+    /// ladder with double quotes.
+    #[test]
+    fn a_flag_word_decodes_into_its_names() {
+        let script = "if (ctx.aws.vpcflow.tcp_flags_array == null) {\n  \
+             ArrayList al = new ArrayList();\n  \
+             ctx.aws.vpcflow.put(\"tcp_flags_array\", al);\n}\n\n\
+             def flags = Integer.parseUnsignedInt(ctx.aws.vpcflow.tcp_flags);\n\n\
+             if ((flags & 0x01) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('fin');\n}\n\
+             if ((flags & 0x02) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('syn');\n}\n\
+             if ((flags & 0x04) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('rst');\n}\n\
+             if ((flags & 0x08) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('psh');\n}\n\
+             if ((flags & 0x10) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('ack');\n}\n\
+             if ((flags & 0x20) != 0) {\n  ctx.aws.vpcflow.tcp_flags_array.add('urg');\n}\n";
+
+        // SYN alone.
+        let mut syn = Event::new(json!({"aws": {"vpcflow": {"tcp_flags": "2"}}}));
+        assert!(try_known_painless(&mut syn, script));
+        assert_eq!(
+            syn.get("aws.vpcflow.tcp_flags_array"),
+            Some(&json!(["syn"]))
+        );
+
+        // SYN + ACK, in the script's own test order rather than the input's.
+        let mut synack = Event::new(json!({"aws": {"vpcflow": {"tcp_flags": "18"}}}));
+        assert!(try_known_painless(&mut synack, script));
+        assert_eq!(
+            synack.get("aws.vpcflow.tcp_flags_array"),
+            Some(&json!(["syn", "ack"]))
+        );
+
+        // No bits set writes an empty list, which is what the script's own
+        // `new ArrayList()` leaves behind.
+        let mut none = Event::new(json!({"aws": {"vpcflow": {"tcp_flags": "0"}}}));
+        assert!(try_known_painless(&mut none, script));
+        assert_eq!(none.get("aws.vpcflow.tcp_flags_array"), Some(&json!([])));
     }
 
     /// Verbatim from `pipelines/aws/waf/default.yml`: the same name/value fold

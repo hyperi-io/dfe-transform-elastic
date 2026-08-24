@@ -213,25 +213,28 @@ impl Event {
     }
 
     /// Remove a value at a dotted path, returning it if it existed.
+    ///
+    /// The walk is iterator-only. Collecting the segments into a `Vec` first
+    /// put one heap allocation on every call, and a generated transform calls
+    /// this constantly -- the sampled profile charges it 78 allocations an
+    /// event on okta and 56 on fortinet, none of which bought anything.
     pub fn remove(&mut self, path: &str) -> Option<Value> {
-        let segments: Vec<&str> = path.split('.').collect();
-        if segments.is_empty() {
-            return None;
-        }
+        let (parents, last) = path.rsplit_once('.').map_or((None, path), |(head, last)| {
+            (Some(head), last)
+        });
 
         let mut current = &mut self.inner;
-        for segment in &segments[..segments.len() - 1] {
-            match current {
-                Value::Object(map) => {
-                    current = map.get_mut(*segment)?;
-                }
-                _ => return None,
+        if let Some(parents) = parents {
+            for segment in parents.split('.') {
+                let Value::Object(map) = current else {
+                    return None;
+                };
+                current = map.get_mut(segment)?;
             }
         }
 
-        let last = segments.last()?;
         match current {
-            Value::Object(map) => map.remove(*last),
+            Value::Object(map) => map.remove(last),
             _ => None,
         }
     }

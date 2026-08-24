@@ -43,7 +43,23 @@ serde_yaml_ng = { workspace = true, optional = true }
 [dev-dependencies]
 tempfile = { workspace = true }
 criterion = { workspace = true }
+# `benches/hashing.rs` only. serde_json's preserve_order map is an IndexMap
+# with the std hasher, and that bench measures what the hasher costs.
+indexmap = { version = "2", default-features = false, features = ["std"] }
 
 [[bench]]
 name = "painless"
+harness = false
+
+# The dotted-path accessors. Field plumbing is the hot path -- rename, set and
+# append outnumber script and grok by an order of magnitude in the vendored
+# pipelines -- so one path walk is the number that multiplies out to a batch.
+[[bench]]
+name = "event"
+harness = false
+
+# What the map's hasher costs, against the lookup it is part of. A measurement,
+# not a proposal: serde_json::Map does not let a caller choose the hasher.
+[[bench]]
+name = "hashing"
 harness = false

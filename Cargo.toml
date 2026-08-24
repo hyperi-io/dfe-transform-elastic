@@ -221,6 +221,11 @@ opt-level = 3
 [profile.bench]
 inherits = "release"
 debug = true
+# `release` strips, which contradicts the `debug` above: the debuginfo is
+# emitted and then the symbol table it needs is thrown away, so every frame of
+# a backtrace resolves to `<unknown>` and the allocation-site profiler in
+# `dfe-transforms/benches/allocations.rs` has nothing to attribute to.
+strip = false
 
 [profile.profiling]
 inherits = "release"

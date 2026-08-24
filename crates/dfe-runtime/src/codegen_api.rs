@@ -339,6 +339,27 @@ pub fn parse_json_str(text: &str) -> std::result::Result<Value, String> {
 ///
 /// Returns an error only if the event refuses a write.
 pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::Result<()> {
+    // Decided on a BORROW, before anything is cloned. The rebuild below copies
+    // the whole container, and for the root that is the entire document -- a
+    // deep clone per event, on every source whose pipeline opens with a
+    // `dot_expander`, whether or not a single key held a dot.
+    let dotted = {
+        let members = if path.is_empty() {
+            event.as_value().as_object()
+        } else {
+            event.get(path).and_then(Value::as_object)
+        };
+        let Some(members) = members else {
+            return Ok(());
+        };
+        members
+            .keys()
+            .any(|key| key.contains('.') && (field == "*" || key == field))
+    };
+    if !dotted {
+        return Ok(());
+    }
+
     let container = if path.is_empty() {
         event.as_value().clone()
     } else {
@@ -1474,6 +1495,62 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- dot_expander ---
+
+    /// A dotted key becomes the nested path it spells, and the others are
+    /// carried across untouched.
+    #[test]
+    fn a_dotted_key_expands_into_objects() {
+        let mut event = Event::new(json!({
+            "aws.cloudwatch.namespace": "AWS/EC2",
+            "aws.ec2.metrics.CPUUtilization.avg": 42,
+            "message": "left alone",
+        }));
+        dot_expand(&mut event, "", "*").unwrap();
+        assert_eq!(event.get_str("aws.cloudwatch.namespace"), Some("AWS/EC2"));
+        assert_eq!(
+            event.get("aws.ec2.metrics.CPUUtilization.avg"),
+            Some(&json!(42))
+        );
+        assert_eq!(event.get_str("message"), Some("left alone"));
+        // Nested for real, not still a flat key.
+        assert!(event.get("aws").is_some_and(|v| v.is_object()));
+    }
+
+    /// Naming ONE field expands that key and leaves the rest flat.
+    #[test]
+    fn a_named_field_expands_alone() {
+        let mut event = Event::new(json!({"a.b": 1, "c.d": 2}));
+        dot_expand(&mut event, "", "a.b").unwrap();
+        assert_eq!(event.get("a.b"), Some(&json!(1)));
+        assert!(event.get("a").is_some_and(|v| v.is_object()));
+        assert!(event.as_value().get("c.d").is_some(), "c.d stays flat");
+    }
+
+    /// A container with no dotted key is left exactly as it was, without the
+    /// deep clone the rebuild would otherwise cost on every event.
+    #[test]
+    fn a_container_with_no_dotted_key_is_untouched() {
+        let before = json!({"message": "plain", "event": {"action": "x"}});
+        let mut event = Event::new(before.clone());
+        dot_expand(&mut event, "", "*").unwrap();
+        assert_eq!(event.as_value(), &before);
+    }
+
+    /// Scoped to a path, and a path that is not there is not an error.
+    #[test]
+    fn a_scoped_expansion_only_touches_its_own_object() {
+        let mut event = Event::new(json!({"json": {"a.b": 1}, "top.level": 2}));
+        dot_expand(&mut event, "json", "*").unwrap();
+        assert_eq!(event.get("json.a.b"), Some(&json!(1)));
+        assert!(
+            event.as_value().get("top.level").is_some(),
+            "the root is out of scope"
+        );
+
+        dot_expand(&mut event, "absent", "*").unwrap();
+    }
 
     // --- uri_parts: the java.net.URI behaviours the corpus pinned ---
 

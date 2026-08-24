@@ -811,6 +811,7 @@ dependencies = [
  "criterion",
  "dfe-parse",
  "fancy-regex",
+ "indexmap 2.13.0",
  "maxminddb",
  "psl",
  "regex",

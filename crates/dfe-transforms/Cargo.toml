@@ -45,3 +45,9 @@ serde_yaml_ng = { workspace = true }
 [[bench]]
 name = "transforms"
 harness = false
+
+# Where the allocations go. Timing says a transform is slow; a per-event
+# allocation count says why, and it is exact rather than sampled.
+[[bench]]
+name = "allocations"
+harness = false
