@@ -35,6 +35,10 @@ fn ctime_with_day_name_parses() {
     assert_eq!(padded.as_deref(), Some("2026-01-02T16:22:01.000Z"));
 }
 
+/// The zone the processor names is where the text is read AND where the
+/// result is written. `2026-01-14T16:22:01.000+03:30` is the same instant as
+/// `2026-01-14T12:52:01.000Z`; Elasticsearch writes the first, which is what
+/// zscaler's tunnel dates carry.
 #[test]
 fn a_numeric_processor_timezone_shifts_the_instant() {
     let parsed = parse_date(
@@ -42,5 +46,5 @@ fn a_numeric_processor_timezone_shifts_the_instant() {
         &["E MMM dd HH:mm:ss yyyy"],
         Some("+03:30"),
     );
-    assert_eq!(parsed.as_deref(), Some("2026-01-14T12:52:01.000Z"));
+    assert_eq!(parsed.as_deref(), Some("2026-01-14T16:22:01.000+03:30"));
 }

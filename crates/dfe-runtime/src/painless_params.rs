@@ -92,6 +92,7 @@ pub(crate) enum ParamsShape {
         key: String,
     },
     MsgParts,
+    MappingRow(Box<MappingRow>),
     KeyedRowMembers(Box<KeyedRowMembers>),
     PutWrites {
         writes: Vec<PutWrite>,
@@ -217,6 +218,22 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
             .map(|(path, _)| clean_path(path.trim()))
     {
         return Some(ParamsShape::ThreatIndicatorType(source));
+    }
+
+    params_shape_tail(normalised)
+}
+
+/// The rest of the dispatch, split only because one function may not run past
+/// 150 lines. Order still matters across the two halves: the first trigger
+/// that fires wins, and these run after everything above.
+fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
+    // Pattern: one row of a NAMED params table, selected by a field, with a
+    // literal fallback where the subject is not in the table.
+    if normalised.contains("def at = ctx.")
+        && normalised.contains(".get(at)")
+        && let Some(shape) = parse_mapping_row(normalised)
+    {
+        return Some(ParamsShape::MappingRow(Box::new(shape)));
     }
 
     // Pattern: proofpoint's message parts, renamed through the params key map
@@ -446,6 +463,7 @@ pub(crate) fn run_params_shape(
             run_evidence_categories(event, source, key, params)
         }
         ParamsShape::MsgParts => run_msg_parts(event, params),
+        ParamsShape::MappingRow(shape) => run_mapping_row(event, shape, params),
         ParamsShape::KeyedRowMembers(shape) => shape.run(event, params),
         ParamsShape::PutWrites { writes, require } => {
             if let Some((path, allowed)) = require
@@ -1122,6 +1140,113 @@ impl KeyedRowMembers {
 /// hash's own name is the tail of that key lowercased. Each indicator
 /// OVERWRITES `threat.indicator.type`, so the last one in the list wins, while
 /// the `file` enrichments accumulate.
+/// One row of a NAMED params table, selected by a field, with a fallback.
+///
+/// `def m = params.<table>.get(ctx.<subject>)`, then each of the row's members
+/// copied to the field it names -- and a whole set of literal defaults where
+/// the subject is not in the table. zscaler's saas-security activity types
+/// read this way, and without it every event took the fallback.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MappingRow {
+    subject: String,
+    table: String,
+    /// Target field and the row member it takes, in the script's order.
+    writes: Vec<(String, String)>,
+    /// What the else branch writes, as literal lists.
+    defaults: Vec<(String, Vec<String>)>,
+}
+
+/// Read the subject, the table and both branches off the script.
+fn parse_mapping_row(script: &str) -> Option<MappingRow> {
+    let subject = script
+        .split_once("def at = ctx.")
+        .and_then(|(_, rest)| rest.split_once(';'))
+        .map(|(path, _)| clean_path(path))?;
+    let table = script
+        .split_once("params.")
+        .and_then(|(_, rest)| rest.split_once(".get("))
+        .map(|(name, _)| name.trim().to_string())?;
+
+    let mut writes = Vec::new();
+    for site in script.split(" = new ArrayList(m.").skip(1) {
+        let member = site.split(')').next()?.trim().to_string();
+        let target = script
+            .split(&format!(" = new ArrayList(m.{member})"))
+            .next()
+            .and_then(|head| head.rsplit_once("ctx."))
+            .map(|(_, path)| clean_path(path))?;
+        writes.push((target, member));
+    }
+    // The guarded scalar: `if (m.<member> != null) { ctx.<t> = m.<member>; }`.
+    for site in script.split("if (m.").skip(1) {
+        let Some((member, rest)) = site.split_once(" != null)") else {
+            continue;
+        };
+        let Some(target) = rest
+            .split_once(&format!("= m.{member}"))
+            .and_then(|(head, _)| head.rsplit_once("ctx."))
+            .map(|(_, path)| clean_path(path))
+        else {
+            continue;
+        };
+        writes.push((target, member.trim().to_string()));
+    }
+    if writes.is_empty() {
+        return None;
+    }
+
+    // `ctx.<target> = ['a', 'b'];` in the else branch.
+    let mut defaults = Vec::new();
+    if let Some((_, tail)) = script.split_once("} else {") {
+        for line in tail.lines().map(str::trim) {
+            let Some(rest) = line.strip_prefix("ctx.") else {
+                continue;
+            };
+            let Some((target, literal)) = rest.split_once(" = [") else {
+                continue;
+            };
+            let members: Vec<String> = literal
+                .trim_end_matches([';', '}', ' '])
+                .trim_end_matches(']')
+                .split(',')
+                .map(|item| item.trim().trim_matches(['\'', '"']).to_string())
+                .filter(|item| !item.is_empty())
+                .collect();
+            if !members.is_empty() {
+                defaults.push((clean_path(target), members));
+            }
+        }
+    }
+
+    Some(MappingRow {
+        subject,
+        table,
+        writes,
+        defaults,
+    })
+}
+
+/// Copy the selected row's members out, or write the defaults.
+fn run_mapping_row(event: &mut Event, shape: &MappingRow, params: &Map<String, Value>) -> bool {
+    let row = event
+        .get_as_string(&shape.subject)
+        .and_then(|key| params.get(&shape.table)?.get(&key).cloned());
+
+    let Some(row) = row else {
+        for (target, members) in &shape.defaults {
+            let _ = event.set(target, json!(members));
+        }
+        return true;
+    };
+
+    for (target, member) in &shape.writes {
+        if let Some(held) = row.get(member).filter(|v| !v.is_null()) {
+            let _ = event.set(target, held.clone());
+        }
+    }
+    true
+}
+
 /// Keys the vendor ships as text that the rename typed on the way through.
 const MSG_PART_LONGS: [&str; 2] = ["detected_size_bytes", "size_decoded_bytes"];
 const MSG_PART_BOOLS: [&str; 7] = [

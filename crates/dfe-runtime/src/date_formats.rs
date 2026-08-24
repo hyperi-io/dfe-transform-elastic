@@ -18,6 +18,9 @@ use chrono::{DateTime, Datelike, FixedOffset, NaiveDateTime, TimeZone, Utc};
 /// that zone as `Z` rather than `+00:00`.
 const ISO_OUT: &str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 
+/// The same shape in a zone that is not UTC, which prints its offset.
+const OFFSET_OUT: &str = "%Y-%m-%dT%H:%M:%S%.3f%:z";
+
 /// Zero offset, the fallback when no zone is named anywhere.
 const UTC_OFFSET: FixedOffset = match FixedOffset::east_opt(0) {
     Some(offset) => offset,
@@ -46,14 +49,34 @@ pub fn parse_date_out(
     output_format: Option<&str>,
 ) -> Option<String> {
     let input = input.trim();
-    // Rendered in UTC whatever zone the text named: that is what Elastic's
-    // own expectations carry, and it is the only reading that does not
-    // depend on where the pipeline happens to run.
-    let out = output_format.map_or(Cow::Borrowed(ISO_OUT), java_to_chrono);
-    formats
+    let parsed = formats
         .iter()
-        .find_map(|format| parse_one(input, format, timezone))
-        .map(|dt| dt.with_timezone(&Utc).format(&out).to_string())
+        .find_map(|format| parse_one(input, format, timezone))?;
+
+    // The processor's OWN `timezone` is the output zone too, not just the
+    // parsing one: Elasticsearch formats the instant in it, so zscaler's
+    // `timezone: '{{{event.timezone}}}'` writes `+03:30` where rendering in
+    // UTC writes `Z` an offset out. A zone the text named rather than the
+    // processor still renders in UTC, which is what the corpus carries, and a
+    // configured zone that IS UTC renders `Z` rather than `+00:00`.
+    let configured = timezone.and_then(zone_offset).filter(|zone| {
+        zone.local_minus_utc() != 0 && output_format.is_none() && !offset_in_text(input)
+    });
+
+    if let Some(zone) = configured {
+        return Some(parsed.with_timezone(&zone).format(OFFSET_OUT).to_string());
+    }
+    let out = output_format.map_or(Cow::Borrowed(ISO_OUT), java_to_chrono);
+    Some(parsed.with_timezone(&Utc).format(&out).to_string())
+}
+
+/// Whether the TEXT carried a zone of its own, which beats the processor's.
+fn offset_in_text(input: &str) -> bool {
+    // Only past the date, so `2023-10-16` is not read as carrying one.
+    input.len() > 10
+        && (input.ends_with('Z')
+            || input[10..].contains('+')
+            || input[10..].rfind('-').is_some_and(|at| at > 2))
 }
 
 fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTime<FixedOffset>> {
@@ -289,6 +312,15 @@ fn zone_offset(zone: &str) -> Option<FixedOffset> {
     if matches!(zone, "UTC" | "GMT" | "Z" | "UT" | "Zulu") {
         return FixedOffset::east_opt(0);
     }
+    // `GMT+03:30` and `UTC-05:00` are Java zone ids, and zscaler's tunnel
+    // events carry the first of them in `event.timezone`.
+    for prefix in ["GMT", "UTC", "UT"] {
+        if let Some(rest) = zone.strip_prefix(prefix)
+            && rest.starts_with(['+', '-'])
+        {
+            return zone_offset(rest);
+        }
+    }
     if let Some((_, minutes)) = ZONE_ABBREVIATIONS.iter().find(|(name, _)| *name == zone) {
         return FixedOffset::east_opt(minutes * 60);
     }
@@ -480,6 +512,9 @@ mod tests {
         }
     }
 
+    /// The processor's zone is the OUTPUT zone as well as the parsing one:
+    /// Elasticsearch formats the instant in it rather than converting to UTC.
+    /// zscaler's tunnel dates carry `+03:30` for exactly this reason.
     #[test]
     fn the_processor_timezone_applies_when_the_text_carries_none() {
         let out = parse_date(
@@ -487,7 +522,14 @@ mod tests {
             &["yyyy MMM d HH:mm:ss"],
             Some("+1000"),
         );
-        assert_eq!(out.unwrap(), "2023-05-02T02:55:19.000Z");
+        assert_eq!(out.unwrap(), "2023-05-02T12:55:19.000+10:00");
+    }
+
+    /// A configured zone that IS UTC prints `Z`, not `+00:00`.
+    #[test]
+    fn a_configured_utc_still_prints_z() {
+        let out = parse_date("2023 May 2 12:55:19", &["yyyy MMM d HH:mm:ss"], Some("UTC"));
+        assert_eq!(out.unwrap(), "2023-05-02T12:55:19.000Z");
     }
 
     /// Elasticsearch's own named formats, not Java patterns. They were read as
