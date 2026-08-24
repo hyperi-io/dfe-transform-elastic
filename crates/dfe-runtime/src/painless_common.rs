@@ -4974,6 +4974,53 @@ fn evidence_loop_path(script: &str) -> Option<String> {
     (!path.is_empty()).then_some(path)
 }
 
+/// Read `ctx.<t> = <v>.substring(0, <v>.toLowerCase().lastIndexOf('<n>'))`.
+///
+/// m365's device events name an API call `ReadProcessMemoryApiCall` and the
+/// pipeline wants the half before the marker. The search is case-INSENSITIVE
+/// and the cut is on the ORIGINAL text, so the case of what survives is the
+/// vendor's.
+fn parse_substring_before_last(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let source = script
+        .split_once("= ctx.")
+        .and_then(|(_, rest)| rest.split_once(';'))
+        .map(|(path, _)| clean_path(path))?;
+    let needle = script
+        .split_once("lastIndexOf(")
+        .and_then(|(_, rest)| quoted_first(rest))?;
+    let target = script
+        .lines()
+        .rev()
+        .map(str::trim)
+        .find(|line| line.starts_with("ctx.") && line.contains(" = "))
+        .and_then(|line| line.split_once(" = "))
+        .map(|(target, _)| clean_path(&target["ctx.".len()..]))?;
+
+    (!source.is_empty() && !target.is_empty() && !needle.is_empty()).then_some(
+        KnownShape::SubstringBeforeLast {
+            source,
+            target,
+            needle,
+        },
+    )
+}
+
+/// Cut the source at the last case-insensitive occurrence of the marker.
+fn run_substring_before_last(event: &mut Event, source: &str, target: &str, needle: &str) -> bool {
+    let Some(text) = event.get_str(source).map(str::to_string) else {
+        return true;
+    };
+    // `substring(0, -1)` throws in Java, so a marker that is not there writes
+    // nothing and the rename behind this finds no field.
+    let Some(at) = text.to_lowercase().rfind(&needle.to_lowercase()) else {
+        return true;
+    };
+    let _ = event.set(target, json!(&text[..at]));
+    true
+}
+
 /// A duration in SECONDS becomes nanoseconds, and closes the span it opens.
 ///
 /// proofpoint writes `ctx.event.duration = (int) (secs * 1000000000)` and then
@@ -6234,6 +6281,11 @@ pub(crate) enum KnownShape {
     BitFlagNames(Box<BitFlagNames>),
     PascalKeys(Box<PascalKeys>),
     SecondsToSpan(String),
+    SubstringBeforeLast {
+        source: String,
+        target: String,
+        needle: String,
+    },
     TlsVersionSplit {
         source: String,
     },
@@ -6724,6 +6776,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains(", new HashMap())")
         && normalised.contains("for (")
         && let Some(shape) = parse_name_value_fold(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: the text before the last CASE-INSENSITIVE marker. The
+    // `toLowerCase()` is what separates this from panw's url and file scripts,
+    // which cut on a plain `lastIndexOf` and are several statements long.
+    if normalised.contains(".toLowerCase().lastIndexOf(")
+        && normalised.contains(".substring(0, ")
+        && let Some(shape) = parse_substring_before_last(normalised)
     {
         shapes.push(shape);
         return shapes;
@@ -7289,6 +7352,11 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::BitFlagNames(decode) => run_bit_flag_names(event, decode),
         KnownShape::PascalKeys(shape) => run_pascal_keys(event, shape),
         KnownShape::SecondsToSpan(source) => run_seconds_to_span(event, source),
+        KnownShape::SubstringBeforeLast {
+            source,
+            target,
+            needle,
+        } => run_substring_before_last(event, source, target, needle),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::ConcatParts(script) => run_concat_parts(event, script),
         KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
@@ -8168,6 +8236,33 @@ mod tests {
         }}));
         assert!(try_known_painless(&mut other, script));
         assert!(!other.has("aws.cloudtrail.console_login"));
+    }
+
+    /// Verbatim from `pipelines/m365_defender/event/pipeline_device.yml`: the
+    /// API name is whatever comes before the `ApiCall` marker, found without
+    /// regard to case but cut out of the ORIGINAL text.
+    #[test]
+    fn the_text_before_a_case_insensitive_marker_is_taken() {
+        let script = "String actiontype = ctx.m365_defender.event.action.type;\n\
+             def idx = actiontype.toLowerCase().lastIndexOf('apicall');\n\
+             ctx._temp_process_Ext_api_name = actiontype.substring(0, idx);\n";
+
+        let mut event = Event::new(json!({
+            "m365_defender": {"event": {"action": {"type": "ReadProcessMemoryApiCall"}}}
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("_temp_process_Ext_api_name"),
+            Some("ReadProcessMemory")
+        );
+
+        // No marker means `substring(0, -1)`, which throws in Java, so
+        // nothing is written and the rename behind it finds no field.
+        let mut plain = Event::new(json!({
+            "m365_defender": {"event": {"action": {"type": "SomethingElse"}}}
+        }));
+        assert!(try_known_painless(&mut plain, script));
+        assert!(!plain.has("_temp_process_Ext_api_name"));
     }
 
     /// Verbatim from `pipelines/proofpoint_on_demand/message/default.yml`. A
