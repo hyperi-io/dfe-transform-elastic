@@ -31,6 +31,7 @@ pub mod painless_helpers;
 pub mod painless_params;
 pub mod painless_plan;
 pub mod painless_scheduled_task;
+pub mod painless_sddl;
 pub mod painless_stats;
 pub mod painless_windows;
 pub mod prelude;

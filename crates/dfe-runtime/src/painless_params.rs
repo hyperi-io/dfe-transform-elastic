@@ -93,6 +93,7 @@ pub(crate) enum ParamsShape {
     },
     MsgParts,
     MappingRow(Box<MappingRow>),
+    SecuritySddl,
     KeyedRowMembers(Box<KeyedRowMembers>),
     PutWrites {
         writes: Vec<PutWrite>,
@@ -227,6 +228,11 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
 /// 150 lines. Order still matters across the two halves: the first trigger
 /// that fires wins, and these run after everything above.
 fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
+    // Pattern: windows security descriptors expanded into readable ACL lines.
+    if normalised.contains("void enrichSDDL(") {
+        return Some(ParamsShape::SecuritySddl);
+    }
+
     // Pattern: one row of a NAMED params table, selected by a field, with a
     // literal fallback where the subject is not in the table.
     if normalised.contains("def at = ctx.")
@@ -464,6 +470,7 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::MsgParts => run_msg_parts(event, params),
         ParamsShape::MappingRow(shape) => run_mapping_row(event, shape, params),
+        ParamsShape::SecuritySddl => crate::painless_sddl::run(event, params),
         ParamsShape::KeyedRowMembers(shape) => shape.run(event, params),
         ParamsShape::PutWrites { writes, require } => {
             if let Some((path, allowed)) = require
