@@ -470,6 +470,18 @@ fn transforms_match_elastics_confirmed_output() {
         return;
     }
 
+    // The corpus was captured with MaxMind's databases and ours are DB-IP
+    // Lite, so every geoip-derived field is excluded from the comparison. The
+    // enrichment's SIDE EFFECTS are not excluded, though: an ASN hit MaxMind
+    // does not have makes gcp/vpcflow's `source.as.asn` rename land on an
+    // occupied `source.as.number`, which fails the document and skips the
+    // twenty-nine removes behind it. Comparing against output built from a
+    // database we do not have means running without one.
+    assert!(
+        dfe_runtime::enrichment::geoip_global::disable(),
+        "a lookup has already loaded the databases -- disable must come first"
+    );
+
     // Whole-diff output for one source. Printing every difference for every
     // source buries the summary the ranking exists to give.
     let detail = std::env::var("DFE_COMPAT_DETAIL").ok();

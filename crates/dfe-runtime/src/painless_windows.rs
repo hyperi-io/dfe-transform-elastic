@@ -907,7 +907,10 @@ pub(crate) fn run_script_block_entropy(event: &mut Event, source: &str) -> bool 
     }
 
     let _ = event.set("powershell.file.script_block_entropy_bits", entropy_bits);
-    let _ = event.set("powershell.file.script_block_entropy_normalized", normalized);
+    let _ = event.set(
+        "powershell.file.script_block_entropy_normalized",
+        normalized,
+    );
     let _ = event.set("powershell.file.script_block_surprisal_stdev", surprisal_sd);
     let _ = event.set("powershell.file.script_block_length", length);
     let _ = event.set("powershell.file.script_block_unique_symbols", seen.len());
@@ -947,9 +950,9 @@ fn is_signature_only(units: &[u16]) -> bool {
     if second_line_end - content_start != SIGNATURE_LINE {
         return false;
     }
-    units[content_start..second_line_end].iter().all(|u| {
-        matches!(u, 65..=90 | 97..=122 | 48..=57) || matches!(u, 43 | 47 | 61)
-    })
+    units[content_start..second_line_end]
+        .iter()
+        .all(|u| matches!(u, 65..=90 | 97..=122 | 48..=57) || matches!(u, 43 | 47 | 61))
 }
 
 #[cfg(test)]

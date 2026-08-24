@@ -211,7 +211,7 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has("json.userIdentity.sessionContext.sessionIssuer.userName") {
-                    event.rename(
+                    event.rename_over(
                         "json.userIdentity.sessionContext.sessionIssuer.userName",
                         "user.name",
                     )?;

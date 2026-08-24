@@ -253,11 +253,32 @@ impl Event {
         Some(std::mem::take(items))
     }
 
-    /// Rename a field from one path to another.
+    /// Rename a field from one path to another, the way Elasticsearch does.
     ///
-    /// Removes the value at `from` and sets it at `to`. Intermediate objects
-    /// are created at the destination as needed.
+    /// An ABSENT source and an OCCUPIED target are both failures there --
+    /// `field [x] doesn't exist` and `field [y] already exists` -- and only
+    /// `ignore_missing`, `ignore_failure` or an `on_failure` handler swallows
+    /// one. Overwriting instead let a rename clobber a value the vendor
+    /// pipeline leaves alone: aws `ec2_metrics` ships six whose targets the
+    /// agent has already filled, and each replaced a computed reading
+    /// (`host.cpu.usage` 0.421) with the raw metric (42).
+    ///
+    /// [`Self::rename_over`] is the `override: true` spelling, which does
+    /// replace the target.
     pub fn rename(&mut self, from: &str, to: &str) -> Result<()> {
+        if self.has(to) {
+            return Err(TransformError::FieldExists {
+                path: to.to_string(),
+            });
+        }
+        self.rename_over(from, to)
+    }
+
+    /// Rename a field, replacing whatever the target already held.
+    ///
+    /// The `override: true` reading. Three of the 4,105 renames the vendored
+    /// pipelines ship ask for it.
+    pub fn rename_over(&mut self, from: &str, to: &str) -> Result<()> {
         match self.remove(from) {
             Some(value) => self.set(to, value),
             None => Err(TransformError::FieldNotFound {
@@ -714,6 +735,35 @@ mod tests {
     fn rename_missing_field_errors() {
         let mut event = Event::new(json!({}));
         assert!(event.rename("missing", "dest").is_err());
+    }
+
+    /// An occupied target is a failure, not an overwrite -- Elasticsearch's own
+    /// `field [y] already exists`. The source stays put so an `on_failure`
+    /// handler still sees the document whole.
+    #[test]
+    fn rename_onto_an_occupied_target_fails_and_changes_nothing() {
+        let mut event = Event::new(json!({"host": {"cpu": {"usage": 0.421}}, "raw": 42}));
+        assert!(event.rename("raw", "host.cpu.usage").is_err());
+        assert_eq!(event.get_f64("host.cpu.usage"), Some(0.421));
+        assert_eq!(event.get_i64("raw"), Some(42));
+    }
+
+    /// `override: true` is the spelling that asks to replace it.
+    #[test]
+    fn rename_over_replaces_an_occupied_target() {
+        let mut event = Event::new(json!({"host": {"cpu": {"usage": 0.421}}, "raw": 42}));
+        event.rename_over("raw", "host.cpu.usage").unwrap();
+        assert_eq!(event.get_i64("host.cpu.usage"), Some(42));
+        assert!(!event.has("raw"));
+    }
+
+    /// A present-but-NULL target counts as occupied: Elasticsearch's
+    /// `hasField` answers key presence, and a `set` with an absent
+    /// `copy_from` writes exactly that null.
+    #[test]
+    fn rename_onto_an_explicit_null_still_fails() {
+        let mut event = Event::new(json!({"dest": null, "raw": 42}));
+        assert!(event.rename("raw", "dest").is_err());
     }
 
     // -- Array + merge tests ---------------------------------------------

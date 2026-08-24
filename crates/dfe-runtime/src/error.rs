@@ -15,6 +15,13 @@ pub enum TransformError {
     #[error("field not found: '{path}'")]
     FieldNotFound { path: String },
 
+    /// A field already holds a value that would have to be replaced.
+    ///
+    /// Elasticsearch's `rename` refuses to land on an occupied target, and
+    /// that refusal is a document failure -- the same wording it uses.
+    #[error("field '{path}' already exists")]
+    FieldExists { path: String },
+
     /// A field exists but has an unexpected type.
     #[error("type mismatch at '{path}': expected {expected}, got {actual}")]
     TypeMismatch {

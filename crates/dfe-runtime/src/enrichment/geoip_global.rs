@@ -25,6 +25,7 @@ use std::collections::HashMap;
 use std::net::IpAddr;
 use std::path::PathBuf;
 use std::sync::OnceLock;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use serde_json::Value;
 use tracing::{debug, info, warn};
@@ -40,6 +41,26 @@ struct GlobalGeoIp {
 }
 
 static GLOBAL_GEOIP: OnceLock<GlobalGeoIp> = OnceLock::new();
+
+/// Set by [`disable`] before the first lookup, read by [`init_global`].
+static DISABLED: AtomicBool = AtomicBool::new(false);
+
+/// Load no database, whatever is on disk.
+///
+/// For a comparison against output another engine produced with a DIFFERENT
+/// MMDB. Every geoip-derived field is excluded from that comparison anyway --
+/// our DB-IP Lite databases disagree with `MaxMind`'s on both city and ASN --
+/// but the enrichment still has SIDE EFFECTS that are compared: gcp/vpcflow
+/// renames `source.as.asn` onto `source.as.number`, and an ASN hit `MaxMind`
+/// does not have makes that rename land on an occupied target, fail the
+/// document, and skip the twenty-nine removes behind it.
+///
+/// Returns false if a lookup has already forced initialisation, in which case
+/// this had no effect -- call it before any transform runs.
+pub fn disable() -> bool {
+    DISABLED.store(true, Ordering::Relaxed);
+    GLOBAL_GEOIP.get().is_none()
+}
 
 /// Whether any database loaded.
 ///
@@ -63,6 +84,14 @@ pub fn cache_stats() -> Stats {
 /// in standard locations. Non-fatal: if no databases found, lookups
 /// return empty results instead of errors.
 fn init_global() -> GlobalGeoIp {
+    if DISABLED.load(Ordering::Relaxed) {
+        debug!("GeoIP enrichment disabled by request");
+        return GlobalGeoIp {
+            city: None,
+            asn: None,
+            cache: Cache::default(),
+        };
+    }
     let city_path = find_db(
         "GEOIP_CITY_DB",
         &["dbip-city-lite.mmdb", "GeoLite2-City.mmdb"],

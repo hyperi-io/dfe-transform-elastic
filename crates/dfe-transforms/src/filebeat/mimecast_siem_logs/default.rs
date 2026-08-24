@@ -1183,7 +1183,7 @@ impl Transform for Default {
                     event.remove("mimecast.senderEnvelope");
                 }
                 if event.has("original") {
-                    event.rename("original", "mimecast")?;
+                    event.rename_over("original", "mimecast")?;
                 }
                 event.remove("mimecast._offset");
                 event.remove("mimecast._partition");

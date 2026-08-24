@@ -814,7 +814,10 @@ fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsShape> {
 fn parse_put_target(script: &str) -> Option<(String, String)> {
     let at = script.find(".put(\"")?;
     let container = clean_path(script[..at].rsplit("ctx.").next()?);
-    let member = script[at + ".put(\"".len()..].split('"').next()?.to_string();
+    let member = script[at + ".put(\"".len()..]
+        .split('"')
+        .next()?
+        .to_string();
     if member.is_empty()
         || !container
             .chars()
@@ -852,7 +855,9 @@ impl PutWrite {
                 Some(false) => key.to_lowercase(),
                 None => key.to_string(),
             };
-            let Some(value) = params.get(&key) else { return };
+            let Some(value) = params.get(&key) else {
+                return;
+            };
             value.clone()
         } else {
             raw
@@ -1002,7 +1007,9 @@ impl KeyedRowMembers {
         let binding = tail.split([';', '\n']).next()?;
 
         // The path is what comes before the normalising calls chained onto it.
-        let path = binding.split_once(".replace(").map_or(binding, |(head, _)| head);
+        let path = binding
+            .split_once(".replace(")
+            .map_or(binding, |(head, _)| head);
         let path = path
             .split_once(".toUpperCase(")
             .map_or(path, |(head, _)| head);
@@ -3127,7 +3134,11 @@ mod tests {
             Some("Network Policy Server")
         );
         // The guard above the assignment is not a field of its own.
-        assert!(event.get("winlog.event_data.SubcategoryGuid == null) {").is_none());
+        assert!(
+            event
+                .get("winlog.event_data.SubcategoryGuid == null) {")
+                .is_none()
+        );
     }
 
     /// Verbatim from `pipelines/crowdstrike/default.yml`, so a change upstream

@@ -58,12 +58,16 @@ pub fn parse_date_out(
 
 fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTime<FixedOffset>> {
     match format {
+        // Elastic scales the WHOLE double to milliseconds and truncates
+        // (`Instant.ofEpochMilli((long) (Double.parseDouble(date) * 1000.0))`),
+        // so its resolution stops at the millisecond. Taking the fraction off
+        // first instead loses precision the integer seconds have already eaten:
+        // `1742799479.852 - 1742799479.0` is 0.851999998, which renders .851
+        // where Elastic renders .852.
         "UNIX" => {
             let seconds = input.parse::<f64>().ok().filter(|s| *s > 0.0)?;
-            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let nanos = ((seconds - seconds.trunc()) * 1e9) as u32;
             #[allow(clippy::cast_possible_truncation)]
-            DateTime::from_timestamp(seconds.trunc() as i64, nanos).map(Into::into)
+            DateTime::from_timestamp_millis((seconds * 1000.0) as i64).map(Into::into)
         }
         "UNIX_MS" => {
             let millis = input.parse::<i64>().ok().filter(|ms| *ms > 0)?;
@@ -458,6 +462,22 @@ mod tests {
     fn the_first_matching_format_wins() {
         let out = parse_date("1587230269", &["UNIX", "UNIX_MS"], None).unwrap();
         assert_eq!(out, "2020-04-18T17:17:49.000Z");
+    }
+
+    /// A fractional UNIX second scales to milliseconds WHOLE, the way Elastic
+    /// does it. Subtracting the integer seconds off first costs the precision
+    /// they have already eaten, and every one of these lands a millisecond
+    /// early that way.
+    #[test]
+    fn a_fractional_unix_second_keeps_its_millisecond() {
+        for (input, expected) in [
+            ("1742799479.852", "2025-03-24T06:57:59.852Z"),
+            ("1742541951.883", "2025-03-21T07:25:51.883Z"),
+            ("1636625755.218", "2021-11-11T10:15:55.218Z"),
+            ("1742799480.061", "2025-03-24T06:58:00.061Z"),
+        ] {
+            assert_eq!(parse_date(input, &["UNIX"], None).unwrap(), expected);
+        }
     }
 
     #[test]

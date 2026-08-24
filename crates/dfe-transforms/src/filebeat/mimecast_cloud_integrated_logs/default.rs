@@ -476,7 +476,7 @@ impl Transform for Default {
             }
 
             if event.has("original") {
-                event.rename("original", "mimecast")?;
+                event.rename_over("original", "mimecast")?;
             }
 
             event.remove("mimecast._offset");

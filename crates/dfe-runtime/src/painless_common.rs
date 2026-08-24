@@ -2131,6 +2131,31 @@ fn run_category_type_ladder(event: &mut Event, arms: &[CategoryArm]) -> bool {
     true
 }
 
+/// Read the source and target of a snake-cased map copy.
+///
+/// `for (def item : ctx.<source>.entrySet())` names the map being walked, and
+/// the trailing `ctx.<target> = <local>` names where the rebuilt one lands.
+/// Both halves must be present: the loop alone could be any of a dozen shapes,
+/// and the assignment alone says nothing about what is being copied.
+fn parse_snake_key_map_copy(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let loop_at = script.find(" : ctx.")?;
+    let (source, _) = script[loop_at + " : ctx.".len()..].split_once(".entrySet()")?;
+
+    let assignment = script
+        .lines()
+        .rev()
+        .map(|line| line.trim().trim_end_matches(';'))
+        .find(|line| line.starts_with("ctx.") && line.contains(" = "))?;
+    let (target, _) = assignment.split_once(" = ")?;
+
+    Some(KnownShape::SnakeKeyMapCopy {
+        source: clean_path(source),
+        target: clean_path(&target["ctx.".len()..]),
+    })
+}
+
 /// Read the angle-strip helper's call sites: `ctx.<p> = <name>(ctx.<p>);`
 /// scalars, and the loop rebuilding a list through the same helper.
 fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
@@ -5792,6 +5817,10 @@ pub(crate) enum KnownShape {
     },
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
+    SnakeKeyMapCopy {
+        source: String,
+        target: String,
+    },
     StripAnglePairs {
         scalars: Vec<String>,
         lists: Vec<String>,
@@ -6210,6 +6239,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         shapes.push(KnownShape::KeysStripWhitespace(
             crate::painless_params::clean_path(&normalised[start + 4..at]),
         ));
+        return shapes;
+    }
+
+    // Pattern: one map copied to another path with its keys snake_cased by a
+    // helper the script defines itself -- lambda's REPORT metrics. The helper's
+    // name is not fixed (`underscore` here), so the replacement it performs is
+    // what identifies it.
+    if normalised.contains("([a-z])([A-Z]+)")
+        && normalised.contains(".getKey()")
+        && let Some(shape) = parse_snake_key_map_copy(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -6790,6 +6831,19 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
                     rebuilt.insert(stripped, value);
                 }
                 let _ = event.set(source, Value::Object(rebuilt));
+            }
+            true
+        }
+        KnownShape::SnakeKeyMapCopy { source, target } => {
+            if let Some(Value::Object(entries)) = event.get(source).cloned() {
+                let mut rebuilt = Map::new();
+                for (key, value) in entries {
+                    // The helper breaks a word only where a lowercase run
+                    // meets an uppercase one, so `memorySizeMB` becomes
+                    // `memory_size_mb` and not `memory_size_m_b`.
+                    rebuilt.insert(to_snake_case(&key, SnakeRule::OnWordBreak), value);
+                }
+                let _ = event.set(target, Value::Object(rebuilt));
             }
             true
         }
@@ -8570,6 +8624,48 @@ def event_timezone = get_timezone(ctx);
             Some("S1"),
         );
         assert!(event.has("json"), "the source object is not consumed");
+    }
+
+    /// lambda's REPORT metrics: a map copied to a new path with its keys
+    /// `snake_cased` by a helper the script names itself, so the shape of the
+    /// replacement identifies it rather than the helper's name. `MB` is one
+    /// word to the vendor's regex, not two letters.
+    #[test]
+    fn a_snake_cased_map_copy_lands_on_its_target() {
+        let script = "String underscore(String s) {\n    \
+             def regex = /_?([a-z])([A-Z]+)/;\n    \
+             s = regex.matcher(s).replaceAll('$1_$2').toLowerCase();\n    \
+             return s\n}\n\n\
+             def out = [:];\n\
+             for (def item : ctx.parsed.record.metrics.entrySet()) {\n    \
+             out[underscore(item.getKey())] = item.getValue();\n}\n\
+             ctx.aws.lambda.metrics = out\n";
+        let mut event = Event::new(json!({
+            "parsed": {"record": {"metrics": {
+                "durationMs": 1234.567,
+                "billedDurationMs": 1235,
+                "memorySizeMB": 256,
+                "maxMemoryUsedMB": 79,
+            }}}
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_f64("aws.lambda.metrics.duration_ms"),
+            Some(1234.567)
+        );
+        assert_eq!(
+            event.get_i64("aws.lambda.metrics.billed_duration_ms"),
+            Some(1235)
+        );
+        assert_eq!(
+            event.get_i64("aws.lambda.metrics.memory_size_mb"),
+            Some(256)
+        );
+        assert_eq!(
+            event.get_i64("aws.lambda.metrics.max_memory_used_mb"),
+            Some(79)
+        );
     }
 
     /// `entra_id` rewrites its own object rather than writing somewhere new, and

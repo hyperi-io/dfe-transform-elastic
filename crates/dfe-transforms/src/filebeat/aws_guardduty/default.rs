@@ -5328,21 +5328,42 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws?.guardduty?.severity?.code != null && ctx.aws.guardduty.severity.code <= 8.9 && ctx.aws.guardduty.severity.code >= 7.0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws.guardduty.severity.code")
+                    && event
+                        .get_f64("aws.guardduty.severity.code")
+                        .is_some_and(|n| n <= 8.9)
+                    && event
+                        .get_f64("aws.guardduty.severity.code")
+                        .is_some_and(|n| n >= 7.0)
+            };
+            if _cond {
                 event.set("aws.guardduty.severity.value", json!("High"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws?.guardduty?.severity?.code != null && ctx.aws.guardduty.severity.code <= 6.9 && ctx.aws.guardduty.severity.code >= 4.0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws.guardduty.severity.code")
+                    && event
+                        .get_f64("aws.guardduty.severity.code")
+                        .is_some_and(|n| n <= 6.9)
+                    && event
+                        .get_f64("aws.guardduty.severity.code")
+                        .is_some_and(|n| n >= 4.0)
+            };
+            if _cond {
                 event.set("aws.guardduty.severity.value", json!("Medium"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws?.guardduty?.severity?.code != null && ctx.aws.guardduty.severity.code <= 3.9 && ctx.aws.guardduty.severity.code >= 1.0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws.guardduty.severity.code")
+                    && event
+                        .get_f64("aws.guardduty.severity.code")
+                        .is_some_and(|n| n <= 3.9)
+                    && event
+                        .get_f64("aws.guardduty.severity.code")
+                        .is_some_and(|n| n >= 1.0)
+            };
+            if _cond {
                 event.set("aws.guardduty.severity.value", json!("Low"))?;
             }
 

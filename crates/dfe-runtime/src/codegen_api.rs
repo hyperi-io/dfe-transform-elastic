@@ -79,9 +79,9 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
         .and_then(|suffix| Some((std::str::from_utf8(suffix.as_bytes()).ok()?, suffix.typ()?)))
         .filter(|(suffix, _)| suffix.len() < domain.len());
 
-    if let Some((private, _)) = listed.filter(|(suffix, typ)| {
-        *typ == psl::Type::Private && suffix.split('.').count() > 2
-    }) && let Some((_, tld)) = private.split_once('.')
+    if let Some((private, _)) =
+        listed.filter(|(suffix, typ)| *typ == psl::Type::Private && suffix.split('.').count() > 2)
+        && let Some((_, tld)) = private.split_once('.')
     {
         let subdomain = domain[..domain.len() - private.len()]
             .strip_suffix('.')
@@ -1512,8 +1512,8 @@ mod tests {
     /// verbatim from the route53 corpus.
     #[test]
     fn a_long_private_suffix_is_the_registered_domain() {
-        let short =
-            registered_domain_lookup("ec2-instance-connect.us-east-1.amazonaws.com").expect("known");
+        let short = registered_domain_lookup("ec2-instance-connect.us-east-1.amazonaws.com")
+            .expect("known");
         assert_eq!(
             short.registered_domain.as_deref(),
             Some("us-east-1.amazonaws.com")

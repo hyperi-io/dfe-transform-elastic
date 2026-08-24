@@ -113,6 +113,15 @@ Each fixture's own `dynamic_fields` and `numeric_keyword_fields` are honoured
 on top of the policy. A source reports `CURRENT` when `real` is zero, and the
 `clean` count is the events with no real difference.
 
+**The corpus test runs with GeoIP OFF** (`geoip_global::disable`). Skipping the
+geo fields is not enough, because the enrichment has side effects that ARE
+compared: gcp/vpcflow renames `source.as.asn` onto `source.as.number`, and an
+ASN hit DB-IP Lite has where MaxMind's GeoLite2 does not makes that rename land
+on an occupied target -- which fails the document and skips the twenty-nine
+removes behind it, costing 262 events. Comparing against output built from a
+database we do not have means running without one. The committed fixtures under
+`tests/fixtures/` still exercise enrichment as a floor.
+
 ## Correct beats bug-compatible
 
 The corpus is the reference for what a pipeline MEANS, not a specification of
