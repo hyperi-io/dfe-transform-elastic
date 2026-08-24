@@ -4974,6 +4974,58 @@ fn evidence_loop_path(script: &str) -> Option<String> {
     (!path.is_empty()).then_some(path)
 }
 
+/// A duration in SECONDS becomes nanoseconds, and closes the span it opens.
+///
+/// proofpoint writes `ctx.event.duration = (int) (secs * 1000000000)` and then
+/// `ctx.event.end = start.plus(duration, ChronoUnit.NANOS)`. The cast is the
+/// script's own and it is to a 32-bit int, so a duration past ~2.1 seconds
+/// wraps there -- reproduced, because the vendor's arithmetic is what decides
+/// the value Elasticsearch stores.
+fn run_seconds_to_span(event: &mut Event, source: &str) -> bool {
+    let Some(seconds) = event.get_f64(source) else {
+        return true;
+    };
+    #[allow(clippy::cast_possible_truncation)]
+    let nanos = (seconds * 1_000_000_000.0) as i32;
+    let _ = event.set("event.duration", json!(nanos));
+
+    let Some(start) = event.get_str("event.start").map(str::to_string) else {
+        return true;
+    };
+    let Ok(parsed) = chrono::DateTime::parse_from_rfc3339(&start) else {
+        return true;
+    };
+    let Some(end) = parsed.checked_add_signed(chrono::TimeDelta::nanoseconds(i64::from(nanos)))
+    else {
+        return true;
+    };
+    let _ = event.set("event.end", json!(render_java_instant(&end.to_utc())));
+    true
+}
+
+/// A `ZonedDateTime` as Java prints it: no fraction at all when there is none,
+/// otherwise three, six or nine digits -- never a partial group.
+fn render_java_instant(instant: &chrono::DateTime<chrono::Utc>) -> String {
+    use chrono::Timelike;
+
+    let nanos = instant.nanosecond();
+    let digits = if nanos == 0 {
+        0
+    } else if nanos.is_multiple_of(1_000_000) {
+        3
+    } else if nanos.is_multiple_of(1_000) {
+        6
+    } else {
+        9
+    };
+    match digits {
+        0 => instant.format("%Y-%m-%dT%H:%M:%SZ").to_string(),
+        3 => instant.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
+        6 => instant.format("%Y-%m-%dT%H:%M:%S%.6fZ").to_string(),
+        _ => instant.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string(),
+    }
+}
+
 /// Every key of one map capitalised, with one prefix that capitalises whole.
 ///
 /// The defender exports disagree with themselves about casing -- one endpoint
@@ -6181,6 +6233,7 @@ pub(crate) enum KnownShape {
     ConsoleLoginEventData,
     BitFlagNames(Box<BitFlagNames>),
     PascalKeys(Box<PascalKeys>),
+    SecondsToSpan(String),
     TlsVersionSplit {
         source: String,
     },
@@ -6322,6 +6375,19 @@ pub(crate) enum KnownShape {
 #[allow(clippy::too_many_lines)] // A transliteration of the dispatch ladder; splitting it would hide the order.
 pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     let mut shapes = Vec::new();
+
+    // Pattern: seconds to nanoseconds, closing the span it opens. Ahead of the
+    // scale-by-literal fallback, which reads the same multiply and stops
+    // there, leaving `event.end` unwritten.
+    if normalised.contains("ChronoUnit.NANOS")
+        && let Some(source) = normalised
+            .split_once("(int) (ctx.")
+            .and_then(|(_, rest)| rest.split_once(" *"))
+            .map(|(path, _)| crate::painless_params::clean_path(path))
+    {
+        shapes.push(KnownShape::SecondsToSpan(source));
+        return shapes;
+    }
 
     // Pattern: drop null and empty values recursively. Matched on the SHAPE,
     // not the helper's name -- panw spells it `dropEmptyFields`, and keying
@@ -7222,6 +7288,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ConsoleLoginEventData => run_console_login_event_data(event),
         KnownShape::BitFlagNames(decode) => run_bit_flag_names(event, decode),
         KnownShape::PascalKeys(shape) => run_pascal_keys(event, shape),
+        KnownShape::SecondsToSpan(source) => run_seconds_to_span(event, source),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::ConcatParts(script) => run_concat_parts(event, script),
         KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
@@ -8101,6 +8168,57 @@ mod tests {
         }}));
         assert!(try_known_painless(&mut other, script));
         assert!(!other.has("aws.cloudtrail.console_login"));
+    }
+
+    /// Verbatim from `pipelines/proofpoint_on_demand/message/default.yml`. A
+    /// fractional second becomes nanoseconds and closes the span the start
+    /// opened, rendered the way Java prints a `ZonedDateTime` -- three, six or
+    /// nine fractional digits, never a partial group.
+    #[test]
+    fn a_fractional_second_closes_the_span_it_opens() {
+        let script = "ctx.event.duration = (int) (ctx.proofpoint_on_demand.message.filter\
+             .duration_secs * 1000000000);\nif (ctx.event?.start != null) {\n  \
+             ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);\n  \
+             ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);\n}\n";
+
+        let mut event = Event::new(json!({
+            "event": { "start": "2020-02-07T16:34:49.929Z" },
+            "proofpoint_on_demand": {"message": {"filter": {"duration_secs": 0.286_712}}},
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("event.duration"), Some(&json!(286_712_000)));
+        assert_eq!(
+            event.get_str("event.end"),
+            Some("2020-02-07T16:34:50.215712Z")
+        );
+
+        // Landing on a whole second prints NO fraction, which is Java's own
+        // rendering and not a rounding of ours.
+        let mut whole = Event::new(json!({
+            "event": { "start": "2020-02-07T16:34:49.929Z" },
+            "proofpoint_on_demand": {"message": {"filter": {"duration_secs": 0.071}}},
+        }));
+        assert!(try_known_painless(&mut whole, script));
+        assert_eq!(whole.get_str("event.end"), Some("2020-02-07T16:34:50Z"));
+
+        // A whole number of milliseconds prints three digits, not six.
+        let mut millis = Event::new(json!({
+            "event": { "start": "2020-02-07T16:34:49.929Z" },
+            "proofpoint_on_demand": {"message": {"filter": {"duration_secs": 0.5}}},
+        }));
+        assert!(try_known_painless(&mut millis, script));
+        assert_eq!(
+            millis.get_str("event.end"),
+            Some("2020-02-07T16:34:50.429Z")
+        );
+
+        // No start means no span, and the duration is still written.
+        let mut startless = Event::new(json!({
+            "proofpoint_on_demand": {"message": {"filter": {"duration_secs": 1.5}}},
+        }));
+        assert!(try_known_painless(&mut startless, script));
+        assert_eq!(startless.get("event.duration"), Some(&json!(1_500_000_000)));
+        assert!(!startless.has("event.end"));
     }
 
     /// Verbatim from `pipelines/m365_defender/vulnerability/default.yml`. The

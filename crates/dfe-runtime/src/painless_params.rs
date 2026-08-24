@@ -91,6 +91,7 @@ pub(crate) enum ParamsShape {
         source: String,
         key: String,
     },
+    MsgParts,
     KeyedRowMembers(Box<KeyedRowMembers>),
     PutWrites {
         writes: Vec<PutWrite>,
@@ -216,6 +217,12 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
             .map(|(path, _)| clean_path(path.trim()))
     {
         return Some(ParamsShape::ThreatIndicatorType(source));
+    }
+
+    // Pattern: proofpoint's message parts, renamed through the params key map
+    // and fanned out into the ECS lists.
+    if normalised.contains("for (part in ctx.json.msgParts)") {
+        return Some(ParamsShape::MsgParts);
     }
 
     // Pattern: m365's event categories and types off the evidence list, each
@@ -438,6 +445,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::EvidenceCategories { source, key } => {
             run_evidence_categories(event, source, key, params)
         }
+        ParamsShape::MsgParts => run_msg_parts(event, params),
         ParamsShape::KeyedRowMembers(shape) => shape.run(event, params),
         ParamsShape::PutWrites { writes, require } => {
             if let Some((path, allowed)) = require
@@ -1114,6 +1122,136 @@ impl KeyedRowMembers {
 /// hash's own name is the tail of that key lowercased. Each indicator
 /// OVERWRITES `threat.indicator.type`, so the last one in the list wins, while
 /// the `file` enrichments accumulate.
+/// Keys the vendor ships as text that the rename typed on the way through.
+const MSG_PART_LONGS: [&str; 2] = ["detected_size_bytes", "size_decoded_bytes"];
+const MSG_PART_BOOLS: [&str; 7] = [
+    "is_archive",
+    "is_corrupted",
+    "is_deleted",
+    "is_protected",
+    "is_timed_out",
+    "is_virtual",
+    "is_rewritten",
+];
+
+/// One message part with its keys renamed through the params map.
+///
+/// Recursive, because a part carries nested maps and lists of maps. A key the
+/// map does not name is carried as it stands, and an EMPTY key becomes
+/// `MISSING_KEY` -- the vendor's own placeholder, not ours.
+fn rename_msg_part(value: &Value, key_map: &Map<String, Value>) -> Value {
+    match value {
+        Value::Object(entries) => {
+            let mut renamed = Map::new();
+            for (key, held) in entries {
+                let mapped = key_map.get(key).and_then(Value::as_str);
+                let name = match (mapped, key.is_empty()) {
+                    (Some(mapped), _) => mapped.to_string(),
+                    (None, true) => "MISSING_KEY".to_string(),
+                    (None, false) => key.clone(),
+                };
+                let converted = match held {
+                    Value::Object(_) | Value::Array(_) => rename_msg_part(held, key_map),
+                    scalar => match mapped {
+                        Some(name) if MSG_PART_LONGS.contains(&name) => scalar
+                            .as_i64()
+                            .or_else(|| scalar.as_str().and_then(|t| t.trim().parse().ok()))
+                            .map_or_else(|| scalar.clone(), |number| json!(number)),
+                        // `Boolean.parseBoolean` is true only for the literal
+                        // "true", case-insensitively, and false for everything
+                        // else including nonsense.
+                        Some(name) if MSG_PART_BOOLS.contains(&name) => match scalar {
+                            Value::String(text) => json!(text.eq_ignore_ascii_case("true")),
+                            already => already.clone(),
+                        },
+                        _ => scalar.clone(),
+                    },
+                };
+                renamed.insert(name, converted);
+            }
+            Value::Object(renamed)
+        }
+        Value::Array(items) => Value::Array(
+            items
+                .iter()
+                .map(|item| match item {
+                    Value::Object(_) => rename_msg_part(item, key_map),
+                    other => other.clone(),
+                })
+                .collect(),
+        ),
+        other => other.clone(),
+    }
+}
+
+/// proofpoint's message parts, and the four lists they feed.
+///
+/// Each part is renamed through the params key map, then fans out: the part
+/// itself, both its hashes into `related.hash`, every URL it carries into
+/// `url.full`, and an attachment record into `email.attachments`. The lists
+/// are created empty even when the loop adds nothing, which is what the
+/// script's own `put(..., new ArrayList())` does before it.
+fn run_msg_parts(event: &mut Event, params: &Map<String, Value>) -> bool {
+    let Some(Value::Array(parts)) = event.get("json.msgParts").cloned() else {
+        return true;
+    };
+
+    let mut renamed_parts = Vec::with_capacity(parts.len());
+    let mut hashes = Vec::new();
+    let mut urls = Vec::new();
+    let mut attachments = Vec::new();
+
+    for part in &parts {
+        let renamed = rename_msg_part(part, params);
+
+        for name in ["sha256", "md5"] {
+            if let Some(hash) = renamed.get(name).filter(|v| !v.is_null()) {
+                hashes.push(hash.clone());
+            }
+        }
+        if let Some(Value::Array(part_urls)) = renamed.get("urls") {
+            for url in part_urls {
+                if let Some(full) = url.get("url").filter(|v| !v.is_null()) {
+                    urls.push(full.clone());
+                }
+            }
+        }
+
+        let mut file = Map::new();
+        for (target, source) in [
+            ("name", "detected_name"),
+            ("extension", "detected_ext"),
+            ("mime_type", "detected_mime"),
+            ("size", "detected_size_bytes"),
+        ] {
+            if let Some(held) = renamed.get(source).filter(|v| !v.is_null()) {
+                file.insert(target.to_string(), held.clone());
+            }
+        }
+        let mut hash = Map::new();
+        for name in ["md5", "sha256"] {
+            if let Some(held) = renamed.get(name).filter(|v| !v.is_null()) {
+                hash.insert(name.to_string(), held.clone());
+            }
+        }
+        if !hash.is_empty() {
+            file.insert("hash".to_string(), Value::Object(hash));
+        }
+        attachments.push(json!({ "file": Value::Object(file) }));
+
+        renamed_parts.push(renamed);
+    }
+
+    let _ = event.set(
+        "proofpoint_on_demand.message.msg_parts",
+        Value::Array(renamed_parts),
+    );
+    let _ = event.set("related.hash", Value::Array(hashes));
+    let _ = event.set("url.full", Value::Array(urls));
+    let _ = event.set("email.attachments", Value::Array(attachments));
+    true
+}
+
 /// m365's `event.category` and `event.type` off the alert evidence list.
 ///
 /// Each entry's `@odata.type` is looked up in the params table; a hit adds its
@@ -3215,6 +3353,129 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `pipelines/m365_defender/alert/default.yml`: the
+    /// categories come off the evidence list through the params table, and the
+    /// TYPE is picked from what the category set holds so far rather than from
+    /// the entry being read.
+    #[test]
+    fn evidence_categories_pick_their_type_from_the_set_so_far() {
+        let script = "def eventCategory = new HashSet();\ndef eventType = new HashSet();\n\
+             for (evidence in ctx.json.evidence) {\n  \
+             String mapping = params[evidence[\"@odata.type\"]];\n}\n";
+        let params = json!({
+            "#microsoft.graph.security.deviceEvidence": "host",
+            "#microsoft.graph.security.userEvidence": "iam",
+            "#microsoft.graph.security.registryKeyEvidence": "registry",
+            "apt": "threat",
+        });
+
+        let mut event = Event::new(json!({"json": {"evidence": [
+            {"@odata.type": "#microsoft.graph.security.deviceEvidence"},
+            {"@odata.type": "#microsoft.graph.security.userEvidence"},
+            {"@odata.type": "#microsoft.graph.security.somethingUnmapped"},
+        ]}}));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.category"), Some(&json!(["host", "iam"])));
+        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+
+        // Once `registry` is in the set, everything AFTER it is `access` --
+        // and the entry that put it there is too.
+        let mut registry = Event::new(json!({"json": {"evidence": [
+            {"@odata.type": "#microsoft.graph.security.registryKeyEvidence"},
+            {"@odata.type": "#microsoft.graph.security.userEvidence"},
+        ]}}));
+        assert!(try_params_painless(&mut registry, script, &params));
+        assert_eq!(registry.get("event.type"), Some(&json!(["access"])));
+
+        // `determination` folds in afterwards, with no registry arm.
+        let mut determined = Event::new(json!({
+            "json": {"evidence": [], "determination": "APT"},
+        }));
+        assert!(try_params_painless(&mut determined, script, &params));
+        assert_eq!(determined.get("event.category"), Some(&json!(["threat"])));
+        assert_eq!(determined.get("event.type"), Some(&json!(["indicator"])));
+    }
+
+    /// proofpoint's message parts: renamed through the key map, then fanned
+    /// out into the four ECS lists. The typed keys convert on the way through
+    /// -- `detected_size_bytes` from text to a number, `is_archive` from text
+    /// to a boolean -- because the vendor ships both as strings.
+    #[test]
+    fn message_parts_rename_and_fan_out() {
+        let script = "def convertToLong(def value) { }\n\
+             for (part in ctx.json.msgParts) {\n  \
+             def msg_part = renameKeys(part, params);\n}\n";
+        let params = json!({
+            "detectedName": "detected_name",
+            "detectedExt": "detected_ext",
+            "detectedMime": "detected_mime",
+            "detectedSizeBytes": "detected_size_bytes",
+            "isArchive": "is_archive",
+            "md5": "md5",
+            "sha256": "sha256",
+            "urls": "urls",
+            "url": "url",
+        });
+        let mut event = Event::new(json!({"json": {"msgParts": [{
+            "detectedName": "note.txt",
+            "detectedExt": "txt",
+            "detectedMime": "text/plain",
+            "detectedSizeBytes": "1024",
+            "isArchive": "false",
+            "md5": "5d41402abc4b2a76b9719d911017c592",
+            "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+            "urls": [{"url": "https://example.com/a"}, {"url": "https://example.com/b"}],
+            "somethingUnmapped": "carried as it stands",
+        }]}}));
+
+        assert!(try_params_painless(&mut event, script, &params));
+
+        let base = "proofpoint_on_demand.message.msg_parts.0";
+        assert_eq!(
+            event.get_str(&format!("{base}.detected_name")),
+            Some("note.txt")
+        );
+        assert_eq!(
+            event.get(&format!("{base}.detected_size_bytes")),
+            Some(&json!(1024))
+        );
+        assert_eq!(
+            event.get(&format!("{base}.is_archive")),
+            Some(&json!(false))
+        );
+        assert_eq!(
+            event.get_str(&format!("{base}.somethingUnmapped")),
+            Some("carried as it stands"),
+            "an unmapped key is carried, not dropped"
+        );
+
+        assert_eq!(
+            event.get("related.hash"),
+            Some(&json!([
+                "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+                "5d41402abc4b2a76b9719d911017c592",
+            ])),
+            "sha256 before md5, the script's own order"
+        );
+        assert_eq!(
+            event.get("url.full"),
+            Some(&json!(["https://example.com/a", "https://example.com/b"]))
+        );
+        assert_eq!(
+            event.get("email.attachments"),
+            Some(&json!([{"file": {
+                "name": "note.txt",
+                "extension": "txt",
+                "mime_type": "text/plain",
+                "size": 1024,
+                "hash": {
+                    "md5": "5d41402abc4b2a76b9719d911017c592",
+                    "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+                },
+            }}]))
+        );
+    }
 
     /// Verbatim from `pipelines/windows/forwarded/security-default.yml`: the
     /// audit subcategory GUID keys a two-member row, braces stripped and the
