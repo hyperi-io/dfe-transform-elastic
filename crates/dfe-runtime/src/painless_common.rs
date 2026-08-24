@@ -836,6 +836,41 @@ fn run_route53_answers(event: &mut Event) -> bool {
     true
 }
 
+/// The ctx path a `def <name> = (ctx.<p> == null) ? false : ctx.<p>;` reads.
+fn ternary_default_path(script: &str, name: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let (_, rest) = script.split_once(&format!(" {name} = (ctx."))?;
+    let path = clean_path(rest.split("==").next()?);
+    (!path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@')))
+    .then_some(path)
+}
+
+/// gcp's long-running operation: one session, opened by the first entry and
+/// closed by the last.
+///
+/// An entry that is BOTH writes nothing -- the operation began and ended
+/// inside it, so there is no session to bracket.
+fn run_long_operation_session(event: &mut Event, first: &str, last: &str) -> bool {
+    let flag = |path: &str| event.get(path).and_then(Value::as_bool).unwrap_or(false);
+    let (first, last) = (flag(first), flag(last));
+    if first && last {
+        return true;
+    }
+
+    let _ = event.append("event.category", json!("session"));
+    if first {
+        let _ = event.append("event.type", json!("start"));
+    }
+    if last {
+        let _ = event.append("event.type", json!("end"));
+    }
+    true
+}
+
 /// The fields a `splitStr(<map>, '<key>')` script splits, as full ctx paths.
 fn parse_split_on_pipe(script: &str) -> Vec<String> {
     let Some(root) = ctx_path_bound_to(script, "ed") else {
@@ -2594,9 +2629,14 @@ impl DropPolicy {
             nulls: script.contains("== null"),
             empty_strings: script.contains("== ''") || script.contains("== \"\""),
             empty_collections: script.contains(".size() == 0") || script.contains(".length == 0"),
-            // One `removeIf` prunes the map alone; the shapes that prune both
-            // spell it twice, once per collection kind.
-            prune_lists: script.matches("removeIf").count() >= 2,
+            // A list is pruned by a `removeIf` whose receiver is the list
+            // itself. `map.values().removeIf` prunes the MAP, which is
+            // cisco_asa's only one; gcp's recursive helper walks the map
+            // through an iterator and spells `removeIf` once, for the list.
+            prune_lists: script
+                .split(".removeIf(")
+                .take(script.matches(".removeIf(").count())
+                .any(|head| !head.trim_end().ends_with("values()")),
             sentinels: predicate_sentinels(script),
         }
     }
@@ -5729,6 +5769,10 @@ pub(crate) enum KnownShape {
     Route53Answers,
     ReverseLookupAddress,
     TruthyAssignments(Vec<(String, String)>),
+    LongOperationSession {
+        first: String,
+        last: String,
+    },
     ScriptBlockEntropy(String),
     SplitOnPipe(Vec<String>),
     ZipAttachments(Box<AttachmentZip>),
@@ -6008,6 +6052,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `in-addr.arpa` / `ip6.arpa` labels and into `related.ip`.
     if normalised.contains(".in-addr.arpa") && normalised.contains(".ip6.arpa") {
         shapes.push(KnownShape::ReverseLookupAddress);
+        return shapes;
+    }
+
+    // Pattern: gcp's long-running operation, which opens and closes a session.
+    if normalised.contains(".category.add('session')")
+        && let Some(first) = ternary_default_path(normalised, "first")
+        && let Some(last) = ternary_default_path(normalised, "last")
+    {
+        shapes.push(KnownShape::LongOperationSession { first, last });
         return shapes;
     }
 
@@ -6709,6 +6762,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::Route53Answers => run_route53_answers(event),
         KnownShape::ReverseLookupAddress => run_reverse_lookup_address(event),
         KnownShape::TruthyAssignments(pairs) => run_truthy_assignments(event, pairs),
+        KnownShape::LongOperationSession { first, last } => {
+            run_long_operation_session(event, first, last)
+        }
         KnownShape::ScriptBlockEntropy(source) => {
             crate::painless_windows::run_script_block_entropy(event, source)
         }
