@@ -443,6 +443,47 @@ fn run_tls_version_split(event: &mut Event, source: &str) -> bool {
     true
 }
 
+/// cloudtrail's `ConsoleLogin` extras: three of `additionalEventData`'s keys
+/// under `console_login.additional_eventdata`, two of them as booleans.
+///
+/// The vendor reads `MobileVersion` and `MFAUsed` as `!= 'No'`, so anything
+/// that is not the literal `No` -- `Yes` included -- is true. Nothing is
+/// written at all unless at least one of the three is present, and the whole
+/// script returns early on any other `eventName`.
+fn run_console_login_event_data(event: &mut Event) -> bool {
+    if event.get_str("json.eventName") != Some("ConsoleLogin") {
+        return true;
+    }
+
+    let mut aed = Map::new();
+    let mut read = |source: &str, target: &str, as_bool: bool| {
+        let Some(value) = event.get(source).filter(|v| !v.is_null()) else {
+            return;
+        };
+        let stored = if as_bool {
+            json!(value.as_str() != Some("No"))
+        } else {
+            value.clone()
+        };
+        aed.insert(target.to_string(), stored);
+    };
+    read(
+        "json.additionalEventData.MobileVersion",
+        "mobile_version",
+        true,
+    );
+    read("json.additionalEventData.LoginTo", "login_to", false);
+    read("json.additionalEventData.MFAUsed", "mfa_used", true);
+
+    if !aed.is_empty() {
+        let _ = event.set(
+            "aws.cloudtrail.console_login.additional_eventdata",
+            Value::Object(aed),
+        );
+    }
+    true
+}
+
 /// checkpoint's dropped-packet tuples: each `<ip,port,ip,port,proto;iface>`
 /// entry becomes a structured map, the sampled marker is noted, and the raw
 /// field goes once anything parsed. A port that will not parse is where the
@@ -2277,6 +2318,41 @@ fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
     })
 }
 
+/// The same fold written as an INDEXED loop -- aws/waf's request headers.
+///
+/// `ctx.<t>[ctx.<s>[i].name] = ctx.<s>[i].value` inside
+/// `for (def i = 0; i < ctx.<s>.length; i++)`. The outcome is
+/// [`KnownShape::NameValueFold`]'s, so only the reading differs: the map is
+/// subscripted rather than `put` to, and the element is reached by index
+/// rather than by a loop variable.
+fn parse_indexed_name_value_fold(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let assignment = script
+        .lines()
+        .map(str::trim)
+        .find(|line| line.starts_with("ctx.") && line.contains("] = ctx."))?;
+    let (lhs, rhs) = assignment.split_once("] = ctx.")?;
+
+    // `ctx.<target>[ctx.<source>[i].<key>`
+    let (target, subscript) = lhs.strip_prefix("ctx.")?.split_once("[ctx.")?;
+    let (source, key_tail) = subscript.split_once('[')?;
+    let key_member = key_tail.split_once("].")?.1;
+
+    // `<source>[i].<value>;`
+    let value_member = rhs.trim_end_matches(';').split_once("].")?.1;
+
+    let source = clean_path(source);
+    let target = clean_path(target);
+    (!source.is_empty() && !target.is_empty() && !key_member.is_empty() && !value_member.is_empty())
+        .then_some(KnownShape::NameValueFold {
+            source,
+            target,
+            key_member: key_member.to_string(),
+            value_member: value_member.to_string(),
+        })
+}
+
 /// The fold itself: the target becomes a fresh map of each element's
 /// key member to its value member; an element with no key is skipped where
 /// Java would take a null key JSON cannot spell.
@@ -2596,12 +2672,23 @@ fn split_outside_quotes(text: &str, sep: char) -> Vec<&str> {
 }
 
 /// Read elb's `tlsv12` split as a [`KnownShape::TlsVersionSplit`].
+///
+/// s3access spells the same thing `ctx.<p>.toLowerCase().splitOnToken("v")`,
+/// and taking everything before the split read `toLowerCase()` as a segment of
+/// the path -- so the field resolved to nothing and eight events lost both
+/// `tls.version` and `tls.version_protocol`. The run lowercases the protocol
+/// half itself, so dropping the call changes nothing else.
 fn parse_tls_version_split(script: &str) -> Option<KnownShape> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".splitOnToken(")?;
     let before = &script[..at];
-    let source = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    let path = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    let source = path
+        .split('.')
+        .take_while(|segment| !segment.contains('('))
+        .collect::<Vec<_>>()
+        .join(".");
     (!source.is_empty()).then_some(KnownShape::TlsVersionSplit { source })
 }
 
@@ -2653,7 +2740,11 @@ impl DropPolicy {
         Self {
             nulls: script.contains("== null"),
             empty_strings: script.contains("== ''") || script.contains("== \"\""),
-            empty_collections: script.contains(".size() == 0") || script.contains(".length == 0"),
+            // `.isEmpty()` is the third spelling and aws/waf's only one, so
+            // every empty list and map it ships survived: four per event.
+            empty_collections: script.contains(".size() == 0")
+                || script.contains(".length == 0")
+                || script.contains(".isEmpty()"),
             // A list is pruned by a `removeIf` whose receiver is the list
             // itself. `map.values().removeIf` prunes the MAP, which is
             // cisco_asa's only one; gcp's recursive helper walks the map
@@ -5472,12 +5563,18 @@ fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
         return true;
     }
 
-    let Some((cond, body)) = script.split_once("!= null") else {
+    let Some((cond, rest)) = script.split_once("!= null") else {
         return false;
     };
     let Some(source) = painless_path(cond) else {
         return false;
     };
+    // The body starts where the CONDITION ends. Splitting at the first `=`
+    // after `!= null` cut a two-clause guard in half: aws/ec2_metrics gates on
+    // `&& ctx.host?.cpu?.usage == null` and then divides the source in place,
+    // so the guard's own field was read as the target and the RAW percentage
+    // was copied onto it -- 42 where the agent had already written 0.421.
+    let body = condition_body(cond, rest);
     let Some((target_expr, value_expr)) = body.split_once('=') else {
         return false;
     };
@@ -5495,6 +5592,37 @@ fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
         let _ = event.set(&target, v);
     }
     true
+}
+
+/// What follows a guard's closing parenthesis.
+///
+/// `head` is the text before the `!= null` and says how deep the parentheses
+/// are there -- one for the `if (` of a plain guard, more where the guard
+/// itself calls something. `rest` is walked until they balance, and what is
+/// left is the body. A guard that never closes (or was never open) leaves
+/// `rest` as it stands, which is what the reading used to do everywhere.
+fn condition_body<'a>(head: &str, rest: &'a str) -> &'a str {
+    let Some(mut depth) = head
+        .matches('(')
+        .count()
+        .checked_sub(head.matches(')').count())
+        .filter(|open| *open > 0)
+    else {
+        return rest;
+    };
+    for (index, c) in rest.char_indices() {
+        match c {
+            '(' => depth += 1,
+            ')' => {
+                depth -= 1;
+                if depth == 0 {
+                    return &rest[index + c.len_utf8()..];
+                }
+            }
+            _ => {}
+        }
+    }
+    rest
 }
 
 /// The LAST `ctx.` path in a fragment, as a dotted path.
@@ -5552,6 +5680,62 @@ fn try_scale_by_literal(event: &mut Event, script: &str) -> bool {
 
     if let Some(n) = event.get_as_i64(&target) {
         let _ = event.set(&target, json!(n.saturating_mul(factor)));
+    }
+    true
+}
+
+/// Read `if (ctx.<a> != null && ctx.<b> == null) { ctx.<a> = ctx.<a> / <n>; }`.
+///
+/// `aws/ec2_metrics` and `aws/rds` turn a `CloudWatch` percentage into a fraction
+/// this way, and only when the agent has not already written the fraction
+/// itself -- that second clause is the whole point of the script, so the
+/// absent-field guard is carried rather than assumed.
+fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let line = script
+        .lines()
+        .map(str::trim)
+        .find(|line| line.starts_with("ctx.") && line.contains('/'))?;
+    let (lhs, rhs) = line.split_once(" = ")?;
+    let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
+
+    let (value, divisor) = rhs.trim().trim_end_matches(';').rsplit_once('/')?;
+    let divisor = divisor.trim().parse::<i64>().ok().filter(|n| *n != 0)?;
+    if clean_path(value.trim().strip_prefix("ctx.")?) != target {
+        return None;
+    }
+
+    let absent = script.split_once("== null").and_then(|(head, _)| {
+        let at = head.rfind("ctx.")?;
+        let path = clean_path(&head[at + "ctx.".len()..]);
+        (!path.is_empty()
+            && path
+                .chars()
+                .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_')))
+        .then_some(path)
+    });
+
+    Some(KnownShape::GuardedDivide {
+        target,
+        absent,
+        divisor,
+    })
+}
+
+/// Divide a field in place, unless the guarded field is already set.
+fn run_guarded_divide(
+    event: &mut Event,
+    target: &str,
+    absent: Option<&String>,
+    divisor: i64,
+) -> bool {
+    if absent.is_some_and(|path| event.has_value(path)) {
+        return true;
+    }
+    if let Some(value) = event.get_f64(target) {
+        #[allow(clippy::cast_precision_loss)]
+        let _ = event.set(target, json!(value / divisor as f64));
     }
     true
 }
@@ -5804,6 +5988,7 @@ pub(crate) enum KnownShape {
     ZipColumns(Box<ColumnZip>),
     MaxByContains(Box<MaxByContains>),
     CheckpointPackets,
+    ConsoleLoginEventData,
     TlsVersionSplit {
         source: String,
     },
@@ -5923,6 +6108,11 @@ pub(crate) enum KnownShape {
     CollectMapValues,
     GuardedReplace,
     ScaleByLiteral,
+    GuardedDivide {
+        target: String,
+        absent: Option<String>,
+        divisor: i64,
+    },
     GuardedCopy,
 }
 
@@ -6269,6 +6459,22 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains(", new HashMap())")
         && normalised.contains("for (")
         && let Some(shape) = parse_name_value_fold(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: cloudtrail's ConsoleLogin extras.
+    if normalised.contains("aed_map") && normalised.contains("'ConsoleLogin'") {
+        shapes.push(KnownShape::ConsoleLoginEventData);
+        return shapes;
+    }
+
+    // Pattern: the same fold written as an indexed loop -- aws/waf's request
+    // headers and the headers it inserts.
+    if normalised.contains("= new HashMap()")
+        && normalised.contains("] = ctx.")
+        && let Some(shape) = parse_indexed_name_value_fold(normalised)
     {
         shapes.push(shape);
         return shapes;
@@ -6724,6 +6930,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // The two catch-alls below are shapes a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
+    // Pattern: divide a number in place by a literal, under a guard.
+    if normalised.contains(" / ")
+        && !normalised.contains("params")
+        && let Some(shape) = parse_guarded_divide(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: scale a number in place by a literal.
     if normalised.contains(" * ") && !normalised.contains("params") {
         shapes.push(KnownShape::ScaleByLiteral);
@@ -6785,6 +7000,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
         KnownShape::SecurityhubResource(source) => run_securityhub_resource(event, source),
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
+        KnownShape::ConsoleLoginEventData => run_console_login_event_data(event),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::ConcatParts(script) => run_concat_parts(event, script),
         KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
@@ -7008,6 +7224,11 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
         KnownShape::ScaleByLiteral => try_scale_by_literal(event, normalised),
+        KnownShape::GuardedDivide {
+            target,
+            absent,
+            divisor,
+        } => run_guarded_divide(event, target, absent.as_ref(), *divisor),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
     }
 }
@@ -7570,6 +7791,145 @@ mod tests {
         let mut plain = Event::new(json!({ "aws": { "elb": { "ssl_protocol": "-" }}}));
         assert!(try_known_painless(&mut plain, script));
         assert!(plain.get("tls.version").is_none());
+    }
+
+    /// Verbatim from `pipelines/aws/ec2_metrics/default.yml`: a `CloudWatch`
+    /// percentage becomes a fraction, but ONLY where the agent has not already
+    /// written the fraction itself. Read as a guarded copy, the second clause
+    /// of the guard was taken as the target and the raw 42 was written over
+    /// the agent's 0.421.
+    #[test]
+    fn a_percentage_divides_in_place_unless_the_agent_beat_it_to_it() {
+        let script = "if(ctx.aws?.ec2?.metrics?.CPUUtilization?.avg != null \
+             && ctx.host?.cpu?.usage == null) {\n    \
+             ctx.aws.ec2.metrics.CPUUtilization.avg = \
+             ctx.aws.ec2.metrics.CPUUtilization.avg / 100;\n}\n";
+
+        // Firehose ships the percentage and nothing else.
+        let mut firehose = Event::new(json!({
+            "aws": {"ec2": {"metrics": {"CPUUtilization": {"avg": 21.96}}}}
+        }));
+        assert!(try_known_painless(&mut firehose, script));
+        assert_eq!(
+            firehose.get("aws.ec2.metrics.CPUUtilization.avg"),
+            Some(&json!(21.96 / 100.0))
+        );
+
+        // The agent has already computed it, so the metric is left alone.
+        let mut agent = Event::new(json!({
+            "aws": {"ec2": {"metrics": {"CPUUtilization": {"avg": 42}}}},
+            "host": {"cpu": {"usage": 0.421}},
+        }));
+        assert!(try_known_painless(&mut agent, script));
+        assert_eq!(
+            agent.get("aws.ec2.metrics.CPUUtilization.avg"),
+            Some(&json!(42))
+        );
+        assert_eq!(agent.get("host.cpu.usage"), Some(&json!(0.421)));
+    }
+
+    /// Verbatim from `pipelines/aws/cloudtrail/default.yml`. `MobileVersion`
+    /// and `MFAUsed` are read as `!= 'No'`, so the string becomes a boolean;
+    /// `LoginTo` is carried as it stands.
+    #[test]
+    fn console_login_extras_become_two_booleans_and_a_url() {
+        let script = "if (ctx.json?.eventName != 'ConsoleLogin') {\n  return;\n}\n\
+             Map aed_map = [:];\n\
+             if (ctx.json?.additionalEventData?.MobileVersion != null) {\n  \
+             aed_map.mobile_version = ctx.json.additionalEventData.MobileVersion != 'No';\n}\n\
+             if (ctx.json?.additionalEventData?.LoginTo != null) {\n  \
+             aed_map.login_to = ctx.json.additionalEventData.LoginTo;\n}\n\
+             if (ctx.json?.additionalEventData?.MFAUsed != null) {\n  \
+             aed_map.mfa_used = ctx.json.additionalEventData.MFAUsed != 'No';\n}\n\
+             if (aed_map.size() > 0) {\n  \
+             ctx.aws.cloudtrail.console_login = [:];\n  \
+             ctx.aws.cloudtrail.console_login.additional_eventdata = aed_map;\n}";
+
+        let mut event = Event::new(json!({"json": {
+            "eventName": "ConsoleLogin",
+            "additionalEventData": {
+                "MobileVersion": "No",
+                "LoginTo": "https://console.aws.amazon.com/s3/",
+                "MFAUsed": "No",
+            },
+        }}));
+        assert!(try_known_painless(&mut event, script));
+        let base = "aws.cloudtrail.console_login.additional_eventdata";
+        assert_eq!(
+            event.get(&format!("{base}.mobile_version")),
+            Some(&json!(false))
+        );
+        assert_eq!(event.get(&format!("{base}.mfa_used")), Some(&json!(false)));
+        assert_eq!(
+            event.get_str(&format!("{base}.login_to")),
+            Some("https://console.aws.amazon.com/s3/")
+        );
+
+        // Anything that is not the literal `No` is true, and another event
+        // name writes nothing at all.
+        let mut yes = Event::new(json!({"json": {
+            "eventName": "ConsoleLogin",
+            "additionalEventData": {"MFAUsed": "Yes"},
+        }}));
+        assert!(try_known_painless(&mut yes, script));
+        assert_eq!(yes.get(&format!("{base}.mfa_used")), Some(&json!(true)));
+
+        let mut other = Event::new(json!({"json": {
+            "eventName": "AssumeRole",
+            "additionalEventData": {"MFAUsed": "Yes"},
+        }}));
+        assert!(try_known_painless(&mut other, script));
+        assert!(!other.has("aws.cloudtrail.console_login"));
+    }
+
+    /// Verbatim from `pipelines/aws/waf/default.yml`: the same name/value fold
+    /// proofpoint writes with `put`, spelled as an indexed loop over a
+    /// subscripted map.
+    #[test]
+    fn an_indexed_name_value_loop_folds_into_a_map() {
+        let script = "if (ctx.json.httpRequest.headers != null) {\n  \
+             ctx.aws.waf.request = new HashMap();\n  \
+             ctx.aws.waf.request.headers = new HashMap();\n  \
+             for (def i = 0; i < ctx.json.httpRequest.headers.length; i++) {\n    \
+             ctx.aws.waf.request.headers[ctx.json.httpRequest.headers[i].name] = \
+             ctx.json.httpRequest.headers[i].value;\n  }\n}";
+
+        let mut event = Event::new(json!({
+            "json": { "httpRequest": { "headers": [
+                {"name": "Host", "value": "localhost:1989"},
+                {"name": "User-Agent", "value": "curl/7.61.1"},
+                {"name": "Accept", "value": "*/*"},
+            ]}}
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("aws.waf.request.headers.Host"),
+            Some("localhost:1989")
+        );
+        assert_eq!(
+            event.get_str("aws.waf.request.headers.User-Agent"),
+            Some("curl/7.61.1")
+        );
+        assert_eq!(event.get_str("aws.waf.request.headers.Accept"), Some("*/*"));
+    }
+
+    /// Verbatim from `pipelines/aws/s3access/default.yml`, which lowercases
+    /// before the split. Taking everything before `.splitOnToken(` read
+    /// `toLowerCase()` as a segment of the field's path.
+    #[test]
+    fn a_lowercased_tls_token_still_names_its_field() {
+        let script = "def parts = ctx.aws.s3access.tls_version.toLowerCase().splitOnToken(\"v\");\n\
+            if (parts.length != 2) {\n  return;\n}\n\
+            ctx.tls.version = parts[1];\n\
+            ctx.tls.version_protocol = parts[0]";
+
+        let mut event = Event::new(json!({
+            "aws": { "s3access": { "tls_version": "TLSv1.2" }},
+            "tls": { "cipher": "ECDHE-RSA-AES128-GCM-SHA256" },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("tls.version"), Some("1.2"));
+        assert_eq!(event.get_str("tls.version_protocol"), Some("tls"));
     }
 
     /// Verbatim from `pipelines/cisco/umbrella/default.yml`: the identities
