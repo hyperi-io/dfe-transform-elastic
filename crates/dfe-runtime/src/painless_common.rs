@@ -715,8 +715,8 @@ fn run_securityhub_multi(event: &mut Event, resources: &[Value]) -> bool {
 /// the image file's path and name joined by whichever separator the path
 /// already uses. A one-member executable set is written as a scalar and a
 /// larger one as a list, which is the script's own distinction.
-fn run_m365_process_evidence(event: &mut Event) -> bool {
-    let Some(Value::Array(evidence)) = event.get("json.alerts.evidence").cloned() else {
+fn run_m365_process_evidence(event: &mut Event, source: &str) -> bool {
+    let Some(Value::Array(evidence)) = event.get(source).cloned() else {
         return true;
     };
 
@@ -1427,8 +1427,8 @@ fn run_reverse_lookup_address(event: &mut Event) -> bool {
 
 /// m365's identity fields off the same alert evidence list -- the sibling of
 /// [`run_m365_process_evidence`], keyed on the evidence `odata_type`.
-fn run_m365_identity_evidence(event: &mut Event) -> bool {
-    let Some(Value::Array(evidence)) = event.get("json.alerts.evidence").cloned() else {
+fn run_m365_identity_evidence(event: &mut Event, source: &str) -> bool {
+    let Some(Value::Array(evidence)) = event.get(source).cloned() else {
         return true;
     };
     // `ctx.process.user = new HashMap()` runs whatever the evidence holds.
@@ -4964,6 +4964,91 @@ fn try_array_to_indexed_object(event: &mut Event, script: &str) -> bool {
     true
 }
 
+/// The evidence list a `for (evidence in ctx.<path>)` loop walks.
+fn evidence_loop_path(script: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find("for (evidence in ctx.")?;
+    let tail = &script[at + "for (evidence in ctx.".len()..];
+    let path = clean_path(tail.split(')').next()?);
+    (!path.is_empty()).then_some(path)
+}
+
+/// Every key of one map capitalised, with one prefix that capitalises whole.
+///
+/// The defender exports disagree with themselves about casing -- one endpoint
+/// ships `CveId`, another `cveId` -- so the pipeline folds both to
+/// `PascalCase` before the renames. `osPlatform` becomes `OSPlatform` not
+/// `OsPlatform`, which is what the prefix exception is for; the script names
+/// both halves of it and neither is assumed here.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PascalKeys {
+    path: String,
+    /// The lowercase prefix that gets replaced whole rather than capitalised,
+    /// and only when an uppercase letter follows it.
+    prefix: String,
+    replacement: String,
+}
+
+/// Read the prefix exception and the map being rewritten.
+fn parse_pascal_keys(script: &str) -> Option<PascalKeys> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".entrySet()")?;
+    let start = script[..at].rfind("ctx.")?;
+    let path = clean_path(&script[start + "ctx.".len()..at]);
+    if path.is_empty() {
+        return None;
+    }
+
+    // `key.startsWith("os")` and `newKey = "OS" + key.substring(2)`.
+    let (prefix, replacement) = match script.split_once(".startsWith(") {
+        Some((_, tail)) => {
+            let prefix = quoted_first(tail)?;
+            let replacement = script
+                .split_once(" = ")
+                .and_then(|(_, rest)| rest.split_once("\" +"))
+                .and_then(|(head, _)| head.rsplit('"').next())
+                .map(str::to_string)?;
+            (prefix, replacement)
+        }
+        None => (String::new(), String::new()),
+    };
+
+    Some(PascalKeys {
+        path,
+        prefix,
+        replacement,
+    })
+}
+
+/// Capitalise every key, honouring the prefix exception.
+fn run_pascal_keys(event: &mut Event, shape: &PascalKeys) -> bool {
+    let Some(Value::Object(entries)) = event.get(&shape.path).cloned() else {
+        return true;
+    };
+
+    let mut rebuilt = Map::new();
+    for (key, value) in entries {
+        let tail = (!shape.prefix.is_empty())
+            .then(|| key.strip_prefix(shape.prefix.as_str()))
+            .flatten()
+            .filter(|tail| tail.chars().next().is_some_and(char::is_uppercase));
+        let renamed = if let Some(tail) = tail {
+            format!("{}{tail}", shape.replacement)
+        } else {
+            let mut chars = key.chars();
+            chars.next().map_or_else(
+                || key.clone(),
+                |first| first.to_uppercase().chain(chars).collect(),
+            )
+        };
+        rebuilt.insert(renamed, value);
+    }
+    let _ = event.set(&shape.path, Value::Object(rebuilt));
+    true
+}
+
 /// A numeric field's bits decoded into a list of names.
 ///
 /// `aws/vpcflow` and `aws/firewall_logs` both spell out the six TCP flags this
@@ -6078,8 +6163,8 @@ pub(crate) enum KnownShape {
         field: String,
         value: String,
     },
-    M365ProcessEvidence,
-    M365IdentityEvidence,
+    M365ProcessEvidence(String),
+    M365IdentityEvidence(String),
     Route53Answers,
     ReverseLookupAddress,
     TruthyAssignments(Vec<(String, String)>),
@@ -6095,6 +6180,7 @@ pub(crate) enum KnownShape {
     CheckpointPackets,
     ConsoleLoginEventData,
     BitFlagNames(Box<BitFlagNames>),
+    PascalKeys(Box<PascalKeys>),
     TlsVersionSplit {
         source: String,
     },
@@ -6357,13 +6443,20 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: m365's process and file fields off the alert evidence list,
-    // and its identity sibling over the same list.
-    if normalised.contains("void maybeAddExecutable(") {
-        shapes.push(KnownShape::M365ProcessEvidence);
+    // and its identity sibling over the same list. The list is at
+    // `json.evidence` on the alert stream and `json.alerts.evidence` on the
+    // incident one, so the loop is what says which -- hard-coding the incident
+    // spelling left every alert event without any of these fields.
+    if normalised.contains("void maybeAddExecutable(")
+        && let Some(path) = evidence_loop_path(normalised)
+    {
+        shapes.push(KnownShape::M365ProcessEvidence(path));
         return shapes;
     }
-    if normalised.contains("def processUserName = new HashSet()") {
-        shapes.push(KnownShape::M365IdentityEvidence);
+    if normalised.contains("def processUserName = new HashSet()")
+        && let Some(path) = evidence_loop_path(normalised)
+    {
+        shapes.push(KnownShape::M365IdentityEvidence(path));
         return shapes;
     }
 
@@ -6567,6 +6660,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_name_value_fold(normalised)
     {
         shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: every key of one map capitalised, ahead of PascalCase renames.
+    if normalised.contains(".substring(0, 1).toUpperCase()")
+        && normalised.contains(".entrySet()")
+        && let Some(shape) = parse_pascal_keys(normalised)
+    {
+        shapes.push(KnownShape::PascalKeys(Box::new(shape)));
         return shapes;
     }
 
@@ -7119,6 +7221,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
         KnownShape::ConsoleLoginEventData => run_console_login_event_data(event),
         KnownShape::BitFlagNames(decode) => run_bit_flag_names(event, decode),
+        KnownShape::PascalKeys(shape) => run_pascal_keys(event, shape),
         KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownShape::ConcatParts(script) => run_concat_parts(event, script),
         KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
@@ -7132,8 +7235,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MailRelated(script) => run_mail_related(event, script),
         KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
         KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
-        KnownShape::M365ProcessEvidence => run_m365_process_evidence(event),
-        KnownShape::M365IdentityEvidence => run_m365_identity_evidence(event),
+        KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
+        KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
         KnownShape::ReverseLookupAddress => run_reverse_lookup_address(event),
         KnownShape::TruthyAssignments(pairs) => run_truthy_assignments(event, pairs),
@@ -7998,6 +8101,49 @@ mod tests {
         }}));
         assert!(try_known_painless(&mut other, script));
         assert!(!other.has("aws.cloudtrail.console_login"));
+    }
+
+    /// Verbatim from `pipelines/m365_defender/vulnerability/default.yml`. The
+    /// defender exports disagree with themselves about casing, and every
+    /// `camelCase` event produced nothing at all while this went unmatched --
+    /// two of six in both `m365_defender` and `microsoft_defender_endpoint`.
+    #[test]
+    fn camel_keys_fold_to_pascal_with_the_os_exception() {
+        let script = "Map normalized = new HashMap();\n\
+             for (entry in ctx.json.entrySet()) {\n  \
+             String key = entry.getKey();\n  String newKey;\n  \
+             if (key.startsWith(\"os\") && key.length() > 2 \
+             && Character.isUpperCase(key.charAt(2))) {\n    \
+             newKey = \"OS\" + key.substring(2);\n  } else {\n    \
+             newKey = key.substring(0, 1).toUpperCase() + key.substring(1);\n  }\n  \
+             normalized.put(newKey, entry.getValue());\n}\nctx.json = normalized;\n";
+
+        let mut event = Event::new(json!({"json": {
+            "cveId": "CVE-2024-9143",
+            "osPlatform": "Linux",
+            "osVersion": "enterprise_linux_9.4",
+            "deviceId": "cccccccccccccc",
+            "isOnboarded": true,
+        }}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("json.CveId"), Some("CVE-2024-9143"));
+        assert_eq!(event.get_str("json.OSPlatform"), Some("Linux"));
+        assert_eq!(
+            event.get_str("json.OSVersion"),
+            Some("enterprise_linux_9.4")
+        );
+        assert_eq!(event.get_str("json.DeviceId"), Some("cccccccccccccc"));
+        assert_eq!(event.get("json.IsOnboarded"), Some(&json!(true)));
+
+        // A key that is already PascalCase survives it, which is what lets one
+        // pipeline take both spellings.
+        let mut pascal = Event::new(json!({"json": {
+            "CveId": "CVE-2022-49226", "OSPlatform": "Linux", "Other": 1,
+        }}));
+        assert!(try_known_painless(&mut pascal, script));
+        assert_eq!(pascal.get_str("json.CveId"), Some("CVE-2022-49226"));
+        assert_eq!(pascal.get_str("json.OSPlatform"), Some("Linux"));
+        assert_eq!(pascal.get("json.Other"), Some(&json!(1)));
     }
 
     /// Verbatim from `pipelines/aws/vpcflow/default.yml`: the six TCP flags,

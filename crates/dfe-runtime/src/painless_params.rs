@@ -87,6 +87,10 @@ pub(crate) enum ParamsShape {
     InvocationDetails,
     ScheduledTask,
     ThreatIndicatorType(String),
+    EvidenceCategories {
+        source: String,
+        key: String,
+    },
     KeyedRowMembers(Box<KeyedRowMembers>),
     PutWrites {
         writes: Vec<PutWrite>,
@@ -212,6 +216,21 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
             .map(|(path, _)| clean_path(path.trim()))
     {
         return Some(ParamsShape::ThreatIndicatorType(source));
+    }
+
+    // Pattern: m365's event categories and types off the evidence list, each
+    // entry's `@odata.type` looked up in the params table.
+    if normalised.contains("def eventCategory = new HashSet()")
+        && let Some(source) = normalised
+            .split_once("for (evidence in ctx.")
+            .and_then(|(_, rest)| rest.split_once(')'))
+            .map(|(path, _)| clean_path(path.trim()))
+        && let Some(key) = normalised
+            .split_once("params[evidence[")
+            .and_then(|(_, rest)| rest.split_once(']'))
+            .map(|(key, _)| key.trim().trim_matches(['"', '\'']).to_string())
+    {
+        return Some(ParamsShape::EvidenceCategories { source, key });
     }
 
     // Pattern: mimecast's scored log-type classifier, keyed on its four
@@ -415,6 +434,9 @@ pub(crate) fn run_params_shape(
         ParamsShape::ScheduledTask => crate::painless_scheduled_task::run(event, params),
         ParamsShape::ThreatIndicatorType(source) => {
             try_threat_indicator_type(event, source, params)
+        }
+        ParamsShape::EvidenceCategories { source, key } => {
+            run_evidence_categories(event, source, key, params)
         }
         ParamsShape::KeyedRowMembers(shape) => shape.run(event, params),
         ParamsShape::PutWrites { writes, require } => {
@@ -1092,6 +1114,84 @@ impl KeyedRowMembers {
 /// hash's own name is the tail of that key lowercased. Each indicator
 /// OVERWRITES `threat.indicator.type`, so the last one in the list wins, while
 /// the `file` enrichments accumulate.
+/// m365's `event.category` and `event.type` off the alert evidence list.
+///
+/// Each entry's `@odata.type` is looked up in the params table; a hit adds its
+/// category and then picks a type from what the set holds SO FAR -- registry
+/// wins over threat, threat over everything else -- which is the script's own
+/// order and not a per-entry decision. `determination` is folded in the same
+/// way afterwards. Both come out deduplicated and sorted.
+fn run_evidence_categories(
+    event: &mut Event,
+    source: &str,
+    key: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let mut categories: Vec<String> = Vec::new();
+    let mut types: Vec<String> = Vec::new();
+
+    let classify = |categories: &mut Vec<String>, types: &mut Vec<String>, mapping: &str| {
+        if !categories.iter().any(|held| held == mapping) {
+            categories.push(mapping.to_string());
+        }
+        let kind = if categories.iter().any(|held| held == "registry") {
+            "access"
+        } else if categories.iter().any(|held| held == "threat") {
+            "indicator"
+        } else {
+            "info"
+        };
+        if !types.iter().any(|held| held == kind) {
+            types.push(kind.to_string());
+        }
+    };
+
+    if let Some(Value::Array(evidence)) = event.get(source).cloned() {
+        for entry in &evidence {
+            let Some(mapping) = entry
+                .get(key)
+                .and_then(Value::as_str)
+                .and_then(|kind| params.get(kind))
+                .and_then(Value::as_str)
+            else {
+                continue;
+            };
+            classify(&mut categories, &mut types, mapping);
+        }
+    }
+
+    // `determination` has no registry arm of its own; the script only asks
+    // whether the set already holds `threat`.
+    if let Some(mapping) = event
+        .get_str("json.determination")
+        .map(str::to_lowercase)
+        .and_then(|held| params.get(&held).cloned())
+        .as_ref()
+        .and_then(Value::as_str)
+    {
+        if !categories.iter().any(|held| held == mapping) {
+            categories.push(mapping.to_string());
+        }
+        let kind = if categories.iter().any(|held| held == "threat") {
+            "indicator"
+        } else {
+            "info"
+        };
+        if !types.iter().any(|held| held == kind) {
+            types.push(kind.to_string());
+        }
+    }
+
+    for (path, mut values) in [("event.type", types), ("event.category", categories)] {
+        if values.is_empty() {
+            continue;
+        }
+        values.sort_unstable();
+        let _ = event.set(path, json!(values));
+    }
+    true
+}
+
 fn try_threat_indicator_type(event: &mut Event, source: &str, params: &Map<String, Value>) -> bool {
     let Some(Value::Array(indicators)) = event.get(source).cloned() else {
         return true;
