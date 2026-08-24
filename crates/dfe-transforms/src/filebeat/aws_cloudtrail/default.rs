@@ -41,8 +41,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.eventTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.eventTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -186,11 +192,18 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("json.userIdentity.sessionContext.attributes.creationDate")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set(
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set(
                             "aws.cloudtrail.user_identity.session_context.creation_date",
                             parsed,
-                        )?;
+                        )?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.userIdentity.sessionContext.attributes.creationDate"
+                                    .into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -746,8 +759,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.digestStartTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.cloudtrail.digest.start_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("aws.cloudtrail.digest.start_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.digestStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -756,8 +775,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.digestEndTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.digestEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -766,8 +791,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.digestEndTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.cloudtrail.digest.end_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("aws.cloudtrail.digest.end_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.digestEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -782,8 +813,16 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.newestEventTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.cloudtrail.digest.newest_event_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => {
+                            event.set("aws.cloudtrail.digest.newest_event_time", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.newestEventTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -792,8 +831,16 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.oldestEventTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.cloudtrail.digest.oldest_event_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => {
+                            event.set("aws.cloudtrail.digest.oldest_event_time", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.oldestEventTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

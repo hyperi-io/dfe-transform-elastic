@@ -659,8 +659,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("cisco.umbrella.first_packet_timestamp")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                            event.set("cisco.umbrella.first_packet_timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], None, None) {
+                            Some(parsed) => {
+                                event.set("cisco.umbrella.first_packet_timestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "cisco.umbrella.first_packet_timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -716,8 +724,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("cisco.umbrella.last_packet_timestamp")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                            event.set("cisco.umbrella.last_packet_timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], None, None) {
+                            Some(parsed) => {
+                                event.set("cisco.umbrella.last_packet_timestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "cisco.umbrella.last_packet_timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1659,10 +1675,15 @@ impl Transform for Default {
             let _cond = { event.has_value("cisco.umbrella._tmp.time") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("cisco.umbrella._tmp.time") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss", "ISO8601"], None, None)
+                    match parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss", "ISO8601"], None, None)
                     {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "cisco.umbrella._tmp.time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

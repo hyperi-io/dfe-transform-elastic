@@ -299,8 +299,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.updatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.activity.updated_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.activity.updated_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -430,8 +438,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1092,8 +1106,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.data.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.activity.data.created_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.activity.data.created_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.data.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

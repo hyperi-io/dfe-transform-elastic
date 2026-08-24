@@ -300,9 +300,15 @@ impl Transform for User {
                     if let Some(date_str) = event.get_as_string(
                         "entityanalytics_entra_id.user.sign_in_activity.last_sign_in_date_time",
                     ) {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("entityanalytics_entra_id.user.sign_in_activity.last_sign_in_date_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("entityanalytics_entra_id.user.sign_in_activity.last_sign_in_date_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "entityanalytics_entra_id.user.sign_in_activity.last_sign_in_date_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {

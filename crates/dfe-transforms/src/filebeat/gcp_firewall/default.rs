@@ -61,8 +61,14 @@ impl Transform for Default {
             }
 
             if let Some(date_str) = event.get_as_string("json.timestamp") {
-                if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None) {
-                    event.set("@timestamp", parsed)?;
+                match parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None) {
+                    Some(parsed) => event.set("@timestamp", parsed)?,
+                    None => {
+                        return Err(TransformError::ParseError {
+                            path: "json.timestamp".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                        });
+                    }
                 }
             }
 

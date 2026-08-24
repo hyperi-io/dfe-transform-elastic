@@ -68,10 +68,14 @@ impl Transform for AwsLambdaPlaintext {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("timestamp") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss", "ISO8601"], None, None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss", "yyyy/MM/dd HH:mm:ss", "ISO8601"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

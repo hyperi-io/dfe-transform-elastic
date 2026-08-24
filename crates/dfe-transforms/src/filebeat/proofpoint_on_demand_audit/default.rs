@@ -301,31 +301,54 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                foreach_array(event, "json.metadata.trace", |event| {
-                    // on_failure: 1 handler(s)
-                    if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.ts") {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set("_ingest._value.ts", parsed)?;
+                if let Some(Value::Array(items)) = event.get("json.metadata.trace").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.ts") {
+                                match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                    Some(parsed) => event.set("_ingest._value.ts", parsed)?,
+                                    None => {
+                                        return Err(TransformError::ParseError {
+                                            path: "_ingest._value.ts".into(),
+                                            message: format!("unable to parse date [{date_str}]"),
+                                        });
+                                    }
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "date_metadata_trace_ts",
+                            )?;
+                            event.remove("_ingest._value.ts");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_metadata_trace_ts")?;
-                        event.remove("_ingest._value.ts");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
                             event.remove("_ingest");
                         }
                     }
-                    Ok(())
-                })?;
+                    event.set("json.metadata.trace", Value::Array(out))?;
+                }
             }
 
             if event.has("json.metadata.trace") {
@@ -518,8 +541,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.ts") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("proofpoint_on_demand.audit.ts", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("proofpoint_on_demand.audit.ts", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.ts".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

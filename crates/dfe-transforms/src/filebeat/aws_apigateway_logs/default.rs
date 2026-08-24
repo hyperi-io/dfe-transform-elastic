@@ -137,10 +137,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("aws.apigateway.request_time") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["dd/MMM/yyyy:H:m:s Z"], None, None)
-                    {
-                        event.set("aws.apigateway.request_time", parsed)?;
+                    match parse_date_out(&date_str, &["dd/MMM/yyyy:H:m:s Z"], None, None) {
+                        Some(parsed) => event.set("aws.apigateway.request_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.apigateway.request_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

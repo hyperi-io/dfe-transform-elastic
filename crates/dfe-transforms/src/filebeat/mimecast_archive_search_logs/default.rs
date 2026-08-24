@@ -69,7 +69,7 @@ impl Transform for Default {
             }
 
             if let Some(date_str) = event.get_as_string("mimecast.createTime") {
-                if let Some(parsed) = parse_date_out(
+                match parse_date_out(
                     &date_str,
                     &[
                         "yyyy-MM-dd'T'HH:mm:ssz",
@@ -87,7 +87,13 @@ impl Transform for Default {
                     Some("UTC"),
                     None,
                 ) {
-                    event.set("@timestamp", parsed)?;
+                    Some(parsed) => event.set("@timestamp", parsed)?,
+                    None => {
+                        return Err(TransformError::ParseError {
+                            path: "mimecast.createTime".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                        });
+                    }
                 }
             }
 

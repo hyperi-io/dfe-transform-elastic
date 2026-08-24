@@ -40,13 +40,19 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &["ISO8601", "yyyy-MM-dd HH:mm:ss,SSS"],
                         None,
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "_tmp.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

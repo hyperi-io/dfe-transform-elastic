@@ -76,11 +76,17 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.applicationInstallationDate")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set(
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set(
                                 "sentinel_one.application.application_installation_date",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.applicationInstallationDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -311,8 +317,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.detectionDate") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.application.detection_date", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.application.detection_date", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.detectionDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

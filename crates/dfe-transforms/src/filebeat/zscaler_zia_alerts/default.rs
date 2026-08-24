@@ -181,7 +181,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "MMM  d HH:mm:ss",
@@ -192,7 +192,13 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("zscaler_zia.alerts.timestamp", parsed)?;
+                            Some(parsed) => event.set("zscaler_zia.alerts.timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_tmp.timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

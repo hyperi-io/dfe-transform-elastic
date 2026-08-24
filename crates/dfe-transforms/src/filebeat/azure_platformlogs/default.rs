@@ -68,7 +68,7 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("timestamp") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &[
                             "ISO8601",
@@ -80,7 +80,13 @@ impl Transform for Default {
                         None,
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -233,7 +239,7 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("azure.platformlogs.time") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &[
                             "ISO8601",
@@ -245,7 +251,13 @@ impl Transform for Default {
                         None,
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "azure.platformlogs.time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -254,7 +266,7 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("azure.platformlogs.EventTimeString") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &[
                             "ISO8601",
@@ -266,7 +278,13 @@ impl Transform for Default {
                         None,
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "azure.platformlogs.EventTimeString".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

@@ -2029,8 +2029,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("aws.vpcflow.end") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.vpcflow.end".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -2039,8 +2045,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("aws.vpcflow.start") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                        event.set("event.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], None, None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.vpcflow.start".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -2049,8 +2061,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("aws.vpcflow.end") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], None, None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.vpcflow.end".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

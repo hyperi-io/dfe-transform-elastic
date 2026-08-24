@@ -190,7 +190,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.raw_date") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "ISO8601",
@@ -201,7 +201,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.raw_date".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -213,7 +219,7 @@ impl Transform for Default {
                     let _cond = { event.has_value("_temp_.raw_date") };
                     if _cond {
                         if let Some(date_str) = event.get_as_string("_temp_.raw_date") {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &[
                                     "ISO8601",
@@ -224,7 +230,13 @@ impl Transform for Default {
                                 None,
                                 None,
                             ) {
-                                event.set("@timestamp", parsed)?;
+                                Some(parsed) => event.set("@timestamp", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "_temp_.raw_date".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                     }

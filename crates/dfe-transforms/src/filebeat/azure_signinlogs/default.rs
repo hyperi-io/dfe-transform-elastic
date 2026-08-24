@@ -57,7 +57,7 @@ impl Transform for Default {
             }
 
             if let Some(date_str) = event.get_as_string("azure.signinlogs.time") {
-                if let Some(parsed) = parse_date_out(
+                match parse_date_out(
                     &date_str,
                     &[
                         "ISO8601",
@@ -69,7 +69,13 @@ impl Transform for Default {
                     None,
                     None,
                 ) {
-                    event.set("@timestamp", parsed)?;
+                    Some(parsed) => event.set("@timestamp", parsed)?,
+                    None => {
+                        return Err(TransformError::ParseError {
+                            path: "azure.signinlogs.time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                        });
+                    }
                 }
             }
 

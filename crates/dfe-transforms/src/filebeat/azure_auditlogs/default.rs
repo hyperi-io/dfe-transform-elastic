@@ -46,7 +46,7 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("azure.auditlogs.time") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &[
                             "ISO8601",
@@ -58,7 +58,13 @@ impl Transform for Default {
                         None,
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "azure.auditlogs.time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

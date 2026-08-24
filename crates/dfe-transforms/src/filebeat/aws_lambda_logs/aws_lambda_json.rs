@@ -27,10 +27,14 @@ impl Transform for AwsLambdaJson {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("parsed.timestamp") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss,SSSZ"], None, None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss,SSSZ"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "parsed.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -42,10 +46,14 @@ impl Transform for AwsLambdaJson {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("parsed.time") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "parsed.time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -57,10 +65,14 @@ impl Transform for AwsLambdaJson {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("parsed._aws.Timestamp") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["UNIX_MS"], None, None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "parsed._aws.Timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

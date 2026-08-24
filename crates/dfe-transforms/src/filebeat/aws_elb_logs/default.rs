@@ -178,8 +178,14 @@ impl Transform for Default {
             }
 
             if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                    event.set("@timestamp", parsed)?;
+                match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                    Some(parsed) => event.set("@timestamp", parsed)?,
+                    None => {
+                        return Err(TransformError::ParseError {
+                            path: "_tmp.timestamp".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                        });
+                    }
                 }
             }
 
@@ -311,8 +317,16 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("aws.elb.tls_connection_creation_time_str")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.elb.tls_connection_creation_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => {
+                            event.set("aws.elb.tls_connection_creation_time", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.elb.tls_connection_creation_time_str".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -328,8 +342,14 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("aws.elb.leaf_client_cert_not_after_str")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.elb.leaf_client_cert_not_after", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("aws.elb.leaf_client_cert_not_after", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.elb.leaf_client_cert_not_after_str".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -343,8 +363,14 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("aws.elb.leaf_client_cert_not_before_str")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("aws.elb.leaf_client_cert_not_before", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("aws.elb.leaf_client_cert_not_before", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "aws.elb.leaf_client_cert_not_before_str".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

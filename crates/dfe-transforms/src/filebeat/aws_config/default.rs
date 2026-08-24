@@ -501,10 +501,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.ConfigRuleInvokedTime") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX_MS", "UNIX"], None, None)
-                        {
-                            event.set("aws.config.config_rule_invoked_time", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX_MS", "UNIX"], None, None) {
+                            Some(parsed) => {
+                                event.set("aws.config.config_rule_invoked_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.ConfigRuleInvokedTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -563,13 +569,18 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.EvaluationResultIdentifier.OrderingTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX_MS", "UNIX"], None, None)
-                        {
-                            event.set(
+                        match parse_date_out(&date_str, &["UNIX_MS", "UNIX"], None, None) {
+                            Some(parsed) => event.set(
                                 "aws.config.evaluation_result_identifier.ordering_timestamp",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.EvaluationResultIdentifier.OrderingTimestamp"
+                                        .into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -638,10 +649,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.ResultRecordedTime") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX_MS", "UNIX"], None, None)
-                        {
-                            event.set("aws.config.result_recorded_time", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX_MS", "UNIX"], None, None) {
+                            Some(parsed) => event.set("aws.config.result_recorded_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.ResultRecordedTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

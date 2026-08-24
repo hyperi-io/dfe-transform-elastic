@@ -106,13 +106,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.updatedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.inspector.updated_at", parsed)?;
+                            Some(parsed) => event.set("aws.inspector.updated_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -484,16 +490,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.exploitabilityDetails.lastKnownExploitAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.inspector.exploitability_details.last_known_exploit_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.exploitabilityDetails.lastKnownExploitAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -598,13 +610,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.firstObservedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.inspector.first_observed_at", parsed)?;
+                            Some(parsed) => event.set("aws.inspector.first_observed_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.firstObservedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -809,13 +827,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.lastObservedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.inspector.last_observed_at", parsed)?;
+                            Some(parsed) => event.set("aws.inspector.last_observed_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.lastObservedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1161,16 +1185,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.packageVulnerabilityDetails.vendorCreatedAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.inspector.package_vulnerability_details.vendor.created_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.packageVulnerabilityDetails.vendorCreatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1233,16 +1263,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.packageVulnerabilityDetails.vendorUpdatedAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.inspector.package_vulnerability_details.vendor.updated_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.packageVulnerabilityDetails.vendorUpdatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1840,42 +1876,66 @@ impl Transform for Default {
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
-                foreach_array(event, "json.resources", |event| {
-                    // on_failure: 1 handler(s)
-                    if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) =
-                            event.get_as_string("_ingest._value.details.awsEc2Instance.launchedAt")
+                if let Some(Value::Array(items)) = event.get("json.resources").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 1 handler(s)
+                        if let Err(err) =
+                            (|| -> Result<()> {
+                                if let Some(date_str) = event.get_as_string(
+                                    "_ingest._value.details.awsEc2Instance.launchedAt",
+                                ) {
+                                    match parse_date_out(
+                                        &date_str,
+                                        &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                        None,
+                                        None,
+                                    ) {
+                                        Some(parsed) => event.set(
+                                            "_ingest._value.details.aws.ec2_instance.launched_at",
+                                            parsed,
+                                        )?,
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                        path: "_ingest._value.details.awsEc2Instance.launchedAt".into(),
+                        message: format!("unable to parse date [{date_str}]"),
+                        });
+                                        }
+                                    }
+                                }
+                                Ok(())
+                            })()
                         {
-                            if let Some(parsed) = parse_date_out(
-                                &date_str,
-                                &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                None,
-                                None,
-                            ) {
-                                event.set(
-                                    "_ingest._value.details.aws.ec2_instance.launched_at",
-                                    parsed,
-                                )?;
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "date_resources_details_awsEc2Instance_launchedAt",
+                            )?;
+                            event.remove("_ingest._value.details.awsEc2Instance.launchedAt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set(
-                            "_ingest.on_failure_processor_tag",
-                            "date_resources_details_awsEc2Instance_launchedAt",
-                        )?;
-                        event.remove("_ingest._value.details.awsEc2Instance.launchedAt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
                             event.remove("_ingest");
                         }
                     }
-                    Ok(())
-                })?;
+                    event.set("json.resources", Value::Array(out))?;
+                }
             }
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
@@ -2060,42 +2120,56 @@ impl Transform for Default {
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
-                foreach_array(event, "json.resources", |event| {
-                    // on_failure: 1 handler(s)
-                    if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string(
-                            "_ingest._value.details.awsEcrContainerImage.lastInUseAt",
-                        ) {
-                            if let Some(parsed) = parse_date_out(
-                                &date_str,
-                                &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                None,
-                                None,
+                if let Some(Value::Array(items)) = event.get("json.resources").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string(
+                                "_ingest._value.details.awsEcrContainerImage.lastInUseAt",
                             ) {
-                                event.set(
-                                    "_ingest._value.details.aws.ecr_container_image.last_in_use_at",
-                                    parsed,
-                                )?;
+                                match parse_date_out(&date_str, &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("_ingest._value.details.aws.ecr_container_image.last_in_use_at", parsed)?,
+                        None => {
+                        return Err(TransformError::ParseError {
+                        path: "_ingest._value.details.awsEcrContainerImage.lastInUseAt".into(),
+                        message: format!("unable to parse date [{date_str}]"),
+                        });
+                        }
+                        }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "date_resources_details_awsEcrContainerImage_lastInUseAt",
+                            )?;
+                            event.remove("_ingest._value.details.awsEcrContainerImage.lastInUseAt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set(
-                            "_ingest.on_failure_processor_tag",
-                            "date_resources_details_awsEcrContainerImage_lastInUseAt",
-                        )?;
-                        event.remove("_ingest._value.details.awsEcrContainerImage.lastInUseAt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
                             event.remove("_ingest");
                         }
                     }
-                    Ok(())
-                })?;
+                    event.set("json.resources", Value::Array(out))?;
+                }
             }
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
@@ -2113,42 +2187,64 @@ impl Transform for Default {
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
-                foreach_array(event, "json.resources", |event| {
-                    // on_failure: 1 handler(s)
-                    if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event
-                            .get_as_string("_ingest._value.details.awsEcrContainerImage.pushedAt")
-                        {
-                            if let Some(parsed) = parse_date_out(
-                                &date_str,
-                                &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                None,
-                                None,
+                if let Some(Value::Array(items)) = event.get("json.resources").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string(
+                                "_ingest._value.details.awsEcrContainerImage.pushedAt",
                             ) {
-                                event.set(
-                                    "_ingest._value.details.aws.ecr_container_image.pushed_at",
-                                    parsed,
-                                )?;
+                                match parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                    None,
+                                    None,
+                                ) {
+                                    Some(parsed) => event.set(
+                                        "_ingest._value.details.aws.ecr_container_image.pushed_at",
+                                        parsed,
+                                    )?,
+                                    None => {
+                                        return Err(TransformError::ParseError {
+                        path: "_ingest._value.details.awsEcrContainerImage.pushedAt".into(),
+                        message: format!("unable to parse date [{date_str}]"),
+                        });
+                                    }
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "date_resources_details_awsEcrContainerImage_pushedAt",
+                            )?;
+                            event.remove("_ingest._value.details.awsEcrContainerImage.pushedAt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set(
-                            "_ingest.on_failure_processor_tag",
-                            "date_resources_details_awsEcrContainerImage_pushedAt",
-                        )?;
-                        event.remove("_ingest._value.details.awsEcrContainerImage.pushedAt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
                             event.remove("_ingest");
                         }
                     }
-                    Ok(())
-                })?;
+                    event.set("json.resources", Value::Array(out))?;
+                }
             }
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
@@ -2233,42 +2329,64 @@ impl Transform for Default {
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
             if _cond {
-                foreach_array(event, "json.resources", |event| {
-                    // on_failure: 1 handler(s)
-                    if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string(
-                            "_ingest._value.details.awsLambdaFunction.lastModifiedAt",
-                        ) {
-                            if let Some(parsed) = parse_date_out(
-                                &date_str,
-                                &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                None,
-                                None,
+                if let Some(Value::Array(items)) = event.get("json.resources").cloned() {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 1 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string(
+                                "_ingest._value.details.awsLambdaFunction.lastModifiedAt",
                             ) {
-                                event.set(
-                                    "_ingest._value.details.awsLambdaFunction.last_modified_at",
-                                    parsed,
-                                )?;
+                                match parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                    None,
+                                    None,
+                                ) {
+                                    Some(parsed) => event.set(
+                                        "_ingest._value.details.awsLambdaFunction.last_modified_at",
+                                        parsed,
+                                    )?,
+                                    None => {
+                                        return Err(TransformError::ParseError {
+                        path: "_ingest._value.details.awsLambdaFunction.lastModifiedAt".into(),
+                        message: format!("unable to parse date [{date_str}]"),
+                        });
+                                    }
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "date_resources_details_awsLambdaFunction_lastModifiedAt",
+                            )?;
+                            event.remove("_ingest._value.details.awsLambdaFunction.lastModifiedAt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set(
-                            "_ingest.on_failure_processor_tag",
-                            "date_resources_details_awsLambdaFunction_lastModifiedAt",
-                        )?;
-                        event.remove("_ingest._value.details.awsLambdaFunction.lastModifiedAt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
                             event.remove("_ingest");
                         }
                     }
-                    Ok(())
-                })?;
+                    event.set("json.resources", Value::Array(out))?;
+                }
             }
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };

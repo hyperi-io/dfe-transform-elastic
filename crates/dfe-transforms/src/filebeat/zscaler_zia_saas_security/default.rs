@@ -837,10 +837,14 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("zscaler_zia.saas_security.time") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
-                        {
-                            event.set("zscaler_zia.saas_security.time", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                            Some(parsed) => event.set("zscaler_zia.saas_security.time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.saas_security.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -889,10 +893,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.saas_security.email.received_time")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
-                        {
-                            event.set("zscaler_zia.saas_security.email.received_time", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                            Some(parsed) => event
+                                .set("zscaler_zia.saas_security.email.received_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.saas_security.email.received_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -942,7 +951,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.saas_security.file.last_modified_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -953,8 +962,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.saas_security.tz"),
                             None,
                         ) {
-                            event
-                                .set("zscaler_zia.saas_security.file.last_modified_time", parsed)?;
+                            Some(parsed) => event
+                                .set("zscaler_zia.saas_security.file.last_modified_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.saas_security.file.last_modified_time"
+                                        .into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1003,7 +1019,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.saas_security.file.last_shared_on")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -1014,7 +1030,14 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.saas_security.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.saas_security.file.last_shared_on", parsed)?;
+                            Some(parsed) => event
+                                .set("zscaler_zia.saas_security.file.last_shared_on", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.saas_security.file.last_shared_on".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

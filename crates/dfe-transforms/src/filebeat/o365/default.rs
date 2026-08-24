@@ -258,8 +258,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.CreationTime") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.CreationTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.CreationTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -1373,8 +1379,14 @@ impl Transform for Default {
                 if let Some(date_str) =
                     event.get_as_string("o365audit.SharePointMetaData.LastModifiedTime")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("file.mtime", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("file.mtime", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.SharePointMetaData.LastModifiedTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2389,9 +2401,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.EndTimeUtc") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.EndTimeUtc") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None)
-                    {
-                        event.set("o365audit.EndTimeUtc", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None) {
+                        Some(parsed) => event.set("o365audit.EndTimeUtc", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.EndTimeUtc".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2399,8 +2416,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.LastUpdateTimeUtc") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.LastUpdateTimeUtc") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.LastUpdateTimeUtc", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.LastUpdateTimeUtc", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.LastUpdateTimeUtc".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2408,8 +2431,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.StartTimeUtc") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.StartTimeUtc") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.StartTimeUtc", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.StartTimeUtc", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.StartTimeUtc".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2417,8 +2446,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.StartTime") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.StartTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.StartTime", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.StartTime", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.StartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2426,8 +2461,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.FilteringDate") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.FilteringDate") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.FilteringDate", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.FilteringDate", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.FilteringDate".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2435,8 +2476,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.RescanResult.Timestamp") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.RescanResult.Timestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.RescanResult.Timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.RescanResult.Timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.RescanResult.Timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2539,8 +2586,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.at") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.at") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.Data.at", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.Data.at", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.Data.at".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2548,8 +2601,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.md") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.md") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.Data.md", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.Data.md", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.Data.md".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2557,13 +2616,19 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.te") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.te") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &["ISO8601", "yyyy-MM-dd HH:mm:ss'Z'"],
                         None,
                         None,
                     ) {
-                        event.set("o365audit.Data.te", parsed)?;
+                        Some(parsed) => event.set("o365audit.Data.te", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.Data.te".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2571,13 +2636,19 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.ts") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ts") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &["ISO8601", "yyyy-MM-dd HH:mm:ss'Z'"],
                         None,
                         None,
                     ) {
-                        event.set("o365audit.Data.ts", parsed)?;
+                        Some(parsed) => event.set("o365audit.Data.ts", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.Data.ts".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2585,8 +2656,14 @@ impl Transform for Default {
             let _cond = { event.has_value("o365audit.Data.ttdt") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("o365audit.Data.ttdt") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("o365audit.Data.ttdt", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("o365audit.Data.ttdt", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "o365audit.Data.ttdt".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

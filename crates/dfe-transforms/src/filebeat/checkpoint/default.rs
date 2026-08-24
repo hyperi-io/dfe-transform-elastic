@@ -281,13 +281,19 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("syslog5424_ts") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "syslog5424_ts".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -302,10 +308,14 @@ impl Transform for Default {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(date_str) = event.get_as_string("syslog5424_ts") {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601", "UNIX"], None, None)
-                            {
-                                event.set("@timestamp", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX"], None, None) {
+                                Some(parsed) => event.set("@timestamp", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "syslog5424_ts".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -1723,7 +1733,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("checkpoint.subs_exp") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "EEE MMM dd HH:mm:ss yyyy",
@@ -1735,7 +1745,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("checkpoint.subs_exp", parsed)?;
+                            Some(parsed) => event.set("checkpoint.subs_exp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "checkpoint.subs_exp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1749,7 +1765,7 @@ impl Transform for Default {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(date_str) = event.get_as_string("checkpoint.subs_exp") {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &[
                                     "EEE MMM dd HH:mm:ss yyyy",
@@ -1761,7 +1777,13 @@ impl Transform for Default {
                                 None,
                                 None,
                             ) {
-                                event.set("checkpoint.subs_exp", parsed)?;
+                                Some(parsed) => event.set("checkpoint.subs_exp", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "checkpoint.subs_exp".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -2211,8 +2233,14 @@ impl Transform for Default {
             let _cond = { event.has_value("checkpoint.last_hit_time") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("checkpoint.last_hit_time") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], None, None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "checkpoint.last_hit_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2220,8 +2248,14 @@ impl Transform for Default {
             let _cond = { event.has_value("checkpoint.lastupdatetime") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("checkpoint.lastupdatetime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], None, None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "checkpoint.lastupdatetime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2229,10 +2263,14 @@ impl Transform for Default {
             let _cond = { event.has_value("checkpoint.creation_time") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("checkpoint.creation_time") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601", "UNIX"], None, None)
-                    {
-                        event.set("event.start", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601", "UNIX"], None, None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "checkpoint.creation_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2240,10 +2278,14 @@ impl Transform for Default {
             let _cond = { event.has_value("checkpoint.login_timestamp") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("checkpoint.login_timestamp") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601", "UNIX"], None, None)
-                    {
-                        event.set("checkpoint.login_timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601", "UNIX"], None, None) {
+                        Some(parsed) => event.set("checkpoint.login_timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "checkpoint.login_timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -2976,8 +3018,14 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("checkpoint.time") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                            event.set("checkpoint.time", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], None, None) {
+                            Some(parsed) => event.set("checkpoint.time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "checkpoint.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

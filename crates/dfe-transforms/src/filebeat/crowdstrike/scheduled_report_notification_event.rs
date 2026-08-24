@@ -28,9 +28,14 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.ExecutionStart".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -45,9 +50,15 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.SearchWindowStart"
+                                    .into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -62,9 +73,14 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.SearchWindowEnd".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

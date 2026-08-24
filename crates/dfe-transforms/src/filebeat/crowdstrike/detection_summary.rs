@@ -34,9 +34,14 @@ impl Transform for DetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessStartTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("process.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("process.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ProcessStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -49,8 +54,14 @@ impl Transform for DetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessStartTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("process.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("process.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ProcessStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -63,9 +74,14 @@ impl Transform for DetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("process.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("process.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ProcessEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -78,8 +94,14 @@ impl Transform for DetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ProcessEndTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("process.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("process.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ProcessEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

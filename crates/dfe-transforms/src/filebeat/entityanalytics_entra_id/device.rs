@@ -170,9 +170,15 @@ impl Transform for Device {
                     if let Some(date_str) = event.get_as_string(
                         "entityanalytics_entra_id.device.approximate_last_sign_in_date_time",
                     ) {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("entityanalytics_entra_id.device.approximate_last_sign_in_date_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("entityanalytics_entra_id.device.approximate_last_sign_in_date_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.approximate_last_sign_in_date_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -232,11 +238,17 @@ impl Transform for Device {
                     if let Some(date_str) = event.get_as_string(
                         "entityanalytics_entra_id.device.compliance_expiration_date_time",
                     ) {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set(
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set(
                                 "entityanalytics_entra_id.device.compliance_expiration_date_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.compliance_expiration_date_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
                         }
                     }
                     Ok(())
@@ -540,11 +552,17 @@ impl Transform for Device {
                     if let Some(date_str) = event.get_as_string(
                         "entityanalytics_entra_id.device.on_premises_last_sync_date_time",
                     ) {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set(
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set(
                                 "entityanalytics_entra_id.device.on_premises_last_sync_date_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                path: "entityanalytics_entra_id.device.on_premises_last_sync_date_time".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
                         }
                     }
                     Ok(())
@@ -691,11 +709,18 @@ impl Transform for Device {
                     if let Some(date_str) = event
                         .get_as_string("entityanalytics_entra_id.device.registration_date_time")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set(
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set(
                                 "entityanalytics_entra_id.device.registration_date_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "entityanalytics_entra_id.device.registration_date_time"
+                                        .into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

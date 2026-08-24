@@ -49,6 +49,17 @@ pub fn parse_date_out(
     output_format: Option<&str>,
 ) -> Option<String> {
     let input = input.trim();
+
+    // `ZoneId.of` throws BEFORE any parsing, so a processor configured with a
+    // zone Java does not know fails outright and runs its `on_failure` --
+    // which for cisco/ftd removes `event.timezone` and re-parses as UTC.
+    // Falling back to UTC here instead kept a field Elasticsearch had deleted.
+    if let Some(zone) = timezone.filter(|zone| !zone.trim().is_empty())
+        && processor_zone_offset(zone).is_none()
+    {
+        return None;
+    }
+
     let parsed = formats
         .iter()
         .find_map(|format| parse_one(input, format, timezone))?;
@@ -229,7 +240,7 @@ fn parse_java_exact(
     let (naive, named) = parse_naive(&input, &chrono)?;
     let offset = named
         .and_then(|zone| zone_offset(&zone))
-        .or_else(|| timezone.and_then(zone_offset))
+        .or_else(|| timezone.and_then(processor_zone_offset))
         .unwrap_or(UTC_OFFSET);
     offset
         .from_local_datetime(&naive)
@@ -305,6 +316,35 @@ const ZONE_ABBREVIATIONS: &[(&str, i32)] = &[
     ("WEST", 60),
     ("WET", 0),
 ];
+
+/// The three-letter abbreviations `java.time.ZoneId.of` accepts.
+///
+/// Its `SHORT_IDS` map, and nothing else. A `z` in a FORMAT parses a zone's
+/// display name, so `EDT` in the text is fine; `ZoneId.of("EDT")` throws, so a
+/// processor configured with it FAILS its date and runs its `on_failure` --
+/// which for cisco/ftd removes `event.timezone` and re-parses as UTC. Reading
+/// it as an offset kept a field Elasticsearch had deleted.
+const JAVA_SHORT_ZONE_IDS: [&str; 28] = [
+    "ACT", "AET", "AGT", "ART", "AST", "BET", "BST", "CAT", "CNT", "CST", "CTT", "EAT", "ECT",
+    "EST", "HST", "IET", "IST", "JST", "MIT", "MST", "NET", "NST", "PLT", "PNT", "PRT", "PST",
+    "SST", "VST",
+];
+
+/// The offset a PROCESSOR's `timezone` setting names.
+///
+/// Stricter than [`zone_offset`], because this is `ZoneId.of` rather than a
+/// format's zone-name parse, and it rejects everything Java rejects.
+fn processor_zone_offset(zone: &str) -> Option<FixedOffset> {
+    let trimmed = zone.trim();
+    let alphabetic = trimmed.chars().all(|c| c.is_ascii_alphabetic());
+    if alphabetic
+        && !matches!(trimmed, "UTC" | "GMT" | "Z" | "UT" | "Zulu")
+        && !JAVA_SHORT_ZONE_IDS.contains(&trimmed)
+    {
+        return None;
+    }
+    zone_offset(trimmed)
+}
 
 /// The offset a zone spelling names, for the spellings that carry one.
 fn zone_offset(zone: &str) -> Option<FixedOffset> {

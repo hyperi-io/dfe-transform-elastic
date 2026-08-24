@@ -174,14 +174,15 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.cancellationDateTimeUtc") {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["strict_date_optional_time_nanos"],
-                            None,
-                            None,
-                        ) {
-                            event.set("microsoft_defender_endpoint.machine_action.cancellation_date_time_utc", parsed)?;
+                        match parse_date_out(&date_str, &["strict_date_optional_time_nanos"], None, None) {
+                        Some(parsed) => event.set("microsoft_defender_endpoint.machine_action.cancellation_date_time_utc", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.cancellationDateTimeUtc".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -292,16 +293,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.creationDateTimeUtc") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "microsoft_defender_endpoint.machine_action.creation_date_time_utc",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.creationDateTimeUtc".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -444,14 +451,15 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.lastUpdateDateTimeUtc") {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["strict_date_optional_time_nanos"],
-                            None,
-                            None,
-                        ) {
-                            event.set("microsoft_defender_endpoint.machine_action.last_update_date_time_utc", parsed)?;
+                        match parse_date_out(&date_str, &["strict_date_optional_time_nanos"], None, None) {
+                        Some(parsed) => event.set("microsoft_defender_endpoint.machine_action.last_update_date_time_utc", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.lastUpdateDateTimeUtc".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {

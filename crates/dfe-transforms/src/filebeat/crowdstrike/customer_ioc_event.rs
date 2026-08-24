@@ -241,8 +241,14 @@ impl Transform for CustomerIocEvent {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.ProcessStartTime")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                            event.set("process.start", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], None, None) {
+                            Some(parsed) => event.set("process.start", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.ProcessStartTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

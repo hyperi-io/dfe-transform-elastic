@@ -976,13 +976,21 @@ impl Transform for Traffic {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.parent_session.start_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.parent_session.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.parent_session.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1017,13 +1025,21 @@ impl Transform for Traffic {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.parent_session.start_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.parent_session.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.parent_session.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

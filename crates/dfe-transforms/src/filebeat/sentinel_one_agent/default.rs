@@ -347,8 +347,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.created_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("sentinel_one.agent.created_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -630,8 +636,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.firstFullModeTime") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.first_full_mode_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.first_full_mode_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.firstFullModeTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -683,8 +697,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.groupUpdatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.group.updated_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.group.updated_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.groupUpdatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1077,8 +1099,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.lastActiveDate") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.last_active_date", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.last_active_date", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.lastActiveDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1823,8 +1853,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.osStartTime") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.os.start_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.os.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.osStartTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1940,8 +1978,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.policyUpdatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.policy.updated_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.policy.updated_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.policyUpdatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1989,8 +2035,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.registeredAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.registered_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.registered_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.registeredAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2047,8 +2101,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.scanAbortedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.scan.aborted_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.scan.aborted_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.scanAbortedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2091,8 +2153,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.scanFinishedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.scan.finished_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.scan.finished_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.scanFinishedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2135,8 +2205,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.scanStartedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.agent.scan.started_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.agent.scan.started_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.scanStartedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2292,8 +2370,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.updatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2355,21 +2439,47 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "sentinel_one.agent.tags", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) = event.get_as_string("_ingest._value.assignedAt")
-                            {
-                                if let Some(parsed) =
-                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                    if let Some(Value::Array(items)) = event.get("sentinel_one.agent.tags").cloned()
+                    {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.assignedAt")
                                 {
-                                    event.set("_ingest._value.assigned_at", parsed)?;
+                                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                        Some(parsed) => {
+                                            event.set("_ingest._value.assigned_at", parsed)?
+                                        }
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.assignedAt".into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("sentinel_one.agent.tags", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }

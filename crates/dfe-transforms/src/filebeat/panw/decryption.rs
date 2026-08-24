@@ -544,13 +544,21 @@ impl Transform for Decryption {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_after")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.certificate.not_after", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_after", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_after".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -589,13 +597,21 @@ impl Transform for Decryption {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_after")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.certificate.not_after", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_after", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_after".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -634,13 +650,21 @@ impl Transform for Decryption {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_before")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.certificate.not_before", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_before", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_before".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -679,13 +703,21 @@ impl Transform for Decryption {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_before")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.certificate.not_before", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_before", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_before".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

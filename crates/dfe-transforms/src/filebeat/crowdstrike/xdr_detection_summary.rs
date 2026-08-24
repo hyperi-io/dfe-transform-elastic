@@ -438,9 +438,14 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTimeEpoch".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -453,8 +458,14 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimeEpoch") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTimeEpoch".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -505,9 +516,14 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EndTimeEpoch".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -520,8 +536,14 @@ impl Transform for XdrDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTimeEpoch") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EndTimeEpoch".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

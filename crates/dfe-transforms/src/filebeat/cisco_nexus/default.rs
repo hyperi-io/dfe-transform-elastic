@@ -175,7 +175,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy MMM d HH:mm:ss zzz",
@@ -200,7 +200,13 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "temp.timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -244,7 +250,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("temp.timestamp") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy MMM d HH:mm:ss zzz",
@@ -269,7 +275,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "temp.timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -314,7 +326,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("cisco_nexus.log.syslog_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "MMM  d HH:mm:ss",
@@ -327,7 +339,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("cisco_nexus.log.syslog_time", parsed)?;
+                            Some(parsed) => event.set("cisco_nexus.log.syslog_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "cisco_nexus.log.syslog_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -372,7 +390,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("cisco_nexus.log.syslog_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "MMM  d HH:mm:ss",
@@ -385,7 +403,13 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("cisco_nexus.log.syslog_time", parsed)?;
+                            Some(parsed) => event.set("cisco_nexus.log.syslog_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "cisco_nexus.log.syslog_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

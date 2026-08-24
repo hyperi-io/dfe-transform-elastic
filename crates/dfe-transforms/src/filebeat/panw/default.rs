@@ -1011,13 +1011,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.parent_session.start_time")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                                 None,
                                 None,
                             ) {
-                                event.set("panw.panos.parent_session.start_time", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.parent_session.start_time", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.parent_session.start_time".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -1051,13 +1059,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.parent_session.start_time")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                                 event.get_str("event.timezone"),
                                 None,
                             ) {
-                                event.set("panw.panos.parent_session.start_time", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.parent_session.start_time", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.parent_session.start_time".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -2552,10 +2568,16 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.factorcompletiontime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["yyyy/MM/dd HH:mm:ss"], None, None)
-                            {
-                                event.set("panw.panos.factorcompletiontime", parsed)?;
+                            match parse_date_out(&date_str, &["yyyy/MM/dd HH:mm:ss"], None, None) {
+                                Some(parsed) => {
+                                    event.set("panw.panos.factorcompletiontime", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.factorcompletiontime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -2589,13 +2611,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.factorcompletiontime")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss"],
                                 event.get_str("event.timezone"),
                                 None,
                             ) {
-                                event.set("panw.panos.factorcompletiontime", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.factorcompletiontime", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.factorcompletiontime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3950,13 +3980,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.certificate.not_after")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                                 None,
                                 None,
                             ) {
-                                event.set("panw.panos.certificate.not_after", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.certificate.not_after", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.certificate.not_after".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3995,13 +4033,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.certificate.not_after")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                                 event.get_str("event.timezone"),
                                 None,
                             ) {
-                                event.set("panw.panos.certificate.not_after", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.certificate.not_after", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.certificate.not_after".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -4040,13 +4086,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.certificate.not_before")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                                 None,
                                 None,
                             ) {
-                                event.set("panw.panos.certificate.not_before", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.certificate.not_before", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.certificate.not_before".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -4085,13 +4139,21 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("panw.panos.certificate.not_before")
                         {
-                            if let Some(parsed) = parse_date_out(
+                            match parse_date_out(
                                 &date_str,
                                 &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                                 event.get_str("event.timezone"),
                                 None,
                             ) {
-                                event.set("panw.panos.certificate.not_before", parsed)?;
+                                Some(parsed) => {
+                                    event.set("panw.panos.certificate.not_before", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "panw.panos.certificate.not_before".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -6771,13 +6833,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.generated_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.generated_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.generated_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.generated_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -6810,13 +6878,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.generated_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.generated_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.generated_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.generated_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -6850,13 +6924,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.received_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.received_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.received_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.received_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -6890,13 +6970,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.received_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.received_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.received_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.received_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -6930,7 +7016,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.logged_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -6940,7 +7026,13 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.logged_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.logged_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.logged_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -6979,7 +7071,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.logged_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -6989,7 +7081,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.logged_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.logged_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.logged_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7044,7 +7142,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.high_res_timestamp") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7054,7 +7152,15 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.high_resolution_timestamp", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.high_resolution_timestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.high_res_timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7091,7 +7197,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp_.high_res_timestamp") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7101,7 +7207,15 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.high_resolution_timestamp", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.high_resolution_timestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp_.high_res_timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7154,7 +7268,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("event.start") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7164,7 +7278,13 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("event.start", parsed)?;
+                            Some(parsed) => event.set("event.start", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "event.start".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7202,7 +7322,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("event.start") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7212,7 +7332,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("event.start", parsed)?;
+                            Some(parsed) => event.set("event.start", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "event.start".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7251,7 +7377,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.start_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7261,7 +7387,13 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.start_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.start_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7300,7 +7432,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.start_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7310,7 +7442,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.start_time", parsed)?;
+                            Some(parsed) => event.set("panw.panos.start_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7353,7 +7491,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7363,7 +7501,15 @@ impl Transform for Default {
                             None,
                             None,
                         ) {
-                            event.set("panw.panos.parent_session.start_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.parent_session.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.parent_session.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -7406,7 +7552,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "yyyy/MM/dd HH:mm:ss",
@@ -7416,7 +7562,15 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.parent_session.start_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("panw.panos.parent_session.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.parent_session.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

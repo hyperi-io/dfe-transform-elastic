@@ -157,7 +157,7 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("zscaler_zia.sandbox_verdict.time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -168,7 +168,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.sandbox_verdict.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.sandbox_verdict.time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.sandbox_verdict.time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.sandbox_verdict.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -217,7 +225,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.sandbox_verdict.event_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -228,7 +236,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.sandbox_verdict.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.sandbox_verdict.event_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.sandbox_verdict.event_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.sandbox_verdict.event_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -278,7 +294,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.sandbox_verdict.analysis_completed_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -289,10 +305,17 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.sandbox_verdict.tz"),
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "zscaler_zia.sandbox_verdict.analysis_completed_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.sandbox_verdict.analysis_completed_time"
+                                        .into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -341,7 +364,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.sandbox_verdict.feed_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -352,7 +375,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.sandbox_verdict.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.sandbox_verdict.feed_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.sandbox_verdict.feed_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.sandbox_verdict.feed_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

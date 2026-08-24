@@ -235,7 +235,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.saas_security_activity.time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -246,7 +246,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.saas_security_activity.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.saas_security_activity.time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.saas_security_activity.time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.saas_security_activity.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -292,7 +300,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.saas_security_activity.event_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -303,7 +311,14 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.saas_security_activity.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.saas_security_activity.event_time", parsed)?;
+                            Some(parsed) => event
+                                .set("zscaler_zia.saas_security_activity.event_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.saas_security_activity.event_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

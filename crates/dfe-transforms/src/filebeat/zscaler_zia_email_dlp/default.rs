@@ -438,8 +438,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.email_dlp.email.mail_sent_epoch")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                            event.set("zscaler_zia.email_dlp.email.mail_sent_epoch", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], None, None) {
+                            Some(parsed) => {
+                                event.set("zscaler_zia.email_dlp.email.mail_sent_epoch", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.email_dlp.email.mail_sent_epoch".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -488,7 +496,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.email_dlp.email.mail_sent_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -499,7 +507,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.email_dlp.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.email_dlp.email.mail_sent_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.email_dlp.email.mail_sent_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.email_dlp.email.mail_sent_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -548,7 +564,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.email_dlp.email.zs_rcv_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -559,7 +575,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.email_dlp.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.email_dlp.email.zs_rcv_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.email_dlp.email.zs_rcv_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.email_dlp.email.zs_rcv_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -608,7 +632,7 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("zscaler_zia.email_dlp.email.zs_sent_time")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -619,7 +643,15 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.email_dlp.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.email_dlp.email.zs_sent_time", parsed)?;
+                            Some(parsed) => {
+                                event.set("zscaler_zia.email_dlp.email.zs_sent_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.email_dlp.email.zs_sent_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -666,7 +698,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("zscaler_zia.email_dlp.time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -677,7 +709,13 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.email_dlp.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.email_dlp.time", parsed)?;
+                            Some(parsed) => event.set("zscaler_zia.email_dlp.time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.email_dlp.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -724,7 +762,7 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("zscaler_zia.email_dlp.feed_time") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -735,7 +773,13 @@ impl Transform for Default {
                             event.get_str("zscaler_zia.email_dlp.tz"),
                             None,
                         ) {
-                            event.set("zscaler_zia.email_dlp.feed_time", parsed)?;
+                            Some(parsed) => event.set("zscaler_zia.email_dlp.feed_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "zscaler_zia.email_dlp.feed_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

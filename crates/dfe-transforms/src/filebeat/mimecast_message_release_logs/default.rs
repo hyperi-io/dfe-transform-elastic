@@ -55,13 +55,19 @@ impl Transform for Default {
             let _cond = { event.has_value("mimecast.released") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("mimecast.released") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &["yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssZZZZZ"],
                         Some("UTC"),
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "mimecast.released".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

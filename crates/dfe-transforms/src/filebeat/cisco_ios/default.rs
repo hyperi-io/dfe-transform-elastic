@@ -249,7 +249,7 @@ impl Transform for Default {
             let _cond = { event.has_value("_temp_.cisco_timestamp") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("_temp_.cisco_timestamp") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &[
                             "ISO8601",
@@ -269,7 +269,13 @@ impl Transform for Default {
                         event.get_str("_temp_.date_timezone"),
                         None,
                     ) {
-                        event.set("@timestamp", parsed)?;
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "_temp_.cisco_timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

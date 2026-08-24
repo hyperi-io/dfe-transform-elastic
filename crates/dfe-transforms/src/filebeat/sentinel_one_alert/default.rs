@@ -312,8 +312,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.alertInfo.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.alertInfo.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -568,8 +574,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.alertInfo.updatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.alert.info.updated_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.alert.info.updated_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.alertInfo.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -937,8 +951,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.alertInfo.reportedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.alert.info.reported_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.alert.info.reported_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.alertInfo.reportedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1335,8 +1357,14 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.sourceParentProcessInfo.pidStarttime")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("process.parent.start", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("process.parent.start", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.sourceParentProcessInfo.pidStarttime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1543,8 +1571,14 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.sourceProcessInfo.pidStarttime")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("process.start", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("process.start", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.sourceProcessInfo.pidStarttime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1611,8 +1645,14 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.targetProcessInfo.tgtFileCreatedAt")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("file.created", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("file.created", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.targetProcessInfo.tgtFileCreatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1774,8 +1814,14 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.targetProcessInfo.tgtFileModifiedAt")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("file.mtime", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("file.mtime", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.targetProcessInfo.tgtFileModifiedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1864,8 +1910,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.targetProcessInfo.tgtProcessStartTime")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.alert.target.process.start_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.alert.target.process.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.targetProcessInfo.tgtProcessStartTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

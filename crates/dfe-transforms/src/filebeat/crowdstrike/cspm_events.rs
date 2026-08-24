@@ -113,9 +113,14 @@ impl Transform for CspmEvents {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.Timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -128,8 +133,14 @@ impl Transform for CspmEvents {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.Timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -144,9 +155,14 @@ impl Transform for CspmEvents {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EventCreatedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -161,8 +177,14 @@ impl Transform for CspmEvents {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EventCreatedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -185,9 +207,16 @@ impl Transform for CspmEvents {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("crowdstrike.event.ResourceCreateTime", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.ResourceCreateTime", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ResourceCreateTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -202,8 +231,16 @@ impl Transform for CspmEvents {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("crowdstrike.event.ResourceCreateTime", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.ResourceCreateTime", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ResourceCreateTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

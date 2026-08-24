@@ -276,7 +276,7 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.datetime") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &[
                                 "E MMM dd HH:mm:ss yyyy",
@@ -287,7 +287,13 @@ impl Transform for Default {
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("zscaler_zia.tunnel.datetime", parsed)?;
+                            Some(parsed) => event.set("zscaler_zia.tunnel.datetime", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.datetime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

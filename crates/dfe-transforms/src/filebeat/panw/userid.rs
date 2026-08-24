@@ -223,10 +223,14 @@ impl Transform for Userid {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["yyyy/MM/dd HH:mm:ss"], None, None)
-                        {
-                            event.set("panw.panos.factorcompletiontime", parsed)?;
+                        match parse_date_out(&date_str, &["yyyy/MM/dd HH:mm:ss"], None, None) {
+                            Some(parsed) => event.set("panw.panos.factorcompletiontime", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.factorcompletiontime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -259,13 +263,19 @@ impl Transform for Userid {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy/MM/dd HH:mm:ss"],
                             event.get_str("event.timezone"),
                             None,
                         ) {
-                            event.set("panw.panos.factorcompletiontime", parsed)?;
+                            Some(parsed) => event.set("panw.panos.factorcompletiontime", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.factorcompletiontime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

@@ -732,13 +732,20 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.Summary.StartTime") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["MMM dd, yyyy hh:mm:ss a", "MMM d, yyyy h:m:s a", "UNIX"],
                             None,
                             None,
                         ) {
-                            event.set("zscaler_zia.sandbox_report.summary.start_time", parsed)?;
+                            Some(parsed) => event
+                                .set("zscaler_zia.sandbox_report.summary.start_time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.Summary.StartTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

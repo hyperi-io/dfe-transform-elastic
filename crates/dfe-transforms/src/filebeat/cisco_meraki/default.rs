@@ -86,13 +86,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp.ts_nano") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["UNIX"],
                             event.get_str("_conf.tz_offset"),
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp.ts_nano".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -128,8 +134,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("_temp.ts_nano") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], None, None) {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "_temp.ts_nano".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

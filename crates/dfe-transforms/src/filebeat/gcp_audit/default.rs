@@ -119,9 +119,14 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("json.timestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None)
-                    {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -856,8 +861,14 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("json.receiveTimestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("gcp.audit.receive_timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("gcp.audit.receive_timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.receiveTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -994,8 +1005,14 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("json.jsonPayload.actionTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("gcp.audit.action_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("gcp.audit.action_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.jsonPayload.actionTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -1077,30 +1094,58 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("gcp.audit.source_log_ids") {
-                    foreach_array(event, "gcp.audit.source_log_ids", |event| {
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if let Some(date_str) = event.get_as_string("_ingest._value.logTime") {
-                                if let Some(parsed) =
-                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                    if let Some(Value::Array(items)) =
+                        event.get("gcp.audit.source_log_ids").cloned()
+                    {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.logTime")
                                 {
-                                    event.set("_ingest._value.log_time", parsed)?;
+                                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                        Some(parsed) => {
+                                            event.set("_ingest._value.log_time", parsed)?
+                                        }
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.logTime".into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
+                                }
+                                Ok(())
+                            })() {
+                                event.set("_ingest.on_failure_message", err.to_string())?;
+                                event.set("_ingest.on_failure_processor_type", "date")?;
+                                event.remove("_ingest._value.logTime");
+                                event.remove("_ingest.on_failure_message");
+                                event.remove("_ingest.on_failure_processor_type");
+                                event.remove("_ingest.on_failure_processor_tag");
+                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                    event.remove("_ingest");
                                 }
                             }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "date")?;
-                            event.remove("_ingest._value.logTime");
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
                                 event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })?;
+                        event.set("gcp.audit.source_log_ids", Value::Array(out))?;
+                    }
                 }
             }
 

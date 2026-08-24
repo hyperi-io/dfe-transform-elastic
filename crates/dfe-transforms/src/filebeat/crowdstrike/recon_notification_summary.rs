@@ -72,9 +72,14 @@ impl Transform for ReconNotificationSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.created", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.MatchedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -87,8 +92,14 @@ impl Transform for ReconNotificationSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.created", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.MatchedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -102,9 +113,14 @@ impl Transform for ReconNotificationSummary {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.created", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ItemPostedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -118,8 +134,14 @@ impl Transform for ReconNotificationSummary {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.created", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ItemPostedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

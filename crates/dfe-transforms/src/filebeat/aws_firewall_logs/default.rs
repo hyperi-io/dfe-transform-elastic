@@ -33,8 +33,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.event.timestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.event.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -537,8 +543,14 @@ impl Transform for Default {
             let _cond = { event.has_value("json.event.tls.notafter") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("json.event.tls.notafter") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("tls.server.not_after", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("tls.server.not_after", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.event.tls.notafter".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -546,8 +558,14 @@ impl Transform for Default {
             let _cond = { event.has_value("json.event.tls.notbefore") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("json.event.tls.notbefore") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                        event.set("tls.server.not_before", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("tls.server.not_before", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.event.tls.notbefore".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

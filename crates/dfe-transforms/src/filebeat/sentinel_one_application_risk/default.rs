@@ -249,13 +249,21 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.detectionDate") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("sentinel_one.application_risk.detection_date", parsed)?;
+                            Some(parsed) => {
+                                event.set("sentinel_one.application_risk.detection_date", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.detectionDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -383,10 +391,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.lastScanDate") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["date_optional_time"], None, None)
-                        {
-                            event.set("sentinel_one.application_risk.last_scan_date", parsed)?;
+                        match parse_date_out(&date_str, &["date_optional_time"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.application_risk.last_scan_date", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.lastScanDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -481,10 +495,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.markedDate") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["date_optional_time"], None, None)
-                        {
-                            event.set("sentinel_one.application_risk.marked_date", parsed)?;
+                        match parse_date_out(&date_str, &["date_optional_time"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.application_risk.marked_date", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.markedDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -534,16 +554,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.mitigationStatusChangeTime") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "date_optional_time"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "sentinel_one.application_risk.mitigation_status_change_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.mitigationStatusChangeTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -679,10 +705,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.publishedDate") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["date_optional_time"], None, None)
-                        {
-                            event.set("sentinel_one.application_risk.published_date", parsed)?;
+                        match parse_date_out(&date_str, &["date_optional_time"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.application_risk.published_date", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.publishedDate".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

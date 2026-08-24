@@ -96,8 +96,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.time") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("m365_defender.event.time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("m365_defender.event.time", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -137,8 +143,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.properties.Timestamp") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("m365_defender.event.timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("m365_defender.event.timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.properties.Timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -631,10 +643,16 @@ impl Transform for Default {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(date_str) = event.get_as_string("json.properties.StartTime") {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set("m365_defender.event.start_time", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => {
+                                    event.set("m365_defender.event.start_time", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.StartTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -676,10 +694,16 @@ impl Transform for Default {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(date_str) = event.get_as_string("json.properties.EndTime") {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set("m365_defender.event.end_time", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => {
+                                    event.set("m365_defender.event.end_time", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.EndTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -723,11 +747,15 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.DataAggregationEndTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event
-                                    .set("m365_defender.event.data_aggregation_end_time", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event
+                                    .set("m365_defender.event.data_aggregation_end_time", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.DataAggregationEndTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -774,13 +802,17 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.DataAggregationStartTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set(
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event.set(
                                     "m365_defender.event.data_aggregation_start_time",
                                     parsed,
-                                )?;
+                                )?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.DataAggregationStartTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3021,13 +3053,17 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.CertificateExpirationTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set(
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event.set(
                                     "m365_defender.event.certificate.expiration_time",
                                     parsed,
-                                )?;
+                                )?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.CertificateExpirationTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3077,13 +3113,18 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.InitiatingProcessCreationTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set(
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event.set(
                                     "m365_defender.event.initiating_process.creation_time",
                                     parsed,
-                                )?;
+                                )?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.InitiatingProcessCreationTime"
+                                            .into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3133,13 +3174,18 @@ impl Transform for Default {
                         if let Some(date_str) = event
                             .get_as_string("json.properties.InitiatingProcessParentCreationTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set(
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event.set(
                                     "m365_defender.event.initiating_process.parent_creation_time",
                                     parsed,
-                                )?;
+                                )?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.InitiatingProcessParentCreationTime"
+                                            .into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3188,10 +3234,15 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.ProcessCreationTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set("m365_defender.event.process.creation_time", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event
+                                    .set("m365_defender.event.process.creation_time", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.ProcessCreationTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3241,13 +3292,18 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.CertificateCountersignatureTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set(
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event.set(
                                     "m365_defender.event.certificate.countersignature_time",
                                     parsed,
-                                )?;
+                                )?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.CertificateCountersignatureTime"
+                                            .into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -3296,11 +3352,15 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.CertificateCreationTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event
-                                    .set("m365_defender.event.certificate.creation_time", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event
+                                    .set("m365_defender.event.certificate.creation_time", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.CertificateCreationTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -11127,13 +11187,17 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.DataAggregationStartTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set(
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event.set(
                                     "m365_defender.event.data_aggregation_start_time",
                                     parsed,
-                                )?;
+                                )?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.DataAggregationStartTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -11180,11 +11244,15 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.DataAggregationEndTime")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event
-                                    .set("m365_defender.event.data_aggregation_end_time", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event
+                                    .set("m365_defender.event.data_aggregation_end_time", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.DataAggregationEndTime".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -11513,10 +11581,15 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.FirstEventTimestamp")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set("m365_defender.event.first_event_timestamp", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => event
+                                    .set("m365_defender.event.first_event_timestamp", parsed)?,
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.FirstEventTimestamp".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())
@@ -11563,10 +11636,16 @@ impl Transform for Default {
                         if let Some(date_str) =
                             event.get_as_string("json.properties.LastEventTimestamp")
                         {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["ISO8601"], None, None)
-                            {
-                                event.set("m365_defender.event.last_event_timestamp", parsed)?;
+                            match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                Some(parsed) => {
+                                    event.set("m365_defender.event.last_event_timestamp", parsed)?
+                                }
+                                None => {
+                                    return Err(TransformError::ParseError {
+                                        path: "json.properties.LastEventTimestamp".into(),
+                                        message: format!("unable to parse date [{date_str}]"),
+                                    });
+                                }
                             }
                         }
                         Ok(())

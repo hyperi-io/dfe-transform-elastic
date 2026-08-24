@@ -173,8 +173,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.threatInfo.updatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.threatInfo.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -528,9 +534,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.agentDetectionInfo.agentRegisteredAt")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event
-                                .set("sentinel_one.threat.detection.agent.registered_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event
+                                .set("sentinel_one.threat.detection.agent.registered_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.agentDetectionInfo.agentRegisteredAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1513,8 +1525,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.agentRealtimeInfo.scanAbortedAt")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.agent.scan.aborted_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.threat.agent.scan.aborted_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.agentRealtimeInfo.scanAbortedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1556,8 +1576,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.agentRealtimeInfo.scanFinishedAt")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.agent.scan.finished_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.threat.agent.scan.finished_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.agentRealtimeInfo.scanFinishedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1599,8 +1627,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.agentRealtimeInfo.scanStartedAt")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.agent.scan.started_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.threat.agent.scan.started_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.agentRealtimeInfo.scanStartedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2296,21 +2332,46 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "json.mitigationStatus", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) = event.get_as_string("_ingest._value.lastUpdate")
-                            {
-                                if let Some(parsed) =
-                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.lastUpdate")
                                 {
-                                    event.set("_ingest._value.last_update", parsed)?;
+                                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                        Some(parsed) => {
+                                            event.set("_ingest._value.last_update", parsed)?
+                                        }
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.lastUpdate".into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("json.mitigationStatus", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }
@@ -2362,22 +2423,45 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "json.mitigationStatus", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) =
-                                event.get_as_string("_ingest._value.mitigationEndedAt")
-                            {
-                                if let Some(parsed) =
-                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.mitigationEndedAt")
                                 {
-                                    event.set("_ingest._value.mitigation_ended_at", parsed)?;
+                                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                        Some(parsed) => event
+                                            .set("_ingest._value.mitigation_ended_at", parsed)?,
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.mitigationEndedAt".into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("json.mitigationStatus", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }
@@ -2390,22 +2474,45 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "json.mitigationStatus", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) =
-                                event.get_as_string("_ingest._value.mitigationStartedAt")
-                            {
-                                if let Some(parsed) =
-                                    parse_date_out(&date_str, &["ISO8601"], None, None)
+                    if let Some(Value::Array(items)) = event.get("json.mitigationStatus").cloned() {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.mitigationStartedAt")
                                 {
-                                    event.set("_ingest._value.mitigation_started_at", parsed)?;
+                                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                                        Some(parsed) => event
+                                            .set("_ingest._value.mitigation_started_at", parsed)?,
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.mitigationStartedAt".into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("json.mitigationStatus", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }
@@ -2551,8 +2658,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.threatInfo.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.created_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("sentinel_one.threat.created_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.threatInfo.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2791,8 +2904,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.threatInfo.identifiedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.file.identified_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.threat.file.identified_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.threatInfo.identifiedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -3303,8 +3424,14 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.timeline.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.timeline.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -3449,8 +3576,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.timeline.createdAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.timeline.created_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.threat.timeline.created_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.timeline.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -3549,8 +3684,16 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.timeline.updatedAt") {
-                        if let Some(parsed) = parse_date_out(&date_str, &["ISO8601"], None, None) {
-                            event.set("sentinel_one.threat.timeline.updated_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => {
+                                event.set("sentinel_one.threat.timeline.updated_at", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.timeline.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

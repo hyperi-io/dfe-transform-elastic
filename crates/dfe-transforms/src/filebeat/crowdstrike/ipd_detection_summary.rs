@@ -211,9 +211,14 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.created", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -226,8 +231,14 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.created", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -273,9 +284,16 @@ impl Transform for IpdDetectionSummary {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -290,8 +308,16 @@ impl Transform for IpdDetectionSummary {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                 {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -335,9 +361,14 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -350,8 +381,14 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.start", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -395,9 +432,14 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                    {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }
@@ -410,8 +452,14 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
-                        event.set("event.end", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

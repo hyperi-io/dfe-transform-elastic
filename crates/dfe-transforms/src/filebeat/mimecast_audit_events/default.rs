@@ -71,7 +71,7 @@ impl Transform for Default {
             event.set("event.category", Value::Array(vec![json!("email")]))?;
 
             if let Some(date_str) = event.get_as_string("mimecast.eventTime") {
-                if let Some(parsed) = parse_date_out(
+                match parse_date_out(
                     &date_str,
                     &[
                         "yyyy-MM-dd'T'HH:mm:ssz",
@@ -89,7 +89,13 @@ impl Transform for Default {
                     Some("UTC"),
                     None,
                 ) {
-                    event.set("@timestamp", parsed)?;
+                    Some(parsed) => event.set("@timestamp", parsed)?,
+                    None => {
+                        return Err(TransformError::ParseError {
+                            path: "mimecast.eventTime".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                        });
+                    }
                 }
             }
 
@@ -1037,7 +1043,7 @@ impl Transform for Default {
             let _cond = { event.has_value("event.created") };
             if _cond {
                 if let Some(date_str) = event.get_as_string("event.created") {
-                    if let Some(parsed) = parse_date_out(
+                    match parse_date_out(
                         &date_str,
                         &[
                             "yyyy-MM-dd HH:mm:ssZ",
@@ -1058,7 +1064,13 @@ impl Transform for Default {
                         Some("UTC"),
                         None,
                     ) {
-                        event.set("event.created", parsed)?;
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "event.created".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
             }

@@ -215,10 +215,14 @@ impl Transform for PipelineAlert {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.properties.StartTime") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                    {
-                        event.set("m365_defender.event.start_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("m365_defender.event.start_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.properties.StartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -241,10 +245,14 @@ impl Transform for PipelineAlert {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.properties.EndTime") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                    {
-                        event.set("m365_defender.event.end_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("m365_defender.event.end_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.properties.EndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -267,10 +275,14 @@ impl Transform for PipelineAlert {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.properties.DataAggregationEndTime") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                    {
-                        event.set("m365_defender.event.data_aggregation_end_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("m365_defender.event.data_aggregation_end_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.properties.DataAggregationEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -293,10 +305,14 @@ impl Transform for PipelineAlert {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.properties.DataAggregationStartTime") {
-                    if let Some(parsed) =
-                        parse_date_out(&date_str, &["ISO8601"], None, None)
-                    {
-                        event.set("m365_defender.event.data_aggregation_start_time", parsed)?;
+                    match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                        Some(parsed) => event.set("m365_defender.event.data_aggregation_start_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.properties.DataAggregationStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())

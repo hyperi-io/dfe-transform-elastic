@@ -42,8 +42,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("json.timestamp") {
-                    if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        event.set("@timestamp", parsed)?;
+                    match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
                     }
                 }
                 Ok(())
@@ -180,8 +186,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.captchaResponse.solveTimestamp")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                            event.set("aws.waf.captcha_response.solve_timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => {
+                                event.set("aws.waf.captcha_response.solve_timestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.captchaResponse.solveTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -283,8 +297,16 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.challengeResponse.solveTimestamp")
                     {
-                        if let Some(parsed) = parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                            event.set("aws.waf.challenge_response.solve_timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => {
+                                event.set("aws.waf.challenge_response.solve_timestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.challengeResponse.solveTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

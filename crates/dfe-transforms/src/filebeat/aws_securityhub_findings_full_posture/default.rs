@@ -130,14 +130,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.Action.AwsApiCallAction.FirstSeen")
                     {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                            None,
-                            None,
-                        ) {
-                            event.set("aws.securityhub_findings_full_posture.action.aws_api_call.first_seen", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("aws.securityhub_findings_full_posture.action.aws_api_call.first_seen", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.Action.AwsApiCallAction.FirstSeen".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -171,14 +172,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.Action.AwsApiCallAction.LastSeen")
                     {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                            None,
-                            None,
-                        ) {
-                            event.set("aws.securityhub_findings_full_posture.action.aws_api_call.last_seen", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("aws.securityhub_findings_full_posture.action.aws_api_call.last_seen", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.Action.AwsApiCallAction.LastSeen".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -1642,14 +1644,20 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.CreatedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event
-                                .set("aws.securityhub_findings_full_posture.created_at", parsed)?;
+                            Some(parsed) => event
+                                .set("aws.securityhub_findings_full_posture.created_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.CreatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1681,14 +1689,20 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.UpdatedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event
-                                .set("aws.securityhub_findings_full_posture.updated_at", parsed)?;
+                            Some(parsed) => event
+                                .set("aws.securityhub_findings_full_posture.updated_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.UpdatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2031,16 +2045,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.FirstObservedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.securityhub_findings_full_posture.first_observed_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.FirstObservedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2121,16 +2141,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.LastObservedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.securityhub_findings_full_posture.last_observed_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.LastObservedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2162,16 +2188,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.ProcessedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.securityhub_findings_full_posture.processed_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.ProcessedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -3743,16 +3775,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.Note.UpdatedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.securityhub_findings_full_posture.note.updated_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.Note.UpdatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4036,14 +4074,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.PatchSummary.OperationEndTime")
                     {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                            None,
-                            None,
-                        ) {
-                            event.set("aws.securityhub_findings_full_posture.patch_summary.operation.end_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("aws.securityhub_findings_full_posture.patch_summary.operation.end_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.PatchSummary.OperationEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -4077,14 +4116,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.PatchSummary.OperationStartTime")
                     {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                            None,
-                            None,
-                        ) {
-                            event.set("aws.securityhub_findings_full_posture.patch_summary.operation.start_time", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("aws.securityhub_findings_full_posture.patch_summary.operation.start_time", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.PatchSummary.OperationStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -4123,16 +4163,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.Process.LaunchedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.securityhub_findings_full_posture.process.launched_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.Process.LaunchedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4314,16 +4360,22 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.Process.TerminatedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.securityhub_findings_full_posture.process.terminated_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.Process.TerminatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4785,25 +4837,53 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "json.ThreatIntelIndicators", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) =
-                                event.get_as_string("_ingest._value.LastObservedAt")
-                            {
-                                if let Some(parsed) = parse_date_out(
-                                    &date_str,
-                                    &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                    None,
-                                    None,
-                                ) {
-                                    event.set("_ingest._value.last_observed_at", parsed)?;
+                    if let Some(Value::Array(items)) =
+                        event.get("json.ThreatIntelIndicators").cloned()
+                    {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.LastObservedAt")
+                                {
+                                    match parse_date_out(
+                                        &date_str,
+                                        &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                        None,
+                                        None,
+                                    ) {
+                                        Some(parsed) => {
+                                            event.set("_ingest._value.last_observed_at", parsed)?
+                                        }
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.LastObservedAt".into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("json.ThreatIntelIndicators", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }
@@ -5553,25 +5633,52 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "json.Vulnerabilities", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) =
-                                event.get_as_string("_ingest._value.Vendor.VendorCreatedAt")
-                            {
-                                if let Some(parsed) = parse_date_out(
-                                    &date_str,
-                                    &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                    None,
-                                    None,
-                                ) {
-                                    event.set("_ingest._value.vendor.created_at", parsed)?;
+                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.Vendor.VendorCreatedAt")
+                                {
+                                    match parse_date_out(
+                                        &date_str,
+                                        &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                        None,
+                                        None,
+                                    ) {
+                                        Some(parsed) => {
+                                            event.set("_ingest._value.vendor.created_at", parsed)?
+                                        }
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.Vendor.VendorCreatedAt"
+                                                    .into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("json.Vulnerabilities", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }
@@ -5607,25 +5714,52 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    foreach_array(event, "json.Vulnerabilities", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(date_str) =
-                                event.get_as_string("_ingest._value.Vendor.VendorUpdatedAt")
-                            {
-                                if let Some(parsed) = parse_date_out(
-                                    &date_str,
-                                    &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                    None,
-                                    None,
-                                ) {
-                                    event.set("_ingest._value.vendor.updated_at", parsed)?;
+                    if let Some(Value::Array(items)) = event.get("json.Vulnerabilities").cloned() {
+                        // A NESTED loop borrows the same `_ingest._value` slot, so
+                        // the enclosing element is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let mut out = Vec::with_capacity(items.len());
+                        for item in items {
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(date_str) =
+                                    event.get_as_string("_ingest._value.Vendor.VendorUpdatedAt")
+                                {
+                                    match parse_date_out(
+                                        &date_str,
+                                        &["ISO8601", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                        None,
+                                        None,
+                                    ) {
+                                        Some(parsed) => {
+                                            event.set("_ingest._value.vendor.updated_at", parsed)?
+                                        }
+                                        None => {
+                                            return Err(TransformError::ParseError {
+                                                path: "_ingest._value.Vendor.VendorUpdatedAt"
+                                                    .into(),
+                                                message: format!(
+                                                    "unable to parse date [{date_str}]"
+                                                ),
+                                            });
+                                        }
+                                    }
                                 }
+                                Ok(())
+                            })();
+                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        event.set("json.Vulnerabilities", Value::Array(out))?;
+                    }
                     Ok(())
                 })();
             }

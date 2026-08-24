@@ -401,10 +401,16 @@ impl Transform for DataProtectionDetectionSummary {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("crowdstrike.event.EventTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
-                        {
-                            event.set("crowdstrike.event.EventTimestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                            Some(parsed) => {
+                                event.set("crowdstrike.event.EventTimestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.EventTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -446,10 +452,14 @@ impl Transform for DataProtectionDetectionSummary {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.SessionStartTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
-                        {
-                            event.set("event.start", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                            Some(parsed) => event.set("event.start", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.SessionStartTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -494,10 +504,14 @@ impl Transform for DataProtectionDetectionSummary {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.SessionEndTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX"], Some("UTC"), None)
-                        {
-                            event.set("event.end", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                            Some(parsed) => event.set("event.end", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.SessionEndTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

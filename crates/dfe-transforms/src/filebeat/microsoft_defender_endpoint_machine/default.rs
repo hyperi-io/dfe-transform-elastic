@@ -201,13 +201,20 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.firstSeen") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("microsoft_defender_endpoint.machine.first_seen", parsed)?;
+                            Some(parsed) => event
+                                .set("microsoft_defender_endpoint.machine.first_seen", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.firstSeen".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -744,13 +751,20 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.lastSeen") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["strict_date_optional_time_nanos"],
                             None,
                             None,
                         ) {
-                            event.set("microsoft_defender_endpoint.machine.last_seen", parsed)?;
+                            Some(parsed) => event
+                                .set("microsoft_defender_endpoint.machine.last_seen", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.lastSeen".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())

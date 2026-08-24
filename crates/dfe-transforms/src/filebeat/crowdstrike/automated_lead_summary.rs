@@ -51,10 +51,16 @@ impl Transform for AutomatedLeadSummary {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.SignalStartTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
-                        {
-                            event.set("crowdstrike.event.SignalStartTimestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None) {
+                            Some(parsed) => {
+                                event.set("crowdstrike.event.SignalStartTimestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.SignalStartTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -94,10 +100,16 @@ impl Transform for AutomatedLeadSummary {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.SignalEndTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
-                        {
-                            event.set("crowdstrike.event.SignalEndTimestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None) {
+                            Some(parsed) => {
+                                event.set("crowdstrike.event.SignalEndTimestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.SignalEndTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -137,10 +149,16 @@ impl Transform for AutomatedLeadSummary {
                     if let Some(date_str) =
                         event.get_as_string("crowdstrike.event.SignalUpdatedTimestamp")
                     {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
-                        {
-                            event.set("crowdstrike.event.SignalUpdatedTimestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None) {
+                            Some(parsed) => {
+                                event.set("crowdstrike.event.SignalUpdatedTimestamp", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "crowdstrike.event.SignalUpdatedTimestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -168,37 +186,62 @@ impl Transform for AutomatedLeadSummary {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                foreach_array(event, "crowdstrike.event.ThreatgraphIndicators", |event| {
-                    // on_failure: 2 handler(s)
-                    if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) =
-                            event.get_as_string("_ingest._value.SignalAssociationTimestamp")
-                        {
-                            if let Some(parsed) =
-                                parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None)
+                if let Some(Value::Array(items)) = event
+                    .get("crowdstrike.event.ThreatgraphIndicators")
+                    .cloned()
+                {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // on_failure: 2 handler(s)
+                        if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) =
+                                event.get_as_string("_ingest._value.SignalAssociationTimestamp")
                             {
-                                event.set("_ingest._value.SignalAssociationTimestamp", parsed)?;
+                                match parse_date_out(&date_str, &["UNIX", "UNIX_MS"], None, None) {
+                                    Some(parsed) => event
+                                        .set("_ingest._value.SignalAssociationTimestamp", parsed)?,
+                                    None => {
+                                        return Err(TransformError::ParseError {
+                                            path: "_ingest._value.SignalAssociationTimestamp"
+                                                .into(),
+                                            message: format!("unable to parse date [{date_str}]"),
+                                        });
+                                    }
+                                }
+                            }
+                            Ok(())
+                        })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set(
+                                "_ingest.on_failure_processor_tag",
+                                "date_threatgraph_indicators_signal_association_timestamp",
+                            )?;
+                            event.remove("_ingest._value.SignalAssociationTimestamp");
+                            event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                event.remove("_ingest");
                             }
                         }
-                        Ok(())
-                    })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set(
-                            "_ingest.on_failure_processor_tag",
-                            "date_threatgraph_indicators_signal_association_timestamp",
-                        )?;
-                        event.remove("_ingest._value.SignalAssociationTimestamp");
-                        event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
+                        }
+                        None => {
                             event.remove("_ingest");
                         }
                     }
-                    Ok(())
-                })?;
+                    event.set("crowdstrike.event.ThreatgraphIndicators", Value::Array(out))?;
+                }
             }
 
             // on_failure: 2 handler(s)

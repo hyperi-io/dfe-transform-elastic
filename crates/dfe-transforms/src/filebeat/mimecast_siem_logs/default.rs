@@ -62,13 +62,19 @@ impl Transform for Default {
                 let _cond = { event.has_value("mimecast.datetime") };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("mimecast.datetime") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["yyyy-MM-dd'T'HH:mm:ssZ"],
                             Some("UTC"),
                             None,
                         ) {
-                            event.set("@timestamp", parsed)?;
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "mimecast.datetime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                 }
@@ -469,10 +475,14 @@ impl Transform for Default {
                 let _cond = { event.has_value("mimecast.timestamp") };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("mimecast.timestamp") {
-                        if let Some(parsed) =
-                            parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None)
-                        {
-                            event.set("@timestamp", parsed)?;
+                        match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "mimecast.timestamp".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                 }

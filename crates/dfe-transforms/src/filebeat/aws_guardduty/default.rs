@@ -125,13 +125,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.createdAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.guardduty.created_at", parsed)?;
+                            Some(parsed) => event.set("aws.guardduty.created_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1079,14 +1085,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.resource.ecsClusterDetails.taskDetails.startedAt")
                     {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                            None,
-                            None,
-                        ) {
-                            event.set("aws.guardduty.resource.ecs_cluster_details.task_details.started_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("aws.guardduty.resource.ecs_cluster_details.task_details.started_at", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.resource.ecsClusterDetails.taskDetails.startedAt".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -1132,14 +1139,15 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.resource.ecsClusterDetails.taskDetails.createdAt")
                     {
-                        if let Some(parsed) = parse_date_out(
-                            &date_str,
-                            &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                            None,
-                            None,
-                        ) {
-                            event.set("aws.guardduty.resource.ecs_cluster_details.task_details.created_at", parsed)?;
+                        match parse_date_out(&date_str, &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"], None, None) {
+                        Some(parsed) => event.set("aws.guardduty.resource.ecs_cluster_details.task_details.created_at", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "json.resource.ecsClusterDetails.taskDetails.createdAt".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
+                    }
                     }
                     Ok(())
                 })() {
@@ -1209,16 +1217,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.resource.eksClusterDetails.createdAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.guardduty.resource.eks_cluster_details.created_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.resource.eksClusterDetails.createdAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -1327,16 +1341,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.resource.instanceDetails.launchTime")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.guardduty.resource.instance_details.launch_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.resource.instanceDetails.launchTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -2498,23 +2518,50 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_array())
             };
             if _cond {
-                foreach_array(event, "json.resource.s3BucketDetails", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.createdAt") {
-                            if let Some(parsed) = parse_date_out(
-                                &date_str,
-                                &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
-                                None,
-                                None,
-                            ) {
-                                event.set("_ingest._value.created_at", parsed)?;
+                if let Some(Value::Array(items)) =
+                    event.get("json.resource.s3BucketDetails").cloned()
+                {
+                    // A NESTED loop borrows the same `_ingest._value` slot, so
+                    // the enclosing element is saved and put back afterwards.
+                    let enclosing = event.get("_ingest._value").cloned();
+                    let mut out = Vec::with_capacity(items.len());
+                    for item in items {
+                        event.set("_ingest._value", item)?;
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.createdAt")
+                            {
+                                match parse_date_out(
+                                    &date_str,
+                                    &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
+                                    None,
+                                    None,
+                                ) {
+                                    Some(parsed) => {
+                                        event.set("_ingest._value.created_at", parsed)?
+                                    }
+                                    None => {
+                                        return Err(TransformError::ParseError {
+                                            path: "_ingest._value.createdAt".into(),
+                                            message: format!("unable to parse date [{date_str}]"),
+                                        });
+                                    }
+                                }
                             }
+                            Ok(())
+                        })();
+                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                    }
+                    match enclosing {
+                        Some(previous) => {
+                            event.set("_ingest._value", previous)?;
                         }
-                        Ok(())
-                    })();
-                    Ok(())
-                })?;
+                        None => {
+                            event.remove("_ingest");
+                        }
+                    }
+                    event.set("json.resource.s3BucketDetails", Value::Array(out))?;
+                }
             }
 
             let _cond = {
@@ -4066,16 +4113,23 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.service.ebsVolumeScanDetails.scanCompletedAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.guardduty.service.ebs_volume_scan_details.scan.completed_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.service.ebsVolumeScanDetails.scanCompletedAt"
+                                        .into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4579,16 +4633,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.service.ebsVolumeScanDetails.scanStartedAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.guardduty.service.ebs_volume_scan_details.scan.started_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.service.ebsVolumeScanDetails.scanStartedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4632,13 +4692,21 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.service.eventFirstSeen") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.guardduty.service.event.first_seen", parsed)?;
+                            Some(parsed) => {
+                                event.set("aws.guardduty.service.event.first_seen", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.service.eventFirstSeen".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4668,13 +4736,21 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.service.eventLastSeen") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.guardduty.service.event.last_seen", parsed)?;
+                            Some(parsed) => {
+                                event.set("aws.guardduty.service.event.last_seen", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.service.eventLastSeen".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -4858,16 +4934,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.service.runtimeDetails.context.modifiedAt")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.guardduty.service.runtime_details.context.modified_at",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.service.runtimeDetails.context.modifiedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -5192,16 +5274,22 @@ impl Transform for Default {
                     if let Some(date_str) =
                         event.get_as_string("json.service.runtimeDetails.process.startTime")
                     {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set(
+                            Some(parsed) => event.set(
                                 "aws.guardduty.service.runtime_details.process.start_time",
                                 parsed,
-                            )?;
+                            )?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.service.runtimeDetails.process.startTime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
@@ -5380,13 +5468,19 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.updatedAt") {
-                        if let Some(parsed) = parse_date_out(
+                        match parse_date_out(
                             &date_str,
                             &["ISO8601", "UNIX", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"],
                             None,
                             None,
                         ) {
-                            event.set("aws.guardduty.updated_at", parsed)?;
+                            Some(parsed) => event.set("aws.guardduty.updated_at", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.updatedAt".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
                         }
                     }
                     Ok(())
