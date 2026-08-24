@@ -87,6 +87,17 @@ pub(crate) enum ParamsShape {
     InvocationDetails,
     ScheduledTask,
     ThreatIndicatorType(String),
+    KeyedRowMembers(Box<KeyedRowMembers>),
+    PutWrites {
+        writes: Vec<PutWrite>,
+        /// A `!["a","b"].contains(ctx.<p>)` return-guard the script opens with.
+        require: Option<(String, Vec<String>)>,
+    },
+    PutFlagNames {
+        container: String,
+        member: String,
+        source: String,
+    },
     UppercaseLookupDefault {
         source: String,
         target: String,
@@ -156,6 +167,31 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // line of the named event_data field.
     if normalised.contains("def parseRawDetail(String raw)") {
         return Some(ParamsShape::InvocationDetails);
+    }
+
+    // Pattern: every params label whose flag the field's bits carry, collected
+    // into one list -- kerberos ticket options.
+    if normalised.contains("Long.decode(")
+        && normalised.contains("params.entrySet()")
+        && let Some(shape) = parse_put_flag_names(normalised)
+    {
+        return Some(shape);
+    }
+
+    // Pattern: one params row put back under a name -- kerberos status and
+    // encryption-type descriptions.
+    if normalised.contains("params[ctx.")
+        && let Some(shape) = parse_put_lookup(normalised)
+    {
+        return Some(shape);
+    }
+
+    // Pattern: a params ROW looked up by a normalised key, two of its members
+    // put back -- windows security's audit subcategory GUID.
+    if (normalised.contains("][0])") || normalised.contains("][1])"))
+        && let Some(shape) = KeyedRowMembers::parse(normalised)
+    {
+        return Some(ParamsShape::KeyedRowMembers(Box::new(shape)));
     }
 
     // Pattern: a field uppercased, then abbreviated through params -- m365's
@@ -379,6 +415,45 @@ pub(crate) fn run_params_shape(
         ParamsShape::ScheduledTask => crate::painless_scheduled_task::run(event, params),
         ParamsShape::ThreatIndicatorType(source) => {
             try_threat_indicator_type(event, source, params)
+        }
+        ParamsShape::KeyedRowMembers(shape) => shape.run(event, params),
+        ParamsShape::PutWrites { writes, require } => {
+            if let Some((path, allowed)) = require
+                && !event
+                    .get_as_string(path)
+                    .is_some_and(|held| allowed.contains(&held))
+            {
+                return true;
+            }
+            for write in writes {
+                write.run(event, params);
+            }
+            true
+        }
+        ParamsShape::PutFlagNames {
+            container,
+            member,
+            source,
+        } => {
+            let Some(bits) = event.get(source).and_then(as_u64_flags) else {
+                return true;
+            };
+            // Elasticsearch walks params in INSERTION order -- its XContent
+            // maps are LinkedHashMap -- and the vendor writes these flag
+            // tables highest bit first, which our sorted map reverses.
+            let mut matched: Vec<(u64, Value)> = params
+                .iter()
+                .filter_map(|(key, name)| {
+                    let flag = as_u64_flags(&Value::String(key.clone()))?;
+                    (flag != 0 && bits & flag == flag).then(|| (flag, name.clone()))
+                })
+                .collect();
+            matched.sort_by_key(|(flag, _)| std::cmp::Reverse(*flag));
+            let names: Vec<Value> = matched.into_iter().map(|(_, name)| name).collect();
+            if !names.is_empty() {
+                let _ = event.set(&format!("{container}.{member}"), Value::Array(names));
+            }
+            true
         }
         ParamsShape::UppercaseLookupDefault { source, target } => {
             if let Some(name) = event.get_str(source).map(str::to_uppercase) {
@@ -733,6 +808,275 @@ fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsShape> {
     }
 
     Some(ParamsShape::UppercaseLookupDefault { source, target })
+}
+
+/// The container and member name a `ctx.<c>.put("<m>", ...)` writes.
+fn parse_put_target(script: &str) -> Option<(String, String)> {
+    let at = script.find(".put(\"")?;
+    let container = clean_path(script[..at].rsplit("ctx.").next()?);
+    let member = script[at + ".put(\"".len()..].split('"').next()?.to_string();
+    if member.is_empty()
+        || !container
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+    {
+        return None;
+    }
+    Some((container, member))
+}
+
+/// One `ctx.<container>.put("<member>", <value>)`, the value read from the
+/// event either directly or through the params table.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct PutWrite {
+    container: String,
+    member: String,
+    source: String,
+    /// Whether the source's value is a params KEY rather than the value.
+    through_params: bool,
+    /// `Some(true)` upper-cases the key, `Some(false)` lower-cases it.
+    fold: Option<bool>,
+}
+
+impl PutWrite {
+    /// An absent source, or a key the table does not hold, writes nothing --
+    /// which is what the script's own null and `containsKey` guards do.
+    fn run(&self, event: &mut Event, params: &Map<String, Value>) {
+        let Some(raw) = event.get(&self.source).cloned() else {
+            return;
+        };
+        let value = if self.through_params {
+            let Some(key) = raw.as_str() else { return };
+            let key = match self.fold {
+                Some(true) => key.to_uppercase(),
+                Some(false) => key.to_lowercase(),
+                None => key.to_string(),
+            };
+            let Some(value) = params.get(&key) else { return };
+            value.clone()
+        } else {
+            raw
+        };
+        let _ = event.set(&format!("{}.{}", self.container, self.member), value);
+    }
+}
+
+/// Every `ctx.<c>.put("<m>", ...)` whose value the event supplies.
+///
+/// A put whose value is a fresh `HashMap` is the script building its own
+/// container and is skipped -- taking it wrote a description into
+/// `winlog.logon`, the map that put was creating.
+fn parse_put_lookup(script: &str) -> Option<ParamsShape> {
+    let mut writes = Vec::new();
+    let mut cursor = 0usize;
+    while let Some(rel) = script[cursor..].find(".put(\"") {
+        let at = cursor + rel;
+        cursor = at + ".put(\"".len();
+
+        let Some(member) = script[cursor..].split('"').next().map(str::to_string) else {
+            continue;
+        };
+        let Some(value) = balanced_argument(&script[cursor + member.len() + 1..]) else {
+            continue;
+        };
+        let container = clean_path(script[..at].rsplit("ctx.").next()?);
+        if member.is_empty()
+            || !container
+                .chars()
+                .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+        {
+            continue;
+        }
+
+        let (through_params, key) = match value.strip_prefix("params[") {
+            Some(inner) => (true, inner.trim_end_matches(']')),
+            None => (false, value.as_str()),
+        };
+        let Some(key) = key.trim().strip_prefix("ctx.") else {
+            continue;
+        };
+        let fold = if key.ends_with(".toLowerCase()") {
+            Some(false)
+        } else if key.ends_with(".toUpperCase()") {
+            Some(true)
+        } else {
+            None
+        };
+        let source = clean_path(
+            key.trim_end_matches(".toLowerCase()")
+                .trim_end_matches(".toUpperCase()"),
+        );
+        if source.is_empty()
+            || !source
+                .chars()
+                .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+        {
+            continue;
+        }
+
+        writes.push(PutWrite {
+            container,
+            member,
+            source,
+            through_params,
+            fold,
+        });
+    }
+
+    (!writes.is_empty()).then(|| ParamsShape::PutWrites {
+        writes,
+        require: parse_contains_guard(script),
+    })
+}
+
+/// The text up to the paren that closes the call this argument sits in.
+fn balanced_argument(rest: &str) -> Option<String> {
+    let rest = rest.trim_start_matches(',').trim_start();
+    let mut depth = 1usize;
+    for (at, c) in rest.char_indices() {
+        match c {
+            '(' => depth += 1,
+            ')' if depth == 1 => return Some(rest[..at].trim().to_string()),
+            ')' => depth -= 1,
+            _ => {}
+        }
+    }
+    None
+}
+
+/// `!["a", "b"].contains(ctx.<path>)` inside a return-guard.
+fn parse_contains_guard(script: &str) -> Option<(String, Vec<String>)> {
+    let (head, tail) = script.split_once("].contains(ctx.")?;
+    let literals: Vec<String> = head
+        .rsplit_once("![")?
+        .1
+        .split('"')
+        .skip(1)
+        .step_by(2)
+        .map(str::to_string)
+        .collect();
+    let path = clean_path(tail.split(')').next()?);
+    (!literals.is_empty() && !path.is_empty()).then_some((path, literals))
+}
+
+/// `Long.decode(ctx.<path>)` against every params key, labels collected.
+fn parse_put_flag_names(script: &str) -> Option<ParamsShape> {
+    let (container, member) = parse_put_target(script)?;
+    let (_, tail) = script.split_once("Long.decode(ctx.")?;
+    let source = clean_path(tail.split(')').next()?);
+    if source.is_empty()
+        || !source
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+    {
+        return None;
+    }
+
+    Some(ParamsShape::PutFlagNames {
+        container,
+        member,
+        source,
+    })
+}
+
+/// A params ROW looked up by a normalised key, some of its members put back.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct KeyedRowMembers {
+    /// The field holding the raw key.
+    source: String,
+    /// Literal pairs the raw key has replaced out of it, in order.
+    replacements: Vec<(String, String)>,
+    /// Whether the key is upper-cased before the lookup.
+    upper: bool,
+    /// The map the members are put into.
+    container: String,
+    /// `(member name, index into the row)`.
+    members: Vec<(String, usize)>,
+}
+
+impl KeyedRowMembers {
+    fn parse(script: &str) -> Option<Self> {
+        // `def <local> = ctx.<path>[.replace(..)]*[.toUpperCase()];`
+        let (declaration, tail) = script.split_once(" = ctx.")?;
+        let local = declaration.rsplit(char::is_whitespace).next()?.to_string();
+        let binding = tail.split([';', '\n']).next()?;
+
+        // The path is what comes before the normalising calls chained onto it.
+        let path = binding.split_once(".replace(").map_or(binding, |(head, _)| head);
+        let path = path
+            .split_once(".toUpperCase(")
+            .map_or(path, |(head, _)| head);
+        let source = clean_path(path);
+        if source.is_empty()
+            || !source
+                .chars()
+                .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+        {
+            return None;
+        }
+
+        let replacements = binding
+            .split(".replace(")
+            .skip(1)
+            .filter_map(|call| {
+                let (arguments, _) = call.split_once(')')?;
+                let mut literals = arguments.split('"').skip(1).step_by(2);
+                Some((literals.next()?.to_string(), literals.next()?.to_string()))
+            })
+            .collect();
+
+        // `ctx.<container>.put("<member>", params[<local>][<index>]);`
+        let mut container = None;
+        let mut members = Vec::new();
+        for call in script.split(".put(\"").skip(1) {
+            let Some((member, rest)) = call.split_once('"') else {
+                continue;
+            };
+            let Some(index) = rest
+                .split_once(&format!("params[{local}]["))
+                .and_then(|(_, tail)| tail.split(']').next())
+                .and_then(|n| n.parse::<usize>().ok())
+            else {
+                continue;
+            };
+            let head = &script[..script.find(&format!(".put(\"{member}\""))?];
+            container = Some(clean_path(head.rsplit("ctx.").next()?));
+            members.push((member.to_string(), index));
+        }
+
+        let container = container?;
+        (!members.is_empty()).then_some(Self {
+            source,
+            replacements,
+            upper: script.contains(".toUpperCase()"),
+            container,
+            members,
+        })
+    }
+
+    /// An unlisted key writes nothing -- the script's own `containsKey` returns.
+    fn run(&self, event: &mut Event, params: &Map<String, Value>) -> bool {
+        let Some(raw) = event.get_str(&self.source).map(str::to_string) else {
+            return true;
+        };
+        let mut key = raw;
+        for (from, to) in &self.replacements {
+            key = key.replace(from, to);
+        }
+        if self.upper {
+            key = key.to_uppercase();
+        }
+        let Some(Value::Array(row)) = params.get(&key) else {
+            return true;
+        };
+
+        for (member, index) in &self.members {
+            if let Some(value) = row.get(*index) {
+                let _ = event.set(&format!("{}.{member}", self.container), value.clone());
+            }
+        }
+        true
+    }
 }
 
 /// securityhub's threat-intel indicators mapped to their STIX type names.
@@ -2754,6 +3098,37 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `pipelines/windows/forwarded/security-default.yml`: the
+    /// audit subcategory GUID keys a two-member row, braces stripped and the
+    /// key upper-cased first.
+    #[test]
+    fn a_keyed_row_puts_its_members_back() {
+        let script = "if (ctx.winlog?.event_data?.SubcategoryGuid == null) {\n  return;\n}\n\
+            def subCatGuid = ctx.winlog.event_data.SubcategoryGuid.replace(\"{\",\"\")\
+            .replace(\"}\",\"\").toUpperCase();\n\
+            if (!params.containsKey(subCatGuid)) {\n  return;\n}\n\
+            ctx.winlog.event_data.put(\"Category\", params[subCatGuid][1]);\n\
+            ctx.winlog.event_data.put(\"SubCategory\", params[subCatGuid][0]);";
+
+        let params = json!({ "0CCE9243-69AE-11D9-BED3-505054503030":
+            ["Network Policy Server", "Logon/Logoff"] });
+        let mut event = crate::Event::new(json!({ "winlog": { "event_data": {
+            "SubcategoryGuid": "{0cce9243-69ae-11d9-bed3-505054503030}"
+        }}}));
+        crate::codegen_api::painless_exec_params(&mut event, script, &params).expect("runs");
+
+        assert_eq!(
+            event.get_str("winlog.event_data.Category"),
+            Some("Logon/Logoff")
+        );
+        assert_eq!(
+            event.get_str("winlog.event_data.SubCategory"),
+            Some("Network Policy Server")
+        );
+        // The guard above the assignment is not a field of its own.
+        assert!(event.get("winlog.event_data.SubcategoryGuid == null) {").is_none());
+    }
 
     /// Verbatim from `pipelines/crowdstrike/default.yml`, so a change upstream
     /// shows up here as a miss.

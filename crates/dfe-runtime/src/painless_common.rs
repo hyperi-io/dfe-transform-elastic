@@ -4236,6 +4236,15 @@ fn try_guarded_replace(event: &mut Event, script: &str) -> bool {
     };
     let target = clean_path(head[target_at + "ctx.".len()..assign].trim());
     let source = clean_path(head[assign + source_at + "ctx.".len()..].trim());
+    // A guard sitting above the assignment holds a `ctx.` of its own, and
+    // taking THAT as the target invented `winlog.event_data.SubcategoryGuid ==
+    // null) {` as a field. A target is a plain dotted path or it is not ours.
+    if !target
+        .chars()
+        .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+    {
+        return false;
+    }
     let Some((from, to)) = two_string_literals(arguments) else {
         return false;
     };
@@ -5720,6 +5729,7 @@ pub(crate) enum KnownShape {
     Route53Answers,
     ReverseLookupAddress,
     TruthyAssignments(Vec<(String, String)>),
+    ScriptBlockEntropy(String),
     SplitOnPipe(Vec<String>),
     ZipAttachments(Box<AttachmentZip>),
     ZipColumns(Box<ColumnZip>),
@@ -5998,6 +6008,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `in-addr.arpa` / `ip6.arpa` labels and into `related.ip`.
     if normalised.contains(".in-addr.arpa") && normalised.contains(".ip6.arpa") {
         shapes.push(KnownShape::ReverseLookupAddress);
+        return shapes;
+    }
+
+    // Pattern: powershell's script-block entropy and the spread around it.
+    if normalised.contains("double surprisalVar")
+        && let Some(source) = ctx_path_bound_to(normalised, "script")
+    {
+        shapes.push(KnownShape::ScriptBlockEntropy(source));
         return shapes;
     }
 
@@ -6691,6 +6709,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::Route53Answers => run_route53_answers(event),
         KnownShape::ReverseLookupAddress => run_reverse_lookup_address(event),
         KnownShape::TruthyAssignments(pairs) => run_truthy_assignments(event, pairs),
+        KnownShape::ScriptBlockEntropy(source) => {
+            crate::painless_windows::run_script_block_entropy(event, source)
+        }
         KnownShape::SplitOnPipe(fields) => run_split_on_pipe(event, fields),
         KnownShape::ZipAttachments(zip) => run_zip_attachments(event, zip),
         KnownShape::ZipColumns(zip) => run_zip_columns(event, zip),

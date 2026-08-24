@@ -10,6 +10,7 @@
 //! The file-info split, the hash-map lowercasing and the registry parser are
 //! sysmon's, the last driven by its params hive table.
 
+use std::collections::HashMap;
 use std::sync::LazyLock;
 
 use serde_json::{Map, Value, json};
@@ -840,6 +841,115 @@ pub(crate) fn copy_sid_field(script: &str) -> Option<String> {
     let after = &script[at + "def userId = ctx.".len()..];
     let (path, _) = after.split_once(';')?;
     Some(clean(path.trim()))
+}
+
+/// The Shannon entropy of a decoded script block, and the spread around it.
+///
+/// The accumulation is the vendor's own online form -- an incremental mean of
+/// the surprisals weighted by probability -- and the arithmetic ORDER is what
+/// the corpus pins, so it is transliterated rather than rewritten as a sum.
+/// Symbols are counted and walked as Java sees them: UTF-16 code units, in
+/// order of FIRST APPEARANCE.
+///
+/// The vendor NFC-normalises the text first. That is identity for the ASCII
+/// script blocks the corpus carries, and Rust's standard library has no
+/// normaliser, so this does not.
+pub(crate) fn run_script_block_entropy(event: &mut Event, source: &str) -> bool {
+    let Some(script) = event.get_str(source) else {
+        return true;
+    };
+    let units: Vec<u16> = script.encode_utf16().collect();
+    let length = units.len();
+    if length == 0 {
+        return true;
+    }
+
+    // A signature-only block is skipped: line 2 is `# ` plus exactly 64
+    // base64 characters. Line 1 can be truncated mid-signature, so only the
+    // second is inspected.
+    if is_signature_only(&units) {
+        return true;
+    }
+
+    let mut counts: HashMap<u16, u32> = HashMap::new();
+    let mut seen: Vec<u16> = Vec::new();
+    for unit in &units {
+        let count = counts.entry(*unit).or_insert(0);
+        if *count == 0 {
+            seen.push(*unit);
+        }
+        *count += 1;
+    }
+
+    let inv_log2 = 1.0 / std::f64::consts::LN_2;
+    #[allow(clippy::cast_precision_loss)]
+    let total = length as f64;
+    let mut entropy = 0.0f64;
+    let mut surprisal_var = 0.0f64;
+    let mut p_sum = 0.0f64;
+    for unit in &seen {
+        let count = f64::from(counts[unit]);
+        let p = count / total;
+        let l2p = p.ln() * inv_log2;
+
+        p_sum += p;
+        let tmp = entropy;
+        entropy = tmp + (p / p_sum) * (l2p - tmp);
+        surprisal_var += p * (l2p - tmp) * (l2p - entropy);
+    }
+
+    let surprisal_sd = surprisal_var.max(0.0).sqrt();
+    let entropy_bits = if entropy == 0.0 { 0.0 } else { -entropy };
+
+    let mut normalized = 0.0f64;
+    if length > 1 {
+        normalized = (entropy_bits / (total.ln() * inv_log2)).clamp(0.0, 1.0);
+    }
+
+    let _ = event.set("powershell.file.script_block_entropy_bits", entropy_bits);
+    let _ = event.set("powershell.file.script_block_entropy_normalized", normalized);
+    let _ = event.set("powershell.file.script_block_surprisal_stdev", surprisal_sd);
+    let _ = event.set("powershell.file.script_block_length", length);
+    let _ = event.set("powershell.file.script_block_unique_symbols", seen.len());
+    true
+}
+
+/// Line 2 is `#`, an optional space, then exactly 64 base64 characters.
+fn is_signature_only(units: &[u16]) -> bool {
+    const LF: u16 = 10;
+    const CR: u16 = 13;
+    const HASH: u16 = 35;
+    const SPACE: u16 = 32;
+    const SIGNATURE_LINE: usize = 64;
+
+    let Some(first_line_end) = units.iter().position(|u| *u == LF).filter(|at| *at > 0) else {
+        return false;
+    };
+    let second_line_start = first_line_end + 1;
+    if second_line_start >= units.len() {
+        return false;
+    }
+    let mut second_line_end = units[second_line_start..]
+        .iter()
+        .position(|u| *u == LF)
+        .map_or(units.len(), |at| second_line_start + at);
+    if second_line_end > second_line_start && units[second_line_end - 1] == CR {
+        second_line_end -= 1;
+    }
+    if second_line_start >= second_line_end || units[second_line_start] != HASH {
+        return false;
+    }
+
+    let mut content_start = second_line_start + 1;
+    if content_start < second_line_end && units[content_start] == SPACE {
+        content_start += 1;
+    }
+    if second_line_end - content_start != SIGNATURE_LINE {
+        return false;
+    }
+    units[content_start..second_line_end].iter().all(|u| {
+        matches!(u, 65..=90 | 97..=122 | 48..=57) || matches!(u, 43 | 47 | 61)
+    })
 }
 
 #[cfg(test)]
