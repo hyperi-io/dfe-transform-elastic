@@ -7473,16 +7473,18 @@ impl Transform for Default {
                 };
                 if _cond {
                     let v = json!(format!(
-                        "{}{}{}\\{}\\{}",
-                        event
-                            .get("#registry.hive")
-                            .map_or_else(String::new, template_to_string),
-                        event
-                            .get("registry.hive")
-                            .map_or_else(String::new, template_to_string),
-                        event
-                            .get("/registry.hive")
-                            .map_or_else(String::new, template_to_string),
+                        "{}\\{}\\{}",
+                        if event.get("registry.hive").is_some_and(|v| !v.is_null()
+                            && v.as_str() != Some("")
+                            && !matches!(v, Value::Bool(false))
+                            && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            event
+                                .get("registry.hive")
+                                .map_or_else(String::new, template_to_string)
+                        } else {
+                            String::new()
+                        },
                         event
                             .get("registry.key")
                             .map_or_else(String::new, template_to_string),
@@ -9902,6 +9904,11 @@ impl Transform for Default {
                                 for (path, value) in captured {
                                     event.set(path, value)?;
                                 }
+                            } else {
+                                return Err(TransformError::ParseError {
+                                    path: "json.properties.SenderEmailAddress".into(),
+                                    message: "dissect pattern did not match".into(),
+                                });
                             }
                         }
                     }

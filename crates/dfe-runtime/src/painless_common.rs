@@ -836,6 +836,486 @@ fn run_route53_answers(event: &mut Event) -> bool {
     true
 }
 
+/// The fields a `splitStr(<map>, '<key>')` script splits, as full ctx paths.
+fn parse_split_on_pipe(script: &str) -> Vec<String> {
+    let Some(root) = ctx_path_bound_to(script, "ed") else {
+        return Vec::new();
+    };
+    let Some(local) = script
+        .split_once(" = ctx.")
+        .and_then(|(head, _)| head.rsplit(char::is_whitespace).next())
+        .map(str::to_string)
+    else {
+        return Vec::new();
+    };
+
+    let mut fields = Vec::new();
+    for call in script.split("splitStr(").skip(1) {
+        let Some((args, _)) = call.split_once(')') else {
+            continue;
+        };
+        let Some((subject, key)) = args.split_once(", ") else {
+            continue;
+        };
+        let key = key.trim().trim_matches('\'');
+        // The helper's own subject is its parameter, not a field.
+        let Some(tail) = subject.trim().strip_prefix(&local) else {
+            continue;
+        };
+        if !tail.is_empty() && !tail.starts_with('.') {
+            continue;
+        }
+        fields.push(format!("{root}{tail}.{key}"));
+    }
+    fields
+}
+
+/// Split each named field on `|`, in place.
+///
+/// The helper leaves anything that is not a NON-EMPTY string alone, so a field
+/// already split stays split and an empty one stays empty rather than becoming
+/// a one-element list.
+fn run_split_on_pipe(event: &mut Event, fields: &[String]) -> bool {
+    for field in fields {
+        let Some(text) = event.get_str(field) else {
+            continue;
+        };
+        if text.is_empty() {
+            continue;
+        }
+        let parts: Vec<Value> = text.split('|').map(|part| json!(part)).collect();
+        let _ = event.set(field, Value::Array(parts));
+    }
+    true
+}
+
+/// zscaler's parallel attachment columns and where each lands.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct AttachmentZip {
+    source: String,
+    target: String,
+    /// The key each entry's map is stored under -- `file`.
+    wrapper: String,
+    /// `(member of the source map, dotted path inside the wrapped map)`.
+    columns: Vec<(String, String)>,
+}
+
+/// One `<receiver>.put('<key>', <value>)` call.
+struct PutCall {
+    receiver: String,
+    key: String,
+    value: String,
+}
+
+/// Every `.put(` call in the script, in source order.
+fn parse_put_calls(script: &str) -> Vec<PutCall> {
+    let mut calls = Vec::new();
+    for (head, tail) in script.split(".put('").zip(script.split(".put('").skip(1)) {
+        let Some(receiver) = head
+            .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+            .next()
+        else {
+            continue;
+        };
+        let Some((key, rest)) = tail.split_once('\'') else {
+            continue;
+        };
+        // The value runs to the `put(`'s OWN closing paren, so a nested call
+        // keeps its parens rather than being cut at the first one.
+        let rest = rest.trim_start_matches(',').trim_start();
+        let mut depth = 1usize;
+        let mut end = None;
+        for (at, c) in rest.char_indices() {
+            match c {
+                '(' => depth += 1,
+                ')' => {
+                    depth -= 1;
+                    if depth == 0 {
+                        end = Some(at);
+                        break;
+                    }
+                }
+                _ => {}
+            }
+        }
+        let Some(end) = end else { continue };
+        calls.push(PutCall {
+            receiver: receiver.to_string(),
+            key: key.to_string(),
+            value: rest[..end].trim().to_string(),
+        });
+    }
+    calls
+}
+
+impl AttachmentZip {
+    /// Read the `att` binding, the `instanceof List` columns, and the target.
+    fn parse(script: &str) -> Option<Self> {
+        use crate::painless_params::clean_path;
+
+        let source = ctx_path_bound_to(script, "att")?;
+        let (head, _) = script.split_once(".add(")?;
+        let target = clean_path(head.rsplit("ctx.").next()?);
+        let entry = script.split(".add(").nth(1)?.split(')').next()?.trim();
+
+        // `def <local> = att.<member> instanceof List ? ...`
+        let mut members: Vec<(String, String)> = Vec::new();
+        for line in script.lines() {
+            let Some((head, _)) = line.split_once(" instanceof List ?") else {
+                continue;
+            };
+            let Some((declaration, subject)) = head.rsplit_once(" = ") else {
+                continue;
+            };
+            let (Some(local), Some(member)) = (
+                declaration.rsplit(char::is_whitespace).next(),
+                subject.trim().rsplit('.').next(),
+            ) else {
+                continue;
+            };
+            members.push((local.to_string(), member.to_string()));
+        }
+
+        // The entry is one map put under one key -- `item.put('file', file)`.
+        let calls = parse_put_calls(script);
+        let wrap = calls.iter().find(|call| call.receiver == entry)?;
+        let (wrapper, inner) = (wrap.key.clone(), wrap.value.clone());
+
+        let member_of = |value: &str| -> Option<String> {
+            let local = value.strip_suffix(".get(i)")?;
+            members
+                .iter()
+                .find(|(name, _)| name == local)
+                .map(|(_, member)| member.clone())
+        };
+
+        let mut columns = Vec::new();
+        for call in &calls {
+            if call.receiver != inner {
+                continue;
+            }
+            if let Some(member) = member_of(&call.value) {
+                columns.push((member, call.key.clone()));
+                continue;
+            }
+            // A nested map reaches the entry through a put of its own, so its
+            // path is this key plus the one the value was stored under.
+            for nested in calls.iter().filter(|c| c.receiver == call.value) {
+                if let Some(member) = member_of(&nested.value) {
+                    columns.push((member, format!("{}.{}", call.key, nested.key)));
+                }
+            }
+        }
+
+        (!columns.is_empty()).then_some(Self {
+            source,
+            target,
+            wrapper,
+            columns,
+        })
+    }
+}
+
+/// zscaler's severity score: the highest any of a field's values earns.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MaxByContains {
+    source: String,
+    target: String,
+    /// `(substrings that win this score, the score)`, in ladder order.
+    arms: Vec<(Vec<String>, i64)>,
+}
+
+impl MaxByContains {
+    fn parse(script: &str) -> Option<Self> {
+        use crate::painless_params::clean_path;
+
+        let source = ctx_path_bound_to(script, "raw")?;
+        let (assignment, _) = script.split_once(" = maxSev;")?;
+        let target = clean_path(assignment.rsplit("ctx.").next()?);
+
+        let pieces: Vec<&str> = script.split("cur = ").collect();
+        let mut arms = Vec::new();
+        for index in 1..pieces.len() {
+            let Some(score) = pieces[index]
+                .split(';')
+                .next()
+                .and_then(|n| n.trim().parse::<i64>().ok())
+            else {
+                continue;
+            };
+            let condition = pieces[index - 1].rsplit("if (").next()?;
+            let literals: Vec<String> = condition
+                .split('\'')
+                .skip(1)
+                .step_by(2)
+                .map(str::to_string)
+                .collect();
+            if !literals.is_empty() {
+                arms.push((literals, score));
+            }
+        }
+
+        (!arms.is_empty()).then_some(Self {
+            source,
+            target,
+            arms,
+        })
+    }
+}
+
+/// Score every value the field holds and keep the highest.
+///
+/// The ladder is first-match per value, so a string containing two of the
+/// substrings scores the EARLIER arm rather than the higher one.
+fn run_max_by_contains(event: &mut Event, shape: &MaxByContains) -> bool {
+    let values = match event.get(&shape.source) {
+        Some(Value::Array(values)) => values.clone(),
+        Some(value @ Value::String(_)) => vec![value.clone()],
+        _ => return true,
+    };
+
+    let mut highest = 0i64;
+    for value in values.iter().filter_map(Value::as_str) {
+        let folded = value.to_lowercase();
+        if let Some((_, score)) = shape
+            .arms
+            .iter()
+            .find(|(literals, _)| literals.iter().any(|lit| folded.contains(lit)))
+            && *score > highest
+        {
+            highest = *score;
+        }
+    }
+
+    if highest > 0 {
+        let _ = event.set(&shape.target, json!(highest));
+    }
+    true
+}
+
+/// Parallel columns zipped into a list of flat maps, one per index.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ColumnZip {
+    source: String,
+    target: String,
+    /// `(member of the source map, key in each entry)`.
+    columns: Vec<(String, String)>,
+    /// The member whose length bounds the loop.
+    driver: String,
+    /// Driver values that skip the entry entirely.
+    skip: Vec<String>,
+}
+
+impl ColumnZip {
+    fn parse(script: &str) -> Option<Self> {
+        use crate::painless_params::clean_path;
+
+        // `def <root> = ctx.<path>;` is the first binding in the script.
+        let (head, tail) = script.split_once(" = ctx.")?;
+        let root = head.rsplit(char::is_whitespace).next()?.to_string();
+        let source = clean_path(tail.split([';', '\n']).next()?);
+
+        let (assignment, _) = script.rsplit_once(" = out;")?;
+        let target = clean_path(assignment.rsplit("ctx.").next()?);
+
+        let mut members: Vec<(String, String)> = Vec::new();
+        for line in script.lines() {
+            let Some((head, _)) = line.split_once(" instanceof List ?") else {
+                continue;
+            };
+            let Some((declaration, subject)) = head.rsplit_once(" = ") else {
+                continue;
+            };
+            let subject = subject.trim();
+            let (Some(local), Some(member)) = (
+                declaration.rsplit(char::is_whitespace).next(),
+                subject.strip_prefix(&format!("{root}.")),
+            ) else {
+                continue;
+            };
+            members.push((local.to_string(), member.to_string()));
+        }
+
+        // The loop bound names one local; that column drives the zip.
+        let driver_local = script
+            .split_once(".size(); i++)")
+            .and_then(|(head, _)| head.rsplit("i < ").next())?
+            .trim()
+            .to_string();
+        let (_, driver) = members.iter().find(|(name, _)| *name == driver_local)?;
+
+        // The driver's own value is bound before the skip test, so a literal
+        // compared against THAT local is a skip.
+        let bound = script
+            .split_once(&format!("= {driver_local}.get(i)"))
+            .and_then(|(head, _)| head.rsplit(char::is_whitespace).nth(1))?;
+        let skip = script
+            .lines()
+            .filter(|line| line.contains("continue") && line.contains(&format!("{bound} ==")))
+            .flat_map(|line| line.split('\'').skip(1).step_by(2))
+            .map(str::to_string)
+            .collect();
+
+        let mut columns = Vec::new();
+        for call in parse_put_calls(script) {
+            if call.value == bound {
+                columns.push((driver.clone(), call.key));
+                continue;
+            }
+            if let Some(local) = call.value.strip_suffix(".get(i)")
+                && let Some((_, member)) = members.iter().find(|(name, _)| name == local)
+            {
+                columns.push((member.clone(), call.key));
+            }
+        }
+
+        (!columns.is_empty()).then_some(Self {
+            source,
+            target,
+            columns,
+            driver: driver.clone(),
+            skip,
+        })
+    }
+}
+
+/// Zip parallel columns into a list of maps, the driver bounding the loop.
+///
+/// The driver's own placeholder values -- the vendor writes `None` for "no
+/// dictionary" -- drop the whole entry, and the list is written only when
+/// something survived.
+fn run_zip_columns(event: &mut Event, zip: &ColumnZip) -> bool {
+    let column = |member: &str| -> Option<Vec<Value>> {
+        match event.get(&format!("{}.{member}", zip.source)) {
+            Some(Value::Array(values)) => Some(values.clone()),
+            _ => None,
+        }
+    };
+    let Some(driver) = column(&zip.driver) else {
+        return true;
+    };
+    let columns: Vec<(&str, Vec<Value>)> = zip
+        .columns
+        .iter()
+        .filter_map(|(member, key)| column(member).map(|values| (key.as_str(), values)))
+        .collect();
+
+    let mut out = Vec::new();
+    for (index, entry) in driver.iter().enumerate() {
+        match entry.as_str() {
+            Some(name) if !zip.skip.iter().any(|dropped| dropped == name) => {}
+            _ => continue,
+        }
+        let mut item = Map::new();
+        for (key, values) in &columns {
+            if let Some(value) = values.get(index) {
+                item.insert((*key).to_string(), value.clone());
+            }
+        }
+        out.push(Value::Object(item));
+    }
+
+    if !out.is_empty() {
+        let _ = event.set(&zip.target, Value::Array(out));
+    }
+    true
+}
+
+/// Zip parallel attachment columns into one `{"file": {...}}` per index.
+///
+/// The list length is the LONGEST column, and a column that runs out simply
+/// contributes nothing to the remaining entries.
+fn run_zip_attachments(event: &mut Event, zip: &AttachmentZip) -> bool {
+    let mut columns: Vec<(&str, Vec<Value>)> = Vec::new();
+    for (member, path) in &zip.columns {
+        if let Some(Value::Array(values)) = event.get(&format!("{}.{member}", zip.source)) {
+            columns.push((path, values.clone()));
+        }
+    }
+    let count = columns.iter().map(|(_, v)| v.len()).max().unwrap_or(0);
+    if count == 0 {
+        return true;
+    }
+
+    for index in 0..count {
+        let mut file = Map::new();
+        for (path, values) in &columns {
+            let Some(value) = values.get(index) else {
+                continue;
+            };
+            // `hash.md5` nests one level; every other slot is a plain key.
+            match path.split_once('.') {
+                Some((outer, inner)) => {
+                    let entry = file
+                        .entry(outer.to_string())
+                        .or_insert_with(|| Value::Object(Map::new()));
+                    if let Value::Object(map) = entry {
+                        map.insert(inner.to_string(), value.clone());
+                    }
+                }
+                None => {
+                    file.insert((*path).to_string(), value.clone());
+                }
+            }
+        }
+        let mut item = Map::new();
+        item.insert(zip.wrapper.clone(), Value::Object(file));
+        let _ = event.append(&zip.target, Value::Object(item));
+    }
+    true
+}
+
+/// The `<target> = isTruthy(<source>)` assignments a script spells, in order.
+fn parse_truthy_assignments(script: &str) -> Vec<(String, String)> {
+    use crate::painless_params::clean_path;
+
+    const CALL: &str = " = isTruthy(ctx.";
+    let mut pairs = Vec::new();
+    for (head, tail) in script.split(CALL).zip(script.split(CALL).skip(1)) {
+        let Some(target) = head.rsplit("ctx.").next() else {
+            continue;
+        };
+        let Some(source) = tail.split(')').next() else {
+            continue;
+        };
+        // A target carrying whitespace is some other expression, not a path.
+        let target = clean_path(target);
+        if target.contains(char::is_whitespace) || target.is_empty() {
+            continue;
+        }
+        pairs.push((target, clean_path(source)));
+    }
+    pairs
+}
+
+/// m365's `isTruthy`: a vendor flag read as a boolean whatever it was typed as.
+///
+/// Only a value the helper RESOLVES is written -- it returns null for anything
+/// else, and a null assignment leaves no field behind. `false` is a resolved
+/// value, so it is written like any other.
+fn run_truthy_assignments(event: &mut Event, pairs: &[(String, String)]) -> bool {
+    for (target, source) in pairs {
+        let resolved = match event.get(source) {
+            Some(Value::Bool(flag)) => Some(*flag),
+            Some(Value::Number(number)) if !number.is_f64() => match number.as_i64() {
+                Some(1) => Some(true),
+                Some(0) => Some(false),
+                _ => None,
+            },
+            Some(Value::String(text)) => match text.as_str() {
+                "1" | "true" => Some(true),
+                "0" | "false" => Some(false),
+                _ => None,
+            },
+            _ => None,
+        };
+        if let Some(flag) = resolved {
+            let _ = event.set(target, json!(flag));
+        }
+    }
+    true
+}
+
 /// The address a reverse-lookup question names, back into `related.ip`.
 ///
 /// `143.69.2.81.in-addr.arpa` is 81.2.69.143 with its octets reversed, and
@@ -5239,6 +5719,11 @@ pub(crate) enum KnownShape {
     M365IdentityEvidence,
     Route53Answers,
     ReverseLookupAddress,
+    TruthyAssignments(Vec<(String, String)>),
+    SplitOnPipe(Vec<String>),
+    ZipAttachments(Box<AttachmentZip>),
+    ZipColumns(Box<ColumnZip>),
+    MaxByContains(Box<MaxByContains>),
     CheckpointPackets,
     TlsVersionSplit {
         source: String,
@@ -5514,6 +5999,50 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains(".in-addr.arpa") && normalised.contains(".ip6.arpa") {
         shapes.push(KnownShape::ReverseLookupAddress);
         return shapes;
+    }
+
+    // Pattern: zscaler's pipe-delimited columns, split in place.
+    if normalised.contains("void splitStr(Map m, String key)") {
+        let fields = parse_split_on_pipe(normalised);
+        if !fields.is_empty() {
+            shapes.push(KnownShape::SplitOnPipe(fields));
+            return shapes;
+        }
+    }
+
+    // Pattern: zscaler's parallel attachment columns zipped into one list.
+    if normalised.contains("item.put('file', file)")
+        && let Some(zip) = AttachmentZip::parse(normalised)
+    {
+        shapes.push(KnownShape::ZipAttachments(Box::new(zip)));
+        return shapes;
+    }
+
+    // Pattern: the highest score any of a field's values scores, each scored by
+    // the substring it contains.
+    if normalised.contains("if (cur > maxSev) maxSev = cur;")
+        && let Some(shape) = MaxByContains::parse(normalised)
+    {
+        shapes.push(KnownShape::MaxByContains(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: the same zip with no wrapper, driven by one column's length and
+    // skipping the vendor's placeholder names.
+    if normalised.contains("out.add(item)")
+        && let Some(zip) = ColumnZip::parse(normalised)
+    {
+        shapes.push(KnownShape::ZipColumns(Box::new(zip)));
+        return shapes;
+    }
+
+    // Pattern: m365's `isTruthy` helper, one target per vendor flag.
+    if normalised.contains("def isTruthy(def val)") {
+        let pairs = parse_truthy_assignments(normalised);
+        if !pairs.is_empty() {
+            shapes.push(KnownShape::TruthyAssignments(pairs));
+            return shapes;
+        }
     }
 
     // Pattern: drop one literal out of a list -- m365's file.path, whose
@@ -6161,6 +6690,11 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::M365IdentityEvidence => run_m365_identity_evidence(event),
         KnownShape::Route53Answers => run_route53_answers(event),
         KnownShape::ReverseLookupAddress => run_reverse_lookup_address(event),
+        KnownShape::TruthyAssignments(pairs) => run_truthy_assignments(event, pairs),
+        KnownShape::SplitOnPipe(fields) => run_split_on_pipe(event, fields),
+        KnownShape::ZipAttachments(zip) => run_zip_attachments(event, zip),
+        KnownShape::ZipColumns(zip) => run_zip_columns(event, zip),
+        KnownShape::MaxByContains(shape) => run_max_by_contains(event, shape),
         KnownShape::SecurityhubResources(source) => {
             if let Some(Value::Array(resources)) = event.get(source).cloned()
                 && resources.len() > 1
@@ -6625,6 +7159,93 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/zscaler_zia/email_dlp/default.yml`: the vendor
+    /// ships its columns pipe-delimited in one string each.
+    #[test]
+    fn pipe_delimited_columns_split_in_place() {
+        let script = "void splitStr(Map m, String key) {\n  if (m == null || key == null) return;\n  \
+            def v = m.get(key);\n  if (!(v instanceof String)) return;\n  String s = (String) v;\n  \
+            if (s.length() == 0) return;\n  List out = new ArrayList();\n  \
+            out.add(s.substring(from, n));\n  m.put(key, out);\n}\n\
+            def ed = ctx.zscaler_zia?.email_dlp;\nif (ed == null) return;\n\
+            splitStr(ed, 'severity');\nif (ed.dlp instanceof Map) {\n  \
+            splitStr(ed.dlp, 'dict_names');\n}\n";
+
+        let mut event = Event::new(json!({ "zscaler_zia": { "email_dlp": {
+            "severity": "a|b", "dlp": { "dict_names": "Credit Cards|SSN" }
+        }}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("zscaler_zia.email_dlp.severity"),
+            Some(&json!(["a", "b"]))
+        );
+        assert_eq!(
+            event.get("zscaler_zia.email_dlp.dlp.dict_names"),
+            Some(&json!(["Credit Cards", "SSN"]))
+        );
+    }
+
+    /// Verbatim from the same pipeline: names and counts zipped, and the
+    /// vendor's `None` placeholder dropping the whole entry.
+    #[test]
+    fn named_counts_zip_and_skip_the_placeholder() {
+        let script = "def dlp = ctx.zscaler_zia.email_dlp.dlp;\n\
+            def names = dlp.dict_names instanceof List ? dlp.dict_names : null;\n\
+            def counts = dlp.dict_counts instanceof List ? dlp.dict_counts : null;\n\
+            if (names == null) return;\ndef out = new ArrayList();\n\
+            for (int i = 0; i < names.size(); i++) {\n  def name = names.get(i);\n  \
+            if (!(name instanceof String) || name == '' || name == 'None') continue;\n  \
+            def item = new HashMap();\n  item.put('name', name);\n  \
+            if (counts != null && i < counts.size()) item.put('count', counts.get(i));\n  \
+            out.add(item);\n}\n\
+            if (out.size() > 0) ctx.zscaler_zia.email_dlp.dlp.dictionaries = out;\n";
+
+        let mut event = Event::new(json!({ "zscaler_zia": { "email_dlp": { "dlp": {
+            "dict_names": ["Credit Cards", "None", "SSN"], "dict_counts": [7, 0, 3]
+        }}}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("zscaler_zia.email_dlp.dlp.dictionaries"),
+            Some(&json!([
+                { "name": "Credit Cards", "count": 7 },
+                { "name": "SSN", "count": 3 }
+            ]))
+        );
+    }
+
+    /// Verbatim from the same pipeline: parallel columns zipped one entry per
+    /// index, the md5 nested a level deeper than the rest.
+    #[test]
+    fn parallel_attachment_columns_zip_into_one_list() {
+        let script = "def att = ctx.zscaler_zia.email_dlp.email.attachments;\n\
+            def names = att.file_names instanceof List ? att.file_names : null;\n\
+            def md5s = att.md5s instanceof List ? att.md5s : null;\n\
+            def types = att.file_types instanceof List ? att.file_types : null;\n\
+            int n = 0;\nif (names != null && names.size() > n) n = names.size();\n\
+            if (n == 0) return;\nif (ctx.email == null) ctx.email = [:];\n\
+            if (ctx.email.attachments == null) ctx.email.attachments = new ArrayList();\n\
+            for (int i = 0; i < n; i++) {\n  def file = new HashMap();\n  \
+            if (names != null && i < names.size()) file.put('name', names.get(i));\n  \
+            if (md5s != null && i < md5s.size()) {\n    def hash = new HashMap();\n    \
+            hash.put('md5', md5s.get(i));\n    file.put('hash', hash);\n  }\n  \
+            if (types != null && i < types.size()) file.put('extension', types.get(i));\n  \
+            def item = new HashMap();\n  item.put('file', file);\n  \
+            ctx.email.attachments.add(item);\n}\n";
+
+        let mut event = Event::new(json!({ "zscaler_zia": { "email_dlp": { "email": {
+            "attachments": {
+                "file_names": ["a.pdf"], "md5s": ["d41d8"], "file_types": ["pdf"]
+            }
+        }}}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("email.attachments"),
+            Some(&json!([{ "file": {
+                "name": "a.pdf", "hash": { "md5": "d41d8" }, "extension": "pdf"
+            }}]))
+        );
+    }
 
     /// Verbatim from `pipelines/aws/inspector/default.yml`: the ladder writes
     /// through `.put()` and compares a local the script LOWER-CASED, so the

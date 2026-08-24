@@ -2226,7 +2226,7 @@ impl Transform for PipelineDevice {
 
             let _cond = { event.has_value("registry.key") && event.get_str("registry.key") != Some("") && event.has_value("registry.value") };
             if _cond {
-            let v = json!(format!("{}{}{}\\{}\\{}", event.get("#registry.hive").map_or_else(String::new, template_to_string), event.get("registry.hive").map_or_else(String::new, template_to_string), event.get("/registry.hive").map_or_else(String::new, template_to_string), event.get("registry.key").map_or_else(String::new, template_to_string), event.get("registry.value").map_or_else(String::new, template_to_string)));
+            let v = json!(format!("{}\\{}\\{}", if event.get("registry.hive").is_some_and(|v| !v.is_null() && v.as_str() != Some("") && !matches!(v, Value::Bool(false)) && !v.as_array().is_some_and(Vec::is_empty)) { event.get("registry.hive").map_or_else(String::new, template_to_string) } else { String::new() }, event.get("registry.key").map_or_else(String::new, template_to_string), event.get("registry.value").map_or_else(String::new, template_to_string)));
             if !painless_is_empty_value(&v) {
                     event.set("registry.path", v)?;
             }

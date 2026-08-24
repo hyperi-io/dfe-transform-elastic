@@ -87,6 +87,10 @@ pub(crate) enum ParamsShape {
     InvocationDetails,
     ScheduledTask,
     ThreatIndicatorType(String),
+    UppercaseLookupDefault {
+        source: String,
+        target: String,
+    },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -152,6 +156,14 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // line of the named event_data field.
     if normalised.contains("def parseRawDetail(String raw)") {
         return Some(ParamsShape::InvocationDetails);
+    }
+
+    // Pattern: a field uppercased, then abbreviated through params -- m365's
+    // registry hive, where an unlisted name stands for itself.
+    if normalised.contains(".toUpperCase();")
+        && let Some(shape) = parse_uppercase_lookup_default(normalised)
+    {
+        return Some(shape);
     }
 
     // Pattern: securityhub's threat-intel indicators, each vendor type mapped
@@ -367,6 +379,13 @@ pub(crate) fn run_params_shape(
         ParamsShape::ScheduledTask => crate::painless_scheduled_task::run(event, params),
         ParamsShape::ThreatIndicatorType(source) => {
             try_threat_indicator_type(event, source, params)
+        }
+        ParamsShape::UppercaseLookupDefault { source, target } => {
+            if let Some(name) = event.get_str(source).map(str::to_uppercase) {
+                let value = params.get(&name).cloned().unwrap_or_else(|| json!(name));
+                let _ = event.set(target, value);
+            }
+            true
         }
         ParamsShape::ProtocolPrefix {
             list,
@@ -694,6 +713,28 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 /// co-equal winner is listed. Iteration orders are Java's hash orders, which
 /// [`crate::painless_helpers::java_bucket`] reproduces -- the corpus's own
 /// single-winner strings depend on them.
+/// `def name = ctx.<source>.toUpperCase(); ... ctx.<target> = params.getOrDefault(name, name);`
+///
+/// The default being the KEY itself is what makes this its own shape: a name
+/// the table does not abbreviate stands for itself rather than going missing.
+fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsShape> {
+    let (head, rest) = script.split_once(".toUpperCase();")?;
+    let source = clean_path(head.rsplit("ctx.").next()?);
+    if source.is_empty() || source.contains(char::is_whitespace) {
+        return None;
+    }
+
+    let bound = head.rsplit(['\n', ';']).next()?.split('=').next()?.trim();
+    let name = bound.rsplit(char::is_whitespace).next()?;
+    let (assignment, _) = rest.split_once(&format!("= params.getOrDefault({name}, {name})"))?;
+    let target = clean_path(assignment.rsplit("ctx.").next()?);
+    if target.is_empty() || target.contains(char::is_whitespace) {
+        return None;
+    }
+
+    Some(ParamsShape::UppercaseLookupDefault { source, target })
+}
+
 /// securityhub's threat-intel indicators mapped to their STIX type names.
 ///
 /// The vendor type is the params key, so `HASH_MD5` becomes `file` and the

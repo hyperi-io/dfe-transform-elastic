@@ -2210,19 +2210,26 @@ impl Transform for Default {
                 event.append(
                     "error.message",
                     json!(format!(
-                        "Processor '{}' {}with tag '{}' {}failed with message '{}'",
+                        "Processor '{}' {}failed with message '{}'",
                         event
                             .get("_ingest.on_failure_processor_type")
                             .map_or_else(String::new, template_to_string),
-                        event
-                            .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, template_to_string),
-                        event
+                        if event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, template_to_string),
-                        event
-                            .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, template_to_string),
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
                         event
                             .get("_ingest.on_failure_message")
                             .map_or_else(String::new, template_to_string)

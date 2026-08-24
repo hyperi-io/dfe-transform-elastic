@@ -109,7 +109,37 @@ impl Transform for Default {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("Processor '{}' {}with tag '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
                 event.remove("_ingest.on_failure_message");
             }
         }

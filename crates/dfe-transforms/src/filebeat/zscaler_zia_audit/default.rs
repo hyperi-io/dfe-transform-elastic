@@ -264,6 +264,11 @@ impl Transform for Default {
                                 for (path, value) in captured {
                                     event.set(path, value)?;
                                 }
+                            } else {
+                                return Err(TransformError::ParseError {
+                                    path: "user.email".into(),
+                                    message: "dissect pattern did not match".into(),
+                                });
                             }
                         }
                     }

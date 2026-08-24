@@ -444,6 +444,12 @@ impl Transform for PipelineEmail {
                             event.set(path, value)?;
                         }
                     }
+                    else {
+                        return Err(TransformError::ParseError {
+                            path: "json.properties.SenderEmailAddress".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
+                    }
                 }
             }
                 Ok(())

@@ -1156,6 +1156,11 @@ impl Transform for Default {
                             for (path, value) in captured {
                                 event.set(path, value)?;
                             }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "zscaler_zia.email_dlp.owner".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
                     }
                     Ok(())
