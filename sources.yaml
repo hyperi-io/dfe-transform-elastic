@@ -1132,3 +1132,118 @@ sources:
     intakes: [beats, receiver]
     framing: body
     transforms: [default]
+
+
+  azure_application_gateway:
+    package: azure
+    data_stream: application_gateway
+    pipelines: azure/application_gateway
+    fixtures: azure/application_gateway
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_eventhub:
+    package: azure
+    data_stream: eventhub
+    pipelines: azure/eventhub
+    fixtures: azure/eventhub
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_events:
+    package: azure
+    data_stream: events
+    pipelines: azure/events
+    fixtures: azure/events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_firewall_logs:
+    package: azure
+    data_stream: firewall_logs
+    pipelines: azure/firewall_logs
+    fixtures: azure/firewall_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_graphactivitylogs:
+    package: azure
+    data_stream: graphactivitylogs
+    pipelines: azure/graphactivitylogs
+    fixtures: azure/graphactivitylogs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_identity_protection:
+    package: azure
+    data_stream: identity_protection
+    pipelines: azure/identity_protection
+    fixtures: azure/identity_protection
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_provisioning:
+    package: azure
+    data_stream: provisioning
+    pipelines: azure/provisioning
+    fixtures: azure/provisioning
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  azure_springcloudlogs:
+    package: azure
+    data_stream: springcloudlogs
+    pipelines: azure/springcloudlogs
+    fixtures: azure/springcloudlogs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  crowdstrike_alert:
+    package: crowdstrike
+    data_stream: alert
+    pipelines: crowdstrike/alert
+    fixtures: crowdstrike/alert
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+
+  crowdstrike_host:
+    package: crowdstrike
+    data_stream: host
+    pipelines: crowdstrike/host
+    fixtures: crowdstrike/host
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  crowdstrike_identity_protection_assessment:
+    package: crowdstrike
+    data_stream: identity_protection_assessment
+    pipelines: crowdstrike/identity_protection_assessment
+    fixtures: crowdstrike/identity_protection_assessment
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  crowdstrike_identity_protection_timeline:
+    package: crowdstrike
+    data_stream: identity_protection_timeline
+    pipelines: crowdstrike/identity_protection_timeline
+    fixtures: crowdstrike/identity_protection_timeline
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  crowdstrike_vulnerability:
+    package: crowdstrike
+    data_stream: vulnerability
+    pipelines: crowdstrike/vulnerability
+    fixtures: crowdstrike/vulnerability
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  cisco_meraki_events:
+    package: cisco_meraki
+    data_stream: events
+    pipelines: cisco_meraki/events
+    fixtures: cisco_meraki/events
+    intakes: [beats]
+    transforms: [default]
+

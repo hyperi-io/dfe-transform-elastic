@@ -323,10 +323,46 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "azure.activitylogs",
     ),
     (
+        "filebeat.azure_application_gateway.default",
+        &filebeat::azure_application_gateway::default::Default,
+        fetched(),
+        "azure.application_gateway",
+    ),
+    (
         "filebeat.azure_auditlogs.default",
         &filebeat::azure_auditlogs::default::Default,
         fetched(),
         "azure.auditlogs",
+    ),
+    (
+        "filebeat.azure_eventhub.default",
+        &filebeat::azure_eventhub::default::Default,
+        fetched(),
+        "azure.eventhub",
+    ),
+    (
+        "filebeat.azure_events.default",
+        &filebeat::azure_events::default::Default,
+        fetched(),
+        "azure.events",
+    ),
+    (
+        "filebeat.azure_firewall_logs.default",
+        &filebeat::azure_firewall_logs::default::Default,
+        fetched(),
+        "azure.firewall_logs",
+    ),
+    (
+        "filebeat.azure_graphactivitylogs.default",
+        &filebeat::azure_graphactivitylogs::default::Default,
+        fetched(),
+        "azure.graphactivitylogs",
+    ),
+    (
+        "filebeat.azure_identity_protection.default",
+        &filebeat::azure_identity_protection::default::Default,
+        fetched(),
+        "azure.identity_protection",
     ),
     (
         "filebeat.azure_platformlogs.default",
@@ -335,10 +371,22 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "azure.platformlogs",
     ),
     (
+        "filebeat.azure_provisioning.default",
+        &filebeat::azure_provisioning::default::Default,
+        fetched(),
+        "azure.provisioning",
+    ),
+    (
         "filebeat.azure_signinlogs.default",
         &filebeat::azure_signinlogs::default::Default,
         fetched(),
         "azure.signinlogs",
+    ),
+    (
+        "filebeat.azure_springcloudlogs.default",
+        &filebeat::azure_springcloudlogs::default::Default,
+        fetched(),
+        "azure.springcloudlogs",
     ),
     (
         "filebeat.checkpoint.default",
@@ -371,6 +419,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "cisco_meraki.log",
     ),
     (
+        "filebeat.cisco_meraki_events.default",
+        &filebeat::cisco_meraki_events::default::Default,
+        agent_only(),
+        "cisco_meraki.events",
+    ),
+    (
         "filebeat.cisco_nexus.default",
         &filebeat::cisco_nexus::default::Default,
         pushed(Framing::Line),
@@ -387,6 +441,36 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::crowdstrike::default::Default,
         fetched(),
         "crowdstrike.falcon",
+    ),
+    (
+        "filebeat.crowdstrike_alert.default",
+        &filebeat::crowdstrike_alert::default::Default,
+        fetched(),
+        "crowdstrike.alert",
+    ),
+    (
+        "filebeat.crowdstrike_host.default",
+        &filebeat::crowdstrike_host::default::Default,
+        fetched(),
+        "crowdstrike.host",
+    ),
+    (
+        "filebeat.crowdstrike_identity_protection_assessment.default",
+        &filebeat::crowdstrike_identity_protection_assessment::default::Default,
+        fetched(),
+        "crowdstrike.identity_protection_assessment",
+    ),
+    (
+        "filebeat.crowdstrike_identity_protection_timeline.default",
+        &filebeat::crowdstrike_identity_protection_timeline::default::Default,
+        fetched(),
+        "crowdstrike.identity_protection_timeline",
+    ),
+    (
+        "filebeat.crowdstrike_vulnerability.default",
+        &filebeat::crowdstrike_vulnerability::default::Default,
+        fetched(),
+        "crowdstrike.vulnerability",
     ),
     (
         "filebeat.entityanalytics_entra_id.default",

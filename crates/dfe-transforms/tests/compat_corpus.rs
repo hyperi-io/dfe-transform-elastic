@@ -221,6 +221,14 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("aws", "vpn") => &filebeat::aws_vpn::default::Default,
         ("aws", "waf") => &filebeat::aws_waf::default::Default,
         ("aws", "firewall_logs") => &filebeat::aws_firewall_logs::default::Default,
+        ("azure", "application_gateway") => &filebeat::azure_application_gateway::default::Default,
+        ("azure", "eventhub") => &filebeat::azure_eventhub::default::Default,
+        ("azure", "events") => &filebeat::azure_events::default::Default,
+        ("azure", "firewall_logs") => &filebeat::azure_firewall_logs::default::Default,
+        ("azure", "graphactivitylogs") => &filebeat::azure_graphactivitylogs::default::Default,
+        ("azure", "identity_protection") => &filebeat::azure_identity_protection::default::Default,
+        ("azure", "provisioning") => &filebeat::azure_provisioning::default::Default,
+        ("azure", "springcloudlogs") => &filebeat::azure_springcloudlogs::default::Default,
         _ => return None,
     })
 }
